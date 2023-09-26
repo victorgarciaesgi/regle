@@ -1,1 +1,1 @@
-export * from './dom.utils';
+export * from './objects.utils';

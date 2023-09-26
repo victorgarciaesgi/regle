@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": ["esnext", "DOM"],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -14,9 +14,9 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "composite": true,
+    "verbatimModuleSyntax": false,
     "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-    "verbatimModuleSyntax": true
+    "allowSyntheticDefaultImports": true
   },
   "include": ["./packages/**/*"]
 }
