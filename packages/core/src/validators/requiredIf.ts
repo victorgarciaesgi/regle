@@ -12,4 +12,5 @@ export const requiredIf = createRule({
   active(_, condition: MaybeRef<boolean>) {
     return !!unref(condition);
   },
+  type: 'required',
 });

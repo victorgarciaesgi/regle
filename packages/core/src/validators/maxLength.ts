@@ -10,4 +10,5 @@ export const maxLength = createRule({
   message: (value: string, count: number) => {
     return `Value must be maximum ${count} characters long`;
   },
+  type: 'maxLength',
 });

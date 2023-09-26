@@ -3,7 +3,10 @@ import { ShibieRuleDefinition } from '..';
 import { isEmpty } from '../utils';
 
 export function createUseFormComposable() {
-  function useForm(state: Ref<Record<string, any>>, factory: () => Record<string, any>) {
+  function useForm<TState extends Record<string, any>, TRules extends any>(
+    state: Ref<Record<string, any>>,
+    factory: () => Record<string, any>
+  ) {
     let effectScopeConstructor = effectScope();
 
     let scopeRules = effectScopeConstructor.run(() => {
