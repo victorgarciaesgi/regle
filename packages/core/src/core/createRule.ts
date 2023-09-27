@@ -29,6 +29,7 @@ function defineRuleProcessors<TValue extends any, TParams extends any[]>(
       _message: definition.message,
       _active: definition.active,
       _type: definition.type,
+      _patched: false,
     },
   } satisfies ShibieRuleDefinition<TValue, TParams>;
 }
@@ -53,6 +54,7 @@ export function createRule<TValue extends any, TParams extends any[] = []>(
       ruleFactory._message = definition.message;
       ruleFactory._active = definition.active;
       ruleFactory._type = definition.type;
+      ruleFactory._patched = false;
       return ruleFactory as InferShibieRule<TValue, TParams>;
     } else {
       return staticProcessors as InferShibieRule<TValue, TParams>;

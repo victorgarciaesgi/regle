@@ -1,16 +1,18 @@
 import { ComputedRef, Ref, computed, effectScope, onScopeDispose, ref, watch } from 'vue';
-import { ShibieRuleDefinition } from '..';
+import { AllRulesDeclarations, ShibiePartialValidationTree, ShibieRuleDefinition } from '../types';
 import { isEmpty } from '../utils';
 
-export function createUseFormComposable() {
-  function useForm<TState extends Record<string, any>, TRules extends any>(
-    state: Ref<Record<string, any>>,
-    factory: () => Record<string, any>
-  ) {
+export function createUseFormComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
+  customRules: () => TCustomRules
+) {
+  function useForm<
+    TState extends Record<string, any>,
+    TRules extends ShibiePartialValidationTree<TState, AllRulesDeclarations & TCustomRules>,
+  >(state: Ref<TState>, rulesFactory: () => TRules) {
     let effectScopeConstructor = effectScope();
 
     let scopeRules = effectScopeConstructor.run(() => {
-      return computed(factory);
+      return computed(rulesFactory);
     }) as ComputedRef<Record<string, any>>;
 
     const rulesResults = ref<any>({});
@@ -54,5 +56,3 @@ export function createUseFormComposable() {
 
   return useForm;
 }
-
-export const useForm = createUseFormComposable();

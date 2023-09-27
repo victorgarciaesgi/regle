@@ -1,8 +1,7 @@
 import { createRule } from '.';
-import { maxLength, required } from '..';
+import { maxLength } from '..';
 import { withMessage } from '../helpers';
-import { CustomRulesDeclarationTree } from '../types';
-import { DefaultValidators } from './defaultValidators';
+import { AllRulesDeclarations } from '../types';
 import { createUseFormComposable } from './useForm';
 
 /**
@@ -12,13 +11,13 @@ import { createUseFormComposable } from './useForm';
  *
  * @param customRules
  */
-export function defineCustomValidators<
-  TCustomRules extends CustomRulesDeclarationTree & Partial<DefaultValidators>,
->(customRules: () => TCustomRules) {
-  // const useForm = createUseFormComposable<TCustomRules>(formatErrorMessages);
+export function defineCustomValidators<TCustomRules extends Partial<AllRulesDeclarations>>(
+  customRules: () => TCustomRules
+) {
+  const useForm = createUseFormComposable<TCustomRules>(customRules);
 
   return {
-    // useForm,
+    useForm,
   };
 }
 

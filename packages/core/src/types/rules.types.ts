@@ -1,14 +1,6 @@
-/**
- * Inline rule definition
- * */
-export type InlineRuleDefinition<T extends any> = (value: T) => boolean | Promise<boolean>;
+import { DefaultValidators } from '../core/defaultValidators';
 
-/**
- * Regroup inline and registered rules
- * */
-export type FormRuleDefinition<TValue extends any, TParams extends any[] = []> =
-  | InlineRuleDefinition<TValue>
-  | ShibieRuleDefinition<TValue, TParams>;
+// - Rules declarations
 
 /**
  * createRule options
@@ -25,6 +17,7 @@ export interface ShibieInternalRuleDefs<TValue extends any, TParams extends any[
   _message: string | ((value: TValue, ...args: TParams) => string);
   _active?: boolean | ((value: TValue, ...args: TParams) => boolean);
   _type: string;
+  _patched: boolean;
 }
 
 /**
@@ -76,10 +69,53 @@ export type InferShibieRule<TValue extends any = any, TParams extends any[] = []
   : ShibieRuleWithParamsDefinition<TValue, TParams>;
 
 export type CustomRulesDeclarationTree = Record<string, ShibieRule<any, any>>;
+export type AllRulesDeclarations = CustomRulesDeclarationTree & DefaultValidators;
+
+// - Rules usage
+
+/**
+ * Inline rule definition
+ * */
+export type InlineRuleDefinition<TValue extends any, TParams extends any[] = []> = (
+  value: TValue,
+  ...params: TParams
+) => boolean | Promise<boolean>;
+
+/**
+ * Regroup inline and registered rules
+ * */
+export type FormRuleDefinition<TValue extends any, TParams extends any[] = []> =
+  | InlineRuleDefinition<TValue>
+  | ShibieRuleDefinition<TValue, TParams>;
+
+/**
+ * Rule tree for a form property
+ */
+export type ShibieRuleDecl<TValue, TCustomRules extends AllRulesDeclarations> = {
+  [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends ShibieRuleWithParamsDefinition<
+    any,
+    infer TParams
+  >
+    ? FormRuleDefinition<TValue, TParams>
+    : FormRuleDefinition<TValue, any[]>;
+};
+
+/**
+ * TODO nested forms
+ */
+export type ShibieFormPropertyType<
+  TValue,
+  TCustomRules extends AllRulesDeclarations,
+> = ShibieRuleDecl<TValue, TCustomRules>;
+
+export type ShibiePartialValidationTree<
+  TForm extends Record<string, any>,
+  TCustomRules extends AllRulesDeclarations,
+> = {
+  [TKey in keyof TForm]?: ShibieFormPropertyType<TForm[TKey], TCustomRules>;
+};
 
 // ---------------------------------------------------------------------
-
-// export type ShibieRuleDecl
 
 //
 //

@@ -21,18 +21,25 @@ errors: {{ errors }}
 </template>
 
 <script setup lang="ts">
-import { useForm, required, maxLength } from '@shibie/core';
+import { required, maxLength, requiredIf } from '@shibie/core';
 import { ref } from 'vue';
+import { useForm, not } from './validations';
 
 const form = ref({
   email: '',
   firstName: '',
 });
 
-const limit = ref(10);
+const limit = ref(2);
 
 const { state, rulesResults, errors } = useForm(form, () => ({
-  email: { required },
-  firstName: { required, maxLength: maxLength(limit.value) },
+  email: {
+    required: requiredIf(limit.value === 2),
+    maxLength: maxLength(limit.value),
+  },
+  firstName: {
+    required,
+    not: not(form.value.email),
+  },
 }));
 </script>
