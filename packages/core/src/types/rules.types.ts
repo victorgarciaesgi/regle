@@ -1,14 +1,31 @@
+import { MaybeRef } from 'vue';
 import { DefaultValidators } from '../core/defaultValidators';
 
 // - Rules declarations
 
+type ExcludeFromTuple<T extends readonly any[], E> = T extends [infer F, ...infer R]
+  ? [F] extends [E]
+    ? ExcludeFromTuple<R, E>
+    : [Exclude<F, E>, ...ExcludeFromTuple<R, E>]
+  : [];
+
+type UnrefTuple<T extends readonly any[]> = T extends [infer F, ...infer R]
+  ? [F] extends [MaybeRef<infer U>]
+    ? [U, ...UnrefTuple<R>]
+    : [F, ...UnrefTuple<R>]
+  : [];
+
 /**
  * createRule options
  */
-export interface ShibieRuleInit<TValue extends any, TParams extends any[] = []> {
-  validator: (value: TValue, ...args: TParams) => boolean;
-  message: string | ((value: TValue, ...args: TParams) => string);
-  active?: boolean | ((value: TValue, ...args: TParams) => boolean);
+export interface ShibieRuleInit<
+  TValue extends any,
+  TParams extends any[] = [],
+  FilteredParams extends any[] = UnrefTuple<ExcludeFromTuple<TParams, Function>>,
+> {
+  validator: (value: TValue, ...args: FilteredParams) => boolean;
+  message: string | ((value: TValue, ...args: FilteredParams) => string);
+  active?: boolean | ((value: TValue, ...args: FilteredParams) => boolean);
   type: string;
 }
 
@@ -91,7 +108,10 @@ export type FormRuleDefinition<TValue extends any, TParams extends any[] = []> =
 /**
  * Rule tree for a form property
  */
-export type ShibieRuleDecl<TValue, TCustomRules extends AllRulesDeclarations> = {
+export type ShibieRuleDecl<
+  TValue,
+  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+> = {
   [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends ShibieRuleWithParamsDefinition<
     any,
     infer TParams
@@ -105,12 +125,12 @@ export type ShibieRuleDecl<TValue, TCustomRules extends AllRulesDeclarations> = 
  */
 export type ShibieFormPropertyType<
   TValue,
-  TCustomRules extends AllRulesDeclarations,
+  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = ShibieRuleDecl<TValue, TCustomRules>;
 
 export type ShibiePartialValidationTree<
   TForm extends Record<string, any>,
-  TCustomRules extends AllRulesDeclarations,
+  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = {
   [TKey in keyof TForm]?: ShibieFormPropertyType<TForm[TKey], TCustomRules>;
 };

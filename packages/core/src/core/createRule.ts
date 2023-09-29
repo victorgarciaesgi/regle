@@ -1,4 +1,14 @@
+import { isRef, unref } from 'vue';
 import { InferShibieRule, ShibieRuleDefinition, ShibieRuleInit } from '../types';
+
+function unwrapParameters<TParams extends any[]>(params: (any | (() => any))[]): TParams {
+  return params.map((param) => {
+    if (typeof param === 'function') {
+      return param();
+    }
+    return unref(param);
+  }) as TParams;
+}
 
 function defineRuleProcessors<TValue extends any, TParams extends any[]>(
   definition: ShibieRuleInit<TValue, TParams>,
@@ -8,17 +18,17 @@ function defineRuleProcessors<TValue extends any, TParams extends any[]>(
   return {
     message(value, ...args) {
       if (typeof definition.message === 'function') {
-        return definition.message(value, ...params);
+        return definition.message(value, ...(unwrapParameters<TParams>(params) as any));
       } else {
         return definition.message;
       }
     },
     validator(value, ...args) {
-      return definition.validator(value, ...params);
+      return definition.validator(value, ...(unwrapParameters<TParams>(params) as any));
     },
     active(value, ...args) {
       if (typeof definition.active === 'function') {
-        return definition.active(value, ...params);
+        return definition.active(value, ...(unwrapParameters<TParams>(params) as any));
       } else {
         return definition.active ?? true;
       }
@@ -34,7 +44,7 @@ function defineRuleProcessors<TValue extends any, TParams extends any[]>(
   } satisfies ShibieRuleDefinition<TValue, TParams>;
 }
 
-export function createRule<TValue extends any, TParams extends any[] = []>(
+export function createRule<TValue extends any, TParams extends (any | (() => any))[] = []>(
   definition: ShibieRuleInit<TValue, TParams>
 ): InferShibieRule<TValue, TParams> {
   if (typeof definition.validator === 'function') {
@@ -55,7 +65,7 @@ export function createRule<TValue extends any, TParams extends any[] = []>(
       ruleFactory._active = definition.active;
       ruleFactory._type = definition.type;
       ruleFactory._patched = false;
-      return ruleFactory as InferShibieRule<TValue, TParams>;
+      return ruleFactory as any;
     } else {
       return staticProcessors as InferShibieRule<TValue, TParams>;
     }

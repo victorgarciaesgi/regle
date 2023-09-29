@@ -1,7 +1,7 @@
 import { MaybeRef, unref } from 'vue';
 import { createRule } from '../core';
 
-export const requiredIf = createRule<any, [condition: MaybeRef<boolean>]>({
+export const requiredIf = createRule<any, [condition: MaybeRef<boolean> | (() => boolean)]>({
   validator(value, condition) {
     if (value != null) {
       return !unref(condition);

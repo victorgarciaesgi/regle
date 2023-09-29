@@ -28,18 +28,26 @@ import { useForm, not } from './validations';
 const form = ref({
   email: '',
   firstName: '',
+  foo: 5,
 });
 
 const limit = ref(2);
 
-const { state, rulesResults, errors } = useForm(form, () => ({
+const { state, rulesResults, errors, $shibie } = useForm(form, () => ({
   email: {
-    required: requiredIf(limit.value === 2),
+    required: requiredIf(() => {
+      return limit.value === 2;
+    }),
     maxLength: maxLength(limit.value),
   },
   firstName: {
     required,
     not: not(form.value.email),
   },
+  foo: {
+    required,
+  },
 }));
+
+// $shibie.value.fields.foo.$value;
 </script>
