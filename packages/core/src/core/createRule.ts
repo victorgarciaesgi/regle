@@ -1,7 +1,17 @@
 import { isRef, unref } from 'vue';
-import { InferShibieRule, ShibieRuleDefinition, ShibieRuleInit } from '../types';
+import {
+  InferShibieRule,
+  ParamDecl,
+  ShibieRuleDefinition,
+  ShibieRuleInit,
+  ShibieUniversalParams,
+} from '../types';
 
-function unwrapParameters<TParams extends any[]>(params: (any | (() => any))[]): TParams {
+/**
+ * Returns a clean list of parameters
+ * Removing Ref and executing function to return the unwraped value
+ */
+function unwrapParameters<TParams extends any[]>(params: unknown[]): TParams {
   return params.map((param) => {
     if (typeof param === 'function') {
       return param();
@@ -13,20 +23,20 @@ function unwrapParameters<TParams extends any[]>(params: (any | (() => any))[]):
 function defineRuleProcessors<TValue extends any, TParams extends any[]>(
   definition: ShibieRuleInit<TValue, TParams>,
   ...params: TParams
-): ShibieRuleDefinition<TValue, TParams> {
+): ShibieRuleDefinition<TValue, ShibieUniversalParams<TParams>> {
   const { message, validator, active, ...properties } = definition;
   return {
-    message(value, ...args) {
+    message(value: any, ...args: any[]) {
       if (typeof definition.message === 'function') {
         return definition.message(value, ...(unwrapParameters<TParams>(params) as any));
       } else {
         return definition.message;
       }
     },
-    validator(value, ...args) {
+    validator(value: any, ...args: any[]) {
       return definition.validator(value, ...(unwrapParameters<TParams>(params) as any));
     },
-    active(value, ...args) {
+    active(value: any, ...args: any[]) {
       if (typeof definition.active === 'function') {
         return definition.active(value, ...(unwrapParameters<TParams>(params) as any));
       } else {
@@ -40,8 +50,9 @@ function defineRuleProcessors<TValue extends any, TParams extends any[]>(
       _active: definition.active,
       _type: definition.type,
       _patched: false,
+      _params: params,
     },
-  } satisfies ShibieRuleDefinition<TValue, TParams>;
+  } as unknown as ShibieRuleDefinition<TValue, ShibieUniversalParams<TParams>>;
 }
 
 export function createRule<TValue extends any, TParams extends (any | (() => any))[] = []>(
@@ -67,7 +78,7 @@ export function createRule<TValue extends any, TParams extends (any | (() => any
       ruleFactory._patched = false;
       return ruleFactory as any;
     } else {
-      return staticProcessors as InferShibieRule<TValue, TParams>;
+      return staticProcessors as any;
     }
   }
   throw new Error('Validator must be a function');

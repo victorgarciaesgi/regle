@@ -1,18 +1,13 @@
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { ComputedRef, Ref, ref, watch } from 'vue';
+import { Shibie, ShibiePartialValidationTree } from '../../types';
 import { isEmpty } from '../../utils';
-import {
-  AllRulesDeclarations,
-  ShibiePartialValidationTree,
-  ShibieRuleDefinition,
-  Shibie,
-} from '../../types';
 
 export function useShibie(
   scopeRules: ComputedRef<ShibiePartialValidationTree<Record<string, any>>>,
   state: Ref<Record<string, any>>
 ) {
-  // const rulesResults = ref<any>({});
-  // const errors = ref<any>({});
+  const rulesResults = ref<any>({});
+  const errors = ref<any>({});
 
   const $shibie = ref<
     Shibie<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>>
@@ -31,36 +26,61 @@ export function useShibie(
     $value: {},
   });
 
-  watch(
-    [scopeRules, state],
-    () => {
-      Object.entries(scopeRules.value).map(([key, rules]) => {
-        // if (isEmpty(rulesResults.value[key])) {
-        //   rulesResults.value[key] = {};
-        // }
-        if (rules) {
-          // errors.value[key] = [];
-          Object.entries(rules).map(([ruleKey, rule]) => {
-            const ruleDef = rule as ShibieRuleDefinition;
-            const ruleResult = ruleDef.validator(state.value[key]);
-            if (!ruleResult) {
-              let message: string;
+  function processRules() {
+    Object.entries(scopeRules.value).map(([key, rules]) => {
+      if (isEmpty(rulesResults.value[key])) {
+        rulesResults.value[key] = {};
+      }
+      if (rules) {
+        errors.value[key] = [];
+        Object.entries(rules).map(async ([ruleKey, ruleDef]) => {
+          let ruleResult: boolean;
+          let message: string | undefined = 'Error';
+          if (ruleDef) {
+            if (typeof ruleDef === 'function') {
+              const resultOrPromise = ruleDef(state.value[key]);
+              if (resultOrPromise instanceof Promise) {
+                ruleResult = await resultOrPromise;
+              } else {
+                ruleResult = resultOrPromise;
+              }
+            } else {
+              ruleResult = ruleDef.validator(state.value[key]);
               if (typeof ruleDef.message === 'function') {
                 message = ruleDef.message(state.value[key]);
               } else {
                 message = ruleDef.message;
               }
-              // errors.value[key].push(message);
             }
-            // if (rulesResults.value[key][ruleKey] !== ruleResult) {
-            //   rulesResults.value[key][ruleKey] = ruleResult;
-            // }
+            if (!ruleResult && message) {
+              errors.value[key].push(message);
+            }
+            if (rulesResults.value[key][ruleKey] !== ruleResult) {
+              rulesResults.value[key][ruleKey] = ruleResult;
+            }
+          }
+        });
+      }
+    });
+  }
+
+  Object.entries(scopeRules.value).map(([key, rules]) => {
+    if (rules) {
+      Object.entries(rules).map(async ([ruleKey, ruleDef]) => {
+        if (typeof ruleDef === 'function') {
+          watch(ruleDef, processRules);
+        } else if (ruleDef) {
+          ruleDef._params?.forEach((param) => {
+            if (typeof param === 'function') {
+              watch(param, processRules);
+            }
           });
         }
       });
-    },
-    { deep: true, immediate: true }
-  );
+    }
+  });
 
-  return $shibie;
+  watch([scopeRules, state], processRules, { deep: true, immediate: true });
+
+  return { $shibie, rulesResults, errors };
 }

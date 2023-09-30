@@ -1,5 +1,5 @@
 import { createRule } from '..';
-import { InferShibieRule, ShibieInternalRuleDefs, ShibieRule } from '../types';
+import { InferShibieRule, ShibieRule } from '../types';
 
 export function withMessage<
   TValue extends any,
@@ -7,7 +7,7 @@ export function withMessage<
   TNewParams extends any[],
   TNewMessage extends string | ((value: TValue, ...params: TNewParams) => string),
 >(rule: ShibieRule<TValue, TParams>, newMessage: TNewMessage): InferShibieRule<TValue, TNewParams> {
-  const { _type, _validator, _active } = rule as unknown as ShibieInternalRuleDefs<TValue, TParams>;
+  const { _type, _validator, _active } = rule;
 
   const newRule = createRule({
     type: _type,
@@ -16,7 +16,7 @@ export function withMessage<
     message: newMessage as unknown as any,
   });
 
-  (newRule as unknown as ShibieInternalRuleDefs<TValue, TParams>)._patched = true;
+  newRule._patched = true;
 
   return newRule as unknown as InferShibieRule<TValue, TNewParams>;
 }

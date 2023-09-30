@@ -3,44 +3,55 @@ import { DefaultValidators } from '../core/defaultValidators';
 
 // - Rules declarations
 
-type ExcludeFromTuple<T extends readonly any[], E> = T extends [infer F, ...infer R]
-  ? [F] extends [E]
-    ? ExcludeFromTuple<R, E>
-    : [Exclude<F, E>, ...ExcludeFromTuple<R, E>]
-  : [];
+// type ExcludeFromTuple<T extends readonly any[], E> = T extends [infer F, ...infer R]
+//   ? [NonNullable<F>] extends [E]
+//     ? ExcludeFromTuple<R, E>
+//     : [Exclude<F, E>, ...ExcludeFromTuple<R, E>]
+//   : [];
 
-type UnrefTuple<T extends readonly any[]> = T extends [infer F, ...infer R]
-  ? [F] extends [MaybeRef<infer U>]
-    ? [U, ...UnrefTuple<R>]
-    : [F, ...UnrefTuple<R>]
+// type UnrefTuple<T extends readonly any[]> = T extends [infer F, ...infer R]
+//   ? [NonNullable<F>] extends [MaybeRef<infer U>]
+//     ? [U, ...UnrefTuple<R>]
+//     : [F, ...UnrefTuple<R>]
+//   : [];
+
+type ArrayElement<T> = T extends Array<infer U> ? U : never;
+export type ParamDecl<T> = MaybeRef<T> | (() => T);
+
+export type ShibieUniversalParams<T extends any[]> = T extends [infer F, ...infer R]
+  ? [ParamDecl<F>, ...ShibieUniversalParams<R>]
+  : T extends [...infer R]
+  ? [(MaybeRef<ArrayElement<R>> | (() => ArrayElement<R>))?]
   : [];
 
 /**
- * createRule options
+ * @argument
+ * createRule arguments options
  */
-export interface ShibieRuleInit<
-  TValue extends any,
-  TParams extends any[] = [],
-  FilteredParams extends any[] = UnrefTuple<ExcludeFromTuple<TParams, Function>>,
-> {
-  validator: (value: TValue, ...args: FilteredParams) => boolean;
-  message: string | ((value: TValue, ...args: FilteredParams) => string);
-  active?: boolean | ((value: TValue, ...args: FilteredParams) => boolean);
+export interface ShibieRuleInit<TValue extends any, TParams extends any[] = []> {
+  validator: (value: TValue, ...args: TParams) => boolean;
+  message: string | ((value: TValue, ...args: TParams) => string);
+  active?: boolean | ((value: TValue, ...args: TParams) => boolean);
   type: string;
 }
 
-export interface ShibieInternalRuleDefs<TValue extends any, TParams extends any[] = []> {
+/**
+ * Internal definition of the rule, can be used to reset or patch the rule
+ */
+export interface ShibieInternalRuleDefs<TValue extends any = any, TParams extends any[] = []> {
   _validator: (value: TValue, ...args: TParams) => boolean;
   _message: string | ((value: TValue, ...args: TParams) => string);
   _active?: boolean | ((value: TValue, ...args: TParams) => boolean);
   _type: string;
   _patched: boolean;
+  _params?: ShibieUniversalParams<TParams>;
 }
 
 /**
  * Returned typed of rules created with `createRule`
  * */
-export interface ShibieRuleDefinition<TValue extends any = any, TParams extends any[] = []> {
+export interface ShibieRuleDefinition<TValue extends any = any, TParams extends any[] = []>
+  extends ShibieInternalRuleDefs {
   validator: (value: TValue, ...args: TParams) => boolean;
   message: (value: TValue, ...args: TParams) => string;
   active: (value: TValue, ...args: TParams) => boolean;
@@ -53,8 +64,9 @@ export interface ShibieRuleDefinition<TValue extends any = any, TParams extends 
 export interface ShibieRuleWithParamsDefinition<
   TValue extends any = any,
   TParams extends any[] = [],
-> extends ShibieRuleInit<TValue, TParams> {
-  (...params: TParams): ShibieRuleDefinition<TValue, TParams>;
+> extends ShibieRuleInit<TValue, TParams>,
+    ShibieInternalRuleDefs {
+  (...params: ShibieUniversalParams<TParams>): ShibieRuleDefinition<TValue, TParams>;
 }
 
 /**
@@ -134,6 +146,39 @@ export type ShibiePartialValidationTree<
 > = {
   [TKey in keyof TForm]?: ShibieFormPropertyType<TForm[TKey], TCustomRules>;
 };
+
+export type ShibieErrorTree<TRules extends ShibiePartialValidationTree<any, any>> = {
+  [K in keyof TRules]: ShibieValidationError<never, TRules[K]>;
+};
+
+// export type UnsafeValidationErrorTree<TData extends Record<string, any> = Record<string, any>> = {
+//   [K in keyof TData]: ValidationError<TData[K]>;
+// };
+
+export type ShibieValidationError<
+  TKey extends DataType = string | Record<string, any>,
+  TRule extends ShibieFormPropertyType<any, any> | undefined = never,
+> = [TKey] extends [never]
+  ? TRule extends ShibieRuleDecl<any, any>
+    ? string[]
+    : TRule extends ShibiePartialValidationTree<any, any>
+    ? ShibieErrorTree<TRule>
+    : never
+  : TKey extends Array<any>
+  ? string[]
+  : TKey extends Date
+  ? string[]
+  : string[];
+
+export type DataType =
+  | string
+  | number
+  | Record<string, any>
+  | File
+  | Array<any>
+  | Date
+  | null
+  | undefined;
 
 // ---------------------------------------------------------------------
 
