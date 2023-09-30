@@ -1,4 +1,4 @@
-import { MaybeRef } from 'vue';
+import { MaybeRef, Ref } from 'vue';
 import { DefaultValidators } from '../core/defaultValidators';
 
 // - Rules declarations
@@ -18,11 +18,17 @@ import { DefaultValidators } from '../core/defaultValidators';
 type ArrayElement<T> = T extends Array<infer U> ? U : never;
 export type ParamDecl<T> = MaybeRef<T> | (() => T);
 
-export type ShibieUniversalParams<T extends any[]> = T extends [infer F, ...infer R]
-  ? [ParamDecl<F>, ...ShibieUniversalParams<R>]
-  : T extends [...infer R]
-  ? [(MaybeRef<ArrayElement<R>> | (() => ArrayElement<R>))?]
-  : [];
+type CreateFn<T extends any[]> = (...args: T) => any;
+
+export type ShibieUniversalParams<T extends any[], F = CreateFn<T>> = Parameters<
+  F extends (...args: infer Args) => any
+    ? (
+        ...args: {
+          [K in keyof Args]: ParamDecl<Args[K]>;
+        }
+      ) => any
+    : never
+>;
 
 /**
  * @argument
