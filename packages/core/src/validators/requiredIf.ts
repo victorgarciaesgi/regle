@@ -1,10 +1,10 @@
-import { MaybeRef } from 'vue';
 import { createRule } from '../core';
+import { isEmpty } from '../helpers';
 
 export const requiredIf = createRule<any, [count: boolean, foo?: string]>({
   validator(value, condition, foo) {
-    if (value != null) {
-      return !condition;
+    if (condition) {
+      return !isEmpty(value);
     }
     return true;
   },

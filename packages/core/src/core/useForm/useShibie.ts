@@ -1,6 +1,6 @@
-import { ComputedRef, Ref, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, effectScope, getCurrentScope, ref, watch } from 'vue';
 import { Shibie, ShibiePartialValidationTree } from '../../types';
-import { isEmpty } from '../../utils';
+import { isEmpty } from '../../helpers';
 
 export function useShibie(
   scopeRules: ComputedRef<ShibiePartialValidationTree<Record<string, any>>>,
@@ -27,6 +27,7 @@ export function useShibie(
   });
 
   function processRules() {
+    console.log('process rules');
     Object.entries(scopeRules.value).map(([key, rules]) => {
       if (isEmpty(rulesResults.value[key])) {
         rulesResults.value[key] = {};
@@ -39,6 +40,7 @@ export function useShibie(
           if (ruleDef) {
             if (typeof ruleDef === 'function') {
               const resultOrPromise = ruleDef(state.value[key]);
+              console.log(resultOrPromise);
               if (resultOrPromise instanceof Promise) {
                 ruleResult = await resultOrPromise;
               } else {
@@ -68,11 +70,13 @@ export function useShibie(
     if (rules) {
       Object.entries(rules).map(async ([ruleKey, ruleDef]) => {
         if (typeof ruleDef === 'function') {
-          watch(ruleDef, processRules);
+          const state = effectScope().run(() => computed(ruleDef))!;
+          watch(state, processRules);
         } else if (ruleDef) {
-          ruleDef._params?.forEach((param) => {
+          ruleDef._params?.forEach((param: any) => {
             if (typeof param === 'function') {
-              watch(param, processRules);
+              const state = effectScope().run(() => computed(param))!;
+              watch(state, processRules);
             }
           });
         }

@@ -1,11 +1,38 @@
-import { ShibieStatus } from './status.types';
+import { AllRulesDeclarations, ShibiePartialValidationTree, ShibieRuleDecl } from '.';
 
-export interface ShibieInstance<TState extends Record<string, unknown>> {
-  state: TState;
-  errors: string[];
-  rules: [];
-  status: ShibieStatus;
+export interface Shibie<
+  TState extends Record<string, any>,
+  TRules extends ShibiePartialValidationTree<TState>,
+> extends ShibieCommonStatus<TState> {
+  fields: {
+    [TKey in keyof TRules]: ShibieFieldStatus<NonNullable<TRules[TKey]>, TState, TKey>;
+  };
+}
 
-  validateForm: () => void;
-  resetForm: () => void;
+export interface ShibieFieldStatus<
+  TRules extends ShibieRuleDecl<any, AllRulesDeclarations>,
+  TState extends Record<PropertyKey, any> = any,
+  TKey extends PropertyKey = string,
+> extends ShibieCommonStatus<TState[TKey]> {
+  $rules: {
+    [TKey in keyof TRules]: ShibieRuleStatus;
+  };
+}
+
+export interface ShibieCommonStatus<TValue = any> {
+  $valid: boolean;
+  $invalid: boolean;
+  $dirty: boolean;
+  $pending: boolean;
+  $value: TValue;
+  $touch: () => void;
+  $reset: () => void;
+}
+
+export interface ShibieRuleStatus {
+  $type: string;
+  $message: string;
+  $validator: string;
+  $active: boolean;
+  $valid: boolean;
 }
