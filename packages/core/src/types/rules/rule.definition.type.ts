@@ -1,6 +1,8 @@
-import { ShibieRuleInit } from './create-rule.types';
+import { ShibieRuleInit } from './rule.init.types';
 import { ShibieUniversalParams } from './rule.params.types';
 import { ShibieInternalRuleDefs } from './rule.internal.types';
+import { AllRulesDeclarations, ShibieRuleDecl } from '.';
+import { ArrayElement, Maybe } from '../utils';
 
 /**
  * Returned typed of rules created with `createRule`
@@ -46,4 +48,11 @@ export type ShibieRuleDefinitionProcessor<
   TValue extends any = any,
   TParams extends any[] = [],
   TReturn = any,
-> = (value: TValue, ...args: TParams) => TReturn;
+> = (value: Maybe<TValue>, ...args: TParams) => TReturn;
+
+export type ShibieCollectionRuleDefinition<
+  TValue = any[],
+  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+> = ShibieRuleDecl<NonNullable<TValue>, TCustomRules> & {
+  $each: ShibieRuleDecl<ArrayElement<TValue>, TCustomRules>;
+};

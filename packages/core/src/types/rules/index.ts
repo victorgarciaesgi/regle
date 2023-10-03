@@ -1,4 +1,4 @@
-export * from './create-rule.types';
+export * from './rule.init.types';
 export * from './rule.custom.types';
 export * from './rule.declaration.types';
 export * from './rule.definition.type';

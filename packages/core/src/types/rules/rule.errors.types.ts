@@ -5,10 +5,10 @@ import {
 } from './rule.declaration.types';
 
 export type ShibieErrorTree<TRules extends ShibiePartialValidationTree<any, any>> = {
-  [K in keyof TRules]: ShibieValidationError<never, TRules[K]>;
+  readonly [K in keyof TRules]: ShibieValidationErrors<never, TRules[K]>;
 };
 
-export type ShibieValidationError<
+export type ShibieValidationErrors<
   TKey extends DataType = string | Record<string, any>,
   TRule extends ShibieFormPropertyType<any, any> | undefined = never,
 > = [TKey] extends [never]
@@ -18,14 +18,23 @@ export type ShibieValidationError<
     ? ShibieErrorTree<TRule>
     : never
   : TKey extends Array<any>
-  ? string[]
+  ? 'Arrayy' // TODO collection
   : TKey extends Date
+  ? string[]
+  : TKey extends File
   ? string[]
   : string[];
 
 // export type UnsafeValidationErrorTree<TData extends Record<string, any> = Record<string, any>> = {
 //   [K in keyof TData]: ValidationError<TData[K]>;
 // };
+
+export type ShibieCollectionErrors<
+  TKey extends DataType = string | Record<string, any>,
+  TRule extends ShibieFormPropertyType<any, any> | undefined = never,
+> = {
+  readonly $errors: any;
+};
 
 export type DataType =
   | string

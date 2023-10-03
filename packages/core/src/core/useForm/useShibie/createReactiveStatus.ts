@@ -1,26 +1,30 @@
-import { Ref, computed, reactive, ref, toRef, watch } from 'vue';
-import { isEmpty } from '../../..';
-import {
+import { ComputedRef, Ref, computed, reactive, ref, toRef, watch } from 'vue';
+import { isEmpty } from '../../../helpers';
+import type {
   CustomRulesDeclarationTree,
   PossibleShibieFieldStatus,
   ShibieFormPropertyType,
   ShibieRuleStatus,
+  ShibieStatus,
+  ShibiePartialValidationTree,
+  ShibieSoftRuleStatus,
 } from '../../../types';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
-import { isCollectionRulesDef, isNestedRulesDef } from '../shibie.guards';
-import { ShibieStatus, ShibiePartialValidationTree } from '../../../types';
+import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../shibie.guards';
+
+type PendingFields = { key: string; state: boolean };
 
 export function createReactiveNestedStatus(
   scopeRules: Ref<ShibiePartialValidationTree<Record<string, any>>>,
   state: Ref<Record<string, any>>,
   customRules: () => Partial<CustomRulesDeclarationTree>
 ): ShibieStatus<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>> {
-  const fields = reactive(
+  const $fields = reactive(
     Object.fromEntries(
       Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
-            const stateRef = toRef(() => state.value[statePropKey]);
+            const stateRef = toRef(state.value, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
             return [
               statePropKey,
@@ -35,45 +39,57 @@ export function createReactiveNestedStatus(
     )
   );
 
-  const $dirty = computed(() => {
-    return Object.entries(fields).some(([key, statusOrField]) => {
+  const $dirty = computed<boolean>(() => {
+    return Object.entries($fields).every(([key, statusOrField]) => {
       return statusOrField.$dirty;
     });
   });
 
-  const $invalid = computed(() => {
-    return Object.entries(fields).some(([key, statusOrField]) => {
+  const $anyDirty = computed<boolean>(() => {
+    return Object.entries($fields).some(([key, statusOrField]) => {
+      return statusOrField.$dirty;
+    });
+  });
+
+  const $invalid = computed<boolean>(() => {
+    return Object.entries($fields).some(([key, statusOrField]) => {
       return statusOrField.$invalid;
     });
   });
 
-  const $pending = computed(() => {
-    return Object.entries(fields).some(([key, statusOrField]) => {
+  const $error = computed<boolean>(() => {
+    return $invalid.value && !$pending.value && $dirty.value;
+  });
+
+  const $pending = computed<boolean>(() => {
+    return Object.entries($fields).some(([key, statusOrField]) => {
       return statusOrField.$pending;
     });
   });
 
   function $reset() {
-    Object.entries(fields).forEach(([key, statusOrField]) => {
+    Object.entries($fields).forEach(([key, statusOrField]) => {
       statusOrField.$reset();
     });
   }
 
   function $touch() {
-    Object.entries(fields).forEach(([key, statusOrField]) => {
+    Object.entries($fields).forEach(([key, statusOrField]) => {
       statusOrField.$touch();
     });
   }
 
-  const $valid = computed(() => $invalid.value);
+  const $valid = computed(() => !$invalid.value);
 
   return reactive({
     $dirty,
+    $anyDirty,
     $invalid,
     $valid,
+    $error,
     $pending,
     $value: state,
-    fields,
+    $fields,
     $reset,
     $touch,
   }) satisfies ShibieStatus<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>>;
@@ -81,16 +97,17 @@ export function createReactiveNestedStatus(
 
 export function createReactiveFieldStatus(
   state: Ref<unknown>,
-  rulesDef: Readonly<Ref<ShibieFormPropertyType>>,
+  rulesDef: Ref<ShibieFormPropertyType>,
   customRules: () => Partial<CustomRulesDeclarationTree>
 ): PossibleShibieFieldStatus | null {
   if (isCollectionRulesDef(rulesDef)) {
-    // TODO collection
     return {} as any;
   } else if (isNestedRulesDef(state, rulesDef)) {
     return createReactiveNestedStatus(rulesDef, state as Ref<Record<string, any>>, customRules);
-  } else if (rulesDef) {
+  } else if (isValidatorRulesDef(rulesDef)) {
     const customMessages = customRules();
+
+    const pendingFields = ref<PendingFields[]>([]);
 
     const rulesResults = computed(() => {
       return Object.fromEntries(
@@ -101,6 +118,9 @@ export function createReactiveFieldStatus(
             let $type: string;
             let $validator: (value: any, ...params: any[]) => boolean | Promise<boolean>;
             let $active: boolean;
+            let $params: any[] | undefined;
+
+            const $pending = pendingFields.value.find(({ key }) => key === ruleKey)?.state ?? false;
 
             let params =
               typeof rule === 'function' ? [] : unwrapRuleParameters(rule?._params ?? []);
@@ -155,20 +175,30 @@ export function createReactiveFieldStatus(
                 {
                   $active,
                   $message,
+                  $pending,
+                  ...($params && { $params }),
                   $type: $type,
                   $valid: ruleResult,
                   $validator,
                 },
-              ] satisfies [string, ShibieRuleStatus];
+              ] satisfies [string, ShibieSoftRuleStatus];
             }
             return [];
           })
-          .filter((ruleDef): ruleDef is [string, ShibieRuleStatus] => !!ruleDef.length)
-      ) satisfies Record<string, ShibieRuleStatus>;
+          .filter((ruleDef): ruleDef is [string, ShibieSoftRuleStatus] => !!ruleDef.length)
+      ) satisfies Record<string, ShibieSoftRuleStatus>;
     });
 
     const $dirty = ref(false);
-    const $pending = ref(false);
+    const $anyDirty = computed(() => $dirty.value);
+
+    const $error = computed<boolean>(() => {
+      return $invalid.value && !$pending.value && $dirty.value;
+    });
+
+    const $pending = computed(() => {
+      return !!pendingFields.value.length;
+    });
 
     const $invalid = computed(() => {
       return Object.entries(rulesResults.value).some(([key, ruleResult]) => {
@@ -194,13 +224,15 @@ export function createReactiveFieldStatus(
 
     return reactive({
       $dirty,
+      $anyDirty,
       $invalid,
+      $error,
       $pending,
       $valid,
       $reset,
       $touch,
       $value: state,
-      $rules: rulesResults,
+      $rules: rulesResults as ComputedRef<Record<string, ShibieRuleStatus>>,
     });
   }
 

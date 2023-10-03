@@ -12,7 +12,9 @@ export type ShibiePartialValidationTree<
 export type ShibieFormPropertyType<
   TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
-> = NonNullable<TValue> extends Array<any>
+> = [NonNullable<TValue>] extends [never]
+  ? ShibieRuleDecl<unknown, TCustomRules>
+  : NonNullable<TValue> extends Array<any>
   ? ShibieCollectionRuleDecl<TValue, TCustomRules>
   : NonNullable<TValue> extends Date
   ? ShibieRuleDecl<NonNullable<TValue>, TCustomRules>

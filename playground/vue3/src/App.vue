@@ -26,11 +26,25 @@ import { ref } from 'vue';
 import { useForm } from './validations';
 import { withMessage } from '@shibie/core/src/helpers';
 
-const form = ref({
+type Form = {
+  email: string;
+  firstName?: Date;
+  foo: {
+    bar: number | undefined;
+    bloublou: {
+      test: string[];
+    };
+  };
+};
+
+const form = ref<Form>({
   email: '',
-  firstName: '',
+  firstName: undefined,
   foo: {
     bar: 5,
+    bloublou: {
+      test: [],
+    },
   },
 });
 
@@ -55,6 +69,9 @@ const { $shibie } = useForm(form, () => ({
   foo: {
     bar: {
       required,
+    },
+    bloublou: {
+      test: {},
     },
   },
 }));

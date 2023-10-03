@@ -11,9 +11,7 @@ export function useShibie(
   state: Ref<Record<string, any>>,
   customRules: () => CustomRulesDeclarationTree
 ) {
-  const $shibie = reactive<
-    ShibieStatus<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>>
-  >(createReactiveNestedStatus(scopeRules, state, customRules));
+  const $shibie = createReactiveNestedStatus(scopeRules, state, customRules);
 
   return { $shibie };
 }

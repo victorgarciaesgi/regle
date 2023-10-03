@@ -1,7 +1,7 @@
 import { createRule, defineCustomValidators, maxLength } from '@shibie/core';
 import { withMessage } from '@shibie/core/src/helpers';
 
-export const not = createRule<any, [target: string]>({
+export const not = createRule<unknown, [target: string]>({
   type: 'not',
   validator(value, target) {
     return value !== target;
