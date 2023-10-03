@@ -1,3 +1,4 @@
+import { Ref } from 'vue';
 import {
   ShibieCollectionRuleDecl,
   ShibieFormPropertyType,
@@ -6,14 +7,14 @@ import {
 import { isObject } from '../../utils';
 
 export function isNestedRulesDef(
-  state: unknown,
-  rule: ShibieFormPropertyType
-): rule is ShibiePartialValidationTree<any, any> {
-  return isObject(state) && isObject(rule);
+  state: Ref<unknown>,
+  rule: Ref<ShibieFormPropertyType>
+): rule is Ref<ShibiePartialValidationTree<any, any>> {
+  return isObject(state.value) && isObject(rule.value);
 }
 
 export function isCollectionRulesDef(
-  rule: ShibieFormPropertyType
-): rule is ShibieCollectionRuleDecl {
-  return !!rule && '$each' in rule;
+  rule: Ref<ShibieFormPropertyType>
+): rule is Ref<ShibieCollectionRuleDecl> {
+  return !!rule.value && '$each' in rule.value;
 }

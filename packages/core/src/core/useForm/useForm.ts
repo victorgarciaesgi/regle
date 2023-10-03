@@ -1,9 +1,9 @@
-import { Ref, computed, effectScope, onScopeDispose, shallowRef, toRaw } from 'vue';
+import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw } from 'vue';
 import {
   AllRulesDeclarations,
   CustomRulesDeclarationTree,
-  ShibieErrorTree,
   ShibiePartialValidationTree,
+  ShibieStatus,
 } from '../../types';
 import { useShibie } from './useShibie';
 
@@ -13,26 +13,16 @@ export function createUseFormComposable<TCustomRules extends CustomRulesDeclarat
   function useForm<
     TState extends Record<string, any>,
     TRules extends ShibiePartialValidationTree<TState, AllRulesDeclarations & TCustomRules>,
-  >(state: Ref<TState>, rulesFactory: () => TRules) {
-    let effectScopeConstructor = effectScope();
-
-    const scopeRules = computed(rulesFactory);
+  >(state: Ref<TState>, rulesFactory: (() => TRules) | ComputedRef<TRules>) {
+    const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
 
     const initialState = shallowRef(structuredClone(toRaw(state.value)));
 
-    const { $shibie, errors, rulesResults } = useShibie(scopeRules, state, customRules);
-
-    onScopeDispose(() => {
-      if (effectScopeConstructor.active) {
-        effectScopeConstructor.stop();
-      }
-    });
+    const { $shibie } = useShibie(scopeRules, state, customRules);
 
     return {
       state,
-      rulesResults,
-      errors: errors as Ref<ShibieErrorTree<TRules>>,
-      $shibie: $shibie,
+      $shibie: $shibie as ShibieStatus<TState, TRules>,
     };
   }
 

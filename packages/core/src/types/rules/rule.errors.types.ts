@@ -27,4 +27,12 @@ export type ShibieValidationError<
 //   [K in keyof TData]: ValidationError<TData[K]>;
 // };
 
-type DataType = string | number | Record<string, any> | File | Array<any> | Date | null | undefined;
+export type DataType =
+  | string
+  | number
+  | Record<string, any>
+  | File
+  | Array<any>
+  | Date
+  | null
+  | undefined;
