@@ -1,20 +1,20 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 400px">
     <input v-model="form.email" placeholder="email" />
-    <ul>
+    <!-- <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul>
+    </ul> -->
     <input v-model.number="limit" placeholder="limit" />
 
     <input v-model="form.firstName" placeholder="firstName" />
-    <ul>
+
+    <input v-model="form.foo.bar" placeholder="foobar" />
+    <!-- <ul>
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
-    </ul>
+    </ul> -->
     <pre>
       <code>
-state: {{ state }}
-rulesResults: {{ rulesResults }}
-errors: {{ errors }}
+{{ $shibie }}
       </code>
     </pre>
   </div>
@@ -23,35 +23,39 @@ errors: {{ errors }}
 <script setup lang="ts">
 import { maxLength, required, requiredIf } from '@shibie/core';
 import { ref } from 'vue';
-import { not, useForm } from './validations';
+import { useForm } from './validations';
+import { withMessage } from '@shibie/core/src/helpers';
 
 const form = ref({
   email: '',
   firstName: '',
-  foo: 5,
+  foo: {
+    bar: 5,
+  },
 });
 
 const limit = ref(2);
 
-const { state, rulesResults, errors, $shibie } = useForm(form, () => ({
+const { $shibie } = useForm(form, () => ({
   email: {
-    required: (value: any) => {
-      console.log(limit.value, value);
+    required: withMessage((value: any) => {
       if (limit.value === 2) {
         return value != '' && value != null;
       }
       return true;
-    },
-    maxLength: maxLength(3),
+    }, 'Hihi'),
+    maxLength: maxLength(() => limit.value),
   },
   firstName: {
-    required,
-    not: not(form.value.email),
+    required: withMessage(
+      requiredIf(() => limit.value === 2),
+      'Requis!'
+    ),
   },
   foo: {
-    required,
+    bar: {
+      required,
+    },
   },
 }));
-
-// $shibie.value.fields.foo.$value;
 </script>

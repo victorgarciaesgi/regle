@@ -7,7 +7,7 @@ import { ParamDecl } from '../../types';
  */
 export function unwrapRuleParameters<TParams extends any[]>(params: ParamDecl[]): TParams {
   return params.map((param) => {
-    if (typeof param === 'function') {
+    if (param instanceof Function) {
       return param();
     }
     return unref(param);

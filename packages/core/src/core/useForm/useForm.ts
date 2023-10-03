@@ -1,13 +1,13 @@
-import { ComputedRef, Ref, computed, effectScope, onScopeDispose, shallowRef, toRaw } from 'vue';
+import { Ref, computed, effectScope, onScopeDispose, shallowRef, toRaw } from 'vue';
 import {
   AllRulesDeclarations,
-  Shibie,
+  CustomRulesDeclarationTree,
   ShibieErrorTree,
   ShibiePartialValidationTree,
 } from '../../types';
 import { useShibie } from './useShibie';
 
-export function createUseFormComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
+export function createUseFormComposable<TCustomRules extends CustomRulesDeclarationTree>(
   customRules: () => TCustomRules
 ) {
   function useForm<
@@ -16,13 +16,11 @@ export function createUseFormComposable<TCustomRules extends Partial<AllRulesDec
   >(state: Ref<TState>, rulesFactory: () => TRules) {
     let effectScopeConstructor = effectScope();
 
-    let scopeRules = effectScopeConstructor.run(() => {
-      return computed(rulesFactory);
-    }) as ComputedRef<ShibiePartialValidationTree<TState, AllRulesDeclarations & TCustomRules>>;
+    const scopeRules = computed(rulesFactory);
 
     const initialState = shallowRef(structuredClone(toRaw(state.value)));
 
-    const { $shibie, errors, rulesResults } = useShibie(scopeRules, state);
+    const { $shibie, errors, rulesResults } = useShibie(scopeRules, state, customRules);
 
     onScopeDispose(() => {
       if (effectScopeConstructor.active) {
@@ -34,7 +32,7 @@ export function createUseFormComposable<TCustomRules extends Partial<AllRulesDec
       state,
       rulesResults,
       errors: errors as Ref<ShibieErrorTree<TRules>>,
-      $shibie: $shibie as Ref<Shibie<TState, TRules>>,
+      $shibie: $shibie,
     };
   }
 

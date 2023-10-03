@@ -1,4 +1,5 @@
-import { createRule, defineCustomValidators } from '@shibie/core';
+import { createRule, defineCustomValidators, maxLength } from '@shibie/core';
+import { withMessage } from '@shibie/core/src/helpers';
 
 export const not = createRule<any, [target: string]>({
   type: 'not',
@@ -12,4 +13,7 @@ export const not = createRule<any, [target: string]>({
 
 export const { useForm } = defineCustomValidators(() => ({
   not,
+  maxLength: withMessage(maxLength, (value, count) => {
+    return `ehooo ${count} is max`;
+  }),
 }));

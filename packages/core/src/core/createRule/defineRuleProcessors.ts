@@ -11,20 +11,30 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
   ...params: ShibieUniversalParams<TParams>
 ): ShibieRuleDefinition<TValue, TParams> {
   const { message, validator, active, ...properties } = definition;
-  return {
+
+  const processors = {
     message(value: any, ...args: any[]) {
       if (typeof definition.message === 'function') {
-        return definition.message(value, ...unwrapRuleParameters<TParams>(params));
+        return definition.message(
+          value,
+          ...unwrapRuleParameters<TParams>(args.length ? args : params)
+        );
       } else {
         return definition.message;
       }
     },
     validator(value: any, ...args: any[]) {
-      return definition.validator(value, ...unwrapRuleParameters<TParams>(params));
+      return definition.validator(
+        value,
+        ...unwrapRuleParameters<TParams>(args.length ? args : params)
+      );
     },
     active(value: any, ...args: any[]) {
       if (typeof definition.active === 'function') {
-        return definition.active(value, ...unwrapRuleParameters<TParams>(params));
+        return definition.active(
+          value,
+          ...unwrapRuleParameters<TParams>(args.length ? args : params)
+        );
       } else {
         return definition.active ?? true;
       }
@@ -39,4 +49,6 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
       _params: params,
     } satisfies ShibieInternalRuleDefs<TValue, TParams>),
   } satisfies ShibieRuleDefinition<TValue, TParams>;
+
+  return processors;
 }

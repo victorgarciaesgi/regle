@@ -7,9 +7,9 @@ import { ShibieInternalRuleDefs } from './rule.internal.types';
  * */
 export interface ShibieRuleDefinition<TValue extends any = any, TParams extends any[] = []>
   extends ShibieInternalRuleDefs<TValue, TParams> {
-  validator: (value: TValue, ...args: TParams) => boolean;
-  message: (value: TValue, ...args: TParams) => string;
-  active: (value: TValue, ...args: TParams) => boolean;
+  validator: ShibieRuleDefinitionProcessor<TValue, TParams, boolean>;
+  message: ShibieRuleDefinitionProcessor<TValue, TParams, string>;
+  active: ShibieRuleDefinitionProcessor<TValue, TParams, boolean>;
   type: string;
 }
 
@@ -41,3 +41,9 @@ export type InferShibieRule<TValue extends any = any, TParams extends any[] = []
 ] extends [[]]
   ? ShibieRuleDefinition<TValue, TParams>
   : ShibieRuleWithParamsDefinition<TValue, TParams>;
+
+export type ShibieRuleDefinitionProcessor<
+  TValue extends any = any,
+  TParams extends any[] = [],
+  TReturn = any,
+> = (value: TValue, ...args: TParams) => TReturn;

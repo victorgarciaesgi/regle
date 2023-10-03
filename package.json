@@ -5,7 +5,7 @@
     "dev": "bun dev",
     "build": "bun build.config.ts",
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit",
     "release": "bumpp && npm publish && git push --follow-tags"
   },
   "dependencies": {},

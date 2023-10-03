@@ -20,3 +20,17 @@ export type ShibieUniversalParams<T extends any[] = [], F = CreateFn<T>> = [T] e
           ) => any
         : never
     >;
+
+export type UnwrapShibieUniversalParams<T extends ParamDecl[] = [], F = CreateFn<T>> = [T] extends [
+  [],
+]
+  ? []
+  : Parameters<
+      F extends (...args: infer Args) => any
+        ? (
+            ...args: {
+              [K in keyof Args]: Args[K] extends ParamDecl<infer U> ? U : Args[K];
+            }
+          ) => any
+        : never
+    >;

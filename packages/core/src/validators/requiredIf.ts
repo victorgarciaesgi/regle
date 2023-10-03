@@ -1,8 +1,8 @@
 import { createRule } from '../core';
 import { isEmpty } from '../helpers';
 
-export const requiredIf = createRule<any, [count: boolean, foo?: string]>({
-  validator(value, condition, foo) {
+export const requiredIf = createRule<any, [condition: boolean]>({
+  validator(value, condition) {
     if (condition) {
       return !isEmpty(value);
     }

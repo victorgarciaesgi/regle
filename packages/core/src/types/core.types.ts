@@ -1,4 +1,5 @@
-import { AllRulesDeclarations, ShibiePartialValidationTree, ShibieRuleDecl } from '.';
+import { ComputedRef, Ref } from 'vue';
+import { AllRulesDeclarations, ShibieFormPropertyType, ShibiePartialValidationTree } from '.';
 
 export interface Shibie<
   TState extends Record<string, any>,
@@ -10,7 +11,7 @@ export interface Shibie<
 }
 
 export interface ShibieFieldStatus<
-  TRules extends ShibieRuleDecl<any, AllRulesDeclarations>,
+  TRules extends ShibieFormPropertyType<any, AllRulesDeclarations>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
 > extends ShibieCommonStatus<TState[TKey]> {
@@ -32,7 +33,7 @@ export interface ShibieCommonStatus<TValue = any> {
 export interface ShibieRuleStatus {
   $type: string;
   $message: string;
-  $validator: string;
+  $validator: (value: any, ...args: any[]) => boolean | Promise<boolean>;
   $active: boolean;
   $valid: boolean;
 }

@@ -1,3 +1,4 @@
+import { ArrayElement } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
 import { ShibieRuleDefinition, ShibieRuleWithParamsDefinition } from './rule.definition.type';
 
@@ -8,16 +9,11 @@ export type ShibiePartialValidationTree<
   [TKey in keyof TForm]?: ShibieFormPropertyType<TForm[TKey], TCustomRules>;
 };
 
-/**
- * TODO nested forms
- */
 export type ShibieFormPropertyType<
-  TValue,
+  TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
-> = NonNullable<TValue> extends Array<infer A>
-  ? ShibieRuleDecl<NonNullable<TValue>, TCustomRules> & {
-      $each?: ShibieRuleDecl<A, TCustomRules>;
-    }
+> = NonNullable<TValue> extends Array<any>
+  ? ShibieCollectionRuleDecl<TValue, TCustomRules>
   : NonNullable<TValue> extends Date
   ? ShibieRuleDecl<NonNullable<TValue>, TCustomRules>
   : NonNullable<TValue> extends File
@@ -30,29 +26,35 @@ export type ShibieFormPropertyType<
  * Rule tree for a form property
  */
 export type ShibieRuleDecl<
-  TValue,
+  TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = {
   [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends ShibieRuleWithParamsDefinition<
     any,
     infer TParams
   >
-    ? FormRuleDefinition<TValue, TParams>
-    : FormRuleDefinition<TValue, any[]>;
+    ? ShibieRuleDefinition<TValue, TParams>
+    : FormRuleDeclaration<TValue, any[]>;
+};
+
+export type ShibieCollectionRuleDecl<
+  TValue = any[],
+  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+> = ShibieRuleDecl<NonNullable<TValue>, TCustomRules> & {
+  $each?: ShibieRuleDecl<ArrayElement<TValue>, TCustomRules>;
 };
 
 /**
- * Inline rule declaration
- * TODO rename declaration
- * */
-export type InlineRuleDefinition<TValue extends any, TParams extends any[] = []> = (
+ * TODO async
+ */
+export type InlineRuleDeclaration<TValue extends any, TParams extends any[] = []> = (
   value: TValue,
   ...params: TParams
-) => boolean | Promise<boolean>;
+) => boolean;
 
 /**
  * Regroup inline and registered rules
  * */
-export type FormRuleDefinition<TValue extends any, TParams extends any[] = []> =
-  | InlineRuleDefinition<TValue>
+export type FormRuleDeclaration<TValue extends any, TParams extends any[] = []> =
+  | InlineRuleDeclaration<TValue>
   | ShibieRuleDefinition<TValue, TParams>;
