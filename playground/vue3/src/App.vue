@@ -14,17 +14,17 @@
     </ul> -->
     <pre>
       <code>
-{{ $shibie }}
+{{ $regle }}
       </code>
     </pre>
   </div>
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, requiredIf } from '@shibie/core';
+import { maxLength, required, requiredIf } from '@regle/core';
 import { ref } from 'vue';
 import { useForm } from './validations';
-import { withMessage } from '@shibie/core/src/helpers';
+import { withMessage } from '@regle/core/src/helpers';
 
 type Form = {
   email: string;
@@ -50,7 +50,7 @@ const form = ref<Form>({
 
 const limit = ref(2);
 
-const { $shibie } = useForm(form, () => ({
+const { $regle } = useForm(form, () => ({
   email: {
     required: withMessage((value: any) => {
       if (limit.value === 2) {

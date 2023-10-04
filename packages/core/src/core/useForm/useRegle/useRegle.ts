@@ -1,17 +1,17 @@
 import { ComputedRef, Ref, reactive, ref } from 'vue';
 import {
   CustomRulesDeclarationTree,
-  ShibieStatus,
-  ShibiePartialValidationTree,
+  RegleStatus,
+  ReglePartialValidationTree,
 } from '../../../types';
 import { createReactiveNestedStatus } from './createReactiveStatus';
 
-export function useShibie(
-  scopeRules: ComputedRef<ShibiePartialValidationTree<Record<string, any>, any>>,
+export function useRegle(
+  scopeRules: ComputedRef<ReglePartialValidationTree<Record<string, any>, any>>,
   state: Ref<Record<string, any>>,
   customRules: () => CustomRulesDeclarationTree
 ) {
-  const $shibie = createReactiveNestedStatus(scopeRules, state, customRules);
+  const $regle = createReactiveNestedStatus(scopeRules, state, customRules);
 
-  return { $shibie };
+  return { $regle };
 }

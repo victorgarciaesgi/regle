@@ -1,49 +1,49 @@
 import { ArrayElement } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
-import { ShibieRuleDefinition, ShibieRuleWithParamsDefinition } from './rule.definition.type';
+import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from './rule.definition.type';
 
-export type ShibiePartialValidationTree<
+export type ReglePartialValidationTree<
   TForm extends Record<string, any>,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = {
-  [TKey in keyof TForm]?: ShibieFormPropertyType<TForm[TKey], TCustomRules>;
+  [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 };
 
-export type ShibieFormPropertyType<
+export type RegleFormPropertyType<
   TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = [NonNullable<TValue>] extends [never]
-  ? ShibieRuleDecl<unknown, TCustomRules>
+  ? RegleRuleDecl<unknown, TCustomRules>
   : NonNullable<TValue> extends Array<any>
-  ? ShibieCollectionRuleDecl<TValue, TCustomRules>
+  ? RegleCollectionRuleDecl<TValue, TCustomRules>
   : NonNullable<TValue> extends Date
-  ? ShibieRuleDecl<NonNullable<TValue>, TCustomRules>
+  ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
   : NonNullable<TValue> extends File
-  ? ShibieRuleDecl<NonNullable<TValue>, TCustomRules>
+  ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
   : NonNullable<TValue> extends Record<string, any>
-  ? ShibiePartialValidationTree<NonNullable<TValue>, TCustomRules>
-  : ShibieRuleDecl<NonNullable<TValue>, TCustomRules>;
+  ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
+  : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
 /**
  * Rule tree for a form property
  */
-export type ShibieRuleDecl<
+export type RegleRuleDecl<
   TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = {
-  [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends ShibieRuleWithParamsDefinition<
+  [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends RegleRuleWithParamsDefinition<
     any,
     infer TParams
   >
-    ? ShibieRuleDefinition<TValue, TParams>
+    ? RegleRuleDefinition<TValue, TParams>
     : FormRuleDeclaration<TValue, any[]>;
 };
 
-export type ShibieCollectionRuleDecl<
+export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
-> = ShibieRuleDecl<NonNullable<TValue>, TCustomRules> & {
-  $each?: ShibieRuleDecl<ArrayElement<TValue>, TCustomRules>;
+> = RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
+  $each?: RegleRuleDecl<ArrayElement<TValue>, TCustomRules>;
 };
 
 /**
@@ -59,4 +59,4 @@ export type InlineRuleDeclaration<TValue extends any, TParams extends any[] = []
  * */
 export type FormRuleDeclaration<TValue extends any, TParams extends any[] = []> =
   | InlineRuleDeclaration<TValue>
-  | ShibieRuleDefinition<TValue, TParams>;
+  | RegleRuleDefinition<TValue, TParams>;

@@ -1,5 +1,5 @@
 import { DefaultValidators } from '../../core/defaultValidators';
-import { ShibieRuleRaw } from './rule.definition.type';
+import { RegleRuleRaw } from './rule.definition.type';
 
-export type CustomRulesDeclarationTree = Record<string, ShibieRuleRaw<any, any>>;
+export type CustomRulesDeclarationTree = Record<string, RegleRuleRaw<any, any>>;
 export type AllRulesDeclarations = CustomRulesDeclarationTree & DefaultValidators;

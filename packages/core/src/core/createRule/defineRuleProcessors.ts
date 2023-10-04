@@ -1,15 +1,15 @@
 import {
-  ShibieInternalRuleDefs,
-  ShibieRuleDefinition,
-  ShibieRuleInit,
-  ShibieUniversalParams,
+  RegleInternalRuleDefs,
+  RegleRuleDefinition,
+  RegleRuleInit,
+  RegleUniversalParams,
 } from '../../types';
 import { unwrapRuleParameters } from './unwrapRuleParameters';
 
 export function defineRuleProcessors<TValue extends any = any, TParams extends any[] = []>(
-  definition: ShibieRuleInit<TValue, TParams>,
-  ...params: ShibieUniversalParams<TParams>
-): ShibieRuleDefinition<TValue, TParams> {
+  definition: RegleRuleInit<TValue, TParams>,
+  ...params: RegleUniversalParams<TParams>
+): RegleRuleDefinition<TValue, TParams> {
   const { message, validator, active, ...properties } = definition;
 
   const processors = {
@@ -47,8 +47,8 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
       _type: definition.type,
       _patched: false,
       _params: params,
-    } satisfies ShibieInternalRuleDefs<TValue, TParams>),
-  } satisfies ShibieRuleDefinition<TValue, TParams>;
+    } satisfies RegleInternalRuleDefs<TValue, TParams>),
+  } satisfies RegleRuleDefinition<TValue, TParams>;
 
   return processors;
 }

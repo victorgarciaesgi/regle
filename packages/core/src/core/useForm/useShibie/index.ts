@@ -1,1 +1,0 @@
-export { useShibie } from './useShibie';

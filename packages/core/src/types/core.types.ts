@@ -1,50 +1,50 @@
 import type {
   AllRulesDeclarations,
-  ShibieCollectionRuleDecl,
-  ShibieCollectionRuleDefinition,
-  ShibieFormPropertyType,
-  ShibiePartialValidationTree,
-  ShibieRuleDecl,
-  ShibieRuleDefinition,
+  RegleCollectionRuleDecl,
+  RegleCollectionRuleDefinition,
+  RegleFormPropertyType,
+  ReglePartialValidationTree,
+  RegleRuleDecl,
+  RegleRuleDefinition,
 } from '.';
 
-export interface ShibieStatus<
+export interface RegleStatus<
   TState extends Record<string, any>,
-  TRules extends ShibiePartialValidationTree<TState>,
-> extends ShibieCommonStatus<TState> {
+  TRules extends ReglePartialValidationTree<TState>,
+> extends RegleCommonStatus<TState> {
   readonly $fields: {
-    readonly [TKey in keyof TRules]: InferShibieStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
+    readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
 }
 
-export type InferShibieStatusType<
-  TRule extends ShibieCollectionRuleDecl | ShibieRuleDecl | ShibiePartialValidationTree<any>,
+export type InferRegleStatusType<
+  TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialValidationTree<any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-> = TRule extends ShibieCollectionRuleDefinition<any, any>
+> = TRule extends RegleCollectionRuleDefinition<any, any>
   ? /* TODO collection  */ any
-  : TRule extends ShibiePartialValidationTree<any>
+  : TRule extends ReglePartialValidationTree<any>
   ? TState[TKey] extends Array<any>
-    ? ShibieCommonStatus<TState[TKey]>
-    : ShibieStatus<TState[TKey], TRule>
-  : ShibieFieldStatus<TRule, TState, TKey>;
+    ? RegleCommonStatus<TState[TKey]>
+    : RegleStatus<TState[TKey], TRule>
+  : RegleFieldStatus<TRule, TState, TKey>;
 
-export interface ShibieFieldStatus<
-  TRules extends ShibieFormPropertyType<any, AllRulesDeclarations>,
+export interface RegleFieldStatus<
+  TRules extends RegleFormPropertyType<any, AllRulesDeclarations>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-> extends ShibieCommonStatus<TState[TKey]> {
+> extends RegleCommonStatus<TState[TKey]> {
   readonly $rules: {
-    readonly [TRuleKey in keyof TRules]: ShibieRuleStatus<
+    readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
-      TRules[TRuleKey] extends ShibieRuleDefinition<any, infer TParams> ? TParams : []
+      TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams> ? TParams : []
     >;
   };
 }
 
-export type PossibleShibieFieldStatus = ShibieFieldStatus<any, any> | ShibieStatus<any, any>;
+export type PossibleRegleFieldStatus = RegleFieldStatus<any, any> | RegleStatus<any, any>;
 
-export interface ShibieCommonStatus<TValue = any> {
+export interface RegleCommonStatus<TValue = any> {
   readonly $valid: boolean;
   readonly $invalid: boolean;
   readonly $dirty: boolean;
@@ -56,7 +56,7 @@ export interface ShibieCommonStatus<TValue = any> {
   $reset: () => void;
 }
 
-export interface ShibieSoftRuleStatus<TValue = any, TParams extends any[] = any[]> {
+export interface RegleSoftRuleStatus<TValue = any, TParams extends any[] = any[]> {
   readonly $type: string;
   readonly $message: string;
   readonly $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;
@@ -66,7 +66,7 @@ export interface ShibieSoftRuleStatus<TValue = any, TParams extends any[] = any[
   readonly $params?: TParams;
 }
 
-export type ShibieRuleStatus<TValue = any, TParams extends any[] = any[]> = {
+export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
   readonly $type: string;
   readonly $message: string;
   readonly $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;

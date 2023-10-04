@@ -1,32 +1,32 @@
 import { createRule } from '..';
 import {
-  InferShibieRule,
+  InferRegleRule,
   InlineRuleDeclaration,
-  ShibieRuleDefinition,
-  ShibieRuleDefinitionProcessor,
-  ShibieRuleRaw,
-  ShibieRuleWithParamsDefinition,
+  RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
+  RegleRuleRaw,
+  RegleRuleWithParamsDefinition,
 } from '../types';
 
 export function withMessage<TValue extends any, TParams extends any[]>(
   rule: InlineRuleDeclaration<TValue, TParams>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
-): ShibieRuleDefinition<TValue, TParams>;
+): RegleRuleDefinition<TValue, TParams>;
 export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: ShibieRuleWithParamsDefinition<TValue, TParams>,
+  rule: RegleRuleWithParamsDefinition<TValue, TParams>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
-): ShibieRuleWithParamsDefinition<TValue, TParams>;
+): RegleRuleWithParamsDefinition<TValue, TParams>;
 export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: ShibieRuleDefinition<TValue, TParams>,
+  rule: RegleRuleDefinition<TValue, TParams>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
-): ShibieRuleDefinition<TValue, TParams>;
+): RegleRuleDefinition<TValue, TParams>;
 export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: ShibieRuleRaw<TValue, TParams> | InlineRuleDeclaration<TValue, TParams>,
+  rule: RegleRuleRaw<TValue, TParams> | InlineRuleDeclaration<TValue, TParams>,
   newMessage: string | ((value: any, ...args: any[]) => string)
-): ShibieRuleWithParamsDefinition<TValue, TParams> | ShibieRuleDefinition<TValue, TParams> {
+): RegleRuleWithParamsDefinition<TValue, TParams> | RegleRuleDefinition<TValue, TParams> {
   let _type: string;
-  let validator: ShibieRuleDefinitionProcessor<TValue, TParams, boolean>;
-  let _active: boolean | ShibieRuleDefinitionProcessor<TValue, TParams, boolean> | undefined;
+  let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean>;
+  let _active: boolean | RegleRuleDefinitionProcessor<TValue, TParams, boolean> | undefined;
 
   if (typeof rule === 'function' && !('_validator' in rule)) {
     _type = '__inline';

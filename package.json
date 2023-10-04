@@ -1,5 +1,5 @@
 {
-  "name": "shibie",
+  "name": "regle",
   "description": "Vue form validator",
   "scripts": {
     "dev": "bun dev",

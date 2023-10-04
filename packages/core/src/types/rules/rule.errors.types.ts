@@ -1,21 +1,21 @@
 import {
-  ShibieFormPropertyType,
-  ShibiePartialValidationTree,
-  ShibieRuleDecl,
+  RegleFormPropertyType,
+  ReglePartialValidationTree,
+  RegleRuleDecl,
 } from './rule.declaration.types';
 
-export type ShibieErrorTree<TRules extends ShibiePartialValidationTree<any, any>> = {
-  readonly [K in keyof TRules]: ShibieValidationErrors<never, TRules[K]>;
+export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> = {
+  readonly [K in keyof TRules]: RegleValidationErrors<never, TRules[K]>;
 };
 
-export type ShibieValidationErrors<
+export type RegleValidationErrors<
   TKey extends DataType = string | Record<string, any>,
-  TRule extends ShibieFormPropertyType<any, any> | undefined = never,
+  TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = [TKey] extends [never]
-  ? TRule extends ShibieRuleDecl<any, any>
+  ? TRule extends RegleRuleDecl<any, any>
     ? string[]
-    : TRule extends ShibiePartialValidationTree<any, any>
-    ? ShibieErrorTree<TRule>
+    : TRule extends ReglePartialValidationTree<any, any>
+    ? RegleErrorTree<TRule>
     : never
   : TKey extends Array<any>
   ? 'Arrayy' // TODO collection
@@ -29,9 +29,9 @@ export type ShibieValidationErrors<
 //   [K in keyof TData]: ValidationError<TData[K]>;
 // };
 
-export type ShibieCollectionErrors<
+export type RegleCollectionErrors<
   TKey extends DataType = string | Record<string, any>,
-  TRule extends ShibieFormPropertyType<any, any> | undefined = never,
+  TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = {
   readonly $errors: any;
 };

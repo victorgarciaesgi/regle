@@ -1,17 +1,17 @@
 import { Ref, toRaw } from 'vue';
 import {
-  ShibieCollectionRuleDecl,
-  ShibieFormPropertyType,
-  ShibiePartialValidationTree,
-  ShibieRuleDecl,
-  ShibieRuleDefinition,
+  RegleCollectionRuleDecl,
+  RegleFormPropertyType,
+  ReglePartialValidationTree,
+  RegleRuleDecl,
+  RegleRuleDefinition,
 } from '../../types';
 import { isObject } from '../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,
-  rule: Ref<ShibieFormPropertyType>
-): rule is Ref<ShibiePartialValidationTree<any, any>> {
+  rule: Ref<RegleFormPropertyType>
+): rule is Ref<ReglePartialValidationTree<any, any>> {
   return (
     isObject(state.value) &&
     isObject(rule.value) &&
@@ -20,17 +20,15 @@ export function isNestedRulesDef(
 }
 
 export function isCollectionRulesDef(
-  rule: Ref<ShibieFormPropertyType>
-): rule is Ref<ShibieCollectionRuleDecl> {
+  rule: Ref<RegleFormPropertyType>
+): rule is Ref<RegleCollectionRuleDecl> {
   return !!rule.value && '$each' in rule.value;
 }
 
-export function isValidatorRulesDef(
-  rule: Ref<ShibieFormPropertyType>
-): rule is Ref<ShibieRuleDecl> {
+export function isValidatorRulesDef(rule: Ref<RegleFormPropertyType>): rule is Ref<RegleRuleDecl> {
   return !!rule.value && isObject(rule.value);
 }
 
-export function isRuleDef(rule: unknown): rule is ShibieRuleDefinition {
+export function isRuleDef(rule: unknown): rule is RegleRuleDefinition {
   return isObject(rule) && '_validator' in rule;
 }

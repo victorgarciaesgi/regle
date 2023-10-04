@@ -9,7 +9,7 @@ type CreateFn<T extends any[]> = (...args: T) => any;
  *
  * [foo: string, bar?: number] => [foo: MaybeRef<string> | (() => string), bar?: MaybeRef<number | undefined> | (() => number) | undefined]
  */
-export type ShibieUniversalParams<T extends any[] = [], F = CreateFn<T>> = [T] extends [[]]
+export type RegleUniversalParams<T extends any[] = [], F = CreateFn<T>> = [T] extends [[]]
   ? []
   : Parameters<
       F extends (...args: infer Args) => any
@@ -21,7 +21,7 @@ export type ShibieUniversalParams<T extends any[] = [], F = CreateFn<T>> = [T] e
         : never
     >;
 
-export type UnwrapShibieUniversalParams<T extends ParamDecl[] = [], F = CreateFn<T>> = [T] extends [
+export type UnwrapRegleUniversalParams<T extends ParamDecl[] = [], F = CreateFn<T>> = [T] extends [
   [],
 ]
   ? []

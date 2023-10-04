@@ -2,23 +2,23 @@ import { ComputedRef, Ref, computed, reactive, ref, toRef, watch } from 'vue';
 import { isEmpty } from '../../../helpers';
 import type {
   CustomRulesDeclarationTree,
-  PossibleShibieFieldStatus,
-  ShibieFormPropertyType,
-  ShibieRuleStatus,
-  ShibieStatus,
-  ShibiePartialValidationTree,
-  ShibieSoftRuleStatus,
+  PossibleRegleFieldStatus,
+  RegleFormPropertyType,
+  RegleRuleStatus,
+  RegleStatus,
+  ReglePartialValidationTree,
+  RegleSoftRuleStatus,
 } from '../../../types';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../shibie.guards';
+import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../regle.guards';
 
 type PendingFields = { key: string; state: boolean };
 
 export function createReactiveNestedStatus(
-  scopeRules: Ref<ShibiePartialValidationTree<Record<string, any>>>,
+  scopeRules: Ref<ReglePartialValidationTree<Record<string, any>>>,
   state: Ref<Record<string, any>>,
   customRules: () => Partial<CustomRulesDeclarationTree>
-): ShibieStatus<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>> {
+): RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>> {
   const $fields = reactive(
     Object.fromEntries(
       Object.entries(scopeRules.value)
@@ -34,7 +34,7 @@ export function createReactiveNestedStatus(
           return [];
         })
         .filter(
-          (rule): rule is [string, PossibleShibieFieldStatus] => !!rule.length && rule[1] != null
+          (rule): rule is [string, PossibleRegleFieldStatus] => !!rule.length && rule[1] != null
         )
     )
   );
@@ -92,14 +92,14 @@ export function createReactiveNestedStatus(
     $fields,
     $reset,
     $touch,
-  }) satisfies ShibieStatus<Record<string, any>, ShibiePartialValidationTree<Record<string, any>>>;
+  }) satisfies RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>>;
 }
 
 export function createReactiveFieldStatus(
   state: Ref<unknown>,
-  rulesDef: Ref<ShibieFormPropertyType>,
+  rulesDef: Ref<RegleFormPropertyType>,
   customRules: () => Partial<CustomRulesDeclarationTree>
-): PossibleShibieFieldStatus | null {
+): PossibleRegleFieldStatus | null {
   if (isCollectionRulesDef(rulesDef)) {
     return {} as any;
   } else if (isNestedRulesDef(state, rulesDef)) {
@@ -181,12 +181,12 @@ export function createReactiveFieldStatus(
                   $valid: ruleResult,
                   $validator,
                 },
-              ] satisfies [string, ShibieSoftRuleStatus];
+              ] satisfies [string, RegleSoftRuleStatus];
             }
             return [];
           })
-          .filter((ruleDef): ruleDef is [string, ShibieSoftRuleStatus] => !!ruleDef.length)
-      ) satisfies Record<string, ShibieSoftRuleStatus>;
+          .filter((ruleDef): ruleDef is [string, RegleSoftRuleStatus] => !!ruleDef.length)
+      ) satisfies Record<string, RegleSoftRuleStatus>;
     });
 
     const $dirty = ref(false);
@@ -232,7 +232,7 @@ export function createReactiveFieldStatus(
       $reset,
       $touch,
       $value: state,
-      $rules: rulesResults as ComputedRef<Record<string, ShibieRuleStatus>>,
+      $rules: rulesResults as ComputedRef<Record<string, RegleRuleStatus>>,
     });
   }
 
