@@ -11,7 +11,7 @@ export const not = createRule<unknown, [target: string]>({
   },
 });
 
-export const { useForm } = defineCustomValidators(() => ({
+export const { useRegle } = defineCustomValidators(() => ({
   not,
   maxLength: withMessage(maxLength, (value, count) => {
     return `ehooo ${count} is max`;

@@ -1,4 +1,4 @@
-import { ComputedRef, Ref, computed, reactive, ref, toRef, watch } from 'vue';
+import { ComputedRef, Ref, computed, reactive, ref, toRef, toRefs, unref, watch } from 'vue';
 import { isEmpty } from '../../../helpers';
 import type {
   CustomRulesDeclarationTree,
@@ -10,7 +10,7 @@ import type {
   RegleSoftRuleStatus,
 } from '../../../types';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../regle.guards';
+import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 
 type PendingFields = { key: string; state: boolean };
 
@@ -101,7 +101,21 @@ export function createReactiveFieldStatus(
   customRules: () => Partial<CustomRulesDeclarationTree>
 ): PossibleRegleFieldStatus | null {
   if (isCollectionRulesDef(rulesDef)) {
-    return {} as any;
+    const { $each, ...otherFields } = toRefs(reactive(rulesDef.value));
+    if (Array.isArray(state.value) && $each?.value) {
+      const values = toRefs(state.value);
+      return reactive({
+        ...(!isEmpty(otherFields) &&
+          createReactiveFieldStatus(state, toRef(reactive(otherFields)), customRules)),
+        $each: values
+          .map((value) => {
+            return createReactiveFieldStatus(value, $each as any, customRules);
+          })
+          .filter((f): f is PossibleRegleFieldStatus => !!f),
+      }) as any;
+    }
+
+    return null;
   } else if (isNestedRulesDef(state, rulesDef)) {
     return createReactiveNestedStatus(rulesDef, state as Ref<Record<string, any>>, customRules);
   } else if (isValidatorRulesDef(rulesDef)) {

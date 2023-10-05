@@ -1,5 +1,5 @@
 import { AllRulesDeclarations, CustomRulesDeclarationTree } from '../types';
-import { createUseFormComposable } from './useForm';
+import { createUseFormComposable } from './useRegle';
 
 /**
  * Root function that allows you to define project-wise all your custom validators or overwrite default ones
@@ -11,11 +11,11 @@ import { createUseFormComposable } from './useForm';
 export function defineCustomValidators<TCustomRules extends Partial<AllRulesDeclarations>>(
   customRules: () => TCustomRules
 ) {
-  const useForm = createUseFormComposable<CustomRulesDeclarationTree>(
+  const useRegle = createUseFormComposable<CustomRulesDeclarationTree>(
     customRules as () => CustomRulesDeclarationTree
   );
 
   return {
-    useForm,
+    useRegle,
   };
 }

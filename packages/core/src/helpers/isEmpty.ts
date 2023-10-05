@@ -1,4 +1,4 @@
-export function isEmpty(value: unknown): boolean {
+export function isEmpty(value: unknown): value is null | undefined {
   if (value === undefined || value === null) {
     return true;
   }
@@ -16,6 +16,9 @@ export function isEmpty(value: unknown): boolean {
   }
   if (typeof value === 'object' && value != null) {
     return Object.keys(value).length === 0;
+  }
+  if (typeof value === 'number') {
+    return isNaN(value);
   }
 
   return !String(value).trim().length;

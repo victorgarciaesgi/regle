@@ -1,1 +1,0 @@
-export { useRegle } from './useRegle';

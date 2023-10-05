@@ -1,3 +1,3 @@
 export * from './createRule';
-export * from './useForm';
+export * from './useRegle';
 export { defineCustomValidators } from './defineCustomValidators';

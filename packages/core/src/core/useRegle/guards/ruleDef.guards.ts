@@ -5,8 +5,8 @@ import {
   ReglePartialValidationTree,
   RegleRuleDecl,
   RegleRuleDefinition,
-} from '../../types';
-import { isObject } from '../../utils';
+} from '../../../types';
+import { isObject } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,

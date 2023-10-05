@@ -6,7 +6,7 @@ import type {
   ReglePartialValidationTree,
   RegleRuleDecl,
   RegleRuleDefinition,
-} from '.';
+} from '..';
 
 export interface RegleStatus<
   TState extends Record<string, any>,
@@ -22,7 +22,7 @@ export type InferRegleStatusType<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
 > = TRule extends RegleCollectionRuleDefinition<any, any>
-  ? /* TODO collection  */ any
+  ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
   : TRule extends ReglePartialValidationTree<any>
   ? TState[TKey] extends Array<any>
     ? RegleCommonStatus<TState[TKey]>
@@ -41,8 +41,6 @@ export interface RegleFieldStatus<
     >;
   };
 }
-
-export type PossibleRegleFieldStatus = RegleFieldStatus<any, any> | RegleStatus<any, any>;
 
 export interface RegleCommonStatus<TValue = any> {
   readonly $valid: boolean;
@@ -78,3 +76,19 @@ export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
   : {
       readonly $params: TParams;
     });
+
+export interface RegleCollectionStatus<
+  TRules extends RegleRuleDecl | ReglePartialValidationTree<any>,
+  TState extends any[],
+> extends RegleFieldStatus<TRules, TState> {
+  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, TState, number>>;
+}
+
+export type PossibleRegleStatus =
+  | RegleStatus<any, any>
+  | RegleFieldStatus<any>
+  | RegleSoftRuleStatus
+  | RegleCollectionStatus<any, any>
+  | RegleCommonStatus<any>;
+
+export type PossibleRegleFieldStatus = RegleFieldStatus<any, any> | RegleStatus<any, any>;

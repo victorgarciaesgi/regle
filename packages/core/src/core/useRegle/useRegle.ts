@@ -2,15 +2,16 @@ import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw } from 'vue';
 import {
   AllRulesDeclarations,
   CustomRulesDeclarationTree,
+  RegleErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
 } from '../../types';
-import { useRegle } from './useRegle';
+import { useStateProperties } from './useStateProperties';
 
 export function createUseFormComposable<TCustomRules extends CustomRulesDeclarationTree>(
   customRules: () => TCustomRules
 ) {
-  function useForm<
+  function useRegle<
     TState extends Record<string, any>,
     TRules extends ReglePartialValidationTree<TState, AllRulesDeclarations & TCustomRules>,
   >(state: Ref<TState>, rulesFactory: (() => TRules) | ComputedRef<TRules>) {
@@ -18,13 +19,14 @@ export function createUseFormComposable<TCustomRules extends CustomRulesDeclarat
 
     const initialState = shallowRef(structuredClone(toRaw(state.value)));
 
-    const { $regle } = useRegle(scopeRules, state, customRules);
+    const { $regle, errors } = useStateProperties(scopeRules, state, customRules);
 
     return {
       state,
-      $regle: $regle as RegleStatus<TState, TRules>,
+      $regle: $regle as Ref<RegleStatus<TState, TRules>>,
+      errors: errors as RegleErrorTree<TRules>,
     };
   }
 
-  return useForm;
+  return useRegle;
 }

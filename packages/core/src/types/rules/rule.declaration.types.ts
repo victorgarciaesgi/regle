@@ -1,4 +1,4 @@
-import { ArrayElement } from '../utils';
+import { ArrayElement, Maybe } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
 import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from './rule.definition.type';
 
@@ -28,7 +28,7 @@ export type RegleFormPropertyType<
  * Rule tree for a form property
  */
 export type RegleRuleDecl<
-  TValue = any,
+  TValue extends any = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
 > = {
   [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends RegleRuleWithParamsDefinition<
@@ -42,15 +42,19 @@ export type RegleRuleDecl<
 export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
-> = RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-  $each?: RegleRuleDecl<ArrayElement<TValue>, TCustomRules>;
-};
+> =
+  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
+      $each?: RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>;
+    })
+  | {
+      $each?: RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>;
+    };
 
 /**
  * TODO async
  */
 export type InlineRuleDeclaration<TValue extends any, TParams extends any[] = []> = (
-  value: TValue,
+  value: Maybe<TValue>,
   ...params: TParams
 ) => boolean;
 

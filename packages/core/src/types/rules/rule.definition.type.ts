@@ -1,7 +1,7 @@
 import { RegleRuleInit } from './rule.init.types';
 import { RegleUniversalParams } from './rule.params.types';
 import { RegleInternalRuleDefs } from './rule.internal.types';
-import { AllRulesDeclarations, RegleRuleDecl } from '.';
+import { AllRulesDeclarations, RegleFormPropertyType, RegleRuleDecl } from '.';
 import { ArrayElement, Maybe } from '../utils';
 
 /**
@@ -51,6 +51,10 @@ export type RegleRuleDefinitionProcessor<
 export type RegleCollectionRuleDefinition<
   TValue = any[],
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
-> = RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-  $each: RegleRuleDecl<ArrayElement<TValue>, TCustomRules>;
-};
+> =
+  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
+      $each: RegleFormPropertyType<ArrayElement<TValue>, TCustomRules>;
+    })
+  | {
+      $each: RegleFormPropertyType<ArrayElement<TValue>, TCustomRules>;
+    };

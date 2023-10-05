@@ -1,3 +1,5 @@
+import { RegleCollectionRuleDefinition } from '.';
+import { RegleFieldStatus } from '..';
 import {
   RegleFormPropertyType,
   ReglePartialValidationTree,
@@ -5,36 +7,27 @@ import {
 } from './rule.declaration.types';
 
 export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> = {
-  readonly [K in keyof TRules]: RegleValidationErrors<never, TRules[K]>;
+  readonly [K in keyof TRules]: RegleValidationErrors<TRules[K]>;
 };
 
 export type RegleValidationErrors<
-  TKey extends DataType = string | Record<string, any>,
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
-> = [TKey] extends [never]
-  ? TRule extends RegleRuleDecl<any, any>
-    ? string[]
-    : TRule extends ReglePartialValidationTree<any, any>
-    ? RegleErrorTree<TRule>
-    : never
-  : TKey extends Array<any>
-  ? 'Arrayy' // TODO collection
-  : TKey extends Date
+> = TRule extends RegleRuleDecl<any, any>
   ? string[]
-  : TKey extends File
-  ? string[]
+  : TRule extends ReglePartialValidationTree<any, any>
+  ? RegleErrorTree<TRule>
+  : TRule extends RegleCollectionRuleDefinition
+  ? RegleCollectionErrors<TRule['$each']>
   : string[];
 
-// export type UnsafeValidationErrorTree<TData extends Record<string, any> = Record<string, any>> = {
-//   [K in keyof TData]: ValidationError<TData[K]>;
-// };
-
 export type RegleCollectionErrors<
-  TKey extends DataType = string | Record<string, any>,
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = {
-  readonly $errors: any;
+  readonly $errors: string[];
+  readonly $each: RegleValidationErrors<TRule>[];
 };
+
+export type PossibleRegleErrors = RegleCollectionErrors<any> | string[] | RegleErrorTree<any>;
 
 export type DataType =
   | string

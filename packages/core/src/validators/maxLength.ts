@@ -1,8 +1,9 @@
+import { isEmpty } from '..';
 import { createRule } from '../core';
 
 export const maxLength = createRule<string, [count: number]>({
   validator: (value, count) => {
-    if (value != null && count != null && !isNaN(count)) {
+    if (!isEmpty(value) && !isEmpty(count)) {
       return value.length <= count;
     }
     return true;

@@ -1,19 +1,20 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 400px">
     <input v-model="form.email" placeholder="email" />
-    <!-- <ul>
+    <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul> -->
+    </ul>
     <input v-model.number="limit" placeholder="limit" />
 
     <input v-model="form.firstName" placeholder="firstName" />
 
-    <input v-model="form.foo.bar" placeholder="foobar" />
-    <!-- <ul>
+    <ul>
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
-    </ul> -->
+    </ul>
+    <input v-model="form.foo.bloublou.test[0].name" placeholder="name" />
     <pre>
       <code>
+{{ errors }}
 {{ $regle }}
       </code>
     </pre>
@@ -23,7 +24,7 @@
 <script setup lang="ts">
 import { maxLength, required, requiredIf } from '@regle/core';
 import { ref } from 'vue';
-import { useForm } from './validations';
+import { useRegle } from './validations';
 import { withMessage } from '@regle/core/src/helpers';
 
 type Form = {
@@ -32,7 +33,9 @@ type Form = {
   foo: {
     bar: number | undefined;
     bloublou: {
-      test: string[];
+      test: {
+        name: string;
+      }[];
     };
   };
 };
@@ -43,14 +46,14 @@ const form = ref<Form>({
   foo: {
     bar: 5,
     bloublou: {
-      test: [],
+      test: [{ name: 'foo' }],
     },
   },
 });
 
 const limit = ref(2);
 
-const { $regle } = useForm(form, () => ({
+const { $regle, errors } = useRegle(form, () => ({
   email: {
     required: withMessage((value: any) => {
       if (limit.value === 2) {
@@ -67,11 +70,13 @@ const { $regle } = useForm(form, () => ({
     ),
   },
   foo: {
-    bar: {
-      required,
-    },
     bloublou: {
-      test: {},
+      test: {
+        required,
+        $each: {
+          name: { required },
+        },
+      },
     },
   },
 }));

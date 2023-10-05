@@ -1,0 +1,1 @@
+export { useStateProperties } from './useStateProperties';
