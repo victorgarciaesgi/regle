@@ -1,12 +1,13 @@
 {
   "name": "regle",
+  "version": "0.0.2",
+  "private": true,
   "description": "Vue form validator",
   "scripts": {
-    "dev": "bun dev",
-    "build": "bun build.config.ts",
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "vue-tsc --noEmit",
-    "release": "bumpp && npm publish && git push --follow-tags"
+    "build": "pnpm run -r --parallel build",
+    "release": "bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
   },
   "devDependencies": {
     "@types/prettier": "3.0.0",
