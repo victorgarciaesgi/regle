@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@total-typescript/ts-reset':
-        specifier: 0.5.1
-        version: 0.5.1
       '@types/prettier':
         specifier: 3.0.0
         version: 3.0.0
@@ -59,6 +56,9 @@ importers:
 
   packages/core:
     devDependencies:
+      '@total-typescript/ts-reset':
+        specifier: 0.5.1
+        version: 0.5.1
       '@types/prettier':
         specifier: 3.0.0
         version: 3.0.0
@@ -110,6 +110,9 @@ importers:
 
   packages/validators:
     devDependencies:
+      '@regle/core':
+        specifier: workspace:*
+        version: link:../core
       '@types/prettier':
         specifier: 3.0.0
         version: 3.0.0

@@ -1,6 +1,10 @@
 import { Ref } from 'vue';
-import { InlineRuleDeclaration, InternalRuleType, RegleRuleDefinition } from '../types';
-import { createRule } from '../core';
+import {
+  createRule,
+  InlineRuleDeclaration,
+  InternalRuleType,
+  RegleRuleDefinition,
+} from '@regle/core';
 
 export function withAsync<TParams extends (Ref<unknown> | (() => unknown))[]>(
   rule: InlineRuleDeclaration<any>,

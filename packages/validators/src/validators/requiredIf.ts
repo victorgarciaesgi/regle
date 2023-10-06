@@ -1,4 +1,4 @@
-import { createRule } from '../core';
+import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 
 export const requiredIf = createRule<unknown, [condition: boolean]>({

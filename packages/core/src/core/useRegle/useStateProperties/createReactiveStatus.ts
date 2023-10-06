@@ -1,5 +1,5 @@
 import { Ref, computed, reactive, ref, toRef, toRefs, watch } from 'vue';
-import { isEmpty } from '../../../helpers';
+import { isEmpty } from '../../../utils';
 import type {
   CustomRulesDeclarationTree,
   PossibleRegleFieldStatus,

@@ -1,5 +1,5 @@
 import { isEmpty } from '../helpers';
-import { createRule } from '../core';
+import { createRule } from '@regle/core';
 
 export const maxLength = createRule<string, [count: number]>({
   validator: (value, count) => {

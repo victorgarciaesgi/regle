@@ -1,12 +1,12 @@
-import { createRule } from '../core';
 import {
+  createRule,
   InlineRuleDeclaration,
   InternalRuleType,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
-} from '../types';
+} from '@regle/core';
 
 export function withMessage<TValue extends any>(
   rule: InlineRuleDeclaration<TValue>,

@@ -1,4 +1,4 @@
-import { createRule } from '../core';
+import { createRule } from '@regle/core';
 
 export const required = createRule<unknown>({
   validator: (value) => !!value,
