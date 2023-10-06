@@ -1,5 +1,5 @@
-import { createRule, defineCustomValidators, maxLength } from '@regle/core';
-import { isEmpty, withMessage } from '@regle/core/src/helpers';
+import { createRule, defineCustomValidators } from '@regle/core';
+import { isEmpty, withMessage, maxLength } from '@regle/validators';
 
 export const not = createRule<unknown, [target: string]>({
   type: 'not',

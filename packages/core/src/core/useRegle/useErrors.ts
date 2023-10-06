@@ -2,18 +2,11 @@ import { Ref, computed } from 'vue';
 import {
   PossibleRegleErrors,
   PossibleRegleStatus,
-  RegleCollectionErrors,
   RegleCollectionStatus,
-  RegleErrorTree,
   RegleRuleStatus,
   RegleStatus,
 } from '../../types';
-import {
-  isCollectionRulesStatus,
-  isFieldStatus,
-  isNestedRulesStatus,
-  isRuleStatus,
-} from './guards/rule.status.guards';
+import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from './guards';
 
 function extractRulesErrors(rules: Record<string, RegleRuleStatus>): string[] {
   return Object.entries(rules)

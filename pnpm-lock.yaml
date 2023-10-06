@@ -164,12 +164,15 @@ importers:
 
   playground/vue3:
     dependencies:
+      '@regle/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@regle/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
       pinia:
         specifier: ^2.1.6
         version: 2.1.6(typescript@5.2.2)(vue@3.3.4)
-      regle:
-        specifier: workspace:*
-        version: link:../..
       vue:
         specifier: ^3.3.4
         version: 3.3.4

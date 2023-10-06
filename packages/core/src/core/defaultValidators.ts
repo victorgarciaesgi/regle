@@ -1,10 +1,7 @@
-import { CustomRulesDeclarationTree } from '../types';
-// import { maxLength, required, requiredIf } from '@regle/validators';
+import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
-export const defaultValidators = {
-  // maxLength,
-  // required,
-  // requiredIf,
-} satisfies CustomRulesDeclarationTree;
-
-export type DefaultValidators = typeof defaultValidators;
+export type DefaultValidators = {
+  maxLength: RegleRuleWithParamsDefinition<string, [count: number]>;
+  required: RegleRuleDefinition<unknown, []>;
+  requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
+};

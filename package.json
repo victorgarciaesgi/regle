@@ -5,8 +5,8 @@
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "vue-tsc --noEmit",
-    "build": "pnpm run -r --parallel build",
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm run -r build",
     "release": "bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
   },
   "devDependencies": {

@@ -26,10 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, requiredIf } from '@regle/core';
+import { maxLength, required, requiredIf, withMessage } from '@regle/validators';
 import { ref } from 'vue';
-import { useRegle, asyncEmail, timeout } from './validations';
-import { withAsync, withMessage } from '@regle/core/src/helpers';
+import { useRegle, asyncEmail } from './validations';
 
 type Form = {
   email: string;

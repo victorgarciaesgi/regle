@@ -10,7 +10,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "regle": "workspace:*",
+    "@regle/core": "workspace:*",
+    "@regle/validators": "workspace:*",
     "pinia": "^2.1.6",
     "vue": "^3.3.4"
   },
