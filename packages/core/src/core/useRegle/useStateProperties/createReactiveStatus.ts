@@ -1,18 +1,16 @@
-import { ComputedRef, Ref, computed, reactive, ref, toRef, toRefs, unref, watch } from 'vue';
+import { Ref, computed, reactive, ref, toRef, toRefs, watch } from 'vue';
 import { isEmpty } from '../../../helpers';
 import type {
   CustomRulesDeclarationTree,
   PossibleRegleFieldStatus,
   RegleFormPropertyType,
-  RegleRuleStatus,
-  RegleStatus,
   ReglePartialValidationTree,
+  RegleRuleStatus,
   RegleSoftRuleStatus,
+  RegleStatus,
 } from '../../../types';
-import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
-
-type PendingFields = { key: string; state: boolean };
+import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
 export function createReactiveNestedStatus(
   scopeRules: Ref<ReglePartialValidationTree<Record<string, any>>>,
@@ -58,7 +56,9 @@ export function createReactiveNestedStatus(
   });
 
   const $error = computed<boolean>(() => {
-    return $invalid.value && !$pending.value && $dirty.value;
+    return Object.entries($fields).some(([key, statusOrField]) => {
+      return statusOrField.$error;
+    });
   });
 
   const $pending = computed<boolean>(() => {
@@ -67,13 +67,13 @@ export function createReactiveNestedStatus(
     });
   });
 
-  function $reset() {
+  function $reset(): void {
     Object.entries($fields).forEach(([key, statusOrField]) => {
       statusOrField.$reset();
     });
   }
 
-  function $touch() {
+  function $touch(): void {
     Object.entries($fields).forEach(([key, statusOrField]) => {
       statusOrField.$touch();
     });
@@ -97,7 +97,7 @@ export function createReactiveNestedStatus(
 
 export function createReactiveFieldStatus(
   state: Ref<unknown>,
-  rulesDef: Ref<RegleFormPropertyType>,
+  rulesDef: Ref<RegleFormPropertyType<any, any>>,
   customRules: () => Partial<CustomRulesDeclarationTree>
 ): PossibleRegleFieldStatus | null {
   if (isCollectionRulesDef(rulesDef)) {
@@ -121,114 +121,57 @@ export function createReactiveFieldStatus(
   } else if (isValidatorRulesDef(rulesDef)) {
     const customMessages = customRules();
 
-    const pendingFields = ref<PendingFields[]>([]);
+    const $dirty = ref(false);
+    const $anyDirty = computed<boolean>(() => $dirty.value);
 
-    const rulesResults = computed(() => {
-      return Object.fromEntries(
+    const $rules = reactive(
+      Object.fromEntries(
         Object.entries(rulesDef.value)
           .map(([ruleKey, rule]) => {
-            let ruleResult: boolean = true;
-            let $message: string = '';
-            let $type: string;
-            let $validator: (value: any, ...params: any[]) => boolean | Promise<boolean>;
-            let $active: boolean;
-            let $params: any[] | undefined;
-
-            const $pending = pendingFields.value.find(({ key }) => key === ruleKey)?.state ?? false;
-
-            let params =
-              typeof rule === 'function' ? [] : unwrapRuleParameters(rule?._params ?? []);
-
-            const customMessageRule = customMessages[ruleKey]?.message;
-            if (customMessageRule) {
-              if (typeof customMessageRule === 'function') {
-                $message = customMessageRule(state.value, ...params);
-              } else {
-                $message = customMessageRule;
-              }
-            }
             if (rule) {
-              if (typeof rule === 'function') {
-                const resultOrPromise = rule(state.value);
-                // TODO Async rules
-                // if (resultOrPromise instanceof Promise) {
-                //   resultOrPromise.then(() => {
-                //   });
-                // } else {
-                // }
-                ruleResult = resultOrPromise;
-                $type = ruleKey;
-                $validator = rule;
-                $active = true;
-              } else {
-                ruleResult = rule.validator(state.value, ...params);
-                if (!(customMessageRule && !rule._patched)) {
-                  if (typeof rule.message === 'function') {
-                    $message = rule.message(state.value, ...params);
-                  } else {
-                    $message = rule.message;
-                  }
-                }
-
-                if (typeof rule.active === 'function') {
-                  $active = rule.active(state.value, ...params);
-                } else {
-                  $active = rule.active;
-                }
-                $type = rule.type === '__inline' ? ruleKey : rule.type;
-                $validator = rule.validator;
-              }
-
-              if (isEmpty($message)) {
-                $message = 'Error';
-                console.warn(`No error message defined for ${ruleKey}`);
-              }
-
+              const ruleRef = toRef(() => rule);
               return [
                 ruleKey,
-                {
-                  $active,
-                  $message,
-                  $pending,
-                  ...($params && { $params }),
-                  $type: $type,
-                  $valid: ruleResult,
-                  $validator,
-                },
-              ] satisfies [string, RegleSoftRuleStatus];
+                createReactiveRuleStatus({
+                  $dirty,
+                  customMessages,
+                  rule: ruleRef as any,
+                  ruleKey,
+                  state,
+                }),
+              ];
             }
             return [];
           })
           .filter((ruleDef): ruleDef is [string, RegleSoftRuleStatus] => !!ruleDef.length)
-      ) satisfies Record<string, RegleSoftRuleStatus>;
-    });
-
-    const $dirty = ref(false);
-    const $anyDirty = computed(() => $dirty.value);
+      )
+    );
 
     const $error = computed<boolean>(() => {
       return $invalid.value && !$pending.value && $dirty.value;
     });
 
-    const $pending = computed(() => {
-      return !!pendingFields.value.length;
+    const $pending = computed<boolean>(() => {
+      return Object.entries($rules).some(([key, rule]) => {
+        return rule.$pending;
+      });
     });
 
-    const $invalid = computed(() => {
-      return Object.entries(rulesResults.value).some(([key, ruleResult]) => {
+    const $invalid = computed<boolean>(() => {
+      return Object.entries($rules).some(([key, ruleResult]) => {
         return !ruleResult.$valid;
       });
     });
 
-    function $reset() {
+    const $valid = computed<boolean>(() => !$invalid.value);
+
+    function $reset(): void {
       $dirty.value = false;
     }
 
-    function $touch() {
+    function $touch(): void {
       $dirty.value = true;
     }
-
-    const $valid = computed(() => !$invalid.value);
 
     watch(state, () => {
       if (!$dirty.value) {
@@ -246,8 +189,8 @@ export function createReactiveFieldStatus(
       $reset,
       $touch,
       $value: state,
-      $rules: rulesResults as ComputedRef<Record<string, RegleRuleStatus>>,
-    });
+      $rules: $rules as Record<string, RegleRuleStatus>,
+    }) satisfies PossibleRegleFieldStatus;
   }
 
   return null;

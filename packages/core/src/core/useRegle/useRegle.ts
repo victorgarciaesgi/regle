@@ -8,7 +8,7 @@ import {
 } from '../../types';
 import { useStateProperties } from './useStateProperties';
 
-export function createUseFormComposable<TCustomRules extends CustomRulesDeclarationTree>(
+export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
   customRules: () => TCustomRules
 ) {
   function useRegle<
@@ -19,7 +19,11 @@ export function createUseFormComposable<TCustomRules extends CustomRulesDeclarat
 
     const initialState = shallowRef(structuredClone(toRaw(state.value)));
 
-    const { $regle, errors } = useStateProperties(scopeRules, state, customRules);
+    const { $regle, errors } = useStateProperties(
+      scopeRules,
+      state,
+      customRules as () => CustomRulesDeclarationTree
+    );
 
     return {
       state,

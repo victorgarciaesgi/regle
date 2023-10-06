@@ -1,4 +1,4 @@
 export * from './core';
 export * from './types';
-export * from './validators';
 export * from './helpers';
+export * from './validators';

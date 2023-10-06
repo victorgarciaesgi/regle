@@ -1,5 +1,7 @@
-import { Ref, toRaw } from 'vue';
+import { Ref } from 'vue';
 import {
+  FormRuleDeclaration,
+  InlineRuleDeclaration,
   RegleCollectionRuleDecl,
   RegleFormPropertyType,
   ReglePartialValidationTree,
@@ -25,10 +27,22 @@ export function isCollectionRulesDef(
   return !!rule.value && '$each' in rule.value;
 }
 
-export function isValidatorRulesDef(rule: Ref<RegleFormPropertyType>): rule is Ref<RegleRuleDecl> {
+export function isValidatorRulesDef(
+  rule: Ref<RegleFormPropertyType>
+): rule is Ref<RegleRuleDecl<any, any>> {
   return !!rule.value && isObject(rule.value);
 }
 
 export function isRuleDef(rule: unknown): rule is RegleRuleDefinition {
   return isObject(rule) && '_validator' in rule;
+}
+
+export function isFormRuleDefinition(
+  rule: Ref<unknown>
+): rule is Ref<RegleRuleDefinition<any, any>> {
+  return !(typeof rule.value === 'function');
+}
+
+export function isFormInline(rule: Ref<unknown>): rule is Ref<InlineRuleDeclaration<any>> {
+  return typeof rule.value === 'function';
 }

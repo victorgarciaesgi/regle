@@ -9,7 +9,7 @@ import { ArrayElement, Maybe } from '../utils';
  * */
 export interface RegleRuleDefinition<TValue extends any = any, TParams extends any[] = []>
   extends RegleInternalRuleDefs<TValue, TParams> {
-  validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean>;
+  validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean | Promise<boolean>>;
   message: RegleRuleDefinitionProcessor<TValue, TParams, string>;
   active: RegleRuleDefinitionProcessor<TValue, TParams, boolean>;
   type: string;

@@ -5,7 +5,7 @@ import { Maybe } from '../utils';
  * createRule arguments options
  */
 export interface RegleRuleInit<TValue extends any, TParams extends any[] = []> {
-  validator: (value: Maybe<TValue>, ...args: TParams) => boolean;
+  validator: (value: Maybe<TValue>, ...args: TParams) => boolean | Promise<boolean>;
   message: string | ((value: Maybe<TValue>, ...args: TParams) => string);
   active?: boolean | ((value: Maybe<TValue>, ...args: TParams) => boolean);
   type: string;

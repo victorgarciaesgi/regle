@@ -36,7 +36,7 @@ export type RegleRuleDecl<
     infer TParams
   >
     ? RegleRuleDefinition<TValue, TParams>
-    : FormRuleDeclaration<TValue, any[]>;
+    : FormRuleDeclaration<TValue, any>;
 };
 
 export type RegleCollectionRuleDecl<
@@ -53,10 +53,10 @@ export type RegleCollectionRuleDecl<
 /**
  * TODO async
  */
-export type InlineRuleDeclaration<TValue extends any, TParams extends any[] = []> = (
+export type InlineRuleDeclaration<TValue extends any> = (
   value: Maybe<TValue>,
-  ...params: TParams
-) => boolean;
+  ...args: any[]
+) => boolean | Promise<boolean>;
 
 /**
  * Regroup inline and registered rules

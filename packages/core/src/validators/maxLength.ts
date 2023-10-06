@@ -1,4 +1,4 @@
-import { isEmpty } from '..';
+import { isEmpty } from '../helpers';
 import { createRule } from '../core';
 
 export const maxLength = createRule<string, [count: number]>({

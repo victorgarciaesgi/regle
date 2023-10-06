@@ -1,17 +1,17 @@
-import { createRule } from '..';
+import { createRule } from '../core';
 import {
-  InferRegleRule,
   InlineRuleDeclaration,
+  InternalRuleType,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
 } from '../types';
 
-export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: InlineRuleDeclaration<TValue, TParams>,
-  newMessage: string | ((value: TValue, ...args: TParams) => string)
-): RegleRuleDefinition<TValue, TParams>;
+export function withMessage<TValue extends any>(
+  rule: InlineRuleDeclaration<TValue>,
+  newMessage: string | ((value: TValue) => string)
+): RegleRuleDefinition<TValue>;
 export function withMessage<TValue extends any, TParams extends any[]>(
   rule: RegleRuleWithParamsDefinition<TValue, TParams>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
@@ -21,18 +21,19 @@ export function withMessage<TValue extends any, TParams extends any[]>(
   newMessage: string | ((value: TValue, ...args: TParams) => string)
 ): RegleRuleDefinition<TValue, TParams>;
 export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: RegleRuleRaw<TValue, TParams> | InlineRuleDeclaration<TValue, TParams>,
+  rule: RegleRuleRaw<TValue, TParams> | InlineRuleDeclaration<TValue>,
   newMessage: string | ((value: any, ...args: any[]) => string)
 ): RegleRuleWithParamsDefinition<TValue, TParams> | RegleRuleDefinition<TValue, TParams> {
   let _type: string;
-  let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean>;
+  let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean | Promise<boolean>>;
   let _active: boolean | RegleRuleDefinitionProcessor<TValue, TParams, boolean> | undefined;
+  let _params: any[] | undefined;
 
   if (typeof rule === 'function' && !('_validator' in rule)) {
-    _type = '__inline';
+    _type = InternalRuleType.Inline;
     validator = rule;
   } else {
-    ({ _type, validator, _active } = rule);
+    ({ _type, validator, _active, _params } = rule);
   }
 
   const newRule = createRule<TValue, TParams>({
@@ -42,6 +43,7 @@ export function withMessage<TValue extends any, TParams extends any[]>(
     message: newMessage,
   });
 
+  newRule._params = _params as any;
   newRule._patched = true;
 
   return newRule;

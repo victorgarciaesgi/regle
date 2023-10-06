@@ -1,6 +1,7 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 400px">
     <input v-model="form.email" placeholder="email" />
+    <span v-if="$regle.$fields.email.$pending" style="color: red">Loading</span>
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
@@ -12,6 +13,9 @@
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
     <input v-model="form.foo.bloublou.test[0].name" placeholder="name" />
+    <ul>
+      <li v-for="error of errors.foo.bloublou.test.$each[0].name" :key="error">{{ error }}</li>
+    </ul>
     <pre>
       <code>
 {{ errors }}
@@ -24,8 +28,8 @@
 <script setup lang="ts">
 import { maxLength, required, requiredIf } from '@regle/core';
 import { ref } from 'vue';
-import { useRegle } from './validations';
-import { withMessage } from '@regle/core/src/helpers';
+import { useRegle, asyncEmail, timeout } from './validations';
+import { withAsync, withMessage } from '@regle/core/src/helpers';
 
 type Form = {
   email: string;
@@ -55,13 +59,11 @@ const limit = ref(2);
 
 const { $regle, errors } = useRegle(form, () => ({
   email: {
-    required: withMessage((value: any) => {
-      if (limit.value === 2) {
-        return value != '' && value != null;
-      }
-      return true;
-    }, 'Hihi'),
-    maxLength: maxLength(() => limit.value),
+    maxLength: withMessage(
+      maxLength(() => limit.value),
+      (value, count) => `Euuuh non ${count}`
+    ),
+    asyncEmail: withMessage(asyncEmail(limit), 'Prout'),
   },
   firstName: {
     required: withMessage(
