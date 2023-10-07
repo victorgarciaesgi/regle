@@ -1,4 +1,4 @@
-import { ComputedRef, Ref, reactive, ref, toRef } from 'vue';
+import { ComputedRef, Ref, reactive, ref, toRef, watch } from 'vue';
 import {
   CustomRulesDeclarationTree,
   RegleStatus,
@@ -12,7 +12,7 @@ export function useStateProperties(
   state: Ref<Record<string, any>>,
   customRules: () => CustomRulesDeclarationTree
 ) {
-  const $regle = ref(createReactiveNestedStatus(scopeRules, state, customRules));
+  const $regle = reactive(createReactiveNestedStatus(scopeRules, state, customRules, ''));
 
   const errors = useErrors($regle);
 

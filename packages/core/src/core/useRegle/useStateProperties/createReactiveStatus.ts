@@ -15,7 +15,8 @@ import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 export function createReactiveNestedStatus(
   scopeRules: Ref<ReglePartialValidationTree<Record<string, any>>>,
   state: Ref<Record<string, any>>,
-  customRules: () => Partial<CustomRulesDeclarationTree>
+  customRules: () => Partial<CustomRulesDeclarationTree>,
+  path: string
 ): RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>> {
   const $fields = reactive(
     Object.fromEntries(
@@ -26,7 +27,12 @@ export function createReactiveNestedStatus(
             const statePropRulesRef = toRef(() => statePropRules);
             return [
               statePropKey,
-              createReactiveFieldStatus(stateRef, statePropRulesRef, customRules),
+              createReactiveFieldStatus(
+                stateRef,
+                statePropRulesRef,
+                customRules,
+                path ? `${path}.${statePropKey}` : statePropKey
+              ),
             ];
           }
           return [];
@@ -36,6 +42,10 @@ export function createReactiveNestedStatus(
         )
     )
   );
+
+  watch(scopeRules, () => {
+    console.log(scopeRules);
+  });
 
   const $dirty = computed<boolean>(() => {
     return Object.entries($fields).every(([key, statusOrField]) => {
@@ -54,6 +64,8 @@ export function createReactiveNestedStatus(
       return statusOrField.$invalid;
     });
   });
+
+  const $valid = computed(() => !$invalid.value);
 
   const $error = computed<boolean>(() => {
     return Object.entries($fields).some(([key, statusOrField]) => {
@@ -79,7 +91,18 @@ export function createReactiveNestedStatus(
     });
   }
 
-  const $valid = computed(() => !$invalid.value);
+  async function $validate(): Promise<boolean> {
+    try {
+      const results = await Promise.all(
+        Object.entries($fields).map(([key, statusOrField]) => {
+          return statusOrField.$validate();
+        })
+      );
+      return results.every((value) => !!value);
+    } catch (e) {
+      return false;
+    }
+  }
 
   return reactive({
     $dirty,
@@ -88,17 +111,18 @@ export function createReactiveNestedStatus(
     $valid,
     $error,
     $pending,
-    $value: state,
     $fields,
     $reset,
     $touch,
+    $validate,
   }) satisfies RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>>;
 }
 
 export function createReactiveFieldStatus(
   state: Ref<unknown>,
   rulesDef: Ref<RegleFormPropertyType<any, any>>,
-  customRules: () => Partial<CustomRulesDeclarationTree>
+  customRules: () => Partial<CustomRulesDeclarationTree>,
+  path: string
 ): PossibleRegleFieldStatus | null {
   if (isCollectionRulesDef(rulesDef)) {
     const { $each, ...otherFields } = toRefs(reactive(rulesDef.value));
@@ -106,10 +130,10 @@ export function createReactiveFieldStatus(
       const values = toRefs(state.value);
       return reactive({
         ...(!isEmpty(otherFields) &&
-          createReactiveFieldStatus(state, toRef(reactive(otherFields)), customRules)),
+          createReactiveFieldStatus(state, toRef(reactive(otherFields)), customRules, path)),
         $each: values
-          .map((value) => {
-            return createReactiveFieldStatus(value, $each as any, customRules);
+          .map((value, index) => {
+            return createReactiveFieldStatus(value, $each as any, customRules, `${path}.${index}`);
           })
           .filter((f): f is PossibleRegleFieldStatus => !!f),
       }) as any;
@@ -117,7 +141,12 @@ export function createReactiveFieldStatus(
 
     return null;
   } else if (isNestedRulesDef(state, rulesDef)) {
-    return createReactiveNestedStatus(rulesDef, state as Ref<Record<string, any>>, customRules);
+    return createReactiveNestedStatus(
+      rulesDef,
+      state as Ref<Record<string, any>>,
+      customRules,
+      path
+    );
   } else if (isValidatorRulesDef(rulesDef)) {
     const customMessages = customRules();
 
@@ -138,6 +167,7 @@ export function createReactiveFieldStatus(
                   rule: ruleRef as any,
                   ruleKey,
                   state,
+                  path,
                 }),
               ];
             }
@@ -171,6 +201,7 @@ export function createReactiveFieldStatus(
 
     function $touch(): void {
       $dirty.value = true;
+      $validate();
     }
 
     watch(state, () => {
@@ -179,6 +210,19 @@ export function createReactiveFieldStatus(
       }
     });
 
+    async function $validate(): Promise<boolean> {
+      try {
+        const results = await Promise.all(
+          Object.entries($rules).map(([key, rule]) => {
+            return rule.$validate();
+          })
+        );
+        return results.every((value) => !!value);
+      } catch (e) {
+        return false;
+      }
+    }
+
     return reactive({
       $dirty,
       $anyDirty,
@@ -186,10 +230,11 @@ export function createReactiveFieldStatus(
       $error,
       $pending,
       $valid,
-      $reset,
-      $touch,
       $value: state,
       $rules: $rules as Record<string, RegleRuleStatus>,
+      $reset,
+      $touch,
+      $validate,
     }) satisfies PossibleRegleFieldStatus;
   }
 

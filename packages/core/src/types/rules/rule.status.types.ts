@@ -11,7 +11,7 @@ import type {
 export interface RegleStatus<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState>,
-> extends RegleCommonStatus<TState> {
+> extends RegleCommonStatus {
   readonly $fields: {
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
@@ -25,7 +25,7 @@ export type InferRegleStatusType<
   ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
   : TRule extends ReglePartialValidationTree<any>
   ? TState[TKey] extends Array<any>
-    ? RegleCommonStatus<TState[TKey]>
+    ? RegleCommonStatus
     : RegleStatus<TState[TKey], TRule>
   : RegleFieldStatus<TRule, TState, TKey>;
 
@@ -33,7 +33,8 @@ export interface RegleFieldStatus<
   TRules extends RegleFormPropertyType<any, AllRulesDeclarations>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-> extends RegleCommonStatus<TState[TKey]> {
+> extends RegleCommonStatus {
+  $value: TState[TKey];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
@@ -42,26 +43,28 @@ export interface RegleFieldStatus<
   };
 }
 
-export interface RegleCommonStatus<TValue = any> {
+export interface RegleCommonStatus {
   readonly $valid: boolean;
   readonly $invalid: boolean;
   readonly $dirty: boolean;
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
-  $value: TValue;
   readonly $error: boolean;
-  $touch: () => void;
-  $reset: () => void;
+  $touch(): void;
+  $reset(): void;
+  $validate(): Promise<boolean>;
 }
 
 export interface RegleSoftRuleStatus<TValue = any, TParams extends any[] = any[]> {
   readonly $type: string;
   readonly $message: string;
-  readonly $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;
   readonly $active: boolean;
   readonly $valid: boolean;
   readonly $pending: boolean;
   readonly $params?: TParams;
+  readonly $path: string;
+  $validator(value: TValue, ...args: TParams): boolean | Promise<boolean>;
+  $validate(): Promise<boolean>;
 }
 
 export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
@@ -89,6 +92,6 @@ export type PossibleRegleStatus =
   | RegleFieldStatus<any>
   | RegleSoftRuleStatus
   | RegleCollectionStatus<any, any>
-  | RegleCommonStatus<any>;
+  | RegleCommonStatus;
 
 export type PossibleRegleFieldStatus = RegleFieldStatus<any, any> | RegleStatus<any, any>;

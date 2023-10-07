@@ -17,7 +17,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
   >(state: Ref<TState>, rulesFactory: (() => TRules) | ComputedRef<TRules>) {
     const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
 
-    const initialState = shallowRef(structuredClone(toRaw(state.value)));
+    const initialState = shallowRef<TState>(structuredClone(toRaw(state.value)));
 
     const { $regle, errors } = useStateProperties(
       scopeRules,
@@ -25,10 +25,22 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       customRules as () => CustomRulesDeclarationTree
     );
 
+    function resetForm() {
+      state.value = toRaw(initialState.value) as TState;
+      $regle.$reset();
+    }
+
+    async function validateForm() {
+      $regle.$touch();
+      return await $regle.$validate();
+    }
+
     return {
       state,
-      $regle: $regle as Ref<RegleStatus<TState, TRules>>,
+      $regle: $regle as RegleStatus<TState, TRules>,
       errors: errors as RegleErrorTree<TRules>,
+      resetForm,
+      validateForm,
     };
   }
 

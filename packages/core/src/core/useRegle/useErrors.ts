@@ -60,9 +60,9 @@ function extractNestedErrors(
   );
 }
 
-export function useErrors($regle: Ref<RegleStatus<Record<string, any>, Record<string, any>>>) {
+export function useErrors($regle: RegleStatus<Record<string, any>, Record<string, any>>) {
   const errors = computed(() => {
-    return extractNestedErrors($regle.value.$fields);
+    return extractNestedErrors($regle.$fields);
   });
 
   return errors;

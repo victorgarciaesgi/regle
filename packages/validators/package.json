@@ -6,7 +6,8 @@
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
     "release": "npm publish",
-    "build": "tsup"
+    "build": "tsup",
+    "dev": "tsup --config=tsup.dev.ts --watch"
   },
   "devDependencies": {
     "@types/prettier": "3.0.0",

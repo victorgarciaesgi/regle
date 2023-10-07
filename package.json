@@ -7,7 +7,8 @@
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
     "build": "pnpm run -r build",
-    "release": "bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
+    "dev": "pnpm run -r --parallel dev",
+    "release": "nr build && bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
   },
   "devDependencies": {
     "@types/prettier": "3.0.0",

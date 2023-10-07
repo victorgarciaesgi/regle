@@ -4,7 +4,7 @@ import {
   RegleRuleInit,
   RegleUniversalParams,
 } from '../../types';
-import { unwrapRuleParameters } from './unwrapRuleParameters';
+import { createReactiveParams, unwrapRuleParameters } from './unwrapRuleParameters';
 
 export function defineRuleProcessors<TValue extends any = any, TParams extends any[] = []>(
   definition: RegleRuleInit<TValue, TParams>,
@@ -15,26 +15,17 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
   const processors = {
     message(value: any, ...args: any[]) {
       if (typeof definition.message === 'function') {
-        return definition.message(
-          value,
-          ...unwrapRuleParameters<TParams>(args.length ? args : params)
-        );
+        return definition.message(value, ...(<TParams>(args.length ? args : params)));
       } else {
         return definition.message;
       }
     },
     validator(value: any, ...args: any[]) {
-      return definition.validator(
-        value,
-        ...unwrapRuleParameters<TParams>(args.length ? args : params)
-      );
+      return definition.validator(value, ...(<TParams>(args.length ? args : params)));
     },
     active(value: any, ...args: any[]) {
       if (typeof definition.active === 'function') {
-        return definition.active(
-          value,
-          ...unwrapRuleParameters<TParams>(args.length ? args : params)
-        );
+        return definition.active(value, ...(<TParams>(args.length ? args : params)));
       } else {
         return definition.active ?? true;
       }
@@ -46,7 +37,7 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
       _active: definition.active,
       _type: definition.type,
       _patched: false,
-      _params: params,
+      _params: createReactiveParams<RegleUniversalParams<TParams>>(params),
     } satisfies RegleInternalRuleDefs<TValue, TParams>),
   } satisfies RegleRuleDefinition<TValue, TParams>;
 
