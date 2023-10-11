@@ -1,7 +1,7 @@
 import { Ref, computed } from 'vue';
 import {
   PossibleRegleErrors,
-  PossibleRegleStatus,
+  $InternalRegleStatusType,
   RegleCollectionStatus,
   RegleRuleStatus,
   RegleStatus,
@@ -19,7 +19,7 @@ function extractRulesErrors(rules: Record<string, RegleRuleStatus>): string[] {
     .filter((msg): msg is string => !!msg);
 }
 
-function processFieldErrors(fieldStatus: PossibleRegleStatus): PossibleRegleErrors {
+function processFieldErrors(fieldStatus: $InternalRegleStatusType): PossibleRegleErrors {
   if (isNestedRulesStatus(fieldStatus)) {
     return extractNestedErrors(fieldStatus.$fields);
   } else if (isCollectionRulesStatus(fieldStatus)) {
@@ -38,7 +38,7 @@ function extractCollectionError(field: RegleCollectionStatus<any, any>): Possibl
 }
 
 function extractNestedErrors(
-  fields: Record<string, PossibleRegleStatus> | PossibleRegleStatus[]
+  fields: Record<string, $InternalRegleStatusType> | $InternalRegleStatusType[]
 ): Record<string, PossibleRegleErrors> {
   return Object.fromEntries(
     Object.entries(fields).map(([fieldKey, fieldStatus]) => {

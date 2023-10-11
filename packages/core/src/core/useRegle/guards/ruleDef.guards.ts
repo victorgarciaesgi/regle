@@ -2,6 +2,7 @@ import { Ref } from 'vue';
 import {
   FormRuleDeclaration,
   InlineRuleDeclaration,
+  PossibleFormPropertyTypes,
   RegleCollectionRuleDecl,
   RegleFormPropertyType,
   ReglePartialValidationTree,
@@ -12,7 +13,7 @@ import { isObject } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,
-  rule: Ref<RegleFormPropertyType>
+  rule: Ref<PossibleFormPropertyTypes>
 ): rule is Ref<ReglePartialValidationTree<any, any>> {
   return (
     isObject(state.value) &&
@@ -22,13 +23,13 @@ export function isNestedRulesDef(
 }
 
 export function isCollectionRulesDef(
-  rule: Ref<RegleFormPropertyType>
+  rule: Ref<PossibleFormPropertyTypes>
 ): rule is Ref<RegleCollectionRuleDecl> {
   return !!rule.value && '$each' in rule.value;
 }
 
 export function isValidatorRulesDef(
-  rule: Ref<RegleFormPropertyType>
+  rule: Ref<PossibleFormPropertyTypes>
 ): rule is Ref<RegleRuleDecl<any, any>> {
   return !!rule.value && isObject(rule.value);
 }

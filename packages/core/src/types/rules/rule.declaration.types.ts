@@ -24,6 +24,11 @@ export type RegleFormPropertyType<
   ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
   : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
+export type PossibleFormPropertyTypes =
+  | RegleRuleDecl<any, any>
+  | RegleCollectionRuleDecl<any, any>
+  | ReglePartialValidationTree<any, any>;
+
 /**
  * Rule tree for a form property
  */
@@ -53,7 +58,7 @@ export type RegleCollectionRuleDecl<
 /**
  * TODO async
  */
-export type InlineRuleDeclaration<TValue extends any> = (
+export type InlineRuleDeclaration<TValue extends any = any> = (
   value: Maybe<TValue>,
   ...args: any[]
 ) => boolean | Promise<boolean>;

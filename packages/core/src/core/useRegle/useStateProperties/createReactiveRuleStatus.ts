@@ -1,15 +1,15 @@
 import { Ref, computed, reactive, ref, watch } from 'vue';
-import { isEmpty } from '../../../utils';
 import {
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
   InternalRuleType,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  RegleSoftRuleStatus,
+  $InternalRegleRuleStatus,
 } from '../../../types';
-import { createReactiveParams, unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
-import { isFormInline, isFormRuleDefinition } from '../guards';
+import { isEmpty } from '../../../utils';
+import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
+import { isFormRuleDefinition } from '../guards';
 
 export function createReactiveRuleStatus({
   $dirty,
@@ -21,23 +21,23 @@ export function createReactiveRuleStatus({
 }: {
   state: Ref<unknown>;
   ruleKey: string;
-  rule: Ref<InlineRuleDeclaration<any>> | Ref<RegleRuleDefinition<any, any>>;
+  rule: Ref<InlineRuleDeclaration | RegleRuleDefinition<any, any>>;
   $dirty: Ref<boolean>;
   customMessages: Partial<CustomRulesDeclarationTree>;
   path: string;
-}) {
+}): $InternalRegleRuleStatus {
   const $pending = ref(false);
   const $valid = ref(true);
 
   const $active = computed<boolean>(() => {
-    if (isFormInline(rule)) {
-      return true;
-    } else {
+    if (isFormRuleDefinition(rule)) {
       if (typeof rule.value.active === 'function') {
-        return rule.value.active(state.value, $params.value);
+        return rule.value.active(state.value, ...$params.value);
       } else {
         return rule.value.active;
       }
+    } else {
+      return true;
     }
   });
 
@@ -47,7 +47,7 @@ export function createReactiveRuleStatus({
 
     if (customMessageRule) {
       if (typeof customMessageRule === 'function') {
-        message = customMessageRule(state.value, $params.value);
+        message = customMessageRule(state.value, ...$params.value);
       } else {
         message = customMessageRule;
       }
@@ -55,7 +55,7 @@ export function createReactiveRuleStatus({
     if (isFormRuleDefinition(rule)) {
       if (!(customMessageRule && !rule.value._patched)) {
         if (typeof rule.value.message === 'function') {
-          message = rule.value.message(state.value, $params.value);
+          message = rule.value.message(state.value, ...$params.value);
         } else {
           message = rule.value.message;
         }
@@ -71,19 +71,19 @@ export function createReactiveRuleStatus({
   });
 
   const $type = computed(() => {
-    if (isFormInline(rule)) {
-      return ruleKey;
-    } else {
+    if (isFormRuleDefinition(rule)) {
       return Object.values(InternalRuleType).includes(rule.value.type) ? ruleKey : rule.value.type;
+    } else {
+      return ruleKey;
     }
   });
 
   const $validator = computed<RegleRuleDefinitionProcessor<any, any, boolean | Promise<boolean>>>(
     () => {
-      if (isFormInline(rule)) {
-        return rule.value;
-      } else {
+      if (isFormRuleDefinition(rule)) {
         return rule.value.validator;
+      } else {
+        return rule.value as InlineRuleDeclaration;
       }
     }
   );
@@ -100,7 +100,7 @@ export function createReactiveRuleStatus({
   async function $validate(): Promise<boolean> {
     const validator = $validator.value;
     let ruleResult = false;
-    const resultOrPromise = validator(state.value, $params.value);
+    const resultOrPromise = validator(state.value, ...$params.value);
 
     if (resultOrPromise instanceof Promise) {
       if ($dirty.value) {
@@ -135,5 +135,5 @@ export function createReactiveRuleStatus({
     $validate,
     $path,
     ...($params.value.length && { $params }),
-  }) satisfies RegleSoftRuleStatus;
+  }) satisfies $InternalRegleRuleStatus;
 }

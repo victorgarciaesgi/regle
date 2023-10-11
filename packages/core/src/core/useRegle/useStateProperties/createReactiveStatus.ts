@@ -1,25 +1,37 @@
-import { Ref, computed, reactive, ref, toRef, toRefs, watch } from 'vue';
+import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, toRefs, watch } from 'vue';
 import { isEmpty } from '../../../utils';
 import type {
   CustomRulesDeclarationTree,
-  PossibleRegleFieldStatus,
+  PossibleFormPropertyTypes,
+  $InternalRegleStatusType,
   RegleFormPropertyType,
   ReglePartialValidationTree,
+  RegleRuleDecl,
   RegleRuleStatus,
-  RegleSoftRuleStatus,
+  $InternalRegleRuleStatus,
   RegleStatus,
 } from '../../../types';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { useStorage } from '../../useStorage';
 
-export function createReactiveNestedStatus(
-  scopeRules: Ref<ReglePartialValidationTree<Record<string, any>>>,
-  state: Ref<Record<string, any>>,
-  customRules: () => Partial<CustomRulesDeclarationTree>,
-  path: string
-): RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>> {
-  const $fields = reactive(
-    Object.fromEntries(
+export function createReactiveNestedStatus({
+  scopeRules,
+  state,
+  customRules,
+  path = '',
+  rootRules,
+}: {
+  rootRules: Ref<ReglePartialValidationTree<Record<string, any>>>;
+  scopeRules: Ref<ReglePartialValidationTree<Record<string, any>>>;
+  state: Ref<Record<string, any>>;
+  customRules: () => Partial<CustomRulesDeclarationTree>;
+  path?: string;
+}): RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>> {
+  const $fields = ref(createReactiveFieldsStatus());
+
+  function createReactiveFieldsStatus() {
+    return Object.fromEntries(
       Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
@@ -27,25 +39,30 @@ export function createReactiveNestedStatus(
             const statePropRulesRef = toRef(() => statePropRules);
             return [
               statePropKey,
-              createReactiveFieldStatus(
-                stateRef,
-                statePropRulesRef,
+              createReactiveFieldStatus({
+                state: stateRef,
+                rulesDef: statePropRulesRef,
+                rootRules,
                 customRules,
-                path ? `${path}.${statePropKey}` : statePropKey
-              ),
+                path: path ? `${path}.${statePropKey}` : statePropKey,
+              }),
             ];
           }
           return [];
         })
         .filter(
-          (rule): rule is [string, PossibleRegleFieldStatus] => !!rule.length && rule[1] != null
+          (rule): rule is [string, $InternalRegleStatusType] => !!rule.length && rule[1] != null
         )
-    )
-  );
+    );
+  }
 
-  watch(scopeRules, () => {
-    console.log(scopeRules);
-  });
+  watch(
+    rootRules,
+    () => {
+      $fields.value = createReactiveFieldsStatus();
+    },
+    { deep: true }
+  );
 
   const $dirty = computed<boolean>(() => {
     return Object.entries($fields).every(([key, statusOrField]) => {
@@ -118,53 +135,88 @@ export function createReactiveNestedStatus(
   }) satisfies RegleStatus<Record<string, any>, ReglePartialValidationTree<Record<string, any>>>;
 }
 
-export function createReactiveFieldStatus(
-  state: Ref<unknown>,
-  rulesDef: Ref<RegleFormPropertyType<any, any>>,
-  customRules: () => Partial<CustomRulesDeclarationTree>,
-  path: string
-): PossibleRegleFieldStatus | null {
+export function createReactiveFieldStatus({
+  state,
+  rulesDef,
+  customRules,
+  rootRules,
+  path,
+}: {
+  state: Ref<unknown>;
+  rulesDef: Ref<PossibleFormPropertyTypes>;
+  rootRules: Ref<ReglePartialValidationTree<Record<string, any>>>;
+  customRules: () => Partial<CustomRulesDeclarationTree>;
+  path: string;
+}): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
     const { $each, ...otherFields } = toRefs(reactive(rulesDef.value));
     if (Array.isArray(state.value) && $each?.value) {
       const values = toRefs(state.value);
       return reactive({
         ...(!isEmpty(otherFields) &&
-          createReactiveFieldStatus(state, toRef(reactive(otherFields)), customRules, path)),
+          createReactiveFieldStatus({
+            state,
+            rulesDef: toRef(reactive(otherFields)),
+            rootRules,
+            customRules,
+            path,
+          })),
         $each: values
           .map((value, index) => {
-            return createReactiveFieldStatus(value, $each as any, customRules, `${path}.${index}`);
+            return createReactiveFieldStatus({
+              state: value,
+              rulesDef: $each as any,
+              rootRules,
+              customRules,
+              path: `${path}.${index}`,
+            });
           })
-          .filter((f): f is PossibleRegleFieldStatus => !!f),
+          .filter((f): f is $InternalRegleStatusType => !!f),
       }) as any;
     }
 
     return null;
   } else if (isNestedRulesDef(state, rulesDef)) {
-    return createReactiveNestedStatus(
-      rulesDef,
-      state as Ref<Record<string, any>>,
+    return createReactiveNestedStatus({
+      scopeRules: rulesDef,
+      state: state as Ref<Record<string, any>>,
+      rootRules,
       customRules,
-      path
-    );
+      path,
+    });
   } else if (isValidatorRulesDef(rulesDef)) {
     const customMessages = customRules();
+
+    type ScopeReturnState = {
+      $error: ComputedRef<boolean>;
+      $pending: ComputedRef<boolean>;
+      $invalid: ComputedRef<boolean>;
+      $valid: ComputedRef<boolean>;
+    };
+    const scope = effectScope();
+    let scopeState!: ScopeReturnState;
 
     const $dirty = ref(false);
     const $anyDirty = computed<boolean>(() => $dirty.value);
 
-    const $rules = reactive(
-      Object.fromEntries(
-        Object.entries(rulesDef.value)
+    const { addEntry, checkEntry, setDirtyEntry, getDirtyState } = useStorage();
+
+    function createReactiveRulesResult() {
+      const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
+      const storeResult = checkEntry(path, declaredRules);
+
+      const newRules = Object.fromEntries(
+        Object.entries(declaredRules)
           .map(([ruleKey, rule]) => {
             if (rule) {
               const ruleRef = toRef(() => rule);
+
               return [
                 ruleKey,
                 createReactiveRuleStatus({
                   $dirty,
                   customMessages,
-                  rule: ruleRef as any,
+                  rule: ruleRef,
                   ruleKey,
                   state,
                   path,
@@ -173,27 +225,68 @@ export function createReactiveFieldStatus(
             }
             return [];
           })
-          .filter((ruleDef): ruleDef is [string, RegleSoftRuleStatus] => !!ruleDef.length)
-      )
-    );
+          .filter((ruleDef): ruleDef is [string, $InternalRegleRuleStatus] => !!ruleDef.length)
+      );
+      $rules.value = newRules;
 
-    const $error = computed<boolean>(() => {
-      return $invalid.value && !$pending.value && $dirty.value;
-    });
+      if (storeResult?.valid != null) {
+        $dirty.value = getDirtyState(path);
+        if (storeResult.valid === false) {
+          $validate();
+        }
+      }
 
-    const $pending = computed<boolean>(() => {
-      return Object.entries($rules).some(([key, rule]) => {
-        return rule.$pending;
+      addEntry(path, {
+        rulesDef: declaredRules,
       });
+
+      scopeState = scope.run(() => {
+        const $error = computed<boolean>(() => {
+          return $invalid.value && !$pending.value && $dirty.value;
+        });
+
+        const $pending = computed<boolean>(() => {
+          return Object.entries($rules.value).some(([key, rule]) => {
+            return rule.$pending;
+          });
+        });
+
+        const $invalid = computed<boolean>(() => {
+          console.log('Computed run');
+          return Object.entries($rules.value).some(([key, ruleResult]) => {
+            return !ruleResult.$valid;
+          });
+        });
+
+        const $valid = computed<boolean>(() => !$invalid.value);
+
+        return {
+          $error,
+          $pending,
+          $invalid,
+          $valid,
+        };
+      }) as ScopeReturnState;
+    }
+
+    const $unwatchDirty = watch($dirty, () => {
+      setDirtyEntry(path, $dirty.value);
     });
 
-    const $invalid = computed<boolean>(() => {
-      return Object.entries($rules).some(([key, ruleResult]) => {
-        return !ruleResult.$valid;
-      });
+    const $unwatchState = watch(state, () => {
+      if (!$dirty.value) {
+        $dirty.value = true;
+      }
     });
 
-    const $valid = computed<boolean>(() => !$invalid.value);
+    function $unwatch() {
+      $unwatchDirty();
+      $unwatchState();
+      scope.stop();
+    }
+
+    const $rules = ref() as Ref<Record<string, $InternalRegleRuleStatus<any, any>>>;
+    createReactiveRulesResult();
 
     function $reset(): void {
       $dirty.value = false;
@@ -204,16 +297,10 @@ export function createReactiveFieldStatus(
       $validate();
     }
 
-    watch(state, () => {
-      if (!$dirty.value) {
-        $dirty.value = true;
-      }
-    });
-
     async function $validate(): Promise<boolean> {
       try {
         const results = await Promise.all(
-          Object.entries($rules).map(([key, rule]) => {
+          Object.entries($rules.value).map(([key, rule]) => {
             return rule.$validate();
           })
         );
@@ -226,16 +313,16 @@ export function createReactiveFieldStatus(
     return reactive({
       $dirty,
       $anyDirty,
-      $invalid,
-      $error,
-      $pending,
-      $valid,
+      $invalid: scopeState.$invalid,
+      $error: scopeState.$error,
+      $pending: scopeState.$pending,
+      $valid: scopeState.$valid,
       $value: state,
-      $rules: $rules as Record<string, RegleRuleStatus>,
+      $rules: $rules,
       $reset,
       $touch,
       $validate,
-    }) satisfies PossibleRegleFieldStatus;
+    }) satisfies $InternalRegleStatusType;
   }
 
   return null;

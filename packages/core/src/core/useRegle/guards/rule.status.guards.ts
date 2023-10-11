@@ -1,5 +1,5 @@
 import {
-  PossibleRegleStatus,
+  $InternalRegleStatusType,
   RegleCollectionStatus,
   RegleFieldStatus,
   RegleRuleStatus,
@@ -7,17 +7,17 @@ import {
 } from '../../../types';
 import { isObject } from '../../../utils';
 
-export function isNestedRulesStatus(rule: PossibleRegleStatus): rule is RegleStatus<any, any> {
+export function isNestedRulesStatus(rule: $InternalRegleStatusType): rule is RegleStatus<any, any> {
   return isObject(rule) && '$fields' in rule;
 }
 
 export function isCollectionRulesStatus(
-  rule: PossibleRegleStatus
+  rule: $InternalRegleStatusType
 ): rule is RegleCollectionStatus<any, any> {
   return !!rule && '$each' in rule;
 }
 
-export function isFieldStatus(rule: PossibleRegleStatus): rule is RegleFieldStatus<any, any> {
+export function isFieldStatus(rule: $InternalRegleStatusType): rule is RegleFieldStatus<any, any> {
   return !!rule && '$rules' in rule;
 }
 

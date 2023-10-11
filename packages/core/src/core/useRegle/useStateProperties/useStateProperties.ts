@@ -12,7 +12,9 @@ export function useStateProperties(
   state: Ref<Record<string, any>>,
   customRules: () => CustomRulesDeclarationTree
 ) {
-  const $regle = reactive(createReactiveNestedStatus(scopeRules, state, customRules, ''));
+  const $regle = reactive(
+    createReactiveNestedStatus({ rootRules: scopeRules, scopeRules, state, customRules })
+  );
 
   const errors = useErrors($regle);
 
