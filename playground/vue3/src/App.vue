@@ -8,16 +8,25 @@
 
     <input v-model.number="limit" placeholder="limit" />
 
-    <input v-model="form.firstName" placeholder="firstName" />
+    <input
+      v-model="form.firstName"
+      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required.$active ? '*' : ''}`"
+    />
     <ul>
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
-    <input v-model="form.foo.bloublou.test[0].name" placeholder="name" />
-    <ul>
-      <li v-for="error of errors.foo.bloublou.test.$each[0].name" :key="error">{{ error }}</li>
-    </ul>
+    <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
+      <input v-model="input.name" placeholder="name" />
+      {{ errors.foo.bloublou.test.$each[index].name }}
+      <ul>
+        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
+          error
+        }}</li>
+      </ul>
+    </template>
 
+    <button type="submit" @click="form.foo.bloublou.test.push({ name: '' })">Add entry</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre>
@@ -69,16 +78,16 @@ const { $regle, errors, validateForm } = useRegle(form, () => ({
   email: {
     maxLength: withMessage(
       maxLength(() => limit.value),
-      (value, count) => `Euuuh non ${count}`
+      (value, count) => `Max length is ${count}`
     ),
-    asyncEmail: withMessage(asyncEmail(limit), 'Prout'),
+    asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
   },
   firstName: {
     required: withMessage(
       requiredIf(() => limit.value === 2),
-      'Requis!'
+      'Champs requis!'
     ),
-    not: not(form.value.email),
+    not: not(() => form.value.email),
   },
   foo: {
     bloublou: {

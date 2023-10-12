@@ -1,5 +1,6 @@
 import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw, watch } from 'vue';
 import {
+  $InternalReglePartialValidationTree,
   AllRulesDeclarations,
   CustomRulesDeclarationTree,
   RegleErrorTree,
@@ -20,7 +21,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     const initialState = shallowRef<TState>(structuredClone(toRaw(state.value)));
 
     const { $regle, errors } = useStateProperties(
-      scopeRules,
+      scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
       state,
       customRules as () => CustomRulesDeclarationTree
     );

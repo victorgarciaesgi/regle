@@ -2,19 +2,22 @@ import { Ref } from 'vue';
 import {
   FormRuleDeclaration,
   InlineRuleDeclaration,
-  PossibleFormPropertyTypes,
+  $InternalFormPropertyTypes,
   RegleCollectionRuleDecl,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
   RegleRuleDefinition,
+  $InternalReglePartialValidationTree,
+  $InternalRegleCollectionRuleDecl,
+  $InternalRegleRuleDecl,
 } from '../../../types';
 import { isObject } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,
-  rule: Ref<PossibleFormPropertyTypes>
-): rule is Ref<ReglePartialValidationTree<any, any>> {
+  rule: Ref<$InternalFormPropertyTypes>
+): rule is Ref<$InternalReglePartialValidationTree> {
   return (
     isObject(state.value) &&
     isObject(rule.value) &&
@@ -23,18 +26,18 @@ export function isNestedRulesDef(
 }
 
 export function isCollectionRulesDef(
-  rule: Ref<PossibleFormPropertyTypes>
-): rule is Ref<RegleCollectionRuleDecl> {
+  rule: Ref<$InternalFormPropertyTypes>
+): rule is Ref<$InternalRegleCollectionRuleDecl> {
   return !!rule.value && '$each' in rule.value;
 }
 
 export function isValidatorRulesDef(
-  rule: Ref<PossibleFormPropertyTypes>
-): rule is Ref<RegleRuleDecl<any, any>> {
+  rule: Ref<$InternalFormPropertyTypes>
+): rule is Ref<$InternalRegleRuleDecl> {
   return !!rule.value && isObject(rule.value);
 }
 
-export function isRuleDef(rule: unknown): rule is RegleRuleDefinition {
+export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any> {
   return isObject(rule) && '_validator' in rule;
 }
 

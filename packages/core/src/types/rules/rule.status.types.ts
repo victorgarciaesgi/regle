@@ -22,14 +22,11 @@ export interface RegleStatus<
 
 /**
  * @internal
- * @reference RegleStatus
+ * @reference {@link RegleStatus}
  */
-export interface $InternalRegleStatus<
-  TState extends Record<string, any> = Record<string, any>,
-  TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
-> extends RegleCommonStatus {
+export interface $InternalRegleStatus extends RegleCommonStatus {
   $fields: {
-    [TKey in keyof TRules]: $InternalRegleStatusType;
+    [x: string]: $InternalRegleStatusType;
   };
 }
 
@@ -50,10 +47,10 @@ export type InferRegleStatusType<
 
 /**
  * @internal
- * @reference InferRegleStatusType
+ * @reference {@link InferRegleStatusType}
  */
 export type $InternalRegleStatusType =
-  | $InternalRegleCollectionStatus<any, any[]>
+  | $InternalRegleCollectionStatus
   | RegleCommonStatus
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
@@ -77,7 +74,7 @@ export interface RegleFieldStatus<
 
 /**
  * @internal
- * @reference RegleFieldStatus
+ * @reference {@link RegleFieldStatus}
  */
 export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
@@ -97,6 +94,8 @@ export interface RegleCommonStatus {
   $touch(): void;
   $reset(): void;
   $validate(): Promise<boolean>;
+  $unwatch(): void;
+  $watch(): void;
 }
 
 /**
@@ -119,18 +118,20 @@ export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
 
 /**
  * @internal
- * @reference RegleRuleStatus
+ * @reference {@link RegleRuleStatus}
  */
-export interface $InternalRegleRuleStatus<TValue = any, TParams extends any[] = any[]> {
+export interface $InternalRegleRuleStatus {
   readonly $type: string;
   readonly $message: string;
   readonly $active: boolean;
   readonly $valid: boolean;
   readonly $pending: boolean;
   readonly $path: string;
-  $validator(value: TValue, ...args: TParams): boolean | Promise<boolean>;
+  $validator(value: any, ...args: any[]): boolean | Promise<boolean>;
   $validate(): Promise<boolean>;
-  readonly $params?: TParams;
+  $unwatch(): void;
+  $watch(): void;
+  readonly $params?: any[];
 }
 
 /**
@@ -144,11 +145,8 @@ export interface RegleCollectionStatus<
 }
 /**
  * @internal
- * @reference RegleCollectionStatus
+ * @reference {@link RegleCollectionStatus}
  */
-export interface $InternalRegleCollectionStatus<
-  TRules extends RegleRuleDecl | ReglePartialValidationTree<any>,
-  TState extends any[],
-> extends RegleFieldStatus<TRules, TState> {
-  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, TState, number>>;
+export interface $InternalRegleCollectionStatus extends $InternalRegleStatus {
+  $each: Array<$InternalRegleStatusType>;
 }

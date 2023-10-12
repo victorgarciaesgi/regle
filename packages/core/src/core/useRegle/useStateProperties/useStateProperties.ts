@@ -1,19 +1,20 @@
-import { ComputedRef, Ref, reactive, ref, toRef, watch } from 'vue';
-import {
-  CustomRulesDeclarationTree,
-  RegleStatus,
-  ReglePartialValidationTree,
-} from '../../../types';
-import { createReactiveNestedStatus } from './createReactiveStatus';
+import { ComputedRef, Ref, reactive } from 'vue';
+import { $InternalReglePartialValidationTree, CustomRulesDeclarationTree } from '../../../types';
 import { useErrors } from '../useErrors';
+import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 
 export function useStateProperties(
-  scopeRules: ComputedRef<ReglePartialValidationTree<Record<string, any>, any>>,
+  scopeRules: ComputedRef<$InternalReglePartialValidationTree>,
   state: Ref<Record<string, any>>,
   customRules: () => CustomRulesDeclarationTree
 ) {
   const $regle = reactive(
-    createReactiveNestedStatus({ rootRules: scopeRules, scopeRules, state, customRules })
+    createReactiveNestedStatus({
+      rootRules: scopeRules,
+      scopeRules,
+      state,
+      customMessages: customRules(),
+    })
   );
 
   const errors = useErrors($regle);

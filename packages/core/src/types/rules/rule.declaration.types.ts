@@ -2,6 +2,9 @@ import { ArrayElement, Maybe } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
 import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from './rule.definition.type';
 
+/**
+ * @public
+ */
 export type ReglePartialValidationTree<
   TForm extends Record<string, any>,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
@@ -9,6 +12,17 @@ export type ReglePartialValidationTree<
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 };
 
+/**
+ * @internal
+ * @reference {@link ReglePartialValidationTree}
+ */
+export type $InternalReglePartialValidationTree = {
+  [x: string]: $InternalFormPropertyTypes;
+};
+
+/**
+ * @public
+ */
 export type RegleFormPropertyType<
   TValue = any,
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
@@ -24,12 +38,17 @@ export type RegleFormPropertyType<
   ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
   : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
-export type PossibleFormPropertyTypes =
-  | RegleRuleDecl<any, any>
-  | RegleCollectionRuleDecl<any, any>
-  | ReglePartialValidationTree<any, any>;
+/**
+ * @internal
+ * @reference {@link RegleFormPropertyType}
+ */
+export type $InternalFormPropertyTypes =
+  | $InternalRegleRuleDecl
+  | $InternalRegleCollectionRuleDecl
+  | $InternalReglePartialValidationTree;
 
 /**
+ * @public
  * Rule tree for a form property
  */
 export type RegleRuleDecl<
@@ -44,6 +63,15 @@ export type RegleRuleDecl<
     : FormRuleDeclaration<TValue, any>;
 };
 
+/**
+ * @internal
+ * @reference {@link RegleRuleDecl}
+ */
+export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any>>;
+
+/**
+ * @public
+ */
 export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
@@ -56,7 +84,16 @@ export type RegleCollectionRuleDecl<
     };
 
 /**
- * TODO async
+ * @internal
+ * @reference {@link RegleCollectionRuleDecl}
+ *
+ */
+export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
+  $each?: $InternalFormPropertyTypes;
+};
+
+/**
+ * @public
  */
 export type InlineRuleDeclaration<TValue extends any = any> = (
   value: Maybe<TValue>,
@@ -64,6 +101,7 @@ export type InlineRuleDeclaration<TValue extends any = any> = (
 ) => boolean | Promise<boolean>;
 
 /**
+ * @public
  * Regroup inline and registered rules
  * */
 export type FormRuleDeclaration<TValue extends any, TParams extends any[] = []> =
