@@ -25,7 +25,7 @@ export interface RegleStatus<
  * @reference {@link RegleStatus}
  */
 export interface $InternalRegleStatus extends RegleCommonStatus {
-  $fields: {
+  $fields?: {
     [x: string]: $InternalRegleStatusType;
   };
 }
@@ -149,4 +149,7 @@ export interface RegleCollectionStatus<
  */
 export interface $InternalRegleCollectionStatus extends $InternalRegleStatus {
   $each: Array<$InternalRegleStatusType>;
+  $rules?: Record<string, $InternalRegleRuleStatus>;
+  $unwatch(): void;
+  $watch(): void;
 }

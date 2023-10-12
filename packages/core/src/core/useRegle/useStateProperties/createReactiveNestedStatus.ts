@@ -9,6 +9,7 @@ import type {
 import { isEmpty, isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 
 export function createReactiveNestedStatus({
   scopeRules,
@@ -183,31 +184,12 @@ export function createReactiveChildrenStatus({
   path: string;
 }): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
-    const { $each, ...otherFields } = toRefs(reactive(rulesDef.value));
-    if (Array.isArray(state.value) && $each?.value) {
-      const values = toRefs(state.value);
-      return reactive({
-        ...(!isEmpty(otherFields) &&
-          createReactiveChildrenStatus({
-            state,
-            rulesDef: toRef(reactive(otherFields)) as any, // TODO
-            customMessages,
-            path,
-          })),
-        $each: values
-          .map((value, index) => {
-            return createReactiveChildrenStatus({
-              state: value,
-              rulesDef: $each as any,
-              customMessages,
-              path: `${path}.${index}`,
-            });
-          })
-          .filter((f): f is $InternalRegleStatusType => !!f),
-      }) as any;
-    }
-
-    return null;
+    return createReactiveCollectionStatus({
+      state,
+      rulesDef,
+      customMessages,
+      path,
+    });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
       scopeRules: rulesDef,

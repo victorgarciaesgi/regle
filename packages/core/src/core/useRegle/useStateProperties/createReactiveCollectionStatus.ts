@@ -1,20 +1,11 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, toRefs, watch } from 'vue';
+import { Ref, reactive, ref, toRef, watch } from 'vue';
 import type {
-  $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
-  $InternalReglePartialValidationTree,
-  $InternalRegleRuleStatus,
-  $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
-  RegleRuleDecl,
 } from '../../../types';
-import { isEmpty, isObject, isRefObject } from '../../../utils';
-import { useStorage } from '../../useStorage';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
-import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 
@@ -25,26 +16,24 @@ interface CreateReactiveCollectionStatusArgs {
   path: string;
 }
 
-type ScopeReturnState = {
-  $each: ComputedRef<$InternalFormPropertyTypes>;
-} & {
-  [Key in keyof $InternalRegleStatus]?: Ref<$InternalRegleStatus[Key]>;
-};
-
 export function createReactiveCollectionStatus({
   state,
   rulesDef,
   customMessages,
   path,
-}: CreateReactiveCollectionStatusArgs) {
-  const scope = effectScope();
-  let scopeState!: ScopeReturnState;
+}: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
+  if (Array.isArray(state.value) && !rulesDef.value.$each) {
+    return null;
+  }
 
-  const $fieldStatus = ref<$InternalRegleFieldStatus | null>(null);
-  const $each = ref();
-  createFieldStatus();
+  let $unwatchState: (() => void) | null = null;
 
-  function createFieldStatus() {
+  const $fieldStatus = ref() as Ref<$InternalRegleFieldStatus>;
+  const $eachStatus = ref<Array<$InternalRegleStatusType>>([]);
+  createStatus();
+  $watch();
+
+  function createStatus() {
     const { $each, ...otherFields } = rulesDef.value;
     $fieldStatus.value = createReactiveFieldStatus({
       state,
@@ -52,23 +41,52 @@ export function createReactiveCollectionStatus({
       customMessages,
       path,
     });
+
+    if (Array.isArray(state.value) && $each) {
+      $eachStatus.value = state.value
+        .map((value, index) => {
+          const $path = `${path}.${index}`;
+          return createReactiveChildrenStatus({
+            state: toRef(() => value),
+            rulesDef: toRef(() => $each),
+            customMessages,
+            path: $path,
+          });
+        })
+        .filter((f): f is $InternalRegleStatusType => !!f);
+    } else {
+      return [];
+    }
   }
 
   function $unwatch() {
+    if ($unwatchState) {
+      $unwatchState();
+    }
     if ($fieldStatus.value) {
       $fieldStatus.value.$unwatch();
     }
-    scope.stop();
-    scopeState = null as any; // cleanup
+    if ($eachStatus.value) {
+      $eachStatus.value.forEach((element) => {
+        element.$unwatch();
+      });
+    }
   }
 
   function $watch() {
-    scopeState = scope.run(() => {
-      const $each = computed(() => rulesDef.value.$each);
-
-      return {
-        $each,
-      };
-    }) as ScopeReturnState;
+    $unwatchState = watch(
+      state,
+      () => {
+        createStatus();
+      },
+      { deep: true }
+    );
   }
+
+  return reactive({
+    ...$fieldStatus.value,
+    $each: $eachStatus,
+    $unwatch,
+    $watch,
+  }) satisfies $InternalRegleCollectionStatus;
 }

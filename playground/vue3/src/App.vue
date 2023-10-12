@@ -18,7 +18,6 @@
 
     <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
       <input v-model="input.name" placeholder="name" />
-      {{ errors.foo.bloublou.test.$each[index].name }}
       <ul>
         <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
           error
@@ -92,7 +91,6 @@ const { $regle, errors, validateForm } = useRegle(form, () => ({
   foo: {
     bloublou: {
       test: {
-        required,
         $each: {
           name: { required },
         },
