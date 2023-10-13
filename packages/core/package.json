@@ -1,10 +1,10 @@
 {
   "name": "@regle/core",
-  "version": "0.0.3",
+  "version": "0.0.4-beta.0",
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit",
     "release": "npm publish",
     "build": "tsup",
     "dev": "tsup --config=tsup.dev.ts --watch"
