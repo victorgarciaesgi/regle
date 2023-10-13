@@ -11,12 +11,12 @@ export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> 
 
 export type RegleValidationErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
-> = TRule extends RegleRuleDecl<any, any>
-  ? string[]
-  : TRule extends RegleCollectionRuleDefinition
+> = TRule extends RegleCollectionRuleDefinition
   ? RegleCollectionErrors<TRule['$each']>
   : TRule extends ReglePartialValidationTree<any, any>
   ? RegleErrorTree<TRule>
+  : TRule extends RegleRuleDecl<any, any>
+  ? string[]
   : string[];
 
 export type RegleCollectionErrors<

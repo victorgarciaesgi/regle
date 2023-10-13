@@ -7,9 +7,11 @@ import {
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 
-export function createRule<TValue extends any, TParams extends any[] = []>(
-  definition: RegleRuleInit<TValue, TParams>
-): InferRegleRule<TValue, TParams> {
+export function createRule<
+  TValue extends any,
+  TParams extends any[] = [],
+  TType extends string = string,
+>(definition: RegleRuleInit<TValue, TParams, TType>): InferRegleRule<TValue, TParams> {
   if (typeof definition.validator === 'function') {
     let fakeParams = [] as never;
     const staticProcessors = defineRuleProcessors(definition, ...fakeParams);

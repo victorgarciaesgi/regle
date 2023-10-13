@@ -50,7 +50,7 @@ export type RegleRuleDefinitionProcessor<
 
 export type RegleCollectionRuleDefinition<
   TValue = any[],
-  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
       $each: RegleFormPropertyType<ArrayElement<TValue>, TCustomRules>;

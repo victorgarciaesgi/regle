@@ -10,7 +10,7 @@
 
     <input
       v-model="form.firstName"
-      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
+      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required.$active ? '*' : ''}`"
     />
     <ul>
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
@@ -38,9 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, withMessage } from '@regle/validators';
+import { maxLength, required, requiredIf, withMessage } from '@regle/validators';
 import { ref } from 'vue';
-import { useRegle, asyncEmail, not } from './validations';
+import { useRegle, asyncEmail, not } from './../validations';
 
 type Form = {
   email: string;
@@ -75,14 +75,14 @@ const limit = ref(2);
 
 const { $regle, errors, validateForm } = useRegle(form, () => ({
   email: {
-    maxLength: withMessage(
-      maxLength(() => limit.value),
-      (value, count) => `Max length is ${count}`
-    ),
+    maxLength: withMessage(maxLength(limit.value), (value, count) => `Max length is ${count}`),
     asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
   },
   firstName: {
-    ...(limit.value === 2 && { required }),
+    required: withMessage(
+      requiredIf(() => limit.value === 2),
+      'Champs requis!'
+    ),
     not: not(form.value.email),
   },
   foo: {

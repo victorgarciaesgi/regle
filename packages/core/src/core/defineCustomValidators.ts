@@ -13,7 +13,5 @@ export function defineCustomValidators<TCustomRules extends Partial<AllRulesDecl
 ) {
   const useRegle = createUseRegleComposable<TCustomRules>(customRules);
 
-  return {
-    useRegle,
-  };
+  return useRegle;
 }

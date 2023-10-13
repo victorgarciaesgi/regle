@@ -2,13 +2,13 @@ import { Ref, computed } from 'vue';
 import {
   PossibleRegleErrors,
   $InternalRegleStatusType,
-  RegleCollectionStatus,
-  RegleRuleStatus,
-  RegleStatus,
+  $InternalRegleStatus,
+  $InternalRegleRuleStatus,
+  $InternalRegleCollectionStatus,
 } from '../../types';
 import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from './guards';
 
-function extractRulesErrors(rules: Record<string, RegleRuleStatus>): string[] {
+function extractRulesErrors(rules: Record<string, $InternalRegleRuleStatus>): string[] {
   return Object.entries(rules)
     .map(([ruleKey, rule]) => {
       if (!rule.$valid) {
@@ -24,7 +24,7 @@ function processFieldErrors(fieldStatus: $InternalRegleStatusType): PossibleRegl
     return extractNestedErrors(fieldStatus.$fields);
   } else if (isCollectionRulesStatus(fieldStatus)) {
     return {
-      $errors: fieldStatus.$error ? extractRulesErrors(fieldStatus.$rules) : [],
+      $errors: fieldStatus.$rules ? extractRulesErrors(fieldStatus.$rules) : [],
       $each: fieldStatus.$each.map(processFieldErrors),
     };
   } else if (isFieldStatus(fieldStatus) && fieldStatus.$error) {
@@ -33,7 +33,7 @@ function processFieldErrors(fieldStatus: $InternalRegleStatusType): PossibleRegl
   return [];
 }
 
-function extractCollectionError(field: RegleCollectionStatus<any, any>): PossibleRegleErrors[] {
+function extractCollectionError(field: $InternalRegleCollectionStatus): PossibleRegleErrors[] {
   return field.$each.map(processFieldErrors);
 }
 
@@ -60,7 +60,7 @@ function extractNestedErrors(
   );
 }
 
-export function useErrors($regle: RegleStatus<Record<string, any>, Record<string, any>>) {
+export function useErrors($regle: $InternalRegleStatus) {
   const errors = computed(() => {
     return extractNestedErrors($regle.$fields);
   });

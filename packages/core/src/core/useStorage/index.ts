@@ -1,1 +1,1 @@
-export { useStorage, StoredRulesResult } from './useStorage';
+export { useStorage, RegleStorage } from './useStorage';

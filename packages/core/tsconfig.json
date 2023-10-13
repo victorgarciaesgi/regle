@@ -17,5 +17,5 @@
     "baseUrl": "./src",
     "types": ["node"]
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts", "./src/reset.d.ts"]
 }

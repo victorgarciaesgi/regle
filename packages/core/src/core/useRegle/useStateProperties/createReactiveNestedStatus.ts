@@ -1,4 +1,14 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, toRefs, watch } from 'vue';
+import {
+  ComputedRef,
+  Ref,
+  computed,
+  effectScope,
+  reactive,
+  ref,
+  toRef,
+  watch,
+  watchEffect,
+} from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalReglePartialValidationTree,
@@ -6,10 +16,11 @@ import type {
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
 } from '../../../types';
-import { isEmpty, isRefObject } from '../../../utils';
+import { isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
+import { RegleStorage } from '../../useStorage';
 
 export function createReactiveNestedStatus({
   scopeRules,
@@ -17,12 +28,14 @@ export function createReactiveNestedStatus({
   customMessages,
   path = '',
   rootRules,
+  storage,
 }: {
   rootRules?: Ref<$InternalReglePartialValidationTree>;
   scopeRules: Ref<$InternalReglePartialValidationTree>;
   state: Ref<Record<string, any>>;
-  customMessages: CustomRulesDeclarationTree;
+  customMessages?: CustomRulesDeclarationTree;
   path?: string;
+  storage: RegleStorage;
 }): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -34,6 +47,7 @@ export function createReactiveNestedStatus({
   };
   let scope = effectScope();
   let scopeState!: ScopeState;
+  let $unwatchFields: (() => void) | undefined;
 
   function createReactiveFieldsStatus() {
     $fields.value = Object.fromEntries(
@@ -49,6 +63,7 @@ export function createReactiveNestedStatus({
                 rulesDef: statePropRulesRef,
                 customMessages,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
+                storage,
               }),
             ];
           }
@@ -61,17 +76,17 @@ export function createReactiveNestedStatus({
     $watch();
   }
 
-  const $fields = ref() as Ref<Record<string, $InternalRegleStatusType>>;
+  const $fields = storage.getFieldsEntry(path);
   createReactiveFieldsStatus();
 
   function $reset(): void {
-    Object.entries($fields.value).forEach(([key, statusOrField]) => {
+    Object.entries($fields.value).forEach(([_, statusOrField]) => {
       statusOrField.$reset();
     });
   }
 
   function $touch(): void {
-    Object.entries($fields.value).forEach(([key, statusOrField]) => {
+    Object.entries($fields.value).forEach(([_, statusOrField]) => {
       statusOrField.$touch();
     });
   }
@@ -79,7 +94,7 @@ export function createReactiveNestedStatus({
   async function $validate(): Promise<boolean> {
     try {
       const results = await Promise.all(
-        Object.entries($fields.value).map(([key, statusOrField]) => {
+        Object.entries($fields.value).map(([_, statusOrField]) => {
           return statusOrField.$validate();
         })
       );
@@ -89,20 +104,17 @@ export function createReactiveNestedStatus({
     }
   }
 
-  let $unwatchFields: (() => void) | undefined;
-
-  if (rootRules) {
-    $unwatchFields = watch(
-      rootRules,
-      () => {
-        $unwatch();
-        createReactiveFieldsStatus();
-      },
-      { deep: true }
-    );
-  }
-
   function $watch() {
+    if (rootRules) {
+      $unwatchFields = watch(
+        rootRules,
+        () => {
+          $unwatch();
+          createReactiveFieldsStatus();
+        },
+        { deep: true, flush: 'post' }
+      );
+    }
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
         return Object.entries($fields.value).every(([key, statusOrField]) => {
@@ -143,7 +155,7 @@ export function createReactiveNestedStatus({
         $valid,
         $error,
         $pending,
-      };
+      } satisfies ScopeState;
     }) as ScopeState;
   }
 
@@ -177,11 +189,13 @@ export function createReactiveChildrenStatus({
   rulesDef,
   customMessages,
   path,
+  storage,
 }: {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
-  customMessages: CustomRulesDeclarationTree;
+  customMessages?: CustomRulesDeclarationTree;
   path: string;
+  storage: RegleStorage;
 }): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
@@ -189,6 +203,7 @@ export function createReactiveChildrenStatus({
       rulesDef,
       customMessages,
       path,
+      storage,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
@@ -196,6 +211,7 @@ export function createReactiveChildrenStatus({
       state,
       customMessages,
       path,
+      storage,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
@@ -203,6 +219,7 @@ export function createReactiveChildrenStatus({
       rulesDef,
       customMessages,
       path,
+      storage,
     });
   }
 

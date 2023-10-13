@@ -25,7 +25,7 @@ export interface RegleStatus<
  * @reference {@link RegleStatus}
  */
 export interface $InternalRegleStatus extends RegleCommonStatus {
-  $fields?: {
+  $fields: {
     [x: string]: $InternalRegleStatusType;
   };
 }
@@ -59,7 +59,7 @@ export type $InternalRegleStatusType =
  * @public
  */
 export interface RegleFieldStatus<
-  TRules extends RegleFormPropertyType<any, AllRulesDeclarations> = Record<string, any>,
+  TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
 > extends RegleCommonStatus {
@@ -147,9 +147,12 @@ export interface RegleCollectionStatus<
  * @internal
  * @reference {@link RegleCollectionStatus}
  */
-export interface $InternalRegleCollectionStatus extends $InternalRegleStatus {
+export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
   $each: Array<$InternalRegleStatusType>;
   $rules?: Record<string, $InternalRegleRuleStatus>;
   $unwatch(): void;
   $watch(): void;
+  $fields?: {
+    [x: string]: $InternalRegleStatusType;
+  };
 }

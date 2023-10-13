@@ -10,6 +10,7 @@ import {
 import { isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import { isFormRuleDefinition } from '../guards';
+import type { RegleStorage } from '../../useStorage';
 
 export function createReactiveRuleStatus({
   $dirty,
@@ -18,13 +19,15 @@ export function createReactiveRuleStatus({
   ruleKey,
   state,
   path,
+  storage,
 }: {
   state: Ref<unknown>;
   ruleKey: string;
   rule: Ref<InlineRuleDeclaration | RegleRuleDefinition<any, any>>;
   $dirty: Ref<boolean>;
-  customMessages: Partial<CustomRulesDeclarationTree>;
+  customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
+  storage: RegleStorage;
 }): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
@@ -37,8 +40,7 @@ export function createReactiveRuleStatus({
   let scope = effectScope();
   let scopeState!: ScopeState;
 
-  const $pending = ref(false);
-  const $valid = ref(true);
+  const { $pending, $valid } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
   function $watch() {
     scopeState = scope.run(() => {
@@ -56,7 +58,7 @@ export function createReactiveRuleStatus({
 
       const $message = computed<string>(() => {
         let message = '';
-        const customMessageRule = customMessages[ruleKey]?.message;
+        const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
 
         if (customMessageRule) {
           if (typeof customMessageRule === 'function') {
@@ -121,6 +123,7 @@ export function createReactiveRuleStatus({
         $path,
       };
     }) as ScopeState;
+
     $validate();
   }
 
@@ -134,9 +137,8 @@ export function createReactiveRuleStatus({
     const validator = scopeState.$validator.value;
     let ruleResult = false;
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
-
     if (resultOrPromise instanceof Promise) {
-      if ($dirty.value) {
+      if ($dirty.value && !$pending.value) {
         try {
           $valid.value = true;
           $pending.value = true;
@@ -153,6 +155,7 @@ export function createReactiveRuleStatus({
       ruleResult = resultOrPromise;
     }
     $valid.value = ruleResult;
+
     return ruleResult;
   }
 

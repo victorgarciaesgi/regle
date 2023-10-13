@@ -4,6 +4,9 @@ import { isEmpty, withMessage, maxLength } from '@regle/validators';
 export const not = createRule<unknown, [target: string]>({
   type: 'not',
   validator(value, target) {
+    if (isEmpty(value)) {
+      return true;
+    }
     return value !== target;
   },
   message(value, target) {

@@ -4,7 +4,7 @@
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "vue-tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "release": "npm publish",
     "build": "tsup",
     "dev": "tsup --config=tsup.dev.ts --watch"

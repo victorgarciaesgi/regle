@@ -7,7 +7,7 @@ import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from './rule.defin
  */
 export type ReglePartialValidationTree<
   TForm extends Record<string, any>,
-  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 };
@@ -25,7 +25,7 @@ export type $InternalReglePartialValidationTree = {
  */
 export type RegleFormPropertyType<
   TValue = any,
-  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
   ? RegleRuleDecl<unknown, TCustomRules>
   : NonNullable<TValue> extends Array<any>
@@ -53,7 +53,7 @@ export type $InternalFormPropertyTypes =
  */
 export type RegleRuleDecl<
   TValue extends any = any,
-  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends RegleRuleWithParamsDefinition<
     any,
@@ -74,7 +74,7 @@ export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any
  */
 export type RegleCollectionRuleDecl<
   TValue = any[],
-  TCustomRules extends AllRulesDeclarations = AllRulesDeclarations,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
       $each?: RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>;

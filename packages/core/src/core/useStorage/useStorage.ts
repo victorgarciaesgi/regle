@@ -1,21 +1,66 @@
-import { RegleFieldStatus, RegleRuleDecl, $InternalRegleRuleStatus } from 'types';
-import { createSharedComposable } from '../../utils';
-import { shallowRef } from 'vue';
-import { unwrapRuleParameters } from 'core/createRule/unwrapRuleParameters';
+import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
+import { Ref, ref, shallowRef } from 'vue';
+import {
+  $InternalRegleCollectionStatus,
+  $InternalRegleFieldStatus,
+  $InternalRegleStatusType,
+  RegleRuleDecl,
+} from '../../types';
 
-export type StoredRulesResult = {
-  rulesDef: RegleRuleDecl<any, any>;
+export type StoredRuleStatus = {
+  $valid: Ref<boolean>;
+  $pending: Ref<boolean>;
+};
+
+export type RegleStorage = {
+  addRuleDeclEntry: ($path: string, rulesDef: RegleRuleDecl<any, any>) => void;
+  setDirtyEntry: ($path: string, dirty: boolean) => void;
+  checkRuleDeclEntry: (
+    $path: string,
+    newRules: RegleRuleDecl
+  ) =>
+    | {
+        valid: boolean;
+      }
+    | undefined;
+  getDirtyState: (path: string) => boolean;
+  trySetRuleStatusRef(path: string): StoredRuleStatus;
+  getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>>;
+  getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>>;
 };
 
 /**
  * Inspired by Vuelidate storage
  */
-function _useStorage() {
-  const storage = shallowRef(new Map<string, StoredRulesResult>());
+export function useStorage(): RegleStorage {
+  const ruleDeclStorage = shallowRef(new Map<string, RegleRuleDecl<any, any>>());
+  const fieldsStorage = shallowRef(
+    new Map<string, Ref<Record<string, $InternalRegleStatusType>>>()
+  );
+  const collectionsStorage = shallowRef(new Map<string, Ref<Array<$InternalRegleStatusType>>>());
   const dirtyStorage = shallowRef(new Map<string, boolean>());
+  const ruleStatusStorage = shallowRef(new Map<string, StoredRuleStatus>());
 
-  function addEntry($path: string, options: StoredRulesResult) {
-    storage.value.set($path, options);
+  function getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>> {
+    const existingFields = fieldsStorage.value.get($path);
+    if (existingFields) {
+      return existingFields;
+    } else {
+      const $fields = ref({}) as Ref<Record<string, $InternalRegleStatusType>>;
+      fieldsStorage.value.set($path, $fields);
+      return $fields;
+    }
+  }
+
+  function getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>> {
+    const existingEach = collectionsStorage.value.get($path);
+    if (existingEach) {
+      return existingEach;
+    } else {
+      const $each = ref<Array<$InternalRegleStatusType>>([]);
+      collectionsStorage.value.set($path, $each);
+      return $each;
+    }
   }
 
   function setDirtyEntry($path: string, dirty: boolean) {
@@ -26,12 +71,19 @@ function _useStorage() {
     return dirtyStorage.value.get(path) ?? false;
   }
 
-  function checkEntry($path: string, newRules: RegleRuleDecl): { valid: boolean } | undefined {
-    const storedRulesResult = storage.value.get($path);
+  function addRuleDeclEntry($path: string, options: RegleRuleDecl<any, any>) {
+    ruleDeclStorage.value.set($path, options);
+  }
 
-    if (!storedRulesResult) return undefined;
+  function checkRuleDeclEntry(
+    $path: string,
+    newRules: RegleRuleDecl
+  ): { valid: boolean } | undefined {
+    const storedRulesDefs = ruleDeclStorage.value.get($path);
 
-    const { rulesDef: storedRules } = storedRulesResult;
+    if (!storedRulesDefs) return undefined;
+
+    const storedRules = storedRulesDefs;
 
     const isValidCache = areRulesChanged(newRules, storedRules);
 
@@ -67,7 +119,25 @@ function _useStorage() {
     });
   }
 
-  return { addEntry, setDirtyEntry, checkEntry, getDirtyState };
-}
+  function trySetRuleStatusRef(path: string): StoredRuleStatus {
+    const ruleStatus = ruleStatusStorage.value.get(path);
+    if (ruleStatus) {
+      return ruleStatus;
+    } else {
+      const $pending = ref(false);
+      const $valid = ref(true);
+      ruleStatusStorage.value.set(path, { $pending, $valid });
+      return { $pending, $valid };
+    }
+  }
 
-export const useStorage = createSharedComposable(_useStorage);
+  return {
+    addRuleDeclEntry,
+    setDirtyEntry,
+    checkRuleDeclEntry,
+    getDirtyState,
+    trySetRuleStatusRef,
+    getFieldsEntry,
+    getCollectionsEntry,
+  };
+}

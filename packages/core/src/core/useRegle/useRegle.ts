@@ -1,8 +1,7 @@
-import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw, watch } from 'vue';
+import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw } from 'vue';
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
-  CustomRulesDeclarationTree,
   RegleErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
@@ -10,11 +9,11 @@ import {
 import { useStateProperties } from './useStateProperties';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
-  customRules: () => TCustomRules
+  customRules?: () => TCustomRules
 ) {
   function useRegle<
     TState extends Record<string, any>,
-    TRules extends ReglePartialValidationTree<TState, AllRulesDeclarations & TCustomRules>,
+    TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
   >(state: Ref<TState>, rulesFactory: (() => TRules) | ComputedRef<TRules>) {
     const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
 
@@ -23,7 +22,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     const { $regle, errors } = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
       state,
-      customRules as () => CustomRulesDeclarationTree
+      customRules
     );
 
     function resetForm() {
@@ -47,3 +46,5 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
   return useRegle;
 }
+
+export const useRegle = createUseRegleComposable();

@@ -1,4 +1,4 @@
-import { Ref, reactive, ref, toRef, watch } from 'vue';
+import { Ref, reactive, ref, toRef, watch, watchEffect } from 'vue';
 import type {
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
@@ -8,12 +8,14 @@ import type {
 } from '../../../types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
+import { RegleStorage } from '../../useStorage';
 
 interface CreateReactiveCollectionStatusArgs {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
-  customMessages: CustomRulesDeclarationTree;
+  customMessages?: CustomRulesDeclarationTree;
   path: string;
+  storage: RegleStorage;
 }
 
 export function createReactiveCollectionStatus({
@@ -21,6 +23,7 @@ export function createReactiveCollectionStatus({
   rulesDef,
   customMessages,
   path,
+  storage,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
   if (Array.isArray(state.value) && !rulesDef.value.$each) {
     return null;
@@ -28,8 +31,9 @@ export function createReactiveCollectionStatus({
 
   let $unwatchState: (() => void) | null = null;
 
-  const $fieldStatus = ref() as Ref<$InternalRegleFieldStatus>;
-  const $eachStatus = ref<Array<$InternalRegleStatusType>>([]);
+  const $fieldStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
+  const $eachStatus = storage.getCollectionsEntry(path);
+
   createStatus();
   $watch();
 
@@ -40,6 +44,7 @@ export function createReactiveCollectionStatus({
       rulesDef: toRef(() => otherFields),
       customMessages,
       path,
+      storage,
     });
 
     if (Array.isArray(state.value) && $each) {
@@ -51,11 +56,12 @@ export function createReactiveCollectionStatus({
             rulesDef: toRef(() => $each),
             customMessages,
             path: $path,
+            storage,
           });
         })
         .filter((f): f is $InternalRegleStatusType => !!f);
     } else {
-      return [];
+      $eachStatus.value = [];
     }
   }
 
@@ -79,7 +85,7 @@ export function createReactiveCollectionStatus({
       () => {
         createStatus();
       },
-      { deep: true }
+      { deep: true, flush: 'sync' }
     );
   }
 

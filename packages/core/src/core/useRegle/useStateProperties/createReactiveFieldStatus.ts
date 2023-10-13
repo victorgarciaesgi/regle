@@ -6,14 +6,15 @@ import type {
   CustomRulesDeclarationTree,
   RegleRuleDecl,
 } from '../../../types';
-import { useStorage } from '../../useStorage';
+import { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
-  customMessages: CustomRulesDeclarationTree;
+  customMessages?: CustomRulesDeclarationTree;
   path: string;
+  storage: RegleStorage;
 }
 
 type ScopeReturnState = {
@@ -28,6 +29,7 @@ export function createReactiveFieldStatus({
   rulesDef,
   customMessages,
   path,
+  storage,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
@@ -35,11 +37,9 @@ export function createReactiveFieldStatus({
   const $dirty = ref(false);
   const $anyDirty = computed<boolean>(() => $dirty.value);
 
-  const { addEntry, checkEntry, setDirtyEntry, getDirtyState } = useStorage();
-
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
-    const storeResult = checkEntry(path, declaredRules);
+    const storeResult = storage.checkRuleDeclEntry(path, declaredRules);
 
     $rules.value = Object.fromEntries(
       Object.entries(declaredRules)
@@ -55,6 +55,7 @@ export function createReactiveFieldStatus({
                 ruleKey,
                 state,
                 path,
+                storage,
               }),
             ];
           }
@@ -66,16 +67,14 @@ export function createReactiveFieldStatus({
     $watch();
 
     if (storeResult?.valid != null) {
-      $dirty.value = getDirtyState(path);
+      $dirty.value = storage.getDirtyState(path);
     }
 
-    addEntry(path, {
-      rulesDef: declaredRules,
-    });
+    storage.addRuleDeclEntry(path, declaredRules);
   }
 
   const $unwatchDirty = watch($dirty, () => {
-    setDirtyEntry(path, $dirty.value);
+    storage.setDirtyEntry(path, $dirty.value);
   });
 
   const $unwatchState = watch(state, () => {
@@ -92,6 +91,9 @@ export function createReactiveFieldStatus({
       });
     }
     $unwatchDirty();
+    if ($dirty.value) {
+      storage.setDirtyEntry(path, $dirty.value);
+    }
     $unwatchState();
     scope.stop();
     scope = effectScope();
