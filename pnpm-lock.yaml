@@ -98,6 +98,9 @@ importers:
       tsup:
         specifier: 7.2.0
         version: 7.2.0(typescript@5.2.2)
+      type-fest:
+        specifier: 4.4.0
+        version: 4.4.0
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -2583,7 +2586,7 @@ packages:
       '@types/normalize-package-data': 2.4.2
       normalize-package-data: 6.0.0
       parse-json: 7.1.0
-      type-fest: 4.3.3
+      type-fest: 4.4.0
     dev: true
 
   /readdirp@3.6.0:
@@ -2918,8 +2921,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /type-fest@4.3.3:
-    resolution: {integrity: sha512-bxhiFii6BBv6UiSDq7uKTMyADT9unXEl3ydGefndVLxFeB44LRbT4K7OJGDYSyDrKnklCC1Pre68qT2wbUl2Aw==}
+  /type-fest@4.4.0:
+    resolution: {integrity: sha512-HT3RRs7sTfY22KuPQJkD/XjbTbxgP2Je5HPt6H6JEGvcjHd5Lqru75EbrP3tb4FYjNJ+DjLp+MNQTFQU0mhXNw==}
     engines: {node: '>=16'}
     dev: true
 

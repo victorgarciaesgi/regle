@@ -1,2 +1,2 @@
-export { createRule, defineCustomValidators } from './core';
+export { createRule, defineCustomValidators, unwrapRuleParameters } from './core';
 export * from './types';

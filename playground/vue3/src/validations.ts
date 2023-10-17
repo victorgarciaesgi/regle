@@ -1,7 +1,7 @@
 import { createRule, defineCustomValidators } from '@regle/core';
 import { isEmpty, withMessage, maxLength } from '@regle/validators';
 
-export const not = createRule<unknown, [target: string]>({
+export const not = createRule<unknown, [target: unknown]>({
   type: 'not',
   validator(value, target) {
     if (isEmpty(value)) {
@@ -30,7 +30,7 @@ export const asyncEmail = createRule<string, [limit: number]>({
   message: 'Value is not an email',
 });
 
-export const { useRegle } = defineCustomValidators(() => ({
+export const useRegle = defineCustomValidators(() => ({
   not,
   maxLength: withMessage(maxLength, (value, count) => {
     return `ehooo ${count} is max`;

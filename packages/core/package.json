@@ -27,7 +27,8 @@
     "vue-eslint-parser": "9.3.1",
     "vue-tsc": "1.8.15",
     "tsup": "7.2.0",
-    "@total-typescript/ts-reset": "0.5.1"
+    "@total-typescript/ts-reset": "0.5.1",
+    "type-fest": "4.4.0"
   },
   "type": "module",
   "exports": {

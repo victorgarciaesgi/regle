@@ -38,15 +38,16 @@
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, withMessage } from '@regle/validators';
+import { maxLength, required, withMessage, applyIf } from '@regle/validators';
 import { ref } from 'vue';
 import { useRegle, asyncEmail, not } from './validations';
+import { requiredIf } from '@regle/validators';
 
 type Form = {
-  email: string;
-  firstName?: Date;
+  email?: string;
+  firstName?: number;
   foo: {
-    bar: number | undefined;
+    bar?: number | undefined;
     bloublou: {
       test: {
         name: string;
@@ -68,18 +69,24 @@ const form = ref<Form>({
 
 async function submit() {
   const result = await validateForm();
-  console.log(result);
+  if (result) {
+    const test: string = result.foo.bloublou.test[0].name;
+  }
 }
 
 const limit = ref(2);
 
-const { $regle, errors, validateForm } = useRegle(form, () => ({
+const { $regle, errors, validateForm, state } = useRegle(form, () => ({
   email: {
     maxLength: withMessage(
       maxLength(() => limit.value),
       (value, count) => `Max length is ${count}`
     ),
-    asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
+    asyncEmail: applyIf(
+      () => limit.value === 3,
+      withMessage(asyncEmail(limit), 'Limit should be 2')
+    ),
+    required,
   },
   firstName: {
     ...(limit.value === 2 && { required }),
