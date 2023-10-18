@@ -78,31 +78,27 @@ async function submit() {
 
 const limit = ref(2);
 
-const { $regle, errors, validateForm, state } = useRegle(
-  form,
-  () => ({
-    email: {
-      maxLength: withMessage(
-        maxLength(() => limit.value),
-        (value, count) => `Max length is ${count}`
-      ),
-      asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
-      required,
-    },
-    firstName: {
-      ...(limit.value === 2 && { required }),
-      not: not(form.value.email),
-    },
-    foo: {
-      bloublou: {
-        test: {
-          $each: {
-            name: { required },
-          },
+const { $regle, errors, validateForm, state } = useRegle(form, () => ({
+  email: {
+    maxLength: withMessage(
+      maxLength(() => limit.value),
+      (value, count) => `Max length is ${count}`
+    ),
+    asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
+    required,
+  },
+  firstName: {
+    ...(limit.value === 2 && { required }),
+    not: not(form.value.email),
+  },
+  foo: {
+    bloublou: {
+      test: {
+        $each: {
+          name: { required },
         },
       },
     },
-  }),
-  { lazy: true }
-);
+  },
+}));
 </script>

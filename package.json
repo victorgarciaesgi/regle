@@ -8,6 +8,7 @@
     "typecheck": "pnpm run -r --parallel typecheck",
     "build": "pnpm run -r build",
     "dev": "pnpm run -r --parallel dev",
+    "test": "echo 'no test'",
     "release": "nr build && bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
   },
   "devDependencies": {
