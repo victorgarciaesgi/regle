@@ -14,7 +14,9 @@
     "verbatimModuleSyntax": false,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["./src/**/*.ts"]
 }

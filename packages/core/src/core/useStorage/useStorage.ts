@@ -27,6 +27,8 @@ export type RegleStorage = {
   trySetRuleStatusRef(path: string): StoredRuleStatus;
   getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>>;
   getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>>;
+  getArrayStatus($id: string): $InternalRegleStatusType | undefined;
+  addArrayStatus($id: string, value: $InternalRegleStatusType): void;
 };
 
 /**
@@ -40,6 +42,8 @@ export function useStorage(): RegleStorage {
   const collectionsStorage = shallowRef(new Map<string, Ref<Array<$InternalRegleStatusType>>>());
   const dirtyStorage = shallowRef(new Map<string, boolean>());
   const ruleStatusStorage = shallowRef(new Map<string, StoredRuleStatus>());
+
+  const arrayStatusStorage = shallowRef(new Map<string, $InternalRegleStatusType>());
 
   function getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>> {
     const existingFields = fieldsStorage.value.get($path);
@@ -61,6 +65,14 @@ export function useStorage(): RegleStorage {
       collectionsStorage.value.set($path, $each);
       return $each;
     }
+  }
+
+  function addArrayStatus($id: string, value: $InternalRegleStatusType) {
+    arrayStatusStorage.value.set($id, value);
+  }
+
+  function getArrayStatus($id: string) {
+    return arrayStatusStorage.value.get($id);
   }
 
   function setDirtyEntry($path: string, dirty: boolean) {
@@ -139,5 +151,7 @@ export function useStorage(): RegleStorage {
     trySetRuleStatusRef,
     getFieldsEntry,
     getCollectionsEntry,
+    getArrayStatus,
+    addArrayStatus,
   };
 }

@@ -14,7 +14,7 @@ import type {
 export interface RegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
-> extends RegleCommonStatus {
+> extends RegleCommonStatus<TState> {
   readonly $fields: {
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
@@ -41,7 +41,7 @@ export type InferRegleStatusType<
   ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
   : TRule extends ReglePartialValidationTree<any>
   ? TState[TKey] extends Array<any>
-    ? RegleCommonStatus
+    ? RegleCommonStatus<TState[TKey]>
     : RegleStatus<TState[TKey], TRule>
   : RegleFieldStatus<TRule, TState, TKey>;
 
@@ -62,7 +62,7 @@ export interface RegleFieldStatus<
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-> extends RegleCommonStatus {
+> extends RegleCommonStatus<TState> {
   $value: TState[TKey];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
@@ -84,13 +84,15 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
 /**
  * @public
  */
-export interface RegleCommonStatus {
+export interface RegleCommonStatus<TValue = any> {
   readonly $valid: boolean;
   readonly $invalid: boolean;
   readonly $dirty: boolean;
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
+  $id?: string;
+  $value: TValue;
   $touch(): void;
   $reset(): void;
   $validate(): Promise<boolean>;
@@ -150,6 +152,7 @@ export interface RegleCollectionStatus<
 export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
   $each: Array<$InternalRegleStatusType>;
   $rules?: Record<string, $InternalRegleRuleStatus>;
+  /** Track each array state */
   $unwatch(): void;
   $watch(): void;
   $fields?: {

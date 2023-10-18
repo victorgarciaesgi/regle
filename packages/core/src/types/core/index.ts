@@ -1,1 +1,2 @@
-export type { Regle } from './useRegle.type';
+export type { Regle } from './useRegle.types';
+export * from './options.types';

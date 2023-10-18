@@ -1,7 +1,10 @@
 import { isEmpty } from '../helpers';
-import { createRule } from '@regle/core';
+import { createRule, RegleRuleWithParamsDefinition } from '@regle/core';
 
-export const maxLength = createRule<string, [count: number]>({
+export const maxLength: RegleRuleWithParamsDefinition<string, [count: number]> = createRule<
+  string,
+  [count: number]
+>({
   validator: (value, count) => {
     if (!isEmpty(value) && !isEmpty(count)) {
       return value.length <= count;

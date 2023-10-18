@@ -1,4 +1,4 @@
-import { createRule, defineCustomValidators } from '@regle/core';
+import { createRule, defineRegleOptions } from '@regle/core';
 import { isEmpty, withMessage, maxLength } from '@regle/validators';
 
 export const not = createRule<unknown, [target: unknown]>({
@@ -30,10 +30,13 @@ export const asyncEmail = createRule<string, [limit: number]>({
   message: 'Value is not an email',
 });
 
-export const useRegle = defineCustomValidators(() => ({
-  not,
-  maxLength: withMessage(maxLength, (value, count) => {
-    return `ehooo ${count} is max`;
+export const useRegle = defineRegleOptions({
+  options: {},
+  rules: () => ({
+    not,
+    maxLength: withMessage(maxLength, (value, count) => {
+      return `ehooo ${count} is max`;
+    }),
+    asyncEmail,
   }),
-  asyncEmail,
-}));
+});

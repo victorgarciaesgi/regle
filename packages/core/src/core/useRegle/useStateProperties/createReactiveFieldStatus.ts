@@ -1,13 +1,27 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, watch } from 'vue';
+import {
+  ComputedRef,
+  Ref,
+  computed,
+  effectScope,
+  reactive,
+  ref,
+  toRef,
+  unref,
+  watch,
+  watchEffect,
+} from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
+  RegleBehaviourOptions,
   RegleRuleDecl,
 } from '../../../types';
 import { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { RequiredDeep } from 'type-fest';
+import { DeepMaybeRef } from '../../../types';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -15,6 +29,7 @@ interface CreateReactiveFieldStatusArgs {
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   storage: RegleStorage;
+  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
 }
 
 type ScopeReturnState = {
@@ -30,12 +45,15 @@ export function createReactiveFieldStatus({
   customMessages,
   path,
   storage,
+  options,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
 
   const $dirty = ref(false);
   const $anyDirty = computed<boolean>(() => $dirty.value);
+
+  const triggerPunishment = ref(false);
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
@@ -56,6 +74,7 @@ export function createReactiveFieldStatus({
                 state,
                 path,
                 storage,
+                options,
               }),
             ];
           }
@@ -78,10 +97,14 @@ export function createReactiveFieldStatus({
   });
 
   const $unwatchState = watch(state, () => {
-    if (!$dirty.value) {
-      $dirty.value = true;
+    if (unref(options.autoDirty)) {
+      if (!$dirty.value) {
+        $dirty.value = true;
+      }
     }
-    $validate();
+    if (!unref(options.lazy)) {
+      $commit();
+    }
   });
 
   function $unwatch() {
@@ -95,9 +118,9 @@ export function createReactiveFieldStatus({
       storage.setDirtyEntry(path, $dirty.value);
     }
     $unwatchState();
+    $unwatchValid();
     scope.stop();
     scope = effectScope();
-    scopeState = null as any; // cleanup
   }
 
   function $watch() {
@@ -107,18 +130,32 @@ export function createReactiveFieldStatus({
       });
 
       const $pending = computed<boolean>(() => {
-        return Object.entries($rules.value).some(([key, rule]) => {
-          return rule.$pending;
-        });
+        if (triggerPunishment.value || !unref(options.rewardEarly)) {
+          return Object.entries($rules.value).some(([key, ruleResult]) => {
+            return ruleResult.$pending;
+          });
+        }
+        return false;
       });
 
       const $invalid = computed<boolean>(() => {
-        return Object.entries($rules.value).some(([key, ruleResult]) => {
-          return !ruleResult.$valid;
-        });
+        if (triggerPunishment.value || !unref(options.rewardEarly)) {
+          return Object.entries($rules.value).some(([key, ruleResult]) => {
+            return !ruleResult.$valid;
+          });
+        }
+        return false;
       });
 
-      const $valid = computed<boolean>(() => !$invalid.value);
+      const $valid = computed<boolean>(() => {
+        if (unref(options.rewardEarly)) {
+          return Object.entries($rules.value).every(([key, ruleResult]) => {
+            return ruleResult.$valid;
+          });
+        } else {
+          return !$invalid.value;
+        }
+      });
 
       return {
         $error,
@@ -132,17 +169,29 @@ export function createReactiveFieldStatus({
   const $rules = ref() as Ref<Record<string, $InternalRegleRuleStatus>>;
   createReactiveRulesResult();
 
+  const $unwatchValid = watch(scopeState.$valid, (valid) => {
+    if (unref(options.rewardEarly) && valid) {
+      triggerPunishment.value = false;
+    }
+  });
+
   function $reset(): void {
     $dirty.value = false;
   }
 
   function $touch(): void {
     $dirty.value = true;
-    $validate();
+  }
+
+  function $commit(): void {
+    Object.entries($rules.value).map(([key, rule]) => {
+      return rule.$validate();
+    });
   }
 
   async function $validate(): Promise<boolean> {
     try {
+      triggerPunishment.value = true;
       const results = await Promise.all(
         Object.entries($rules.value).map(([key, rule]) => {
           return rule.$validate();

@@ -1,26 +1,29 @@
-import {
-  ComputedRef,
-  Ref,
-  computed,
-  effectScope,
-  reactive,
-  ref,
-  toRef,
-  watch,
-  watchEffect,
-} from 'vue';
+import { RequiredDeep } from 'type-fest';
+import { ComputedRef, Ref, computed, effectScope, reactive, toRef, watch } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalReglePartialValidationTree,
   $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
+  RegleBehaviourOptions,
 } from '../../../types';
+import { DeepMaybeRef } from '../../../types';
 import { isRefObject } from '../../../utils';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
-import { createReactiveFieldStatus } from './createReactiveFieldStatus';
-import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { RegleStorage } from '../../useStorage';
+import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
+import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+
+interface CreateReactiveNestedStatus {
+  rootRules?: Ref<$InternalReglePartialValidationTree>;
+  scopeRules: Ref<$InternalReglePartialValidationTree>;
+  state: Ref<Record<string, any>>;
+  customMessages?: CustomRulesDeclarationTree;
+  path?: string;
+  storage: RegleStorage;
+  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+}
 
 export function createReactiveNestedStatus({
   scopeRules,
@@ -29,14 +32,8 @@ export function createReactiveNestedStatus({
   path = '',
   rootRules,
   storage,
-}: {
-  rootRules?: Ref<$InternalReglePartialValidationTree>;
-  scopeRules: Ref<$InternalReglePartialValidationTree>;
-  state: Ref<Record<string, any>>;
-  customMessages?: CustomRulesDeclarationTree;
-  path?: string;
-  storage: RegleStorage;
-}): $InternalRegleStatus {
+  options,
+}: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
     $anyDirty: ComputedRef<boolean>;
@@ -64,6 +61,7 @@ export function createReactiveNestedStatus({
                 customMessages,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
                 storage,
+                options,
               }),
             ];
           }
@@ -170,12 +168,12 @@ export function createReactiveNestedStatus({
     }
     scope.stop();
     scope = effectScope();
-    scopeState = null as any; // cleanup
   }
 
   return reactive({
     ...scopeState,
     $fields,
+    $value: state,
     $reset,
     $touch,
     $validate,
@@ -184,19 +182,23 @@ export function createReactiveNestedStatus({
   }) satisfies $InternalRegleStatus;
 }
 
+interface CreateReactiveChildrenStatus {
+  state: Ref<unknown>;
+  rulesDef: Ref<$InternalFormPropertyTypes>;
+  customMessages?: CustomRulesDeclarationTree;
+  path: string;
+  storage: RegleStorage;
+  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+}
+
 export function createReactiveChildrenStatus({
   state,
   rulesDef,
   customMessages,
   path,
   storage,
-}: {
-  state: Ref<unknown>;
-  rulesDef: Ref<$InternalFormPropertyTypes>;
-  customMessages?: CustomRulesDeclarationTree;
-  path: string;
-  storage: RegleStorage;
-}): $InternalRegleStatusType | null {
+  options,
+}: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
       state,
@@ -204,6 +206,7 @@ export function createReactiveChildrenStatus({
       customMessages,
       path,
       storage,
+      options,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
@@ -212,6 +215,7 @@ export function createReactiveChildrenStatus({
       customMessages,
       path,
       storage,
+      options,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
@@ -220,6 +224,7 @@ export function createReactiveChildrenStatus({
       customMessages,
       path,
       storage,
+      options,
     });
   }
 

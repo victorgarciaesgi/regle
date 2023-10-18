@@ -2,6 +2,8 @@
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.email" placeholder="email" />
     <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
+    {{ $regle.$fields.email.$valid }}
+    {{ $regle.$fields.email.$invalid }}
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
@@ -26,6 +28,7 @@
     </template>
 
     <button type="submit" @click="form.foo.bloublou.test.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.foo.bloublou.test.splice(0, 1)">Remove first</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre style="max-width: 100%">
@@ -38,10 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, withMessage, applyIf } from '@regle/validators';
+import { applyIf, maxLength, required, withMessage } from '@regle/validators';
 import { ref } from 'vue';
-import { useRegle, asyncEmail, not } from './validations';
-import { requiredIf } from '@regle/validators';
+import { asyncEmail, not, useRegle } from './validations';
 
 type Form = {
   email?: string;
@@ -76,30 +78,31 @@ async function submit() {
 
 const limit = ref(2);
 
-const { $regle, errors, validateForm, state } = useRegle(form, () => ({
-  email: {
-    maxLength: withMessage(
-      maxLength(() => limit.value),
-      (value, count) => `Max length is ${count}`
-    ),
-    asyncEmail: applyIf(
-      () => limit.value === 3,
-      withMessage(asyncEmail(limit), 'Limit should be 2')
-    ),
-    required,
-  },
-  firstName: {
-    ...(limit.value === 2 && { required }),
-    not: not(form.value.email),
-  },
-  foo: {
-    bloublou: {
-      test: {
-        $each: {
-          name: { required },
+const { $regle, errors, validateForm, state } = useRegle(
+  form,
+  () => ({
+    email: {
+      maxLength: withMessage(
+        maxLength(() => limit.value),
+        (value, count) => `Max length is ${count}`
+      ),
+      asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
+      required,
+    },
+    firstName: {
+      ...(limit.value === 2 && { required }),
+      not: not(form.value.email),
+    },
+    foo: {
+      bloublou: {
+        test: {
+          $each: {
+            name: { required },
+          },
         },
       },
     },
-  },
-}));
+  }),
+  { lazy: true }
+);
 </script>

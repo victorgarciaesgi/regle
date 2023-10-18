@@ -1,3 +1,3 @@
 export { createRule, unwrapRuleParameters } from './createRule';
-export * from './useRegle';
-export { defineCustomValidators } from './defineCustomValidators';
+export { useRegle } from './useRegle';
+export { defineRegleOptions } from './defineRegleOptions';

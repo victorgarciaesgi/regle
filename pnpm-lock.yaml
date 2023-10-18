@@ -115,10 +115,11 @@ importers:
         version: 1.8.15(typescript@5.2.2)
 
   packages/validators:
-    devDependencies:
+    dependencies:
       '@regle/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
       '@types/prettier':
         specifier: 3.0.0
         version: 3.0.0

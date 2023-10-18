@@ -6,11 +6,25 @@ import {
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   $InternalRegleRuleStatus,
+  RegleBehaviourOptions,
+  DeepMaybeRef,
 } from '../../../types';
 import { isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import { isFormRuleDefinition } from '../guards';
 import type { RegleStorage } from '../../useStorage';
+import { RequiredDeep } from 'type-fest';
+
+interface CreateReactiveRuleStatusOptions {
+  state: Ref<unknown>;
+  ruleKey: string;
+  rule: Ref<InlineRuleDeclaration | RegleRuleDefinition<any, any>>;
+  $dirty: Ref<boolean>;
+  customMessages?: Partial<CustomRulesDeclarationTree>;
+  path: string;
+  storage: RegleStorage;
+  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+}
 
 export function createReactiveRuleStatus({
   $dirty,
@@ -20,15 +34,8 @@ export function createReactiveRuleStatus({
   state,
   path,
   storage,
-}: {
-  state: Ref<unknown>;
-  ruleKey: string;
-  rule: Ref<InlineRuleDeclaration | RegleRuleDefinition<any, any>>;
-  $dirty: Ref<boolean>;
-  customMessages?: Partial<CustomRulesDeclarationTree>;
-  path: string;
-  storage: RegleStorage;
-}): $InternalRegleRuleStatus {
+  options,
+}: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
     $message: ComputedRef<string>;
@@ -124,7 +131,7 @@ export function createReactiveRuleStatus({
       };
     }) as ScopeState;
 
-    $validate();
+    // $validate();
   }
 
   $watch();
@@ -163,7 +170,6 @@ export function createReactiveRuleStatus({
     $unwatchState();
     scope.stop();
     scope = effectScope();
-    scopeState = null as any;
   }
 
   return reactive({
