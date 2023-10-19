@@ -49,6 +49,8 @@ TODO
 - [ ] withExternalErrors
 - [ ] Zod support
 - [ ] Typed plugin system (like scrollToError)
+- [ ] Unit tests
+- [ ] E2E tests
 - [ ] Readme
 - [ ] TS docs
 - [ ] Documentation site
