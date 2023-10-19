@@ -1,4 +1,7 @@
 # Regle
+
+Typescript first model-based validation library for Vue 3
+
 [npm-version-src]: https://img.shields.io/npm/v/@regle/core.svg
 [npm-version-href]: https://www.npmjs.com/package/@regle/core
 [npm-downloads-src]: https://img.shields.io/npm/dm/@regle/core.svg
@@ -10,22 +13,6 @@
 [![npm downloads][npm-total-downloads-src]][npm-downloads-href]
 <img src='https://img.shields.io/npm/l/@regle/core.svg'>
 
-
-## Provide a type safe router to Nuxt with auto-generated typed definitions for route path, name and params
-
-- Supports all programmatic navigation utils (`NuxtLink`, `useRouter`, `navigateTo`, `useRoute`, `useLocalePath`, etc...)
-- Supports optional params and catchAll routes
-- Autocompletes routes paths, names and params
-- Throw error if route path is invalid
-- Out of the box `i18n` support
-- Supports routes extended by config and modules
-
-<br/>
-
-<br/>
-<p align="center">
-  <img src="https://github.com/victorgarciaesgi/nuxt-typed-router/blob/master/.github/images/nuxt-typed-router.gif?raw=true"/>
-</p>
 <br/>
 
 
