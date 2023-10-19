@@ -14,6 +14,7 @@ Typescript first model-based validation library for Vue 3
 <img src='https://img.shields.io/npm/l/@regle/core.svg'>
 
 > ⚠️ Project is still in development, do not use it in production
+> API or function names can still change
 
 
 # Documentation
@@ -88,13 +89,14 @@ pnpm install @regle/core @regle/validators
 import {useRegle} from '@regle/core';
 import {email, required, minLength, sameAs} from '@regle/validators';
 
+
 const form = ref({
   email: '',
   password: '',
   confirmPassword: '',
 })
 
-const {errors} = useRegle(form, () => {
+const {$regle, errors, validateForm} = useRegle(form, () => {
   email: {
     email,
     required,
@@ -107,7 +109,17 @@ const {errors} = useRegle(form, () => {
     required,
     sameAs: withMessage(sameAs(form.value.password), 'Confirm password must be same as password')
   }
-})
+});
+
+
+
+function submit() {
+  const result = await validateForm();
+  if (result) {
+    console.log(result);
+    //          ^ type safe form result based on your validators
+  }
+}
 
 </script>
 ```
