@@ -41,7 +41,16 @@
 </template>
 
 <script setup lang="ts">
-import { applyIf, maxLength, required, withMessage } from '@regle/validators';
+import {
+  applyIf,
+  maxLength,
+  required,
+  withMessage,
+  decimal,
+  email,
+  and,
+  minLength,
+} from '@regle/validators';
 import { ref } from 'vue';
 import { asyncEmail, not, useRegle } from './validations';
 
@@ -80,12 +89,8 @@ const limit = ref(2);
 
 const { $regle, errors, validateForm, state } = useRegle(form, () => ({
   email: {
-    maxLength: withMessage(
-      maxLength(() => limit.value),
-      (value, count) => `Max length is ${count}`
-    ),
-    asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
     required,
+    foo: withMessage(and(email, minLength(6)), 'Boooooo'),
   },
   firstName: {
     ...(limit.value === 2 && { required }),

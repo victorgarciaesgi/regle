@@ -6,10 +6,10 @@ import {
   RegleRuleDefinition,
 } from '@regle/core';
 
-export function withAsync<TParams extends (Ref<unknown> | (() => unknown))[]>(
-  rule: InlineRuleDeclaration<any>,
+export function withAsync<TValue, TParams extends (Ref<unknown> | (() => unknown))[]>(
+  rule: InlineRuleDeclaration<TValue>,
   depsArray: [...TParams]
-): RegleRuleDefinition<any> {
+): RegleRuleDefinition<TValue> {
   const validator = async (value: any | null | undefined) => {
     return rule(value);
   };

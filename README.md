@@ -51,11 +51,13 @@ TODO
 - [x] async rules
 - [x] resetForm
 - [x] validateForm typesafe
+- [x] Deep nested rules
 - [x] `applyIf` helper (like requiredIf for any validator)
 - [x] Async with params (need deps array) (withAsync)
 - [x] Options (lazy, rewardEarly, autoDirty)
 - [x] Regex helper
-- [ ] Additional Rules
+- [x] Additional rules and "and" helper
+- [ ] "or" and "not" helper
 - [ ] Dates built-in validators
 - [ ] withExternalErrors
 - [ ] Zod support
