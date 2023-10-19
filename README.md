@@ -13,7 +13,7 @@ Typescript first model-based validation library for Vue 3
 [![npm downloads][npm-total-downloads-src]][npm-downloads-href]
 <img src='https://img.shields.io/npm/l/@regle/core.svg'>
 
-<br/>
+> ⚠️ Project is still in development, do not use it in production
 
 
 # Documentation
@@ -24,8 +24,6 @@ TODO
 
 TODO
 
-
-<br/>
 
 # Compatibility:
 
@@ -39,6 +37,7 @@ TODO
 - [x] resetForm
 - [x] validateForm typesafe
 - [x] Deep nested rules
+- [x] Collection validation
 - [x] `applyIf` helper (like requiredIf for any validator)
 - [x] Async with params (need deps array) (withAsync)
 - [x] Options (lazy, rewardEarly, autoDirty)
@@ -65,6 +64,25 @@ pnpm install @regle/core @regle/validators
 ```
 
 ```vue
+<template>
+    <input v-model="form.email" placeholder="email" />
+    <ul>
+      <li v-for="error of errors.email" :key="error">{{ error }}</li>
+    </ul>
+
+    <input v-model="form.password" placeholder="password"/>
+    <ul>
+      <li v-for="error of errors.password" :key="error">{{ error }}</li>
+    </ul>
+
+    <input v-model="form.confirmPassword" placeholder="password"/>
+    <ul>
+      <li v-for="error of errors.confirmPassword" :key="error">{{ error }}</li>
+    </ul>
+
+
+    <button type="submit" @click="submit">Submit</button>
+</template>
 
 <script setup lang='ts'>
 import {useRegle} from '@regle/core';
