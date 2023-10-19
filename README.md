@@ -96,7 +96,7 @@ const form = ref({
   confirmPassword: '',
 })
 
-const {$regle, errors, validateForm} = useRegle(form, () => {
+const {$regle, errors, validateForm} = useRegle(form, () => ({
   email: {
     email,
     required,
@@ -109,7 +109,7 @@ const {$regle, errors, validateForm} = useRegle(form, () => {
     required,
     sameAs: withMessage(sameAs(form.value.password), 'Confirm password must be same as password')
   }
-});
+}));
 
 
 
