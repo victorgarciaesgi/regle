@@ -6,14 +6,14 @@ export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: bool
   [condition: boolean]
 >({
   validator(value, condition) {
-    if (condition) {
+    if (!condition) {
       return ruleHelpers.isFilled(value);
     }
     return true;
   },
   message: 'Value is required',
   active(_, condition) {
-    return condition;
+    return !condition;
   },
   type: 'required',
 });

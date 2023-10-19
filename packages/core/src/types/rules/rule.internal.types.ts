@@ -11,6 +11,7 @@ export interface RegleInternalRuleDefs<TValue extends any = any, TParams extends
   _type: string;
   _patched: boolean;
   _params?: RegleUniversalParams<TParams>;
+  _async: boolean;
 }
 
 export enum InternalRuleType {

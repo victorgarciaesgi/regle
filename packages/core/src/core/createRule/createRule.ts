@@ -15,6 +15,8 @@ export function createRule<
   if (typeof definition.validator === 'function') {
     let fakeParams = [] as never;
     const staticProcessors = defineRuleProcessors(definition, ...fakeParams);
+
+    const isAsync = definition.validator.constructor.name === 'AsyncFunction';
     // For validators needing a params like maxLength or requiredIf
     if (definition.validator.length > 1) {
       // For validators with param, return a function providing params for all the rule processors
@@ -33,6 +35,7 @@ export function createRule<
       ruleFactory._active = definition.active;
       ruleFactory._type = definition.type;
       ruleFactory._patched = false;
+      ruleFactory._async = isAsync;
       return ruleFactory satisfies RegleRuleWithParamsDefinition<TValue, TParams>;
     } else {
       return staticProcessors satisfies RegleRuleDefinition<TValue, TParams> as any;

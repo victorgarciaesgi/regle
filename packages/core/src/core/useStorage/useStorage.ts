@@ -1,11 +1,6 @@
-import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
 import { Ref, ref, shallowRef } from 'vue';
-import {
-  $InternalRegleCollectionStatus,
-  $InternalRegleFieldStatus,
-  $InternalRegleStatusType,
-  RegleRuleDecl,
-} from '../../types';
+import { $InternalRegleStatusType, RegleRuleDecl } from '../../types';
+import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
 
 export type StoredRuleStatus = {
   $valid: Ref<boolean>;

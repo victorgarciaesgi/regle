@@ -12,6 +12,8 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
 ): RegleRuleDefinition<TValue, TParams> {
   const { message, validator, active, ...properties } = definition;
 
+  const isAsync = validator.constructor.name === 'AsyncFunction';
+
   const processors = {
     message(value: any, ...args: any[]) {
       if (typeof definition.message === 'function') {
@@ -37,6 +39,7 @@ export function defineRuleProcessors<TValue extends any = any, TParams extends a
       _active: definition.active,
       _type: definition.type,
       _patched: false,
+      _async: isAsync,
       _params: createReactiveParams<RegleUniversalParams<TParams>>(params),
     } satisfies RegleInternalRuleDefs<TValue, TParams>),
   } satisfies RegleRuleDefinition<TValue, TParams>;

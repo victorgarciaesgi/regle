@@ -1,10 +1,10 @@
 import { createRule, defineRegleOptions } from '@regle/core';
-import { isEmpty, withMessage, maxLength } from '@regle/validators';
+import { ruleHelpers, withMessage, maxLength } from '@regle/validators';
 
 export const not = createRule<unknown, [target: unknown]>({
   type: 'not',
   validator(value, target) {
-    if (isEmpty(value)) {
+    if (ruleHelpers.isEmpty(value)) {
       return true;
     }
     return value !== target;
@@ -21,7 +21,7 @@ export function timeout(count: number) {
 export const asyncEmail = createRule<string, [limit: number]>({
   type: 'email',
   async validator(value, limit) {
-    if (isEmpty(value)) {
+    if (ruleHelpers.isEmpty(value)) {
       return true;
     }
     await timeout(1000);
