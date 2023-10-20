@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.0.5-beta.0",
+  "version": "0.0.5",
   "private": true,
   "description": "Vue form validator",
   "scripts": {
