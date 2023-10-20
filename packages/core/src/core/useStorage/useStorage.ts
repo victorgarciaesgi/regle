@@ -24,6 +24,7 @@ export type RegleStorage = {
   getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>>;
   getArrayStatus($id: string): $InternalRegleStatusType | undefined;
   addArrayStatus($id: string, value: $InternalRegleStatusType): void;
+  deleteArrayStatus($id?: string): void;
 };
 
 /**
@@ -68,6 +69,12 @@ export function useStorage(): RegleStorage {
 
   function getArrayStatus($id: string) {
     return arrayStatusStorage.value.get($id);
+  }
+
+  function deleteArrayStatus($id?: string) {
+    if ($id) {
+      arrayStatusStorage.value.delete($id);
+    }
   }
 
   function setDirtyEntry($path: string, dirty: boolean) {
@@ -148,5 +155,6 @@ export function useStorage(): RegleStorage {
     getCollectionsEntry,
     getArrayStatus,
     addArrayStatus,
+    deleteArrayStatus,
   };
 }

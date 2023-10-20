@@ -1,7 +1,10 @@
-import { createRule } from '@regle/core';
+import { RegleRuleWithParamsDefinition, createRule } from '@regle/core';
 import { ruleHelpers } from 'helpers';
 
-export const sameAs = createRule<unknown, [target: unknown]>({
+export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]> = createRule<
+  unknown,
+  [target: unknown]
+>({
   type: 'sameAs',
   validator(value, target) {
     if (ruleHelpers.isEmpty(value)) {

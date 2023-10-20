@@ -23,7 +23,6 @@ export function applyIf<TValue extends any, TParams extends any[]>(
 ): RegleRuleWithParamsDefinition<TValue, TParams> | RegleRuleDefinition<TValue, TParams> {
   let _type: string;
   let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean | Promise<boolean>>;
-  let _active: boolean | RegleRuleDefinitionProcessor<TValue, TParams, boolean> | undefined;
   let _params: any[] | undefined;
   let _message: string | ((value: TValue | null | undefined, ...args: TParams) => string) = '';
 
@@ -31,7 +30,7 @@ export function applyIf<TValue extends any, TParams extends any[]>(
     _type = InternalRuleType.Inline;
     validator = rule;
   } else {
-    ({ _type, validator, _active, _params, _message } = rule);
+    ({ _type, validator, _params, _message } = rule);
     _params?.push(_condition);
   }
 
@@ -43,10 +42,15 @@ export function applyIf<TValue extends any, TParams extends any[]>(
     return true;
   }
 
+  function newActive(value: any, ...args: TParams) {
+    const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
+    return condition;
+  }
+
   const newRule = createRule<TValue, TParams>({
     type: _type,
     validator: newValidator,
-    active: _active,
+    active: newActive,
     message: _message,
   });
 

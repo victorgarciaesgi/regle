@@ -87,6 +87,9 @@ export function createReactiveFieldStatus({
 
     if (storeResult?.valid != null) {
       $dirty.value = storage.getDirtyState(path);
+      if ($dirty.value) {
+        $commit();
+      }
     }
 
     storage.addRuleDeclEntry(path, declaredRules);

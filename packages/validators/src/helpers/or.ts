@@ -1,7 +1,14 @@
-import { createRule, FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
+import {
+  createRule,
+  FormRuleDeclaration,
+  RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
+} from '@regle/core';
+import { minValue } from 'validators/minValue';
 import { ExtractValueFormRules } from '../types';
+import { maxLength } from '../validators';
 
-export function and<TRules extends FormRuleDeclaration<any, any>[]>(
+export function or<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<ExtractValueFormRules<TRules>[number]> {
   const isAnyRuleAsync = rules.some((rule) => {
@@ -33,7 +40,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
             }
           })
         );
-        return results.every((result) => !!result);
+        return results.some((result) => !!result);
       }
     : (value: any | null | undefined, ...params: any[]) => {
         return rules
@@ -44,11 +51,11 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
               return rule.validator(value, ...params);
             }
           })
-          .every((result) => !!result);
+          .some((result) => !!result);
       };
 
   const newRule = createRule({
-    type: 'and',
+    type: 'or',
     validator: validator,
     message: '',
   });

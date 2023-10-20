@@ -22,5 +22,5 @@ export function withAsync<TValue, TParams extends (Ref<unknown> | (() => unknown
 
   newRule._params = depsArray as any;
 
-  return newRule as any;
+  return newRule as RegleRuleDefinition;
 }

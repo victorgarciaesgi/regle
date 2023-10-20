@@ -1,5 +1,5 @@
 import { RequiredDeep } from 'type-fest';
-import { Ref, reactive, ref, toRef, toRefs, watch } from 'vue';
+import { Ref, nextTick, reactive, ref, toRaw, toRef, toRefs, watch } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
@@ -41,13 +41,16 @@ function createCollectionElement({
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes;
 }): $InternalRegleStatusType | null {
-  const $path = `${path}.${index}`;
   const $id = randomId();
+  const $path = `${path}.${$id}`;
 
   if (!value[index].$id) {
     Object.defineProperties(value[index], {
       $id: {
         value: $id,
+        enumerable: false,
+        configurable: false,
+        writable: false,
       },
     });
   }
@@ -104,14 +107,21 @@ export function createReactiveCollectionStatus({
     if (Array.isArray(state.value) && $each) {
       $eachStatus.value = state.value
         .map((value, index) => {
-          return createCollectionElement({
-            path,
-            rules: $each,
-            value: state.value as any[],
-            index,
-            options,
-            storage,
-          });
+          if (value.$id) {
+            const previousStatus = storage.getArrayStatus(value.$id);
+            if (previousStatus) {
+              return previousStatus;
+            }
+          } else {
+            return createCollectionElement({
+              path,
+              rules: $each,
+              value: state.value as any[],
+              index,
+              options,
+              storage,
+            });
+          }
         })
         .filter((f): f is $InternalRegleStatusType => !!f);
     } else {
@@ -119,14 +129,23 @@ export function createReactiveCollectionStatus({
     }
   }
 
-  function updateChildrenStatus() {
+  async function updateChildrenStatus() {
     const { $each } = rulesDef.value;
     if (Array.isArray(state.value) && $eachStatus.value && $each) {
+      $unwatchState?.();
       state.value.forEach((value, index) => {
         if (value.$id) {
+          if (
+            Array.isArray(state.value) &&
+            !state.value.find((val) => val.$id === $eachStatus.value[index].$id)
+          ) {
+            $eachStatus.value[index].$unwatch();
+          }
           const previousStatus = storage.getArrayStatus(value.$id);
           if (previousStatus) {
             $eachStatus.value[index] = previousStatus;
+          } else {
+            $eachStatus.value[index].$unwatch();
           }
         } else {
           const newElement = createCollectionElement({
@@ -143,16 +162,17 @@ export function createReactiveCollectionStatus({
           }
         }
       });
-    }
+      // cleanup removed elements from array (only if elements are pushed)
 
-    // cleanup removed elements from array
-
-    if ($eachStatus.value) {
       const deletedItems = $eachStatus.value.filter(($each) => {
         return Array.isArray(state.value) && !state.value.find((val) => val.$id === $each.$id);
       });
-
-      deletedItems.forEach((item) => item.$unwatch());
+      deletedItems.forEach((item) => {
+        storage.deleteArrayStatus(item.$id);
+        item.$unwatch();
+      });
+      $eachStatus.value.length = state.value.length;
+      nextTick($watch);
     }
   }
 
@@ -171,13 +191,9 @@ export function createReactiveCollectionStatus({
   }
 
   function $watch() {
-    $unwatchState = watch(
-      state,
-      () => {
-        updateChildrenStatus();
-      },
-      { deep: true, flush: 'sync' }
-    );
+    $unwatchState = watch(() => (state.value as any).length, updateChildrenStatus, {
+      flush: 'sync',
+    });
   }
 
   function $touch(): void {

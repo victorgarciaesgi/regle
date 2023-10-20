@@ -144,6 +144,7 @@ export function createReactiveRuleStatus({
     const validator = scopeState.$validator.value;
     let ruleResult = false;
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+
     if (resultOrPromise instanceof Promise) {
       if ($dirty.value && !$pending.value) {
         try {

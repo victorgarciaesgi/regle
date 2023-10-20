@@ -2,8 +2,6 @@
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.email" placeholder="email" />
     <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
-    {{ $regle.$fields.email.$valid }}
-    {{ $regle.$fields.email.$invalid }}
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
@@ -50,9 +48,11 @@ import {
   email,
   and,
   minLength,
+  not,
+  sameAs,
 } from '@regle/validators';
-import { ref } from 'vue';
-import { asyncEmail, not, useRegle } from './validations';
+import { ref, watch } from 'vue';
+import { asyncEmail, useRegle } from './validations';
 
 type Form = {
   email?: string;
@@ -94,7 +94,7 @@ const { $regle, errors, validateForm, state } = useRegle(form, () => ({
   },
   firstName: {
     ...(limit.value === 2 && { required }),
-    not: not(form.value.email),
+    not: not(sameAs(form.value.email), 'Should not be same as email'),
   },
   foo: {
     bloublou: {
