@@ -51,6 +51,14 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       $regle.$reset();
     }
 
+    const $valid = computed<boolean>(() => {
+      return $regle.$valid && $regle.$dirty && !$regle.$pending;
+    });
+
+    const $invalid = computed<boolean>(() => {
+      return ($regle.$invalid && $regle.$dirty) || $regle.$pending;
+    });
+
     async function validateForm(): Promise<false | DeepSafeFormState<TState, TRules>> {
       $regle.$touch();
       const result = await $regle.$validate();
@@ -61,11 +69,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     }
 
     return {
-      state: state as Ref<PartialDeep<TState>>,
+      $state: state as Ref<PartialDeep<TState>>,
       $regle: $regle as RegleStatus<TState, TRules>,
-      errors: errors as RegleErrorTree<TRules>,
+      $errors: errors as RegleErrorTree<TRules>,
       resetForm,
       validateForm,
+      $valid,
+      $invalid,
     };
   }
 

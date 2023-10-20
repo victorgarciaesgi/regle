@@ -3,7 +3,7 @@
     <input v-model="form.email" placeholder="email" />
     <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of $errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model.number="limit" placeholder="limit" />
@@ -13,13 +13,13 @@
       :placeholder="`firstName ${$regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
-      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
     <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
+        <li v-for="error of $errors.foo.bloublou.test.$each[index].name" :key="error">{{
           error
         }}</li>
       </ul>
@@ -31,7 +31,7 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ errors }}
+{{ $errors }}
 {{ $regle }}
       </code>
     </pre>
@@ -87,7 +87,7 @@ async function submit() {
 
 const limit = ref(2);
 
-const { $regle, errors, validateForm, state } = useRegle(form, () => ({
+const { $regle, $errors, validateForm, $state } = useRegle(form, () => ({
   email: {
     required,
     foo: withMessage(and(email, minLength(6)), 'Boooooo'),

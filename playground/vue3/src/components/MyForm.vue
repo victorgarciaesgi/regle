@@ -3,34 +3,35 @@
     <input v-model="form.email" placeholder="email" />
     <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of $errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model.number="limit" placeholder="limit" />
 
     <input
       v-model="form.firstName"
-      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required.$active ? '*' : ''}`"
+      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
-      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
     <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
+        <li v-for="error of $errors.foo.bloublou.test.$each[index].name" :key="error">{{
           error
         }}</li>
       </ul>
     </template>
 
     <button type="submit" @click="form.foo.bloublou.test.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.foo.bloublou.test.splice(0, 1)">Remove first</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre style="max-width: 100%">
       <code>
-{{ errors }}
+{{ $errors }}
 {{ $regle }}
       </code>
     </pre>
@@ -38,15 +39,26 @@
 </template>
 
 <script setup lang="ts">
-import { maxLength, required, requiredIf, withMessage } from '@regle/validators';
-import { ref } from 'vue';
-import { useRegle, asyncEmail, not } from './../validations';
+import {
+  applyIf,
+  maxLength,
+  required,
+  withMessage,
+  decimal,
+  email,
+  and,
+  minLength,
+  not,
+  sameAs,
+} from '@regle/validators';
+import { ref, watch } from 'vue';
+import { asyncEmail, useRegle } from './../validations';
 
 type Form = {
-  email: string;
-  firstName?: Date;
+  email?: string;
+  firstName?: number;
   foo: {
-    bar: number | undefined;
+    bar?: number | undefined;
     bloublou: {
       test: {
         name: string;
@@ -68,22 +80,21 @@ const form = ref<Form>({
 
 async function submit() {
   const result = await validateForm();
-  console.log(result);
+  if (result) {
+    const test: string = result.foo.bloublou.test[0].name;
+  }
 }
 
 const limit = ref(2);
 
-const { $regle, errors, validateForm } = useRegle(form, () => ({
+const { $regle, $errors, validateForm, $state } = useRegle(form, () => ({
   email: {
-    maxLength: withMessage(maxLength(limit.value), (value, count) => `Max length is ${count}`),
-    asyncEmail: withMessage(asyncEmail(limit), 'Limit should be 2'),
+    required,
+    foo: withMessage(and(email, minLength(6)), 'Boooooo'),
   },
   firstName: {
-    required: withMessage(
-      requiredIf(() => limit.value === 2),
-      'Champs requis!'
-    ),
-    not: not(form.value.email),
+    ...(limit.value === 2 && { required }),
+    not: not(sameAs(form.value.email), 'Should not be same as email'),
   },
   foo: {
     bloublou: {

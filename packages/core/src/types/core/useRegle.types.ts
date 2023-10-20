@@ -1,7 +1,7 @@
-import { Ref } from 'vue';
+import { PartialDeep } from 'type-fest';
+import { ComputedRef, Ref } from 'vue';
 import {
   CustomRulesDeclarationTree,
-  RegleCollectionErrors,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
   RegleFormPropertyType,
@@ -10,15 +10,19 @@ import {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import { PartialDeep } from 'type-fest';
 
 export interface Regle<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
 > {
-  state: Ref<PartialDeep<TState>>;
+  $state: Ref<PartialDeep<TState>>;
   $regle: RegleStatus<TState, TRules>;
-  errors: RegleErrorTree<TRules>;
+  /** Show active errors based on your behaviour options (lazy, autoDirty)
+   * It allow you to skip scouting the `$regle` object
+   */
+  $errors: RegleErrorTree<TRules>;
+  $valid: ComputedRef<boolean>;
+  $invalid: ComputedRef<boolean>;
   resetForm: () => void;
   validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;
 }
