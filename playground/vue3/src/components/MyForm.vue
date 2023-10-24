@@ -51,8 +51,9 @@ import {
   not,
   sameAs,
 } from '@regle/validators';
-import { ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
+import { or } from '@regle/validators';
 
 type Form = {
   email?: string;
@@ -67,7 +68,7 @@ type Form = {
   };
 };
 
-const form = ref<Form>({
+const form = reactive<Form>({
   email: '',
   firstName: undefined,
   foo: {
@@ -90,11 +91,11 @@ const limit = ref(2);
 const { $regle, $errors, validateForm, $state } = useRegle(form, () => ({
   email: {
     required,
-    foo: withMessage(and(email, minLength(6)), 'Boooooo'),
+    foo: withMessage(and(email, minLength(6)), (_, min) => `Should be email OR minlength: ${min}`),
   },
   firstName: {
     ...(limit.value === 2 && { required }),
-    not: not(sameAs(form.value.email), 'Should not be same as email'),
+    not: not(sameAs(form.email), 'Should not be same as email'),
   },
   foo: {
     bloublou: {

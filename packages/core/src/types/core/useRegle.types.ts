@@ -1,5 +1,5 @@
 import { PartialDeep } from 'type-fest';
-import { ComputedRef, Ref } from 'vue';
+import { ComputedRef, MaybeRef, Ref } from 'vue';
 import {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDefinition,
@@ -26,6 +26,10 @@ export interface Regle<
   resetForm: () => void;
   validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;
 }
+
+export type DeepReactiveState<T extends Record<string, any>> = {
+  [K in keyof T]: MaybeRef<T[K]>;
+};
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,
@@ -64,25 +68,3 @@ export type SafeProperty<
       : never
     : never
   : never;
-
-export type bar = DeepSafeFormState<
-  {
-    bar?: number | undefined;
-    bloublou: {
-      test: {
-        name: string;
-      }[];
-    };
-  },
-  {
-    bloublou: {
-      test: {
-        $each: {
-          name: {
-            required: RegleRuleDefinition<unknown, []>;
-          };
-        };
-      };
-    };
-  }
->;

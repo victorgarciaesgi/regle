@@ -1,9 +1,12 @@
 import { createRule, FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import { ExtractValueFormRules } from '../types';
+import { ExtractValueFromRules, ExtractParamsFromRules, UnwrapTuples } from '../types';
 
 export function and<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
-): RegleRuleDefinition<ExtractValueFormRules<TRules>[number]> {
+): RegleRuleDefinition<
+  ExtractValueFromRules<TRules>[number],
+  UnwrapTuples<ExtractParamsFromRules<TRules>>
+> {
   const isAnyRuleAsync = rules.some((rule) => {
     if (typeof rule === 'function') {
       return rule.constructor.name === 'AsyncFunction';
@@ -12,39 +15,50 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
     }
   });
 
-  const params = rules
+  const _params = rules
     .map((rule) => {
       if (typeof rule === 'function') {
         return null;
       } else {
-        return rule._params;
+        const $params = rule._params;
+        if (!$params?.length) {
+          return [null];
+        } else {
+          return $params;
+        }
       }
     })
+    .flat()
     .filter((param): param is any => !!param);
+
+  function computeRules(rules: [...TRules], value: any, ...params: any[]) {
+    const $rules: any[] = [];
+    let paramIndex = 0;
+
+    for (let rule of rules) {
+      if (typeof rule === 'function') {
+        $rules.push(rule(value));
+        paramIndex++;
+      } else {
+        const paramsLength = rule._params?.length ?? 0;
+        $rules.push(rule.validator(value, ...params.slice(paramIndex, paramsLength)));
+        if (paramsLength) {
+          paramIndex += paramsLength;
+        }
+      }
+    }
+
+    return $rules;
+  }
 
   const validator = isAnyRuleAsync
     ? async (value: any | null | undefined, ...params: any[]) => {
-        const results = await Promise.all(
-          rules.map((rule) => {
-            if (typeof rule === 'function') {
-              return rule(value);
-            } else {
-              return rule.validator(value, ...params);
-            }
-          })
-        );
+        const results = await Promise.all(computeRules(rules, value, ...params));
         return results.every((result) => !!result);
       }
     : (value: any | null | undefined, ...params: any[]) => {
-        return rules
-          .map((rule) => {
-            if (typeof rule === 'function') {
-              return rule(value);
-            } else {
-              return rule.validator(value, ...params);
-            }
-          })
-          .every((result) => !!result);
+        const $rules = computeRules(rules, value, ...params);
+        return $rules.every((result) => !!result);
       };
 
   const newRule = createRule({
@@ -53,7 +67,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
     message: '',
   });
 
-  newRule._params = params;
+  newRule._params = _params;
 
   return newRule as RegleRuleDefinition;
 }

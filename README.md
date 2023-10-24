@@ -35,6 +35,17 @@ TODO
 - Nuxt 3
 - Pinia
 
+# What I upgraded from Vuelidate
+
+- 100% type safety
+- Made for Vue 3 and composition API first 
+- Collection validation ($each is back)
+- Global config
+- External results improvements
+- Async rules with params
+- Easier rule declaration
+- Performances (need benchmark)
+
 # Roadmap
 
 - [x] async rules
@@ -48,9 +59,10 @@ TODO
 - [x] Regex helper
 - [x] Additional rules and "and" helper
 - [x] "or" and "not" helper
-- [ ] Dates built-in validators
 - [ ] withExternalErrors
+- [ ] Dates built-in validators
 - [ ] Zod support
+- [ ] Nested component collection (? need poll)
 - [ ] Unit tests
 - [ ] E2E tests
 - [ ] Readme

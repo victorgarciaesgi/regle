@@ -1,4 +1,4 @@
-import { ComputedRef, Ref, computed, isRef, shallowRef, toRaw } from 'vue';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, shallowRef, toRaw, watch } from 'vue';
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
@@ -10,7 +10,7 @@ import {
 } from '../../types';
 import { useStateProperties } from './useStateProperties';
 import { PartialDeep, RequiredDeep } from 'type-fest';
-import { DeepSafeFormState } from 'types/core/useRegle.types';
+import { DeepReactiveState, DeepSafeFormState } from 'types/core/useRegle.types';
 import { DeepMaybeRef } from 'types/utils';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
@@ -27,7 +27,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     TState extends Record<string, any>,
     TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
   >(
-    state: Ref<TState>,
+    state: Ref<TState> | DeepReactiveState<TState>,
     rulesFactory: (() => TRules) | ComputedRef<TRules>,
     options?: Partial<DeepMaybeRef<Required<RegleBehaviourOptions>>>
   ): Regle<TState, TRules> {
@@ -37,11 +37,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       ...options,
     };
 
-    const initialState = shallowRef<TState>(structuredClone(toRaw(state.value)));
+    const processedState = ref(state) as Ref<TState>;
+
+    const initialState = shallowRef<TState>(structuredClone(toRaw(processedState.value)));
 
     const { $regle, errors } = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
-      state,
+      processedState,
       resolvedOptions,
       customRules
     );
