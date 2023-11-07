@@ -1,12 +1,16 @@
 import { RequiredDeep } from 'type-fest';
 import { ComputedRef, Ref, computed, effectScope, reactive, toRef, watch } from 'vue';
 import type {
+  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
+  $InternalRegleErrors,
   $InternalReglePartialValidationTree,
   $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
   RegleBehaviourOptions,
+  RegleExternalErrorTree,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { DeepMaybeRef } from '../../../types';
 import { isRefObject } from '../../../utils';
@@ -22,7 +26,8 @@ interface CreateReactiveNestedStatus {
   customMessages?: CustomRulesDeclarationTree;
   path?: string;
   storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+  options: ResolvedRegleBehaviourOptions;
+  externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
 }
 
 export function createReactiveNestedStatus({
@@ -33,6 +38,7 @@ export function createReactiveNestedStatus({
   rootRules,
   storage,
   options,
+  externalErrors,
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -53,6 +59,7 @@ export function createReactiveNestedStatus({
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
+            const $externalErrors = toRef(() => externalErrors.value?.[statePropKey]);
             return [
               statePropKey,
               createReactiveChildrenStatus({
@@ -62,6 +69,7 @@ export function createReactiveNestedStatus({
                 path: path ? `${path}.${statePropKey}` : statePropKey,
                 storage,
                 options,
+                externalErrors: $externalErrors,
               }),
             ];
           }
@@ -170,6 +178,12 @@ export function createReactiveNestedStatus({
     scope = effectScope();
   }
 
+  function $clearExternalErrors() {
+    Object.entries($fields.value).forEach(([_, field]) => {
+      field.$clearExternalErrors();
+    });
+  }
+
   return reactive({
     ...scopeState,
     $fields,
@@ -179,6 +193,7 @@ export function createReactiveNestedStatus({
     $validate,
     $unwatch,
     $watch,
+    $clearExternalErrors,
   }) satisfies $InternalRegleStatus;
 }
 
@@ -189,6 +204,7 @@ interface CreateReactiveChildrenStatus {
   path: string;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+  externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
 }
 
 export function createReactiveChildrenStatus({
@@ -198,6 +214,7 @@ export function createReactiveChildrenStatus({
   path,
   storage,
   options,
+  externalErrors,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
@@ -207,6 +224,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      externalErrors,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
@@ -216,6 +234,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      externalErrors: externalErrors as Readonly<Ref<RegleExternalErrorTree | undefined>>,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
@@ -225,6 +244,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      externalErrors: externalErrors as Ref<string[] | undefined>,
     });
   }
 

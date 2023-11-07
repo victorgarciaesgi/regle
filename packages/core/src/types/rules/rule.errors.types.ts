@@ -26,7 +26,44 @@ export type RegleCollectionErrors<
   readonly $each: RegleValidationErrors<TRule>[];
 };
 
-export type PossibleRegleErrors = RegleCollectionErrors<any> | string[] | RegleErrorTree<any>;
+/**
+ * @internal
+ */
+export type $InternalRegleErrors = RegleCollectionErrors<any> | string[] | RegleErrorTree<any>;
+
+//-
+// ------- External errors
+// -
+
+export type RegleExternalErrorTree<TState extends Record<string, any> = Record<string, any>> = {
+  [K in keyof TState]?: RegleExternalValidationErrors<TState[K]>;
+};
+
+export type RegleExternalValidationErrors<TValue extends any> = [NonNullable<TValue>] extends [
+  never,
+]
+  ? string[]
+  : TValue extends Array<infer U>
+  ? RegleExternalCollectionErrors<U>
+  : NonNullable<TValue> extends Date
+  ? string[]
+  : NonNullable<TValue> extends File
+  ? string[]
+  : TValue extends Record<string, any>
+  ? RegleExternalErrorTree<TValue>
+  : string[];
+
+export type RegleExternalCollectionErrors<TValue extends any = any> = {
+  $errors?: string[];
+  $each?: RegleExternalValidationErrors<TValue>[];
+};
+
+export type $InternalExternalRegleErrors =
+  | RegleExternalCollectionErrors<any>
+  | string[]
+  | RegleExternalErrorTree<any>;
+
+// - Misc
 
 export type DataType =
   | string
@@ -37,3 +74,16 @@ export type DataType =
   | Date
   | null
   | undefined;
+
+type test = RegleExternalErrorTree<{
+  email?: string | undefined;
+  firstName?: number | undefined;
+  foo: {
+    bar?: number | undefined;
+    bloublou: {
+      test: {
+        name: string;
+      }[];
+    };
+  };
+}>;

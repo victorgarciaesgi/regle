@@ -1,27 +1,15 @@
-import {
-  ComputedRef,
-  Ref,
-  computed,
-  effectScope,
-  reactive,
-  ref,
-  toRef,
-  unref,
-  watch,
-  watchEffect,
-} from 'vue';
+import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
 import type {
+  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
-  RegleBehaviourOptions,
   RegleRuleDecl,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
-import { RequiredDeep } from 'type-fest';
-import { DeepMaybeRef } from '../../../types';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -29,7 +17,8 @@ interface CreateReactiveFieldStatusArgs {
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+  options: ResolvedRegleBehaviourOptions;
+  externalErrors: Readonly<Ref<string[] | undefined>>;
 }
 
 type ScopeReturnState = {
@@ -46,6 +35,7 @@ export function createReactiveFieldStatus({
   path,
   storage,
   options,
+  externalErrors,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
@@ -54,6 +44,17 @@ export function createReactiveFieldStatus({
   const $anyDirty = computed<boolean>(() => $dirty.value);
 
   const triggerPunishment = ref(false);
+
+  const $externalErrors = ref<string[] | undefined>([]);
+
+  function collectExternalErrors() {
+    if (externalErrors.value) {
+      $externalErrors.value = externalErrors.value;
+    }
+  }
+  collectExternalErrors();
+
+  const $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
@@ -108,6 +109,8 @@ export function createReactiveFieldStatus({
     if (!unref(options.lazy)) {
       $commit();
     }
+    $externalErrors.value = [];
+    console.log($externalErrors.value);
   });
 
   function $unwatch() {
@@ -122,6 +125,7 @@ export function createReactiveFieldStatus({
     }
     $unwatchState();
     $unwatchValid();
+    $unwatchExternalErrors();
     scope.stop();
     scope = effectScope();
   }
@@ -165,7 +169,7 @@ export function createReactiveFieldStatus({
         $pending,
         $invalid,
         $valid,
-      };
+      } satisfies ScopeReturnState;
     }) as ScopeReturnState;
   }
 
@@ -180,6 +184,7 @@ export function createReactiveFieldStatus({
 
   function $reset(): void {
     $dirty.value = false;
+    $externalErrors.value = [];
   }
 
   function $touch(): void {
@@ -206,6 +211,10 @@ export function createReactiveFieldStatus({
     }
   }
 
+  function $clearExternalErrors() {
+    $externalErrors.value = [];
+  }
+
   return reactive({
     $dirty,
     $anyDirty,
@@ -213,6 +222,7 @@ export function createReactiveFieldStatus({
     $error: scopeState.$error,
     $pending: scopeState.$pending,
     $valid: scopeState.$valid,
+    $externalErrors,
     $value: state,
     $rules: $rules,
     $reset,
@@ -220,5 +230,6 @@ export function createReactiveFieldStatus({
     $validate,
     $unwatch,
     $watch,
+    $clearExternalErrors,
   }) satisfies $InternalRegleFieldStatus;
 }

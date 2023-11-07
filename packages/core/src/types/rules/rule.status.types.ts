@@ -64,6 +64,7 @@ export interface RegleFieldStatus<
   TKey extends PropertyKey = string,
 > extends RegleCommonStatus<TState> {
   $value: TState[TKey];
+  readonly $externalErrors?: string[];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
@@ -79,6 +80,7 @@ export interface RegleFieldStatus<
 export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
   $rules: Record<string, $InternalRegleRuleStatus>;
+  $externalErrors?: string[];
 }
 
 /**
@@ -98,6 +100,7 @@ export interface RegleCommonStatus<TValue = any> {
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
+  $clearExternalErrors(): void;
 }
 
 /**
@@ -123,17 +126,19 @@ export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
  * @reference {@link RegleRuleStatus}
  */
 export interface $InternalRegleRuleStatus {
-  readonly $type: string;
-  readonly $message: string;
-  readonly $active: boolean;
-  readonly $valid: boolean;
-  readonly $pending: boolean;
-  readonly $path: string;
+  $type: string;
+  $message: string;
+  $active: boolean;
+  $valid: boolean;
+  $pending: boolean;
+  $path: string;
+  $externalErrors?: string[];
+  $params?: any[];
   $validator(value: any, ...args: any[]): boolean | Promise<boolean>;
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
-  readonly $params?: any[];
+  $clearExternalErrors(): void;
 }
 
 /**

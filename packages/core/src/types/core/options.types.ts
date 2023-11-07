@@ -1,3 +1,8 @@
+import { RequiredDeep } from 'type-fest';
+import { DeepMaybeRef } from 'types/utils';
+import { MaybeRef } from 'vue';
+import { RegleExternalErrorTree } from '../../types/rules';
+
 export interface RegleBehaviourOptions {
   /**
    * Only display error when calling `validateForm()`
@@ -15,3 +20,10 @@ export interface RegleBehaviourOptions {
    */
   rewardEarly?: boolean;
 }
+
+export interface LocalRegleBehaviourOptions<TState extends Record<string, any>> {
+  $externalErrors?: MaybeRef<RegleExternalErrorTree<TState>>;
+}
+
+export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
+  LocalRegleBehaviourOptions<Record<string, any>>;

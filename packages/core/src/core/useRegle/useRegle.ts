@@ -2,11 +2,13 @@ import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, shallowRef, toRaw, wa
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
+  LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
   RegleErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
+  ResolvedRegleBehaviourOptions,
 } from '../../types';
 import { useStateProperties } from './useStateProperties';
 import { PartialDeep, RequiredDeep } from 'type-fest';
@@ -29,13 +31,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
   >(
     state: Ref<TState> | DeepReactiveState<TState>,
     rulesFactory: (() => TRules) | ComputedRef<TRules>,
-    options?: Partial<DeepMaybeRef<Required<RegleBehaviourOptions>>>
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TState>
   ): Regle<TState, TRules> {
     const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
-    const resolvedOptions: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> = {
+    const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
       ...options,
-    };
+    } as any;
 
     const processedState = ref(state) as Ref<TState>;
 

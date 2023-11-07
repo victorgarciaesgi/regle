@@ -1,22 +1,23 @@
-import { ComputedRef, Ref, reactive } from 'vue';
+import { ComputedRef, Ref, computed, reactive, unref } from 'vue';
 import {
   $InternalReglePartialValidationTree,
   CustomRulesDeclarationTree,
-  DeepMaybeRef,
-  RegleBehaviourOptions,
+  RegleExternalErrorTree,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { useStorage } from '../../useStorage';
 import { useErrors } from '../useErrors';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
-import { useStorage } from '../../useStorage';
-import { RequiredDeep } from 'type-fest';
 
 export function useStateProperties(
   scopeRules: ComputedRef<$InternalReglePartialValidationTree>,
   state: Ref<Record<string, any>>,
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>,
+  options: ResolvedRegleBehaviourOptions,
   customRules?: () => CustomRulesDeclarationTree
 ) {
   const storage = useStorage();
+
+  const externalErrors = computed(() => unref(options.$externalErrors));
 
   const $regle = reactive(
     createReactiveNestedStatus({
@@ -26,6 +27,7 @@ export function useStateProperties(
       customMessages: customRules?.(),
       storage,
       options,
+      externalErrors,
     })
   );
 

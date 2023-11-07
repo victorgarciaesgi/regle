@@ -54,6 +54,7 @@ import {
 import { reactive, ref, watch } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
 import { or } from '@regle/validators';
+import { RegleExternalErrorTree } from '@regle/core';
 
 type Form = {
   email?: string;
@@ -81,6 +82,7 @@ const form = reactive<Form>({
 
 async function submit() {
   const result = await validateForm();
+  errors.value.email = ['boo'];
   if (result) {
     const test: string = result.foo.bloublou.test[0].name;
   }
@@ -88,23 +90,35 @@ async function submit() {
 
 const limit = ref(2);
 
-const { $regle, $errors, validateForm, $state } = useRegle(form, () => ({
-  email: {
-    required,
-    foo: withMessage(and(email, minLength(6)), (_, min) => `Should be email OR minlength: ${min}`),
-  },
-  firstName: {
-    ...(limit.value === 2 && { required }),
-    not: not(sameAs(form.email), 'Should not be same as email'),
-  },
-  foo: {
-    bloublou: {
-      test: {
-        $each: {
-          name: { required },
+const errors = ref<RegleExternalErrorTree<Form>>({});
+
+const { $regle, $errors, validateForm, $state } = useRegle(
+  form,
+  () => ({
+    email: {
+      required,
+      foo: withMessage(
+        and(email, minLength(6)),
+        (_, min) => `Should be email OR minlength: ${min}`
+      ),
+    },
+    firstName: {
+      ...(limit.value === 2 && { required }),
+      not: not(
+        sameAs(() => form.email),
+        'Should not be same as email'
+      ),
+    },
+    foo: {
+      bloublou: {
+        test: {
+          $each: {
+            name: { required },
+          },
         },
       },
     },
-  },
-}));
+  }),
+  { $externalErrors: errors }
+);
 </script>

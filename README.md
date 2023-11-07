@@ -39,12 +39,18 @@ TODO
 
 - 100% type safety
 - Made for Vue 3 and composition API first 
-- Collection validation ($each is back)
+- Collection validation ($each is back without performance issues)
 - Global config
 - External results improvements
 - Async rules with params
 - Easier rule declaration
 - Performances (need benchmark)
+
+
+# What is still missing from Vuelidate
+
+- Validation groups
+
 
 # Roadmap
 

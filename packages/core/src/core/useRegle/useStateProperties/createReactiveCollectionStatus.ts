@@ -1,6 +1,7 @@
 import { RequiredDeep } from 'type-fest';
-import { Ref, nextTick, reactive, ref, toRaw, toRef, toRefs, watch } from 'vue';
+import { ComputedRef, Ref, computed, nextTick, reactive, ref, toRef, toRefs, watch } from 'vue';
 import type {
+  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
@@ -8,21 +9,16 @@ import type {
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
   RegleBehaviourOptions,
+  RegleExternalCollectionErrors,
+  RegleExternalErrorTree,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { DeepMaybeRef } from '../../../types';
+import { randomId } from '../../../utils/randomId';
 import { RegleStorage } from '../../useStorage';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
-import { randomId } from '../../../utils/randomId';
-
-interface CreateReactiveCollectionStatusArgs {
-  state: Ref<unknown>;
-  rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
-  customMessages?: CustomRulesDeclarationTree;
-  path: string;
-  storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-}
+import { isExternalErrorCollection } from '../guards';
 
 function createCollectionElement({
   path,
@@ -32,6 +28,7 @@ function createCollectionElement({
   value,
   customMessages,
   rules,
+  externalErrors,
 }: {
   path: string;
   index: number;
@@ -40,6 +37,7 @@ function createCollectionElement({
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes;
+  externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $id = randomId();
   const $path = `${path}.${$id}`;
@@ -56,6 +54,7 @@ function createCollectionElement({
   }
 
   const $state = toRefs(value);
+  const $externalErrors = toRefs(externalErrors.value ?? reactive([undefined]));
   const $status = createReactiveChildrenStatus({
     state: $state[index],
     rulesDef: toRef(() => rules),
@@ -63,6 +62,7 @@ function createCollectionElement({
     path: $path,
     storage,
     options,
+    externalErrors: $externalErrors?.[index],
   });
 
   if ($status) {
@@ -73,6 +73,16 @@ function createCollectionElement({
   return $status;
 }
 
+interface CreateReactiveCollectionStatusArgs {
+  state: Ref<unknown>;
+  rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
+  customMessages?: CustomRulesDeclarationTree;
+  path: string;
+  storage: RegleStorage;
+  options: ResolvedRegleBehaviourOptions;
+  externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
+}
+
 export function createReactiveCollectionStatus({
   state,
   rulesDef,
@@ -80,6 +90,7 @@ export function createReactiveCollectionStatus({
   path,
   storage,
   options,
+  externalErrors,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
   if (Array.isArray(state.value) && !rulesDef.value.$each) {
     return null;
@@ -95,6 +106,23 @@ export function createReactiveCollectionStatus({
 
   function createStatus() {
     const { $each, ...otherFields } = rulesDef.value;
+
+    const $externalErrorsField = toRef(() => {
+      if (externalErrors.value) {
+        if (isExternalErrorCollection(externalErrors.value)) {
+          return externalErrors.value.$errors;
+        }
+      }
+    });
+
+    const $externalErrorsEach = toRef(() => {
+      if (externalErrors.value) {
+        if (isExternalErrorCollection(externalErrors.value)) {
+          return externalErrors.value.$each;
+        }
+      }
+    });
+
     $fieldStatus.value = createReactiveFieldStatus({
       state,
       rulesDef: toRef(() => otherFields),
@@ -102,6 +130,7 @@ export function createReactiveCollectionStatus({
       path,
       storage,
       options,
+      externalErrors: $externalErrorsField,
     });
 
     if (Array.isArray(state.value) && $each) {
@@ -120,6 +149,7 @@ export function createReactiveCollectionStatus({
               index,
               options,
               storage,
+              externalErrors: $externalErrorsEach,
             });
           }
         })
@@ -148,6 +178,13 @@ export function createReactiveCollectionStatus({
             $eachStatus.value[index].$unwatch();
           }
         } else {
+          const $externalErrorsEach = toRef(() => {
+            if (externalErrors.value) {
+              if ('$each' in externalErrors.value) {
+                return externalErrors.value.$each as $InternalExternalRegleErrors[];
+              }
+            }
+          });
           const newElement = createCollectionElement({
             value: state.value as any[],
             rules: $each,
@@ -156,6 +193,7 @@ export function createReactiveCollectionStatus({
             storage,
             options,
             index,
+            externalErrors: $externalErrorsEach,
           });
           if (newElement) {
             $eachStatus.value[index] = newElement;

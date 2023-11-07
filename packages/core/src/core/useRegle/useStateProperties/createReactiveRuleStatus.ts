@@ -1,19 +1,18 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, effectScope, reactive, watch } from 'vue';
 import {
+  $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
   InternalRuleType,
+  RegleExternalErrorTree,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  $InternalRegleRuleStatus,
-  RegleBehaviourOptions,
-  DeepMaybeRef,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
-import { isFormRuleDefinition } from '../guards';
 import type { RegleStorage } from '../../useStorage';
-import { RequiredDeep } from 'type-fest';
+import { isFormRuleDefinition } from '../guards';
 
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
@@ -23,7 +22,7 @@ interface CreateReactiveRuleStatusOptions {
   customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
   storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+  options: ResolvedRegleBehaviourOptions;
 }
 
 export function createReactiveRuleStatus({
@@ -163,6 +162,9 @@ export function createReactiveRuleStatus({
       ruleResult = resultOrPromise;
     }
     $valid.value = ruleResult;
+    if (options.$externalErrors) {
+      // TODO
+    }
 
     return ruleResult;
   }
