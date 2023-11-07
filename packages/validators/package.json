@@ -1,6 +1,6 @@
 {
   "name": "@regle/validators",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
