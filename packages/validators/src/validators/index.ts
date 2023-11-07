@@ -16,3 +16,6 @@ export * from './required';
 export * from './requiredUnless';
 export * from './sameAs';
 export * from './url';
+export * from './dateAfter';
+export * from './dateBefore';
+export * from './dateBetween';

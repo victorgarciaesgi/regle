@@ -20,4 +20,5 @@ export type DefaultValidators = {
   requireUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]>;
   url: RegleRuleDefinition<string>;
+  dateAfter: RegleRuleWithParamsDefinition<Date, [after: Date]>;
 };

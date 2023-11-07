@@ -16,6 +16,16 @@
       <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
+    <input type="date" v-model="form.birthDate" placeholder="Birth date" />
+    <ul>
+      <li v-for="error of $errors.birthDate" :key="error">{{ error }}</li>
+    </ul>
+
+    <input type="date" v-model="form.today" placeholder="Today" />
+    <ul>
+      <li v-for="error of $errors.today" :key="error">{{ error }}</li>
+    </ul>
+
     <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
       <input v-model="input.name" placeholder="name" />
       <ul>
@@ -50,6 +60,7 @@ import {
   minLength,
   not,
   sameAs,
+  dateAfter,
 } from '@regle/validators';
 import { reactive, ref, watch } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
@@ -59,6 +70,8 @@ import { RegleExternalErrorTree } from '@regle/core';
 type Form = {
   email?: string;
   firstName?: number;
+  birthDate?: Date;
+  today?: Date;
   foo: {
     bar?: number | undefined;
     bloublou: {
@@ -71,7 +84,6 @@ type Form = {
 
 const form = reactive<Form>({
   email: '',
-  firstName: undefined,
   foo: {
     bar: 5,
     bloublou: {
@@ -108,6 +120,12 @@ const { $regle, $errors, validateForm, $state } = useRegle(
         sameAs(() => form.email),
         'Should not be same as email'
       ),
+    },
+    birthDate: {
+      required,
+    },
+    today: {
+      dateAfter: dateAfter(() => form.birthDate),
     },
     foo: {
       bloublou: {

@@ -4,7 +4,7 @@ import {
   RegleRuleDefinitionProcessor,
   createRule,
 } from '@regle/core';
-import { ruleHelpers } from './rulesHelpers';
+import { ruleHelpers } from './ruleHelpers';
 
 export function not<TValue, TParams extends any[] = any[]>(
   rule: FormRuleDeclaration<TValue, TParams>,

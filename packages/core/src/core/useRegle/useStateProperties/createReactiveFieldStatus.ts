@@ -110,7 +110,6 @@ export function createReactiveFieldStatus({
       $commit();
     }
     $externalErrors.value = [];
-    console.log($externalErrors.value);
   });
 
   function $unwatch() {

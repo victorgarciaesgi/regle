@@ -20,6 +20,22 @@ It's heavily inspired by Vuelidate.
 > API or function names can still change
 
 
+# Improvements from Vuelidate
+
+- 100% type safety
+- Made for Vue 3 and composition API first 
+- Collection validation ($each is back without performance issues)
+- Global config
+- External results improvements
+- Async rules with params
+- Easier rule declaration
+- Performances (need benchmark)
+
+# What is still missing from Vuelidate
+
+- Validation groups
+
+
 # Documentation
 
 TODO
@@ -35,21 +51,7 @@ TODO
 - Nuxt 3
 - Pinia
 
-# What I upgraded from Vuelidate
 
-- 100% type safety
-- Made for Vue 3 and composition API first 
-- Collection validation ($each is back without performance issues)
-- Global config
-- External results improvements
-- Async rules with params
-- Easier rule declaration
-- Performances (need benchmark)
-
-
-# What is still missing from Vuelidate
-
-- Validation groups
 
 
 # Roadmap
@@ -65,8 +67,8 @@ TODO
 - [x] Regex helper
 - [x] Additional rules and "and" helper
 - [x] "or" and "not" helper
-- [ ] withExternalErrors
-- [ ] Dates built-in validators
+- [x] externalErrors
+- [x] Dates built-in validators
 - [ ] Zod support
 - [ ] Nested component collection (? need poll)
 - [ ] Unit tests

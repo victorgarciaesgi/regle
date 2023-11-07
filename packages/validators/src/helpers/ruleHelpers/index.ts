@@ -3,6 +3,8 @@ import { isFilled } from './isFilled';
 import { isNumber } from './isNumber';
 import { regex } from './regex';
 import { size } from './size';
+import { isDate } from './isDate';
+import { toDate } from './toDate';
 
 export const ruleHelpers = {
   isEmpty,
@@ -10,4 +12,6 @@ export const ruleHelpers = {
   size,
   regex,
   isNumber,
+  isDate,
+  toDate,
 };
