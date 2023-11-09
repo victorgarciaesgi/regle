@@ -28,3 +28,16 @@ export function createReactiveParams<TParams extends any[]>(params: ParamDecl[])
     return toRef(() => param);
   }) as TParams;
 }
+
+/**
+ * Due to `function.length` not returning default parameters, it need to parse the func.toString()
+ */
+export function getFunctionParametersLength(func: Function): number {
+  const funcStr = func.toString();
+  const params = funcStr
+    .slice(funcStr.indexOf('(') + 1, funcStr.indexOf(')'))
+    .split(',')
+    .map((param) => param.trim());
+  const defaults = params.filter((param) => param.includes('='));
+  return defaults.length + func.length;
+}

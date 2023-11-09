@@ -13,7 +13,7 @@ export const minValue: RegleRuleWithParamsDefinition<number, [count: number]> = 
       console.warn(
         `[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`
       );
-      return true;
+      return false;
     }
     return true;
   },

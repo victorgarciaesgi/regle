@@ -13,7 +13,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
       console.warn(
         `[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`
       );
-      return true;
+      return false;
     }
     return true;
   },

@@ -6,7 +6,7 @@ export const macAddress: RegleRuleWithParamsDefinition<
   [separator?: string | undefined],
   false
 > = createRule<string, [separator?: string]>({
-  validator(value, separator) {
+  validator(value, separator = ':') {
     if (ruleHelpers.isEmpty(value)) {
       return true;
     }

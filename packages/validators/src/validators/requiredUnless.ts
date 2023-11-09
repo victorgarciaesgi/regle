@@ -4,7 +4,6 @@ import { ruleHelpers } from '../helpers';
 export const requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> =
   createRule<unknown, [condition: boolean]>({
     validator(value, condition) {
-      console.log(condition);
       if (!condition) {
         return ruleHelpers.isFilled(typeof value === 'string' ? value.trim() : value);
       }

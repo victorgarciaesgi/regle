@@ -18,7 +18,7 @@ export const between: RegleRuleWithParamsDefinition<number, [min: number, max: n
         console.warn(
           `[between] Value or parameters aren't numbers, got value: ${value}, min: ${min}, max: ${max}`
         );
-        return true;
+        return false;
       }
       return true;
     },

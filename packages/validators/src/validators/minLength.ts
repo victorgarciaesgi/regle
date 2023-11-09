@@ -11,7 +11,7 @@ export const minLength: RegleRuleWithParamsDefinition<
         return ruleHelpers.size(value) >= count;
       }
       console.warn(`[minLength] Parameter isn't a number, got parameter: ${count}`);
-      return true;
+      return false;
     }
     return true;
   },

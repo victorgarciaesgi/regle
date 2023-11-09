@@ -6,6 +6,7 @@ import {
   RegleUniversalParams,
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
+import { getFunctionParametersLength } from './unwrapRuleParameters';
 
 /**
  * @description
@@ -49,7 +50,7 @@ export function createRule<
 
     const isAsync = definition.validator.constructor.name === 'AsyncFunction';
     // For validators needing a params like maxLength or requiredIf
-    if (definition.validator.length > 1) {
+    if (getFunctionParametersLength(definition.validator) > 1) {
       // For validators with param, return a function providing params for all the rule processors
       const ruleFactory = function (...params: RegleUniversalParams<TParams>) {
         return defineRuleProcessors(definition, ...params);

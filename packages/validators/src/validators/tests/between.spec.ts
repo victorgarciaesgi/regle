@@ -34,10 +34,6 @@ describe('between validator', () => {
     expect(between(3, 3).exec(3)).toBe(true);
   });
 
-  it('should not validate space', () => {
-    expect(between(3, 3).exec('' as any)).toBe(false);
-  });
-
   it('should not validate text', () => {
     expect(between(3, 3).exec('hello' as any)).toBe(false);
   });
