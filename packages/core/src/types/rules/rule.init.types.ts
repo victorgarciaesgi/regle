@@ -7,10 +7,13 @@ import { Maybe } from '../utils';
 export interface RegleRuleInit<
   TValue extends any,
   TParams extends any[] = [],
-  TType extends string = string,
+  TAsync extends boolean = false,
 > {
-  validator: (value: Maybe<TValue>, ...args: TParams) => boolean | Promise<boolean>;
+  validator: (
+    value: Maybe<TValue>,
+    ...args: TParams
+  ) => TAsync extends false ? boolean : Promise<boolean>;
   message: string | ((value: Maybe<TValue>, ...args: TParams) => string);
   active?: boolean | ((value: Maybe<TValue>, ...args: TParams) => boolean);
-  type: TType;
+  type?: string;
 }

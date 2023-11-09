@@ -52,7 +52,7 @@ function createCollectionElement({
   }
 
   const $state = toRefs(value);
-  const $externalErrors = toRefs(externalErrors.value ?? reactive([undefined]));
+  const $externalErrors = toRef(() => externalErrors.value?.[index]);
   const $status = createReactiveChildrenStatus({
     state: $state[index],
     rulesDef: toRef(() => rules),
@@ -60,7 +60,7 @@ function createCollectionElement({
     path: $path,
     storage,
     options,
-    externalErrors: $externalErrors?.[index],
+    externalErrors: $externalErrors,
   });
 
   if ($status) {

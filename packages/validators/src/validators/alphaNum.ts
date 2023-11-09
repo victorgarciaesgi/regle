@@ -1,7 +1,7 @@
 import { RegleRuleDefinition, createRule } from '@regle/core';
-import { ruleHelpers } from 'helpers';
+import { ruleHelpers } from '../helpers';
 
-const alphaNumRegex = /^[a-zA-Z]*$/;
+const alphaNumRegex = /^[a-zA-Z0-9]*$/;
 
 export const alphaNum: RegleRuleDefinition<string | number> = createRule<string | number>({
   validator(value) {
@@ -10,6 +10,6 @@ export const alphaNum: RegleRuleDefinition<string | number> = createRule<string 
     }
     return ruleHelpers.regex(value, alphaNumRegex);
   },
-  message: 'Value must be an only alphabetic or numeric',
+  message: 'The value must be alpha-numeric',
   type: 'alpha',
 });

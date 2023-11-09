@@ -1,11 +1,12 @@
 import { RegleRuleWithParamsDefinition, createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
-export const requireUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> =
+export const requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> =
   createRule<unknown, [condition: boolean]>({
     validator(value, condition) {
+      console.log(condition);
       if (!condition) {
-        return ruleHelpers.isFilled(value);
+        return ruleHelpers.isFilled(typeof value === 'string' ? value.trim() : value);
       }
       return true;
     },

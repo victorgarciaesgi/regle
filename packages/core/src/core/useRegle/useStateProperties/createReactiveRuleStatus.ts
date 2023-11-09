@@ -92,7 +92,7 @@ export function createReactiveRuleStatus({
       });
 
       const $type = computed(() => {
-        if (isFormRuleDefinition(rule)) {
+        if (isFormRuleDefinition(rule) && rule.value.type) {
           return Object.values(InternalRuleType).includes(rule.value.type)
             ? ruleKey
             : rule.value.type;

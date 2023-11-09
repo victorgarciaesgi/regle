@@ -1,5 +1,5 @@
 import { RegleRuleWithParamsDefinition, createRule } from '@regle/core';
-import { ruleHelpers } from 'helpers';
+import { ruleHelpers } from '../helpers';
 
 export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]> = createRule<
   unknown,
@@ -13,6 +13,6 @@ export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]> =
     return value === target;
   },
   message(_, target) {
-    return `Value must be same as "${target}"`;
+    return `Value must be equal to "${target}"`;
   },
 });

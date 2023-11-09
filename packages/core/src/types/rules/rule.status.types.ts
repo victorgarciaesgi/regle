@@ -138,7 +138,6 @@ export interface $InternalRegleRuleStatus {
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
-  $clearExternalErrors(): void;
 }
 
 /**

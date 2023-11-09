@@ -9,7 +9,8 @@
     <input v-model.number="limit" placeholder="limit" />
 
     <input
-      v-model="form.firstName"
+      :value="form.firstName"
+      @input="updateFirstName"
       :placeholder="`firstName ${$regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
@@ -49,27 +50,23 @@
 </template>
 
 <script setup lang="ts">
+import { RegleExternalErrorTree } from '@regle/core';
 import {
-  applyIf,
-  maxLength,
-  required,
-  withMessage,
-  decimal,
-  email,
   and,
+  dateAfter,
+  email,
   minLength,
   not,
+  required,
   sameAs,
-  dateAfter,
+  withMessage,
 } from '@regle/validators';
-import { reactive, ref, watch } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
-import { or } from '@regle/validators';
-import { RegleExternalErrorTree } from '@regle/core';
 
 type Form = {
   email?: string;
-  firstName?: number;
+  firstName?: string;
   birthDate?: Date;
   today?: Date;
   foo: {
@@ -92,9 +89,21 @@ const form = reactive<Form>({
   },
 });
 
+async function updateFirstName(event: any) {
+  const t0 = performance.now();
+  form.firstName = event.target.value;
+  await nextTick();
+  const t1 = performance.now();
+  console.log(`Time it takes to run the function: ${t1 - t0} ms`);
+}
+
 async function submit() {
+  const t0 = performance.now();
   const result = await validateForm();
   errors.value.email = ['boo'];
+  const t1 = performance.now();
+  console.log(`Time it takes to run the function: ${t1 - t0} ms`);
+
   if (result) {
     const test: string = result.foo.bloublou.test[0].name;
   }
@@ -110,8 +119,8 @@ const { $regle, $errors, validateForm, $state } = useRegle(
     email: {
       required,
       foo: withMessage(
-        and(email, minLength(6)),
-        (_, min) => `Should be email OR minlength: ${min}`
+        and(asyncEmail(2), minLength(6)),
+        (_, limit, min) => `Should be email OR minlength: ${min}`
       ),
     },
     firstName: {

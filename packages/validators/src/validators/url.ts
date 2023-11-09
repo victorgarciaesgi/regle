@@ -1,5 +1,5 @@
 import { RegleRuleDefinition, createRule } from '@regle/core';
-import { ruleHelpers } from 'helpers';
+import { ruleHelpers } from '../helpers';
 
 /**
  * Regex taken from {@link https://gist.github.com/dperini/729294}
@@ -14,6 +14,6 @@ export const url: RegleRuleDefinition<string> = createRule<string>({
     }
     return ruleHelpers.regex(value, urlRegex);
   },
-  message: 'Value must be an url',
+  message: 'The value is not a valid URL address',
   type: 'url',
 });

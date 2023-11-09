@@ -1,6 +1,7 @@
+import { Maybe } from '../../types/utils';
 import { MaybeRef } from 'vue';
 
-export type ParamDecl<T = any> = MaybeRef<T> | (() => T);
+export type ParamDecl<T = any> = MaybeRef<Maybe<T>> | (() => Maybe<T>);
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 

@@ -5,23 +5,22 @@ import {
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   ParamDecl,
-  RegleRuleWithParamsDefinition,
   unwrapRuleParameters,
 } from '@regle/core';
 
-export function applyIf<TValue extends any>(
+export function applyIf<TValue extends any, TRule extends InlineRuleDeclaration<TValue>>(
   _condition: ParamDecl<boolean>,
-  rule: InlineRuleDeclaration<TValue>
-): RegleRuleDefinition<TValue>;
-export function applyIf<TValue extends any, TParams extends any[]>(
+  rule: TRule
+): RegleRuleDefinition<TValue, [], ReturnType<TRule> extends Promise<any> ? true : false>;
+export function applyIf<TValue extends any, TParams extends any[], TAsync extends boolean = false>(
   _condition: ParamDecl<boolean>,
-  rule: RegleRuleDefinition<TValue, TParams>
-): RegleRuleDefinition<TValue, TParams>;
-export function applyIf<TValue extends any, TParams extends any[]>(
+  rule: RegleRuleDefinition<TValue, TParams, TAsync>
+): RegleRuleDefinition<TValue, TParams, TAsync>;
+export function applyIf<TValue extends any, TParams extends any[], TAsync extends boolean = false>(
   _condition: ParamDecl<boolean>,
-  rule: RegleRuleDefinition<TValue, TParams> | InlineRuleDeclaration<TValue>
-): RegleRuleWithParamsDefinition<TValue, TParams> | RegleRuleDefinition<TValue, TParams> {
-  let _type: string;
+  rule: RegleRuleDefinition<TValue, TParams, TAsync> | InlineRuleDeclaration<TValue>
+): RegleRuleDefinition<TValue, TParams, TAsync> {
+  let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean | Promise<boolean>>;
   let _params: any[] | undefined;
   let _message: string | ((value: TValue | null | undefined, ...args: TParams) => string) = '';
@@ -47,12 +46,12 @@ export function applyIf<TValue extends any, TParams extends any[]>(
     return condition;
   }
 
-  const newRule = createRule<TValue, TParams>({
+  const newRule = createRule<TValue, TParams, TAsync>({
     type: _type,
-    validator: newValidator,
+    validator: newValidator as any,
     active: newActive,
     message: _message,
-  });
+  }) as RegleRuleDefinition<TValue, TParams, TAsync>;
 
   newRule._params = _params as any;
 

@@ -26,14 +26,13 @@ It's heavily inspired by Vuelidate.
 - Made for Vue 3 and composition API first 
 - Collection validation ($each is back without performance issues)
 - Global config
-- External results improvements
 - Async rules with params
 - Easier rule declaration
-- Performances (need benchmark)
 
-# What is still missing from Vuelidate
+# What is not planned or reimplemented differently from Vuelidate
 
 - Validation groups
+- Nested validation collection
 
 
 # Documentation
@@ -56,7 +55,7 @@ TODO
 
 # Roadmap
 
-- [x] async rules
+- [x] Async rules
 - [x] resetForm
 - [x] validateForm typesafe
 - [x] Deep nested rules
@@ -69,14 +68,16 @@ TODO
 - [x] "or" and "not" helper
 - [x] externalErrors
 - [x] Dates built-in validators
-- [ ] Zod support
-- [ ] Nested component collection (? need poll)
+- [ ] Usable async data in messages
+- [ ] Per field validation option (lazy etc...)
 - [ ] Unit tests
 - [ ] E2E tests
 - [ ] Readme
 - [ ] TS docs
 - [ ] Documentation site
 - [ ] Logo
+- [ ] Zod support
+- [ ] Nested component collection (? need poll)
 - [ ] Typed plugin system ? (like scrollToError)
 
 # Quick start
@@ -114,14 +115,19 @@ pnpm install @regle/core @regle/validators
 import {useRegle} from '@regle/core';
 import {email, required, minLength, sameAs} from '@regle/validators';
 
+type MyForm = {
+  email?: string,
+  password?: string,
+  confirmPassword?: string
+}
 
-const form = ref({
-  email: '',
-  password: '',
-  confirmPassword: '',
+const form = ref<MyForm>({
+  email: undefined,
+  password: undefined,
+  confirmPassword: undefined,
 })
 
-const {$regle, errors, validateForm} = useRegle(form, () => ({
+const {$errors, validateForm} = useRegle(form, () => ({
   email: {
     email,
     required,
@@ -132,7 +138,7 @@ const {$regle, errors, validateForm} = useRegle(form, () => ({
   },
   confirmPassword: {
     required,
-    sameAs: withMessage(sameAs(form.value.password), 'Confirm password must be same as password')
+    sameAs: withMessage(sameAs(() => form.value.password), 'Confirm password must be same as password')
   }
 }));
 
@@ -141,7 +147,7 @@ const {$regle, errors, validateForm} = useRegle(form, () => ({
 function submit() {
   const result = await validateForm();
   if (result) {
-    console.log(result);
+    console.log(result.email); // email: string
     //          ^ type safe form result based on your validators
   }
 }

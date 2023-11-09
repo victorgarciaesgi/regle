@@ -34,6 +34,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TState>
   ): Regle<TState, TRules> {
     const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
+
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
       ...options,

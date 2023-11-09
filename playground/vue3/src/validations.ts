@@ -5,7 +5,7 @@ export function timeout(count: number) {
   return new Promise((resolve) => setTimeout(resolve, count));
 }
 
-export const asyncEmail = createRule<string, [limit: number]>({
+export const asyncEmail = createRule<string, [limit: number], true>({
   type: 'email',
   async validator(value, limit) {
     if (ruleHelpers.isEmpty(value)) {

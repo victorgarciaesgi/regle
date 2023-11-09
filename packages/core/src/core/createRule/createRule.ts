@@ -7,11 +7,42 @@ import {
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 
+/**
+ * @description
+ * Create a typed custom rule that can be used like default validators.
+ * It can also be declared in the global options
+ *
+ * It will automatically detect if the rule is async
+ *
+ * @typeParam TValue - The input value the rule should receive
+ * @typeParam TParams - Tuple declaration of the rule parameters (if any)
+ *
+ * @param definition - The rule processors object
+ *
+ * @returns A rule definition that can be callable depending on params presence
+ *
+ * @exemple
+ *
+ * ```ts
+ * // Create a simple rule with no params
+ * import {ruleHelpers} from '@regle/validators';
+ *
+ * export const isFoo = createRule<string>({
+ *   validator(value) {
+ *       if (ruleHelpers.isFilled(value)) {
+ *           return value === 'foo';
+ *       }
+ *       return true
+ *   },
+ *   message: "The value should be 'foo'"
+ * })
+ * ```
+ */
 export function createRule<
-  TValue extends any,
+  TValue extends any = unknown,
   TParams extends any[] = [],
-  TType extends string = string,
->(definition: RegleRuleInit<TValue, TParams, TType>): InferRegleRule<TValue, TParams> {
+  TAsync extends boolean = false,
+>(definition: RegleRuleInit<TValue, TParams, TAsync>): InferRegleRule<TValue, TParams, TAsync> {
   if (typeof definition.validator === 'function') {
     let fakeParams = [] as never;
     const staticProcessors = defineRuleProcessors(definition, ...fakeParams);
@@ -29,16 +60,17 @@ export function createRule<
       ruleFactory.message = staticProcessors.message;
       ruleFactory.active = staticProcessors.active;
       ruleFactory.type = staticProcessors.type;
+      ruleFactory.exec = staticProcessors.exec;
 
-      ruleFactory._validator = definition.validator;
-      ruleFactory._message = definition.message;
-      ruleFactory._active = definition.active;
+      ruleFactory._validator = staticProcessors.validator;
+      ruleFactory._message = staticProcessors.message;
+      ruleFactory._active = staticProcessors.active;
       ruleFactory._type = definition.type;
       ruleFactory._patched = false;
-      ruleFactory._async = isAsync;
-      return ruleFactory satisfies RegleRuleWithParamsDefinition<TValue, TParams>;
+      ruleFactory._async = isAsync as TAsync;
+      return ruleFactory satisfies RegleRuleWithParamsDefinition<TValue, TParams, TAsync>;
     } else {
-      return staticProcessors satisfies RegleRuleDefinition<TValue, TParams> as any;
+      return staticProcessors satisfies RegleRuleDefinition<TValue, TParams, TAsync> as any;
     }
   }
   throw new Error('Validator must be a function');

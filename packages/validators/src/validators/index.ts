@@ -19,3 +19,5 @@ export * from './url';
 export * from './dateAfter';
 export * from './dateBefore';
 export * from './dateBetween';
+export * from './ipAddress';
+export * from './macAddress';

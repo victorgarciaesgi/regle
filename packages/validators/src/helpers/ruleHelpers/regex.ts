@@ -1,6 +1,6 @@
 import { isEmpty } from './isEmpty';
 
-export function regex(_value: string | number, ...expr: RegExp[]): boolean {
+export function regex(_value: string | number | null | undefined, ...expr: RegExp[]): boolean {
   if (isEmpty(_value)) {
     return true;
   }

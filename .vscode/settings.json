@@ -1,5 +1,6 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "prettier.configPath": ".prettierrc",
-  "references.preferredLocation": "peek"
+  "references.preferredLocation": "peek",
+  "vitest.enable": true
 }

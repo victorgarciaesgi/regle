@@ -18,7 +18,7 @@ export const minValue: RegleRuleWithParamsDefinition<number, [count: number]> = 
     return true;
   },
   message: (_, count) => {
-    return `Value must be minimum ${count}`;
+    return `The minimum value allowed is ${count}`;
   },
   type: 'minValue',
 });

@@ -102,8 +102,16 @@ export type InlineRuleDeclaration<TValue extends any = any> = (
 
 /**
  * @public
+ */
+export type InlinePromiseRuleDeclaration<TValue extends any = any> = (
+  value: Maybe<TValue>,
+  ...args: any[]
+) => Promise<boolean>;
+
+/**
+ * @public
  * Regroup inline and registered rules
  * */
 export type FormRuleDeclaration<TValue extends any, TParams extends any[] = []> =
   | InlineRuleDeclaration<TValue>
-  | RegleRuleDefinition<TValue, TParams>;
+  | RegleRuleDefinition<TValue, TParams, boolean>;

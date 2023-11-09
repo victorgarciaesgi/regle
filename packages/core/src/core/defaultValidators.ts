@@ -4,6 +4,7 @@ export type DefaultValidators = {
   maxLength: RegleRuleWithParamsDefinition<string, [count: number]>;
   required: RegleRuleDefinition<unknown, []>;
   requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
+  requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
   alpha: RegleRuleDefinition<string>;
   alphaNum: RegleRuleDefinition<string | number>;
   between: RegleRuleWithParamsDefinition<number, [min: number, max: number]>;
@@ -17,8 +18,11 @@ export type DefaultValidators = {
   >;
   minValue: RegleRuleWithParamsDefinition<number, [count: number]>;
   numeric: RegleRuleDefinition<number | string>;
-  requireUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]>;
   url: RegleRuleDefinition<string>;
   dateAfter: RegleRuleWithParamsDefinition<Date, [after: Date]>;
+  dateBefore: RegleRuleWithParamsDefinition<Date, [before: Date]>;
+  dateBetween: RegleRuleWithParamsDefinition<Date, [before: Date, after: Date]>;
+  ipAddress: RegleRuleDefinition<string, [], false>;
+  macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false>;
 };

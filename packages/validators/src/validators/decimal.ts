@@ -1,5 +1,5 @@
 import { RegleRuleDefinition, createRule } from '@regle/core';
-import { ruleHelpers } from 'helpers';
+import { ruleHelpers } from '../helpers';
 
 const decimalRegex = /^[-]?\d*(\.\d+)?$/;
 

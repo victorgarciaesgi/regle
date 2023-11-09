@@ -8,23 +8,37 @@ import {
   RegleRuleWithParamsDefinition,
 } from '@regle/core';
 
-export function withMessage<TValue extends any>(
-  rule: InlineRuleDeclaration<TValue>,
+export function withMessage<TValue extends any, TRule extends InlineRuleDeclaration<TValue>>(
+  rule: TRule,
   newMessage: string | ((value: TValue) => string)
-): RegleRuleDefinition<TValue>;
-export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams>,
+): RegleRuleDefinition<TValue, [], ReturnType<TRule> extends Promise<any> ? true : false>;
+export function withMessage<
+  TValue extends any,
+  TParams extends any[],
+  TAsync extends boolean = false,
+>(
+  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
-): RegleRuleWithParamsDefinition<TValue, TParams>;
-export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: RegleRuleDefinition<TValue, TParams>,
+): RegleRuleWithParamsDefinition<TValue, TParams, TAsync>;
+export function withMessage<
+  TValue extends any,
+  TParams extends any[],
+  TAsync extends boolean = false,
+>(
+  rule: RegleRuleDefinition<TValue, TParams, TAsync>,
   newMessage: string | ((value: TValue, ...args: TParams) => string)
-): RegleRuleDefinition<TValue, TParams>;
-export function withMessage<TValue extends any, TParams extends any[]>(
-  rule: RegleRuleRaw<TValue, TParams> | InlineRuleDeclaration<TValue>,
+): RegleRuleDefinition<TValue, TParams, TAsync>;
+export function withMessage<
+  TValue extends any,
+  TParams extends any[],
+  TAsync extends boolean = false,
+>(
+  rule: RegleRuleRaw<TValue, TParams, TAsync> | InlineRuleDeclaration<TValue>,
   newMessage: string | ((value: any, ...args: any[]) => string)
-): RegleRuleWithParamsDefinition<TValue, TParams> | RegleRuleDefinition<TValue, TParams> {
-  let _type: string;
+):
+  | RegleRuleWithParamsDefinition<TValue, TParams, TAsync>
+  | RegleRuleDefinition<TValue, TParams, TAsync> {
+  let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<TValue, TParams, boolean | Promise<boolean>>;
   let _active: boolean | RegleRuleDefinitionProcessor<TValue, TParams, boolean> | undefined;
   let _params: any[] | undefined;
@@ -38,7 +52,7 @@ export function withMessage<TValue extends any, TParams extends any[]>(
 
   const newRule = createRule<TValue, TParams>({
     type: _type,
-    validator: validator,
+    validator: validator as any,
     active: _active,
     message: newMessage,
   });
@@ -46,5 +60,5 @@ export function withMessage<TValue extends any, TParams extends any[]>(
   newRule._params = _params as any;
   newRule._patched = true;
 
-  return newRule;
+  return newRule as any;
 }

@@ -21,5 +21,5 @@ export function isEmpty(value: unknown): value is null | undefined {
     return isNaN(value);
   }
 
-  return !String(value).trim().length;
+  return !String(value).length;
 }

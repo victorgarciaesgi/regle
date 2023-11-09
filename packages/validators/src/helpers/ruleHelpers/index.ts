@@ -5,6 +5,7 @@ import { regex } from './regex';
 import { size } from './size';
 import { isDate } from './isDate';
 import { toDate } from './toDate';
+import { toNumber } from './toNumber';
 
 export const ruleHelpers = {
   isEmpty,
@@ -14,4 +15,5 @@ export const ruleHelpers = {
   isNumber,
   isDate,
   toDate,
+  toNumber,
 };

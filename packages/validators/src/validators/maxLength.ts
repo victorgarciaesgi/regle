@@ -18,7 +18,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
     return true;
   },
   message: (_, count) => {
-    return `Value must be maximum ${count} characters long`;
+    return `The maximum length allowed is ${count}`;
   },
   type: 'maxLength',
 });

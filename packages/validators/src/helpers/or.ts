@@ -1,11 +1,17 @@
 import { createRule, FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import { ExtractParamsFromRules, ExtractValueFromRules, UnwrapTuples } from '../types';
+import {
+  ExtractParamsFromRules,
+  ExtractValueFromRules,
+  GuessAsyncFromRules,
+  UnwrapTuples,
+} from '../types';
 
 export function or<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],
-  UnwrapTuples<ExtractParamsFromRules<TRules>>
+  UnwrapTuples<ExtractParamsFromRules<TRules>>,
+  GuessAsyncFromRules<TRules>
 > {
   const isAnyRuleAsync = rules.some((rule) => {
     if (typeof rule === 'function') {
@@ -58,11 +64,11 @@ export function or<TRules extends FormRuleDeclaration<any, any>[]>(
 
   const newRule = createRule({
     type: 'or',
-    validator: validator,
-    message: '',
+    validator: validator as any,
+    message: 'The value does not match any of the provided validators',
   });
 
-  newRule._params = params;
+  newRule._params = params as any;
 
-  return newRule as RegleRuleDefinition;
+  return newRule as any;
 }

@@ -16,7 +16,7 @@ export function withAsync<TValue, TParams extends (Ref<unknown> | (() => unknown
 
   const newRule = createRule({
     type: InternalRuleType.Async,
-    validator: validator,
+    validator: validator as any,
     message: '',
   });
 

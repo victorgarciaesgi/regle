@@ -1,11 +1,22 @@
-import { createRule, FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import { ExtractValueFromRules, ExtractParamsFromRules, UnwrapTuples } from '../types';
+import {
+  createRule,
+  FormRuleDeclaration,
+  RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
+} from '@regle/core';
+import {
+  ExtractValueFromRules,
+  ExtractParamsFromRules,
+  UnwrapTuples,
+  GuessAsyncFromRules,
+} from '../types';
 
 export function and<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],
-  UnwrapTuples<ExtractParamsFromRules<TRules>>
+  UnwrapTuples<ExtractParamsFromRules<TRules>>,
+  GuessAsyncFromRules<TRules>
 > {
   const isAnyRuleAsync = rules.some((rule) => {
     if (typeof rule === 'function') {
@@ -51,23 +62,31 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
     return $rules;
   }
 
-  const validator = isAnyRuleAsync
-    ? async (value: any | null | undefined, ...params: any[]) => {
-        const results = await Promise.all(computeRules(rules, value, ...params));
-        return results.every((result) => !!result);
-      }
-    : (value: any | null | undefined, ...params: any[]) => {
-        const $rules = computeRules(rules, value, ...params);
-        return $rules.every((result) => !!result);
-      };
+  let validator: RegleRuleDefinitionProcessor;
+
+  if (!!rules.length) {
+    validator = isAnyRuleAsync
+      ? async (value: any | null | undefined, ...params: any[]) => {
+          const results = await Promise.all(computeRules(rules, value, ...params));
+          return results.every((result) => !!result);
+        }
+      : (value: any | null | undefined, ...params: any[]) => {
+          const $rules = computeRules(rules, value, ...params);
+          return $rules.every((result) => !!result);
+        };
+  } else {
+    validator = (value: any) => {
+      return false;
+    };
+  }
 
   const newRule = createRule({
     type: 'and',
-    validator: validator,
-    message: '',
+    validator: validator as any,
+    message: 'The value does not match all of the provided validators',
   });
 
-  newRule._params = _params;
+  newRule._params = _params as any;
 
-  return newRule as RegleRuleDefinition;
+  return newRule as any;
 }

@@ -1,7 +1,16 @@
-export function size(value: string | any[] | Record<string, any>): number {
-  if (Array.isArray(value)) return value.length;
-  if (typeof value === 'object') {
-    return Object.keys(value).length;
+import { MaybeRef, unref } from 'vue';
+
+export function size(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
+  const _value = unref(value);
+  if (Array.isArray(_value)) return _value.length;
+  if (typeof _value === 'object') {
+    return Object.keys(_value).length;
   }
-  return String(value).length;
+  if (typeof _value === 'number') {
+    if (isNaN(_value)) {
+      return 0;
+    }
+    return _value;
+  }
+  return String(_value).length;
 }

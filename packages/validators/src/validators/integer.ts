@@ -1,5 +1,5 @@
 import { RegleRuleDefinition, createRule } from '@regle/core';
-import { ruleHelpers } from 'helpers';
+import { ruleHelpers } from '../helpers';
 
 const integerRegex = /(^[0-9]*$)|(^-[0-9]+$)/;
 
