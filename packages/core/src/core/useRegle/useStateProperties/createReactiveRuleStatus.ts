@@ -1,5 +1,6 @@
 import { ComputedRef, Ref, computed, effectScope, reactive, watch } from 'vue';
 import {
+  $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
@@ -7,6 +8,7 @@ import {
   RegleExternalErrorTree,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
+  RegleRuleMetadataDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { isEmpty } from '../../../utils';
@@ -39,21 +41,32 @@ export function createReactiveRuleStatus({
     $active: ComputedRef<boolean>;
     $message: ComputedRef<string>;
     $type: ComputedRef<string>;
-    $validator: ComputedRef<RegleRuleDefinitionProcessor<any, any, boolean | Promise<boolean>>>;
+    $validator: ComputedRef<
+      RegleRuleDefinitionProcessor<
+        any,
+        any,
+        RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>
+      >
+    >;
     $params: ComputedRef<any[]>;
     $path: ComputedRef<string>;
   };
   let scope = effectScope();
   let scopeState!: ScopeState;
 
-  const { $pending, $valid } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
+  const { $pending, $valid, $metadata } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
   function $watch() {
     scopeState = scope.run(() => {
+      const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
+        $invalid: !$valid.value,
+        $params: $params.value,
+        ...$metadata.value,
+      }));
       const $active = computed<boolean>(() => {
         if (isFormRuleDefinition(rule)) {
           if (typeof rule.value.active === 'function') {
-            return rule.value.active(state.value, ...$params.value);
+            return rule.value.active(state.value, $defaultMetadata.value);
           } else {
             return rule.value.active;
           }
@@ -68,7 +81,7 @@ export function createReactiveRuleStatus({
 
         if (customMessageRule) {
           if (typeof customMessageRule === 'function') {
-            message = customMessageRule(state.value, ...$params.value);
+            message = customMessageRule(state.value, $defaultMetadata.value);
           } else {
             message = customMessageRule;
           }
@@ -76,7 +89,7 @@ export function createReactiveRuleStatus({
         if (isFormRuleDefinition(rule)) {
           if (!(customMessageRule && !rule.value._patched)) {
             if (typeof rule.value.message === 'function') {
-              message = rule.value.message(state.value, ...$params.value);
+              message = rule.value.message(state.value, $defaultMetadata.value);
             } else {
               message = rule.value.message;
             }
@@ -151,7 +164,13 @@ export function createReactiveRuleStatus({
           $pending.value = true;
           const promiseResult = await resultOrPromise;
 
-          ruleResult = promiseResult;
+          if (typeof promiseResult === 'boolean') {
+            ruleResult = promiseResult;
+          } else {
+            const { $valid, ...rest } = promiseResult;
+            ruleResult = $valid;
+            $metadata.value = rest;
+          }
         } catch (e) {
           ruleResult = false;
         } finally {
@@ -159,7 +178,13 @@ export function createReactiveRuleStatus({
         }
       }
     } else {
-      ruleResult = resultOrPromise;
+      if (typeof resultOrPromise === 'boolean') {
+        ruleResult = resultOrPromise;
+      } else {
+        const { $valid, ...rest } = resultOrPromise;
+        ruleResult = $valid;
+        $metadata.value = rest;
+      }
     }
     $valid.value = ruleResult;
     if (options.$externalErrors) {

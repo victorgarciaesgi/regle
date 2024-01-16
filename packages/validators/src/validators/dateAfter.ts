@@ -11,7 +11,7 @@ export const dateAfter: RegleRuleWithParamsDefinition<Date, [after: Maybe<Date>]
     }
     return true;
   },
-  message: (_, after) => {
+  message: (_, { $params: [after] }) => {
     return `The date must be after ${after}`;
   },
   type: 'dateAfter',

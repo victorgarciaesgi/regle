@@ -1,6 +1,10 @@
 import { ArrayElement, Maybe } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
-import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from './rule.definition.type';
+import {
+  RegleRuleDefinition,
+  RegleRuleMetadataDefinition,
+  RegleRuleWithParamsDefinition,
+} from './rule.definition.type';
 
 /**
  * @public
@@ -95,23 +99,27 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
 /**
  * @public
  */
-export type InlineRuleDeclaration<TValue extends any = any> = (
-  value: Maybe<TValue>,
-  ...args: any[]
-) => boolean | Promise<boolean>;
+export type InlineRuleDeclaration<
+  TValue extends any = any,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+> = (value: Maybe<TValue>, ...args: any[]) => TMetadata | Promise<TMetadata>;
 
 /**
  * @public
  */
-export type InlinePromiseRuleDeclaration<TValue extends any = any> = (
-  value: Maybe<TValue>,
-  ...args: any[]
-) => Promise<boolean>;
+export type InlinePromiseRuleDeclaration<
+  TValue extends any = any,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+> = (value: Maybe<TValue>, ...args: any[]) => Promise<TMetadata>;
 
 /**
  * @public
  * Regroup inline and registered rules
  * */
-export type FormRuleDeclaration<TValue extends any, TParams extends any[] = []> =
-  | InlineRuleDeclaration<TValue>
-  | RegleRuleDefinition<TValue, TParams, boolean>;
+export type FormRuleDeclaration<
+  TValue extends any,
+  TParams extends any[] = [],
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+> =
+  | InlineRuleDeclaration<TValue, TMetadata>
+  | RegleRuleDefinition<TValue, TParams, boolean, TMetadata>;

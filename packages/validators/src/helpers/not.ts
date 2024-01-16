@@ -1,15 +1,27 @@
 import {
-  FormRuleDeclaration,
   RegleRuleDefinition,
-  RegleRuleDefinitionProcessor,
+  RegleRuleDefinitionWithMetadataProcessor,
+  RegleRuleMetadataConsumer,
+  RegleRuleMetadataDefinition,
   createRule,
 } from '@regle/core';
 import { ruleHelpers } from './ruleHelpers';
 
-export function not<TValue, TParams extends any[] = any[], TAsync extends boolean = false>(
-  rule: RegleRuleDefinition<TValue, TParams, TAsync>,
-  message: string | RegleRuleDefinitionProcessor<TValue, TParams, string>
-): RegleRuleDefinition<TValue, [], TAsync> {
+export function not<
+  TValue,
+  TParams extends any[] = any[],
+  TAsync extends boolean = false,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+>(
+  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
+  message:
+    | string
+    | RegleRuleDefinitionWithMetadataProcessor<
+        TValue,
+        RegleRuleMetadataConsumer<TParams, TMetadata>,
+        string
+      >
+): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
   let _type: string | undefined;
   let _params: any[] | undefined = [];
   let _async = false;
@@ -45,5 +57,5 @@ export function not<TValue, TParams extends any[] = any[], TAsync extends boolea
 
   newRule._params = _params as any;
 
-  return newRule as RegleRuleDefinition<TValue, [], TAsync>;
+  return newRule as RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
 }

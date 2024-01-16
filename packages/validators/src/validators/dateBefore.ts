@@ -11,7 +11,7 @@ export const dateBefore: RegleRuleWithParamsDefinition<Date, [before: Maybe<Date
     }
     return true;
   },
-  message: (_, before) => {
+  message: (_, { $params: [before] }) => {
     return `The date must be before ${before}`;
   },
   type: 'dateBefore',

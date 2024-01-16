@@ -12,7 +12,7 @@ export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]> =
     }
     return value === target;
   },
-  message(_, target) {
+  message(_, { $params: [target] }) {
     return `Value must be equal to "${target}"`;
   },
 });

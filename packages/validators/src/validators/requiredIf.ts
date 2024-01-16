@@ -12,7 +12,7 @@ export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: bool
     return true;
   },
   message: 'Value is required',
-  active(_, condition) {
+  active(_, { $params: [condition] }) {
     return condition;
   },
   type: 'required',

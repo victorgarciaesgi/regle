@@ -11,8 +11,8 @@ export const dateBetween: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, after) => {
-    return `The date must be before ${after}`;
+  message: (_, { $params: [before, after] }) => {
+    return `The date must be between ${before} and ${after}`;
   },
   type: 'dateBetween',
 });

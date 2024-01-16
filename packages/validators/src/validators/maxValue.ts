@@ -17,7 +17,7 @@ export const maxValue: RegleRuleWithParamsDefinition<number, [count: number]> = 
     }
     return true;
   },
-  message: (_, count) => {
+  message: (_, { $params: [count] }) => {
     return `The maximum value allowed is ${count}`;
   },
   type: 'maxValue',

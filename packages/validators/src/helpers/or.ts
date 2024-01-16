@@ -3,15 +3,17 @@ import {
   ExtractParamsFromRules,
   ExtractValueFromRules,
   GuessAsyncFromRules,
+  GuessMetadataFromRules,
   UnwrapTuples,
 } from '../types';
 
-export function or<TRules extends FormRuleDeclaration<any, any>[]>(
+export function or<TRules extends FormRuleDeclaration<any, any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
-  GuessAsyncFromRules<TRules>
+  GuessAsyncFromRules<TRules>,
+  GuessMetadataFromRules<TRules>
 > {
   const isAnyRuleAsync = rules.some((rule) => {
     if (typeof rule === 'function') {
@@ -52,14 +54,39 @@ export function or<TRules extends FormRuleDeclaration<any, any>[]>(
     return $rules;
   }
 
+  function computeMetadata(
+    results: (boolean | { $valid: boolean; [x: string]: any })[]
+  ): boolean | { $valid: boolean; [x: string]: any } {
+    const isAnyResultMetaData = results.some((s) => typeof s !== 'boolean');
+    if (isAnyResultMetaData) {
+      return {
+        $valid: results.some((result) => {
+          if (typeof result === 'boolean') {
+            return !!result;
+          }
+          return result.$valid;
+        }),
+        ...results.reduce((acc, result) => {
+          if (typeof result === 'boolean') {
+            return acc;
+          }
+          const { $valid, ...rest } = result;
+          return { ...acc, ...rest };
+        }, {}),
+      };
+    } else {
+      return results.some((result) => !!result);
+    }
+  }
+
   const validator = isAnyRuleAsync
     ? async (value: any | null | undefined, ...params: any[]) => {
         const results = await Promise.all(computeRules(rules, value, ...params));
-        return results.some((result) => !!result);
+        return computeMetadata(results);
       }
     : (value: any | null | undefined, ...params: any[]) => {
         const $rules = computeRules(rules, value, ...params);
-        return $rules.some((result) => !!result);
+        return computeMetadata($rules);
       };
 
   const newRule = createRule({

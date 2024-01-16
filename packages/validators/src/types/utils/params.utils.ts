@@ -1,17 +1,18 @@
 import { InlineRuleDeclaration, RegleRuleDefinition } from '@regle/core';
+import { EmptyObject } from 'type-fest';
 
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<infer V, any, any>
+  ? F extends RegleRuleDefinition<infer V, any, any, any>
     ? [V, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<infer V>
+    : F extends InlineRuleDeclaration<infer V, any>
     ? [V, ...ExtractValueFromRules<R>]
     : [F, ...ExtractValueFromRules<R>]
   : [];
 
 type ExtractAsyncStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, any, infer A>
+  ? F extends RegleRuleDefinition<any, any, infer A, any>
     ? [A, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<any>
+    : F extends InlineRuleDeclaration<any, any>
     ? [ReturnType<F> extends Promise<any> ? true : false, ...ExtractValueFromRules<R>]
     : [F, ...ExtractValueFromRules<R>]
   : [];
@@ -27,10 +28,33 @@ type ExtractAsync<T extends [...any[]]> = T extends [infer F, ...infer R]
 export type GuessAsyncFromRules<T extends any[]> = ExtractAsync<ExtractAsyncStatesFromRules<T>>;
 
 export type ExtractParamsFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, infer P, any>
+  ? F extends RegleRuleDefinition<any, infer P, any, any>
     ? [P, ...ExtractParamsFromRules<R>]
     : [F, ...ExtractParamsFromRules<R>]
   : [];
+
+type ExtractMetaDataFromRules<T extends any[]> = T extends [infer F, ...infer R]
+  ? F extends RegleRuleDefinition<
+      any,
+      any,
+      any,
+      infer M extends {
+        $valid: boolean;
+        [x: string]: any;
+      }
+    >
+    ? [M, ...ExtractMetaDataFromRules<R>]
+    : [...ExtractMetaDataFromRules<R>]
+  : [];
+
+type ExtractMetadata<T extends [...any[]]> = T extends [infer F, ...infer R]
+  ? F & ExtractMetadata<R>
+  : {};
+
+export type GuessMetadataFromRules<
+  T extends any[],
+  TMeta = ExtractMetadata<ExtractMetaDataFromRules<T>>,
+> = TMeta extends EmptyObject ? boolean : TMeta;
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 

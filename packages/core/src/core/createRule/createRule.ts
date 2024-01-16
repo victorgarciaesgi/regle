@@ -2,6 +2,7 @@ import {
   InferRegleRule,
   RegleRuleDefinition,
   RegleRuleInit,
+  RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinition,
   RegleUniversalParams,
 } from '../../types';
@@ -43,17 +44,20 @@ export function createRule<
   TValue extends any = unknown,
   TParams extends any[] = [],
   TAsync extends boolean = false,
->(definition: RegleRuleInit<TValue, TParams, TAsync>): InferRegleRule<TValue, TParams, TAsync> {
+  TMetaData extends RegleRuleMetadataDefinition = boolean,
+>(
+  definition: RegleRuleInit<TValue, TParams, TAsync, TMetaData>
+): InferRegleRule<TValue, TParams, TAsync, TMetaData> {
   if (typeof definition.validator === 'function') {
-    let fakeParams = [] as never;
-    const staticProcessors = defineRuleProcessors(definition, ...fakeParams);
+    let fakeParams: any[] = [];
+    const staticProcessors = defineRuleProcessors(definition as any, ...fakeParams);
 
     const isAsync = definition.validator.constructor.name === 'AsyncFunction';
     // For validators needing a params like maxLength or requiredIf
     if (getFunctionParametersLength(definition.validator) > 1) {
       // For validators with param, return a function providing params for all the rule processors
       const ruleFactory = function (...params: RegleUniversalParams<TParams>) {
-        return defineRuleProcessors(definition, ...params);
+        return defineRuleProcessors(definition as any, ...params);
       };
 
       // Assign all the internals to the rule raw function so they are accessible without calling it
@@ -69,9 +73,9 @@ export function createRule<
       ruleFactory._type = definition.type;
       ruleFactory._patched = false;
       ruleFactory._async = isAsync as TAsync;
-      return ruleFactory satisfies RegleRuleWithParamsDefinition<TValue, TParams, TAsync>;
+      return ruleFactory as any;
     } else {
-      return staticProcessors satisfies RegleRuleDefinition<TValue, TParams, TAsync> as any;
+      return staticProcessors as any;
     }
   }
   throw new Error('Validator must be a function');

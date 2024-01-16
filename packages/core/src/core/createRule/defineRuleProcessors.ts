@@ -1,68 +1,61 @@
 import {
-  RegleInternalRuleDefs,
-  RegleRuleDefinition,
-  RegleRuleInit,
-  RegleUniversalParams,
+  $InternalRegleRuleDefinition,
+  $InternalRegleRuleInit,
+  $InternalRegleRuleMetadataConsumer,
 } from '../../types';
 import { createReactiveParams, unwrapRuleParameters } from './unwrapRuleParameters';
 
-export function defineRuleProcessors<
-  TValue extends any = any,
-  TParams extends any[] = [],
-  TAsync extends boolean = false,
->(
-  definition: RegleRuleInit<TValue, TParams, TAsync>,
-  ...params: RegleUniversalParams<TParams>
-): RegleRuleDefinition<TValue, TParams, TAsync> {
+export function defineRuleProcessors(
+  definition: $InternalRegleRuleInit,
+  ...params: any[]
+): $InternalRegleRuleDefinition {
   const { message, validator, active, ...properties } = definition;
 
   const isAsync = validator.constructor.name === 'AsyncFunction';
 
   const defaultProcessors = {
-    message(value: any, ...args: any[]) {
+    validator(value: any, ...args: any[]) {
+      return definition.validator(value, ...unwrapRuleParameters(args.length ? args : params));
+    },
+    message(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.message === 'function') {
-        return definition.message(
-          value,
-          ...unwrapRuleParameters<TParams>(args.length ? args : params)
-        );
+        return definition.message(value, {
+          ...metadata,
+          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+        });
       } else {
         return definition.message;
       }
     },
-    validator(value: any, ...args: any[]) {
-      return definition.validator(
-        value,
-        ...unwrapRuleParameters<TParams>(args.length ? args : params)
-      );
-    },
-    active(value: any, ...args: any[]) {
+
+    active(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.active === 'function') {
-        return definition.active(
-          value,
-          ...unwrapRuleParameters<TParams>(args.length ? args : params)
-        );
+        return definition.active(value, {
+          ...metadata,
+          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+        });
       } else {
         return definition.active ?? true;
       }
     },
     exec(value: any) {
-      return definition.validator(value, ...unwrapRuleParameters<TParams>(params));
+      return definition.validator(value, ...unwrapRuleParameters(params));
     },
   };
 
   const processors = {
     ...defaultProcessors,
     ...properties,
-    ...({
-      _validator: definition.validator,
+    ...{
+      _validator: definition.validator as any,
       _message: definition.message,
       _active: definition.active,
       _type: definition.type,
       _patched: false,
-      _async: isAsync as TAsync,
-      _params: createReactiveParams<RegleUniversalParams<TParams>>(params),
-    } satisfies RegleInternalRuleDefs<TValue, TParams, TAsync>),
-  } satisfies RegleRuleDefinition<TValue, TParams, TAsync>;
+      _async: isAsync,
+      _params: createReactiveParams<never>(params),
+    },
+  };
 
   return processors;
 }

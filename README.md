@@ -68,7 +68,7 @@ TODO
 - [x] "or" and "not" helper
 - [x] externalErrors
 - [x] Dates built-in validators
-- [ ] Usable async data in messages
+- [ ] Usable Metadata (change create Rule declaration?)
 - [ ] Per field validation option (lazy etc...)
 - [ ] Unit tests
 - [ ] E2E tests

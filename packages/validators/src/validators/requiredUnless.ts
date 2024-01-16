@@ -10,7 +10,7 @@ export const requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: 
       return true;
     },
     message: 'Value is required',
-    active(_, condition) {
+    active(_, { $params: [condition] }) {
       return !condition;
     },
     type: 'required',

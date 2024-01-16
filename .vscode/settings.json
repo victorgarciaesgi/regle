@@ -2,5 +2,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "prettier.configPath": ".prettierrc",
   "references.preferredLocation": "peek",
-  "vitest.enable": true
+  "vitest.enable": true,
+  "window.title": "Regle"
 }

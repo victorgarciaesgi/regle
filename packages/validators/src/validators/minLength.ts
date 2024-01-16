@@ -15,7 +15,7 @@ export const minLength: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, count) => {
+  message: (_, { $params: [count] }) => {
     return `This field should be at least ${count} characters long`;
   },
   type: 'minLength',

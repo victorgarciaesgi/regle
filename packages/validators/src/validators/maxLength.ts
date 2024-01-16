@@ -17,7 +17,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, count) => {
+  message: (_, { $params: [count] }) => {
     return `The maximum length allowed is ${count}`;
   },
   type: 'maxLength',

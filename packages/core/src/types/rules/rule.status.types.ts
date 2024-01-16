@@ -6,6 +6,7 @@ import type {
   ReglePartialValidationTree,
   RegleRuleDecl,
   RegleRuleDefinition,
+  RegleRuleMetadataDefinition,
 } from '..';
 
 /**
@@ -134,7 +135,10 @@ export interface $InternalRegleRuleStatus {
   $path: string;
   $externalErrors?: string[];
   $params?: any[];
-  $validator(value: any, ...args: any[]): boolean | Promise<boolean>;
+  $validator(
+    value: any,
+    ...args: any[]
+  ): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;

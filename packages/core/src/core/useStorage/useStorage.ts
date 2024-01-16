@@ -5,6 +5,7 @@ import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
 export type StoredRuleStatus = {
   $valid: Ref<boolean>;
   $pending: Ref<boolean>;
+  $metadata: Ref<Record<string, any>>;
 };
 
 export type RegleStorage = {
@@ -140,8 +141,9 @@ export function useStorage(): RegleStorage {
     } else {
       const $pending = ref(false);
       const $valid = ref(true);
-      ruleStatusStorage.value.set(path, { $pending, $valid });
-      return { $pending, $valid };
+      const $metadata = ref({});
+      ruleStatusStorage.value.set(path, { $pending, $valid, $metadata });
+      return { $pending, $valid, $metadata };
     }
   }
 

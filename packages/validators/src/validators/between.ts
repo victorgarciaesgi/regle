@@ -22,7 +22,7 @@ export const between: RegleRuleWithParamsDefinition<number, [min: number, max: n
       }
       return true;
     },
-    message: (_, min, max) => {
+    message: (_, { $params: [min, max] }) => {
       return `The value must be between ${min} and ${max}`;
     },
     type: 'between',

@@ -5,14 +5,22 @@ export function timeout(count: number) {
   return new Promise((resolve) => setTimeout(resolve, count));
 }
 
-export const asyncEmail = createRule<string, [limit: number], true>({
+export const asyncEmail = createRule<
+  string,
+  [limit: number],
+  true,
+  { $valid: boolean; foo?: string }
+>({
   type: 'email',
   async validator(value, limit) {
     if (ruleHelpers.isEmpty(value)) {
-      return true;
+      return { $valid: true };
     }
     await timeout(1000);
-    return limit === 2;
+    return {
+      $valid: limit === 2,
+      foo: 'bar',
+    };
   },
   message: 'Value is not an email',
 });

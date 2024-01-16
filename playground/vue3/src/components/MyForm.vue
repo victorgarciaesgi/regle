@@ -55,6 +55,7 @@ import {
   and,
   dateAfter,
   email,
+  maxLength,
   minLength,
   not,
   required,
@@ -119,15 +120,16 @@ const { $regle, $errors, validateForm, $state } = useRegle(
     email: {
       required,
       foo: withMessage(
-        and(asyncEmail(2), minLength(6)),
-        (_, limit, min) => `Should be email OR minlength: ${min}`
+        and(asyncEmail(2), maxLength(6)),
+        (_, { $params: [limit, max], foo }) =>
+          `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
       ),
     },
     firstName: {
       ...(limit.value === 2 && { required }),
       not: not(
         sameAs(() => form.email),
-        'Should not be same as email'
+        (_, { $params: [target] }) => `Should not be same as email (${target})`
       ),
     },
     birthDate: {
