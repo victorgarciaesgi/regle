@@ -16,10 +16,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v2
-        name: Install pnpm
         with:
           version: 8
-          run_install: false
+          run_install: true
       - run: pnpm run test
         env:
           CI: true
