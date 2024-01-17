@@ -1,10 +1,8 @@
 import { ruleHelpers } from '../helpers';
-import { createRule, RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, defineType, RegleRuleWithParamsDefinition } from '@regle/core';
 
-export const maxValue: RegleRuleWithParamsDefinition<number, [count: number]> = createRule<
-  number,
-  [count: number]
->({
+export const maxValue: RegleRuleWithParamsDefinition<number, [count: number]> = createRule({
+  type: defineType<number, [count: number]>('maxValue'),
   validator: (value, count) => {
     if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(count)) {
       if (ruleHelpers.isNumber(count) && ruleHelpers.isNumber(value)) {
@@ -20,5 +18,4 @@ export const maxValue: RegleRuleWithParamsDefinition<number, [count: number]> = 
   message: (_, { $params: [count] }) => {
     return `The maximum value allowed is ${count}`;
   },
-  type: 'maxValue',
 });

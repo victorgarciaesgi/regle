@@ -1,5 +1,6 @@
 import {
   createRule,
+  defineType,
   FormRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
@@ -108,7 +109,7 @@ export function and<TRules extends FormRuleDeclaration<any, any, any>[]>(
   }
 
   const newRule = createRule({
-    type: 'and',
+    type: defineType<any>('and'),
     validator: validator as any,
     message: 'The value does not match all of the provided validators',
   });

@@ -1,11 +1,12 @@
-import { RegleRuleWithParamsDefinition, createRule } from '@regle/core';
+import { RegleRuleWithParamsDefinition, createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const macAddress: RegleRuleWithParamsDefinition<
   string,
   [separator?: string | undefined],
-  false
-> = createRule<string, [separator?: string]>({
+  boolean
+> = createRule({
+  type: defineType<string, [separator?: string]>('macAddress'),
   validator(value, separator = ':') {
     if (ruleHelpers.isEmpty(value)) {
       return true;
@@ -25,7 +26,6 @@ export const macAddress: RegleRuleWithParamsDefinition<
     return parts !== null && (parts.length === 6 || parts.length === 8) && parts.every(hexValid);
   },
   message: 'The value is not a valid MAC Address',
-  type: 'macAddress',
 });
 
 const hexValid = (hex: string) => hex.toLowerCase().match(/^[0-9a-f]{2}$/);

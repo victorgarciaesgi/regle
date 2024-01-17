@@ -1,4 +1,4 @@
-import { RegleRuleInit } from './rule.init.types';
+import { RegleRuleCore, RegleRuleInit } from './rule.init.types';
 import { RegleUniversalParams } from './rule.params.types';
 import { RegleInternalRuleDefs } from './rule.internal.types';
 import { AllRulesDeclarations, RegleCommonStatus, RegleFormPropertyType, RegleRuleDecl } from '.';
@@ -50,12 +50,12 @@ export interface RegleRuleWithParamsDefinition<
   TValue extends any = any,
   TParams extends any[] = [],
   TAsync extends boolean = false,
-  TMetaData extends RegleRuleMetadataDefinition = boolean,
-> extends RegleRuleInit<TValue, TParams, TAsync, TMetaData>,
-    RegleInternalRuleDefs<TValue, TParams, TAsync, TMetaData> {
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+> extends RegleRuleCore<TValue, TParams, TAsync, TMetadata>,
+    RegleInternalRuleDefs<TValue, TParams, TAsync, TMetadata> {
   (
     ...params: RegleUniversalParams<TParams>
-  ): RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>;
+  ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 }
 
 /**

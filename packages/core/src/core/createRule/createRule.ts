@@ -1,9 +1,7 @@
 import {
   InferRegleRule,
-  RegleRuleDefinition,
   RegleRuleInit,
   RegleRuleMetadataDefinition,
-  RegleRuleWithParamsDefinition,
   RegleUniversalParams,
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
@@ -41,12 +39,13 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  * ```
  */
 export function createRule<
-  TValue extends any = unknown,
-  TParams extends any[] = [],
-  TAsync extends boolean = false,
-  TMetaData extends RegleRuleMetadataDefinition = boolean,
+  TValue extends any,
+  TParams extends any[],
+  TMetaData extends RegleRuleMetadataDefinition,
+  TReturn extends TMetaData | Promise<TMetaData>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  definition: RegleRuleInit<TValue, TParams, TAsync, TMetaData>
+  definition: RegleRuleInit<TValue, TParams, TMetaData, TReturn, TAsync>
 ): InferRegleRule<TValue, TParams, TAsync, TMetaData> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
@@ -79,4 +78,10 @@ export function createRule<
     }
   }
   throw new Error('Validator must be a function');
+}
+
+export function defineType<TValue extends any = unknown, TParams extends any[] = []>(
+  ruleName: string
+): { value: TValue; params: TParams } {
+  return ruleName as any;
 }

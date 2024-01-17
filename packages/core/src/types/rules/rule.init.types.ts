@@ -12,19 +12,40 @@ import {
 export interface RegleRuleInit<
   TValue extends any,
   TParams extends any[] = [],
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TReturn extends TMetadata | Promise<TMetadata> = TMetadata,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+> {
+  type: { value: TValue; params: TParams };
+  validator: (value: Maybe<TValue>, ...args: TParams) => TReturn;
+  message:
+    | string
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string);
+  active?:
+    | boolean
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+}
+
+/**
+ * @argument
+ * Rule core
+ */
+export interface RegleRuleCore<
+  TValue extends any,
+  TParams extends any[] = [],
   TAsync extends boolean = false,
-  TMetaData extends RegleRuleMetadataDefinition = boolean,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
 > {
   validator: (
     value: Maybe<TValue>,
     ...args: TParams
-  ) => TAsync extends false ? TMetaData : Promise<TMetaData>;
+  ) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   message:
     | string
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetaData>) => string);
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string);
   active?:
     | boolean
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetaData>) => boolean);
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
   type?: string;
 }
 

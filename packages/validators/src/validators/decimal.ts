@@ -1,9 +1,10 @@
-import { RegleRuleDefinition, createRule } from '@regle/core';
+import { RegleRuleDefinition, createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 const decimalRegex = /^[-]?\d*(\.\d+)?$/;
 
-export const decimal: RegleRuleDefinition<number | string> = createRule<number | string>({
+export const decimal: RegleRuleDefinition<number | string> = createRule({
+  type: defineType<number | string>('decimal'),
   validator(value) {
     if (ruleHelpers.isEmpty(value)) {
       return true;
@@ -11,5 +12,4 @@ export const decimal: RegleRuleDefinition<number | string> = createRule<number |
     return ruleHelpers.regex(value, decimalRegex);
   },
   message: 'Value must be decimal',
-  type: 'decimal',
 });

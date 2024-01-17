@@ -1,4 +1,4 @@
-import { RegleRuleDefinition, createRule } from '@regle/core';
+import { RegleRuleDefinition, createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 function nibbleValid(nibble: string) {
@@ -18,7 +18,8 @@ function nibbleValid(nibble: string) {
   return numeric >= 0 && numeric <= 255;
 }
 
-export const ipAddress: RegleRuleDefinition<string, [], false> = createRule<string>({
+export const ipAddress: RegleRuleDefinition<string, [], boolean> = createRule({
+  type: defineType<string>('ipAddress'),
   validator(value) {
     if (ruleHelpers.isEmpty(value)) {
       return true;
@@ -32,5 +33,4 @@ export const ipAddress: RegleRuleDefinition<string, [], false> = createRule<stri
     return nibbles.length === 4 && nibbles.every(nibbleValid);
   },
   message: 'The value is not a valid IP address',
-  type: 'ipAddress',
 });

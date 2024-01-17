@@ -1,10 +1,8 @@
-import { RegleRuleWithParamsDefinition, createRule } from '@regle/core';
+import { RegleRuleWithParamsDefinition, createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
-export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> = createRule<
-  unknown,
-  [condition: boolean]
->({
+export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> = createRule({
+  type: defineType<unknown, [condition: boolean]>('required'),
   validator(value, condition) {
     if (condition) {
       return ruleHelpers.isFilled(typeof value === 'string' ? value.trim() : value);
@@ -15,5 +13,4 @@ export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: bool
   active(_, { $params: [condition] }) {
     return condition;
   },
-  type: 'required',
 });

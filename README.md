@@ -68,15 +68,16 @@ TODO
 - [x] "or" and "not" helper
 - [x] externalErrors
 - [x] Dates built-in validators
-- [ ] Usable Metadata (change create Rule declaration?)
+- [x] Usable Metadata (change create Rule declaration?)
 - [ ] Per field validation option (lazy etc...)
-- [ ] Unit tests
+- [ ] withDebounce
+- [ ] Zod support
+- [ ] Unit tests (in progress)
 - [ ] E2E tests
 - [ ] Readme
 - [ ] TS docs
 - [ ] Documentation site
 - [ ] Logo
-- [ ] Zod support
 - [ ] Nested component collection (? need poll)
 - [ ] Typed plugin system ? (like scrollToError)
 

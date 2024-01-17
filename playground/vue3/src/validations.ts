@@ -1,17 +1,12 @@
-import { createRule, defineRegleOptions } from '@regle/core';
+import { createRule, defineRegleOptions, defineType } from '@regle/core';
 import { ruleHelpers, withMessage, maxLength } from '@regle/validators';
 
 export function timeout(count: number) {
   return new Promise((resolve) => setTimeout(resolve, count));
 }
 
-export const asyncEmail = createRule<
-  string,
-  [limit: number],
-  true,
-  { $valid: boolean; foo?: string }
->({
-  type: 'email',
+export const asyncEmail = createRule({
+  type: defineType<string, [limit: number]>('asyncEmail'),
   async validator(value, limit) {
     if (ruleHelpers.isEmpty(value)) {
       return { $valid: true };
@@ -28,7 +23,7 @@ export const asyncEmail = createRule<
 export const useRegle = defineRegleOptions({
   options: {},
   rules: () => ({
-    maxLength: withMessage(maxLength, (value, count) => {
+    maxLength: withMessage(maxLength, (value) => {
       return `ehooo ${count} is max`;
     }),
     asyncEmail,

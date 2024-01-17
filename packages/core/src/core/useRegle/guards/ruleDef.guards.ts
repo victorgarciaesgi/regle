@@ -1,16 +1,11 @@
 import { Ref } from 'vue';
 import {
-  FormRuleDeclaration,
-  InlineRuleDeclaration,
   $InternalFormPropertyTypes,
-  RegleCollectionRuleDecl,
-  RegleFormPropertyType,
-  ReglePartialValidationTree,
-  RegleRuleDecl,
-  RegleRuleDefinition,
-  $InternalReglePartialValidationTree,
   $InternalRegleCollectionRuleDecl,
+  $InternalReglePartialValidationTree,
   $InternalRegleRuleDecl,
+  InlineRuleDeclaration,
+  RegleRuleDefinition,
 } from '../../../types';
 import { isObject } from '../../../utils';
 

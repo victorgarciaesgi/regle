@@ -69,8 +69,8 @@ export function applyIf<
     return condition;
   }
 
-  const newRule = createRule<TValue, TParams, TAsync, TMetadata>({
-    type: _type,
+  const newRule = createRule({
+    type: _type as any,
     validator: newValidator as any,
     active: newActive,
     message: _message,

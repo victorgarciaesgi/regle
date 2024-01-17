@@ -102,7 +102,9 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
 export type InlineRuleDeclaration<
   TValue extends any = any,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
-> = (value: Maybe<TValue>, ...args: any[]) => TMetadata | Promise<TMetadata>;
+  TReturn extends TMetadata | Promise<TMetadata> = TMetadata,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+> = (value: Maybe<TValue>, ...args: any[]) => TReturn;
 
 /**
  * @public

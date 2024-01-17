@@ -1,2 +1,2 @@
-export { createRule } from './createRule';
+export { createRule, defineType } from './createRule';
 export { unwrapRuleParameters } from './unwrapRuleParameters';

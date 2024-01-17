@@ -1,8 +1,9 @@
 import { ruleHelpers } from '../helpers';
-import { createRule, RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, defineType, RegleRuleWithParamsDefinition } from '@regle/core';
 
 export const between: RegleRuleWithParamsDefinition<number, [min: number, max: number]> =
-  createRule<number, [min: number, max: number]>({
+  createRule({
+    type: defineType<number, [min: number, max: number]>('between'),
     validator: (value, min, max) => {
       if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(min) && ruleHelpers.isFilled(max)) {
         const tValue = ruleHelpers.toNumber(value);
@@ -25,5 +26,4 @@ export const between: RegleRuleWithParamsDefinition<number, [min: number, max: n
     message: (_, { $params: [min, max] }) => {
       return `The value must be between ${min} and ${max}`;
     },
-    type: 'between',
   });

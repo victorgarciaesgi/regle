@@ -4,6 +4,7 @@ import {
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
   createRule,
+  defineType,
 } from '@regle/core';
 import { ruleHelpers } from './ruleHelpers';
 
@@ -51,6 +52,7 @@ export function not<
   })();
 
   const newRule = createRule({
+    type: defineType('not') as any,
     validator: validator as any,
     message,
   });

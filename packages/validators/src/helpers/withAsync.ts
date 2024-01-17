@@ -1,6 +1,7 @@
 import { Ref } from 'vue';
 import {
   createRule,
+  defineType,
   InlineRuleDeclaration,
   InternalRuleType,
   RegleRuleDefinition,
@@ -15,7 +16,7 @@ export function withAsync<TValue, TParams extends (Ref<unknown> | (() => unknown
   };
 
   const newRule = createRule({
-    type: InternalRuleType.Async,
+    type: defineType<any>(InternalRuleType.Async),
     validator: validator as any,
     message: '',
   });

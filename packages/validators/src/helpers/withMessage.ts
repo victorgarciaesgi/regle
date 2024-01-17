@@ -73,8 +73,8 @@ export function withMessage<
     ({ _type, validator, _active, _params } = rule);
   }
 
-  const newRule = createRule<TValue, TParams, TAsync, TMetadata>({
-    type: _type,
+  const newRule = createRule({
+    type: _type as any,
     validator: validator as any,
     active: _active,
     message: newMessage,
