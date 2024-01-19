@@ -114,7 +114,7 @@ const limit = ref(2);
 
 const errors = ref<RegleExternalErrorTree<Form>>({});
 
-const { $regle, $errors, validateForm, $state } = useRegle(
+const { $regle, $errors, validateForm } = useRegle(
   form,
   () => ({
     email: {

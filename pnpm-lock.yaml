@@ -184,6 +184,76 @@ importers:
         specifier: 1.8.27
         version: 1.8.27(typescript@5.3.3)
 
+  packages/zod:
+    dependencies:
+      '@regle/core':
+        specifier: workspace:*
+        version: link:../core
+      '@regle/validators':
+        specifier: workspace:*
+        version: link:../validators
+    devDependencies:
+      '@total-typescript/ts-reset':
+        specifier: 0.5.1
+        version: 0.5.1
+      '@types/node':
+        specifier: 20.11.5
+        version: 20.11.5
+      '@types/prettier':
+        specifier: 3.0.0
+        version: 3.0.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: 6.19.0
+        version: 6.19.0(@typescript-eslint/parser@6.19.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: 6.19.0
+        version: 6.19.0(eslint@8.56.0)(typescript@5.3.3)
+      '@vue/test-utils':
+        specifier: 2.4.3
+        version: 2.4.3(vue@3.4.14)
+      bumpp:
+        specifier: 9.3.0
+        version: 9.3.0
+      changelogithub:
+        specifier: 0.13.3
+        version: 0.13.3
+      cross-env:
+        specifier: 7.0.3
+        version: 7.0.3
+      eslint:
+        specifier: 8.56.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      eslint-plugin-vue:
+        specifier: 9.20.1
+        version: 9.20.1(eslint@8.56.0)
+      prettier:
+        specifier: 3.2.4
+        version: 3.2.4
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(typescript@5.3.3)
+      type-fest:
+        specifier: 4.9.0
+        version: 4.9.0
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vue:
+        specifier: 3.4.14
+        version: 3.4.14(typescript@5.3.3)
+      vue-eslint-parser:
+        specifier: 9.4.0
+        version: 9.4.0(eslint@8.56.0)
+      vue-tsc:
+        specifier: 1.8.27
+        version: 1.8.27(typescript@5.3.3)
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+
   playground/vue3:
     dependencies:
       '@regle/core':
@@ -192,12 +262,18 @@ importers:
       '@regle/validators':
         specifier: workspace:*
         version: link:../../packages/validators
+      '@regle/zod':
+        specifier: workspace:*
+        version: link:../../packages/zod
       pinia:
         specifier: ^2.1.7
         version: 2.1.7(typescript@5.3.3)(vue@3.4.14)
       vue:
         specifier: ^3.4.14
         version: 3.4.14(typescript@5.3.3)
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
     devDependencies:
       '@rushstack/eslint-patch':
         specifier: ^1.7.0
@@ -239,7 +315,7 @@ importers:
         specifier: ^5.0.11
         version: 5.0.11(@types/node@20.11.5)
       vue-tsc:
-        specifier: ^1.8.27
+        specifier: 1.8.27
         version: 1.8.27(typescript@5.3.3)
 
 packages:
@@ -3566,3 +3642,6 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}

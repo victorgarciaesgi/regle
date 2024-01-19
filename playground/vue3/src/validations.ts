@@ -1,4 +1,4 @@
-import { createRule, defineRegleOptions, defineType } from '@regle/core';
+import { createRule, defineRegleConfig, defineType } from '@regle/core';
 import { ruleHelpers, withMessage, maxLength } from '@regle/validators';
 
 export function timeout(count: number) {
@@ -20,10 +20,10 @@ export const asyncEmail = createRule({
   message: 'Value is not an email',
 });
 
-export const useRegle = defineRegleOptions({
+export const useRegle = defineRegleConfig({
   options: {},
   rules: () => ({
-    maxLength: withMessage(maxLength, (value) => {
+    maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
       return `ehooo ${count} is max`;
     }),
     asyncEmail,

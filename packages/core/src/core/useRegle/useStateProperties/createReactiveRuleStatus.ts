@@ -178,12 +178,14 @@ export function createReactiveRuleStatus({
         }
       }
     } else {
-      if (typeof resultOrPromise === 'boolean') {
-        ruleResult = resultOrPromise;
-      } else {
-        const { $valid, ...rest } = resultOrPromise;
-        ruleResult = $valid;
-        $metadata.value = rest;
+      if (resultOrPromise != null) {
+        if (typeof resultOrPromise === 'boolean') {
+          ruleResult = resultOrPromise;
+        } else {
+          const { $valid, ...rest } = resultOrPromise;
+          ruleResult = $valid;
+          $metadata.value = rest;
+        }
       }
     }
     $valid.value = ruleResult;

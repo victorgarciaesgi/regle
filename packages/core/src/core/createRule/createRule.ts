@@ -41,11 +41,11 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
 export function createRule<
   TValue extends any,
   TParams extends any[],
-  TMetaData extends RegleRuleMetadataDefinition,
-  TReturn extends TMetaData | Promise<TMetaData>,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetaData extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  definition: RegleRuleInit<TValue, TParams, TMetaData, TReturn, TAsync>
+  definition: RegleRuleInit<TValue, TParams, TReturn, TMetaData, TAsync>
 ): InferRegleRule<TValue, TParams, TAsync, TMetaData> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];

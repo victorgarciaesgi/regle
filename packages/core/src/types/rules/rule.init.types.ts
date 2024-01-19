@@ -11,9 +11,9 @@ import {
  */
 export interface RegleRuleInit<
   TValue extends any,
-  TParams extends any[] = [],
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
-  TReturn extends TMetadata | Promise<TMetadata> = TMetadata,
+  TParams extends any[],
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetadata extends RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > {
   type: { value: TValue; params: TParams };

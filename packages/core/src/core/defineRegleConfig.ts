@@ -8,7 +8,7 @@ import { createUseRegleComposable } from './useRegle';
  *
  * @param customRules
  */
-export function defineRegleOptions<TCustomRules extends Partial<AllRulesDeclarations>>({
+export function defineRegleConfig<TCustomRules extends Partial<AllRulesDeclarations>>({
   rules,
   options,
 }: {

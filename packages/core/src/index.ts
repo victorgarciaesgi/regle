@@ -1,2 +1,2 @@
-export { createRule, defineType, defineRegleOptions, unwrapRuleParameters } from './core';
+export { createRule, defineType, defineRegleConfig, unwrapRuleParameters, useRegle } from './core';
 export * from './types';

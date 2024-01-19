@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext", "DOM"],
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false,
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "types": ["node"]
+  },
+  "include": ["./src/**/*.ts", "./src/reset.d.ts"]
+}

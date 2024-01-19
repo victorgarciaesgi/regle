@@ -76,8 +76,11 @@ TODO
 - [ ] E2E tests
 - [ ] Readme
 - [ ] TS docs
-- [ ] Documentation site
+- [ ] Documentation site (VitePress + Shikiji)
 - [ ] Logo
+
+# Maybe in roadmap
+
 - [ ] Nested component collection (? need poll)
 - [ ] Typed plugin system ? (like scrollToError)
 
