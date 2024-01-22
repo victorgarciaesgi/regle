@@ -21,17 +21,17 @@
       <li v-for="error of $errors.today" :key="error">{{ error }}</li>
     </ul> -->
 
-    <!-- <template :key="index" v-for="(input, index) of form.foo?.bloublou.test">
+    <template :key="index" v-for="(input, index) of form.nested">
       <input v-model="input.name" placeholder="name" />
+      {{ $errors.nested }}
       <ul>
-        <li v-for="error of $errors.foo.bloublou.test.$each[index].name" :key="error">{{
-          error
-        }}</li>
+        <!-- TODO types for collections errors -->
+        <li v-for="error of $errors.nested.$each[index].name" :key="error">{{ error }}</li>
       </ul>
-    </template> -->
+    </template>
 
-    <!-- <button type="submit" @click="form.foo?.bloublou.test.push({ name: '' })">Add entry</button>
-    <button type="submit" @click="form.foo?.bloublou.test.splice(0, 1)">Remove first</button> -->
+    <button type="submit" @click="form.nested.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.nested.splice(0, 1)">Remove first</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre style="max-width: 100%">
@@ -45,22 +45,18 @@
 <script setup lang="ts">
 import { useZodForm } from '@regle/zod';
 import { nextTick, reactive, ref } from 'vue';
-import { z } from 'zod';
+import { z, infer, ZodString } from 'zod';
 
 type Form = {
-  email?: string;
+  email: string;
   firstName?: string;
-  nested: {
-    foo: string;
-  };
+  nested: [{ name: string }];
 };
 
 const form = reactive<Form>({
   email: '',
   firstName: '',
-  nested: {
-    foo: '',
-  },
+  nested: [{ name: '' }],
 });
 
 async function updateFirstName(event: any) {
@@ -82,32 +78,20 @@ async function submit() {
   // }
 }
 
-const schema = z.object({
-  email: z
-    .string()
-    .min(1, { message: 'This is required' })
-    .email({ message: 'This must be an email' }),
-  firstName: z.string().min(1),
-  nested: z.object({
-    foo: z.string().min(1),
-  }),
-});
-
-console.log(z.string());
-
-const { $errors, $regle } = useZodForm(
+const { $errors, $regle } = useZodForm<Form>(
   form,
   z.object({
     email: z
-      .string()
+      .string({ required_error: 'foobar' })
       .min(1, { message: 'This is required' })
       .email({ message: 'This must be an email' })
-      .refine((val) => val === 'foo')
-      .optional(),
-    firstName: z.string().min(1, 'Min length of 1'),
-    nested: z.object({
-      foo: z.string().min(1),
-    }),
+      .refine((val) => val === 'foo'),
+    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }),
+    nested: z.array(
+      z.object({
+        name: z.string().min(1, 'Required'),
+      })
+    ),
   })
 );
 </script>

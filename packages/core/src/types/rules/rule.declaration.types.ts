@@ -17,6 +17,16 @@ export type ReglePartialValidationTree<
 };
 
 /**
+ * @public
+ */
+export type RegleValidationTree<
+  TForm extends Record<string, any>,
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+> = {
+  [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+};
+
+/**
  * @internal
  * @reference {@link ReglePartialValidationTree}
  */
@@ -31,16 +41,16 @@ export type RegleFormPropertyType<
   TValue = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
-  ? RegleRuleDecl<unknown, TCustomRules>
+  ? RegleRuleDecl<TValue, TCustomRules>
   : NonNullable<TValue> extends Array<any>
-  ? RegleCollectionRuleDecl<TValue, TCustomRules>
-  : NonNullable<TValue> extends Date
-  ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
-  : NonNullable<TValue> extends File
-  ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
-  : NonNullable<TValue> extends Record<string, any>
-  ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
-  : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
+    ? RegleCollectionRuleDecl<TValue, TCustomRules>
+    : NonNullable<TValue> extends Date
+      ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
+      : NonNullable<TValue> extends File
+        ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
+        : NonNullable<TValue> extends Record<string, any>
+          ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
+          : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
 /**
  * @internal

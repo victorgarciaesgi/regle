@@ -15,7 +15,7 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
-    "types": ["node"]
+    "types": ["node"],
   },
-  "include": ["./src/**/*.ts", "./src/reset.d.ts"]
+  "include": ["./src/**/*.ts", "./src/reset.d.ts"],
 }
