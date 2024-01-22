@@ -119,11 +119,10 @@ const { $regle, $errors, validateForm } = useRegle(
   () => ({
     email: {
       required,
-      foo: withMessage(
-        and(asyncEmail(2), maxLength(6)),
-        (_, { $params: [limit, max], foo }) =>
-          `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
-      ),
+      foo: withMessage(and(asyncEmail(2), maxLength(6)), (_, { $params: [limit, max], foo }) => [
+        `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`,
+        'bite',
+      ]),
     },
     firstName: {
       ...(limit.value === 2 && { required }),

@@ -17,7 +17,7 @@ export function withMessage<
   TRule extends InlineRuleDeclaration<TValue, TMetaData>,
 >(
   rule: TRule,
-  newMessage: string | ((value: TValue) => string)
+  newMessage: string | string[] | ((value: TValue) => string | string[])
 ): RegleRuleDefinition<TValue, [], ReturnType<TRule> extends Promise<any> ? true : false>;
 export function withMessage<
   TValue extends any,
@@ -28,7 +28,11 @@ export function withMessage<
   rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync>,
   newMessage:
     | string
-    | ((value: TValue, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string)
+    | string[]
+    | ((
+        value: TValue,
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+      ) => string | string[])
 ): RegleRuleWithParamsDefinition<TValue, TParams, TAsync>;
 export function withMessage<
   TValue extends any,
@@ -39,7 +43,11 @@ export function withMessage<
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage:
     | string
-    | ((value: TValue, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string)
+    | string[]
+    | ((
+        value: TValue,
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+      ) => string | string[])
 ): RegleRuleDefinition<TValue, TParams, TAsync>;
 export function withMessage<
   TValue extends any,
@@ -50,7 +58,8 @@ export function withMessage<
   rule: RegleRuleRaw<TValue, TParams, TAsync, TMetadata> | InlineRuleDeclaration<TValue, TMetadata>,
   newMessage:
     | string
-    | ((value: any, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string)
+    | string[]
+    | ((value: any, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string | string[])
 ):
   | RegleRuleWithParamsDefinition<TValue, TParams, TAsync>
   | RegleRuleDefinition<TValue, TParams, TAsync> {

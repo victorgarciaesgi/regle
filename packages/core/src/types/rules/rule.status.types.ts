@@ -38,13 +38,14 @@ export type InferRegleStatusType<
   TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialValidationTree<any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-> = TRule extends RegleCollectionRuleDefinition<any, any>
-  ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
-  : TRule extends ReglePartialValidationTree<any>
-  ? TState[TKey] extends Array<any>
-    ? RegleCommonStatus<TState[TKey]>
-    : RegleStatus<TState[TKey], TRule>
-  : RegleFieldStatus<TRule, TState, TKey>;
+> =
+  TRule extends RegleCollectionRuleDefinition<any, any>
+    ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
+    : TRule extends ReglePartialValidationTree<any>
+      ? TState[TKey] extends Array<any>
+        ? RegleCommonStatus<TState[TKey]>
+        : RegleStatus<TState[TKey], TRule>
+      : RegleFieldStatus<TRule, TState, TKey>;
 
 /**
  * @internal
@@ -109,7 +110,7 @@ export interface RegleCommonStatus<TValue = any> {
  */
 export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
   readonly $type: string;
-  readonly $message: string;
+  readonly $message: string | string[];
   readonly $active: boolean;
   readonly $valid: boolean;
   readonly $pending: boolean;
@@ -128,7 +129,7 @@ export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
  */
 export interface $InternalRegleRuleStatus {
   $type: string;
-  $message: string;
+  $message: string | string[];
   $active: boolean;
   $valid: boolean;
   $pending: boolean;

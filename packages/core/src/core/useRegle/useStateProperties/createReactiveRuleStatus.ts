@@ -5,7 +5,6 @@ import {
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
   InternalRuleType,
-  RegleExternalErrorTree,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
@@ -75,8 +74,8 @@ export function createReactiveRuleStatus({
         }
       });
 
-      const $message = computed<string>(() => {
-        let message = '';
+      const $message = computed<string | string[]>(() => {
+        let message: string | string[] | undefined;
         const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
 
         if (customMessageRule) {

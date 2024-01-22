@@ -19,7 +19,14 @@ function extractRulesErrors(
       }
       return null;
     })
-    .filter((msg): msg is string => !!msg)
+    .filter((msg): msg is string | string[] => !!msg)
+    .reduce<string[]>((acc, value) => {
+      if (typeof value === 'string') {
+        return acc?.concat([value]);
+      } else {
+        return acc?.concat(value);
+      }
+    }, [])
     .concat(externalErrors ?? []);
 }
 

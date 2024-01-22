@@ -17,7 +17,11 @@ export interface RegleInternalRuleDefs<
   ) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   _message:
     | string
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string);
+    | string[]
+    | ((
+        value: Maybe<TValue>,
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+      ) => string | string[]);
   _active?:
     | boolean
     | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);

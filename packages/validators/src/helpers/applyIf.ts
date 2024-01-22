@@ -43,10 +43,11 @@ export function applyIf<
   let _params: any[] | undefined;
   let _message:
     | string
+    | string[]
     | ((
         value: TValue | null | undefined,
         metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
-      ) => string) = '';
+      ) => string | string[]) = '';
 
   if (typeof rule === 'function') {
     _type = InternalRuleType.Inline;

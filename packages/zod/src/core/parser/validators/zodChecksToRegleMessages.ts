@@ -3,8 +3,8 @@ import { withMessage } from '@regle/validators';
 import { z } from 'zod';
 import { extractIssuesMessages, transformZodValidatorAdapter } from './shared';
 
-export function zodStringtoRegle(
-  def: z.ZodStringDef,
+export function zodChecksToRegleMessages(
+  def: z.ZodDateDef | z.ZodBigIntDef | z.ZodNumberDef | z.ZodStringDef,
   schema: z.ZodSchema<any>
 ): RegleFormPropertyType {
   if (def.checks.length) {

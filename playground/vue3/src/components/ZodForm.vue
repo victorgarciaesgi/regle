@@ -49,13 +49,13 @@ import { z, infer, ZodString } from 'zod';
 
 type Form = {
   email: string;
-  firstName?: string;
+  firstName?: number;
   nested: [{ name: string }];
 };
 
 const form = reactive<Form>({
   email: '',
-  firstName: '',
+  firstName: undefined,
   nested: [{ name: '' }],
 });
 
@@ -83,10 +83,12 @@ const { $errors, $regle } = useZodForm<Form>(
   z.object({
     email: z
       .string({ required_error: 'foobar' })
-      .min(1, { message: 'This is required' })
+      .min(1)
       .email({ message: 'This must be an email' })
       .refine((val) => val === 'foo'),
-    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }),
+    firstName: z.coerce
+      .number({ invalid_type_error: 'Not a number', required_error: 'Bite' })
+      .optional(),
     nested: z.array(
       z.object({
         name: z.string().min(1, 'Required'),

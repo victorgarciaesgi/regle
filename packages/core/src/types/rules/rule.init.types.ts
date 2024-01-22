@@ -20,7 +20,11 @@ export interface RegleRuleInit<
   validator: (value: Maybe<TValue>, ...args: TParams) => TReturn;
   message:
     | string
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string);
+    | string[]
+    | ((
+        value: Maybe<TValue>,
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+      ) => string | string[]);
   active?:
     | boolean
     | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
@@ -42,7 +46,10 @@ export interface RegleRuleCore<
   ) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   message:
     | string
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string);
+    | ((
+        value: Maybe<TValue>,
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+      ) => string | string[]);
   active?:
     | boolean
     | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
@@ -58,7 +65,9 @@ export interface $InternalRegleRuleInit {
     value: any,
     ...args: any[]
   ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
-  message: string | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string);
+  message:
+    | string
+    | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   active?: boolean | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => boolean);
   type?: string;
 }

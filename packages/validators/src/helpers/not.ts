@@ -17,10 +17,11 @@ export function not<
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   message:
     | string
+    | string[]
     | RegleRuleDefinitionWithMetadataProcessor<
         TValue,
         RegleRuleMetadataConsumer<TParams, TMetadata>,
-        string
+        string | string[]
       >
 ): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
   let _type: string | undefined;

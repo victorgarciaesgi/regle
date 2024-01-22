@@ -21,7 +21,7 @@ export interface RegleRuleDefinition<
   message: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TMetaData>,
-    string
+    string | string[]
   >;
   active: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
