@@ -43,12 +43,12 @@
 
 <script setup lang="ts">
 import { useZodForm } from '@regle/zod';
-import { nextTick, reactive, ref } from 'vue';
-import { z, infer, ZodString } from 'zod';
+import { nextTick, reactive } from 'vue';
+import { z } from 'zod';
 
 type Form = {
   email: string;
-  firstName: number;
+  firstName?: number;
   nested: [{ name: string }];
 };
 
@@ -77,7 +77,7 @@ async function submit() {
   // }
 }
 
-const { $errors, $regle } = useZodForm(
+const { $errors, $regle, $state, validateForm } = useZodForm(
   form,
   z.object({
     email: z
@@ -85,7 +85,9 @@ const { $errors, $regle } = useZodForm(
       .min(1)
       .email({ message: 'This must be an email' })
       .refine((val) => val === 'foo@free.fr', 'Bite'),
-    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }),
+    firstName: z.coerce
+      .number({ invalid_type_error: 'Not a number', required_error: 'Bite' })
+      .optional(),
     nested: z.array(
       z.object({
         name: z.string().min(1, 'Required'),

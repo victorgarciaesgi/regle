@@ -1,4 +1,4 @@
-import { RegleStatus } from '@regle/core';
+import { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
 import { PartialDeep } from 'type-fest';
 import { ComputedRef, Ref } from 'vue';
 import { z } from 'zod';
@@ -6,7 +6,7 @@ import { toZod } from './zod.types';
 
 export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
   $state: Ref<PartialDeep<TState>>;
-  $regle: RegleStatus<TState, any>;
+  $regle: ZodRegleStatus<TState, TSchema>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
    * It allow you to skip scouting the `$regle` object
    */
@@ -14,10 +14,10 @@ export interface ZodRegle<TState extends Record<string, any>, TSchema extends to
   $valid: ComputedRef<boolean>;
   $invalid: ComputedRef<boolean>;
   resetForm: () => void;
-  // validateForm: () => Promise<false | DeepSafeFormState<TState, TSchema>>;
+  validateForm: () => Promise<false | z.output<TSchema>>;
 }
 
-// Zod errors
+// - Zod errors
 
 export type ZodToRegleErrorTree<TSchema extends toZod<any>> =
   TSchema extends z.ZodObject<infer O>
@@ -26,7 +26,7 @@ export type ZodToRegleErrorTree<TSchema extends toZod<any>> =
       }
     : never;
 
-export type ZodDefToRegleValidationErrors<TRule extends z.ZodType<any, any, any>> =
+export type ZodDefToRegleValidationErrors<TRule extends z.ZodTypeAny> =
   TRule extends z.ZodArray<infer A>
     ? ZodToRegleCollectionErrors<A>
     : TRule extends z.ZodObject<any>
@@ -37,3 +37,63 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
   readonly $errors: string[];
   readonly $each: ZodDefToRegleValidationErrors<TRule>[];
 };
+
+// - Zod status
+
+/**
+ * @public
+ */
+export interface ZodRegleStatus<
+  TState extends Record<string, any> = Record<string, any>,
+  TSchema extends toZod<any> = toZod<any>,
+> extends RegleCommonStatus<TState> {
+  readonly $fields: TSchema extends z.ZodObject<infer O extends z.ZodRawShape>
+    ? {
+        readonly [TKey in keyof O]: O[TKey] extends z.ZodTypeAny
+          ? InferZodRegleStatusType<O[TKey], TState, TKey>
+          : never;
+      }
+    : never;
+}
+
+/**
+ * @public
+ */
+export type InferZodRegleStatusType<
+  TSchema extends z.ZodTypeAny,
+  TState extends Record<PropertyKey, any> = any,
+  TKey extends PropertyKey = string,
+> =
+  TSchema extends z.ZodArray<infer A>
+    ? ZodRegleCollectionStatus<A, TState[TKey]>
+    : TSchema extends z.ZodObject<any>
+      ? TState[TKey] extends Array<any>
+        ? RegleCommonStatus<TState[TKey]>
+        : ZodRegleStatus<TState[TKey], TSchema>
+      : ZodRegleFieldStatus<TSchema, TState, TKey>;
+
+/**
+ * @public
+ */
+export interface ZodRegleFieldStatus<
+  TSchema extends z.ZodTypeAny,
+  TState extends Record<PropertyKey, any> = any,
+  TKey extends PropertyKey = string,
+> extends RegleCommonStatus<TState> {
+  $value: TState[TKey];
+  readonly $externalErrors?: string[];
+  // readonly $rules: {
+  //   [`${TSchema}`]: RegleRuleStatus<TState[TKey], []> & TSchema['']
+  // };
+  readonly $rules: {
+    [Key in `${string & TSchema['_def']['typeName']}`]: RegleRuleStatus<TState[TKey], []>;
+  };
+}
+
+/**
+ * @public
+ */
+export interface ZodRegleCollectionStatus<TSchema extends z.ZodTypeAny, TState extends any[]>
+  extends ZodRegleFieldStatus<TSchema, TState> {
+  readonly $each: Array<InferZodRegleStatusType<NonNullable<TSchema>, TState, number>>;
+}

@@ -16,7 +16,8 @@
     "composite": true,
     "verbatimModuleSyntax": false,
     "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "noErrorTruncation": true,
   },
-  "include": ["./packages/**/*", "tests/**/*.ts"]
+  "include": ["./packages/**/*", "tests/**/*.ts"],
 }

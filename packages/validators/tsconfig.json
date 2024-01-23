@@ -17,7 +17,8 @@
     "baseUrl": "./src",
     "declaration": true,
     "declarationMap": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "noErrorTruncation": true,
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts"],
 }

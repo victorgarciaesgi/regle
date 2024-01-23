@@ -16,6 +16,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
     "types": ["node"],
+    "noErrorTruncation": true,
   },
   "include": ["./src/**/*.ts", "./src/reset.d.ts"],
 }
