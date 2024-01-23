@@ -5,5 +5,5 @@ export default defineConfig({
   format: ['esm'],
   dts: false,
   clean: false,
-  external: ['vue'],
+  external: ['vue', 'zod'],
 });

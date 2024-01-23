@@ -4,25 +4,25 @@ import { EmptyObject } from 'type-fest';
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<infer V, any, any, any>
     ? [V, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<infer V, any>
-    ? [V, ...ExtractValueFromRules<R>]
-    : [F, ...ExtractValueFromRules<R>]
+    : F extends InlineRuleDeclaration<infer V, any, any>
+      ? [V, ...ExtractValueFromRules<R>]
+      : [F, ...ExtractValueFromRules<R>]
   : [];
 
 type ExtractAsyncStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<any, any, infer A, any>
     ? [A, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<any, any>
-    ? [ReturnType<F> extends Promise<any> ? true : false, ...ExtractValueFromRules<R>]
-    : [F, ...ExtractValueFromRules<R>]
+    : F extends InlineRuleDeclaration<any, any, any>
+      ? [ReturnType<F> extends Promise<any> ? true : false, ...ExtractValueFromRules<R>]
+      : [F, ...ExtractValueFromRules<R>]
   : [];
 
 type ExtractAsync<T extends [...any[]]> = T extends [infer F, ...infer R]
   ? F extends true
     ? true
     : F extends false
-    ? ExtractAsync<R>
-    : false
+      ? ExtractAsync<R>
+      : false
   : false;
 
 export type GuessAsyncFromRules<T extends any[]> = ExtractAsync<ExtractAsyncStatesFromRules<T>>;

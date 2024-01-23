@@ -42,11 +42,11 @@ export function createRule<
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
-  TMetaData extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  definition: RegleRuleInit<TValue, TParams, TReturn, TMetaData, TAsync>
-): InferRegleRule<TValue, TParams, TAsync, TMetaData> {
+  definition: RegleRuleInit<TValue, TParams, TReturn, TMetadata, TAsync>
+): InferRegleRule<TValue, TParams, TAsync, TMetadata> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
     const staticProcessors = defineRuleProcessors(definition as any, ...fakeParams);

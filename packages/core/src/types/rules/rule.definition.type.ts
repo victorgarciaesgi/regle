@@ -128,7 +128,7 @@ export type RegleRuleDefinitionWithMetadataProcessor<
   TValue extends any,
   TMetadata extends RegleRuleMetadataConsumer<any, any>,
   TReturn = any,
-> = (value: Maybe<TValue>, metadata: TMetadata) => TReturn;
+> = ((value: Maybe<TValue>, metadata: TMetadata) => TReturn) | TReturn;
 
 export type RegleCollectionRuleDefinition<
   TValue = any[],

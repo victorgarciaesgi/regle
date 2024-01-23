@@ -5,10 +5,17 @@ import {
   InlineRuleDeclaration,
   InternalRuleType,
   RegleRuleDefinition,
+  RegleRuleMetadataDefinition,
 } from '@regle/core';
 
-export function withAsync<TValue, TParams extends (Ref<unknown> | (() => unknown))[]>(
-  rule: InlineRuleDeclaration<TValue>,
+export function withAsync<
+  TValue,
+  TParams extends (Ref<unknown> | (() => unknown))[],
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+>(
+  rule: InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>,
   depsArray: [...TParams]
 ): RegleRuleDefinition<TValue> {
   const validator = async (value: any | null | undefined) => {

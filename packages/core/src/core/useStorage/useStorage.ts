@@ -6,6 +6,7 @@ export type StoredRuleStatus = {
   $valid: Ref<boolean>;
   $pending: Ref<boolean>;
   $metadata: Ref<Record<string, any>>;
+  $validating: Ref<boolean>;
 };
 
 export type RegleStorage = {
@@ -142,8 +143,9 @@ export function useStorage(): RegleStorage {
       const $pending = ref(false);
       const $valid = ref(true);
       const $metadata = ref({});
-      ruleStatusStorage.value.set(path, { $pending, $valid, $metadata });
-      return { $pending, $valid, $metadata };
+      const $validating = ref(false);
+      ruleStatusStorage.value.set(path, { $pending, $valid, $metadata, $validating });
+      return { $pending, $valid, $metadata, $validating };
     }
   }
 

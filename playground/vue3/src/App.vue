@@ -1,9 +1,9 @@
 <template>
   <div style="display: flex">
-    <MyForm />
-    <MyForm />
+    <!-- <MyForm />
+    <MyForm /> -->
 
-    <!-- <ZodForm /> -->
+    <ZodForm />
   </div>
 </template>
 

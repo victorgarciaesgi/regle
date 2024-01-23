@@ -74,14 +74,14 @@ export type RegleRuleDecl<
     infer TParams
   >
     ? RegleRuleDefinition<TValue, TParams>
-    : FormRuleDeclaration<TValue, any>;
+    : FormRuleDeclaration<TValue, any, any, any>;
 };
 
 /**
  * @internal
  * @reference {@link RegleRuleDecl}
  */
-export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any>>;
+export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any, any, any>>;
 
 /**
  * @public
@@ -110,19 +110,11 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
  * @public
  */
 export type InlineRuleDeclaration<
-  TValue extends any = any,
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
-  TReturn extends TMetadata | Promise<TMetadata> = TMetadata,
+  TValue extends any,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetadata extends RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > = (value: Maybe<TValue>, ...args: any[]) => TReturn;
-
-/**
- * @public
- */
-export type InlinePromiseRuleDeclaration<
-  TValue extends any = any,
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
-> = (value: Maybe<TValue>, ...args: any[]) => Promise<TMetadata>;
 
 /**
  * @public
@@ -130,8 +122,10 @@ export type InlinePromiseRuleDeclaration<
  * */
 export type FormRuleDeclaration<
   TValue extends any,
-  TParams extends any[] = [],
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TParams extends any[],
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > =
-  | InlineRuleDeclaration<TValue, TMetadata>
-  | RegleRuleDefinition<TValue, TParams, boolean, TMetadata>;
+  | InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>
+  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;

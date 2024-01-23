@@ -23,6 +23,7 @@ It's heavily inspired by Vuelidate.
 # Improvements from Vuelidate
 
 - 100% type safety
+- Zod support
 - Made for Vue 3 and composition API first 
 - Collection validation ($each is back without performance issues)
 - Global config

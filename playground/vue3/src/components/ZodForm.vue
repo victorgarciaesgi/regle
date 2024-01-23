@@ -23,7 +23,6 @@
 
     <template :key="index" v-for="(input, index) of form.nested">
       <input v-model="input.name" placeholder="name" />
-      {{ $errors.nested }}
       <ul>
         <!-- TODO types for collections errors -->
         <li v-for="error of $errors.nested.$each[index].name" :key="error">{{ error }}</li>
@@ -49,13 +48,13 @@ import { z, infer, ZodString } from 'zod';
 
 type Form = {
   email: string;
-  firstName?: number;
+  firstName: number;
   nested: [{ name: string }];
 };
 
 const form = reactive<Form>({
   email: '',
-  firstName: undefined,
+  firstName: 0,
   nested: [{ name: '' }],
 });
 
@@ -78,17 +77,15 @@ async function submit() {
   // }
 }
 
-const { $errors, $regle } = useZodForm<Form>(
+const { $errors, $regle } = useZodForm(
   form,
   z.object({
     email: z
       .string({ required_error: 'foobar' })
       .min(1)
       .email({ message: 'This must be an email' })
-      .refine((val) => val === 'foo'),
-    firstName: z.coerce
-      .number({ invalid_type_error: 'Not a number', required_error: 'Bite' })
-      .optional(),
+      .refine((val) => val === 'foo@free.fr', 'Bite'),
+    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }),
     nested: z.array(
       z.object({
         name: z.string().min(1, 'Required'),

@@ -18,7 +18,7 @@ import { isFormRuleDefinition } from '../guards';
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
-  rule: Ref<InlineRuleDeclaration | RegleRuleDefinition<any, any>>;
+  rule: Ref<InlineRuleDeclaration<any, any, any, boolean> | RegleRuleDefinition<any, any, any>>;
   $dirty: Ref<boolean>;
   customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
@@ -53,7 +53,9 @@ export function createReactiveRuleStatus({
   let scope = effectScope();
   let scopeState!: ScopeState;
 
-  const { $pending, $valid, $metadata } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
+  const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(
+    `${path}.${ruleKey}`
+  );
 
   function $watch() {
     scopeState = scope.run(() => {
@@ -62,6 +64,7 @@ export function createReactiveRuleStatus({
         $params: $params.value,
         ...$metadata.value,
       }));
+
       const $active = computed<boolean>(() => {
         if (isFormRuleDefinition(rule)) {
           if (typeof rule.value.active === 'function') {
@@ -75,29 +78,31 @@ export function createReactiveRuleStatus({
       });
 
       const $message = computed<string | string[]>(() => {
-        let message: string | string[] | undefined;
-        const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
+        let message: string | string[] = '';
+        if ($dirty.value && !$validating.value) {
+          const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
 
-        if (customMessageRule) {
-          if (typeof customMessageRule === 'function') {
-            message = customMessageRule(state.value, $defaultMetadata.value);
-          } else {
-            message = customMessageRule;
-          }
-        }
-        if (isFormRuleDefinition(rule)) {
-          if (!(customMessageRule && !rule.value._patched)) {
-            if (typeof rule.value.message === 'function') {
-              message = rule.value.message(state.value, $defaultMetadata.value);
+          if (customMessageRule) {
+            if (typeof customMessageRule === 'function') {
+              message = customMessageRule(state.value, $defaultMetadata.value);
             } else {
-              message = rule.value.message;
+              message = customMessageRule;
             }
           }
-        }
+          if (isFormRuleDefinition(rule)) {
+            if (!(customMessageRule && !rule.value._patched)) {
+              if (typeof rule.value.message === 'function') {
+                message = rule.value.message(state.value, $defaultMetadata.value);
+              } else {
+                message = rule.value.message;
+              }
+            }
+          }
 
-        if (isEmpty(message)) {
-          message = 'Error';
-          console.warn(`No error message defined for ${ruleKey}`);
+          if (isEmpty(message)) {
+            message = 'Error';
+            console.warn(`No error message defined for ${ruleKey}`);
+          }
         }
 
         return message;
@@ -119,7 +124,7 @@ export function createReactiveRuleStatus({
         if (isFormRuleDefinition(rule)) {
           return rule.value.validator;
         } else {
-          return rule.value as InlineRuleDeclaration;
+          return rule.value as InlineRuleDeclaration<any, any, any>;
         }
       });
 
@@ -152,47 +157,52 @@ export function createReactiveRuleStatus({
   });
 
   async function $validate(): Promise<boolean> {
-    const validator = scopeState.$validator.value;
-    let ruleResult = false;
-    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+    try {
+      $validating.value = true;
+      const validator = scopeState.$validator.value;
+      let ruleResult = false;
+      const resultOrPromise = validator(state.value, ...scopeState.$params.value);
 
-    if (resultOrPromise instanceof Promise) {
-      if ($dirty.value && !$pending.value) {
-        try {
-          $valid.value = true;
-          $pending.value = true;
-          const promiseResult = await resultOrPromise;
+      if (resultOrPromise instanceof Promise) {
+        if ($dirty.value && !$pending.value) {
+          try {
+            $valid.value = true;
+            $pending.value = true;
+            const promiseResult = await resultOrPromise;
 
-          if (typeof promiseResult === 'boolean') {
-            ruleResult = promiseResult;
+            if (typeof promiseResult === 'boolean') {
+              ruleResult = promiseResult;
+            } else {
+              const { $valid, ...rest } = promiseResult;
+              ruleResult = $valid;
+              $metadata.value = rest;
+            }
+          } catch (e) {
+            ruleResult = false;
+          } finally {
+            $pending.value = false;
+          }
+        }
+      } else {
+        if (resultOrPromise != null) {
+          if (typeof resultOrPromise === 'boolean') {
+            ruleResult = resultOrPromise;
           } else {
-            const { $valid, ...rest } = promiseResult;
+            const { $valid, ...rest } = resultOrPromise;
             ruleResult = $valid;
             $metadata.value = rest;
           }
-        } catch (e) {
-          ruleResult = false;
-        } finally {
-          $pending.value = false;
         }
       }
-    } else {
-      if (resultOrPromise != null) {
-        if (typeof resultOrPromise === 'boolean') {
-          ruleResult = resultOrPromise;
-        } else {
-          const { $valid, ...rest } = resultOrPromise;
-          ruleResult = $valid;
-          $metadata.value = rest;
-        }
+      $valid.value = ruleResult;
+      if (options.$externalErrors) {
+        // TODO
       }
-    }
-    $valid.value = ruleResult;
-    if (options.$externalErrors) {
-      // TODO
-    }
 
-    return ruleResult;
+      return ruleResult;
+    } finally {
+      $validating.value = false;
+    }
   }
 
   function $unwatch() {

@@ -12,12 +12,13 @@ import {
 
 export function applyIf<
   TValue extends any,
-  TMetaData extends RegleRuleMetadataDefinition,
-  TRule extends InlineRuleDeclaration<TValue, TMetaData>,
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   _condition: ParamDecl<boolean>,
-  rule: TRule
-): RegleRuleDefinition<TValue, [], ReturnType<TRule> extends Promise<any> ? true : false>;
+  rule: InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>
+): RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
 export function applyIf<
   TValue extends any,
   TParams extends any[],
@@ -25,18 +26,19 @@ export function applyIf<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 >(
   _condition: ParamDecl<boolean>,
-  rule: RegleRuleDefinition<TValue, TParams, TAsync>
+  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
 ): RegleRuleDefinition<TValue, TParams, TAsync>;
 export function applyIf<
   TValue extends any,
   TParams extends any[],
-  TAsync extends boolean = false,
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   _condition: ParamDecl<boolean>,
   rule:
     | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-    | InlineRuleDeclaration<TValue, TMetadata>
+    | InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<TValue, TParams, TMetadata | Promise<TMetadata>>;

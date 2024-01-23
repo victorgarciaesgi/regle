@@ -1,6 +1,5 @@
 import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
 import type {
-  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,

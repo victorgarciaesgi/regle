@@ -15,14 +15,11 @@ export function not<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 >(
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
-  message:
-    | string
-    | string[]
-    | RegleRuleDefinitionWithMetadataProcessor<
-        TValue,
-        RegleRuleMetadataConsumer<TParams, TMetadata>,
-        string | string[]
-      >
+  message: RegleRuleDefinitionWithMetadataProcessor<
+    TValue,
+    RegleRuleMetadataConsumer<TParams, TMetadata>,
+    string | string[]
+  >
 ): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
   let _type: string | undefined;
   let _params: any[] | undefined = [];

@@ -13,7 +13,7 @@ import {
   GuessMetadataFromRules,
 } from '../types';
 
-export function and<TRules extends FormRuleDeclaration<any, any, any>[]>(
+export function and<TRules extends FormRuleDeclaration<any, any, any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],

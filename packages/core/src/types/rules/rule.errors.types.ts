@@ -14,10 +14,10 @@ export type RegleValidationErrors<
 > = TRule extends RegleCollectionRuleDefinition
   ? RegleCollectionErrors<TRule['$each']>
   : TRule extends ReglePartialValidationTree<any, any>
-  ? RegleErrorTree<TRule>
-  : TRule extends RegleRuleDecl<any, any>
-  ? string[]
-  : string[];
+    ? RegleErrorTree<TRule>
+    : TRule extends RegleRuleDecl<any, any>
+      ? string[]
+      : string[];
 
 export type RegleCollectionErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
@@ -44,14 +44,14 @@ export type RegleExternalValidationErrors<TValue extends any> = [NonNullable<TVa
 ]
   ? string[]
   : TValue extends Array<infer U>
-  ? RegleExternalCollectionErrors<U>
-  : NonNullable<TValue> extends Date
-  ? string[]
-  : NonNullable<TValue> extends File
-  ? string[]
-  : TValue extends Record<string, any>
-  ? RegleExternalErrorTree<TValue>
-  : string[];
+    ? RegleExternalCollectionErrors<U>
+    : NonNullable<TValue> extends Date
+      ? string[]
+      : NonNullable<TValue> extends File
+        ? string[]
+        : TValue extends Record<string, any>
+          ? RegleExternalErrorTree<TValue>
+          : string[];
 
 export type RegleExternalCollectionErrors<TValue extends any = any> = {
   $errors?: string[];
@@ -74,16 +74,3 @@ export type DataType =
   | Date
   | null
   | undefined;
-
-type test = RegleExternalErrorTree<{
-  email?: string | undefined;
-  firstName?: number | undefined;
-  foo: {
-    bar?: number | undefined;
-    bloublou: {
-      test: {
-        name: string;
-      }[];
-    };
-  };
-}>;
