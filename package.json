@@ -11,7 +11,9 @@
     "dev": "pnpm run -r --parallel dev",
     "test": "pnpm run build && vitest run",
     "test:dev": "vitest",
-    "release": "nr build && bumpp -r && pnpm run -r --parallel release && git push --follow-tags"
+    "release": "nr build && bumpp -r && pnpm run -r --parallel release && git push --follow-tags",
+    "play:vue3": "cd playground/vue3 && pnpm run dev",
+    "play:nuxt": "cd playground/nuxt && pnpm run dev"
   },
   "devDependencies": {
     "@regle/core": "workspace:*",

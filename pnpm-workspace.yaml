@@ -3,3 +3,4 @@ packages:
  - packages/validators
  - packages/zod
  - playground/vue3
+ - playground/nuxt

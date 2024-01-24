@@ -212,11 +212,11 @@ const {$errors} = useRegle(..., () => ({
 ## Usage with Zod
 
 ```bash
-pnpm install @regle/zod
+pnpm install zod @regle/zod
 # or
-yarn add @regle/zod
+yarn add zod @regle/zod
 # or
-npm install @regle/zod
+npm install zod @regle/zod
 ```
 
 ```vue
