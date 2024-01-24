@@ -72,7 +72,7 @@ TODO
 - [x] Dates built-in validators
 - [x] Usable Metadata (change create Rule declaration?)
 - [x] Zod support
-- [ ] Per field validation option (lazy, debounce, etc...)
+- [x] Per field validation option (lazy, debounce, etc...)
 - [ ] Unit tests (in progress)
 - [ ] E2E tests
 - [ ] Readme
