@@ -88,11 +88,11 @@ TODO
 # Quick start
 
 ```bash
+pnpm install @regle/core @regle/validators
+# or
 yarn add @regle/core @regle/validators
 # or
 npm install @regle/core @regle/validators
-# or
-pnpm install @regle/core @regle/validators
 ```
 
 ```vue
@@ -156,6 +156,76 @@ function submit() {
     //          ^ type safe form result based on your validators
   }
 }
+
+</script>
+```
+
+
+## Create your own validators rules
+
+```ts
+// validations.ts
+import {createRule, defineRegleConfig} from '@regle/core';
+
+const myCustomRule = createRule({
+  type: defineType<string, [foo: string]>('myCustomRule'),
+  validator(value, foo) {
+    return value === foo;
+  },
+  message: (_, {$params: [foo]}) => `Value is not ${foo}`
+})
+
+export const useRegle = defineRegleConfig({
+  rules: () => ({
+    maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
+      return `No no,  ${count} is the maximum value`;
+    }),
+    myCustomRule
+  }),
+});
+```
+
+
+```vue
+<script setup lang='ts'>
+import {useRegle, myCustomRule} from './validations';
+
+
+const {$errors} = useRegle(..., () => ({
+  foo: {
+    myCustomRule: myCustomRule('bar'),
+  // ^ autocompletes
+  }
+}))
+
+</script>
+```
+
+
+## Usage with Zod
+
+```bash
+pnpm install @regle/zod
+# or
+yarn add @regle/zod
+# or
+npm install @regle/zod
+```
+
+```vue
+<script setup lang='ts'>
+import {useZodForm} from '@regle/zod';
+import {z} from 'zod';
+
+const form = reactive({
+  email: '',
+  firstName: '',
+})
+
+const {$errors, $regle} = useZodForm(form, z.object({
+  email: z.string().email({message: 'This must be an email'}).min(1, {message: "This is required"}),
+  firstName: z.strin().min(1),
+}))
 
 </script>
 ```
