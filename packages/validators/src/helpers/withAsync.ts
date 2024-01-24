@@ -11,13 +11,12 @@ import {
 export function withAsync<
   TValue,
   TParams extends (Ref<unknown> | (() => unknown))[],
-  TMetadata extends RegleRuleMetadataDefinition,
   TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
 >(
-  rule: InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>,
+  rule: InlineRuleDeclaration<TValue, TReturn>,
   depsArray: [...TParams]
-): RegleRuleDefinition<TValue> {
+): RegleRuleDefinition<TValue, TParams, true, TMetadata> {
   const validator = async (value: any | null | undefined) => {
     return rule(value);
   };
@@ -30,5 +29,5 @@ export function withAsync<
 
   newRule._params = depsArray as any;
 
-  return newRule as RegleRuleDefinition;
+  return newRule as any;
 }

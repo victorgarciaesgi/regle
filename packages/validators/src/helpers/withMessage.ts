@@ -18,7 +18,7 @@ export function withMessage<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>,
+  rule: InlineRuleDeclaration<TValue, TReturn>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TMetadata>,
@@ -44,7 +44,7 @@ export function withMessage<
   TParams extends any[],
   TMetadata extends RegleRuleMetadataDefinition,
   TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TAsync extends boolean = boolean,
 >(
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
@@ -52,7 +52,7 @@ export function withMessage<
     RegleRuleMetadataConsumer<TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync>;
+): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withMessage<
   TValue extends any,
   TParams extends any[],
@@ -60,9 +60,7 @@ export function withMessage<
   TReturn extends TMetadata | Promise<TMetadata>,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule:
-    | RegleRuleRaw<TValue, TParams, TAsync, TMetadata>
-    | InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>,
+  rule: RegleRuleRaw<TValue, TParams, TAsync, TMetadata> | InlineRuleDeclaration<TValue, TReturn>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<[TParams], TMetadata>,

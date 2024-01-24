@@ -18,7 +18,7 @@ import { isFormRuleDefinition } from '../guards';
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
-  rule: Ref<InlineRuleDeclaration<any, any, any, boolean> | RegleRuleDefinition<any, any, any>>;
+  rule: Ref<InlineRuleDeclaration<any, any> | RegleRuleDefinition<any, any, any>>;
   $dirty: Ref<boolean>;
   customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
@@ -124,7 +124,7 @@ export function createReactiveRuleStatus({
         if (isFormRuleDefinition(rule)) {
           return rule.value.validator;
         } else {
-          return rule.value as InlineRuleDeclaration<any, any, any>;
+          return rule.value as InlineRuleDeclaration<any, any>;
         }
       });
 

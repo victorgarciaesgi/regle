@@ -3,8 +3,6 @@ import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 export type DefaultValidators = {
   maxLength: RegleRuleWithParamsDefinition<string, [count: number]>;
   required: RegleRuleDefinition<unknown, []>;
-  requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
-  requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean]>;
   alpha: RegleRuleDefinition<string>;
   alphaNum: RegleRuleDefinition<string | number>;
   between: RegleRuleWithParamsDefinition<number, [min: number, max: number]>;

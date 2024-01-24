@@ -8,16 +8,19 @@ import {
   unwrapRuleParameters,
   RegleRuleMetadataDefinition,
   RegleRuleMetadataConsumer,
+  RegleRuleDefinitionWithMetadataProcessor,
 } from '@regle/core';
 
 export function applyIf<
   TValue extends any,
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
+  TReturn extends
+    | RegleRuleMetadataDefinition
+    | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   _condition: ParamDecl<boolean>,
-  rule: InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>
+  rule: InlineRuleDeclaration<TValue, TReturn>
 ): RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
 export function applyIf<
   TValue extends any,
@@ -28,28 +31,18 @@ export function applyIf<
   _condition: ParamDecl<boolean>,
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
 ): RegleRuleDefinition<TValue, TParams, TAsync>;
-export function applyIf<
-  TValue extends any,
-  TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
->(
+export function applyIf(
   _condition: ParamDecl<boolean>,
-  rule:
-    | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-    | InlineRuleDeclaration<TValue, TReturn, TMetadata, TAsync>
-): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
+  rule: RegleRuleDefinition<any, any, any> | InlineRuleDeclaration<any, any>
+): RegleRuleDefinition<any, any, any, any> {
   let _type: string | undefined;
-  let validator: RegleRuleDefinitionProcessor<TValue, TParams, TMetadata | Promise<TMetadata>>;
+  let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined;
-  let _message:
-    | string
-    | string[]
-    | ((
-        value: TValue | null | undefined,
-        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
-      ) => string | string[]) = '';
+  let _message: RegleRuleDefinitionWithMetadataProcessor<
+    any,
+    RegleRuleMetadataConsumer<any, any>,
+    string | string[]
+  > = '';
 
   if (typeof rule === 'function') {
     _type = InternalRuleType.Inline;
@@ -59,7 +52,7 @@ export function applyIf<
     _params?.push(_condition);
   }
 
-  function newValidator(value: any, ...args: TParams) {
+  function newValidator(value: any, ...args: any[]) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
     if (condition) {
       return validator(value, ...args);
@@ -67,7 +60,7 @@ export function applyIf<
     return true;
   }
 
-  function newActive(value: any, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) {
+  function newActive(value: any, metadata: RegleRuleMetadataConsumer<any[], any>) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
     return condition;
   }
@@ -77,9 +70,9 @@ export function applyIf<
     validator: newValidator as any,
     active: newActive,
     message: _message,
-  }) as RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+  });
 
   newRule._params = _params as any;
 
-  return newRule;
+  return newRule as any;
 }

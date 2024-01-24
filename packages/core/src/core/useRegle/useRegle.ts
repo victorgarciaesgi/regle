@@ -1,19 +1,21 @@
-import { ComputedRef, Ref, computed, isRef, ref, shallowRef, toRaw, watch } from 'vue';
+import { PartialDeep, RequiredDeep } from 'type-fest';
+import { ComputedRef, Ref, computed, isRef, ref, shallowRef, toRaw } from 'vue';
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
+  DeepReactiveState,
+  DeepSafeFormState,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
   RegleErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
+  RegleValidationTree,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
+import { DeepMaybeRef } from '../../types/utils';
 import { useStateProperties } from './useStateProperties';
-import { PartialDeep, RequiredDeep } from 'type-fest';
-import { DeepReactiveState, DeepSafeFormState } from 'types/core/useRegle.types';
-import { DeepMaybeRef } from 'types/utils';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
   customRules?: () => TCustomRules,
@@ -28,12 +30,18 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
   function useRegle<
     TState extends Record<string, any>,
     TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
+    TValid = keyof TRules extends keyof ReglePartialValidationTree<
+      TState,
+      Partial<AllRulesDeclarations> & TCustomRules
+    >
+      ? true
+      : false,
   >(
     state: Ref<TState> | DeepReactiveState<TState>,
-    rulesFactory: (() => TRules) | ComputedRef<TRules>,
+    rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TState>
   ): Regle<TState, TRules> {
-    const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory);
+    const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory as any);
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,

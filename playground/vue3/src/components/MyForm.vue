@@ -50,7 +50,15 @@
 </template>
 
 <script setup lang="ts">
-import { RegleExternalErrorTree } from '@regle/core';
+import {
+  AllRulesDeclarations,
+  FormRuleDeclaration,
+  RegleExternalErrorTree,
+  ReglePartialValidationTree,
+  RegleRuleDecl,
+  RegleRuleDefinition,
+  RegleRuleMetadataDefinition,
+} from '@regle/core';
 import {
   and,
   dateAfter,
@@ -59,11 +67,13 @@ import {
   minLength,
   not,
   required,
+  requiredIf,
   sameAs,
   withMessage,
 } from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
+import { or } from '@regle/validators';
 
 type Form = {
   email?: string;
@@ -119,7 +129,7 @@ const { $regle, $errors, validateForm } = useRegle(
   () => ({
     email: {
       required,
-      foo: withMessage(and(asyncEmail(2), maxLength(6)), (_, { $params: [limit, max], foo }) => [
+      foo: withMessage(or(asyncEmail(2), maxLength(6)), (_, { $params: [limit, max], foo }) => [
         `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`,
         'bite',
       ]),

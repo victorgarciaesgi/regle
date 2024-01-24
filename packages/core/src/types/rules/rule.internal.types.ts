@@ -1,5 +1,8 @@
 import { Maybe } from '../utils';
-import { RegleRuleMetadataConsumer, RegleRuleMetadataDefinition } from './rule.definition.type';
+import {
+  PossibleRegleRuleMetadataConsumer,
+  RegleRuleMetadataDefinition,
+} from './rule.definition.type';
 import { RegleUniversalParams } from './rule.params.types';
 
 /**
@@ -18,13 +21,10 @@ export interface RegleInternalRuleDefs<
   _message:
     | string
     | string[]
-    | ((
-        value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
-      ) => string | string[]);
+    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
   _active?:
     | boolean
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean);
   _type?: string;
   _patched: boolean;
   _params?: RegleUniversalParams<TParams>;

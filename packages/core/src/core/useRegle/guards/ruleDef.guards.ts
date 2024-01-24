@@ -42,8 +42,6 @@ export function isFormRuleDefinition(
   return !(typeof rule.value === 'function');
 }
 
-export function isFormInline(
-  rule: Ref<unknown>
-): rule is Ref<InlineRuleDeclaration<any, any, any>> {
+export function isFormInline(rule: Ref<unknown>): rule is Ref<InlineRuleDeclaration<any, any>> {
   return typeof rule.value === 'function';
 }

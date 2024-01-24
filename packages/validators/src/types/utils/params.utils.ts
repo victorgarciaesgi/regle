@@ -4,7 +4,7 @@ import { EmptyObject } from 'type-fest';
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<infer V, any, any, any>
     ? [V, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<infer V, any, any>
+    : F extends InlineRuleDeclaration<infer V, any>
       ? [V, ...ExtractValueFromRules<R>]
       : [F, ...ExtractValueFromRules<R>]
   : [];
@@ -12,7 +12,7 @@ export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infe
 type ExtractAsyncStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<any, any, infer A, any>
     ? [A, ...ExtractValueFromRules<R>]
-    : F extends InlineRuleDeclaration<any, any, any>
+    : F extends InlineRuleDeclaration<any, any>
       ? [ReturnType<F> extends Promise<any> ? true : false, ...ExtractValueFromRules<R>]
       : [F, ...ExtractValueFromRules<R>]
   : [];

@@ -23,7 +23,7 @@ It's heavily inspired by Vuelidate.
 # Improvements from Vuelidate
 
 - 100% type safety
-- Zod support
+- [Zod](https://zod.dev/) support
 - Made for Vue 3 and composition API first 
 - Collection validation ($each is back without performance issues)
 - Global config
@@ -70,9 +70,8 @@ TODO
 - [x] externalErrors
 - [x] Dates built-in validators
 - [x] Usable Metadata (change create Rule declaration?)
-- [ ] Per field validation option (lazy etc...)
-- [ ] withDebounce
-- [ ] Zod support
+- [x] Zod support
+- [ ] Per field validation option (lazy, debounce, etc...)
 - [ ] Unit tests (in progress)
 - [ ] E2E tests
 - [ ] Readme
@@ -127,9 +126,9 @@ type MyForm = {
 }
 
 const form = ref<MyForm>({
-  email: undefined,
-  password: undefined,
-  confirmPassword: undefined,
+  email: '',
+  password: '',
+  confirmPassword: '',
 })
 
 const {$errors, validateForm} = useRegle(form, () => ({

@@ -25,5 +25,13 @@ export interface LocalRegleBehaviourOptions<TState extends Record<string, any>> 
   $externalErrors?: MaybeRef<RegleExternalErrorTree<TState>>;
 }
 
+export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOptions> & {
+  $debounce?: number;
+};
+
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
   LocalRegleBehaviourOptions<Record<string, any>>;
+
+type AddDollarToOptions<T extends Record<string, any>> = {
+  [K in keyof T as `$${string & K}`]: T[K];
+};

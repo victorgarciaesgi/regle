@@ -4,6 +4,7 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
+  FieldRegleBehaviourOptions,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
@@ -25,6 +26,10 @@ type ScopeReturnState = {
   $pending: ComputedRef<boolean>;
   $invalid: ComputedRef<boolean>;
   $valid: ComputedRef<boolean>;
+  $debounce: ComputedRef<number | undefined>;
+  $lazy: ComputedRef<boolean>;
+  $rewardEarly: ComputedRef<boolean>;
+  $autoDirty: ComputedRef<boolean>;
 };
 
 export function createReactiveFieldStatus({
@@ -59,8 +64,13 @@ export function createReactiveFieldStatus({
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
     const storeResult = storage.checkRuleDeclEntry(path, declaredRules);
 
+    $localOptions.value = Object.fromEntries(
+      Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
+    );
+
     $rules.value = Object.fromEntries(
       Object.entries(declaredRules)
+        .filter(([ruleKey]) => !ruleKey.startsWith('$'))
         .map(([ruleKey, rule]) => {
           if (rule) {
             const ruleRef = toRef(() => rule);
@@ -100,12 +110,12 @@ export function createReactiveFieldStatus({
   });
 
   const $unwatchState = watch(state, () => {
-    if (unref(options.autoDirty)) {
+    if (scopeState.$autoDirty.value) {
       if (!$dirty.value) {
         $dirty.value = true;
       }
     }
-    if (!unref(options.lazy)) {
+    if (!scopeState.$lazy.value) {
       $commit();
     }
     $externalErrors.value = [];
@@ -130,12 +140,37 @@ export function createReactiveFieldStatus({
 
   function $watch() {
     scopeState = scope.run(() => {
+      const $debounce = computed<number | undefined>(() => {
+        return $localOptions.value.$debounce;
+      });
+
+      const $lazy = computed<boolean>(() => {
+        if ($localOptions.value.$lazy) {
+          return $localOptions.value.$lazy;
+        }
+        return unref(options.lazy);
+      });
+
+      const $rewardEarly = computed<boolean>(() => {
+        if ($localOptions.value.$rewardEarly) {
+          return $localOptions.value.$rewardEarly;
+        }
+        return unref(options.rewardEarly);
+      });
+
+      const $autoDirty = computed<boolean>(() => {
+        if ($localOptions.value.$autoDirty) {
+          return $localOptions.value.$autoDirty;
+        }
+        return unref(options.autoDirty);
+      });
+
       const $error = computed<boolean>(() => {
         return $invalid.value && !$pending.value && $dirty.value;
       });
 
       const $pending = computed<boolean>(() => {
-        if (triggerPunishment.value || !unref(options.rewardEarly)) {
+        if (triggerPunishment.value || !$rewardEarly.value) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
             return ruleResult.$pending;
           });
@@ -144,7 +179,7 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if (triggerPunishment.value || !unref(options.rewardEarly)) {
+        if (triggerPunishment.value || !$rewardEarly.value) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
             return !ruleResult.$valid;
           });
@@ -153,7 +188,7 @@ export function createReactiveFieldStatus({
       });
 
       const $valid = computed<boolean>(() => {
-        if (unref(options.rewardEarly)) {
+        if ($rewardEarly.value) {
           return Object.entries($rules.value).every(([key, ruleResult]) => {
             return ruleResult.$valid;
           });
@@ -167,15 +202,20 @@ export function createReactiveFieldStatus({
         $pending,
         $invalid,
         $valid,
+        $debounce,
+        $lazy,
+        $rewardEarly,
+        $autoDirty,
       } satisfies ScopeReturnState;
     }) as ScopeReturnState;
   }
 
   const $rules = ref() as Ref<Record<string, $InternalRegleRuleStatus>>;
+  const $localOptions = ref() as Ref<FieldRegleBehaviourOptions>;
   createReactiveRulesResult();
 
   const $unwatchValid = watch(scopeState.$valid, (valid) => {
-    if (unref(options.rewardEarly) && valid) {
+    if (scopeState.$rewardEarly.value && valid) {
       triggerPunishment.value = false;
     }
   });

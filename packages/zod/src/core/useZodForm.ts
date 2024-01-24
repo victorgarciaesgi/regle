@@ -50,9 +50,5 @@ export function useZodForm<
   );
   zodShapeToRegleRules();
 
-  return useRegle(
-    state,
-    computed(() => rules.value),
-    options
-  ) as any;
+  return useRegle(state, computed(() => rules.value) as any, options) as any;
 }

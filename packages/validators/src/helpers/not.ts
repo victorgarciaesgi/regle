@@ -11,7 +11,7 @@ import { ruleHelpers } from './ruleHelpers';
 export function not<
   TValue,
   TParams extends any[] = any[],
-  TAsync extends boolean = false,
+  TAsync extends boolean = boolean,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 >(
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
@@ -20,7 +20,7 @@ export function not<
     RegleRuleMetadataConsumer<TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
+): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
   let _type: string | undefined;
   let _params: any[] | undefined = [];
   let _async = false;
@@ -57,5 +57,5 @@ export function not<
 
   newRule._params = _params as any;
 
-  return newRule as RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
+  return newRule as RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 }

@@ -10,8 +10,8 @@ import { ArrayElement, ExcludeByType, Maybe } from '../utils';
 export interface RegleRuleDefinition<
   TValue extends any = any,
   TParams extends any[] = [],
-  TAsync extends boolean = false,
-  TMetaData extends RegleRuleMetadataDefinition = boolean,
+  TAsync extends boolean = boolean,
+  TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
 > extends RegleInternalRuleDefs<TValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
     TValue,
@@ -20,12 +20,12 @@ export interface RegleRuleDefinition<
   >;
   message: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetaData>,
+    PossibleRegleRuleMetadataConsumer,
     string | string[]
   >;
   active: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetaData>,
+    PossibleRegleRuleMetadataConsumer,
     boolean
   >;
   type?: string;
@@ -83,6 +83,13 @@ export type RegleRuleMetadataConsumer<
         $params: TParams;
       }) &
   (TMetadata extends boolean ? {} : Omit<TMetadata, '$valid'>);
+
+/**
+ * Will be used to consumme metadata on related helpers and rule status
+ */
+export type PossibleRegleRuleMetadataConsumer = DefaultMetadataProperties & {
+  $params?: any[];
+};
 
 /**
  * @internal
