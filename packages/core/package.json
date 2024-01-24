@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
@@ -12,7 +12,7 @@
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "vue": "> 3.1.0"
+    "vue": "^3.1.0"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.5.1",

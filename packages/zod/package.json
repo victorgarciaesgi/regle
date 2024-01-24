@@ -1,6 +1,6 @@
 {
   "name": "@regle/zod",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
@@ -12,7 +12,7 @@
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "zod": "> 3"
+    "zod": "^3"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
