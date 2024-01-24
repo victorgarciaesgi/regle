@@ -1,5 +1,5 @@
 import { RequiredDeep } from 'type-fest';
-import { DeepMaybeRef } from 'types/utils';
+import { DeepMaybeRef } from '../../types/utils';
 import { MaybeRef } from 'vue';
 import { RegleExternalErrorTree } from '../../types/rules';
 
@@ -17,6 +17,8 @@ export interface RegleBehaviourOptions {
   /**
    * The fields will turn valid when they are, but not invalid unless calling `validateForm()`
    * @default false
+   *
+   * @experimental report any bug
    */
   rewardEarly?: boolean;
 }
@@ -32,6 +34,14 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
   LocalRegleBehaviourOptions<Record<string, any>>;
 
-type AddDollarToOptions<T extends Record<string, any>> = {
+export type AddDollarToOptions<T extends Record<string, any>> = {
   [K in keyof T as `$${string & K}`]: T[K];
+};
+
+export type FilterDollarProperties<T extends Record<string, any>> = {
+  [K in keyof T as K extends `$${string}` ? never : K]: T[K];
+};
+
+export type PickDollarProperties<T extends Record<string, any>> = {
+  [K in keyof T as K extends `$${string}` ? K : never]: T[K];
 };

@@ -5,11 +5,13 @@ import type {
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
+  FilterDollarProperties,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { debounce } from '../../../utils';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -27,9 +29,9 @@ type ScopeReturnState = {
   $invalid: ComputedRef<boolean>;
   $valid: ComputedRef<boolean>;
   $debounce: ComputedRef<number | undefined>;
-  $lazy: ComputedRef<boolean>;
-  $rewardEarly: ComputedRef<boolean>;
-  $autoDirty: ComputedRef<boolean>;
+  $lazy: ComputedRef<boolean | undefined>;
+  $rewardEarly: ComputedRef<boolean | undefined>;
+  $autoDirty: ComputedRef<boolean | undefined>;
 };
 
 export function createReactiveFieldStatus({
@@ -79,7 +81,7 @@ export function createReactiveFieldStatus({
               createReactiveRuleStatus({
                 $dirty,
                 customMessages,
-                rule: ruleRef,
+                rule: ruleRef as any,
                 ruleKey,
                 state,
                 path,
@@ -117,8 +119,10 @@ export function createReactiveFieldStatus({
     }
     if (!scopeState.$lazy.value) {
       $commit();
+      if (!scopeState.$rewardEarly.value !== false) {
+        $clearExternalErrors();
+      }
     }
-    $externalErrors.value = [];
   });
 
   function $unwatch() {
@@ -144,21 +148,21 @@ export function createReactiveFieldStatus({
         return $localOptions.value.$debounce;
       });
 
-      const $lazy = computed<boolean>(() => {
+      const $lazy = computed<boolean | undefined>(() => {
         if ($localOptions.value.$lazy) {
           return $localOptions.value.$lazy;
         }
         return unref(options.lazy);
       });
 
-      const $rewardEarly = computed<boolean>(() => {
+      const $rewardEarly = computed<boolean | undefined>(() => {
         if ($localOptions.value.$rewardEarly) {
           return $localOptions.value.$rewardEarly;
         }
         return unref(options.rewardEarly);
       });
 
-      const $autoDirty = computed<boolean>(() => {
+      const $autoDirty = computed<boolean | undefined>(() => {
         if ($localOptions.value.$autoDirty) {
           return $localOptions.value.$autoDirty;
         }
@@ -179,7 +183,9 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if (triggerPunishment.value || !$rewardEarly.value) {
+        if ($externalErrors.value?.length) {
+          return true;
+        } else if (triggerPunishment.value || !$rewardEarly.value) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
             return !ruleResult.$valid;
           });
@@ -188,7 +194,9 @@ export function createReactiveFieldStatus({
       });
 
       const $valid = computed<boolean>(() => {
-        if ($rewardEarly.value) {
+        if ($externalErrors.value?.length) {
+          return false;
+        } else if ($rewardEarly.value) {
           return Object.entries($rules.value).every(([key, ruleResult]) => {
             return ruleResult.$valid;
           });
@@ -229,20 +237,26 @@ export function createReactiveFieldStatus({
     $dirty.value = true;
   }
 
-  function $commit(): void {
+  const $commit = debounce($commitHandler, scopeState.$debounce.value ?? 0);
+
+  function $commitHandler() {
     Object.entries($rules.value).map(([key, rule]) => {
       return rule.$validate();
     });
   }
 
-  async function $validate(): Promise<boolean> {
+  const $validate = debounce($validateHandler, scopeState.$debounce.value ?? 0);
+
+  async function $validateHandler() {
     try {
+      $clearExternalErrors();
       triggerPunishment.value = true;
-      const results = await Promise.all(
+      const results = await Promise.allSettled(
         Object.entries($rules.value).map(([key, rule]) => {
           return rule.$validate();
         })
       );
+
       return results.every((value) => !!value);
     } catch (e) {
       return false;

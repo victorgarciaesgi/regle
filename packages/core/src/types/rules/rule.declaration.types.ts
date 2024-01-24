@@ -1,3 +1,4 @@
+import { FieldRegleBehaviourOptions } from '../../types/core';
 import { ArrayElement, Maybe } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
 import {
@@ -68,13 +69,16 @@ export type $InternalFormPropertyTypes =
 export type RegleRuleDecl<
   TValue extends any = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
-> = {
-  [TKey in keyof TCustomRules]?: TCustomRules[TKey] extends RegleRuleWithParamsDefinition<
-    any,
-    infer TParams
-  >
+> = FieldRegleBehaviourOptions & {
+  [TKey in keyof TCustomRules]?: NonNullable<
+    TCustomRules[TKey]
+  > extends RegleRuleWithParamsDefinition<any, infer TParams>
     ? RegleRuleDefinition<TValue, TParams, boolean>
-    : FormRuleDeclaration<TValue, any>;
+    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
+      ? FormRuleDeclaration<TValue, any>
+      :
+          | FormRuleDeclaration<TValue, any>
+          | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
 };
 
 /**

@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
-    <input v-model="form.email" placeholder="email" />
+    <input :value="form.email" @input="updateEmail" placeholder="email" />
     <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
       <li v-for="error of $errors.email" :key="error">{{ error }}</li>
@@ -105,22 +105,33 @@ async function updateFirstName(event: any) {
   form.firstName = event.target.value;
   await nextTick();
   const t1 = performance.now();
-  console.log(`Time it takes to run the function: ${t1 - t0} ms`);
+  console.log(`Time it takes to update firstname: ${t1 - t0} ms`);
 }
 
+async function updateEmail(event: any) {
+  const t0 = performance.now();
+  form.email = event.target.value;
+  await nextTick();
+  const t1 = performance.now();
+  console.log(`Time it takes to update email: ${t1 - t0} ms`);
+}
 async function submit() {
   const t0 = performance.now();
   const result = await validateForm();
-  errors.value.email = ['boo'];
+  if (externalEven.value % 2 === 0) {
+    errors.value.email = ['boo'];
+  }
   const t1 = performance.now();
   console.log(`Time it takes to run the function: ${t1 - t0} ms`);
 
   if (result) {
     const test: string = result.foo.bloublou.test[0].name;
   }
+  externalEven.value++;
 }
 
 const limit = ref(2);
+const externalEven = ref(0);
 
 const errors = ref<RegleExternalErrorTree<Form>>({});
 
@@ -129,10 +140,11 @@ const { $regle, $errors, validateForm } = useRegle(
   () => ({
     email: {
       required,
-      foo: withMessage(or(asyncEmail(2), maxLength(6)), (_, { $params: [limit, max], foo }) => [
+      foo: withMessage(and(asyncEmail(2), maxLength(6)), (_, { $params: [limit, max], foo }) => [
         `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`,
         'bite',
       ]),
+      $rewardEarly: true,
     },
     firstName: {
       ...(limit.value === 2 && { required }),

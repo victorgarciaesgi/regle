@@ -28,6 +28,7 @@ It's heavily inspired by Vuelidate.
 - Collection validation ($each is back without performance issues)
 - Global config
 - Async rules with params
+- Per field options (debounce, lazy...)
 - Easier rule declaration
 
 # What is not planned or reimplemented differently from Vuelidate
