@@ -201,7 +201,6 @@ import {useRegle, myCustomRule} from './validations';
 const {$errors} = useRegle(..., () => ({
   foo: {
     myCustomRule: myCustomRule('bar'),
-    $debounce: 300,
   // ^ autocompletes
   }
 }))
