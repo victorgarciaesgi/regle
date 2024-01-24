@@ -95,6 +95,10 @@ yarn add @regle/core @regle/validators
 npm install @regle/core @regle/validators
 ```
 
+### [Installation for Zod](#usage-with-zod)
+
+
+
 ```vue
 <template>
     <input v-model="form.email" placeholder="email" />
