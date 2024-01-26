@@ -1,9 +1,9 @@
-import { RegleCollectionRuleDefinition } from '.';
 import {
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
 } from './rule.declaration.types';
+import { RegleCollectionRuleDefinition } from './rule.definition.type';
 
 export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> = {
   readonly [K in keyof TRules]: RegleValidationErrors<TRules[K]>;
@@ -18,6 +18,8 @@ export type RegleValidationErrors<
     : TRule extends RegleRuleDecl<any, any>
       ? string[]
       : string[];
+
+// test.test.$each
 
 export type RegleCollectionErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,

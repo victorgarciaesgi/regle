@@ -2,6 +2,7 @@ import {
   createRule,
   InlineRuleDeclaration,
   InternalRuleType,
+  Maybe,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,
@@ -11,6 +12,9 @@ import {
   RegleRuleWithParamsDefinition,
 } from '@regle/core';
 
+/**
+ * TODO find solution to the TValue problem being infered to TValue & Date & File
+ */
 export function withMessage<
   TValue extends any,
   TParams extends any[],
@@ -53,31 +57,19 @@ export function withMessage<
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
-export function withMessage<
-  TValue extends any,
-  TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
->(
-  rule: RegleRuleRaw<TValue, TParams, TAsync, TMetadata> | InlineRuleDeclaration<TValue, TReturn>,
+export function withMessage(
+  rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
-    TValue,
-    RegleRuleMetadataConsumer<[TParams], TMetadata>,
+    any,
+    RegleRuleMetadataConsumer<[any], any>,
     string | string[]
   >
-):
-  | RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>
-  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
+): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
   let _type: string | undefined;
-  let validator: RegleRuleDefinitionProcessor<TValue, TParams, TMetadata | Promise<TMetadata>>;
+  let validator: RegleRuleDefinitionProcessor<any | Promise<any>>;
   let _active:
     | boolean
-    | RegleRuleDefinitionWithMetadataProcessor<
-        TValue,
-        RegleRuleMetadataConsumer<TParams, TMetadata>,
-        boolean
-      >
+    | RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any>, boolean>
     | undefined;
   let _params: any[] | undefined;
 
@@ -98,5 +90,5 @@ export function withMessage<
   newRule._params = _params as any;
   newRule._patched = true;
 
-  return newRule as any;
+  return newRule;
 }

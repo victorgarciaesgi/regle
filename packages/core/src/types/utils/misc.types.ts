@@ -1,6 +1,11 @@
 import { MaybeRef } from 'vue';
 
-export type Maybe<T> = T | null | undefined;
+export type Prettify<T> = T extends infer R
+  ? {
+      [K in keyof R]: R[K];
+    } & {}
+  : never;
+export type Maybe<T = any> = T | null | undefined;
 export type MaybeNull<T> = T | null;
 
 export type DeepMaybeRef<T extends Record<string, any>> = {
@@ -10,3 +15,5 @@ export type DeepMaybeRef<T extends Record<string, any>> = {
 export type ExcludeByType<T, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K] extends U ? never : T[K];
 };
+
+export type PrimitiveTypes = string | number | boolean;

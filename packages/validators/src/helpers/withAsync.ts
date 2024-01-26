@@ -15,7 +15,7 @@ export function withAsync<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
 >(
   rule: InlineRuleDeclaration<TValue, TReturn>,
-  depsArray: [...TParams]
+  depsArray?: [...TParams]
 ): RegleRuleDefinition<TValue, TParams, true, TMetadata> {
   const validator = async (value: any | null | undefined) => {
     return rule(value);

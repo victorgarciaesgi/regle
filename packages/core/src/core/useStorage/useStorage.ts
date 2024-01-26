@@ -126,12 +126,24 @@ export function useStorage(): RegleStorage {
         typeof storedRuleElement === 'function'
       )
         return false;
-      if (!newRuleElement._params) return true;
-      return newRuleElement._params?.every((paramKey, index) => {
-        const storedParams = unwrapRuleParameters(storedRuleElement._params as any[]);
-        const newParams = unwrapRuleParameters(newRuleElement._params as any[]);
-        return storedParams?.[index] === newParams?.[index];
-      });
+      // $debounce
+      if (typeof newRuleElement === 'number') {
+        return false;
+        // $lazy, $autoDirty etc..
+      } else if (typeof newRuleElement === 'boolean') {
+        return false;
+      } else if (!newRuleElement._params) return true;
+      else {
+        return newRuleElement._params?.every((paramKey, index) => {
+          if (typeof storedRuleElement === 'number' || typeof storedRuleElement === 'boolean') {
+            return true;
+          } else {
+            const storedParams = unwrapRuleParameters(storedRuleElement._params as any[]);
+            const newParams = unwrapRuleParameters(newRuleElement._params as any[]);
+            return storedParams?.[index] === newParams?.[index];
+          }
+        });
+      }
     });
   }
 

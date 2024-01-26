@@ -54,6 +54,7 @@ import { RegleExternalErrorTree } from '@regle/core';
 import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
+import { minLength } from '@regle/validators';
 
 type Form = {
   email?: string;
@@ -124,7 +125,7 @@ const { $regle, $errors, validateForm } = useRegle(
         `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`,
         'bite',
       ]),
-      $rewardEarly: true,
+      $debounce: 300,
     },
     firstName: {
       ...(limit.value === 2 && { required }),
@@ -143,7 +144,7 @@ const { $regle, $errors, validateForm } = useRegle(
       bloublou: {
         test: {
           $each: {
-            name: { required },
+            name: { required, minLength: minLength(2), $rewardEarly: true },
           },
         },
       },

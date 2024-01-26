@@ -1,5 +1,5 @@
 import { FieldRegleBehaviourOptions } from '../../types/core';
-import { ArrayElement, Maybe } from '../utils';
+import { ArrayElement, Maybe, PrimitiveTypes } from '../utils';
 import { AllRulesDeclarations } from './rule.custom.types';
 import {
   RegleRuleDefinition,
@@ -60,7 +60,10 @@ export type RegleFormPropertyType<
 export type $InternalFormPropertyTypes =
   | $InternalRegleRuleDecl
   | $InternalRegleCollectionRuleDecl
-  | $InternalReglePartialValidationTree;
+  | $InternalReglePartialValidationTree
+  | FieldRegleBehaviourOptions;
+
+type test = string & Date & File extends Date & File & infer M ? M : never;
 
 /**
  * @public
@@ -114,8 +117,10 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
  * @public
  */
 export type InlineRuleDeclaration<
-  TValue extends any,
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TValue extends any = any,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
+    | RegleRuleMetadataDefinition
+    | Promise<RegleRuleMetadataDefinition>,
 > = (value: Maybe<TValue>, ...args: any[]) => TReturn;
 
 /**

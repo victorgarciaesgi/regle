@@ -101,7 +101,7 @@ export function createReactiveRuleStatus({
 
           if (isEmpty(message)) {
             message = 'Error';
-            console.warn(`No error message defined for ${ruleKey}`);
+            console.warn(`No error message defined for ${path}.${ruleKey}`);
           }
         }
 
@@ -146,8 +146,6 @@ export function createReactiveRuleStatus({
         $path,
       };
     }) as ScopeState;
-
-    // $validate();
   }
 
   $watch();

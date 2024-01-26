@@ -5,13 +5,14 @@
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "pnpm run -r --parallel typecheck",
-    "build": "pnpm run -r build",
-    "build:local": "pnpm run -r build:local",
-    "dev": "pnpm run -r --parallel dev",
+    "typecheck": "pnpm run -r --parallel --filter='@regle/*' typecheck",
+    "build": "pnpm run -r --filter='@regle/*' build",
+    "build:local": "pnpm run -r --filter='@regle/*' build:local",
+    "dev": "pnpm run -r --parallel --filter='@regle/*' dev",
     "test": "pnpm run build && vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:dev": "vitest",
-    "release": "nr build && bumpp -r && pnpm run -r --parallel release && git push --follow-tags",
+    "release": "nr build:local && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev"
   },
@@ -33,7 +34,10 @@
     "vitest": "1.2.1",
     "vue": "3.4.14",
     "vue-eslint-parser": "9.4.0",
-    "vue-tsc": "1.8.27"
+    "vue-tsc": "1.8.27",
+    "@vitest/coverage-v8": "1.2.1",
+    "@vitejs/plugin-vue": "5.0.3",
+    "happy-dom": "13.3.1"
   },
   "type": "module",
   "main": "./dist/module.cjs",

@@ -17,11 +17,11 @@ export function debounce<T extends () => any>(
       timeout = setTimeout(() => {
         timeout = undefined;
         if (!immediate) {
-          void Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
+          Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
         }
       }, wait);
       if (immediate && !timeout) {
-        void Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
+        Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
       }
     });
 
@@ -35,7 +35,7 @@ export function debounce<T extends () => any>(
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         timeout = undefined;
-        void Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
+        Promise.resolve(func.apply(this, [...args] as any)).then(resolve);
       }, 0);
     });
 

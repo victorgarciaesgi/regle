@@ -12,24 +12,25 @@ export interface RegleRuleDefinition<
   TParams extends any[] = [],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
-> extends RegleInternalRuleDefs<TValue, TParams, TAsync, TMetaData> {
+  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+> extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
-    TValue,
+    TFilteredValue,
     TParams,
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
   message: RegleRuleDefinitionWithMetadataProcessor<
-    TValue,
+    TFilteredValue,
     PossibleRegleRuleMetadataConsumer,
     string | string[]
   >;
   active: RegleRuleDefinitionWithMetadataProcessor<
-    TValue,
+    TFilteredValue,
     PossibleRegleRuleMetadataConsumer,
     boolean
   >;
   type?: string;
-  exec: (value: Maybe<TValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
+  exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
 
 /**

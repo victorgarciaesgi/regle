@@ -9,6 +9,10 @@ describe('maxLength validator', () => {
     expect(maxLength(-1).exec('')).toBe(true);
   });
 
+  it('should not validate string param', () => {
+    expect(maxLength('eee' as any).exec('eeeeee')).toBe(false);
+  });
+
   it('should validate null', () => {
     expect(maxLength(5).exec(null)).toBe(true);
   });

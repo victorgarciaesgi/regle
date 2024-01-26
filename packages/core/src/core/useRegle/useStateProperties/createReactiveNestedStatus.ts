@@ -99,12 +99,18 @@ export function createReactiveNestedStatus({
 
   async function $validate(): Promise<boolean> {
     try {
-      const results = await Promise.all(
+      const results = await Promise.allSettled(
         Object.entries($fields.value).map(([_, statusOrField]) => {
           return statusOrField.$validate();
         })
       );
-      return results.every((value) => !!value);
+      return results.every((value) => {
+        if (value.status === 'fulfilled') {
+          return value.value;
+        } else {
+          return false;
+        }
+      });
     } catch (e) {
       return false;
     }

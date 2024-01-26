@@ -13,6 +13,10 @@ describe('minLength validator', () => {
     expect(minLength(5).exec('a')).toBe(false);
   });
 
+  it('should not validate string param', () => {
+    expect(minLength('eee' as any).exec('eeeeee')).toBe(false);
+  });
+
   it('should validate enough characters', () => {
     expect(minLength(5).exec('abcde')).toBe(true);
   });

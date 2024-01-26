@@ -5,13 +5,12 @@ import type {
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
-  FilterDollarProperties,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { debounce } from '../../../utils';
 import { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
-import { debounce } from '../../../utils';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -185,7 +184,7 @@ export function createReactiveFieldStatus({
       const $invalid = computed<boolean>(() => {
         if ($externalErrors.value?.length) {
           return true;
-        } else if (triggerPunishment.value || !$rewardEarly.value) {
+        } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
             return !ruleResult.$valid;
           });
@@ -202,6 +201,12 @@ export function createReactiveFieldStatus({
           });
         } else {
           return !$invalid.value;
+        }
+      });
+
+      watch($valid, (value) => {
+        if (value) {
+          triggerPunishment.value = false;
         }
       });
 
@@ -235,9 +240,17 @@ export function createReactiveFieldStatus({
 
   function $touch(): void {
     $dirty.value = true;
+    if (!scopeState.$lazy.value) {
+      $commit();
+      if (!scopeState.$rewardEarly.value !== false) {
+        $clearExternalErrors();
+      }
+    }
   }
 
-  const $commit = debounce($commitHandler, scopeState.$debounce.value ?? 0);
+  const $commit = scopeState.$debounce.value
+    ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
+    : $commitHandler;
 
   function $commitHandler() {
     Object.entries($rules.value).map(([key, rule]) => {
@@ -245,19 +258,31 @@ export function createReactiveFieldStatus({
     });
   }
 
-  const $validate = debounce($validateHandler, scopeState.$debounce.value ?? 0);
+  const $validate = scopeState.$debounce.value
+    ? debounce($validateHandler, scopeState.$debounce.value ?? 0)
+    : $validateHandler;
 
-  async function $validateHandler() {
+  async function $validateHandler(): Promise<boolean> {
     try {
       $clearExternalErrors();
       triggerPunishment.value = true;
-      const results = await Promise.allSettled(
-        Object.entries($rules.value).map(([key, rule]) => {
-          return rule.$validate();
-        })
-      );
+      if (!scopeState.$lazy.value) {
+        return !scopeState.$error.value;
+      } else {
+        const results = await Promise.allSettled(
+          Object.entries($rules.value).map(([key, rule]) => {
+            return rule.$validate();
+          })
+        );
 
-      return results.every((value) => !!value);
+        return results.every((value) => {
+          if (value.status === 'fulfilled') {
+            return value.value;
+          } else {
+            return false;
+          }
+        });
+      }
     } catch (e) {
       return false;
     }

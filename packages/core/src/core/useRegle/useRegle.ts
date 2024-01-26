@@ -41,7 +41,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TState>
   ): Regle<TState, TRules> {
-    const scopeRules = isRef(rulesFactory) ? rulesFactory : computed(rulesFactory as any);
+    const scopeRules = isRef(rulesFactory)
+      ? rulesFactory
+      : computed(
+          (typeof (rulesFactory as TRules | (() => TRules)) === 'function'
+            ? rulesFactory
+            : () => rulesFactory) as any
+        );
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
