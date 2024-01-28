@@ -3,7 +3,7 @@ import { ruleHelpers } from '../helpers';
 
 const alphaRegex = /^[a-zA-Z]*$/;
 
-export const alpha: RegleRuleDefinition<string> = createRule({
+export const alpha: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: defineType<string>('alpha'),
   validator(value) {
     if (ruleHelpers.isEmpty(value)) {

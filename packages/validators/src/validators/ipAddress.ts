@@ -18,7 +18,7 @@ function nibbleValid(nibble: string) {
   return numeric >= 0 && numeric <= 255;
 }
 
-export const ipAddress: RegleRuleDefinition<string, [], boolean> = createRule({
+export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: defineType<string>('ipAddress'),
   validator(value) {
     if (ruleHelpers.isEmpty(value)) {

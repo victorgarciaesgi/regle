@@ -2,8 +2,10 @@ import { ruleHelpers } from '../helpers';
 import { createRule, defineType, Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 
 export const dateAfter: RegleRuleWithParamsDefinition<
-  Date | string,
-  [after: Maybe<Date | string>]
+  string | Date,
+  [after: Maybe<string | Date>],
+  false,
+  boolean
 > = createRule({
   type: defineType<Date | string, [after: Maybe<Date | string>]>('dateAfter'),
   validator: (value, after) => {

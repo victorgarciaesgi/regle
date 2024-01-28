@@ -2,6 +2,7 @@ import {
   $InternalRegleRuleDefinition,
   $InternalRegleRuleInit,
   $InternalRegleRuleMetadataConsumer,
+  RegleRuleMetadataDefinition,
 } from '../../types';
 import { createReactiveParams, unwrapRuleParameters } from './unwrapRuleParameters';
 
@@ -39,7 +40,28 @@ export function defineRuleProcessors(
       }
     },
     exec(value: any) {
-      return definition.validator(value, ...unwrapRuleParameters(params));
+      const validator = definition.validator(value, ...unwrapRuleParameters(params));
+      let rawResult: RegleRuleMetadataDefinition;
+      if (validator instanceof Promise) {
+        return validator.then((result) => {
+          rawResult = result;
+          if (typeof rawResult === 'object' && '$valid' in rawResult) {
+            return rawResult.$valid;
+          } else if (typeof rawResult === 'boolean') {
+            return rawResult;
+          }
+          return false;
+        });
+      } else {
+        rawResult = validator;
+      }
+
+      if (typeof rawResult === 'object' && '$valid' in rawResult) {
+        return rawResult.$valid;
+      } else if (typeof rawResult === 'boolean') {
+        return rawResult;
+      }
+      return false;
     },
   };
 

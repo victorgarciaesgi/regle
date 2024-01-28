@@ -130,9 +130,9 @@ export type InlineRuleDeclaration<
 export type FormRuleDeclaration<
   TValue extends any,
   TParams extends any[],
-  TReturn extends
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
     | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
+    | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
 > =

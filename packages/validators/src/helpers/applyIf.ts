@@ -13,6 +13,7 @@ import {
 
 export function applyIf<
   TValue extends any,
+  TParams extends any[],
   TReturn extends
     | RegleRuleMetadataDefinition
     | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
@@ -20,21 +21,10 @@ export function applyIf<
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   _condition: ParamDecl<boolean>,
-  rule: InlineRuleDeclaration<TValue, TReturn>
-): RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
-export function applyIf<
-  TValue extends any,
-  TParams extends any[],
-  TAsync extends boolean = false,
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
->(
-  _condition: ParamDecl<boolean>,
-  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-): RegleRuleDefinition<TValue, TParams, TAsync>;
-export function applyIf(
-  _condition: ParamDecl<boolean>,
-  rule: RegleRuleDefinition<any, any, any> | InlineRuleDeclaration<any, any>
-): RegleRuleDefinition<any, any, any, any> {
+  rule:
+    | InlineRuleDeclaration<TValue, TReturn>
+    | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined;

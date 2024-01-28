@@ -1,4 +1,4 @@
-import { useRegle } from '@regle/core';
+import { RegleRuleDefinition, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
@@ -41,5 +41,40 @@ describe('applyIf helper', () => {
     await timeout(0);
     expect(vm.$errors.email).toStrictEqual(['Value is required']);
     expect(vm.$regle.$error).toBe(true);
+  });
+
+  it('should have correct types', () => {
+    const test = applyIf(
+      () => true,
+      () => ({ $valid: true, foo: 'bar' })
+    );
+    expectTypeOf(applyIf(() => true, required)).toEqualTypeOf<
+      RegleRuleDefinition<unknown, [], false, boolean, unknown>
+    >();
+
+    expectTypeOf(
+      applyIf(
+        () => true,
+        async () => true
+      )
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+
+    expectTypeOf(
+      applyIf(
+        () => true,
+        () => ({ $valid: true, foo: 'bar' })
+      )
+    ).toEqualTypeOf<
+      RegleRuleDefinition<
+        unknown,
+        [],
+        false,
+        {
+          $valid: true;
+          foo: string;
+        },
+        unknown
+      >
+    >();
   });
 });

@@ -4,6 +4,7 @@ import { ruleHelpers } from '../helpers';
 export const macAddress: RegleRuleWithParamsDefinition<
   string,
   [separator?: string | undefined],
+  false,
   boolean
 > = createRule({
   type: defineType<string, [separator?: string]>('macAddress'),
@@ -20,8 +21,8 @@ export const macAddress: RegleRuleWithParamsDefinition<
       typeof separator === 'string' && separator !== ''
         ? value.split(separator)
         : value.length === 12 || value.length === 16
-        ? value.match(/.{2}/g)
-        : null;
+          ? value.match(/.{2}/g)
+          : null;
 
     return parts !== null && (parts.length === 6 || parts.length === 8) && parts.every(hexValid);
   },

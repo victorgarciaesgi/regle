@@ -7,7 +7,7 @@ import {
   UnwrapTuples,
 } from '../types';
 
-export function or<TRules extends FormRuleDeclaration<any, any, any, any>[]>(
+export function or<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],

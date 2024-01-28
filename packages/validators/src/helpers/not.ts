@@ -1,5 +1,7 @@
 import {
+  InlineRuleDeclaration,
   RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
@@ -11,48 +13,57 @@ import { ruleHelpers } from './ruleHelpers';
 export function not<
   TValue,
   TParams extends any[] = any[],
-  TAsync extends boolean = boolean,
-  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TReturn extends
+    | RegleRuleMetadataDefinition
+    | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
-  message: RegleRuleDefinitionWithMetadataProcessor<
+  rule:
+    | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+    | InlineRuleDeclaration<TValue, TReturn>,
+  message?: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TMetadata>,
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
   let _type: string | undefined;
-  let _params: any[] | undefined = [];
-  let _async = false;
+  let validator: RegleRuleDefinitionProcessor<any, any, any>;
+  let newValidator: RegleRuleDefinitionProcessor<any, any, any>;
+  let _params: any[] | undefined;
 
-  ({ _type, _params, _async } = rule);
-  if (_type) {
-    _type = `!${_type}`;
+  let _async: boolean;
+
+  if (typeof rule === 'function') {
+    validator = rule;
+    _async = rule.constructor.name === 'AsyncFunction';
+  } else {
+    ({ _type, validator, _params } = rule);
+    _async = rule._async;
   }
 
-  const validator = (() => {
-    if (_async) {
-      return async (value: any, ...params: any[]) => {
-        if (ruleHelpers.isFilled(value)) {
-          const result = await rule.validator(value, ...(params as any));
-          return !result;
-        }
-        return true;
-      };
-    } else {
-      return (value: any, ...params: any[]) => {
-        if (ruleHelpers.isFilled(value)) {
-          return !rule.validator(value, ...(params as any));
-        }
-        return true;
-      };
-    }
-  })();
+  if (_async) {
+    newValidator = async (value: any, ...params: any[]) => {
+      if (ruleHelpers.isFilled(value)) {
+        const result = await validator(value, ...(params as any));
+        return !result;
+      }
+      return true;
+    };
+  } else {
+    newValidator = (value: any, ...params: any[]) => {
+      if (ruleHelpers.isFilled(value)) {
+        return !validator(value, ...(params as any));
+      }
+      return true;
+    };
+  }
 
   const newRule = createRule({
     type: defineType('not') as any,
-    validator: validator as any,
-    message,
+    validator: newValidator as any,
+    message: message ?? 'Error',
   });
 
   newRule._params = _params as any;

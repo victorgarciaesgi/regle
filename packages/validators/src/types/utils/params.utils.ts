@@ -33,18 +33,17 @@ export type ExtractParamsFromRules<T extends any[]> = T extends [infer F, ...inf
     : [F, ...ExtractParamsFromRules<R>]
   : [];
 
+type MetadataBase = {
+  $valid: boolean;
+  [x: string]: any;
+};
+
 type ExtractMetaDataFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<
-      any,
-      any,
-      any,
-      infer M extends {
-        $valid: boolean;
-        [x: string]: any;
-      }
-    >
+  ? F extends RegleRuleDefinition<any, any, any, infer M extends MetadataBase>
     ? [M, ...ExtractMetaDataFromRules<R>]
-    : [...ExtractMetaDataFromRules<R>]
+    : F extends InlineRuleDeclaration<any, infer M extends MetadataBase | Promise<MetadataBase>>
+      ? [M, ...ExtractMetaDataFromRules<R>]
+      : [...ExtractMetaDataFromRules<R>]
   : [];
 
 type ExtractMetadata<T extends [...any[]]> = T extends [infer F, ...infer R]
@@ -55,6 +54,15 @@ export type GuessMetadataFromRules<
   T extends any[],
   TMeta = ExtractMetadata<ExtractMetaDataFromRules<T>>,
 > = TMeta extends EmptyObject ? boolean : TMeta;
+
+type test = ExtractMetaDataFromRules<
+  [
+    (value: any) => {
+      $valid: true;
+      foo: string;
+    },
+  ]
+>;
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 

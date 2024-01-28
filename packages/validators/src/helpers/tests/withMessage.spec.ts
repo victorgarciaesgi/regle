@@ -1,6 +1,6 @@
-import { useRegle } from '@regle/core';
+import { RegleRuleDefinition, RegleRuleMetadataDefinition, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
+import { Ref, defineComponent, ref } from 'vue';
 import { and } from '../../helpers/and';
 import { email, minLength, required } from '../../validators';
 import { withMessage } from '../withMessage';
@@ -75,5 +75,76 @@ describe('withMessage helper', () => {
     expect(vm.$errors.firstName).toStrictEqual([]);
     expect(vm.$errors.email).toStrictEqual([]);
     expect(vm.$errors.lastName).toStrictEqual(['Required async']);
+  });
+
+  it('should have correct types', () => {
+    expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
+      RegleRuleDefinition<unknown, [], boolean, RegleRuleMetadataDefinition, unknown>
+    >();
+
+    expectTypeOf(withMessage((value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
+      RegleRuleDefinition<
+        unknown,
+        [],
+        false,
+        {
+          $valid: true;
+          foo: string;
+        },
+        unknown
+      >
+    >();
+
+    expectTypeOf(
+      withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')
+    ).toEqualTypeOf<
+      RegleRuleDefinition<
+        unknown,
+        [],
+        true,
+        {
+          $valid: true;
+          foo: string;
+        },
+        unknown
+      >
+    >();
+
+    expectTypeOf(
+      withMessage(and(minLength(4), email), (value, { $params: [count] }) => {
+        return ['Must be email', `Must be min: ${count}`];
+      })
+    ).toEqualTypeOf<
+      RegleRuleDefinition<
+        string | any[] | Record<PropertyKey, any>,
+        [number],
+        false,
+        boolean,
+        string | any[] | Record<PropertyKey, any>
+      >
+    >();
+
+    expectTypeOf(
+      withMessage(minLength(4), (value, { $params: [count] }) => {
+        return `Value: ${value} Min: ${count}`;
+      })
+    ).toEqualTypeOf<
+      RegleRuleDefinition<
+        string | any[] | Record<PropertyKey, any>,
+        [count: number],
+        false,
+        boolean,
+        string | any[] | Record<PropertyKey, any>
+      >
+    >();
+
+    expectTypeOf(
+      withMessage(
+        withAsync(async (value) => {
+          return await new Promise<boolean>((resolve) => resolve(ruleHelpers.isFilled(value)));
+        }),
+        'Required async'
+      )
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
   });
 });

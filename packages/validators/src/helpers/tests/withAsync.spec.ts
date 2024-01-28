@@ -1,4 +1,4 @@
-import { useRegle } from '@regle/core';
+import { RegleRuleDefinition, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
@@ -48,7 +48,6 @@ describe('withAsync helper', () => {
   });
 
   it('should be on pending state when changing value', async () => {
-    vi.useFakeTimers();
     vm.form.email = 'f';
     await timeout(0);
     expect(vm.$regle.$pending).toBe(true);
@@ -63,7 +62,6 @@ describe('withAsync helper', () => {
   });
 
   it('should be on pending state and validate when changing dep', async () => {
-    vi.useFakeTimers();
     vm.form.count = 1;
     await timeout(0);
     expect(vm.$regle.$pending).toBe(true);
@@ -76,5 +74,36 @@ describe('withAsync helper', () => {
 
     expect(vm.$regle.$fields.email.$error).toBe(true);
     expect(vm.$errors.email).toStrictEqual(['Error']);
+  });
+
+  it('should handle failed promises', async () => {
+    const rule = withAsync(async () => {
+      try {
+        return await new Promise<boolean>((resolve, reject) => {
+          reject(false);
+        });
+      } catch (e) {
+        return false;
+      }
+    });
+
+    expect(await rule.exec(null)).toBe(false);
+  });
+
+  it('should have correct types', () => {
+    expectTypeOf(
+      withAsync(
+        async (value) => {
+          return true;
+        },
+        [() => 0]
+      )
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [number], true, boolean, unknown>>();
+
+    expectTypeOf(
+      withAsync(async (value) => {
+        return true;
+      })
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
   });
 });

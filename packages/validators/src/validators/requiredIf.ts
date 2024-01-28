@@ -1,7 +1,12 @@
 import { RegleRuleWithParamsDefinition, createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
-export const requiredIf: RegleRuleWithParamsDefinition<unknown, [condition: boolean]> = createRule({
+export const requiredIf: RegleRuleWithParamsDefinition<
+  unknown,
+  [condition: boolean],
+  false,
+  boolean
+> = createRule({
   type: defineType<unknown, [condition: boolean]>('required'),
   validator(value, condition) {
     if (condition) {

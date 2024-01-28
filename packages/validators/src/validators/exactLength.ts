@@ -2,8 +2,10 @@ import { ruleHelpers } from '../helpers';
 import { createRule, defineType, RegleRuleWithParamsDefinition } from '@regle/core';
 
 export const exactLength: RegleRuleWithParamsDefinition<
-  string | Record<PropertyKey, any> | any[],
-  [count: number]
+  string | any[] | Record<PropertyKey, any>,
+  [count: number],
+  false,
+  boolean
 > = createRule({
   type: defineType<string | Record<PropertyKey, any> | any[], [count: number]>('exactLength'),
   validator: (value, count) => {
