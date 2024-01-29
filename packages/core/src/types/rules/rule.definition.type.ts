@@ -59,15 +59,15 @@ export interface RegleRuleWithParamsDefinition<
   ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 }
 
+export type RegleRuleMetadataExtended = {
+  $valid: boolean;
+  [x: string]: any;
+};
+
 /**
  * Define a rule Metadata definition
  */
-export type RegleRuleMetadataDefinition =
-  | {
-      $valid: boolean;
-      [x: string]: any;
-    }
-  | boolean;
+export type RegleRuleMetadataDefinition = RegleRuleMetadataExtended | boolean;
 
 type DefaultMetadataProperties = Pick<ExcludeByType<RegleCommonStatus, Function>, '$invalid'>;
 
@@ -83,7 +83,11 @@ export type RegleRuleMetadataConsumer<
     : {
         $params: TParams;
       }) &
-  (TMetadata extends boolean ? {} : Omit<TMetadata, '$valid'>);
+  (Exclude<TMetadata, boolean> extends RegleRuleMetadataExtended
+    ? TMetadata extends boolean
+      ? Partial<Omit<Exclude<TMetadata, boolean>, '$valid'>>
+      : Omit<Exclude<TMetadata, boolean>, '$valid'>
+    : {});
 
 /**
  * Will be used to consumme metadata on related helpers and rule status

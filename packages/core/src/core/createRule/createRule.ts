@@ -27,7 +27,8 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  * // Create a simple rule with no params
  * import {ruleHelpers} from '@regle/validators';
  *
- * export const isFoo = createRule<string>({
+ * export const isFoo = createRule({
+ *   type: defineType<string>('foo'),
  *   validator(value) {
  *       if (ruleHelpers.isFilled(value)) {
  *           return value === 'foo';

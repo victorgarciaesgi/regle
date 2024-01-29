@@ -79,7 +79,7 @@ describe('withMessage helper', () => {
 
   it('should have correct types', () => {
     expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], boolean, RegleRuleMetadataDefinition, unknown>
+      RegleRuleDefinition<unknown, [], false, boolean, unknown>
     >();
 
     expectTypeOf(withMessage((value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<

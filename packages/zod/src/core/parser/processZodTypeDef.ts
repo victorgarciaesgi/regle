@@ -7,7 +7,7 @@ import {
   zodArrayToRegle,
   zodObjectToRegle,
 } from './validators';
-import { PossibleDefTypes } from 'types';
+import { PossibleDefTypes } from '../../types';
 
 export function processZodTypeDef(
   def: PossibleDefTypes,

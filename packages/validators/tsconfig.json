@@ -14,7 +14,6 @@
     "verbatimModuleSyntax": false,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
     "declaration": true,
     "declarationMap": true,
     "types": ["vitest/globals"],

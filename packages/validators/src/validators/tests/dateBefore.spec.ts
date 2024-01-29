@@ -21,6 +21,18 @@ describe('dateBefore validator', () => {
     expect(dateBefore('abde').exec('')).toBe(true);
   });
 
+  it('should not validate string value', () => {
+    expect(dateBefore('abde').exec('ezezfnr')).toBe(false);
+  });
+
+  it('should not validate wrong number value', () => {
+    expect(dateBefore(101929020 as any).exec(new Date().getTime() as any)).toBe(false);
+  });
+
+  it('should not validate wrong type', () => {
+    expect(dateBefore(true as any).exec(true as any)).toBe(false);
+  });
+
   it('should validate a date before', () => {
     expect(dateBefore(new Date(2013)).exec(new Date(2012))).toBe(true);
   });

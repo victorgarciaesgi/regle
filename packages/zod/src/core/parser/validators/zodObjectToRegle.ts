@@ -1,5 +1,5 @@
 import { ReglePartialValidationTree } from '@regle/core';
-import { PossibleDefTypes } from 'types';
+import { PossibleDefTypes } from '../../../types';
 import { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 
