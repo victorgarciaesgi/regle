@@ -19,7 +19,7 @@ export function useStateProperties(
 
   const externalErrors = computed(() => unref(options.$externalErrors));
 
-  const $regle = reactive(
+  const regle = reactive(
     createReactiveNestedStatus({
       rootRules: scopeRules,
       scopeRules,
@@ -31,7 +31,7 @@ export function useStateProperties(
     })
   );
 
-  const errors = useErrors($regle);
+  const errors = useErrors(regle);
 
-  return { $regle, errors };
+  return { regle, errors };
 }

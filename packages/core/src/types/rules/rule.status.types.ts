@@ -1,4 +1,5 @@
 import type {
+  $InternalRegleRuleDefinition,
   AllRulesDeclarations,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -40,7 +41,9 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
 > =
   TRule extends RegleCollectionRuleDefinition<any, any>
-    ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
+    ? TState[TKey] extends Array<Record<string, any> | any[]>
+      ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
+      : RegleFieldStatus<TRule['$each'] & TRule, TState[TKey]>
     : TRule extends ReglePartialValidationTree<any>
       ? TState[TKey] extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
@@ -117,6 +120,7 @@ export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
   readonly $path: string;
   $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;
   $validate(): Promise<boolean>;
+  $reset(): void;
 } & ([TParams] extends [[]]
   ? {}
   : {
@@ -143,6 +147,7 @@ export interface $InternalRegleRuleStatus {
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
+  $reset(): void;
 }
 
 /**
@@ -154,12 +159,13 @@ export interface RegleCollectionStatus<
 > extends RegleFieldStatus<TRules, TState> {
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, TState, number>>;
 }
+
 /**
  * @internal
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
-  $each: Array<$InternalRegleStatusType>;
+  $each: Array<$InternalRegleStatusType | { $rules: $InternalRegleRuleStatus }>;
   $rules?: Record<string, $InternalRegleRuleStatus>;
   /** Track each array state */
   $unwatch(): void;

@@ -16,7 +16,7 @@ describe('withMessage helper', () => {
         lastName: '',
       });
 
-      const { $errors, validateForm, $regle } = useRegle(form, () => ({
+      const { errors, validateForm, regle } = useRegle(form, () => ({
         email: {
           email: withMessage(and(minLength(4), email), (value, { $params: [count] }) => {
             return ['Must be email', `Must be min: ${count}`];
@@ -38,22 +38,22 @@ describe('withMessage helper', () => {
         },
       }));
 
-      return { form, $errors, validateForm, $regle };
+      return { form, errors, validateForm, regle };
     },
   });
 
   const { vm } = mount(testComponent);
 
   it('should return empty errors', () => {
-    expect(vm.$errors.email).toStrictEqual([]);
-    expect(vm.$errors.firstName).toStrictEqual([]);
+    expect(vm.errors.email).toStrictEqual([]);
+    expect(vm.errors.firstName).toStrictEqual([]);
   });
 
   it('should return errors when submitting no values', async () => {
     const result = await vm.validateForm();
     expect(result).toBe(false);
-    expect(vm.$errors.email).toStrictEqual([]);
-    expect(vm.$errors.firstName).toStrictEqual(['Required']);
+    expect(vm.errors.email).toStrictEqual([]);
+    expect(vm.errors.firstName).toStrictEqual(['Required']);
   });
 
   it('should return errors when submitting with incorrect values', async () => {
@@ -62,8 +62,8 @@ describe('withMessage helper', () => {
     vm.form.lastName = 'foo';
     await flushPromises();
     // await vm.validateForm();
-    expect(vm.$errors.firstName).toStrictEqual(['Value: foo Min: 4']);
-    expect(vm.$errors.email).toStrictEqual(['Must be email', `Must be min: 4`]);
+    expect(vm.errors.firstName).toStrictEqual(['Value: foo Min: 4']);
+    expect(vm.errors.email).toStrictEqual(['Must be email', `Must be min: 4`]);
   });
 
   it('should return no errors when submitting with correct values', async () => {
@@ -72,9 +72,10 @@ describe('withMessage helper', () => {
     vm.form.lastName = '';
     await flushPromises();
     // await vm.validateForm();
-    expect(vm.$errors.firstName).toStrictEqual([]);
-    expect(vm.$errors.email).toStrictEqual([]);
-    expect(vm.$errors.lastName).toStrictEqual(['Required async']);
+
+    expect(vm.errors.firstName).toStrictEqual([]);
+    expect(vm.errors.email).toStrictEqual([]);
+    expect(vm.errors.lastName).toStrictEqual(['Required async']);
   });
 
   it('should have correct types', () => {

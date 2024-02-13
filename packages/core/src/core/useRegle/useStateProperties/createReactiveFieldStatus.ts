@@ -52,14 +52,19 @@ export function createReactiveFieldStatus({
 
   const $externalErrors = ref<string[] | undefined>([]);
 
+  let $unwatchState: () => void;
+  let $unwatchValid: () => void;
+  let $unwatchExternalErrors: () => void;
+  let $unwatchDirty: () => void;
+
+  let $commit = () => {};
+
   function collectExternalErrors() {
     if (externalErrors.value) {
       $externalErrors.value = externalErrors.value;
     }
   }
   collectExternalErrors();
-
-  const $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
@@ -96,6 +101,10 @@ export function createReactiveFieldStatus({
 
     $watch();
 
+    $commit = scopeState.$debounce.value
+      ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
+      : $commitHandler;
+
     if (storeResult?.valid != null) {
       $dirty.value = storage.getDirtyState(path);
       if ($dirty.value) {
@@ -105,24 +114,6 @@ export function createReactiveFieldStatus({
 
     storage.addRuleDeclEntry(path, declaredRules);
   }
-
-  const $unwatchDirty = watch($dirty, () => {
-    storage.setDirtyEntry(path, $dirty.value);
-  });
-
-  const $unwatchState = watch(state, () => {
-    if (scopeState.$autoDirty.value) {
-      if (!$dirty.value) {
-        $dirty.value = true;
-      }
-    }
-    if (!scopeState.$lazy.value) {
-      $commit();
-      if (!scopeState.$rewardEarly.value !== false) {
-        $clearExternalErrors();
-      }
-    }
-  });
 
   function $unwatch() {
     if ($rules.value) {
@@ -221,21 +212,53 @@ export function createReactiveFieldStatus({
         $autoDirty,
       } satisfies ScopeReturnState;
     }) as ScopeReturnState;
+
+    $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
+    $unwatchState = watch(
+      state,
+      () => {
+        if (scopeState.$autoDirty.value) {
+          if (!$dirty.value) {
+            $dirty.value = true;
+          }
+        }
+        if (!scopeState.$lazy.value) {
+          $commit();
+          if (!scopeState.$rewardEarly.value !== false) {
+            $clearExternalErrors();
+          }
+        }
+      },
+      { deep: true }
+    );
+    $unwatchDirty = watch($dirty, () => {
+      storage.setDirtyEntry(path, $dirty.value);
+    });
+
+    $unwatchValid = watch(scopeState.$valid, (valid) => {
+      if (scopeState.$rewardEarly.value && valid) {
+        triggerPunishment.value = false;
+      }
+    });
+  }
+
+  function $commitHandler() {
+    Object.entries($rules.value).forEach(([key, rule]) => {
+      rule.$validate();
+    });
   }
 
   const $rules = ref() as Ref<Record<string, $InternalRegleRuleStatus>>;
   const $localOptions = ref() as Ref<FieldRegleBehaviourOptions>;
-  createReactiveRulesResult();
 
-  const $unwatchValid = watch(scopeState.$valid, (valid) => {
-    if (scopeState.$rewardEarly.value && valid) {
-      triggerPunishment.value = false;
-    }
-  });
+  createReactiveRulesResult();
 
   function $reset(): void {
     $dirty.value = false;
     $externalErrors.value = [];
+    Object.entries($rules.value).forEach(([key, rule]) => {
+      rule.$reset();
+    });
   }
 
   function $touch(): void {
@@ -248,16 +271,6 @@ export function createReactiveFieldStatus({
     }
   }
 
-  const $commit = scopeState.$debounce.value
-    ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
-    : $commitHandler;
-
-  function $commitHandler() {
-    Object.entries($rules.value).map(([key, rule]) => {
-      return rule.$validate();
-    });
-  }
-
   const $validate = scopeState.$debounce.value
     ? debounce($validateHandler, scopeState.$debounce.value ?? 0)
     : $validateHandler;
@@ -266,7 +279,7 @@ export function createReactiveFieldStatus({
     try {
       $clearExternalErrors();
       triggerPunishment.value = true;
-      if (!scopeState.$lazy.value) {
+      if (!scopeState.$lazy.value && $anyDirty.value) {
         return !scopeState.$error.value;
       } else {
         const results = await Promise.allSettled(

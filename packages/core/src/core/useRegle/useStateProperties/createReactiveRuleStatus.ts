@@ -53,6 +53,8 @@ export function createReactiveRuleStatus({
   let scope = effectScope();
   let scopeState!: ScopeState;
 
+  let $unwatchState: () => void;
+
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(
     `${path}.${ruleKey}`
   );
@@ -146,61 +148,66 @@ export function createReactiveRuleStatus({
         $path,
       };
     }) as ScopeState;
+
+    $unwatchState = watch(scopeState.$params, $validate, {
+      deep: true,
+    });
   }
 
   $watch();
 
-  const $unwatchState = watch(scopeState.$params, $validate, {
-    deep: true,
-  });
-
   async function $validate(): Promise<boolean> {
-    try {
-      $validating.value = true;
-      const validator = scopeState.$validator.value;
-      let ruleResult = false;
-      const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+    $validating.value = true;
+    const validator = scopeState.$validator.value;
+    let ruleResult = false;
+    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
 
-      if (resultOrPromise instanceof Promise) {
-        if ($dirty.value && !$pending.value) {
-          try {
-            $valid.value = true;
-            $pending.value = true;
-            const promiseResult = await resultOrPromise;
-
-            if (typeof promiseResult === 'boolean') {
-              ruleResult = promiseResult;
-            } else {
-              const { $valid, ...rest } = promiseResult;
-              ruleResult = $valid;
-              $metadata.value = rest;
-            }
-          } catch (e) {
-            ruleResult = false;
-          } finally {
-            $pending.value = false;
-          }
-        }
-      } else {
-        if (resultOrPromise != null) {
-          if (typeof resultOrPromise === 'boolean') {
-            ruleResult = resultOrPromise;
+    if (resultOrPromise instanceof Promise) {
+      if (!$pending.value) {
+        try {
+          $valid.value = true;
+          $pending.value = true;
+          const promiseResult = await resultOrPromise;
+          if (typeof promiseResult === 'boolean') {
+            ruleResult = promiseResult;
           } else {
-            const { $valid, ...rest } = resultOrPromise;
+            const { $valid, ...rest } = promiseResult;
             ruleResult = $valid;
             $metadata.value = rest;
           }
+        } catch (e) {
+          ruleResult = false;
+        } finally {
+          $pending.value = false;
         }
       }
-      $valid.value = ruleResult;
-      if (options.$externalErrors) {
-        // TODO
+    } else {
+      if (resultOrPromise != null) {
+        if (typeof resultOrPromise === 'boolean') {
+          ruleResult = resultOrPromise;
+        } else {
+          const { $valid, ...rest } = resultOrPromise;
+          ruleResult = $valid;
+          $metadata.value = rest;
+        }
       }
-
-      return ruleResult;
-    } finally {
-      $validating.value = false;
     }
+    $valid.value = ruleResult;
+    if (options.$externalErrors) {
+      // TODO
+    }
+    $validating.value = false;
+
+    return ruleResult;
+  }
+
+  function $reset() {
+    $valid.value = true;
+    $metadata.value = {};
+    $pending.value = false;
+    $validating.value = false;
+
+    $watch();
   }
 
   function $unwatch() {
@@ -216,5 +223,6 @@ export function createReactiveRuleStatus({
     $validate,
     $unwatch,
     $watch,
+    $reset,
   }) satisfies $InternalRegleRuleStatus;
 }

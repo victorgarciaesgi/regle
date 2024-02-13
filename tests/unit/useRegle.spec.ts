@@ -11,7 +11,7 @@ import {
   withMessage,
 } from '@regle/validators';
 import { defineComponent, ref } from 'vue';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 
 describe('useRegle composable with classic form', () => {
   const testComponent = defineComponent({
@@ -24,7 +24,7 @@ describe('useRegle composable with classic form', () => {
         confirmPassword: '',
       });
 
-      const { $errors, validateForm, $regle, $invalid, $valid, resetForm } = useRegle(form, () => ({
+      const { errors, validateForm, regle, invalid, resetForm } = useRegle(form, () => ({
         email: {
           email,
           required,
@@ -45,14 +45,14 @@ describe('useRegle composable with classic form', () => {
         },
       }));
 
-      return { form, $errors, validateForm, $regle, $invalid, $valid, resetForm };
+      return { form, errors, validateForm, regle, invalid, resetForm };
     },
   });
 
   const { vm } = mount(testComponent);
 
   it('should have a initial state', () => {
-    expect(vm.$errors).toStrictEqual({
+    expect(vm.errors).toStrictEqual({
       email: [],
       firstName: [],
       lastName: [],
@@ -60,14 +60,13 @@ describe('useRegle composable with classic form', () => {
       confirmPassword: [],
     });
 
-    expect(vm.$invalid).toBe(false);
-    expect(vm.$valid).toBe(false);
+    expect(vm.invalid).toBe(true);
 
-    expect(vm.$regle.$anyDirty).toBe(false);
-    expect(vm.$regle.$dirty).toBe(false);
-    expect(vm.$regle.$error).toBe(false);
-    expect(vm.$regle.$pending).toBe(false);
-    expect(vm.$regle.$value).toStrictEqual({
+    expect(vm.regle.$anyDirty).toBe(false);
+    expect(vm.regle.$dirty).toBe(false);
+    expect(vm.regle.$error).toBe(false);
+    expect(vm.regle.$pending).toBe(false);
+    expect(vm.regle.$value).toStrictEqual({
       email: '',
       firstName: '',
       lastName: '',
@@ -75,18 +74,18 @@ describe('useRegle composable with classic form', () => {
       confirmPassword: '',
     });
 
-    expect(vm.$regle.$fields.email.$valid).toBe(true);
-    expect(vm.$regle.$fields.firstName.$valid).toBe(true);
-    expect(vm.$regle.$fields.lastName.$valid).toBe(true);
-    expect(vm.$regle.$fields.password.$valid).toBe(true);
-    expect(vm.$regle.$fields.password.$valid).toBe(true);
+    expect(vm.regle.$fields.email.$valid).toBe(false);
+    expect(vm.regle.$fields.firstName.$valid).toBe(true);
+    expect(vm.regle.$fields.lastName.$valid).toBe(true);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
   });
 
   it('should error on initial submit', async () => {
     const result = await vm.validateForm();
 
     expect(result).toBe(false);
-    expect(vm.$errors).toStrictEqual({
+    expect(vm.errors).toStrictEqual({
       email: ['Value is required'],
       firstName: [],
       lastName: [],
@@ -94,18 +93,51 @@ describe('useRegle composable with classic form', () => {
       confirmPassword: ['Value is required'],
     });
 
-    expect(vm.$invalid).toBe(true);
-    expect(vm.$valid).toBe(false);
+    expect(vm.invalid).toBe(true);
 
-    expect(vm.$regle.$anyDirty).toBe(true);
-    expect(vm.$regle.$dirty).toBe(true);
-    expect(vm.$regle.$error).toBe(true);
-    expect(vm.$regle.$pending).toBe(false);
+    expect(vm.regle.$anyDirty).toBe(true);
+    expect(vm.regle.$dirty).toBe(true);
+    expect(vm.regle.$error).toBe(true);
+    expect(vm.regle.$pending).toBe(false);
 
-    expect(vm.$regle.$fields.email.$valid).toBe(false);
-    expect(vm.$regle.$fields.firstName.$valid).toBe(true);
-    expect(vm.$regle.$fields.lastName.$valid).toBe(true);
-    expect(vm.$regle.$fields.password.$valid).toBe(false);
-    expect(vm.$regle.$fields.password.$valid).toBe(false);
+    expect(vm.regle.$fields.email.$valid).toBe(false);
+    expect(vm.regle.$fields.firstName.$valid).toBe(true);
+    expect(vm.regle.$fields.lastName.$valid).toBe(true);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
+  });
+
+  it('should reset on initial state when calling resetForm', async () => {
+    vm.resetForm();
+
+    await flushPromises();
+
+    expect(vm.errors).toStrictEqual({
+      email: [],
+      firstName: [],
+      lastName: [],
+      password: [],
+      confirmPassword: [],
+    });
+
+    expect(vm.invalid).toBe(true);
+
+    expect(vm.regle.$anyDirty).toBe(false);
+    expect(vm.regle.$dirty).toBe(false);
+    expect(vm.regle.$error).toBe(false);
+    expect(vm.regle.$pending).toBe(false);
+    expect(vm.regle.$value).toStrictEqual({
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      confirmPassword: '',
+    });
+
+    expect(vm.regle.$fields.email.$valid).toBe(false);
+    expect(vm.regle.$fields.firstName.$valid).toBe(true);
+    expect(vm.regle.$fields.lastName.$valid).toBe(true);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
+    expect(vm.regle.$fields.password.$valid).toBe(false);
   });
 });

@@ -1,36 +1,41 @@
 import { RegleRuleDefinition, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
 import { withAsync } from '../../helpers/withAsync';
-import { withMessage } from '../../helpers/withMessage';
+import { withMessage } from '../withMessage';
 
-describe('withAsync helper', () => {
-  const testComponent = defineComponent({
-    setup() {
-      const form = ref({
-        email: '',
-        count: 0,
-      });
+describe.only('withAsync helper', () => {
+  const mountComponent = () => {
+    return mount(
+      defineComponent({
+        template: '<div>{{regle}}</div>',
+        setup() {
+          const form = ref({
+            email: '',
+            count: 0,
+          });
 
-      const { $errors, validateForm, $regle } = useRegle(form, () => ({
-        email: {
-          error: withMessage(
-            withAsync(
-              async (value) => {
-                await timeout(10000);
-                return form.value.count === 0;
-              },
-              [() => form.value.count]
-            ),
-            'Error'
-          ),
+          const { errors, validateForm, regle } = useRegle(form, () => ({
+            email: {
+              error: withMessage(
+                withAsync(
+                  async (value) => {
+                    await timeout(10);
+                    return form.value.count === 0;
+                  },
+                  [() => form.value.count]
+                ),
+                'Error'
+              ),
+            },
+          }));
+
+          return { form, errors, validateForm, regle };
         },
-      }));
-
-      return { form, $errors, validateForm, $regle };
-    },
-  });
+      })
+    );
+  };
 
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -41,39 +46,44 @@ describe('withAsync helper', () => {
     vi.useRealTimers();
   });
 
-  const { vm } = mount(testComponent);
-
   it('should return empty errors', () => {
-    expect(vm.$errors.email).toStrictEqual([]);
+    const wrapper = mountComponent();
+    expect(wrapper.vm.errors.email).toStrictEqual([]);
   });
 
   it('should be on pending state when changing value', async () => {
-    vm.form.email = 'f';
-    await timeout(0);
-    expect(vm.$regle.$pending).toBe(true);
-    expect(vm.$regle.$fields.email.$pending).toBe(true);
+    const wrapper = mountComponent();
+    wrapper.vm.form.email = 'f';
+    expect(wrapper.vm.regle.$pending).toBe(true);
+    expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 
-    vi.runAllTimers();
+    vi.advanceTimersByTime(10);
+    await nextTick();
     await flushPromises();
-    expect(vm.$regle.$pending).toBe(false);
-    expect(vm.$regle.$fields.email.$pending).toBe(false);
 
-    expect(vm.$regle.$fields.email.$error).toBe(false);
+    expect(wrapper.vm.regle.$pending).toBe(false);
+    expect(wrapper.vm.regle.$fields.email.$pending).toBe(false);
+
+    expect(wrapper.vm.regle.$fields.email.$error).toBe(false);
   });
 
   it('should be on pending state and validate when changing dep', async () => {
-    vm.form.count = 1;
-    await timeout(0);
-    expect(vm.$regle.$pending).toBe(true);
-    expect(vm.$regle.$fields.email.$pending).toBe(true);
+    const wrapper = mountComponent();
+    wrapper.vm.form.email = 'f';
+    wrapper.vm.form.count = 1;
+    expect(wrapper.vm.regle.$pending).toBe(true);
+    expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 
-    vi.runAllTimers();
+    vi.advanceTimersByTime(10);
+    await nextTick();
     await flushPromises();
-    expect(vm.$regle.$pending).toBe(false);
-    expect(vm.$regle.$fields.email.$pending).toBe(false);
 
-    expect(vm.$regle.$fields.email.$error).toBe(true);
-    expect(vm.$errors.email).toStrictEqual(['Error']);
+    expect(wrapper.vm.regle.$pending).toBe(false);
+    expect(wrapper.vm.regle.$fields.email.$pending).toBe(false);
+
+    expect(wrapper.vm.regle.$fields.email.$rules.error.$valid).toBe(false);
+    expect(wrapper.vm.regle.$fields.email.$error).toBe(true);
+    expect(wrapper.vm.errors.email).toStrictEqual(['Error']);
   });
 
   it('should handle failed promises', async () => {

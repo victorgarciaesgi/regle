@@ -1,5 +1,16 @@
 import { RequiredDeep } from 'type-fest';
-import { ComputedRef, Ref, computed, effectScope, reactive, toRef, watch } from 'vue';
+import {
+  ComputedRef,
+  EffectScope,
+  Ref,
+  effectScope,
+  onScopeDispose,
+  reactive,
+  toRef,
+  triggerRef,
+  watch,
+  computed,
+} from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -48,11 +59,13 @@ export function createReactiveNestedStatus({
     $error: ComputedRef<boolean>;
     $pending: ComputedRef<boolean>;
   };
-  let scope = effectScope();
+  let scope: EffectScope;
   let scopeState!: ScopeState;
   let $unwatchFields: (() => void) | undefined;
 
-  function createReactiveFieldsStatus() {
+  function createReactiveFieldsStatus(watch = true) {
+    $fields.value = null as any;
+    triggerRef($fields);
     $fields.value = Object.fromEntries(
       Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
@@ -79,16 +92,20 @@ export function createReactiveNestedStatus({
           (rule): rule is [string, $InternalRegleStatusType] => !!rule.length && rule[1] != null
         )
     );
-    $watch();
+    if (watch) {
+      $watch();
+    }
   }
 
-  const $fields = storage.getFieldsEntry(path);
+  let $fields: Ref<Record<string, $InternalRegleStatusType>> = storage.getFieldsEntry(path);
   createReactiveFieldsStatus();
 
   function $reset(): void {
+    createReactiveFieldsStatus(false);
     Object.entries($fields.value).forEach(([_, statusOrField]) => {
       statusOrField.$reset();
     });
+    $watch();
   }
 
   function $touch(): void {
@@ -127,6 +144,7 @@ export function createReactiveNestedStatus({
         { deep: true, flush: 'post' }
       );
     }
+    scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
         return Object.entries($fields.value).every(([key, statusOrField]) => {
@@ -146,7 +164,7 @@ export function createReactiveNestedStatus({
         });
       });
 
-      const $valid = computed(() => !$invalid.value);
+      const $valid = computed<boolean>(() => !$invalid.value);
 
       const $error = computed<boolean>(() => {
         return Object.entries($fields.value).some(([key, statusOrField]) => {
@@ -180,8 +198,6 @@ export function createReactiveNestedStatus({
     if ($unwatchFields) {
       $unwatchFields();
     }
-    scope.stop();
-    scope = effectScope();
   }
 
   function $clearExternalErrors() {

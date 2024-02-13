@@ -3,29 +3,29 @@
     <input v-model="form.email" placeholder="email" />
 
     <ul>
-      <li v-for="error of $errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input :value="form.firstName" @input="updateFirstName" placeholder="firstname" />
     <ul>
-      <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
     <!-- <input type="date" v-model="form.birthDate" placeholder="Birth date" /> -->
     <!-- <ul>
-      <li v-for="error of $errors.birthDate" :key="error">{{ error }}</li>
+      <li v-for="error of errors.birthDate" :key="error">{{ error }}</li>
     </ul> -->
 
     <!-- <input type="date" v-model="form.today" placeholder="Today" /> -->
     <!-- <ul>
-      <li v-for="error of $errors.today" :key="error">{{ error }}</li>
+      <li v-for="error of errors.today" :key="error">{{ error }}</li>
     </ul> -->
 
     <template :key="index" v-for="(input, index) of form.nested">
       <input v-model="input.name" placeholder="name" />
       <ul>
         <!-- TODO types for collections errors -->
-        <li v-for="error of $errors.nested.$each[index].name" :key="error">{{ error }}</li>
+        <li v-for="error of errors.nested.$each[index].name" :key="error">{{ error }}</li>
       </ul>
     </template>
 
@@ -35,7 +35,7 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ $regle }}
+{{ regle }}
       </code>
     </pre>
   </div>
@@ -77,7 +77,7 @@ async function submit() {
   // }
 }
 
-const { $errors, $regle, $state, validateForm } = useZodForm(
+const { errors, regle, validateForm } = useZodForm(
   form,
   z.object({
     email: z

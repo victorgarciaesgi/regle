@@ -1,9 +1,9 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input :value="form.email" @input="updateEmail" placeholder="email" />
-    <span v-if="$regle.$fields.email.$pending" style="color: orange">Loading</span>
+    <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
-      <li v-for="error of $errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model.number="limit" placeholder="limit" />
@@ -11,26 +11,26 @@
     <input
       :value="form.firstName"
       @input="updateFirstName"
-      :placeholder="`firstName ${$regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
+      :placeholder="`firstName ${regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
-      <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
     <input type="date" v-model="form.birthDate" placeholder="Birth date" />
     <ul>
-      <li v-for="error of $errors.birthDate" :key="error">{{ error }}</li>
+      <li v-for="error of errors.birthDate" :key="error">{{ error }}</li>
     </ul>
 
     <input type="date" v-model="form.today" placeholder="Today" />
     <ul>
-      <li v-for="error of $errors.today" :key="error">{{ error }}</li>
+      <li v-for="error of errors.today" :key="error">{{ error }}</li>
     </ul>
 
     <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <li v-for="error of $errors.foo.bloublou.test.$each[index].name" :key="error">{{
+        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
           error
         }}</li>
       </ul>
@@ -42,8 +42,8 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ $errors }}
-{{ $regle }}
+{{ errors }}
+{{ regle }}
       </code>
     </pre>
   </div>
@@ -100,7 +100,7 @@ async function submit() {
   const t0 = performance.now();
   const result = await validateForm();
   if (externalEven.value % 2 === 0) {
-    errors.value.email = ['boo'];
+    externalErrors.value.email = ['boo'];
   }
   const t1 = performance.now();
   console.log(`Time it takes to run the function: ${t1 - t0} ms`);
@@ -114,9 +114,9 @@ async function submit() {
 const limit = ref(2);
 const externalEven = ref(0);
 
-const errors = ref<RegleExternalErrorTree<Form>>({});
+const externalErrors = ref<RegleExternalErrorTree<Form>>({});
 
-const { $regle, $errors, validateForm } = useRegle(
+const { regle, errors, validateForm } = useRegle(
   form,
   () => ({
     email: {
@@ -150,6 +150,6 @@ const { $regle, $errors, validateForm } = useRegle(
       },
     },
   }),
-  { $externalErrors: errors }
+  { $externalErrors: externalErrors }
 );
 </script>

@@ -1,21 +1,13 @@
 import {
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
-  Regle,
   RegleBehaviourOptions,
   ReglePartialValidationTree,
-  RegleValidationTree,
   useRegle,
 } from '@regle/core';
-import { computed, MaybeRef, Ref, ref, unref, UnwrapRef, watch } from 'vue';
+import { MaybeRef, Ref, computed, ref, unref, watch } from 'vue';
+import { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
 import { processZodTypeDef } from './parser/processZodTypeDef';
-import {
-  DeepReactiveState,
-  PossibleDefTypes,
-  ZodRegle,
-  ZodToRegleErrorTree,
-  toZod,
-} from '../types';
 
 export function useZodForm<
   TState extends Record<string, any>,

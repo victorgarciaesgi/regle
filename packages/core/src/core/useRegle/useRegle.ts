@@ -1,5 +1,6 @@
 import { PartialDeep, RequiredDeep } from 'type-fest';
-import { ComputedRef, Ref, computed, isRef, ref, shallowRef, toRaw } from 'vue';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, toRaw, nextTick } from 'vue';
+import { resetScheduling } from '@vue/reactivity';
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
@@ -11,11 +12,11 @@ import {
   RegleErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
-  RegleValidationTree,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import { DeepMaybeRef } from '../../types/utils';
 import { useStateProperties } from './useStateProperties';
+import { isObject } from '../../utils';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
   customRules?: () => TCustomRules,
@@ -54,11 +55,11 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       ...options,
     } as any;
 
-    const processedState = ref(state) as Ref<TState>;
+    const processedState = isRef(state) ? state : (ref(state) as Ref<TState>);
 
-    const initialState = shallowRef<TState>(structuredClone(toRaw(processedState.value)));
+    const initialState = structuredClone(toRaw(processedState.value));
 
-    const { $regle, errors } = useStateProperties(
+    const { regle, errors } = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
       processedState,
       resolvedOptions,
@@ -66,35 +67,57 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     );
 
     function resetForm() {
-      state.value = toRaw(initialState.value) as TState;
-      $regle.$reset();
+      regle.$unwatch();
+      resetValuesRecursively(state, initialState);
+      regle.$reset();
+      regle.$validate();
     }
 
-    const $valid = computed<boolean>(() => {
-      return $regle.$valid && $regle.$dirty && !$regle.$pending;
-    });
+    function resetValuesRecursively(
+      origin: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
+      state: Record<string, MaybeRef<any>>
+    ) {
+      Object.entries(initialState).forEach(([key, value]) => {
+        let originRef = isRef<Record<string, MaybeRef<any>>>(origin) ? origin.value : origin;
+        let originValue = isRef(originRef[key]) ? originRef[key].value : originRef[key];
+        const stateRef = isRef(state[key]) ? state[key]._value : state[key];
+        if (Array.isArray(stateRef) && Array.isArray(originValue)) {
+          stateRef.forEach((val, index) => {
+            resetValuesRecursively(originValue[index], stateRef[index]);
+          });
+        } else if (isObject(stateRef)) {
+          resetValuesRecursively(originValue, stateRef);
+        } else {
+          if (isRef(originRef[key])) {
+            originRef[key].value = stateRef;
+          } else {
+            originRef[key] = stateRef;
+          }
+        }
+      });
+    }
 
-    const $invalid = computed<boolean>(() => {
-      return ($regle.$invalid && $regle.$dirty) || $regle.$pending;
+    const invalid = computed<boolean>(() => {
+      return regle.$invalid || regle.$pending;
     });
 
     async function validateForm(): Promise<false | DeepSafeFormState<TState, TRules>> {
-      $regle.$touch();
-      const result = await $regle.$validate();
+      regle.$touch();
+      const result = await regle.$validate();
       if (result) {
         return state.value as any;
       }
       return false;
     }
 
+    regle.$validate();
+
     return {
-      $state: state as Ref<PartialDeep<TState>>,
-      $regle: $regle as RegleStatus<TState, TRules>,
-      $errors: errors as RegleErrorTree<TRules>,
+      regle: regle as RegleStatus<TState, TRules>,
+      errors: errors as RegleErrorTree<TRules>,
       resetForm,
       validateForm,
-      $valid,
-      $invalid,
+      invalid,
     };
   }
 

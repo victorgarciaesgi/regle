@@ -15,14 +15,12 @@ export interface Regle<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
 > {
-  $state: Ref<PartialDeep<TState>>;
-  $regle: RegleStatus<TState, TRules>;
+  regle: RegleStatus<TState, TRules>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
    * It allow you to skip scouting the `$regle` object
    */
-  $errors: RegleErrorTree<TRules>;
-  $valid: ComputedRef<boolean>;
-  $invalid: ComputedRef<boolean>;
+  errors: RegleErrorTree<TRules>;
+  invalid: ComputedRef<boolean>;
   resetForm: () => void;
   validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;
 }
@@ -54,17 +52,17 @@ export type SafeProperty<
     ? SafeProperty<TState[number], TRule['$each']>[]
     : never
   : TRule extends ReglePartialValidationTree<any, any>
-  ? TState extends Record<string, any>
-    ? DeepSafeFormState<TState, TRule>
-    : never
-  : TRule extends RegleRuleDecl<any, any>
-  ? unknown extends TRule['required']
-    ? never
-    : TRule['required'] extends undefined
-    ? never
-    : TRule['required'] extends RegleRuleDefinition<any, infer Params>
-    ? Params extends never[]
-      ? TState
+    ? TState extends Record<string, any>
+      ? DeepSafeFormState<TState, TRule>
       : never
-    : never
-  : never;
+    : TRule extends RegleRuleDecl<any, any>
+      ? unknown extends TRule['required']
+        ? never
+        : TRule['required'] extends undefined
+          ? never
+          : TRule['required'] extends RegleRuleDefinition<any, infer Params>
+            ? Params extends never[]
+              ? TState
+              : never
+            : never
+      : never;
