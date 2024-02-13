@@ -1,6 +1,5 @@
-import { PartialDeep, RequiredDeep } from 'type-fest';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, toRaw, nextTick } from 'vue';
-import { resetScheduling } from '@vue/reactivity';
+import { RequiredDeep } from 'type-fest';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, toRaw } from 'vue';
 import {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
@@ -15,8 +14,8 @@ import {
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import { DeepMaybeRef } from '../../types/utils';
-import { useStateProperties } from './useStateProperties';
 import { isObject } from '../../utils';
+import { useStateProperties } from './useStateProperties';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
   customRules?: () => TCustomRules,

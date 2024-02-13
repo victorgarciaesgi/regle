@@ -1,4 +1,4 @@
-import { RegleRuleDefinition, RegleRuleMetadataDefinition, useRegle } from '@regle/core';
+import { RegleRuleDefinition, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { Ref, defineComponent, ref } from 'vue';
 import { and } from '../../helpers/and';
@@ -60,8 +60,9 @@ describe('withMessage helper', () => {
     vm.form.firstName = 'foo';
     vm.form.email = 'foo';
     vm.form.lastName = 'foo';
+
     await flushPromises();
-    // await vm.validateForm();
+
     expect(vm.errors.firstName).toStrictEqual(['Value: foo Min: 4']);
     expect(vm.errors.email).toStrictEqual(['Must be email', `Must be min: 4`]);
   });
@@ -70,8 +71,8 @@ describe('withMessage helper', () => {
     vm.form.firstName = 'foobar';
     vm.form.email = 'foo@bar.fr';
     vm.form.lastName = '';
+
     await flushPromises();
-    // await vm.validateForm();
 
     expect(vm.errors.firstName).toStrictEqual([]);
     expect(vm.errors.email).toStrictEqual([]);
