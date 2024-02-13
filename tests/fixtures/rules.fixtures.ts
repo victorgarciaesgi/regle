@@ -51,3 +51,18 @@ export const ruleMockAsyncIsEqualParam = createRule({
     return `Error, received: ${foo}`;
   },
 });
+
+export const inlineRuleMockIsFoo = (value: any) => {
+  if (ruleHelpers.isFilled(value)) {
+    return value === 'foo';
+  }
+  return true;
+};
+
+export const inlineRuleAsyncMockIsFoo = async (value: any) => {
+  if (ruleHelpers.isFilled(value)) {
+    await timeout(1000);
+    return value === 'foo';
+  }
+  return true;
+};

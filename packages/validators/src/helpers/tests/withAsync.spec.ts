@@ -5,7 +5,7 @@ import { timeout } from '../../../../../tests/utils';
 import { withAsync } from '../../helpers/withAsync';
 import { withMessage } from '../withMessage';
 
-describe.only('withAsync helper', () => {
+describe('withAsync helper', () => {
   const mountComponent = () => {
     return mount(
       defineComponent({
