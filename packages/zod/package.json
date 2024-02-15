@@ -6,7 +6,7 @@
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
     "release": "pnpm publish --report-summary",
-    "build": "tsup",
+    "build": "tsup --minify",
     "build:local": "tsup --clean false",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"

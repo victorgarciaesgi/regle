@@ -2,5 +2,6 @@ packages:
  - packages/core
  - packages/validators
  - packages/zod
+ - packages/tests
  - playground/vue3
  - playground/nuxt

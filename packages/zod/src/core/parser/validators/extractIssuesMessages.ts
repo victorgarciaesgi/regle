@@ -1,4 +1,5 @@
-import { ZodIssue, z } from 'zod';
+import type { ZodIssue } from 'zod';
+import { z } from 'zod';
 
 export function extractIssuesMessages() {
   return (value: unknown, metadata: { $issues: ZodIssue[] }) => {

@@ -1,5 +1,5 @@
-import { Maybe } from '../utils';
-import {
+import type { Maybe } from '../utils';
+import type {
   $InternalRegleRuleMetadataConsumer,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,

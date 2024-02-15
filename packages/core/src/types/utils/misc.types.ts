@@ -1,4 +1,4 @@
-import { MaybeRef } from 'vue';
+import type { MaybeRef } from 'vue';
 
 export type Prettify<T> = T extends infer R
   ? {

@@ -1,4 +1,5 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleFieldStatus,
@@ -9,7 +10,7 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { debounce } from '../../../utils';
-import { RegleStorage } from '../../useStorage';
+import type { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
 interface CreateReactiveFieldStatusArgs {
@@ -31,6 +32,7 @@ type ScopeReturnState = {
   $lazy: ComputedRef<boolean | undefined>;
   $rewardEarly: ComputedRef<boolean | undefined>;
   $autoDirty: ComputedRef<boolean | undefined>;
+  $anyDirty: ComputedRef<boolean>;
 };
 
 export function createReactiveFieldStatus({
@@ -46,7 +48,6 @@ export function createReactiveFieldStatus({
   let scopeState!: ScopeReturnState;
 
   const $dirty = ref(false);
-  const $anyDirty = computed<boolean>(() => $dirty.value);
 
   const triggerPunishment = ref(false);
 
@@ -134,6 +135,7 @@ export function createReactiveFieldStatus({
 
   function $watch() {
     scopeState = scope.run(() => {
+      const $anyDirty = computed<boolean>(() => $dirty.value);
       const $debounce = computed<number | undefined>(() => {
         return $localOptions.value.$debounce;
       });
@@ -210,6 +212,7 @@ export function createReactiveFieldStatus({
         $lazy,
         $rewardEarly,
         $autoDirty,
+        $anyDirty,
       } satisfies ScopeReturnState;
     }) as ScopeReturnState;
 
@@ -264,7 +267,6 @@ export function createReactiveFieldStatus({
   function $touch(): void {
     $dirty.value = true;
     if (!scopeState.$lazy.value) {
-      $commit();
       if (!scopeState.$rewardEarly.value !== false) {
         $clearExternalErrors();
       }
@@ -279,14 +281,13 @@ export function createReactiveFieldStatus({
     try {
       $clearExternalErrors();
       triggerPunishment.value = true;
-      if (!scopeState.$lazy.value && $anyDirty.value) {
+      if (!scopeState.$lazy.value && scopeState.$anyDirty.value && !scopeState.$pending) {
         return !scopeState.$error.value;
       } else {
-        const results = await Promise.allSettled(
-          Object.entries($rules.value).map(([key, rule]) => {
-            return rule.$validate();
-          })
-        );
+        const promises = Object.entries($rules.value).map(([key, rule]) => {
+          return rule.$validate();
+        });
+        const results = await Promise.allSettled(promises);
 
         return results.every((value) => {
           if (value.status === 'fulfilled') {
@@ -307,7 +308,7 @@ export function createReactiveFieldStatus({
 
   return reactive({
     $dirty,
-    $anyDirty,
+    $anyDirty: scopeState.$anyDirty,
     $invalid: scopeState.$invalid,
     $error: scopeState.$error,
     $pending: scopeState.$pending,

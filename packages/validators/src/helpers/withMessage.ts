@@ -1,8 +1,5 @@
-import {
-  createRule,
+import type {
   InlineRuleDeclaration,
-  InternalRuleType,
-  Maybe,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,
@@ -11,6 +8,7 @@ import {
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
 } from '@regle/core';
+import { createRule, InternalRuleType, Maybe } from '@regle/core';
 
 /**
  * TODO find solution to the TValue problem being infered to TValue & Date & File

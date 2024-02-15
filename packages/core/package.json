@@ -6,8 +6,8 @@
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit && vitest run --typecheck",
     "release": "pnpm publish --report-summary",
-    "build": "tsup",
-    "build:local": "tsup --clean false",
+    "build": "tsup --minify",
+    "build:local": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"
   },
@@ -34,7 +34,8 @@
     "vitest": "1.2.2",
     "vue": "3.4.19",
     "vue-eslint-parser": "9.4.2",
-    "vue-tsc": "1.8.27"
+    "vue-tsc": "1.8.27",
+    "@microsoft/api-extractor": "7.40.1"
   },
   "type": "module",
   "exports": {

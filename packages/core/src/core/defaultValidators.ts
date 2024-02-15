@@ -1,4 +1,4 @@
-import { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
 export type DefaultValidators = {
   maxLength: RegleRuleWithParamsDefinition<string, [count: number]>;

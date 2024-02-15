@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
 export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
   return async (value: unknown) => {

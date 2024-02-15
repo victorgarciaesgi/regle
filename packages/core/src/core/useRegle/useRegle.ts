@@ -1,6 +1,7 @@
-import { RequiredDeep } from 'type-fest';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, toRaw } from 'vue';
-import {
+import type { RequiredDeep } from 'type-fest';
+import type { ComputedRef, MaybeRef, Ref } from 'vue';
+import { computed, isRef, ref, toRaw } from 'vue';
+import type {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
   DeepReactiveState,
@@ -13,7 +14,7 @@ import {
   RegleStatus,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import { DeepMaybeRef } from '../../types/utils';
+import type { DeepMaybeRef } from '../../types/utils';
 import { isObject } from '../../utils';
 import { useStateProperties } from './useStateProperties';
 
@@ -76,7 +77,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       origin: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
       state: Record<string, MaybeRef<any>>
     ) {
-      Object.entries(initialState).forEach(([key, value]) => {
+      Object.entries(state).forEach(([key, value]) => {
         let originRef = isRef<Record<string, MaybeRef<any>>>(origin) ? origin.value : origin;
         let originValue = isRef(originRef[key]) ? originRef[key].value : originRef[key];
         const stateRef = isRef(state[key]) ? state[key]._value : state[key];
@@ -104,7 +105,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       regle.$touch();
       const result = await regle.$validate();
       if (result) {
-        return state.value as any;
+        return processedState.value as any;
       }
       return false;
     }

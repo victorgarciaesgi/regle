@@ -21,7 +21,6 @@ export interface RegleStatus<
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
 }
-
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -47,7 +46,9 @@ export type InferRegleStatusType<
     : TRule extends ReglePartialValidationTree<any>
       ? TState[TKey] extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
-        : RegleStatus<TState[TKey], TRule>
+        : TState[TKey] extends Record<PropertyKey, any>
+          ? RegleStatus<TState[TKey], TRule>
+          : RegleFieldStatus<TRule, TState, TKey>
       : RegleFieldStatus<TRule, TState, TKey>;
 
 /**
@@ -165,7 +166,7 @@ export interface RegleCollectionStatus<
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
-  $each: Array<$InternalRegleStatusType | { $rules: $InternalRegleRuleStatus }>;
+  $each: Array<$InternalRegleStatusType>;
   $rules?: Record<string, $InternalRegleRuleStatus>;
   /** Track each array state */
   $unwatch(): void;

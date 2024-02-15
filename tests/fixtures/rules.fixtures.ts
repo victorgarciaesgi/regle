@@ -13,6 +13,17 @@ export const ruleMockIsFoo = createRule({
   message: 'Custom error',
 });
 
+export const ruleMockIsEven = createRule({
+  type: defineType<number>('ruleMockIsEven'),
+  validator(value) {
+    if (ruleHelpers.isFilled(value)) {
+      return value % 2 === 0;
+    }
+    return true;
+  },
+  message: 'Custom error',
+});
+
 export const ruleMockAsyncIsFoo = createRule({
   type: defineType<string>('ruleMockAsyncIsFoo'),
   async validator(value) {

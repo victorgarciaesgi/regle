@@ -18,7 +18,7 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals"]
   },
-  "include": ["./packages/**/*", "tests/**/*.ts"],
+  "include": ["./packages/**/*", "tests"]
 }

@@ -1,4 +1,4 @@
-import { MaybeRef } from 'vue';
+import type { MaybeRef } from 'vue';
 
 export type ArrayElement<T> = T extends Array<infer U> ? U : never;
 

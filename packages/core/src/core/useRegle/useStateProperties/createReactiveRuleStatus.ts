@@ -1,15 +1,16 @@
-import { ComputedRef, Ref, computed, effectScope, reactive, watch } from 'vue';
-import {
+import type { ComputedRef, Ref } from 'vue';
+import { computed, effectScope, reactive, watch } from 'vue';
+import type {
   $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
-  InternalRuleType,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { InternalRuleType } from '../../../types';
 import { isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
@@ -196,6 +197,7 @@ export function createReactiveRuleStatus({
     if (options.$externalErrors) {
       // TODO
     }
+
     $validating.value = false;
 
     return ruleResult;

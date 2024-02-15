@@ -1,16 +1,6 @@
-import { RequiredDeep } from 'type-fest';
-import {
-  ComputedRef,
-  EffectScope,
-  Ref,
-  effectScope,
-  onScopeDispose,
-  reactive,
-  toRef,
-  triggerRef,
-  watch,
-  computed,
-} from 'vue';
+import type { RequiredDeep } from 'type-fest';
+import type { ComputedRef, EffectScope, Ref } from 'vue';
+import { effectScope, onScopeDispose, reactive, toRef, triggerRef, watch, computed } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -23,9 +13,9 @@ import type {
   RegleExternalErrorTree,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { DeepMaybeRef } from '../../../types';
+import type { DeepMaybeRef } from '../../../types';
 import { isRefObject } from '../../../utils';
-import { RegleStorage } from '../../useStorage';
+import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';

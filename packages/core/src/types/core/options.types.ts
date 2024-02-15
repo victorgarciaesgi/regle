@@ -1,7 +1,7 @@
-import { RequiredDeep } from 'type-fest';
-import { DeepMaybeRef } from '../../types/utils';
-import { MaybeRef } from 'vue';
-import { RegleExternalErrorTree } from '../../types/rules';
+import type { RequiredDeep } from 'type-fest';
+import type { DeepMaybeRef } from '../../types/utils';
+import type { MaybeRef } from 'vue';
+import type { RegleExternalErrorTree } from '../../types/rules';
 
 export interface RegleBehaviourOptions {
   /**

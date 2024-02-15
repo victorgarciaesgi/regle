@@ -1,6 +1,6 @@
-import { PartialDeep } from 'type-fest';
-import { ComputedRef, MaybeRef, Ref } from 'vue';
-import {
+import type { EmptyObject } from 'type-fest';
+import type { ComputedRef, MaybeRef } from 'vue';
+import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
@@ -12,8 +12,8 @@ import {
 } from '../rules';
 
 export interface Regle<
-  TState extends Record<string, any>,
-  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
+  TState extends Record<string, any> = EmptyObject,
+  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
 > {
   regle: RegleStatus<TState, TRules>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
@@ -32,17 +32,19 @@ export type DeepReactiveState<T extends Record<string, any>> = {
 export type DeepSafeFormState<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
-> = {
-  [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never] ? K : never]?: [
-    SafeProperty<TState[K], TRules[K]>,
-  ] extends [never]
-    ? TState[K]
-    : SafeProperty<TState[K], TRules[K]>;
-} & {
-  [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never]
-    ? never
-    : K]-?: SafeProperty<TState[K], TRules[K]>;
-};
+> = [unknown] extends [TState]
+  ? {}
+  : {
+      [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never] ? K : never]?: [
+        SafeProperty<TState[K], TRules[K]>,
+      ] extends [never]
+        ? TState[K]
+        : SafeProperty<TState[K], TRules[K]>;
+    } & {
+      [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never]
+        ? never
+        : K]-?: SafeProperty<TState[K], TRules[K]>;
+    };
 
 export type SafeProperty<
   TState,

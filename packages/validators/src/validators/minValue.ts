@@ -1,5 +1,6 @@
 import { ruleHelpers } from '../helpers';
-import { createRule, defineType, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
 
 export const minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> =
   createRule({

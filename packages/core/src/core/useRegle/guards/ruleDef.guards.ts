@@ -1,5 +1,5 @@
-import { Ref } from 'vue';
-import {
+import type { Ref } from 'vue';
+import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
   $InternalReglePartialValidationTree,

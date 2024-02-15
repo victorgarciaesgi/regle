@@ -1,15 +1,13 @@
-import {
-  createRule,
+import type {
   InlineRuleDeclaration,
-  InternalRuleType,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   ParamDecl,
-  unwrapRuleParameters,
   RegleRuleMetadataDefinition,
   RegleRuleMetadataConsumer,
   RegleRuleDefinitionWithMetadataProcessor,
 } from '@regle/core';
+import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
 
 export function applyIf<
   TValue extends any,

@@ -1,4 +1,4 @@
-import { RegleFormPropertyType } from '@regle/core';
+import type { RegleFormPropertyType } from '@regle/core';
 import { withMessage } from '@regle/validators';
 import z from 'zod';
 import {
@@ -7,7 +7,7 @@ import {
   zodArrayToRegle,
   zodObjectToRegle,
 } from './validators';
-import { PossibleDefTypes } from '../../types';
+import type { PossibleDefTypes } from '../../types';
 
 export function processZodTypeDef(
   def: PossibleDefTypes,

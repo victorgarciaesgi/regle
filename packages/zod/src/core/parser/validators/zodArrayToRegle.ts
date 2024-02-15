@@ -1,4 +1,4 @@
-import { RegleCollectionRuleDecl } from '@regle/core';
+import type { RegleCollectionRuleDecl } from '@regle/core';
 import { exactLength, maxLength, minLength } from '@regle/validators';
 import { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';

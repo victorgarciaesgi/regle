@@ -1,5 +1,4 @@
-import { UnwrapRef } from 'vue';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 export type ZodObj<T extends Record<PropertyKey, any>> = {
   [K in keyof T]: undefined extends T[K] ? z.ZodOptional<ZodChild<T[K]>> : ZodChild<T[K]>;

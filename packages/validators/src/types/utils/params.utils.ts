@@ -1,5 +1,5 @@
-import { InlineRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import { EmptyObject } from 'type-fest';
+import type { InlineRuleDeclaration, RegleRuleDefinition } from '@regle/core';
+import type { EmptyObject } from 'type-fest';
 
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<infer V, any, any, any>

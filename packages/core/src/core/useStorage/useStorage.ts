@@ -1,5 +1,6 @@
-import { Ref, onScopeDispose, ref, shallowRef } from 'vue';
-import { $InternalRegleRuleStatus, $InternalRegleStatusType, RegleRuleDecl } from '../../types';
+import type { Ref } from 'vue';
+import { onScopeDispose, ref, shallowRef } from 'vue';
+import type { $InternalRegleStatusType, RegleRuleDecl } from '../../types';
 import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
 
 export type StoredRuleStatus = {
@@ -23,9 +24,7 @@ export type RegleStorage = {
   getDirtyState: (path: string) => boolean;
   trySetRuleStatusRef(path: string): StoredRuleStatus;
   getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>>;
-  getCollectionsEntry(
-    $path: string
-  ): Ref<Array<$InternalRegleStatusType | { $rules: $InternalRegleRuleStatus }>>;
+  getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>>;
   getArrayStatus($id: string): $InternalRegleStatusType | undefined;
   addArrayStatus($id: string, value: $InternalRegleStatusType): void;
   deleteArrayStatus($id?: string): void;

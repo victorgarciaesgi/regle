@@ -1,8 +1,8 @@
-import { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
-import { PartialDeep } from 'type-fest';
-import { ComputedRef, Ref } from 'vue';
-import { z } from 'zod';
-import { toZod } from './zod.types';
+import type { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
+import type { PartialDeep } from 'type-fest';
+import type { ComputedRef, Ref } from 'vue';
+import type { z } from 'zod';
+import type { toZod } from './zod.types';
 
 export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
   state: Ref<PartialDeep<TState>>;

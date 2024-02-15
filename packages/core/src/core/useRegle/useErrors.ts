@@ -1,5 +1,5 @@
 import { Ref, computed } from 'vue';
-import {
+import type {
   $InternalRegleErrors,
   $InternalRegleStatusType,
   $InternalRegleStatus,

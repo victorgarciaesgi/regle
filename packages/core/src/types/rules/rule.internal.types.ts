@@ -1,9 +1,9 @@
-import { Maybe } from '../utils';
-import {
+import type { Maybe } from '../utils';
+import type {
   PossibleRegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
 } from './rule.definition.type';
-import { RegleUniversalParams } from './rule.params.types';
+import type { RegleUniversalParams } from './rule.params.types';
 
 /**
  * Internal definition of the rule, can be used to reset or patch the rule

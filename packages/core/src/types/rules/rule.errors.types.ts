@@ -1,9 +1,9 @@
-import {
+import type {
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
 } from './rule.declaration.types';
-import { RegleCollectionRuleDefinition } from './rule.definition.type';
+import type { RegleCollectionRuleDefinition } from './rule.definition.type';
 
 export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> = {
   readonly [K in keyof TRules]: RegleValidationErrors<TRules[K]>;
@@ -13,10 +13,10 @@ export type RegleValidationErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = TRule extends RegleCollectionRuleDefinition
   ? RegleCollectionErrors<TRule['$each']>
-  : TRule extends ReglePartialValidationTree<any, any>
-    ? RegleErrorTree<TRule>
-    : TRule extends RegleRuleDecl<any, any>
-      ? string[]
+  : TRule extends RegleRuleDecl<any, any>
+    ? string[]
+    : TRule extends ReglePartialValidationTree<any, any>
+      ? RegleErrorTree<TRule>
       : string[];
 
 // test.test.$each

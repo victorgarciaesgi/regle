@@ -1,5 +1,6 @@
 import { createRule, defineRegleConfig, defineType } from '@regle/core';
 import { ruleHelpers, withMessage, maxLength } from '@regle/validators';
+import { ref } from 'vue';
 
 export function timeout(count: number) {
   return new Promise((resolve) => setTimeout(resolve, count));

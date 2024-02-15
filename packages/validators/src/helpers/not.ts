@@ -1,13 +1,12 @@
-import {
+import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
-  createRule,
-  defineType,
 } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
 import { ruleHelpers } from './ruleHelpers';
 
 export function not<

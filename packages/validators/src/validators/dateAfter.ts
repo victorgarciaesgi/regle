@@ -1,5 +1,6 @@
 import { ruleHelpers } from '../helpers';
-import { createRule, defineType, Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
 
 export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,

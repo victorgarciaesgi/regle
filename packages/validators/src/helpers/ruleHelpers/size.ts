@@ -1,4 +1,5 @@
-import { MaybeRef, unref } from 'vue';
+import type { MaybeRef } from 'vue';
+import { unref } from 'vue';
 
 export function size(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
   const _value = unref(value);

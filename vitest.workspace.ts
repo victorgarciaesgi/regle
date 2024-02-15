@@ -8,7 +8,7 @@ export default defineWorkspace([
       globals: true,
       testTimeout: 10000,
       environment: 'happy-dom',
-      include: ['./tests/**/*.spec.ts', './packages/**/*.spec.ts'],
+      include: ['./packages/**/*.spec.ts'],
       typecheck: {
         enabled: true,
       },

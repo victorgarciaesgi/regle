@@ -1,13 +1,11 @@
-import { Ref } from 'vue';
-import {
-  createRule,
-  defineType,
+import type { Ref } from 'vue';
+import type {
   InlineRuleDeclaration,
-  InternalRuleType,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
+import { createRule, defineType, InternalRuleType } from '@regle/core';
 
 export function withAsync<
   TValue,

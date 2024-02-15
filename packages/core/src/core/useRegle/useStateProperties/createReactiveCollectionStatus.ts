@@ -1,16 +1,6 @@
-import { RequiredDeep } from 'type-fest';
-import {
-  ComputedRef,
-  Ref,
-  computed,
-  effectScope,
-  nextTick,
-  reactive,
-  ref,
-  toRef,
-  toRefs,
-  watch,
-} from 'vue';
+import type { RequiredDeep } from 'type-fest';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, toRef, toRefs, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -22,9 +12,9 @@ import type {
   RegleBehaviourOptions,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { DeepMaybeRef } from '../../../types';
+import type { DeepMaybeRef } from '../../../types';
 import { randomId } from '../../../utils/randomId';
-import { RegleStorage } from '../../useStorage';
+import type { RegleStorage } from '../../useStorage';
 import { isExternalErrorCollection } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';

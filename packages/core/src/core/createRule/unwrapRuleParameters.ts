@@ -1,5 +1,5 @@
 import { isRef, toRef, unref } from 'vue';
-import { ParamDecl } from '../../types';
+import type { ParamDecl } from '../../types';
 
 /**
  * Returns a clean list of parameters

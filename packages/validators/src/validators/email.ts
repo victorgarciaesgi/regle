@@ -1,4 +1,5 @@
-import { RegleRuleDefinition, createRule, defineType } from '@regle/core';
+import type { RegleRuleDefinition } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 const emailRegex =

@@ -1,8 +1,14 @@
-import { RegleRuleCore, RegleRuleInit } from './rule.init.types';
-import { RegleUniversalParams } from './rule.params.types';
-import { RegleInternalRuleDefs } from './rule.internal.types';
-import { AllRulesDeclarations, RegleCommonStatus, RegleFormPropertyType, RegleRuleDecl } from '.';
-import { ArrayElement, ExcludeByType, Maybe } from '../utils';
+import type { RegleRuleCore } from './rule.init.types';
+import { RegleRuleInit } from './rule.init.types';
+import type { RegleUniversalParams } from './rule.params.types';
+import type { RegleInternalRuleDefs } from './rule.internal.types';
+import type {
+  AllRulesDeclarations,
+  RegleCommonStatus,
+  RegleFormPropertyType,
+  RegleRuleDecl,
+} from '.';
+import type { ArrayElement, ExcludeByType, Maybe } from '../utils';
 
 /**
  * Returned typed of rules created with `createRule`

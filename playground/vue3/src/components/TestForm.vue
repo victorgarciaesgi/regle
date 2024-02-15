@@ -54,7 +54,7 @@
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
-
+    <!-- 
     <template :key="index" v-for="(input, index) of form.nested.foo">
       <input v-model="form.nested.foo[index]" placeholder="name" />
     </template>
@@ -63,7 +63,7 @@
     </ul>
 
     <button type="submit" @click="form.nested.foo.push('')">Add entry</button>
-    <button type="submit" @click="form.nested.foo.splice(0, 1)">Remove first</button>
+    <button type="submit" @click="form.nested.foo.splice(0, 1)">Remove first</button> -->
     <br />
     <button type="submit" @click="resetForm">reset</button>
     <button type="submit" @click="submit">Submit</button>
@@ -86,37 +86,31 @@ import { timeout, useRegle } from './../validations';
 import { withAsync } from '@regle/validators';
 import { maxLength } from '@regle/validators';
 
-const form = ref({
+const form = reactive({
   email: '',
   count: 0,
   nested: {
-    foo: ['', ''],
+    level1: 1,
+    level2: {
+      level3: 2,
+    },
   },
 });
 
-function submit() {
-  validateForm();
+async function submit() {
+  const result = await validateForm();
+  console.log(result);
 }
 
 const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () => ({
   email: {
     required,
-    maxLength: maxLength(form.value.count),
+    maxLength: maxLength(form.count),
     email: async (value) => {
       await timeout(1000);
       return true;
     },
   },
-  nested: {
-    foo: {
-      minLength: withMessage(minLength(4), 'Minimum 4 elements'),
-      $each: {
-        required: withMessage(required, 'All fields need to be filled'),
-        minLength: minLength(3),
-      },
-    },
-  },
+  // nested: {},
 }));
-
-regle.$fields.nested.$fields.foo;
 </script>

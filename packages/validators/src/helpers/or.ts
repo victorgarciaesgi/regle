@@ -1,5 +1,6 @@
-import { createRule, defineType, FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import {
+import type { FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
+import type {
   ExtractParamsFromRules,
   ExtractValueFromRules,
   GuessAsyncFromRules,

@@ -8,4 +8,5 @@ export default defineConfig({
   },
   clean: true,
   external: ['vue'],
+  sourcemap: false,
 });

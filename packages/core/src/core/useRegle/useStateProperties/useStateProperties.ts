@@ -1,10 +1,11 @@
-import { ComputedRef, Ref, computed, reactive, unref } from 'vue';
-import {
+import type { ComputedRef, Ref } from 'vue';
+import { computed, reactive, unref } from 'vue';
+import type {
   $InternalReglePartialValidationTree,
   CustomRulesDeclarationTree,
-  RegleExternalErrorTree,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { RegleExternalErrorTree } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { useErrors } from '../useErrors';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';

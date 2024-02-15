@@ -1,7 +1,10 @@
-import { FieldRegleBehaviourOptions } from '../../types/core';
-import { ArrayElement, Maybe, PrimitiveTypes } from '../utils';
-import { AllRulesDeclarations } from './rule.custom.types';
-import {
+import type { Ref } from 'vue';
+import { UnwrapRef } from 'vue';
+import type { FieldRegleBehaviourOptions } from '../../types/core';
+import type { ArrayElement, Maybe } from '../utils';
+import { PrimitiveTypes } from '../utils';
+import type { AllRulesDeclarations } from './rule.custom.types';
+import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinition,
@@ -49,9 +52,11 @@ export type RegleFormPropertyType<
       ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
       : NonNullable<TValue> extends File
         ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
-        : NonNullable<TValue> extends Record<string, any>
-          ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
-          : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
+        : NonNullable<TValue> extends Ref<infer V>
+          ? RegleFormPropertyType<V, TCustomRules>
+          : NonNullable<TValue> extends Record<string, any>
+            ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
+            : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
 /**
  * @internal
@@ -62,8 +67,6 @@ export type $InternalFormPropertyTypes =
   | $InternalRegleCollectionRuleDecl
   | $InternalReglePartialValidationTree
   | FieldRegleBehaviourOptions;
-
-type test = string & Date & File extends Date & File & infer M ? M : never;
 
 /**
  * @public

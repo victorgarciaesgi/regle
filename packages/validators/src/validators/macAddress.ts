@@ -1,4 +1,5 @@
-import { RegleRuleWithParamsDefinition, createRule, defineType } from '@regle/core';
+import type { RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, defineType } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const macAddress: RegleRuleWithParamsDefinition<

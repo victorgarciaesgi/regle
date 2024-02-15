@@ -1,4 +1,4 @@
-import { $InternalExternalRegleErrors, RegleExternalCollectionErrors } from '../../../types';
+import type { $InternalExternalRegleErrors, RegleExternalCollectionErrors } from '../../../types';
 
 export function isExternalErrorCollection(
   value: $InternalExternalRegleErrors

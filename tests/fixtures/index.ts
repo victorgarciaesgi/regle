@@ -1,3 +1,2 @@
-export * from './async.fixtures';
+export * from './validations.fixtures';
 export * from './rules.fixtures';
-export * from './component.fixtures';

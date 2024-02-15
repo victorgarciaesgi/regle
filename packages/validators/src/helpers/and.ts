@@ -1,11 +1,10 @@
-import {
-  createRule,
-  defineType,
+import type {
   FormRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
 } from '@regle/core';
-import {
+import { createRule, defineType } from '@regle/core';
+import type {
   ExtractValueFromRules,
   ExtractParamsFromRules,
   UnwrapTuples,

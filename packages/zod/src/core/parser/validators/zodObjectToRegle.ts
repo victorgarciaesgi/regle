@@ -1,6 +1,6 @@
-import { ReglePartialValidationTree } from '@regle/core';
-import { PossibleDefTypes } from '../../../types';
-import { z } from 'zod';
+import type { ReglePartialValidationTree } from '@regle/core';
+import type { PossibleDefTypes } from '../../../types';
+import type { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 
 export function zodObjectToRegle(

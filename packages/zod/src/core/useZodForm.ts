@@ -1,12 +1,13 @@
-import {
+import type {
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   ReglePartialValidationTree,
-  useRegle,
 } from '@regle/core';
-import { MaybeRef, Ref, computed, ref, unref, watch } from 'vue';
-import { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
+import { useRegle } from '@regle/core';
+import type { MaybeRef, Ref } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
+import type { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
 import { processZodTypeDef } from './parser/processZodTypeDef';
 
 export function useZodForm<

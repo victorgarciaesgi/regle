@@ -63,7 +63,6 @@ describe('withAsync helper', () => {
 
     expect(wrapper.vm.regle.$pending).toBe(false);
     expect(wrapper.vm.regle.$fields.email.$pending).toBe(false);
-
     expect(wrapper.vm.regle.$fields.email.$error).toBe(false);
   });
 
