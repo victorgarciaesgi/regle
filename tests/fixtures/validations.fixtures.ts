@@ -1,9 +1,37 @@
 import { computed, reactive, ref } from 'vue';
+import type { Regle, RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { ruleMockIsEven } from './rules.fixtures';
 export type { RefSymbol } from '@vue/reactivity';
 
-export function nestedReactiveObjectValidation() {
+type ReturnRegleType = Regle<
+  {
+    level0: number;
+    level1: {
+      child: number;
+      level2: {
+        child: number;
+      };
+    };
+  },
+  {
+    level0: {
+      rule: RegleRuleDefinition<number, [], false, boolean, number>;
+    };
+    level1: {
+      child: {
+        rule: RegleRuleDefinition<number, [], false, boolean, number>;
+      };
+      level2: {
+        child: {
+          rule: RegleRuleDefinition<number, [], false, boolean, number>;
+        };
+      };
+    };
+  }
+>;
+
+export function nestedReactiveObjectValidation(): ReturnRegleType {
   const form = reactive({
     level0: 0,
     level1: {
@@ -13,22 +41,18 @@ export function nestedReactiveObjectValidation() {
       },
     },
   });
-
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0: { rule: ruleMockIsEven },
-      level1: {
+  return useRegle(form, () => ({
+    level0: { rule: ruleMockIsEven },
+    level1: {
+      child: { rule: ruleMockIsEven },
+      level2: {
         child: { rule: ruleMockIsEven },
-        level2: {
-          child: { rule: ruleMockIsEven },
-        },
       },
-    })),
-  };
+    },
+  }));
 }
 
-export function nestedRefObjectValidation() {
+export function nestedRefObjectValidation(): ReturnRegleType {
   const form = ref({
     level0: 0,
     level1: {
@@ -38,21 +62,18 @@ export function nestedRefObjectValidation() {
       },
     },
   });
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0: { rule: ruleMockIsEven },
-      level1: {
+  return useRegle(form, () => ({
+    level0: { rule: ruleMockIsEven },
+    level1: {
+      child: { rule: ruleMockIsEven },
+      level2: {
         child: { rule: ruleMockIsEven },
-        level2: {
-          child: { rule: ruleMockIsEven },
-        },
       },
-    })),
-  };
+    },
+  }));
 }
 
-export function nestedReactiveWithRefsValidation() {
+export function nestedReactiveWithRefsValidation(): ReturnRegleType {
   const form = reactive({
     level0: ref(0),
     level1: {
@@ -63,18 +84,15 @@ export function nestedReactiveWithRefsValidation() {
     },
   });
 
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0: { rule: ruleMockIsEven },
-      level1: {
+  return useRegle(form, () => ({
+    level0: { rule: ruleMockIsEven },
+    level1: {
+      child: { rule: ruleMockIsEven },
+      level2: {
         child: { rule: ruleMockIsEven },
-        level2: {
-          child: { rule: ruleMockIsEven },
-        },
       },
-    })),
-  };
+    },
+  }));
 }
 
 // Fucking ts error

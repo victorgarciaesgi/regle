@@ -8,7 +8,7 @@ import type {
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
 } from '@regle/core';
-import { createRule, InternalRuleType, Maybe } from '@regle/core';
+import { createRule, InternalRuleType } from '@regle/core';
 
 /**
  * TODO find solution to the TValue problem being infered to TValue & Date & File

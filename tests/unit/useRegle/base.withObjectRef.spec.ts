@@ -1,18 +1,40 @@
 import { flushPromises } from '@vue/test-utils';
+import { useRegle } from '@regle/core';
 import {
   nestedReactiveObjectValidation,
   nestedRefObjectValidation,
   nestedReactiveWithRefsValidation,
+  ruleMockIsEven,
 } from '../../fixtures';
 import { createRegleComponent } from '../../utils/test.utils';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
+function nesteObjectWithRefsValidation() {
+  const form = {
+    level0: ref(0),
+    level1: {
+      child: ref(1),
+      level2: {
+        child: ref(2),
+      },
+    },
+  };
 
-describe.each([
-  ['reactive', nestedReactiveObjectValidation],
-  ['ref', nestedRefObjectValidation],
-  ['reactive with ref', nestedReactiveWithRefsValidation],
-])('useRegle with %s', async (title, regle) => {
-  const { vm } = createRegleComponent(regle);
+  return {
+    form,
+    ...useRegle(form, () => ({
+      level0: { rule: ruleMockIsEven },
+      level1: {
+        child: { rule: ruleMockIsEven },
+        level2: {
+          child: { rule: ruleMockIsEven },
+        },
+      },
+    })),
+  };
+}
+
+describe('useRegle with Object refs', async () => {
+  const { vm } = createRegleComponent(nesteObjectWithRefsValidation);
 
   it('should have a initial state', () => {
     expect(vm.errors).toStrictEqual({

@@ -1,3 +1,4 @@
+import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleRuleDefinition,
   AllRulesDeclarations,
@@ -69,7 +70,7 @@ export interface RegleFieldStatus<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
 > extends RegleCommonStatus<TState> {
-  $value: TState[TKey];
+  $value: UnwrapNestedRefs<TState[TKey]>;
   readonly $externalErrors?: string[];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
@@ -100,7 +101,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $pending: boolean;
   readonly $error: boolean;
   $id?: string;
-  $value: TValue;
+  $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;
   $validate(): Promise<boolean>;

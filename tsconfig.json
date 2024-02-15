@@ -20,5 +20,5 @@
     "noErrorTruncation": true,
     "types": ["vitest/globals"]
   },
-  "include": ["./packages/**/*", "tests"]
+  "include": ["./packages/**/*", "./tests/**/*"]
 }

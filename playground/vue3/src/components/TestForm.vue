@@ -47,9 +47,9 @@
       </code>
     </pre>
   </div> -->
-    <input v-model.number="form.count" placeholder="count" />
+    <input v-model.number="form.count.value" placeholder="count" />
 
-    <input v-model="form.email" placeholder="email" />
+    <input v-model="form.email.value" placeholder="email" />
     <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
@@ -86,20 +86,21 @@ import { timeout, useRegle } from './../validations';
 import { withAsync } from '@regle/validators';
 import { maxLength } from '@regle/validators';
 
-const form = reactive({
-  email: '',
-  count: 0,
+const form = {
+  email: ref(''),
+  count: ref(0),
   nested: {
-    level1: 1,
+    level1: ref(1),
     level2: {
-      level3: 2,
+      level3: ref(2),
     },
   },
-});
+};
 
 async function submit() {
-  const result = await validateForm();
-  console.log(result);
+  regle.$value.count = 2;
+  // const result = await validateForm();
+  // console.log(result);
 }
 
 const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () => ({

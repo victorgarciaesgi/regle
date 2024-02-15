@@ -1,4 +1,4 @@
-import type { Regle } from '@regle/core/src';
+import type { Regle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
