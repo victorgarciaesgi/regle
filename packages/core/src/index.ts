@@ -35,4 +35,5 @@ export {
   ParamDecl,
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
+  RegleComputedRules,
 } from './types';

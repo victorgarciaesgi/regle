@@ -3,6 +3,7 @@ import {
   nestedReactiveObjectValidation,
   nestedRefObjectValidation,
   nestedReactiveWithRefsValidation,
+  nestedRefObjectValidationComputed,
 } from '../../fixtures';
 import { createRegleComponent } from '../../utils/test.utils';
 import { nextTick } from 'vue';
@@ -10,6 +11,7 @@ import { nextTick } from 'vue';
 describe.each([
   ['reactive', nestedReactiveObjectValidation],
   ['ref', nestedRefObjectValidation],
+  ['ref state with computed rules', nestedRefObjectValidationComputed],
   ['reactive with ref', nestedReactiveWithRefsValidation],
 ])('useRegle with %s', async (title, regle) => {
   const { vm } = createRegleComponent(regle);

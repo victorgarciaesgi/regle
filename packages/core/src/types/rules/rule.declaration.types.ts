@@ -1,6 +1,6 @@
-import type { Ref } from 'vue';
+import type { MaybeRef, Ref } from 'vue';
 import { UnwrapRef } from 'vue';
-import type { FieldRegleBehaviourOptions } from '../../types/core';
+import type { FieldRegleBehaviourOptions, Regle } from '../../types/core';
 import type { ArrayElement, Maybe } from '../utils';
 import { PrimitiveTypes } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
@@ -28,6 +28,27 @@ export type RegleValidationTree<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+};
+
+/**
+ * @public
+ */
+export type RegleComputedRules<
+  TForm extends MaybeRef<Record<string, any>>,
+  TCustomRules extends
+    | Partial<AllRulesDeclarations>
+    | Regle<any, any> = Partial<AllRulesDeclarations>,
+  TState = TForm extends Ref<infer R> ? R : TForm,
+  TCustom = TCustomRules extends Regle<any, infer R>
+    ? R extends ReglePartialValidationTree<any, infer C>
+      ? C
+      : Partial<AllRulesDeclarations>
+    : TCustomRules,
+> = {
+  [TKey in keyof TState]?: RegleFormPropertyType<
+    TState[TKey],
+    TCustom extends Partial<AllRulesDeclarations> ? TCustom : {}
+  >;
 };
 
 /**

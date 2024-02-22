@@ -1,5 +1,10 @@
 import { computed, reactive, ref } from 'vue';
-import type { Regle, RegleRuleDefinition } from '@regle/core';
+import type {
+  Regle,
+  RegleComputedRules,
+  ReglePartialValidationTree,
+  RegleRuleDefinition,
+} from '@regle/core';
 import { useRegle } from '@regle/core';
 import { ruleMockIsEven } from './rules.fixtures';
 export type { RefSymbol } from '@vue/reactivity';
@@ -71,6 +76,33 @@ export function nestedRefObjectValidation(): ReturnRegleType {
       },
     },
   }));
+}
+
+export function nestedRefObjectValidationComputed(): ReturnRegleType {
+  const form = ref({
+    level0: 0,
+    level1: {
+      child: 1,
+      level2: {
+        child: 2,
+      },
+    },
+  });
+
+  const rules = computed(
+    () =>
+      ({
+        level0: { rule: ruleMockIsEven },
+        level1: {
+          child: { rule: ruleMockIsEven },
+          level2: {
+            child: { rule: ruleMockIsEven },
+          },
+        },
+      }) satisfies RegleComputedRules<typeof form>
+  );
+
+  return useRegle(form, rules);
 }
 
 export function nestedReactiveWithRefsValidation(): ReturnRegleType {

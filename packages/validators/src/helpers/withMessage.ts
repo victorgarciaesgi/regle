@@ -10,9 +10,6 @@ import type {
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
-/**
- * TODO find solution to the TValue problem being infered to TValue & Date & File
- */
 export function withMessage<
   TValue extends any,
   TParams extends any[],
