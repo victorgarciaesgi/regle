@@ -24,29 +24,33 @@ export const ruleMockIsEven = createRule({
   message: 'Custom error',
 });
 
-export const ruleMockIsEvenAsync = createRule({
-  type: defineType<number>('ruleMockIsEven'),
-  async validator(value) {
-    if (ruleHelpers.isFilled(value)) {
-      await timeout(1000);
-      return value % 2 === 0;
-    }
-    return true;
-  },
-  message: 'Custom error',
-});
+export function ruleMockIsEvenAsync() {
+  return createRule({
+    type: defineType<number>('ruleMockIsEven'),
+    async validator(value) {
+      if (ruleHelpers.isFilled(value)) {
+        await timeout(1000);
+        return value % 2 === 0;
+      }
+      return true;
+    },
+    message: 'Custom error',
+  });
+}
 
-export const ruleMockIsFooAsync = createRule({
-  type: defineType<string>('ruleMockAsyncIsFoo'),
-  async validator(value) {
-    if (ruleHelpers.isFilled(value)) {
-      await timeout(1000);
-      return value === 'foo';
-    }
-    return true;
-  },
-  message: 'Custom error',
-});
+export function ruleMockIsFooAsync() {
+  return createRule({
+    type: defineType<string>('ruleMockAsyncIsFoo'),
+    async validator(value) {
+      if (ruleHelpers.isFilled(value)) {
+        await timeout(1000);
+        return value === 'foo';
+      }
+      return true;
+    },
+    message: 'Custom error',
+  });
+}
 
 export const ruleMockIsEqualParam = createRule({
   type: defineType<string, [foo: string]>('ruleMockIsEqualParam'),
@@ -61,7 +65,7 @@ export const ruleMockIsEqualParam = createRule({
   },
 });
 
-export const ruleMockAsyncIsEqualParam = createRule({
+export const ruleMockIsEqualParamAsync = createRule({
   type: defineType<string, [foo: string]>('ruleMockIsEqualParam'),
   async validator(value, foo) {
     if (ruleHelpers.isFilled(value)) {

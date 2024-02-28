@@ -39,7 +39,7 @@ describe('withAsync helper', () => {
   };
 
   beforeEach(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.useFakeTimers();
   });
 
   afterEach(() => {

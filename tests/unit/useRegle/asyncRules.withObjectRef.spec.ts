@@ -18,11 +18,11 @@ function nesteAsyncObjectWithRefsValidation() {
   return {
     form,
     ...useRegle(form, () => ({
-      level0Async: { rule: ruleMockIsEvenAsync },
+      level0Async: { rule: ruleMockIsEvenAsync() },
       level1: {
         child: { rule: ruleMockIsEven },
         level2: {
-          childAsync: { rule: ruleMockIsFooAsync },
+          childAsync: { rule: ruleMockIsFooAsync() },
         },
       },
     })),
@@ -30,16 +30,15 @@ function nesteAsyncObjectWithRefsValidation() {
 }
 
 describe('useRegle with async rules and Object refs', async () => {
-  const { vm } = createRegleComponent(nesteAsyncObjectWithRefsValidation);
-
-  beforeEach(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+  beforeAll(() => {
+    vi.useFakeTimers();
   });
 
-  afterEach(() => {
-    vi.runOnlyPendingTimers();
+  afterAll(() => {
     vi.useRealTimers();
   });
+
+  const { vm } = createRegleComponent(nesteAsyncObjectWithRefsValidation);
 
   it('should have a initial state', () => {
     expect(vm.errors).toStrictEqual({
@@ -75,9 +74,8 @@ describe('useRegle with async rules and Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.validateForm();
+    const [result] = await Promise.all([vm.validateForm(), vi.advanceTimersByTimeAsync(1000)]);
 
-    vi.advanceTimersByTime(1000);
     await nextTick();
     await flushPromises();
 
@@ -108,7 +106,7 @@ describe('useRegle with async rules and Object refs', async () => {
   it('should update dirty state and errors when updating form', async () => {
     vm.regle.$value.level0Async = 1;
     await nextTick();
-    vi.advanceTimersByTime(1000);
+    vi.advanceTimersByTimeAsync(1000);
     await nextTick();
     await flushPromises();
 
@@ -222,7 +220,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
 
-    const result = await vm.validateForm();
+    const [result] = await Promise.all([vm.validateForm(), vi.advanceTimersByTimeAsync(1000)]);
 
     expect(result).toStrictEqual({
       level0Async: 2,
