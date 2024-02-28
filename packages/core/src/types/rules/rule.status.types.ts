@@ -1,6 +1,5 @@
 import type { UnwrapNestedRefs } from 'vue';
 import type {
-  $InternalRegleRuleDefinition,
   AllRulesDeclarations,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,

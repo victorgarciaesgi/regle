@@ -1,4 +1,5 @@
-import { RegleRuleDefinition, useRegle } from '@regle/core';
+import type { RegleRuleDefinition } from '@regle/core';
+import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
@@ -54,6 +55,9 @@ describe('withAsync helper', () => {
   it('should be on pending state when changing value', async () => {
     const wrapper = mountComponent();
     wrapper.vm.form.email = 'f';
+
+    await nextTick();
+
     expect(wrapper.vm.regle.$pending).toBe(true);
     expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 
@@ -70,6 +74,9 @@ describe('withAsync helper', () => {
     const wrapper = mountComponent();
     wrapper.vm.form.email = 'f';
     wrapper.vm.form.count = 1;
+
+    await nextTick();
+
     expect(wrapper.vm.regle.$pending).toBe(true);
     expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 

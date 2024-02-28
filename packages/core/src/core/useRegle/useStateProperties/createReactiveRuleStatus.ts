@@ -167,7 +167,9 @@ export function createReactiveRuleStatus({
       if (!$pending.value) {
         try {
           $valid.value = true;
-          $pending.value = true;
+          if ($dirty.value) {
+            $pending.value = true;
+          }
           const promiseResult = await resultOrPromise;
           if (typeof promiseResult === 'boolean') {
             ruleResult = promiseResult;
