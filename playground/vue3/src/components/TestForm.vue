@@ -47,13 +47,13 @@
       </code>
     </pre>
   </div> -->
-    <input v-model.number="form.count.value" placeholder="count" />
+    <!-- <input v-model.number="form.count.value" placeholder="count" />
 
-    <input v-model="form.email.value" placeholder="email" />
-    <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
+    <input v-model="form.email.value" placeholder="email" /> -->
+    <!-- <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul>
+    </ul> -->
     <!-- 
     <template :key="index" v-for="(input, index) of form.nested.foo">
       <input v-model="form.nested.foo[index]" placeholder="name" />
@@ -70,8 +70,8 @@
 
     <pre>
         <code>
-    {{ invalid }}
-    {{ regle }}
+{{ errors }}
+{{ regle }}
         
       </code>
     </pre>
@@ -80,38 +80,29 @@
 
 <script setup lang="ts">
 import { RegleExternalErrorTree } from '@regle/core';
-import { minLength, required, withMessage } from '@regle/validators';
+import { minLength, numeric, required, withMessage } from '@regle/validators';
 import { reactive, ref } from 'vue';
 import { timeout, useRegle } from './../validations';
 import { withAsync } from '@regle/validators';
 import { maxLength } from '@regle/validators';
 
 const form = {
-  email: ref(''),
-  count: ref(0),
+  array0: [] as number[],
   nested: {
-    level1: ref(1),
-    level2: {
-      level3: ref(2),
-    },
+    array1: null as null | string[],
   },
 };
 
 async function submit() {
-  regle.$value.count = 2;
-  // const result = await validateForm();
+  // regle.$value.count = 2;
+  const result = await validateForm();
   // console.log(result);
 }
 
 const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () => ({
-  email: {
-    required,
-    maxLength: maxLength(form.count),
-    email: async (value) => {
-      await timeout(1000);
-      return true;
-    },
+  array0: { $each: { numeric: numeric } },
+  nested: {
+    array1: { required, $each: { minLength: minLength(2) } },
   },
-  // nested: {},
 }));
 </script>

@@ -16,4 +16,4 @@ export type ExcludeByType<T, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K] extends U ? never : T[K];
 };
 
-export type PrimitiveTypes = string | number | boolean;
+export type PrimitiveTypes = string | number | boolean | bigint;

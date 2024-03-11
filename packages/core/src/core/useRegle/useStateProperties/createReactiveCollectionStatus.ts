@@ -15,7 +15,7 @@ import type {
 import type { DeepMaybeRef } from '../../../types';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
-import { isExternalErrorCollection } from '../guards';
+import { isExternalErrorCollection, isRuleDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 import { createRule, defineType } from '../../createRule';
@@ -90,6 +90,12 @@ interface CreateReactiveCollectionStatusArgs {
 
 interface ScopeReturnState {
   isPrimitiveArray: ComputedRef<boolean>;
+  $dirty: ComputedRef<boolean>;
+  $anyDirty: ComputedRef<boolean>;
+  $invalid: ComputedRef<boolean>;
+  $valid: ComputedRef<boolean>;
+  $error: ComputedRef<boolean>;
+  $pending: ComputedRef<boolean>;
 }
 
 export function createReactiveCollectionStatus({
@@ -302,10 +308,63 @@ export function createReactiveCollectionStatus({
     });
     scopeState = scope.run(() => {
       const isPrimitiveArray = computed(() => {
-        return Array.isArray(state.value) && state.value.some((s) => typeof s !== 'object');
+        if (Array.isArray(state.value) && state.value.length) {
+          return state.value.some((s) => typeof s !== 'object');
+        }
+        if (rulesDef.value.$each) {
+          return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
+        }
+        return false;
       });
 
-      return { isPrimitiveArray };
+      const $dirty = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$dirty &&
+          $eachStatus.value.every((statusOrField) => {
+            return statusOrField.$dirty;
+          })
+        );
+      });
+
+      const $anyDirty = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$anyDirty ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$dirty;
+          })
+        );
+      });
+
+      const $invalid = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$invalid ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$invalid;
+          })
+        );
+      });
+
+      const $valid = computed<boolean>(() => !$invalid.value);
+
+      const $error = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$error ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$error;
+          })
+        );
+      });
+
+      const $pending = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$pending ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$pending;
+          })
+        );
+      });
+
+      return { isPrimitiveArray, $dirty, $anyDirty, $invalid, $valid, $error, $pending };
     })!;
   }
 
@@ -330,13 +389,14 @@ export function createReactiveCollectionStatus({
 
   async function $validate(): Promise<boolean> {
     try {
-      const results = await Promise.all(
-        $eachStatus.value.map((rule) => {
+      const results = await Promise.all([
+        $fieldStatus.value.$validate(),
+        ...$eachStatus.value.map((rule) => {
           if ('$dirty' in rule) {
             return rule.$validate();
           }
-        })
-      );
+        }),
+      ]);
       return results.every((value) => !!value);
     } catch (e) {
       return false;
@@ -345,6 +405,7 @@ export function createReactiveCollectionStatus({
 
   return reactive({
     ...$fieldStatus.value,
+    ...scopeState,
     $each: $eachStatus,
     $validate,
     $unwatch,

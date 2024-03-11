@@ -19,8 +19,6 @@ export type RegleValidationErrors<
       ? RegleErrorTree<TRule>
       : string[];
 
-// test.test.$each
-
 export type RegleCollectionErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = {
