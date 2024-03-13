@@ -91,36 +91,46 @@ describe('useRegle with collection validation', async () => {
     expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(false);
   });
 
-  // it('should update dirty state and errors when updating form', async () => {
-  //   vm.regle.$value.array0.push(1);
+  it('should update dirty state and errors when pushing values form', async () => {
+    vm.regle.$value.array0.push(1);
 
-  //   await nextTick();
+    await nextTick();
 
-  //   expect(vm.errors.level0).toStrictEqual(['Custom error']);
+    expect(vm.errors.array0.$each).toStrictEqual([['Custom error']]);
+    expect(vm.errors.array0.$errors).toStrictEqual([]);
 
-  //   expect(vm.invalid).toBe(true);
+    expect(vm.invalid).toBe(true);
 
-  //   expect(vm.regle.$anyDirty).toBe(true);
-  //   expect(vm.regle.$dirty).toBe(true);
-  //   expect(vm.regle.$fields.level0.$dirty).toBe(true);
-  //   expect(vm.regle.$error).toBe(true);
-  //   expect(vm.regle.$fields.level0.$error).toBe(true);
-  //   expect(vm.regle.$pending).toBe(false);
-  //   expect(vm.regle.$value).toStrictEqual({
-  //     level0: 1,
-  //     level1: {
-  //       child: 1,
-  //       level2: {
-  //         child: 2,
-  //       },
-  //     },
-  //   });
+    expect(vm.regle.$anyDirty).toBe(true);
+    expect(vm.regle.$dirty).toBe(true);
+    expect(vm.regle.$fields.array0.$dirty).toBe(true);
+    expect(vm.regle.$error).toBe(true);
+    expect(vm.regle.$fields.array0.$error).toBe(true);
+    expect(vm.regle.$pending).toBe(false);
+    expect(vm.regle.$value).toStrictEqual({
+      array0: [1],
+      nested: {
+        array1: null,
+      },
+    });
 
-  //   expect(vm.regle.$fields.level0.$valid).toBe(false);
-  //   expect(vm.regle.$fields.level1.$valid).toBe(false);
-  //   expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-  //   expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
-  // });
+    expect(vm.regle.$fields.array0.$valid).toBe(false);
+    expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(false);
+
+    //
+
+    vm.regle.$value.array0.push(3);
+    vm.regle.$value.nested.array1 = ['bar'];
+
+    await nextTick();
+
+    expect(vm.errors.array0.$each).toStrictEqual([['Custom error'], ['Custom error']]);
+    expect(vm.errors.array0.$errors).toStrictEqual([]);
+
+    expect(vm.regle.$value.nested).toStrictEqual([]);
+
+    expect(vm.errors.nested.array1.$each).toStrictEqual([['Custom error']]);
+  });
 
   // it('should update dirty state and errors when updating nested properties', async () => {
   //   vm.regle.$value.level1.child = 3;

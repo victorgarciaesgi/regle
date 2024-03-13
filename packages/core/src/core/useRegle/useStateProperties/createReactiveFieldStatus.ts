@@ -75,8 +75,44 @@ export function createReactiveFieldStatus({
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
     );
 
+    $watch();
+
+    $commit = scopeState.$debounce.value
+      ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
+      : $commitHandler;
+
+    if (storeResult?.valid != null) {
+      $dirty.value = storage.getDirtyState(path);
+      if ($dirty.value) {
+        $commit();
+      }
+    }
+
+    storage.addRuleDeclEntry(path, declaredRules);
+  }
+
+  function $unwatch() {
+    console.log('unwatch', state.value);
+    if ($rules.value) {
+      Object.entries($rules.value).forEach(([_, rule]) => {
+        rule.$unwatch();
+      });
+    }
+    $unwatchDirty();
+    if ($dirty.value) {
+      storage.setDirtyEntry(path, $dirty.value);
+    }
+    $unwatchState();
+    $unwatchValid();
+    $unwatchExternalErrors();
+    scope.stop();
+    scope = effectScope();
+  }
+
+  function $watch() {
+    console.log('watch', state.value);
     $rules.value = Object.fromEntries(
-      Object.entries(declaredRules)
+      Object.entries(rulesDef.value)
         .filter(([ruleKey]) => !ruleKey.startsWith('$'))
         .map(([ruleKey, rule]) => {
           if (rule) {
@@ -99,41 +135,6 @@ export function createReactiveFieldStatus({
         })
         .filter((ruleDef): ruleDef is [string, $InternalRegleRuleStatus] => !!ruleDef.length)
     );
-
-    $watch();
-
-    $commit = scopeState.$debounce.value
-      ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
-      : $commitHandler;
-
-    if (storeResult?.valid != null) {
-      $dirty.value = storage.getDirtyState(path);
-      if ($dirty.value) {
-        $commit();
-      }
-    }
-
-    storage.addRuleDeclEntry(path, declaredRules);
-  }
-
-  function $unwatch() {
-    if ($rules.value) {
-      Object.entries($rules.value).forEach(([_, rule]) => {
-        rule.$unwatch();
-      });
-    }
-    $unwatchDirty();
-    if ($dirty.value) {
-      storage.setDirtyEntry(path, $dirty.value);
-    }
-    $unwatchState();
-    $unwatchValid();
-    $unwatchExternalErrors();
-    scope.stop();
-    scope = effectScope();
-  }
-
-  function $watch() {
     scopeState = scope.run(() => {
       const $anyDirty = computed<boolean>(() => $dirty.value);
       const $debounce = computed<number | undefined>(() => {
@@ -217,23 +218,20 @@ export function createReactiveFieldStatus({
     }) as ScopeReturnState;
 
     $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
-    $unwatchState = watch(
-      state,
-      () => {
-        if (scopeState.$autoDirty.value) {
-          if (!$dirty.value) {
-            $dirty.value = true;
-          }
+    $unwatchState = watch(state, () => {
+      console.log('state changed', state.value);
+      if (scopeState.$autoDirty.value) {
+        if (!$dirty.value) {
+          $dirty.value = true;
         }
-        if (!scopeState.$lazy.value) {
-          $commit();
-          if (!scopeState.$rewardEarly.value !== false) {
-            $clearExternalErrors();
-          }
+      }
+      if (!scopeState.$lazy.value) {
+        $commit();
+        if (!scopeState.$rewardEarly.value !== false) {
+          $clearExternalErrors();
         }
-      },
-      { deep: true }
-    );
+      }
+    });
     $unwatchDirty = watch($dirty, () => {
       storage.setDirtyEntry(path, $dirty.value);
     });

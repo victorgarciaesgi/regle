@@ -10,30 +10,12 @@ export type StoredRuleStatus = {
   $validating: Ref<boolean>;
 };
 
-export type RegleStorage = {
-  addRuleDeclEntry: ($path: string, rulesDef: RegleRuleDecl<any, any>) => void;
-  setDirtyEntry: ($path: string, dirty: boolean) => void;
-  checkRuleDeclEntry: (
-    $path: string,
-    newRules: RegleRuleDecl
-  ) =>
-    | {
-        valid: boolean;
-      }
-    | undefined;
-  getDirtyState: (path: string) => boolean;
-  trySetRuleStatusRef(path: string): StoredRuleStatus;
-  getFieldsEntry($path: string): Ref<Record<string, $InternalRegleStatusType>>;
-  getCollectionsEntry($path: string): Ref<Array<$InternalRegleStatusType>>;
-  getArrayStatus($id: string): $InternalRegleStatusType | undefined;
-  addArrayStatus($id: string, value: $InternalRegleStatusType): void;
-  deleteArrayStatus($id?: string): void;
-};
+export type RegleStorage = ReturnType<typeof useStorage>;
 
 /**
  * Inspired by Vuelidate storage
  */
-export function useStorage(): RegleStorage {
+export function useStorage() {
   const ruleDeclStorage = shallowRef(new Map<string, RegleRuleDecl<any, any>>());
   const fieldsStorage = shallowRef(
     new Map<string, Ref<Record<string, $InternalRegleStatusType>>>()
@@ -66,17 +48,19 @@ export function useStorage(): RegleStorage {
     }
   }
 
-  function addArrayStatus($id: string, value: $InternalRegleStatusType) {
-    arrayStatusStorage.value.set($id, value);
+  // Collections
+
+  function addArrayStatus($arrayId: string, index: number, value: $InternalRegleStatusType) {
+    arrayStatusStorage.value.set(`${$arrayId}-${index}`, value);
   }
 
-  function getArrayStatus($id: string) {
-    return arrayStatusStorage.value.get($id);
+  function getArrayStatus($arrayId: string, index: number) {
+    return arrayStatusStorage.value.get(`${$arrayId}-${index}`);
   }
 
-  function deleteArrayStatus($id?: string) {
-    if ($id) {
-      arrayStatusStorage.value.delete($id);
+  function deleteArrayStatus($arrayId: string, index?: number) {
+    if ($arrayId && index != null) {
+      arrayStatusStorage.value.delete(`${$arrayId}-${index}`);
     }
   }
 
@@ -182,5 +166,6 @@ export function useStorage(): RegleStorage {
     getArrayStatus,
     addArrayStatus,
     deleteArrayStatus,
+    arrayStatusStorage,
   };
 }

@@ -55,23 +55,42 @@
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul> -->
     <!-- 
-    <template :key="index" v-for="(input, index) of form.nested.foo">
-      <input v-model="form.nested.foo[index]" placeholder="name" />
-    </template>
-    <ul>
-      <li :key="index" v-for="(error, index) of errors.nested.foo.$errors">{{ error }}</li>
-    </ul>
+   
 
-    <button type="submit" @click="form.nested.foo.push('')">Add entry</button>
-    <button type="submit" @click="form.nested.foo.splice(0, 1)">Remove first</button> -->
+    <button type="submit" @click="form.nested.array1?.push('')">Add entry</button>
+    <button type="submit" @click="form.nested.array1?.splice(0, 1)">Remove first</button> -->
     <br />
+    <template :key="index" v-for="(input, index) of form.nested.array1">
+      <input v-model="form.nested.array1[index]" placeholder="name" />
+      <ul>
+        <li :key="index2" v-for="(error, index2) of errors.nested.array1.$each[index]">{{
+          error
+        }}</li>
+      </ul>
+    </template>
+
+    <button type="submit" @click="form.nested.array1?.push('e')">Add entry</button>
+    <button type="submit" @click="form.nested.array1?.shift()">Remove first</button>
+
+    <template :key="index" v-for="(input, index) of form.array2">
+      <input v-model="form.array2[index].name" placeholder="name" />
+      <ul>
+        <li :key="index2" v-for="(error, index2) of errors.array2.$each[index].name">{{
+          error
+        }}</li>
+      </ul>
+    </template>
+
+    <button type="submit" @click="form.array2?.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.array2?.splice(0, 1)">Remove first</button>
+
     <button type="submit" @click="resetForm">reset</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre>
         <code>
-{{ errors }}
-{{ regle }}
+
+{{ regle.$fields.nested.$fields.array1 }}
         
       </code>
     </pre>
@@ -86,12 +105,13 @@ import { timeout, useRegle } from './../validations';
 import { withAsync } from '@regle/validators';
 import { maxLength } from '@regle/validators';
 
-const form = {
-  array0: [] as number[],
+const form = reactive({
+  array0: [0] as number[],
   nested: {
-    array1: null as null | string[],
+    array1: ['foo', 'e', 'a'] as string[],
   },
-};
+  array2: [{ name: '' }],
+});
 
 async function submit() {
   // regle.$value.count = 2;
@@ -104,5 +124,6 @@ const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () =>
   nested: {
     array1: { required, $each: { minLength: minLength(2) } },
   },
+  array2: { $each: { name: { required } } },
 }));
 </script>

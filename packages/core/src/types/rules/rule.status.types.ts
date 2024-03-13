@@ -1,14 +1,13 @@
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   AllRulesDeclarations,
-  IsPrimitiveArray,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
+  RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  Transform$EachKeys,
 } from '..';
 
 /**
@@ -41,11 +40,9 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
 > =
   TRule extends RegleCollectionRuleDefinition<any, any>
-    ? TState[TKey] extends Array<Record<string, any> | any[] | null | undefined>
+    ? TState[TKey] extends Array<Record<string, any> | any[]>
       ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
-      : IsPrimitiveArray<TState[TKey]> extends true
-        ? RegleFieldStatus<Transform$EachKeys<TRule['$each']> & Omit<TRule, '$each'>, TState[TKey]>
-        : RegleFieldStatus<TRule['$each'] & TRule, TState[TKey]>
+      : RegleFieldStatus<TRule['$each'] & TRule, TState[TKey]>
     : TRule extends ReglePartialValidationTree<any>
       ? TState[TKey] extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
@@ -75,7 +72,10 @@ export interface RegleFieldStatus<
   $value: UnwrapNestedRefs<TState[TKey]>;
   readonly $externalErrors?: string[];
   readonly $rules: {
-    readonly [TRuleKey in keyof TRules]: TState[TKey];
+    readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
+      TState[TKey],
+      TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams> ? TParams : []
+    >;
   };
 }
 
@@ -99,7 +99,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
-  $id?: string;
+  $id?: number;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;
