@@ -1,6 +1,7 @@
+import { pauseScheduling, pauseTracking, resetScheduling, resetTracking } from '@vue/reactivity';
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';
-import { computed, effectScope, reactive, ref, toRaw, toRef, toRefs } from 'vue';
+import { computed, effectScope, reactive, ref, toRaw, toRef, toRefs, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -11,9 +12,9 @@ import type {
   CustomRulesDeclarationTree,
   DeepMaybeRef,
   RegleBehaviourOptions,
-  RegleCommonStatus,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { isObject } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
 import {
@@ -25,13 +26,6 @@ import {
 } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
-import {
-  pauseScheduling,
-  pauseTracking,
-  resetScheduling,
-  resetTracking,
-  shallowRef,
-} from '@vue/reactivity';
 
 function createCollectionElement({
   $id,
@@ -43,7 +37,6 @@ function createCollectionElement({
   customMessages,
   rules,
   externalErrors,
-  dirty,
 }: {
   $id: string;
   path: string;
@@ -54,12 +47,26 @@ function createCollectionElement({
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
-  dirty?: boolean;
 }): $InternalRegleStatusType | null {
-  const $path = `${path}.${index}`;
+  const $fieldId = randomId();
+  const $path = `${path}.${$fieldId}`;
+
+  if (typeof value[index] === 'object' && value[index] != null) {
+    if (!value[index].$id) {
+      Object.defineProperties(value[index], {
+        $id: {
+          value: $fieldId,
+          enumerable: false,
+          configurable: false,
+          writable: false,
+        },
+      });
+    }
+  }
 
   const $state = toRefs(value);
   const $externalErrors = toRef(() => externalErrors.value?.[index]);
+
   const $status = createReactiveChildrenStatus({
     state: $state[index],
     rulesDef: toRef(() => rules),
@@ -71,10 +78,46 @@ function createCollectionElement({
   });
 
   if ($status) {
-    const valueId = value[index].$id;
-    $status.$id = valueId ?? index;
+    const valueId = value[index]?.$id;
+    $status.$id = valueId ?? $fieldId;
     storage.addArrayStatus($id, index, $status);
   }
+
+  return $status;
+}
+
+function updateCollectionElement({
+  path,
+  index,
+  options,
+  storage,
+  value,
+  customMessages,
+  rules,
+  externalErrors,
+}: {
+  $id: string;
+  path: string;
+  index: number;
+  value: any[];
+  customMessages?: CustomRulesDeclarationTree;
+  storage: RegleStorage;
+  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
+  rules: $InternalFormPropertyTypes;
+  externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
+}): $InternalRegleStatusType | null {
+  const $state = toRefs(value);
+  const $externalErrors = toRef(() => externalErrors.value?.[index]);
+
+  const $status = createReactiveChildrenStatus({
+    state: $state[index],
+    rulesDef: toRef(() => rules),
+    customMessages,
+    path,
+    storage,
+    options,
+    externalErrors: $externalErrors,
+  });
 
   return $status;
 }
@@ -114,23 +157,7 @@ export function createReactiveCollectionStatus({
     return null;
   }
   const $id = ref<string>() as Ref<string>;
-  const $deletingProcess = ref(false);
-
-  if (typeof state.value === 'object') {
-    if (!(state.value as any)?.$id) {
-      $id.value = randomId();
-      Object.defineProperties(state.value, {
-        $id: {
-          value: $id.value,
-          enumerable: false,
-          configurable: false,
-          writable: false,
-        },
-      });
-    } else {
-      $id.value = (state.value as any)?.$id;
-    }
-  }
+  const $value = ref(state.value);
 
   let $unwatchState: (() => void) | null = null;
 
@@ -141,6 +168,21 @@ export function createReactiveCollectionStatus({
   createStatus();
 
   function createStatus() {
+    if (typeof state.value === 'object') {
+      if (state.value != null && !(state.value as any)?.$id && state.value !== null) {
+        $id.value = randomId();
+        Object.defineProperties(state.value, {
+          $id: {
+            value: $id.value,
+            enumerable: false,
+            configurable: false,
+            writable: false,
+          },
+        });
+      } else {
+        $id.value = (state.value as any)?.$id;
+      }
+    }
     const { $each, $debounce, $autoDirty, $lazy, $rewardEarly, ...otherFields } = rulesDef.value;
 
     const $externalErrorsField = toRef(() => {
@@ -161,21 +203,17 @@ export function createReactiveCollectionStatus({
 
     if (Array.isArray(state.value)) {
       const instrumentations: Record<string, Function> = {};
-      const mutationsKeys = ['pop', 'shift', 'unshift', 'splice'] as const;
-      mutationsKeys.forEach((key) => {
+      // TODO warn that reassing the array will lost track of previous rule states (even with filter, reduce etc..)
+      (['pop', 'shift', 'unshift', 'splice'] as const).forEach((key) => {
         instrumentations[key] = function (this: unknown[], ...args: [...any[]]) {
           pauseTracking();
           pauseScheduling();
 
-          const previousStatuses = shallowRef<$InternalRegleStatusType[]>([]);
-
           $eachStatus.value.forEach((status) => {
             status.$unwatch();
             storage.deleteArrayStatus($id.value, status.$id);
-            previousStatuses.value.push(status);
           });
-
-          // @ts-expect-error
+          // @ts-ignore
           $eachStatus.value[key](...args);
 
           const res = (Object.assign([], this) as any)[key].apply(this, args);
@@ -183,12 +221,22 @@ export function createReactiveCollectionStatus({
           $eachStatus.value = $eachStatus.value
             .map((status, newIndex) => {
               if (
+                isObject(status) &&
                 (isFieldStatus(status) ||
                   isCollectionRulesStatus(status) ||
                   isNestedRulesStatus(status)) &&
                 status.$id != null
               ) {
-                status.$watch();
+                return updateCollectionElement({
+                  $id: $id.value,
+                  path: `${path}.${status.$id}`,
+                  rules: $each!,
+                  value: state.value as any[],
+                  index: newIndex,
+                  options,
+                  storage,
+                  externalErrors: $externalErrorsEach,
+                });
               } else {
                 return createCollectionElement({
                   $id: $id.value,
@@ -206,6 +254,7 @@ export function createReactiveCollectionStatus({
 
           resetScheduling();
           resetTracking();
+
           return res;
         };
       });
@@ -219,20 +268,19 @@ export function createReactiveCollectionStatus({
           }
           return result;
         },
-        // deleteProperty(target, key) {
-        //   console.log(`Array removed item: ${key as string} deleted`);
-        //   const result = Reflect.deleteProperty(target, key);
-        //   if (typeof key === 'symbol') return true;
-        //   if (!isNaN(parseInt(key))) {
-        //     $eachStatus.value.splice(parseInt(key), 1);
-        //     storage.deleteArrayStatus($id.value, parseInt(key));
-        //   }
-        //   return result;
-        // },
+        deleteProperty(target, key) {
+          const result = Reflect.deleteProperty(target, key);
+          if (typeof key === 'symbol') return true;
+          if (!isNaN(parseInt(key))) {
+            $eachStatus.value.splice(parseInt(key), 1);
+            storage.deleteArrayStatus($id.value, parseInt(key));
+          }
+          return result;
+        },
         set(target, key, value) {
           const result = Reflect.set(target, key, value);
 
-          console.log(`Array mutated: ${key as string} set to`, value);
+          // console.log(`set key ${key as string} with value ${value}`);
           if (typeof key === 'symbol') return true;
           if (!isNaN(parseInt(key))) {
             const index = parseInt(key);
@@ -275,21 +323,24 @@ export function createReactiveCollectionStatus({
       externalErrors: $externalErrorsField,
     });
 
+    $value.value = $fieldStatus.value.$value;
+
     if (Array.isArray(state.value) && $each) {
-      $eachStatus.value = state.value
-        .map((value, index) => {
-          return createCollectionElement({
-            $id: $id.value,
-            path,
-            rules: $each,
-            value: state.value as any[],
-            index,
-            options,
-            storage,
-            externalErrors: $externalErrorsEach,
-          });
-        })
-        .filter((f): f is $InternalRegleStatusType => !!f);
+      for (const [index, s] of state.value.entries()) {
+        const element = createCollectionElement({
+          $id: $id.value,
+          path,
+          rules: $each,
+          value: state.value as any[],
+          index,
+          options,
+          storage,
+          externalErrors: $externalErrorsEach,
+        });
+        if (element) {
+          $eachStatus.value[index] = element;
+        }
+      }
     } else {
       $eachStatus.value = [];
     }
@@ -312,12 +363,16 @@ export function createReactiveCollectionStatus({
   }
 
   function $watch() {
+    $unwatchState = watch(state, () => {
+      if (state.value != null && !Object.hasOwn(state.value as any, '$id')) {
+        createStatus();
+      }
+    });
     scopeState = scope.run(() => {
       const isPrimitiveArray = computed(() => {
         if (Array.isArray(state.value) && state.value.length) {
           return state.value.some((s) => typeof s !== 'object');
-        }
-        if (rulesDef.value.$each) {
+        } else if (rulesDef.value.$each) {
           return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
         }
         return false;
@@ -411,6 +466,7 @@ export function createReactiveCollectionStatus({
 
   return reactive({
     ...$fieldStatus.value,
+    $value,
     ...scopeState,
     $each: $eachStatus,
     $validate,

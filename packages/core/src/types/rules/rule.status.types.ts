@@ -40,13 +40,13 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
 > =
   TRule extends RegleCollectionRuleDefinition<any, any>
-    ? TState[TKey] extends Array<Record<string, any> | any[]>
+    ? NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
       ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
-      : RegleFieldStatus<TRule['$each'] & TRule, TState[TKey]>
+      : RegleFieldStatus<TRule, TState, TKey>
     : TRule extends ReglePartialValidationTree<any>
-      ? TState[TKey] extends Array<any>
+      ? NonNullable<TState[TKey]> extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
-        : TState[TKey] extends Record<PropertyKey, any>
+        : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
           ? RegleStatus<TState[TKey], TRule>
           : RegleFieldStatus<TRule, TState, TKey>
       : RegleFieldStatus<TRule, TState, TKey>;

@@ -60,37 +60,37 @@
     <button type="submit" @click="form.nested.array1?.push('')">Add entry</button>
     <button type="submit" @click="form.nested.array1?.splice(0, 1)">Remove first</button> -->
     <br />
-    <template :key="index" v-for="(input, index) of form.nested.array1">
-      <input v-model="form.nested.array1[index]" placeholder="name" />
+    <template :key="index" v-for="(input, index) of form.array0">
+      <input v-model="form.array0[index]" placeholder="name" />
       <ul>
-        <li :key="index2" v-for="(error, index2) of errors.nested.array1.$each[index]">{{
-          error
-        }}</li>
+        <li :key="index2" v-for="(error, index2) of errors.array0.$each[index]">{{ error }}</li>
       </ul>
     </template>
 
-    <button type="submit" @click="form.nested.array1?.push('e')">Add entry</button>
-    <button type="submit" @click="form.nested.array1?.shift()">Remove first</button>
+    <button type="submit" @click="form.array0?.push(null)">Add entry</button>
+    <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button>
 
-    <template :key="index" v-for="(input, index) of form.array2">
+    <!-- <template :key="index" v-for="(input, index) of form.array2">
       <input v-model="form.array2[index].name" placeholder="name" />
       <ul>
         <li :key="index2" v-for="(error, index2) of errors.array2.$each[index].name">{{
           error
         }}</li>
       </ul>
-    </template>
+    </template> -->
 
-    <button type="submit" @click="form.array2?.push({ name: '' })">Add entry</button>
-    <button type="submit" @click="form.array2?.splice(0, 1)">Remove first</button>
+    <!-- <button type="submit" @click="form.array2?.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.array2 = form.array2.filter((f) => f.name.length > 2)"
+      >Remove first</button -->
+    >
 
     <button type="submit" @click="resetForm">reset</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre>
         <code>
-
-{{ regle.$fields.nested.$fields.array1 }}
+{{ errors }}
+{{ regle }}
         
       </code>
     </pre>
@@ -100,30 +100,35 @@
 <script setup lang="ts">
 import { RegleExternalErrorTree } from '@regle/core';
 import { minLength, numeric, required, withMessage } from '@regle/validators';
-import { reactive, ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { timeout, useRegle } from './../validations';
 import { withAsync } from '@regle/validators';
 import { maxLength } from '@regle/validators';
 
 const form = reactive({
-  array0: [0] as number[],
+  array0: [null] as (number | null)[],
   nested: {
-    array1: ['foo', 'e', 'a'] as string[],
+    array1: null as string[] | null,
   },
-  array2: [{ name: '' }],
+  // array2: [{ name: '' }],
 });
 
 async function submit() {
   // regle.$value.count = 2;
   const result = await validateForm();
-  // console.log(result);
+  console.log(result);
 }
 
 const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () => ({
   array0: { $each: { numeric: numeric } },
   nested: {
-    array1: { required, $each: { minLength: minLength(2) } },
+    array1: { $each: { minLength: minLength(2) } },
   },
-  array2: { $each: { name: { required } } },
+  // array2: { $each: { name: { required } } },
 }));
+
+form.nested.array1 = ['b'];
+nextTick(() => {
+  regle.$fields.nested.$fields.array1.$each[0].$touch();
+});
 </script>
