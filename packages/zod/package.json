@@ -1,6 +1,6 @@
 {
   "name": "@regle/zod",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Vue form validator",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
