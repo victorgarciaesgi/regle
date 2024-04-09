@@ -30,7 +30,7 @@ function collectionWithPrimitives() {
   };
 }
 
-describe.only('useRegle with collection validation', async () => {
+describe('useRegle with collection validation', async () => {
   const { vm } = createRegleComponent(collectionWithPrimitives);
 
   it('should have a initial state', () => {
