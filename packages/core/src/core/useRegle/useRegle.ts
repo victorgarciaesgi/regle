@@ -80,7 +80,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       Object.entries(state).forEach(([key, value]) => {
         let originRef = isRef<Record<string, MaybeRef<any>>>(origin) ? origin.value : origin;
         let originValue = isRef(originRef[key]) ? originRef[key].value : originRef[key];
-        const stateRef = isRef(state[key]) ? state[key]._value : state[key];
+        const stateRef = isRef(state[key]) ? (state[key] as any)._value : state[key];
         if (Array.isArray(stateRef) && Array.isArray(originValue)) {
           stateRef.forEach((val, index) => {
             resetValuesRecursively(originValue[index], stateRef[index]);

@@ -1,10 +1,9 @@
 import { flushPromises } from '@vue/test-utils';
 import { useRegle } from '@regle/core';
-import { required } from '@regle/validators';
+import { required, withMessage } from '@regle/validators';
 import { ruleMockIsEven, ruleMockIsFoo } from '../../fixtures';
 import { createRegleComponent } from '../../utils/test.utils';
 import { nextTick, reactive, ref } from 'vue';
-import { timeout } from '../../utils';
 
 // TODO
 // Types for errors primitives (remove $each)
@@ -23,9 +22,9 @@ function collectionWithPrimitives() {
     ...useRegle(form, () => ({
       array0: { $each: { ruleMockIsEven } },
       nested: {
-        array1: { required, $each: { ruleMockIsFoo } },
+        array1: { required: withMessage(required, 'Custom error'), $each: { ruleMockIsFoo } },
       },
-      array2: { $each: { ruleMockIsFoo, required } },
+      array2: { $each: { ruleMockIsFoo, required: withMessage(required, 'Custom error') } },
     })),
   };
 }
@@ -82,7 +81,7 @@ describe('useRegle with collection validation', async () => {
       nested: {
         array1: {
           $each: [],
-          $errors: ['Value is required'],
+          $errors: ['Custom error'],
         },
       },
       array2: {
@@ -139,10 +138,7 @@ describe('useRegle with collection validation', async () => {
     vm.form.array2 = ['bar'];
 
     await nextTick();
-
-    vm.regle.$fields.array2.$each[0].$touch();
-    vm.regle.$fields.nested.$fields.array1.$each[0].$touch();
-
+    vm.regle.$touch();
     await nextTick();
 
     expect(vm.errors.array0.$each).toStrictEqual([['Custom error'], ['Custom error']]);
@@ -156,6 +152,7 @@ describe('useRegle with collection validation', async () => {
       array2: ['bar'],
     });
 
+    expect(vm.regle.$fields.nested.$fields.array1.$dirty).toBe(true);
     expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(false);
     expect(vm.regle.$fields.nested.$fields.array1.$each[0].$dirty).toBe(true);
     expect(vm.regle.$fields.nested.$fields.array1.$value).toStrictEqual(['bar']);
@@ -163,5 +160,49 @@ describe('useRegle with collection validation', async () => {
     expect(vm.regle.$value.nested.array1).toStrictEqual(['bar']);
 
     expect(vm.errors.nested.array1.$each).toStrictEqual([['Custom error']]);
+
+    vm.form.array0[0] = 2;
+    vm.form.array0[1] = 4;
+    vm.form.nested.array1[0] = 'foo';
+    vm.form.array2[0] = 'foo';
+
+    vm.regle.$touch();
+
+    await nextTick();
+
+    expect(vm.regle.$fields.array0.$valid).toBe(true);
+    expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(true);
+    expect(vm.regle.$fields.nested.$fields.array1.$each[0].$dirty).toBe(true);
+    expect(vm.regle.$fields.nested.$fields.array1.$value).toStrictEqual(['foo']);
+    expect(vm.regle.$fields.nested.$fields.array1.$each[0].$valid).toBe(true);
+    expect(vm.regle.$value.nested.array1).toStrictEqual(['foo']);
+
+    expect(vm.errors.nested.array1.$each).toStrictEqual([[]]);
+    expect(vm.regle.$fields.array0.$valid).toBe(true);
+    expect(vm.regle.$fields.nested.$valid).toBe(true);
+    expect(vm.regle.$fields.array2.$valid).toBe(true);
+    expect(vm.regle.$valid).toBe(true);
+    expect(vm.invalid).toBe(false);
+  });
+
+  it('should update status when pushing new state', async () => {
+    vm.form.array0.push(6);
+    vm.form.nested.array1?.push('bar');
+    vm.form.array2.push('foo');
+
+    vm.regle.$touch();
+
+    await nextTick();
+
+    expect(vm.regle.$fields.array0.$valid).toBe(true);
+
+    expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(false);
+    expect(vm.regle.$fields.nested.$fields.array1.$each[1].$dirty).toBe(true);
+    expect(vm.regle.$fields.nested.$fields.array1.$value).toStrictEqual(['foo', 'bar']);
+    expect(vm.regle.$fields.nested.$fields.array1.$valid).toBe(false);
+
+    expect(vm.regle.$value.nested.array1).toStrictEqual(['foo', 'bar']);
+
+    expect(vm.errors.nested.array1.$each).toStrictEqual([[], ['Custom error']]);
   });
 });

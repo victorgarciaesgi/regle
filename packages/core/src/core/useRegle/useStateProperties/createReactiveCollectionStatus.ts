@@ -1,4 +1,4 @@
-import { pauseScheduling, pauseTracking, resetScheduling, resetTracking } from '@vue/reactivity';
+import { pauseTracking, resetTracking } from '@vue/reactivity';
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';
 import { computed, effectScope, reactive, ref, toRaw, toRef, toRefs, watch } from 'vue';
@@ -207,7 +207,6 @@ export function createReactiveCollectionStatus({
       (['pop', 'shift', 'unshift', 'splice'] as const).forEach((key) => {
         instrumentations[key] = function (this: unknown[], ...args: [...any[]]) {
           pauseTracking();
-          pauseScheduling();
 
           $eachStatus.value.forEach((status) => {
             status.$unwatch();
@@ -252,7 +251,6 @@ export function createReactiveCollectionStatus({
             })
             .filter((f): f is $InternalRegleStatusType => !!f);
 
-          resetScheduling();
           resetTracking();
 
           return res;
@@ -308,9 +306,7 @@ export function createReactiveCollectionStatus({
         },
       });
       pauseTracking();
-      pauseScheduling();
       state.value = watchableState;
-      resetScheduling();
       resetTracking();
     }
     $fieldStatus.value = createReactiveFieldStatus({
