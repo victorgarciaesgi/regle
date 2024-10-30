@@ -136,7 +136,7 @@ const form = ref<MyForm>({
   confirmPassword: '',
 })
 
-const {$errors, validateForm} = useRegle(form, () => ({
+const {errors, validateForm} = useRegle(form, () => ({
   email: {
     email,
     required,
@@ -198,7 +198,7 @@ export const useRegle = defineRegleConfig({
 import {useRegle, myCustomRule} from './validations';
 
 
-const {$errors} = useRegle(..., () => ({
+const {errors} = useRegle(..., () => ({
   foo: {
     myCustomRule: myCustomRule('bar'),
   // ^ autocompletes
@@ -229,7 +229,7 @@ const form = reactive({
   firstName: '',
 })
 
-const {$errors, $regle} = useZodForm(form, z.object({
+const {errors, regle} = useZodForm(form, z.object({
   email: z.string().email({message: 'This must be an email'}).min(1, {message: "This is required"}),
   firstName: z.strin().min(1),
 }))
