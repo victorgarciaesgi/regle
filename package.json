@@ -14,18 +14,21 @@
     "test:dev": "vitest",
     "release": "nr build && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
-    "play:nuxt": "cd playground/nuxt && pnpm run dev"
+    "play:nuxt": "cd playground/nuxt && pnpm run dev",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@regle/core": "workspace:*",
     "@regle/validators": "workspace:*",
     "@regle/zod": "workspace:*",
-    "@types/prettier": "3.0.0",
     "@typescript-eslint/eslint-plugin": "8.4.0",
     "@typescript-eslint/parser": "8.4.0",
     "@vitejs/plugin-vue": "5.1.3",
     "@vitest/coverage-istanbul": "2.0.5",
     "@vitest/coverage-v8": "2.0.5",
+    "@shikijs/vitepress-twoslash": "1.18.0",
     "@vue/reactivity": "3.5.0",
     "@vue/test-utils": "2.4.6",
     "bumpp": "9.5.2",
@@ -38,6 +41,7 @@
     "prettier": "3.3.3",
     "typescript": "5.5.4",
     "vitest": "2.0.5",
+    "vitepress": "1.3.4",
     "vue": "3.5.0",
     "vue-eslint-parser": "9.4.3",
     "vue-tsc": "2.1.4"

@@ -1,12 +1,20 @@
-import { Ref, computed } from 'vue';
+import { ComputedRef, Ref, computed } from 'vue';
 import type {
   $InternalRegleErrors,
   $InternalRegleStatusType,
   $InternalRegleStatus,
   $InternalRegleRuleStatus,
   $InternalRegleCollectionStatus,
+  $InternalExternalRegleErrors,
 } from '../../types';
-import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from './guards';
+import {
+  isCollectionExternalErrorStatus,
+  isCollectionRulesStatus,
+  isFieldStatus,
+  isNestedExternalErrorStatus,
+  isNestedRulesStatus,
+} from './guards';
+import { isObject } from '../../utils';
 
 function extractRulesErrors(
   rules: Record<string, $InternalRegleRuleStatus>,

@@ -4,6 +4,7 @@ import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
+  RegleExternalErrorTree,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
@@ -14,12 +15,13 @@ import type {
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
+  TExternal extends RegleExternalErrorTree<TState> = never,
 > {
   regle: RegleStatus<TState, TRules>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
-   * It allow you to skip scouting the `$regle` object
+   * It allow you to skip scouting the `regle` object
    */
-  errors: RegleErrorTree<TRules>;
+  errors: RegleErrorTree<TRules, TExternal>;
   invalid: ComputedRef<boolean>;
   resetForm: () => void;
   validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;

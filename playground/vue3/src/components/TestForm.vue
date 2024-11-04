@@ -128,7 +128,13 @@ const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () =>
 }));
 
 form.nested.array1 = ['b'];
-nextTick(() => {
+nextTick(async () => {
   regle.$fields.nested.$fields.array1.$each[0].$touch();
+
+  const result = await validateForm();
+  if (result) {
+    // TODO bug never
+    result.nested.array1;
+  }
 });
 </script>

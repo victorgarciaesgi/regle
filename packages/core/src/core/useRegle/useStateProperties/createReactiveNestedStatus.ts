@@ -1,6 +1,16 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref } from 'vue';
-import { effectScope, onScopeDispose, reactive, toRef, triggerRef, watch, computed } from 'vue';
+import {
+  effectScope,
+  onScopeDispose,
+  reactive,
+  toRef,
+  triggerRef,
+  watch,
+  computed,
+  unref,
+  ref,
+} from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -56,7 +66,7 @@ export function createReactiveNestedStatus({
   function createReactiveFieldsStatus(watch = true) {
     $fields.value = null as any;
     triggerRef($fields);
-    $fields.value = Object.fromEntries(
+    const scopedRulesStatus = Object.fromEntries(
       Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
@@ -82,6 +92,32 @@ export function createReactiveNestedStatus({
           (rule): rule is [string, $InternalRegleStatusType] => !!rule.length && rule[1] != null
         )
     );
+
+    const externalRulesStatus = Object.fromEntries(
+      Object.entries(unref(externalErrors) ?? {})
+        .filter(([key]) => !(key in scopeRules.value))
+        .map(([key, errors]) => {
+          if (errors) {
+            const statePropRulesRef = toRef(() => ({}));
+            const $externalErrors = toRef(() => errors);
+            return [
+              key,
+              createReactiveChildrenStatus({
+                state: ref(undefined),
+                rulesDef: statePropRulesRef,
+                customMessages,
+                path: path ? `${path}.${key}` : key,
+                storage,
+                options,
+                externalErrors: $externalErrors,
+              }),
+            ];
+          }
+          return [];
+        })
+    );
+
+    $fields.value = { ...scopedRulesStatus, ...externalRulesStatus };
     if (watch) {
       $watch();
     }

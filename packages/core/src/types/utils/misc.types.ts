@@ -17,3 +17,8 @@ export type ExcludeByType<T, U> = {
 };
 
 export type PrimitiveTypes = string | number | boolean | bigint;
+
+export type NonPresentKeys<
+  TSource extends Record<string, any>,
+  Target extends Record<string, any>,
+> = Omit<Target, keyof TSource>;

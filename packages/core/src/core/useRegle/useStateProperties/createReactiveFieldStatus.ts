@@ -61,9 +61,7 @@ export function createReactiveFieldStatus({
   let $commit = () => {};
 
   function collectExternalErrors() {
-    if (externalErrors.value) {
-      $externalErrors.value = externalErrors.value;
-    }
+    $externalErrors.value = externalErrors.value ?? [];
   }
   collectExternalErrors();
 
@@ -231,7 +229,7 @@ export function createReactiveFieldStatus({
       if (!scopeState.$lazy.value) {
         $commit();
         if (!scopeState.$rewardEarly.value !== false) {
-          $clearExternalErrors();
+          // $clearExternalErrors();
         }
       }
     });
@@ -270,7 +268,7 @@ export function createReactiveFieldStatus({
     $dirty.value = true;
     if (!scopeState.$lazy.value) {
       if (!scopeState.$rewardEarly.value !== false) {
-        $clearExternalErrors();
+        // $clearExternalErrors();
       }
     }
   }
@@ -281,7 +279,6 @@ export function createReactiveFieldStatus({
 
   async function $validateHandler(): Promise<boolean> {
     try {
-      $clearExternalErrors();
       triggerPunishment.value = true;
       if (!scopeState.$lazy.value && scopeState.$anyDirty.value && !scopeState.$pending) {
         return !scopeState.$error.value;

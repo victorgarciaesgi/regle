@@ -10,6 +10,7 @@ import type {
   Regle,
   RegleBehaviourOptions,
   RegleErrorTree,
+  RegleExternalErrorTree,
   ReglePartialValidationTree,
   RegleStatus,
   ResolvedRegleBehaviourOptions,
@@ -31,6 +32,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
   function useRegle<
     TState extends Record<string, any>,
     TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
+    TExternal extends RegleExternalErrorTree<TState>,
     TValid = keyof TRules extends keyof ReglePartialValidationTree<
       TState,
       Partial<AllRulesDeclarations> & TCustomRules
@@ -40,8 +42,9 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
   >(
     state: Ref<TState> | DeepReactiveState<TState>,
     rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TState>
-  ): Regle<TState, TRules> {
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<TState, TExternal>
+  ): Regle<TState, TRules, TExternal> {
     const scopeRules = isRef(rulesFactory)
       ? rulesFactory
       : computed(

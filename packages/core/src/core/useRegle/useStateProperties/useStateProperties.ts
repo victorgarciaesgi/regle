@@ -5,7 +5,6 @@ import type {
   CustomRulesDeclarationTree,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { RegleExternalErrorTree } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { useErrors } from '../useErrors';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';

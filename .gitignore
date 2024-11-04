@@ -24,6 +24,9 @@ lib
 .output
 .DS_Store
 
+docs/.vitepress/dist
+docs/.vitepress/cache
+
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov

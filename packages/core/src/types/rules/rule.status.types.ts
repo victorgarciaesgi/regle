@@ -9,6 +9,7 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
 } from '..';
+import { EmptyObject } from 'type-fest';
 
 /**
  * @public

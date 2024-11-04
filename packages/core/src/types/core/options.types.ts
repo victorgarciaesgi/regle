@@ -23,8 +23,11 @@ export interface RegleBehaviourOptions {
   rewardEarly?: boolean;
 }
 
-export interface LocalRegleBehaviourOptions<TState extends Record<string, any>> {
-  $externalErrors?: MaybeRef<RegleExternalErrorTree<TState>>;
+export interface LocalRegleBehaviourOptions<
+  TState extends Record<string, any>,
+  TExternal extends RegleExternalErrorTree<TState>,
+> {
+  $externalErrors?: MaybeRef<TExternal>;
 }
 
 export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOptions> & {
@@ -32,7 +35,7 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
 };
 
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
-  LocalRegleBehaviourOptions<Record<string, any>>;
+  LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>>;
 
 export type AddDollarToOptions<T extends Record<string, any>> = {
   [K in keyof T as `$${string & K}`]: T[K];

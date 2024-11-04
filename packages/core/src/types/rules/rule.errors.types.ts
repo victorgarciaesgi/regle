@@ -1,29 +1,50 @@
+import { ArrayElement, NonPresentKeys } from '../utils';
 import type {
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
 } from './rule.declaration.types';
-import type { RegleCollectionRuleDefinition } from './rule.definition.type';
+import type { RegleCollectionRuleDefinition, RegleRuleDefinition } from './rule.definition.type';
 
-export type RegleErrorTree<TRules extends ReglePartialValidationTree<any, any>> = {
-  readonly [K in keyof TRules]: RegleValidationErrors<TRules[K]>;
+export type RegleErrorTree<
+  TRules extends ReglePartialValidationTree<any, any>,
+  TExternal extends RegleExternalErrorTree<Record<string, unknown>> = never,
+> = {
+  readonly [K in keyof TRules]: RegleValidationErrors<
+    TRules[K],
+    K extends keyof TExternal ? TExternal[K] : never
+  >;
+} & {
+  readonly [K in keyof NonPresentKeys<TRules, TExternal>]: RegleExternalValidationErrorsReport<
+    TExternal[K]
+  >;
 };
 
 export type RegleValidationErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
+  TExternalError extends RegleExternalValidationErrors<any> | undefined = never,
 > = TRule extends RegleCollectionRuleDefinition
-  ? RegleCollectionErrors<TRule['$each']>
+  ? RegleCollectionErrors<
+      TRule['$each'],
+      TExternalError extends RegleExternalCollectionErrors
+        ? ArrayElement<TExternalError['$each']>
+        : never
+    >
   : TRule extends RegleRuleDecl<any, any>
     ? string[]
     : TRule extends ReglePartialValidationTree<any, any>
-      ? RegleErrorTree<TRule>
+      ? RegleErrorTree<
+          TRule,
+          TExternalError extends RegleExternalErrorTree ? TExternalError : never
+        >
       : string[];
 
 export type RegleCollectionErrors<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
+  TExternalError extends RegleExternalValidationErrors<any> | undefined = never,
 > = {
   readonly $errors: string[];
-  readonly $each: RegleValidationErrors<TRule>[];
+  readonly $each: RegleValidationErrors<TRule, TExternalError>[];
 };
 
 /**
@@ -57,6 +78,16 @@ export type RegleExternalCollectionErrors<TValue extends any = any> = {
   $errors?: string[];
   $each?: RegleExternalValidationErrors<TValue>[];
 };
+
+export type RegleExternalValidationErrorsReport<
+  TExternalError extends RegleExternalValidationErrors<any> | undefined = never,
+> = TExternalError extends RegleExternalCollectionErrors
+  ? RegleCollectionErrors<TExternalError['$each']>
+  : TExternalError extends string[]
+    ? string[]
+    : TExternalError extends RegleExternalErrorTree<any>
+      ? RegleErrorTree<TExternalError>
+      : string[];
 
 export type $InternalExternalRegleErrors =
   | RegleExternalCollectionErrors<any>
