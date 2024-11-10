@@ -34,7 +34,7 @@ It's heavily inspired by Vuelidate.
 # What is not planned or reimplemented differently from Vuelidate
 
 - Validation groups
-- Nested validation collection
+- Nested component validation collection (not possible to infer types)
 
 
 # Documentation
