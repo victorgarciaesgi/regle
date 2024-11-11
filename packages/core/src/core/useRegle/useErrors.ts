@@ -2,21 +2,31 @@ import { computed } from 'vue';
 import type {
   $InternalRegleCollectionStatus,
   $InternalRegleErrors,
+  $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   $InternalRegleStatus,
   $InternalRegleStatusType,
 } from '../../types';
 import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from './guards';
 
-function extractRulesErrors(
-  rules: Record<string, $InternalRegleRuleStatus>,
-  externalErrors?: string[]
-): string[] {
-  return Object.entries(rules)
+export function extractRulesErrors({
+  field,
+  silent = false,
+}: {
+  field: Pick<
+    $InternalRegleFieldStatus | $InternalRegleCollectionStatus,
+    '$rules' | '$dirty' | '$externalErrors'
+  >;
+  silent?: boolean;
+}): string[] {
+  return Object.entries(field.$rules ?? {})
     .map(([ruleKey, rule]) => {
-      if (!rule.$valid) {
+      if (silent) {
+        return rule.$message;
+      } else if (!rule.$valid && field.$dirty) {
         return rule.$message;
       }
+
       return null;
     })
     .filter((msg): msg is string | string[] => !!msg)
@@ -27,7 +37,7 @@ function extractRulesErrors(
         return acc?.concat(value);
       }
     }, [])
-    .concat(externalErrors ?? []);
+    .concat(field.$externalErrors ?? []);
 }
 
 function processFieldErrors(fieldStatus: $InternalRegleStatusType): $InternalRegleErrors {
@@ -35,12 +45,14 @@ function processFieldErrors(fieldStatus: $InternalRegleStatusType): $InternalReg
     return extractNestedErrors(fieldStatus.$fields);
   } else if (isCollectionRulesStatus(fieldStatus)) {
     return {
-      $errors: fieldStatus.$rules ? extractRulesErrors(fieldStatus.$rules) : [],
+      $errors: fieldStatus.$rules ? extractRulesErrors({ field: fieldStatus }) : [],
       $each: fieldStatus.$each.map(processFieldErrors),
     };
   } else if (isFieldStatus(fieldStatus)) {
     if (fieldStatus.$error) {
-      return extractRulesErrors(fieldStatus.$rules, fieldStatus.$externalErrors);
+      return extractRulesErrors({
+        field: fieldStatus,
+      });
     } else {
       return fieldStatus.$externalErrors ?? [];
     }
@@ -52,7 +64,7 @@ function extractCollectionError(field: $InternalRegleCollectionStatus): $Interna
   return field.$each.map(processFieldErrors);
 }
 
-function extractNestedErrors(
+export function extractNestedErrors(
   fields: Record<string, $InternalRegleStatusType> | $InternalRegleStatusType[]
 ): Record<string, $InternalRegleErrors> {
   return Object.fromEntries(
@@ -63,13 +75,20 @@ function extractNestedErrors(
         return [
           fieldKey,
           {
-            ...(fieldStatus.$rules && { $errors: extractRulesErrors(fieldStatus.$rules) }),
+            ...(fieldStatus.$rules && {
+              $errors: extractRulesErrors({ field: fieldStatus }),
+            }),
             $each: extractCollectionError(fieldStatus),
           },
         ];
       } else if (isFieldStatus(fieldStatus)) {
         if (fieldStatus.$error) {
-          return [fieldKey, extractRulesErrors(fieldStatus.$rules, fieldStatus.$externalErrors)];
+          return [
+            fieldKey,
+            extractRulesErrors({
+              field: fieldStatus,
+            }),
+          ];
         } else {
           return [fieldKey, fieldStatus.$externalErrors ?? []];
         }

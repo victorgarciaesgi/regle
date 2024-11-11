@@ -1,11 +1,7 @@
 import { defineConfig } from 'tsup';
+import { defaultOptions } from '../../tsup.common.build';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm'],
-  dts: {
-    resolve: true,
-  },
-  clean: true,
+  ...defaultOptions,
   external: ['vue', '@regle/core', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
 });

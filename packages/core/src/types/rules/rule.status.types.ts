@@ -2,6 +2,7 @@ import type { UnwrapNestedRefs } from 'vue';
 import type {
   AllRulesDeclarations,
   ExtractFromGetter,
+  InlineRuleDeclaration,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleFormPropertyType,
@@ -74,10 +75,19 @@ export interface RegleFieldStatus<
 > extends RegleCommonStatus<TState> {
   $value: UnwrapNestedRefs<TState[TKey]>;
   readonly $externalErrors?: string[];
+  readonly $errors: string[];
+  readonly $silentErrors: string[];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
-      TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams> ? TParams : []
+      TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
+      TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
+        ? TMetadata
+        : TRules[TRuleKey] extends InlineRuleDeclaration<any, infer TMetadata>
+          ? TMetadata extends Promise<infer P>
+            ? P
+            : TMetadata
+          : never
     >;
   };
 }
@@ -90,6 +100,8 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
   $rules: Record<string, $InternalRegleRuleStatus>;
   $externalErrors?: string[];
+  $errors: string[];
+  $silentErrors: string[];
 }
 
 /**
@@ -102,7 +114,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
-  $id?: number;
+  $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;
@@ -115,13 +127,18 @@ export interface RegleCommonStatus<TValue = any> {
 /**
  * @public
  */
-export type RegleRuleStatus<TValue = any, TParams extends any[] = any[]> = {
+export type RegleRuleStatus<
+  TValue = any,
+  TParams extends any[] = any[],
+  TMetadata extends RegleRuleMetadataDefinition = never,
+> = {
   readonly $type: string;
   readonly $message: string | string[];
   readonly $active: boolean;
   readonly $valid: boolean;
   readonly $pending: boolean;
   readonly $path: string;
+  readonly $metadata: TMetadata;
   $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;
   $validate(): Promise<boolean>;
   $reset(): void;
@@ -144,6 +161,7 @@ export interface $InternalRegleRuleStatus {
   $path: string;
   $externalErrors?: string[];
   $params?: any[];
+  $metadata: any;
   $validator(
     value: any,
     ...args: any[]
@@ -171,6 +189,7 @@ export interface RegleCollectionStatus<
 export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
   $each: Array<$InternalRegleStatusType>;
   $rules?: Record<string, $InternalRegleRuleStatus>;
+  $externalErrors?: string[];
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;

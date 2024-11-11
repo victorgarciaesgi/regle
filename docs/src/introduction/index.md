@@ -5,7 +5,7 @@ Regle (French word for "rule") is a Typescript first form validation library mad
 I'm a lover and long-time user of Vuelidate API, so Regle's is be greatly inspired by it.
 
 Regle is about bringing type safety and great DX to simple or complex Form.
-It's all data-based and headless, so the UI output will be up to you.
+It's all data-based and headless, the validation matches the data structure so can seperate UI and validations.
 
 Declare your form rules inside a component or a Pinia stores and use it wherever you like.
 

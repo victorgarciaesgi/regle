@@ -35,7 +35,6 @@ export function createReactiveRuleStatus({
   state,
   path,
   storage,
-  options,
 }: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
@@ -82,30 +81,28 @@ export function createReactiveRuleStatus({
 
       const $message = computed<string | string[]>(() => {
         let message: string | string[] = '';
-        if ($dirty.value && !$validating.value) {
-          const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
+        const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
 
-          if (customMessageRule) {
-            if (typeof customMessageRule === 'function') {
-              message = customMessageRule(state.value, $defaultMetadata.value);
+        if (customMessageRule) {
+          if (typeof customMessageRule === 'function') {
+            message = customMessageRule(state.value, $defaultMetadata.value);
+          } else {
+            message = customMessageRule;
+          }
+        }
+        if (isFormRuleDefinition(rule)) {
+          if (!(customMessageRule && !rule.value._patched)) {
+            if (typeof rule.value.message === 'function') {
+              message = rule.value.message(state.value, $defaultMetadata.value);
             } else {
-              message = customMessageRule;
+              message = rule.value.message;
             }
           }
-          if (isFormRuleDefinition(rule)) {
-            if (!(customMessageRule && !rule.value._patched)) {
-              if (typeof rule.value.message === 'function') {
-                message = rule.value.message(state.value, $defaultMetadata.value);
-              } else {
-                message = rule.value.message;
-              }
-            }
-          }
+        }
 
-          if (isEmpty(message)) {
-            message = 'Error';
-            console.warn(`No error message defined for ${path}.${ruleKey}`);
-          }
+        if (isEmpty(message)) {
+          message = 'Error';
+          console.warn(`No error message defined for ${path}.${ruleKey}`);
         }
 
         return message;
@@ -196,9 +193,6 @@ export function createReactiveRuleStatus({
       }
     }
     $valid.value = ruleResult;
-    if (options.$externalErrors) {
-      // TODO
-    }
 
     $validating.value = false;
 
@@ -224,6 +218,7 @@ export function createReactiveRuleStatus({
     ...scopeState,
     $pending,
     $valid,
+    $metadata,
     $validate,
     $unwatch,
     $watch,

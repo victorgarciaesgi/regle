@@ -1,11 +1,7 @@
 import { defineConfig } from 'tsup';
+import { defaultOptions } from '../../tsup.common.build';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
-  dts: {
-    resolve: true,
-  },
-  clean: true,
+  ...defaultOptions,
   external: ['vue', 'zod'],
 });

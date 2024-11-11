@@ -39,7 +39,7 @@ describe('applyIf helper', () => {
   it('should be invalid when touching activating helper', async () => {
     vm.form.count = 1;
     await timeout(0);
-    expect(vm.errors.email).toStrictEqual(['Value is required']);
+    expect(vm.errors.email).toStrictEqual(['This field is required']);
     expect(vm.regle.$error).toBe(true);
   });
 

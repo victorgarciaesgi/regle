@@ -8,6 +8,7 @@ const Nav: DefaultTheme.NavItemWithLink[] = [
 
 const CoreConcepts: DefaultTheme.NavItemWithLink[] = [
   { text: 'useRegle', link: '/core-concepts/' },
+  { text: 'Common properties', link: '/core-concepts/common-properties' },
 ];
 
 export default defineConfig({

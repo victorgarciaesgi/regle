@@ -33,7 +33,6 @@ It's heavily inspired by Vuelidate.
 
 # What is not planned or reimplemented differently from Vuelidate
 
-- Validation groups
 - Nested component validation collection (not possible to infer types)
 
 
@@ -70,20 +69,21 @@ TODO
 - [x] "or" and "not" helper
 - [x] externalErrors
 - [x] Dates built-in validators
-- [x] Usable Metadata (change create Rule declaration?)
+- [x] Usable Metadata
 - [x] Zod support
 - [x] Per field validation option (lazy, debounce, etc...)
+- [x] Logo
+- [x] $silentErrors 
+- [ ] Validation groups
 - [ ] Unit tests (in progress)
 - [ ] E2E tests
 - [ ] Readme
-- [ ] TS docs
 - [ ] Documentation site (VitePress + Shikiji)
-- [ ] Logo
+- [ ] TS docs
 
 # Maybe in roadmap
 
-- [ ] Nested component collection (? need poll)
-- [ ] Typed plugin system ? (like scrollToError)
+- [ ] Typed plugin system (like scrollToError)
 
 # Quick start
 

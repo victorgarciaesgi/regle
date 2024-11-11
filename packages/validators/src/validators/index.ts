@@ -22,3 +22,4 @@ export * from './dateBefore';
 export * from './dateBetween';
 export * from './ipAddress';
 export * from './macAddress';
+export * from './checked';

@@ -7,11 +7,9 @@ title: useRegle
 
 `useRegle` is the center piece of all your forms. The composable will take a state and rules as input and return everything you need as an ouput.
 
-Let's see how to use it
-
+Let's see how to use it with the simplest case example
 
 ``` vue twoslash
-
 <script setup lang='ts'>
 import {useRegle} from '@regle/core';
 
@@ -22,7 +20,6 @@ const {regle, state, errors, invalid, validateForm, resetForm} = useRegle({name:
 })
 
 </script>
-
 ```
 
 In the returned helpers we have:
@@ -36,3 +33,22 @@ In the returned helpers we have:
 
 
 Let's deep dive in details what each property can do
+
+## `regle`
+
+Regle is a reactive object containing a bunch of computed properties and methods you can use freely depending on your need.
+
+Most of the time, you would only need the `errors` property, but for custom behaviours it's really useful
+
+``` ts twoslash
+// @noErrors
+import {useRegle} from '@regle/core';
+
+const {regle, state, errors, invalid, validateForm, resetForm} = useRegle({name: ''}, {
+  name: {
+    // options
+  }
+})
+```
+
+You can find a complete description of the properties in the [properties section](/core-concepts/common-properties)

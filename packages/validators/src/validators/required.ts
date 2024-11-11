@@ -7,5 +7,5 @@ export const required: RegleRuleDefinition<unknown, [], false, boolean, unknown>
   validator: (value) => {
     return ruleHelpers.isFilled(typeof value === 'string' ? value.trim() : value);
   },
-  message: 'Value is required',
+  message: 'This field is required',
 });

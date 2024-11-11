@@ -21,11 +21,14 @@ hero:
       link: /examples
 
 features:
-  - title: ✅ Type Safe
+  - icon: ✅
+    title: Type Safe
     details: All types are inferred, providing a pleasant developer experience.
-  - title: 📕 Model based
+  - icon: 📕
+    title:  Model based
     details: You can focus on your validations, not on your DOM.
-  - title: 🪶 Light
+  - icon: 🪶
+    title: Light
     details: 0 dependencies, ~6kb size, only the necessary.
 ---
 

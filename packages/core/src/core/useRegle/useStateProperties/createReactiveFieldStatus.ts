@@ -13,6 +13,7 @@ import type {
 import { debounce, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { extractRulesErrors } from '../useErrors';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -27,6 +28,8 @@ interface CreateReactiveFieldStatusArgs {
 
 type ScopeReturnState = {
   $error: ComputedRef<boolean>;
+  $errors: ComputedRef<string[]>;
+  $silentErrors: ComputedRef<string[]>;
   $pending: ComputedRef<boolean>;
   $invalid: ComputedRef<boolean>;
   $valid: ComputedRef<boolean>;
@@ -174,6 +177,27 @@ export function createReactiveFieldStatus({
         return $invalid.value && !$pending.value && $dirty.value;
       });
 
+      const $errors = computed<string[]>(() => {
+        return extractRulesErrors({
+          field: {
+            $dirty: $dirty.value,
+            $externalErrors: $externalErrors.value,
+            $rules: $rules.value,
+          },
+        });
+      });
+
+      const $silentErrors = computed<string[]>(() => {
+        return extractRulesErrors({
+          field: {
+            $dirty: $dirty.value,
+            $externalErrors: $externalErrors.value,
+            $rules: $rules.value,
+          },
+          silent: true,
+        });
+      });
+
       const $pending = computed<boolean>(() => {
         if (triggerPunishment.value || !$rewardEarly.value) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
@@ -219,6 +243,8 @@ export function createReactiveFieldStatus({
         $valid,
         $debounce,
         $lazy,
+        $errors,
+        $silentErrors,
         $rewardEarly,
         $autoDirty,
         $anyDirty,
@@ -322,6 +348,8 @@ export function createReactiveFieldStatus({
     $error: scopeState.$error,
     $pending: scopeState.$pending,
     $valid: scopeState.$valid,
+    $errors: scopeState.$errors,
+    $silentErrors: scopeState.$silentErrors,
     $externalErrors,
     $value: state,
     $rules: $rules,

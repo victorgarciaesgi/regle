@@ -107,7 +107,14 @@
 
 <script setup lang="ts">
 import { RegleExternalErrorTree } from '@regle/core';
-import { minLength, numeric, required, requiredIf, withMessage } from '@regle/validators';
+import {
+  minLength,
+  numeric,
+  required,
+  requiredIf,
+  withMessage,
+  withParams,
+} from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
 import { timeout, useRegle } from './../validations';
 
@@ -126,8 +133,16 @@ async function submit() {
   console.log(result);
 }
 
-const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, {
-  // name: { required },
+const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, () => ({
+  name: {
+    required: withParams(
+      (value) => {
+        console.log(value);
+        return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
+      },
+      [() => form.array2[0].name]
+    ),
+  },
   // array0: { $each: { numeric: numeric } },
   // nested: {
   //   array1: { $each: { minLength: minLength(2) } },
@@ -135,11 +150,16 @@ const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form
   array2: {
     $each: (value) => {
       return {
-        name: { required: requiredIf(() => value.deleted) },
+        name: {
+          required: requiredIf(value.deleted),
+          valid: () => ({ $valid: value.deleted, foo: value.deleted }),
+        },
       };
     },
   },
-});
+}));
+
+regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 
 // form.nested.array1 = ['b'];
 // nextTick(async () => {

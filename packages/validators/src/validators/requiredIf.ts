@@ -15,7 +15,7 @@ export const requiredIf: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: 'Value is required',
+  message: 'This field is required',
   active(_, { $params: [condition] }) {
     return condition;
   },

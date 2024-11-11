@@ -81,7 +81,7 @@ function createCollectionElement({
   if ($status) {
     const valueId = value[index]?.$id;
     $status.$id = valueId ?? $fieldId;
-    storage.addArrayStatus($id, index, $status);
+    storage.addArrayStatus($id, index.toString(), $status);
   }
 
   return $status;
@@ -272,7 +272,7 @@ export function createReactiveCollectionStatus({
           if (typeof key === 'symbol') return true;
           if (!isNaN(parseInt(key))) {
             $eachStatus.value.splice(parseInt(key), 1);
-            storage.deleteArrayStatus($id.value, parseInt(key));
+            storage.deleteArrayStatus($id.value, key);
           }
           return result;
         },
