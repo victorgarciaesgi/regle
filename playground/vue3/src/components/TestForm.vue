@@ -169,6 +169,8 @@ const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(
   }
 );
 
+regle.$fields.name.$silentErrors;
+
 // regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 
 // form.nested.array1 = ['b'];

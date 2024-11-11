@@ -1,5 +1,8 @@
-# Regle
+<p align="center">
+  <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png" alt="regle cover">
+</p>
 
+# Regle
 
 
 Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript first model-based validation library for Vue 3.

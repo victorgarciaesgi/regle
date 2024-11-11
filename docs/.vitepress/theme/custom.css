@@ -18,7 +18,11 @@ html.dark {
 
 
 .VPHomeFeatures {
-  margin-top: 100px;
+  /* margin-top: 100px; */
+}
+
+.VPFeature .icon {
+  padding: 10px;
 }
 
 .demo-container {
@@ -52,3 +56,20 @@ html.dark {
   background-color: var(--vp-c-gray-2);
 }
 
+
+/* Two slashs */
+
+
+.twoslash-completion-list .twoslash-completions-icon.completions-property {
+  color: #bd976a !important;
+}
+.twoslash-completion-list .twoslash-completions-icon.completions-property + span .twoslash-completions-unmatched {
+  color: #bd976a !important;
+}
+
+.twoslash-completion-list .twoslash-completions-icon.completions-method {
+  color: #80a665 !important;
+}
+.twoslash-completion-list .twoslash-completions-icon.completions-method + span .twoslash-completions-unmatched {
+  color: #80a665 !important;
+}

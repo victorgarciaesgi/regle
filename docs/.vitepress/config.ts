@@ -1,4 +1,5 @@
-import { DefaultTheme, defineConfig } from 'vitepress';
+import type { DefaultTheme } from 'vitepress';
+import { defineConfig } from 'vitepress';
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash';
 
 const Nav: DefaultTheme.NavItemWithLink[] = [
@@ -40,7 +41,7 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],
   },
   markdown: {
-    codeTransformers: [transformerTwoslash()],
+    codeTransformers: [transformerTwoslash({})],
     theme: 'vitesse-dark',
   },
   srcDir: './src',
