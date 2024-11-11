@@ -1,6 +1,7 @@
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   AllRulesDeclarations,
+  ExtractFromGetter,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleFormPropertyType,
@@ -9,7 +10,6 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
 } from '..';
-import { EmptyObject } from 'type-fest';
 
 /**
  * @public
@@ -42,7 +42,9 @@ export type InferRegleStatusType<
 > =
   TRule extends RegleCollectionRuleDefinition<any, any>
     ? NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
-      ? RegleCollectionStatus<TRule['$each'], TState[TKey]>
+      ? ExtractFromGetter<TRule['$each']> extends RegleRuleDecl | ReglePartialValidationTree<any>
+        ? RegleCollectionStatus<ExtractFromGetter<TRule['$each']>, TState[TKey]>
+        : never
       : RegleFieldStatus<TRule, TState, TKey>
     : TRule extends ReglePartialValidationTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>

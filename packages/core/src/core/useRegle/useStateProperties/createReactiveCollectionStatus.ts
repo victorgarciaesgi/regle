@@ -11,10 +11,11 @@ import type {
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
   DeepMaybeRef,
+  MaybeGetter,
   RegleBehaviourOptions,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { isObject } from '../../../utils';
+import { isObject, unwrapGetter } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
 import {
@@ -45,7 +46,7 @@ function createCollectionElement({
   customMessages?: CustomRulesDeclarationTree;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  rules: $InternalFormPropertyTypes;
+  rules: MaybeGetter<$InternalFormPropertyTypes, any>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $fieldId = randomId();
@@ -103,7 +104,7 @@ function updateCollectionElement({
   customMessages?: CustomRulesDeclarationTree;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  rules: $InternalFormPropertyTypes;
+  rules: MaybeGetter<$InternalFormPropertyTypes, any>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $state = toRefs(value);

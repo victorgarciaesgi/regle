@@ -1,5 +1,5 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, EffectScope, Ref } from 'vue';
+import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
 import {
   effectScope,
   onScopeDispose,
@@ -19,12 +19,13 @@ import type {
   $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
+  MaybeGetter,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import type { DeepMaybeRef } from '../../../types';
-import { isRefObject } from '../../../utils';
+import { isRefObject, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
@@ -32,7 +33,7 @@ import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 
 interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialValidationTree>;
-  scopeRules: Ref<$InternalReglePartialValidationTree>;
+  scopeRules: Ref<MaybeGetter<$InternalReglePartialValidationTree>>;
   state: Ref<Record<string, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path?: string;
@@ -61,13 +62,16 @@ export function createReactiveNestedStatus({
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
-  let $unwatchFields: (() => void) | undefined;
+  let $unwatchFields: WatchStopHandle;
+  let $unwatchState: WatchStopHandle;
 
   function createReactiveFieldsStatus(watch = true) {
     $fields.value = null as any;
     triggerRef($fields);
+
+    const unwrappedScopedRules = unwrapGetter(scopeRules.value, state.value);
     const scopedRulesStatus = Object.fromEntries(
-      Object.entries(scopeRules.value)
+      Object.entries(unwrappedScopedRules)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
@@ -95,7 +99,7 @@ export function createReactiveNestedStatus({
 
     const externalRulesStatus = Object.fromEntries(
       Object.entries(unref(externalErrors) ?? {})
-        .filter(([key]) => !(key in scopeRules.value))
+        .filter(([key]) => !(key in unwrappedScopedRules))
         .map(([key, errors]) => {
           if (errors) {
             const statePropRulesRef = toRef(() => ({}));
@@ -170,6 +174,16 @@ export function createReactiveNestedStatus({
         { deep: true, flush: 'post' }
       );
     }
+    if (scopeRules.value instanceof Function) {
+      $unwatchState = watch(
+        state,
+        () => {
+          $unwatch();
+          createReactiveFieldsStatus();
+        },
+        { deep: true, flush: 'post' }
+      );
+    }
     scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
@@ -221,9 +235,8 @@ export function createReactiveNestedStatus({
         field.$unwatch();
       });
     }
-    if ($unwatchFields) {
-      $unwatchFields();
-    }
+    $unwatchFields?.();
+    $unwatchState?.();
   }
 
   function $clearExternalErrors() {
@@ -247,12 +260,13 @@ export function createReactiveNestedStatus({
 
 interface CreateReactiveChildrenStatus {
   state: Ref<unknown>;
-  rulesDef: Ref<$InternalFormPropertyTypes>;
+  rulesDef: Ref<MaybeGetter<$InternalFormPropertyTypes, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
+  onUnwatch?: () => void;
 }
 
 export function createReactiveChildrenStatus({
@@ -263,8 +277,9 @@ export function createReactiveChildrenStatus({
   storage,
   options,
   externalErrors,
+  onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
-  if (isCollectionRulesDef(rulesDef)) {
+  if (isCollectionRulesDef(rulesDef, state)) {
     return createReactiveCollectionStatus({
       state,
       rulesDef,
@@ -293,6 +308,7 @@ export function createReactiveChildrenStatus({
       storage,
       options,
       externalErrors: externalErrors as Ref<string[] | undefined>,
+      onUnwatch,
     });
   }
 

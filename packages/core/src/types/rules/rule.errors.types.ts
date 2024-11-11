@@ -1,10 +1,10 @@
-import { ArrayElement, NonPresentKeys } from '../utils';
+import { ArrayElement, ExtractFromGetter, NonPresentKeys } from '../utils';
 import type {
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
 } from './rule.declaration.types';
-import type { RegleCollectionRuleDefinition, RegleRuleDefinition } from './rule.definition.type';
+import { RegleCollectionRuleDefinition } from './rule.definition.type';
 
 export type RegleErrorTree<
   TRules extends ReglePartialValidationTree<any, any>,
@@ -25,7 +25,7 @@ export type RegleValidationErrors<
   TExternalError extends RegleExternalValidationErrors<any> | undefined = never,
 > = TRule extends RegleCollectionRuleDefinition
   ? RegleCollectionErrors<
-      TRule['$each'],
+      ExtractFromGetter<TRule['$each']>,
       TExternalError extends RegleExternalCollectionErrors
         ? ArrayElement<TExternalError['$each']>
         : never

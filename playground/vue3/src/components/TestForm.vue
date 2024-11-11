@@ -59,7 +59,12 @@
 
     <button type="submit" @click="form.nested.array1?.push('')">Add entry</button>
     <button type="submit" @click="form.nested.array1?.splice(0, 1)">Remove first</button> -->
-    <br />
+    <input v-model="state.name" placeholder="name" />
+
+    <ul>
+      <li v-for="error of errors.name" :key="error">{{ error }}</li>
+    </ul>
+    <!-- <br />
     <template :key="index" v-for="(input, index) of form.array0">
       <input v-model="form.array0[index]" placeholder="name" />
       <ul>
@@ -68,20 +73,23 @@
     </template>
 
     <button type="submit" @click="form.array0?.push(null)">Add entry</button>
-    <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button>
+    <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button> -->
 
-    <!-- <template :key="index" v-for="(input, index) of form.array2">
+    <template :key="index" v-for="(input, index) of form.array2">
       <input v-model="form.array2[index].name" placeholder="name" />
+      <input type="checkbox" v-model="form.array2[index].deleted" />
       <ul>
         <li :key="index2" v-for="(error, index2) of errors.array2.$each[index].name">{{
           error
         }}</li>
       </ul>
-    </template> -->
+    </template>
 
-    <!-- <button type="submit" @click="form.array2?.push({ name: '' })">Add entry</button>
+    <button type="submit" @click="form.array2?.push({ name: '', deleted: false })"
+      >Add entry</button
+    >
     <button type="submit" @click="form.array2 = form.array2.filter((f) => f.name.length > 2)"
-      >Remove first</button -->
+      >Remove first</button
     >
 
     <button type="submit" @click="resetForm">reset</button>
@@ -89,7 +97,7 @@
 
     <pre>
         <code>
-{{ errors }}
+ <!-- {{ errors }} -->
 {{ regle }}
         
       </code>
@@ -99,18 +107,17 @@
 
 <script setup lang="ts">
 import { RegleExternalErrorTree } from '@regle/core';
-import { minLength, numeric, required, withMessage } from '@regle/validators';
+import { minLength, numeric, required, requiredIf, withMessage } from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
 import { timeout, useRegle } from './../validations';
-import { withAsync } from '@regle/validators';
-import { maxLength } from '@regle/validators';
 
 const form = reactive({
-  array0: [null] as (number | null)[],
-  nested: {
-    array1: null as string[] | null,
-  },
-  // array2: [{ name: '' }],
+  name: '',
+  // array0: [null] as (number | null)[],
+  // nested: {
+  //   array1: null as string[] | null,
+  // },
+  array2: [{ name: '', deleted: false }],
 });
 
 async function submit() {
@@ -119,22 +126,29 @@ async function submit() {
   console.log(result);
 }
 
-const { errors, validateForm, regle, resetForm, invalid } = useRegle(form, () => ({
-  array0: { $each: { numeric: numeric } },
-  nested: {
-    array1: { $each: { minLength: minLength(2) } },
+const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, {
+  // name: { required },
+  // array0: { $each: { numeric: numeric } },
+  // nested: {
+  //   array1: { $each: { minLength: minLength(2) } },
+  // },
+  array2: {
+    $each: (value) => {
+      return {
+        name: { required: requiredIf(() => value.deleted) },
+      };
+    },
   },
-  // array2: { $each: { name: { required } } },
-}));
-
-form.nested.array1 = ['b'];
-nextTick(async () => {
-  regle.$fields.nested.$fields.array1.$each[0].$touch();
-
-  const result = await validateForm();
-  if (result) {
-    // TODO bug never
-    result.nested.array1;
-  }
 });
+
+// form.nested.array1 = ['b'];
+// nextTick(async () => {
+//   regle.$fields.nested.$fields.array1.$each[0].$touch();
+
+//   const result = await validateForm();
+//   if (result) {
+//     // TODO bug never
+//     result.nested.array1;
+//   }
+// });
 </script>

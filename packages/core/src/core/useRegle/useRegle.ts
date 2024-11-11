@@ -16,7 +16,7 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type { DeepMaybeRef } from '../../types/utils';
-import { isObject } from '../../utils';
+import { cloneDeep, isObject } from '../../utils';
 import { useStateProperties } from './useStateProperties';
 
 export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
@@ -40,7 +40,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       ? true
       : false,
   >(
-    state: Ref<TState> | DeepReactiveState<TState>,
+    state: MaybeRef<TState> | DeepReactiveState<TState>,
     rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<TState, TExternal>
@@ -60,7 +60,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
     const processedState = isRef(state) ? state : (ref(state) as Ref<TState>);
 
-    const initialState = structuredClone(toRaw(processedState.value));
+    const initialState = cloneDeep(toRaw(processedState.value));
 
     const { regle, errors } = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
@@ -121,6 +121,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       resetForm,
       validateForm,
       invalid,
+      state: processedState,
     };
   }
 

@@ -34,7 +34,8 @@ export function createReactiveParams<TParams extends any[]>(params: ParamDecl[])
  */
 export function getFunctionParametersLength(func: Function): number {
   const funcStr = func.toString();
-  const params = funcStr
+  const isArrowFunction = funcStr.includes('=>');
+  const params = (isArrowFunction ? funcStr.split('=>')[0] : funcStr)
     .slice(funcStr.indexOf('(') + 1, funcStr.indexOf(')'))
     .split(',')
     .map((param) => param.trim());

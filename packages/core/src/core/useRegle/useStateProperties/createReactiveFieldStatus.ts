@@ -1,26 +1,28 @@
-import type { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
 import type {
-  $InternalFormPropertyTypes,
   $InternalRegleFieldStatus,
+  $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
+  MaybeGetter,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce } from '../../../utils';
+import { debounce, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
-  rulesDef: Ref<$InternalFormPropertyTypes>;
+  rulesDef: Ref<$InternalRegleRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<string[] | undefined>>;
+  onUnwatch?: () => void;
 }
 
 type ScopeReturnState = {
@@ -43,6 +45,7 @@ export function createReactiveFieldStatus({
   storage,
   options,
   externalErrors,
+  onUnwatch,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
@@ -53,10 +56,10 @@ export function createReactiveFieldStatus({
 
   const $externalErrors = ref<string[] | undefined>([]);
 
-  let $unwatchState: () => void;
-  let $unwatchValid: () => void;
-  let $unwatchExternalErrors: () => void;
-  let $unwatchDirty: () => void;
+  let $unwatchState: WatchStopHandle;
+  let $unwatchValid: WatchStopHandle;
+  let $unwatchExternalErrors: WatchStopHandle;
+  let $unwatchDirty: WatchStopHandle;
 
   let $commit = () => {};
 
@@ -73,8 +76,10 @@ export function createReactiveFieldStatus({
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
     );
 
+    const unwrappedRule = unwrapGetter(rulesDef.value, state.value);
+
     $rules.value = Object.fromEntries(
-      Object.entries(rulesDef.value)
+      Object.entries(unwrappedRule)
         .filter(([ruleKey]) => !ruleKey.startsWith('$'))
         .map(([ruleKey, rule]) => {
           if (rule) {
@@ -129,6 +134,7 @@ export function createReactiveFieldStatus({
     $unwatchExternalErrors();
     scope.stop();
     scope = effectScope();
+    onUnwatch?.();
   }
 
   function $watch() {
@@ -226,6 +232,9 @@ export function createReactiveFieldStatus({
           $dirty.value = true;
         }
       }
+      if (rulesDef.value instanceof Function) {
+        createReactiveRulesResult();
+      }
       if (!scopeState.$lazy.value) {
         $commit();
         if (!scopeState.$rewardEarly.value !== false) {
@@ -233,6 +242,7 @@ export function createReactiveFieldStatus({
         }
       }
     });
+
     $unwatchDirty = watch($dirty, () => {
       storage.setDirtyEntry(path, $dirty.value);
       $validate();

@@ -5,5 +5,5 @@ export default defineConfig({
   format: ['esm'],
   dts: false,
   clean: false,
-  external: ['vue', 'zod'],
+  external: ['vue', 'zod', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
 });

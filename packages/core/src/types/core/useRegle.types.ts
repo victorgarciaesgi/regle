@@ -1,5 +1,5 @@
 import type { EmptyObject } from 'type-fest';
-import type { ComputedRef, MaybeRef } from 'vue';
+import type { ComputedRef, MaybeRef, Ref } from 'vue';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDefinition,
@@ -11,6 +11,7 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
+import { ExtractFromGetter } from '../utils';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
@@ -25,6 +26,7 @@ export interface Regle<
   invalid: ComputedRef<boolean>;
   resetForm: () => void;
   validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;
+  state: Ref<TState>;
 }
 
 export type DeepReactiveState<T extends Record<string, any>> = {
@@ -53,7 +55,7 @@ export type SafeProperty<
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
 > = TRule extends RegleCollectionRuleDefinition
   ? TState extends Array<any>
-    ? SafeProperty<TState[number], TRule['$each']>[]
+    ? SafeProperty<TState[number], ExtractFromGetter<TRule['$each']>>[]
     : never
   : TRule extends ReglePartialValidationTree<any, any>
     ? TState extends Record<string, any>

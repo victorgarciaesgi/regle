@@ -1,8 +1,6 @@
 import type { MaybeRef, Ref } from 'vue';
-import { UnwrapRef } from 'vue';
 import type { FieldRegleBehaviourOptions, Regle } from '../../types/core';
-import type { ArrayElement, Maybe } from '../utils';
-import { PrimitiveTypes } from '../utils';
+import type { ArrayElement, Maybe, MaybeGetter } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
@@ -122,19 +120,24 @@ export type RegleCollectionRuleDecl<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-      $each?: RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>;
+      $each?: MaybeGetter<
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        ArrayElement<TValue>
+      >;
     })
   | {
-      $each?: RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>;
+      $each?: MaybeGetter<
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        ArrayElement<TValue>
+      >;
     };
 
 /**
  * @internal
  * @reference {@link RegleCollectionRuleDecl}
- *
  */
 export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
-  $each?: $InternalFormPropertyTypes;
+  $each?: MaybeGetter<$InternalFormPropertyTypes, any>;
 };
 
 /**

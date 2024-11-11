@@ -4,7 +4,6 @@ export {
   RegleBehaviourOptions,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,
-  RegleCollectionRuleDefinition,
   RegleCollectionStatus,
   RegleCommonStatus,
   RegleErrorTree,

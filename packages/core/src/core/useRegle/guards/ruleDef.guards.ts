@@ -5,31 +5,35 @@ import type {
   $InternalReglePartialValidationTree,
   $InternalRegleRuleDecl,
   InlineRuleDeclaration,
+  MaybeGetter,
   RegleRuleDefinition,
 } from '../../../types';
-import { isObject } from '../../../utils';
+import { isObject, unwrapGetter } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,
-  rule: Ref<$InternalFormPropertyTypes>
-): rule is Ref<$InternalReglePartialValidationTree> {
+  rules: Ref<MaybeGetter<$InternalFormPropertyTypes>>
+): rules is Ref<$InternalReglePartialValidationTree> {
+  const unwrappedRules = unwrapGetter(rules.value, state.value);
   return (
     isObject(state.value) &&
-    isObject(rule.value) &&
-    !Object.entries(rule.value).some((rule) => isRuleDef(rule))
+    isObject(unwrappedRules) &&
+    !Object.entries(unwrappedRules).some((rule) => isRuleDef(rule))
   );
 }
 
 export function isCollectionRulesDef(
-  rule: Ref<$InternalFormPropertyTypes>
-): rule is Ref<$InternalRegleCollectionRuleDecl> {
-  return !!rule.value && '$each' in rule.value;
+  rules: Ref<MaybeGetter<$InternalFormPropertyTypes, any>>,
+  state: Ref<unknown>
+): rules is Ref<$InternalRegleCollectionRuleDecl> {
+  const unwrappedRules = unwrapGetter(rules.value, state.value);
+  return !!unwrappedRules && '$each' in unwrappedRules;
 }
 
 export function isValidatorRulesDef(
-  rule: Ref<$InternalFormPropertyTypes>
-): rule is Ref<$InternalRegleRuleDecl> {
-  return !!rule.value && isObject(rule.value);
+  rules: Ref<MaybeGetter<$InternalFormPropertyTypes>>
+): rules is Ref<$InternalRegleRuleDecl> {
+  return !!rules && isObject(rules.value);
 }
 
 export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any> {

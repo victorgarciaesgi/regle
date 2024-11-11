@@ -8,7 +8,7 @@ import type {
   RegleFormPropertyType,
   RegleRuleDecl,
 } from '.';
-import type { ArrayElement, ExcludeByType, Maybe } from '../utils';
+import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 
 /**
  * Returned typed of rules created with `createRule`
@@ -153,8 +153,14 @@ export type RegleCollectionRuleDefinition<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-      $each: RegleFormPropertyType<ArrayElement<TValue>, TCustomRules>;
+      $each: MaybeGetter<
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        ArrayElement<TValue>
+      >;
     })
   | {
-      $each: RegleFormPropertyType<ArrayElement<TValue>, TCustomRules>;
+      $each: MaybeGetter<
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        ArrayElement<TValue>
+      >;
     };

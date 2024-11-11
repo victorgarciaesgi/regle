@@ -15,7 +15,7 @@
     "release": "nr build && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev",
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs --port 6001",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
