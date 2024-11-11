@@ -28,6 +28,7 @@ export function useStateProperties(
       storage,
       options,
       externalErrors,
+      validationGroups: options.validationGroups,
     })
   );
 

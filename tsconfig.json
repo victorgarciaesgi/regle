@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "DOM"],
+    "lib": [
+      "esnext",
+      "DOM"
+    ],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -14,11 +17,16 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "composite": true,
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
-    "types": ["vitest/globals"]
+    "types": [
+      "vitest/globals"
+    ]
   },
-  "include": ["./packages/**/*", "./tests/**/*"]
+  "include": [
+    "./packages/**/*",
+    "./tests/**/*"
+  ]
 }

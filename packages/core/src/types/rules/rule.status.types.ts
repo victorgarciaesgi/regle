@@ -10,19 +10,28 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
+  RegleValidationGroupEntry,
+  RegleValidationGroupOutput,
 } from '..';
 
 /**
  * @public
  */
-export interface RegleStatus<
+export type RegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
-> extends RegleCommonStatus<TState> {
+  TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
+> = RegleCommonStatus<TState> & {
   readonly $fields: {
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
-}
+} & ([TValidationGroups] extends [never]
+    ? object
+    : {
+        $groups: {
+          readonly [TKey in keyof TValidationGroups]: RegleValidationGroupOutput;
+        };
+      });
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -143,7 +152,7 @@ export type RegleRuleStatus<
   $validate(): Promise<boolean>;
   $reset(): void;
 } & ([TParams] extends [[]]
-  ? {}
+  ? object
   : {
       readonly $params: TParams;
     });

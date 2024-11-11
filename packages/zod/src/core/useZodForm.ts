@@ -3,6 +3,7 @@ import type {
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
+  RegleFieldStatus,
   ReglePartialValidationTree,
 } from '@regle/core';
 import { useRegle } from '@regle/core';
@@ -19,7 +20,7 @@ export function useZodForm<
   state: Ref<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TZodSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<TState, TExternal>
+    LocalRegleBehaviourOptions<TState, {}, TExternal, never>
 ): ZodRegle<TState, TZodSchema> {
   const rules = ref<ReglePartialValidationTree<any, any>>({});
 

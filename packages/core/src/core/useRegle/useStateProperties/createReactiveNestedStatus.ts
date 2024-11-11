@@ -1,30 +1,22 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
-import {
-  effectScope,
-  onScopeDispose,
-  reactive,
-  toRef,
-  triggerRef,
-  watch,
-  computed,
-  unref,
-  ref,
-} from 'vue';
-import type {
-  $InternalExternalRegleErrors,
-  $InternalFormPropertyTypes,
-  $InternalRegleErrors,
-  $InternalReglePartialValidationTree,
-  $InternalRegleStatus,
-  $InternalRegleStatusType,
-  CustomRulesDeclarationTree,
-  MaybeGetter,
-  RegleBehaviourOptions,
-  RegleExternalErrorTree,
-  ResolvedRegleBehaviourOptions,
-} from '../../../types';
+import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
 import type { DeepMaybeRef } from '../../../types';
+import {
+  mergeArrayGroupProperties,
+  mergeBooleanGroupProperties,
+  type $InternalExternalRegleErrors,
+  type $InternalFormPropertyTypes,
+  type $InternalReglePartialValidationTree,
+  type $InternalRegleStatus,
+  type $InternalRegleStatusType,
+  type CustomRulesDeclarationTree,
+  type MaybeGetter,
+  type RegleBehaviourOptions,
+  type RegleExternalErrorTree,
+  type RegleValidationGroupEntry,
+  type ResolvedRegleBehaviourOptions,
+} from '../../../types';
 import { isRefObject, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
@@ -40,6 +32,11 @@ interface CreateReactiveNestedStatus {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
+  validationGroups?:
+    | ((rules: {
+        [x: string]: $InternalRegleStatusType;
+      }) => Record<string, RegleValidationGroupEntry[]>)
+    | undefined;
 }
 
 export function createReactiveNestedStatus({
@@ -51,6 +48,7 @@ export function createReactiveNestedStatus({
   storage,
   options,
   externalErrors,
+  validationGroups,
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -64,9 +62,10 @@ export function createReactiveNestedStatus({
   let scopeState!: ScopeState;
   let $unwatchFields: WatchStopHandle;
   let $unwatchState: WatchStopHandle;
+  let $unwatchGroups: WatchStopHandle;
 
   function createReactiveFieldsStatus(watch = true) {
-    $fields.value = null as any;
+    $fields.value = null!;
     triggerRef($fields);
 
     const unwrappedScopedRules = unwrapGetter(scopeRules.value, state.value);
@@ -121,7 +120,40 @@ export function createReactiveNestedStatus({
         })
     );
 
-    $fields.value = { ...scopedRulesStatus, ...externalRulesStatus };
+    const groups = Object.fromEntries(
+      Object.entries(validationGroups?.(scopedRulesStatus) ?? {}).map(([key, entries]) => {
+        if (entries.length) {
+          return [
+            key,
+            {
+              ...Object.fromEntries(
+                (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map(
+                  (property) => [
+                    property,
+                    mergeBooleanGroupProperties(
+                      toRef(() => entries),
+                      property
+                    ),
+                  ]
+                )
+              ),
+              ...Object.fromEntries(
+                (['$errors', '$silentErrors'] as const).map((property) => [
+                  property,
+                  mergeArrayGroupProperties(
+                    toRef(() => entries),
+                    property
+                  ),
+                ])
+              ),
+            },
+          ];
+        }
+        return [];
+      })
+    );
+
+    $fields.value = { ...scopedRulesStatus, ...externalRulesStatus, ...groups };
     if (watch) {
       $watch();
     }
@@ -184,6 +216,7 @@ export function createReactiveNestedStatus({
         { deep: true, flush: 'post' }
       );
     }
+
     scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
@@ -237,6 +270,7 @@ export function createReactiveNestedStatus({
     }
     $unwatchFields?.();
     $unwatchState?.();
+    $unwatchGroups?.();
   }
 
   function $clearExternalErrors() {

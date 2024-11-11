@@ -11,14 +11,16 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import { ExtractFromGetter } from '../utils';
+import type { ExtractFromGetter } from '../utils';
+import type { RegleValidationGroupEntry } from './options.types';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
   TExternal extends RegleExternalErrorTree<TState> = never,
+  TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
 > {
-  regle: RegleStatus<TState, TRules>;
+  regle: RegleStatus<TState, TRules, TValidationGroups>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
    * It allow you to skip scouting the `regle` object
    */
@@ -37,7 +39,7 @@ export type DeepSafeFormState<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
 > = [unknown] extends [TState]
-  ? {}
+  ? object
   : {
       [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never] ? K : never]?: [
         SafeProperty<TState[K], TRules[K]>,

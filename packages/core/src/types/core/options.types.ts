@@ -1,7 +1,16 @@
 import type { RequiredDeep } from 'type-fest';
 import type { DeepMaybeRef } from '../../types/utils';
 import type { MaybeRef } from 'vue';
-import type { RegleExternalErrorTree } from '../../types/rules';
+import type {
+  AllRulesDeclarations,
+  CustomRulesDeclarationTree,
+  RegleCollectionStatus,
+  RegleExternalErrorTree,
+  RegleFieldStatus,
+  RegleFormPropertyType,
+  ReglePartialValidationTree,
+  RegleStatus,
+} from '../../types/rules';
 
 export interface RegleBehaviourOptions {
   /**
@@ -25,9 +34,26 @@ export interface RegleBehaviourOptions {
 
 export interface LocalRegleBehaviourOptions<
   TState extends Record<string, any>,
+  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
   TExternal extends RegleExternalErrorTree<TState>,
+  TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
 > {
   $externalErrors?: MaybeRef<TExternal>;
+  validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
+}
+
+export type RegleValidationGroupEntry =
+  | RegleFieldStatus<any, any, any>
+  | RegleCollectionStatus<any, any>;
+
+export interface RegleValidationGroupOutput {
+  $invalid: boolean;
+  $error: boolean;
+  $pending: boolean;
+  $dirty: boolean;
+  $valid: boolean;
+  $errors: string[];
+  $silentErrors: string[];
 }
 
 export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOptions> & {
@@ -35,7 +61,12 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
 };
 
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
-  LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>>;
+  LocalRegleBehaviourOptions<
+    Record<string, any>,
+    Record<string, any>,
+    Record<string, any>,
+    Record<string, any[]>
+  >;
 
 export type AddDollarToOptions<T extends Record<string, any>> = {
   [K in keyof T as `$${string & K}`]: T[K];

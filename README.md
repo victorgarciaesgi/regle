@@ -22,16 +22,17 @@ It's heavily inspired by Vuelidate.
 
 # Improvements from Vuelidate
 
-- 100% type safety
+- 100% type safety and autocompletion
 - [Zod](https://zod.dev/) support
 - Made for Vue 3 and composition API first 
-- Collection validation ($each is back without performance issues)
+- Collection validation (`$each` is back)
+- Typed validator metadata
 - Global config
 - Async rules with params
 - Per field options (debounce, lazy...)
 - Easier rule declaration
 
-# What is not planned or reimplemented differently from Vuelidate
+# What is not planned
 
 - Nested component validation collection (not possible to infer types)
 
@@ -47,11 +48,9 @@ TODO
 
 # Compatibility:
 
-- Vue 3
+- Vue 3.1+
 - Nuxt 3
 - Pinia
-
-
 
 
 # Roadmap
@@ -75,10 +74,11 @@ TODO
 - [x] Logo
 - [x] $silentErrors 
 - [ ] Validation groups
+- [ ] `Valibot` support
 - [ ] Unit tests (in progress)
 - [ ] E2E tests
-- [ ] Readme
-- [ ] Documentation site (VitePress + Shikiji)
+- [ ] Readme (in progress)
+- [ ] Documentation (in progress)
 - [ ] TS docs
 
 # Maybe in roadmap
@@ -94,9 +94,6 @@ yarn add @regle/core @regle/validators
 # or
 npm install @regle/core @regle/validators
 ```
-
-### [Installation for Zod](#usage-with-zod)
-
 
 
 ```vue

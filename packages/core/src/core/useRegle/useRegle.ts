@@ -9,10 +9,13 @@ import type {
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
+  RegleCollectionStatus,
   RegleErrorTree,
   RegleExternalErrorTree,
+  RegleFieldStatus,
   ReglePartialValidationTree,
   RegleStatus,
+  RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type { DeepMaybeRef } from '../../types/utils';
@@ -33,6 +36,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     TState extends Record<string, any>,
     TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
     TExternal extends RegleExternalErrorTree<TState>,
+    TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
     TValid = keyof TRules extends keyof ReglePartialValidationTree<
       TState,
       Partial<AllRulesDeclarations> & TCustomRules
@@ -43,8 +47,8 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<TState, TExternal>
-  ): Regle<TState, TRules, TExternal> {
+      LocalRegleBehaviourOptions<TState, TRules, TExternal, TValidationGroups>
+  ): Regle<TState, TRules, TExternal, TValidationGroups> {
     const scopeRules = isRef(rulesFactory)
       ? rulesFactory
       : computed(
@@ -116,7 +120,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     regle.$validate();
 
     return {
-      regle: regle as RegleStatus<TState, TRules>,
+      regle: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
       errors: errors as RegleErrorTree<TRules>,
       resetForm,
       validateForm,

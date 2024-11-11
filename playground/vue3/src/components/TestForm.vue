@@ -62,7 +62,9 @@
     <input v-model="state.name" placeholder="name" />
 
     <ul>
-      <li v-for="error of errors.name" :key="error">{{ error }}</li>
+      <li v-for="error of errors.name" :key="error">
+        {{ error }}
+      </li>
     </ul>
     <!-- <br />
     <template :key="index" v-for="(input, index) of form.array0">
@@ -75,25 +77,25 @@
     <button type="submit" @click="form.array0?.push(null)">Add entry</button>
     <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button> -->
 
-    <template :key="index" v-for="(input, index) of form.array2">
+    <template v-for="(input, index) of form.array2" :key="index">
       <input v-model="form.array2[index].name" placeholder="name" />
-      <input type="checkbox" v-model="form.array2[index].deleted" />
+      <input v-model="form.array2[index].deleted" type="checkbox" />
       <ul>
-        <li :key="index2" v-for="(error, index2) of errors.array2.$each[index].name">{{
-          error
-        }}</li>
+        <li v-for="(error, index2) of errors.array2.$each[index].name" :key="index2">
+          {{ error }}
+        </li>
       </ul>
     </template>
 
-    <button type="submit" @click="form.array2?.push({ name: '', deleted: false })"
-      >Add entry</button
-    >
-    <button type="submit" @click="form.array2 = form.array2.filter((f) => f.name.length > 2)"
-      >Remove first</button
-    >
+    <button type="submit" @click="form.array2?.push({ name: '', deleted: false })">
+      Add entry
+    </button>
+    <button type="submit" @click="form.array2 = form.array2.filter((f) => f.name.length > 2)">
+      Remove first
+    </button>
 
-    <button type="submit" @click="resetForm">reset</button>
-    <button type="submit" @click="submit">Submit</button>
+    <button type="submit" @click="resetForm"> reset </button>
+    <button type="submit" @click="submit"> Submit </button>
 
     <pre>
         <code>
@@ -106,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { RegleExternalErrorTree } from '@regle/core';
+import { RegleExternalErrorTree, RegleFieldStatus } from '@regle/core';
 import {
   minLength,
   numeric,
@@ -133,33 +135,41 @@ async function submit() {
   console.log(result);
 }
 
-const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, () => ({
-  name: {
-    required: withParams(
-      (value) => {
-        console.log(value);
-        return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
-      },
-      [() => form.array2[0].name]
-    ),
-  },
-  // array0: { $each: { numeric: numeric } },
-  // nested: {
-  //   array1: { $each: { minLength: minLength(2) } },
-  // },
-  array2: {
-    $each: (value) => {
-      return {
-        name: {
-          required: requiredIf(value.deleted),
-          valid: () => ({ $valid: value.deleted, foo: value.deleted }),
+const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(
+  form,
+  () => ({
+    name: {
+      required: withParams(
+        (value) => {
+          console.log(value);
+          return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
         },
-      };
+        [() => form.array2[0].name]
+      ),
     },
-  },
-}));
+    // array0: { $each: { numeric: numeric } },
+    // nested: {
+    //   array1: { $each: { minLength: minLength(2) } },
+    // },
+    array2: {
+      $each: (value) => {
+        return {
+          name: {
+            required: requiredIf(value.deleted),
+            valid: () => ({ $valid: value.deleted, foo: value.deleted }),
+          },
+        };
+      },
+    },
+  }),
+  {
+    validationGroups: (fields) => ({
+      group1: [fields.name, fields.array2],
+    }),
+  }
+);
 
-regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
+// regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 
 // form.nested.array1 = ['b'];
 // nextTick(async () => {
