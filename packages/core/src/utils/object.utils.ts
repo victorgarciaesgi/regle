@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { MaybeGetter } from '../types';
+import type { MaybeGetter } from '../types';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
   return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
@@ -13,7 +13,7 @@ export function cloneDeep(obj: { [x: string]: any }): {
   [x: string]: any;
 } {
   let result = obj;
-  var type = {}.toString.call(obj).slice(8, -1);
+  let type = {}.toString.call(obj).slice(8, -1);
   if (type == 'Set') {
     return new Set([...(obj as any)].map((value) => cloneDeep(value)));
   }
@@ -28,7 +28,7 @@ export function cloneDeep(obj: { [x: string]: any }): {
   }
   if (type == 'Array' || type == 'Object') {
     result = Array.isArray(obj) ? [] : {};
-    for (var key in obj) {
+    for (let key in obj) {
       // include prototype properties
       result[key] = cloneDeep(obj[key]);
     }
@@ -41,7 +41,7 @@ function getRegExpFlags(regExp: any) {
   if (typeof regExp.source.flags == 'string') {
     return regExp.source.flags;
   } else {
-    var flags = [];
+    let flags = [];
     regExp.global && flags.push('g');
     regExp.ignoreCase && flags.push('i');
     regExp.multiline && flags.push('m');

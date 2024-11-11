@@ -10,7 +10,6 @@ describe('withAsync helper', () => {
   const mountComponent = () => {
     return mount(
       defineComponent({
-        template: '<div>{{regle}}</div>',
         setup() {
           const form = ref({
             email: '',
@@ -34,6 +33,7 @@ describe('withAsync helper', () => {
 
           return { form, errors, validateForm, regle };
         },
+        template: '<div>{{regle}}</div>',
       })
     );
   };

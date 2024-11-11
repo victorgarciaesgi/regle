@@ -4,8 +4,8 @@
   "private": true,
   "description": "Typescript first model-based validation library for Vue 3",
   "scripts": {
-    "lint": "eslint --ext .ts --ext .vue .",
-    "lint:fix": "eslint --ext .ts --ext .vue . --fix",
+    "lint": "eslint packages/**",
+    "lint:fix": "eslint packages/** --fix",
     "typecheck": "pnpm run -r --parallel --filter='@regle/*' typecheck",
     "build": "pnpm run -r --filter='@regle/*' build",
     "build:local": "pnpm run -r --filter='@regle/*' build:local",

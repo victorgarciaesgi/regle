@@ -1,4 +1,5 @@
-import { RegleRuleDefinition, useRegle } from '@regle/core';
+import type { RegleRuleDefinition} from '@regle/core';
+import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';

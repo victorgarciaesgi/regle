@@ -1,4 +1,4 @@
-import { RegleRuleDefinition } from '@regle/core';
+import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../validators';
 import { and } from '../and';

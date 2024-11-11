@@ -1,3 +1,4 @@
+// eslint-disable-next-line vue/prefer-import-from-vue
 import { pauseTracking, resetTracking } from '@vue/reactivity';
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';

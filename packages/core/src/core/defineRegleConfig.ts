@@ -1,6 +1,5 @@
 import type { AllRulesDeclarations, RegleBehaviourOptions } from '../types';
 import { createUseRegleComposable } from './useRegle';
-import type { Ref, ComputedRef } from 'vue';
 
 /**
  * Root function that allows you to define project-wise all your custom validators or overwrite default ones

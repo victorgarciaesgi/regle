@@ -3,7 +3,7 @@ import prettierPlugin from 'eslint-config-prettier';
 import ts from 'typescript-eslint';
 
 export default [
-  ...ts.configs.recommended,
+  ts.configs.base,
   ...eslintPluginVue.configs['flat/recommended'],
   {
     files: ['**/*.ts', '*.vue', '**/*.vue'],
@@ -12,7 +12,7 @@ export default [
         parser: '@typescript-eslint/parser',
       },
     },
-    ignores: ['dist', 'node_modules'],
+    ignores: ['**/*.js', '**/*.d.ts', 'dist', 'node_modules'],
     rules: {
       semi: 'off',
       'prefer-const': 'off',
@@ -24,7 +24,7 @@ export default [
       'import/named': 'off',
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',
-      '@typescript-eslint/no-unused-vars': ['off'],
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
       '@typescript-eslint/no-explicit-any': 'off',
     },

@@ -1,10 +1,10 @@
-import { ArrayElement, ExtractFromGetter, NonPresentKeys } from '../utils';
+import type { ArrayElement, ExtractFromGetter, NonPresentKeys } from '../utils';
 import type {
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
 } from './rule.declaration.types';
-import { RegleCollectionRuleDefinition } from './rule.definition.type';
+import type { RegleCollectionRuleDefinition } from './rule.definition.type';
 
 export type RegleErrorTree<
   TRules extends ReglePartialValidationTree<any, any>,

@@ -1,4 +1,4 @@
-import { RegleRuleDefinition } from '@regle/core';
+import type { RegleRuleDefinition } from '@regle/core';
 import { minLength, required } from '../../validators';
 import { not } from '../not';
 

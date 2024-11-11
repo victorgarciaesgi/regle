@@ -1,4 +1,5 @@
-import { RegleRuleDefinition, useRegle } from '@regle/core';
+import type { RegleRuleDefinition} from '@regle/core';
+import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { Ref, defineComponent, ref } from 'vue';
 import { and } from '../../helpers/and';
