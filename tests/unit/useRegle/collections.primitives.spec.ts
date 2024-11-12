@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils';
 import { useRegle } from '@regle/core';
-import { required, withMessage } from '@regle/validators';
+import { required, withMessage } from '@regle/rules';
 import { ruleMockIsEven, ruleMockIsFoo } from '../../fixtures';
 import { createRegleComponent } from '../../utils/test.utils';
 import { nextTick, reactive, ref } from 'vue';

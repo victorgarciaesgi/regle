@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe } from '@regle/core';
+import type { Maybe, InlineRuleDeclaration } from '@regle/core';
 import {
   createRule,
   defineType,
@@ -116,30 +116,41 @@ import {
   RegleFieldStatus,
   useRegle,
 } from '@regle/core';
-import {
-  minLength,
-  numeric,
-  required,
-  requiredIf,
-  withMessage,
-  withParams,
-} from '@regle/validators';
+import { minLength, numeric, required, requiredIf, withMessage, withParams } from '@regle/rules';
 import { nextTick, reactive, ref } from 'vue';
 import { timeout } from './../validations';
 
-function test() {
-  return custom;
-}
+const customRuleInlineWithMetaData1 = ((value: Maybe<string>) => {
+  return {
+    $valid: value === 'regle',
+    foo: 'bar',
+  };
+}) satisfies InlineRuleDeclaration;
 
-function custom(value: Maybe<string>) {
-  return true;
-}
+const {} = useRegle(
+  { name: '' },
+  {
+    name: {
+      customRule: withMessage(customRuleInlineWithMetaData1, (value, {}) => 'Foo'),
+    },
+  }
+);
 
-const rule = createRule({
-  type: defineType<string>('custom'),
-  message: 'foo',
-  validator: test(),
-});
+const customRuleInlineWithMetaData = ((value: Maybe<string>) => {
+  return {
+    $valid: value === 'regle',
+    foo: 'bar',
+  };
+}) satisfies InlineRuleDeclaration;
+
+const { regle } = useRegle(
+  { name: '' },
+  {
+    name: {
+      customRule: withMessage(customRuleInlineWithMetaData, 'Custom Error'),
+    },
+  }
+);
 
 const form = reactive({
   name: '',

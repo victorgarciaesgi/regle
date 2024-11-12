@@ -1,5 +1,5 @@
 import type { RegleFormPropertyType } from '@regle/core';
-import { withMessage } from '@regle/validators';
+import { withMessage } from '@regle/rules';
 import z from 'zod';
 import {
   extractIssuesMessages,

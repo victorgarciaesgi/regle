@@ -1,6 +1,6 @@
 import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
-import { email, minLength, required } from '../../validators';
+import { email, minLength, required } from '../../rules';
 import { and } from '../and';
 
 describe('and validator', () => {

@@ -1,5 +1,5 @@
 import type { RegleCollectionRuleDecl } from '@regle/core';
-import { exactLength, maxLength, minLength } from '@regle/validators';
+import { exactLength, maxLength, minLength } from '@regle/rules';
 import { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 

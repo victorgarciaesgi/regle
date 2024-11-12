@@ -1,12 +1,12 @@
-import type { RegleRuleDefinition} from '@regle/core';
+import type { RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { Ref, defineComponent, ref } from 'vue';
-import { and } from '../../helpers/and';
-import { email, minLength, required } from '../../validators';
+import { and } from '../and';
+import { email, minLength, required } from '../../rules';
 import { withMessage } from '../withMessage';
-import { withAsync } from '../../helpers/withAsync';
-import { ruleHelpers } from '../../helpers/ruleHelpers';
+import { withAsync } from '../withAsync';
+import { ruleHelpers } from '../ruleHelpers';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({

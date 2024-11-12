@@ -1,6 +1,6 @@
 packages: 
  - packages/core
- - packages/validators
+ - packages/rules
  - packages/zod
  - packages/tests
  - playground/vue3

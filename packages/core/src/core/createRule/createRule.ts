@@ -9,7 +9,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
 
 /**
  * @description
- * Create a typed custom rule that can be used like default validators.
+ * Create a typed custom rule that can be used like default rules.
  * It can also be declared in the global options
  *
  * It will automatically detect if the rule is async
@@ -25,7 +25,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * ```ts
  * // Create a simple rule with no params
- * import {ruleHelpers} from '@regle/validators';
+ * import {ruleHelpers} from '@regle/rules';
  *
  * export const isFoo = createRule({
  *   type: defineType<string>('foo'),

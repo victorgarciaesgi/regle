@@ -22,19 +22,19 @@ Declare your form rules inside a component or a Pinia stores and use it wherever
 ::: code-group
 
 ```sh [pnpm]
-pnpm add @regle/core @regle/validators
+pnpm add @regle/core @regle/rules
 ```
 
 ```sh [npm]
-npm install @regle/core @regle/validators
+npm install @regle/core @regle/rules
 ```
 
 ```sh [yarn]
-yarn add @regle/core @regle/validators
+yarn add @regle/core @regle/rules
 ```
 
 ```sh [bun]
-bun add @regle/core @regle/validators
+bun add @regle/core @regle/rules
 ```
 
 :::

@@ -1,5 +1,5 @@
 import type { RegleRuleDefinition } from '@regle/core';
-import { minLength, required } from '../../validators';
+import { minLength, required } from '../../rules';
 import { not } from '../not';
 
 describe('not validator', () => {

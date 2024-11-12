@@ -2,7 +2,7 @@ import type { AllRulesDeclarations, RegleBehaviourOptions } from '../types';
 import { createUseRegleComposable } from './useRegle';
 
 /**
- * Root function that allows you to define project-wise all your custom validators or overwrite default ones
+ * Root function that allows you to define project-wise all your custom rules or overwrite default ones
  *
  * It will return utility functions that let you build type-safe forms
  *

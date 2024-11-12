@@ -1,5 +1,5 @@
 import { createRule, defineType } from '@regle/core';
-import { ruleHelpers } from '@regle/validators';
+import { ruleHelpers } from '@regle/rules';
 import { timeout } from '../utils';
 
 export const ruleMockIsFoo = createRule({

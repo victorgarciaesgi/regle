@@ -3,7 +3,7 @@ import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
-import { withAsync } from '../../helpers/withAsync';
+import { withAsync } from '../withAsync';
 import { withMessage } from '../withMessage';
 
 describe('withAsync helper', () => {

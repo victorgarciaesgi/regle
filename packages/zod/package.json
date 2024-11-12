@@ -1,7 +1,7 @@
 {
   "name": "@regle/zod",
   "version": "0.0.16",
-  "description": "Vue form validator",
+  "description": "Zod adapter for Regle",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@regle/core": "workspace:*",
-    "@regle/validators": "workspace:*"
+    "@regle/rules": "workspace:*"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",

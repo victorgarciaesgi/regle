@@ -29,7 +29,7 @@ It's heavily inspired by Vuelidate.
 - [Zod](https://zod.dev/) support
 - Made for Vue 3 and composition API first 
 - Collection validation (`$each` is back)
-- Typed validator metadata
+- Typed rule metadata
 - Global config
 - Async rules with params
 - Per field options (debounce, lazy...)
@@ -63,14 +63,14 @@ TODO
 - [x] validateForm typesafe
 - [x] Deep nested rules
 - [x] Collection validation
-- [x] `applyIf` helper (like requiredIf for any validator)
+- [x] `applyIf` helper (like requiredIf for any rule)
 - [x] Async with params (need deps array) (withAsync)
 - [x] Options (lazy, rewardEarly, autoDirty)
 - [x] Regex helper
 - [x] Additional rules and "and" helper
 - [x] "or" and "not" helper
 - [x] externalErrors
-- [x] Dates built-in validators
+- [x] Dates built-in rule
 - [x] Usable Metadata
 - [x] Zod support
 - [x] Per field validation option (lazy, debounce, etc...)
@@ -91,11 +91,11 @@ TODO
 # Quick start
 
 ```bash
-pnpm install @regle/core @regle/validators
+pnpm install @regle/core @regle/rules
 # or
-yarn add @regle/core @regle/validators
+yarn add @regle/core @regle/rules
 # or
-npm install @regle/core @regle/validators
+npm install @regle/core @regle/rules
 ```
 
 
@@ -122,7 +122,7 @@ npm install @regle/core @regle/validators
 
 <script setup lang='ts'>
 import {useRegle} from '@regle/core';
-import {email, required, minLength, sameAs} from '@regle/validators';
+import {email, required, minLength, sameAs} from '@regle/rules';
 
 type MyForm = {
   email?: string,
@@ -157,7 +157,7 @@ function submit() {
   const result = await validateForm();
   if (result) {
     console.log(result.email); // email: string
-    //          ^ type safe form result based on your validators
+    //          ^ type safe form result based on your rules
   }
 }
 
@@ -165,7 +165,7 @@ function submit() {
 ```
 
 
-## Create your own validators rules
+## Create your own rules
 
 ```ts
 // validations.ts

@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { RegleExternalErrorTree } from '@regle/core';
-import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/validators';
+import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/rules';
 import { reactive, ref } from 'vue';
 import { asyncEmail, useRegle } from './validations';
 

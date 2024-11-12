@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@regle/core": "workspace:*",
-    "@regle/validators": "workspace:*",
+    "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
     "@shikijs/vitepress-twoslash": "1.22.2",
     "@typescript-eslint/eslint-plugin": "8.14.0",

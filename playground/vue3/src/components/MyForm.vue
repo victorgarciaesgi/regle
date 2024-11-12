@@ -51,10 +51,10 @@
 
 <script setup lang="ts">
 import { RegleExternalErrorTree } from '@regle/core';
-import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/validators';
+import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/rules';
 import { nextTick, reactive, ref } from 'vue';
 import { asyncEmail, useRegle } from './../validations';
-import { minLength } from '@regle/validators';
+import { minLength } from '@regle/rules';
 
 type Form = {
   email?: string;

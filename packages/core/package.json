@@ -1,7 +1,7 @@
 {
   "name": "@regle/core",
   "version": "0.0.16",
-  "description": "Vue form validator",
+  "description": "Typescript first model-based validation library for Vue 3",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit && vitest run --typecheck",

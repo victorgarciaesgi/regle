@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@regle/core": "workspace:*",
-    "@regle/validators": "workspace:*",
+    "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
     "pinia": "^2.2.6",
     "zod": "3.23.8"

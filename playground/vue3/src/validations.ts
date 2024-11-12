@@ -1,5 +1,5 @@
 import { createRule, defineRegleConfig, defineType } from '@regle/core';
-import { ruleHelpers, withMessage, maxLength } from '@regle/validators';
+import { ruleHelpers, withMessage, maxLength } from '@regle/rules';
 import { ref } from 'vue';
 
 export function timeout(count: number) {

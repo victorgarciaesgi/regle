@@ -13,7 +13,7 @@ Let's make a simple exemple to explain the different properties
 <script setup lang='ts'>
 // @noErrors
 import {useRegle} from '@regle/core';
-import {required} from '@regle/validators';
+import {required} from '@regle/rules';
 import {ref} from 'vue';
 
 const form = ref({email: '', user: {firstName: '', lastName: ''}});
@@ -45,7 +45,7 @@ regle.$fields.email.$rules.required.
 ### `$invalid` 
 - Type: `readonly boolean`
 
-Indicates the state of validation for given model becomes true when any of its children validators specified in options returns a falsy value.
+Indicates the state of validation for given model becomes true when any of its children rules specified in options returns a falsy value.
 
 
 ### `$valid`
@@ -76,7 +76,7 @@ A reference to the original validated model. It can be used to bind your form wi
 ### `$pending`
 - Type: `readonly boolean`
 
-Indicates if any child async validator is currently pending. Always false if all validators are synchronous.
+Indicates if any child async rule is currently pending. Always false if all rules are synchronous.
 
 
 ### `$error`
@@ -102,7 +102,7 @@ Collection of all the error messages, collected for all child properties.
 ### `$validate`
 - Type: `() => Promise<boolean>`
 
-Sets all properties as dirty, triggering all validators. Returns a Promise with a boolean, which resolves once all validators finish.
+Sets all properties as dirty, triggering all rules. Returns a Promise with a boolean, which resolves once all rules finish.
 
 ### `$touch`
 - Type: `() => void`

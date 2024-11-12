@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import { required } from '@regle/validators';
+import { required } from '@regle/rules';
 import type { RegleExternalErrorTree } from '@regle/core';
 import { ref } from 'vue';
 

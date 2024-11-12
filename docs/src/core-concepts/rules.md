@@ -10,7 +10,7 @@ Rules are the core concept of Regle (and also it's name 🙄).
 A rule is a function (inline or created with the `createRule` helper) that receive the matching value and return either a boolean or an object with a $valid property. If the validation passes, return true or an object containing at least `{ $valid: boolean }`, false otherwise.
 
 
-## Simple inline validators
+## Simple inline rule
 
 ``` ts twoslash
 import type { Maybe, InlineRuleDeclaration } from '@regle/core';
@@ -27,7 +27,7 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => {
 }) satisfies InlineRuleDeclaration;
 ```
 
-Inline rules are then usable with a set of tools from `@regle/validators`
+Inline rules are then usable with a set of tools from `@regle/rules`
 
 ### `withMessage`
 
@@ -36,7 +36,7 @@ This tool take your rule as a first argument and your error message as a second.
 ``` ts twoslash
 // @noErrors
 import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
-import {withMessage} from '@regle/validators';
+import {withMessage} from '@regle/rules';
 
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => {
   return {
