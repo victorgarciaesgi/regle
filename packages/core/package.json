@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "0.0.16",
+  "version": "0.1.0",
   "description": "Typescript first model-based validation library for Vue 3",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
