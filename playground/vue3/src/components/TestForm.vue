@@ -108,7 +108,14 @@
 </template>
 
 <script setup lang="ts">
-import { RegleExternalErrorTree, RegleFieldStatus, useRegle } from '@regle/core';
+import type { Maybe } from '@regle/core';
+import {
+  createRule,
+  defineType,
+  RegleExternalErrorTree,
+  RegleFieldStatus,
+  useRegle,
+} from '@regle/core';
 import {
   minLength,
   numeric,
@@ -119,6 +126,20 @@ import {
 } from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
 import { timeout } from './../validations';
+
+function test() {
+  return custom;
+}
+
+function custom(value: Maybe<string>) {
+  return true;
+}
+
+const rule = createRule({
+  type: defineType<string>('custom'),
+  message: 'foo',
+  validator: test(),
+});
 
 const form = reactive({
   name: '',

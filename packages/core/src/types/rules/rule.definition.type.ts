@@ -81,7 +81,7 @@ type DefaultMetadataProperties = Pick<ExcludeByType<RegleCommonStatus, Function>
  * Will be used to consumme metadata on related helpers and rule status
  */
 export type RegleRuleMetadataConsumer<
-  TParams extends any[] = [],
+  TParams extends any[] = never,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > = DefaultMetadataProperties &
   (TParams extends never

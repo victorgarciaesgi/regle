@@ -15,7 +15,7 @@ import {useRegle} from '@regle/core';
 
 const {regle, state, errors, invalid, validateForm, resetForm} = useRegle({name: ''}, {
   name: {
-    // options
+    // rules
   }
 })
 
@@ -46,7 +46,7 @@ import {useRegle} from '@regle/core';
 
 const {regle, state, errors, invalid, validateForm, resetForm} = useRegle({name: ''}, {
   name: {
-    // options
+    // rules
   }
 })
 ```

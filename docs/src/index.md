@@ -11,7 +11,7 @@ hero:
   image:
     dark: ../assets/logo-reglejs-favicon-reversed.svg
     light: ../assets/logo-reglejs-favicon.svg
-    alt: Regle
+    alt: Regle logo
   actions:
     - theme: brand
       text: Get Started

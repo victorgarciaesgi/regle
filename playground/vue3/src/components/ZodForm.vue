@@ -6,7 +6,7 @@
       <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
 
-    <input :value="form.firstName" @input="updateFirstName" placeholder="firstname" />
+    <input :value="form.firstName" placeholder="firstname" @input="updateFirstName" />
     <ul>
       <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
@@ -21,10 +21,9 @@
       <li v-for="error of errors.today" :key="error">{{ error }}</li>
     </ul> -->
 
-    <template :key="index" v-for="(input, index) of form.nested">
+    <template v-for="(input, index) of form.nested" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <!-- TODO types for collections errors -->
         <li v-for="error of errors.nested.$each[index].name" :key="error">{{ error }}</li>
       </ul>
     </template>

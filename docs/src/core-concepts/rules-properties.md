@@ -1,10 +1,10 @@
 ---
-title: Common properties
+title: Rules properties
 ---
 
-# Common properties
+# Validation properties
 
-Common properties are computed values or methods available in every nested rule status (including `regle`)
+Validation properties are computed values or methods available in every nested rule status (including `regle`)
 
 
 Let's make a simple exemple to explain the different properties
@@ -25,8 +25,8 @@ const {regle, errors} = useRegle(form, {
   }
 })
 
-regle.$fields.email.
-//                  ^|
+regle.$fields.email.$rules.required.
+//                                  ^|
 </script>
 
 <template>
@@ -38,7 +38,7 @@ regle.$fields.email.
   </ul>
 </template>
 ```
-<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
 
 ## Computed properties for fields
 
@@ -96,12 +96,26 @@ Collection of all the error messages, collected for all child properties and nes
 Collection of all the error messages, collected for all child properties.
 
 
-## Methods for fields
+## Common methods for fields
 
 
-  $touch(): void;
-  $reset(): void;
-  $validate(): Promise;
-  $unwatch(): void;
-  $watch(): void;
-  $clearExternalErrors(): void;
+### `$validate`
+- Type: `() => Promise<boolean>`
+
+Sets all properties as dirty, triggering all validators. Returns a Promise with a boolean, which resolves once all validators finish.
+
+### `$touch`
+- Type: `() => void`
+
+Sets its property and all nested properties $dirty state to true.
+
+### `$reset`
+- Type: `() => void`
+
+Resets the $dirty state on all nested properties of a form.
+
+### `$clearExternalResults`
+- Type: `() => void`
+
+Clears the $externalResults state back to an empty object.
+

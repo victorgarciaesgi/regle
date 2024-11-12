@@ -14,16 +14,15 @@ export function withMessage<
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
-  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: InlineRuleDeclaration<TValue, TReturn>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetadata>,
+    RegleRuleMetadataConsumer<TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, [], TAsync, TMetadata>;
+): RegleRuleDefinition<TValue, [], TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withMessage<
   TValue extends any,
   TParams extends any[],
