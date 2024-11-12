@@ -77,7 +77,7 @@
     <button type="submit" @click="form.array0?.push(null)">Add entry</button>
     <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button> -->
 
-    <template v-for="(input, index) of form.array2" :key="index">
+    <!-- <template v-for="(input, index) of form.array2" :key="index">
       <input v-model="form.array2[index].name" placeholder="name" />
       <input v-model="form.array2[index].deleted" type="checkbox" />
       <ul>
@@ -95,7 +95,7 @@
     </button>
 
     <button type="submit" @click="resetForm"> reset </button>
-    <button type="submit" @click="submit"> Submit </button>
+    <button type="submit" @click="submit"> Submit </button> -->
 
     <pre>
         <code>
@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { RegleExternalErrorTree, RegleFieldStatus } from '@regle/core';
+import { RegleExternalErrorTree, RegleFieldStatus, useRegle } from '@regle/core';
 import {
   minLength,
   numeric,
@@ -118,7 +118,7 @@ import {
   withParams,
 } from '@regle/validators';
 import { nextTick, reactive, ref } from 'vue';
-import { timeout, useRegle } from './../validations';
+import { timeout } from './../validations';
 
 const form = reactive({
   name: '',
@@ -126,7 +126,7 @@ const form = reactive({
   // nested: {
   //   array1: null as string[] | null,
   // },
-  array2: [{ name: '', deleted: false }],
+  parents: [{ skills: [{ items: [{ name: '' }] }] }],
 });
 
 async function submit() {
@@ -135,41 +135,37 @@ async function submit() {
   console.log(result);
 }
 
-const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(
-  form,
-  () => ({
-    name: {
-      required: withParams(
-        (value) => {
-          console.log(value);
-          return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
-        },
-        [() => form.array2[0].name]
-      ),
-    },
-    // array0: { $each: { numeric: numeric } },
-    // nested: {
-    //   array1: { $each: { minLength: minLength(2) } },
-    // },
-    array2: {
-      $each: (value) => {
-        return {
-          name: {
-            required: requiredIf(value.deleted),
-            valid: () => ({ $valid: value.deleted, foo: value.deleted }),
+const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, () => ({
+  // name: {
+  //   required: withParams(
+  //     (value) => {
+  //       console.log(value);
+  //       return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
+  //     },
+  //     [() => form.array2[0].name]
+  //   ),
+  // },
+  // array0: { $each: { numeric: numeric } },
+  // nested: {
+  //   array1: { $each: { minLength: minLength(2) } },
+  // },
+  parents: {
+    $each: (parent) => ({
+      skills: {
+        $each: (skill) => ({
+          items: {
+            $each: (item, index) => {
+              console.log(parent, skill, item);
+              return {
+                name: { required: () => ({ $valid: true, foo: skill }) },
+              };
+            },
           },
-        };
+        }),
       },
-    },
-  }),
-  {
-    validationGroups: (fields) => ({
-      group1: [fields.name, fields.array2],
     }),
-  }
-);
-
-regle.$fields.name.$silentErrors;
+  },
+}));
 
 // regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 

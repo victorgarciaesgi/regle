@@ -29,6 +29,7 @@ interface CreateReactiveNestedStatus {
   state: Ref<Record<string, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path?: string;
+  index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
@@ -297,6 +298,7 @@ interface CreateReactiveChildrenStatus {
   rulesDef: Ref<MaybeGetter<$InternalFormPropertyTypes, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
+  index?: number;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
@@ -311,6 +313,7 @@ export function createReactiveChildrenStatus({
   storage,
   options,
   externalErrors,
+  index,
   onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef, state)) {
@@ -321,6 +324,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      index,
       externalErrors,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
@@ -331,6 +335,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      index,
       externalErrors: externalErrors as Readonly<Ref<RegleExternalErrorTree | undefined>>,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
@@ -341,6 +346,7 @@ export function createReactiveChildrenStatus({
       path,
       storage,
       options,
+      index,
       externalErrors: externalErrors as Ref<string[] | undefined>,
       onUnwatch,
     });

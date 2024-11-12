@@ -20,6 +20,7 @@ interface CreateReactiveFieldStatusArgs {
   rulesDef: Ref<$InternalRegleRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
+  index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<string[] | undefined>>;
@@ -48,6 +49,7 @@ export function createReactiveFieldStatus({
   storage,
   options,
   externalErrors,
+  index,
   onUnwatch,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
@@ -79,7 +81,7 @@ export function createReactiveFieldStatus({
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
     );
 
-    const unwrappedRule = unwrapGetter(rulesDef.value, state.value);
+    const unwrappedRule = unwrapGetter(rulesDef.value, state.value, index);
 
     $rules.value = Object.fromEntries(
       Object.entries(unwrappedRule)

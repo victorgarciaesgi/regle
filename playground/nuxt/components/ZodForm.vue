@@ -3,19 +3,19 @@
     <input v-model="form.email" placeholder="email" />
 
     <ul>
-      <li v-for="error of $errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model="form.firstName" placeholder="firstname" />
     <ul>
-      <li v-for="error of $errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
-    <template :key="index" v-for="(input, index) of form.nested">
+    <template v-for="(input, index) of form.nested" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
         <!-- TODO types for collections errors -->
-        <li v-for="error of $errors.nested.$each[index].name" :key="error">
+        <li v-for="error of errors.nested.$each[index].name" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -54,7 +54,7 @@ async function submit() {
   const result = await validateForm();
 }
 
-const { $errors, $regle, validateForm } = useZodForm(
+const { errors, regle, validateForm } = useZodForm(
   form,
   z.object({
     email: z

@@ -51,9 +51,13 @@ function getRegExpFlags(regExp: any) {
   }
 }
 
-export function unwrapGetter<T extends any>(getter: MaybeGetter<T, any>, value: any): T {
+export function unwrapGetter<T extends any>(
+  getter: MaybeGetter<T, any>,
+  value: any,
+  index?: number
+): T {
   if (getter instanceof Function) {
-    return getter(value);
+    return getter(value, index ?? 0);
   }
   return getter;
 }

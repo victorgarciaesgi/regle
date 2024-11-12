@@ -25,7 +25,7 @@ It's heavily inspired by Vuelidate.
 
 # Improvements from Vuelidate
 
-- 100% type safety and autocompletion
+- 100% type safety and autocomplete
 - [Zod](https://zod.dev/) support
 - Made for Vue 3 and composition API first 
 - Collection validation (`$each` is back)
@@ -42,7 +42,7 @@ It's heavily inspired by Vuelidate.
 
 # Documentation
 
-TODO
+In Progress
 
 # Play with it
 
@@ -76,7 +76,7 @@ TODO
 - [x] Per field validation option (lazy, debounce, etc...)
 - [x] Logo
 - [x] $silentErrors 
-- [ ] Validation groups
+- [x] Validation groups
 - [ ] `Valibot` support
 - [ ] Unit tests (in progress)
 - [ ] E2E tests

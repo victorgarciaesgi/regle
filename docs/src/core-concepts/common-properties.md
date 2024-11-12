@@ -40,7 +40,7 @@ regle.$fields.email.
 ```
 <br/><br/><br/><br/><br/>
 
-## Computed properties
+## Computed properties for fields
 
 ### `$invalid` 
 - Type: `readonly boolean`
@@ -96,7 +96,7 @@ Collection of all the error messages, collected for all child properties and nes
 Collection of all the error messages, collected for all child properties.
 
 
-## Methods
+## Methods for fields
 
 
   $touch(): void;

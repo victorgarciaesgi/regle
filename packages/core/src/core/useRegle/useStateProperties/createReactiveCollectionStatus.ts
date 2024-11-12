@@ -16,7 +16,7 @@ import type {
   RegleBehaviourOptions,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { isObject, unwrapGetter } from '../../../utils';
+import { isObject } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
 import {
@@ -51,7 +51,7 @@ function createCollectionElement({
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $fieldId = randomId();
-  const $path = `${path}.${$fieldId}`;
+  let $path = `${path}.${$fieldId}`;
 
   if (typeof value[index] === 'object' && value[index] != null) {
     if (!value[index].$id) {
@@ -63,6 +63,8 @@ function createCollectionElement({
           writable: false,
         },
       });
+    } else {
+      $path = `${path}.${value[index].$id}`;
     }
   }
 
@@ -129,6 +131,7 @@ interface CreateReactiveCollectionStatusArgs {
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
+  index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
