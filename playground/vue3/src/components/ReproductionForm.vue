@@ -167,7 +167,7 @@ const externalErrors = ref({
   },
 } satisfies RegleExternalErrorTree<Form>);
 
-const { errors, validateForm, regle } = useRegle(
+const { errors, validateState, regle } = useRegle(
   form,
   () => ({
     name: {
@@ -185,6 +185,6 @@ const { errors, validateForm, regle } = useRegle(
 );
 
 const submit = () => {
-  validateForm();
+  validateState();
 };
 </script>

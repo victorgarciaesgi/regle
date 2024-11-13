@@ -67,7 +67,7 @@ async function updateFirstName(event: any) {
 
 async function submit() {
   const t0 = performance.now();
-  // const result = await validateForm();
+  // const result = await validateState();
   const t1 = performance.now();
   console.log(`Time it takes to run the function: ${t1 - t0} ms`);
 
@@ -76,7 +76,7 @@ async function submit() {
   // }
 }
 
-const { errors, regle, validateForm } = useZodForm(
+const { errors, regle, validateState } = useZodForm(
   form,
   z.object({
     email: z

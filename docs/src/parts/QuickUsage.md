@@ -1,6 +1,6 @@
 ``` vue twoslash
 <template>
-  <input v-model='form.email' placeholder='Type your email'/>
+  <input v-model='state.email' placeholder='Type your email'/>
   <ul>
     <li v-for="error of errors.email">
       {{ error }}
@@ -13,9 +13,8 @@ import {useRegle} from '@regle/core';
 import {required, minLength, email} from '@regle/rules';
 import {ref} from 'vue';
 
-const form = ref({email: ''});
 
-const {errors} = useRegle(form, {
+const {errors, state} = useRegle({email: ''}, {
   email: {required, minLength: minLength(4), email}
 })
 
@@ -26,8 +25,8 @@ Result:
 
 <div class="demo-container">
   <div>
-    <input v-model='form.email' placeholder='Type your email'/>
-    <button type="button" @click="resetForm">Reset</button>
+    <input v-model='state.email' placeholder='Type your email'/>
+    <button type="button" @click="resetAll">Reset</button>
   </div>
   <ul v-if="errors.email.length">
     <li v-for="error of errors.email">
@@ -41,9 +40,7 @@ import {useRegle} from '@regle/core';
 import {required, minLength, email} from '@regle/rules';
 import {ref} from 'vue';
 
-const form = ref({email: ''});
-
-const {errors, resetForm} = useRegle(form, {
+const {errors, state, resetAll} = useRegle({email: ''}, {
   email: {required, minLength: minLength(4), email}
 })
 </script>

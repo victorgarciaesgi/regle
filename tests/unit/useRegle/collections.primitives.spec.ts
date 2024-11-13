@@ -70,7 +70,7 @@ describe('useRegle with collection validation', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.validateForm();
+    const result = await vm.validateState();
 
     expect(result).toBe(false);
     expect(vm.errors).toStrictEqual({

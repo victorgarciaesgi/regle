@@ -1,22 +1,21 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
-import type { DeepMaybeRef } from '../../../types';
-import {
-  mergeArrayGroupProperties,
-  mergeBooleanGroupProperties,
-  type $InternalExternalRegleErrors,
-  type $InternalFormPropertyTypes,
-  type $InternalReglePartialValidationTree,
-  type $InternalRegleStatus,
-  type $InternalRegleStatusType,
-  type CustomRulesDeclarationTree,
-  type MaybeGetter,
-  type RegleBehaviourOptions,
-  type RegleExternalErrorTree,
-  type RegleValidationGroupEntry,
-  type ResolvedRegleBehaviourOptions,
+import type {
+  DeepMaybeRef,
+  CustomRulesDeclarationTree,
+  $InternalExternalRegleErrors,
+  $InternalFormPropertyTypes,
+  $InternalReglePartialValidationTree,
+  $InternalRegleStatus,
+  $InternalRegleStatusType,
+  MaybeGetter,
+  RegleBehaviourOptions,
+  RegleExternalErrorTree,
+  RegleValidationGroupEntry,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isRefObject, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';

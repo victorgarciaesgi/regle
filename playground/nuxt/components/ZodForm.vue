@@ -51,10 +51,10 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const result = await validateForm();
+  const result = await validateState();
 }
 
-const { errors, regle, validateForm } = useZodForm(
+const { errors, regle, validateState } = useZodForm(
   form,
   z.object({
     email: z

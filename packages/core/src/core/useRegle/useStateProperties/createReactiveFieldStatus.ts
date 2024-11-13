@@ -4,9 +4,8 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
-  CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
-  MaybeGetter,
+  CustomRulesDeclarationTree,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';

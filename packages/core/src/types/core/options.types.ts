@@ -14,7 +14,7 @@ import type {
 
 export interface RegleBehaviourOptions {
   /**
-   * Only display error when calling `validateForm()`
+   * Only display error when calling `validateState()`
    * @default false
    */
   lazy?: boolean;
@@ -24,7 +24,7 @@ export interface RegleBehaviourOptions {
    */
   autoDirty?: boolean;
   /**
-   * The fields will turn valid when they are, but not invalid unless calling `validateForm()`
+   * The fields will turn valid when they are, but not invalid unless calling `validateState()`
    * @default false
    *
    * @experimental report any bug

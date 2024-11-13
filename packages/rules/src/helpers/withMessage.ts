@@ -30,7 +30,7 @@ export function withMessage<
   TReturn extends TMetadata | Promise<TMetadata>,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync>,
+  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TMetadata>,
@@ -42,7 +42,7 @@ export function withMessage<
   TParams extends any[],
   TMetadata extends RegleRuleMetadataDefinition,
   TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean = boolean,
+  TAsync extends boolean,
 >(
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<

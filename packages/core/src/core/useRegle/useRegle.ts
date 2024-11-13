@@ -9,10 +9,8 @@ import type {
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
-  RegleCollectionStatus,
   RegleErrorTree,
   RegleExternalErrorTree,
-  RegleFieldStatus,
   ReglePartialValidationTree,
   RegleStatus,
   RegleValidationGroupEntry,
@@ -73,7 +71,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       customRules
     );
 
-    function resetForm() {
+    function resetAll() {
       regle.$unwatch();
       resetValuesRecursively(state, initialState);
       regle.$reset();
@@ -108,7 +106,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       return regle.$invalid || regle.$pending;
     });
 
-    async function validateForm(): Promise<false | DeepSafeFormState<TState, TRules>> {
+    async function validateState(): Promise<false | DeepSafeFormState<TState, TRules>> {
       regle.$touch();
       const result = await regle.$validate();
       if (result) {
@@ -122,8 +120,8 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     return {
       regle: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
       errors: errors as RegleErrorTree<TRules>,
-      resetForm,
-      validateForm,
+      resetAll,
+      validateState,
       invalid,
       state: processedState,
     };

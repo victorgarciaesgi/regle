@@ -94,7 +94,7 @@
       Remove first
     </button>
 
-    <button type="submit" @click="resetForm"> reset </button>
+    <button type="submit" @click="resetAll"> reset </button>
     <button type="submit" @click="submit"> Submit </button> -->
 
     <pre>
@@ -116,41 +116,17 @@ import {
   RegleFieldStatus,
   useRegle,
 } from '@regle/core';
-import { minLength, numeric, required, requiredIf, withMessage, withParams } from '@regle/rules';
+import {
+  minLength,
+  numeric,
+  required,
+  requiredIf,
+  withAsync,
+  withMessage,
+  withParams,
+} from '@regle/rules';
 import { nextTick, reactive, ref } from 'vue';
 import { timeout } from './../validations';
-
-const customRuleInlineWithMetaData1 = ((value: Maybe<string>) => {
-  return {
-    $valid: value === 'regle',
-    foo: 'bar',
-  };
-}) satisfies InlineRuleDeclaration;
-
-const {} = useRegle(
-  { name: '' },
-  {
-    name: {
-      customRule: withMessage(customRuleInlineWithMetaData1, (value, {}) => 'Foo'),
-    },
-  }
-);
-
-const customRuleInlineWithMetaData = ((value: Maybe<string>) => {
-  return {
-    $valid: value === 'regle',
-    foo: 'bar',
-  };
-}) satisfies InlineRuleDeclaration;
-
-const { regle } = useRegle(
-  { name: '' },
-  {
-    name: {
-      customRule: withMessage(customRuleInlineWithMetaData, 'Custom Error'),
-    },
-  }
-);
 
 const form = reactive({
   name: '',
@@ -163,11 +139,11 @@ const form = reactive({
 
 async function submit() {
   // regle.$value.count = 2;
-  const result = await validateForm();
+  const result = await validateState();
   console.log(result);
 }
 
-const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form, () => ({
+const { errors, validateState, regle, resetAll, invalid, state } = useRegle(form, () => ({
   // name: {
   //   required: withParams(
   //     (value) => {
@@ -205,7 +181,7 @@ const { errors, validateForm, regle, resetForm, invalid, state } = useRegle(form
 // nextTick(async () => {
 //   regle.$fields.nested.$fields.array1.$each[0].$touch();
 
-//   const result = await validateForm();
+//   const result = await validateState();
 //   if (result) {
 //     // TODO bug never
 //     result.nested.array1;

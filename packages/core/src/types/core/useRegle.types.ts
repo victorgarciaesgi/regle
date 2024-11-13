@@ -26,8 +26,8 @@ export interface Regle<
    */
   errors: RegleErrorTree<TRules, TExternal>;
   invalid: ComputedRef<boolean>;
-  resetForm: () => void;
-  validateForm: () => Promise<false | DeepSafeFormState<TState, TRules>>;
+  resetAll: () => void;
+  validateState: () => Promise<false | DeepSafeFormState<TState, TRules>>;
   state: Ref<TState>;
 }
 

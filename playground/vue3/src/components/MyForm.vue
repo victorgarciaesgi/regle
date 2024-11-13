@@ -98,7 +98,7 @@ async function updateEmail(event: any) {
 }
 async function submit() {
   const t0 = performance.now();
-  const result = await validateForm();
+  const result = await validateState();
   if (externalEven.value % 2 === 0) {
     externalErrors.value.email = ['boo'];
   }
@@ -116,7 +116,7 @@ const externalEven = ref(0);
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({});
 
-const { regle, errors, validateForm } = useRegle(
+const { regle, errors, validateState } = useRegle(
   form,
   () => ({
     email: {

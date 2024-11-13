@@ -16,7 +16,7 @@ describe('withAsync helper', () => {
             count: 0,
           });
 
-          const { errors, validateForm, regle } = useRegle(form, () => ({
+          const { errors, validateState, regle } = useRegle(form, () => ({
             email: {
               error: withMessage(
                 withAsync(
@@ -31,7 +31,7 @@ describe('withAsync helper', () => {
             },
           }));
 
-          return { form, errors, validateForm, regle };
+          return { form, errors, validateState, regle };
         },
         template: '<div>{{regle}}</div>',
       })

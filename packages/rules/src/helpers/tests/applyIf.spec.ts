@@ -14,13 +14,13 @@ describe('applyIf helper', () => {
         count: 0,
       });
 
-      const { errors, validateForm, regle } = useRegle(form, () => ({
+      const { errors, validateState, regle } = useRegle(form, () => ({
         email: {
           error: applyIf(() => form.value.count === 1, required),
         },
       }));
 
-      return { form, errors, validateForm, regle };
+      return { form, errors, validateState, regle };
     },
   });
 

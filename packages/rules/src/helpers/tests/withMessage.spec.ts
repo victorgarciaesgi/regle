@@ -17,7 +17,7 @@ describe('withMessage helper', () => {
         lastName: '',
       });
 
-      const { errors, validateForm, regle } = useRegle(form, () => ({
+      const { errors, validateState, regle } = useRegle(form, () => ({
         email: {
           email: withMessage(and(minLength(4), email), (value, { $params: [count] }) => {
             return ['Must be email', `Must be min: ${count}`];
@@ -39,7 +39,7 @@ describe('withMessage helper', () => {
         },
       }));
 
-      return { form, errors, validateForm, regle };
+      return { form, errors, validateState, regle };
     },
   });
 
@@ -51,7 +51,7 @@ describe('withMessage helper', () => {
   });
 
   it('should return errors when submitting no values', async () => {
-    const result = await vm.validateForm();
+    const result = await vm.validateState();
     expect(result).toBe(false);
     expect(vm.errors.email).toStrictEqual([]);
     expect(vm.errors.firstName).toStrictEqual(['Required']);

@@ -11,7 +11,7 @@ export const requiredIf: RegleRuleWithParamsDefinition<
   type: defineType<unknown, [condition: boolean]>('required'),
   validator(value, condition) {
     if (condition) {
-      return ruleHelpers.isFilled(typeof value === 'string' ? value.trim() : value);
+      return ruleHelpers.isFilled(value);
     }
     return true;
   },

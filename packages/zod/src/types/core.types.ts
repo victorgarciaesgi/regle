@@ -12,8 +12,8 @@ export interface ZodRegle<TState extends Record<string, any>, TSchema extends to
    */
   errors: ZodToRegleErrorTree<TSchema>;
   invalid: ComputedRef<boolean>;
-  resetForm: () => void;
-  validateForm: () => Promise<false | z.output<TSchema>>;
+  resetAll: () => void;
+  validateState: () => Promise<false | z.output<TSchema>>;
 }
 
 // - Zod errors

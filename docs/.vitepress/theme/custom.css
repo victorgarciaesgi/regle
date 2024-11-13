@@ -43,6 +43,11 @@ html.dark {
   font-size: 14px;
 }
 
+
+.demo-container label {
+  font-size: 14px;
+}
+
 .demo-container button {
   border-radius: 8px;
   color: var(--vp-c-text-1);
@@ -61,10 +66,10 @@ html.dark {
 
 
 .twoslash-completion-list .twoslash-completions-icon.completions-property {
-  color: #bd976a !important;
+  color: #cb7676 !important;
 }
 .twoslash-completion-list .twoslash-completions-icon.completions-property + span .twoslash-completions-unmatched {
-  color: #bd976a !important;
+  color: #cb7676 !important;
 }
 
 .twoslash-completion-list .twoslash-completions-icon.completions-method {

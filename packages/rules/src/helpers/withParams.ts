@@ -16,7 +16,7 @@ export function withParams<
   rule: InlineRuleDeclaration<TValue, TReturn>,
   depsArray: [...TParams]
 ): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata> {
-  const validator = async (value: any | null | undefined) => {
+  const validator = (value: any | null | undefined) => {
     return rule(value);
   };
 

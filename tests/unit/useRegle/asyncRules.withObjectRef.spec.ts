@@ -74,7 +74,7 @@ describe('useRegle with async rules and Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const [result] = await Promise.all([vm.validateForm(), vi.advanceTimersByTimeAsync(1000)]);
+    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
 
     await nextTick();
     await flushPromises();
@@ -220,7 +220,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
 
-    const [result] = await Promise.all([vm.validateForm(), vi.advanceTimersByTimeAsync(1000)]);
+    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
 
     expect(result).toStrictEqual({
       level0Async: 2,
@@ -233,8 +233,8 @@ describe('useRegle with async rules and Object refs', async () => {
     });
   });
 
-  it('should reset on initial state when calling resetForm', async () => {
-    vm.resetForm();
+  it('should reset on initial state when calling resetAll', async () => {
+    vm.resetAll();
 
     vi.advanceTimersByTime(1000);
     await nextTick();

@@ -26,6 +26,6 @@ export const useRegle = defineRegleConfig({
     maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
       return `ehooo ${count} is max`;
     }),
-    asyncEmail,
+    asyncEmail: withMessage(asyncEmail, () => ''),
   }),
 });

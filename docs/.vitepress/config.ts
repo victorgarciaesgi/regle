@@ -7,9 +7,18 @@ const Nav: DefaultTheme.NavItemWithLink[] = [
   { text: 'Core concepts', link: '/core-concepts/' },
 ];
 
-const CoreConcepts: DefaultTheme.NavItemWithLink[] = [
+const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
-  { text: 'Rules', link: '/core-concepts/rules' },
+  {
+    text: 'Rules',
+    items: [
+      { text: 'Inline rules', link: '/core-concepts/rules/' },
+      {
+        text: 'Advanced rules',
+        link: '/core-concepts/rules/advanced-rules',
+      },
+    ],
+  },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
 ];

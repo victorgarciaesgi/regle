@@ -40,25 +40,20 @@ regle.$fields.email.$rules.required.
 ```
 <br/><br/><br/><br/>
 
-## Computed properties for fields
-
-### `$invalid` 
-- Type: `readonly boolean`
-
-Indicates the state of validation for given model becomes true when any of its children rules specified in options returns a falsy value.
+## Computed properties for rules
 
 
 ### `$valid`
 - Type: `readonly boolean`
   
-Same as `$invalid`, but for a truthy value
+Indicates the state of validation for this validator
 
 
-### `$dirty`
+### `$pending`
 - Type: `readonly boolean`
   
 
-A flag indicating whether the field being validated has been interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can control this flag manually using the `$touch` and `$reset` methods. The `$dirty` flag is considered true if the current model has been touched or if all its child models are `$dirty`. 
+If the rule is async, indicates if it's currently pending. Always false if it's synchronous.
 
 
 ### `$anyDirty`
@@ -73,10 +68,6 @@ A flag very similar to `$dirty`, with one exception. The `$anyDirty` flag is con
 A reference to the original validated model. It can be used to bind your form with `v-model` too
 
 
-### `$pending`
-- Type: `readonly boolean`
-
-Indicates if any child async rule is currently pending. Always false if all rules are synchronous.
 
 
 ### `$error`

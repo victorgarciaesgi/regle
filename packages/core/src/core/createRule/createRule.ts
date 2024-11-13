@@ -53,7 +53,6 @@ export function createRule<
     const staticProcessors = defineRuleProcessors(definition as any, ...fakeParams);
 
     const isAsync = definition.validator.constructor.name === 'AsyncFunction';
-    console.log(definition.validator, getFunctionParametersLength(definition.validator));
     // For validators needing a params like maxLength or requiredIf
     if (getFunctionParametersLength(definition.validator) > 1) {
       // For validators with param, return a function providing params for all the rule processors

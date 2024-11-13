@@ -66,7 +66,7 @@ describe('useRegle with Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.validateForm();
+    const result = await vm.validateState();
 
     expect(result).toBe(false);
     expect(vm.errors).toStrictEqual({
@@ -199,7 +199,7 @@ describe('useRegle with Object refs', async () => {
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
 
-    const result = await vm.validateForm();
+    const result = await vm.validateState();
 
     expect(result).toStrictEqual({
       level0: 2,
@@ -212,8 +212,8 @@ describe('useRegle with Object refs', async () => {
     });
   });
 
-  it('should reset on initial state when calling resetForm', async () => {
-    vm.resetForm();
+  it('should reset on initial state when calling resetAll', async () => {
+    vm.resetAll();
 
     await flushPromises();
 

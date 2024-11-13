@@ -59,8 +59,8 @@ TODO
 # Roadmap
 
 - [x] Async rules
-- [x] resetForm
-- [x] validateForm typesafe
+- [x] resetAll
+- [x] validateState typesafe
 - [x] Deep nested rules
 - [x] Collection validation
 - [x] `applyIf` helper (like requiredIf for any rule)
@@ -136,7 +136,7 @@ const form = ref<MyForm>({
   confirmPassword: '',
 })
 
-const {errors, validateForm} = useRegle(form, () => ({
+const {errors, validateState} = useRegle(form, () => ({
   email: {
     email,
     required,
@@ -154,7 +154,7 @@ const {errors, validateForm} = useRegle(form, () => ({
 
 
 function submit() {
-  const result = await validateForm();
+  const result = await validateState();
   if (result) {
     console.log(result.email); // email: string
     //          ^ type safe form result based on your rules
