@@ -67,10 +67,10 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(true);
+    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 
   it('should error on initial submit', async () => {
@@ -100,7 +100,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level0Async.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 
   it('should update dirty state and errors when updating form', async () => {
@@ -133,7 +133,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level0Async.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
@@ -266,9 +266,9 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(true);
+    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 });

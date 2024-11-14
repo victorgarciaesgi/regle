@@ -28,7 +28,6 @@ const useCustomRegle = defineRegleConfig({
   })
 })
 
-
 const {errors} = useCustomRegle({name: ''}, {
   name: {
     required, minLength: minLength(6)
@@ -37,3 +36,35 @@ const {errors} = useCustomRegle({name: ''}, {
 ```
 
 Result: 
+
+<div class="demo-container">
+  <div>
+    <input :class="{valid: regle.$fields.name.$valid}" v-model='state.name' placeholder='Type your name'/>
+    <button type="button" @click="resetAll">Reset</button>
+  </div>
+  <ul v-if="errors.name.length">
+    <li v-for="error of errors.name">
+      {{ error }}
+    </li>
+  </ul>
+</div>
+
+<script setup lang='ts'>
+import {defineRegleConfig} from '@regle/core';
+import { withMessage, minLength, required } from '@regle/rules';
+
+const useCustomRegle = defineRegleConfig({
+  rules: () => ({
+    required: withMessage(required, 'You need to provide a value'),
+    minLength: withMessage(minLength, (value, { $params: [count] }) => {
+      return `Maximum length is ${count}. Current value: ${value?.length}`;
+    })
+  })
+})
+
+const {errors, state, regle, resetAll} = useCustomRegle({name: ''}, {
+  name: {
+    required, minLength: minLength(6)
+  }
+})
+</script>

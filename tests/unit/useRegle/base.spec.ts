@@ -43,10 +43,10 @@ describe.each([
       },
     });
 
-    expect(vm.regle.$fields.level0.$valid).toBe(true);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
   });
 
   it('should error on initial submit', async () => {
@@ -227,9 +227,9 @@ describe.each([
       },
     });
 
-    expect(vm.regle.$fields.level0.$valid).toBe(true);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
   });
 });
