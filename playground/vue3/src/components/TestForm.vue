@@ -59,7 +59,21 @@
 
     <button type="submit" @click="form.nested.array1?.push('')">Add entry</button>
     <button type="submit" @click="form.nested.array1?.splice(0, 1)">Remove first</button> -->
-    <input v-model="state.name" placeholder="name" />
+    <template v-for="(input, index) of state.parents[0].skills[0].items" :key="index">
+      <input v-model="input.name" placeholder="item" />
+      <ul>
+        <li
+          v-for="(error, index2) of errors.parents.$each[0].skills.$each[0].items.$each[index].name"
+          :key="index2"
+          >{{ error }}</li
+        >
+      </ul>
+    </template>
+    <input v-model="state.parents[0].firstName" placeholder="firstName" />
+
+    <button type="submit" @click="state.parents[0].skills[0].items?.push({ name: '' })">
+      Add entry
+    </button>
 
     <ul>
       <li v-for="error of errors.name" :key="error">
@@ -117,6 +131,7 @@ import {
   useRegle,
 } from '@regle/core';
 import {
+  maxLength,
   minLength,
   numeric,
   required,
@@ -125,7 +140,7 @@ import {
   withMessage,
   withParams,
 } from '@regle/rules';
-import { nextTick, reactive, ref } from 'vue';
+import { nextTick, reactive, ref, watch } from 'vue';
 import { timeout } from './../validations';
 
 const form = reactive({
@@ -134,7 +149,7 @@ const form = reactive({
   // nested: {
   //   array1: null as string[] | null,
   // },
-  parents: [{ skills: [{ items: [{ name: '' }] }] }],
+  parents: [{ firstName: '', skills: [{ items: [{ name: '' }] }] }],
 });
 
 async function submit() {
@@ -143,37 +158,60 @@ async function submit() {
   console.log(result);
 }
 
-const { errors, validateState, regle, resetAll, invalid, state } = useRegle(form, () => ({
-  // name: {
-  //   required: withParams(
-  //     (value) => {
-  //       console.log(value);
-  //       return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
-  //     },
-  //     [() => form.array2[0].name]
-  //   ),
-  // },
-  // array0: { $each: { numeric: numeric } },
-  // nested: {
-  //   array1: { $each: { minLength: minLength(2) } },
-  // },
-  parents: {
-    $each: (parent) => ({
-      skills: {
-        $each: (skill) => ({
-          items: {
-            $each: (item, index) => {
-              console.log(parent, skill, item);
+const { errors, validateState, regle, resetAll, invalid, state } = useRegle(
+  form,
+  () => ({
+    // name: {
+    //   required: withParams(
+    //     (value) => {
+    //       console.log(value);
+    //       return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
+    //     },
+    //     [() => form.array2[0].name]
+    //   ),
+    // },
+    // array0: { $each: { numeric: numeric } },
+    // nested: {
+    //   array1: { $each: { minLength: minLength(2) } },
+    // },
+    parents: {
+      $each: (parent) => {
+        console.log('parent');
+
+        return {
+          skills: {
+            $each: (skill) => {
+              console.log('skill');
+
               return {
-                name: { required: () => ({ $valid: true, foo: skill }) },
+                items: {
+                  $each: (item, index) => {
+                    console.log('item', parent.value.firstName);
+
+                    return {
+                      name: {
+                        required: withParams(
+                          (value, _parent) => {
+                            return {
+                              $valid: _parent.firstName === 'regle',
+                              foo: _parent.firstName,
+                            };
+                          },
+                          [parent]
+                        ),
+                      },
+                    };
+                  },
+                },
               };
             },
           },
-        }),
+        };
       },
-    }),
-  },
-}));
+    },
+  }),
+  { lazy: false }
+);
 
 // regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 

@@ -1,7 +1,7 @@
 
 # Introduction
 
-Regle (French word for "rule") is a Typescript first form validation library made for Vue 3.
+Regle (French word for "rule") is a Typescript-first form validation library made for Vue 3.
 I'm a lover and long-time user of Vuelidate API, so Regle's is be greatly inspired by it.
 
 Regle is about bringing type safety and great DX to simple or complex Form.

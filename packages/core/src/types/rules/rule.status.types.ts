@@ -92,7 +92,7 @@ export interface RegleFieldStatus<
       TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
       TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
         ? TMetadata
-        : TRules[TRuleKey] extends InlineRuleDeclaration<any, infer TMetadata>
+        : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
           ? TMetadata extends Promise<infer P>
             ? P
             : TMetadata

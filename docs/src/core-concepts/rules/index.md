@@ -19,21 +19,22 @@ You can write inline rules like simple function receiving the value you're evalu
 
 ``` ts twoslash
 // @noErrors
-import type { Maybe, InlineRuleDeclaration } from '@regle/core';
+const someAsyncCall = async () => await Promise.resolve(true);
+// ---cut---
+import type { Maybe } from '@regle/core';
 
-const customRuleInline = ((value: Maybe<string>) => value === 'regle') satisfies InlineRuleDeclaration
+const customRuleInline = ((value: Maybe<string>) => value === 'regle')
 
 /** Async rule that will activate the $pending state of your field  */
 const customRuleInlineAsync = (async (value: Maybe<string>) => {
-  await someAsyncCall();
-  return value === 'regle'
-}) satisfies InlineRuleDeclaration;
+  return await someAsyncCall();
+});
 
 /** You can return any data from your rule as long as the $valid property is present  */
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   $valid: value === 'regle',
   foo: 'bar'
-})) satisfies InlineRuleDeclaration;
+}));
 ```
 
 Inline rules are then usable with a set of tools from `@regle/rules`
@@ -42,7 +43,7 @@ Inline rules are then usable with a set of tools from `@regle/rules`
 
 This tool take your rule as a first argument and your error message as a second. It will define what error to set
 
-``` ts twoslash
+``` ts twoslash {3-11}
 // @noErrors
 import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
 import {withMessage} from '@regle/rules';
@@ -52,8 +53,11 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   foo: 'bar' as const
 })) satisfies InlineRuleDeclaration;
 
+
+// ---cut---
 const {regle} = useRegle({name: ''}, {
   name: {
+    // Inline functions can be also written... inline
     customRule1: withMessage((value) => !!value, "Custom Error"),
     customRule2: withMessage(customRuleInlineWithMetaData, "Custom Error"),
 
@@ -63,7 +67,6 @@ const {regle} = useRegle({name: ''}, {
       (value, {foo}) => `Custom Error: ${value} ${foo}`
 //              ^?
     ), 
-    
   }
 })
 ```
@@ -87,21 +90,22 @@ const rules = computed(() => ({/* rules */ }))
 useRegle({}, rules)
 ```
 
-But sometimes, values cannot be tracked properly, so you can use this tool to force a dependency on a rule
+But sometimes, values cannot be tracked properly, so you can use this tool to force dependencies on a rule
 
-``` ts twoslash
+``` ts twoslash {7-9}
 // @noErrors
-import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
-import {withParams} from '@regle/rules';
+import {useRegle} from '@regle/core';
 import {ref} from 'vue';
+// ---cut---
+import {withParams} from '@regle/rules';
 
 const base = ref('foo');
 
 const {regle} = useRegle({name: ''}, {
   name: {
-    customRule: withParams((value) => value === base.value, [base]),
+    customRule: withParams((value, param) => value === param, [base]),
     // or
-    customRule: withParams((value) => value === base.value, [() => base.value]),
+    customRule: withParams((value, param) => value === param, [() => base.value]),
   }
 })
 ```
@@ -111,17 +115,20 @@ const {regle} = useRegle({name: ''}, {
 
 withAsync works the same as `withParams`, but for async rules depending on external values
 
-``` ts twoslash
+``` ts twoslash {7}
 // @noErrors
-import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
-import {withAsync} from '@regle/rules';
+import {useRegle} from '@regle/core';
 import {ref} from 'vue';
+const someAsyncCall = async (param: string) => await Promise.resolve(true);
+
+// ---cut---
+import {withAsync} from '@regle/rules';
 
 const base = ref('foo');
 
 const {regle} = useRegle({name: ''}, {
   name: {
-    customRule: withAsync(async (value) => new Promise<boolean>((resolve) => resolve(value === base.value)), [base]),
+    customRule: withAsync(async (value, param) => await someAsyncCall(param), [base]),
   }
 })
 ```
@@ -131,11 +138,13 @@ const {regle} = useRegle({name: ''}, {
 
 Rule tools can work with each other and still keeps thing typed
 
-``` ts twoslash
+``` ts twoslash {9-14}
 // @noErrors
-import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
-import {withAsync, withMessage} from '@regle/rules';
+import {useRegle} from '@regle/core';
 import {ref} from 'vue';
+const someAsyncCall = async (param: string) => await Promise.resolve(true);
+// ---cut---
+import {withAsync, withMessage} from '@regle/rules';
 
 const base = ref(1);
 
@@ -145,10 +154,10 @@ const { regle } = useRegle(
     name: {
       customRule: withMessage(
         withAsync(
-          async (value) => new Promise<boolean>((resolve) => resolve(value === base.value)),
+          async (value, param) => await someAsyncCall(param),
           [base]
         ),
-        (value, { $params: [base] }) => `Custom error: ${value} != ${base}`
+        (value, { $params: [param] }) => `Custom error: ${value} != ${param}`
         //                   ^?
       ),
     },

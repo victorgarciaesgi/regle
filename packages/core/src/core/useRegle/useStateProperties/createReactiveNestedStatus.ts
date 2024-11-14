@@ -24,7 +24,7 @@ import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 
 interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialValidationTree>;
-  scopeRules: Ref<MaybeGetter<$InternalReglePartialValidationTree>>;
+  scopeRules: Ref<$InternalReglePartialValidationTree>;
   state: Ref<Record<string, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path?: string;
@@ -64,13 +64,12 @@ export function createReactiveNestedStatus({
   let $unwatchState: WatchStopHandle;
   let $unwatchGroups: WatchStopHandle;
 
-  function createReactiveFieldsStatus(watch = true) {
+  function createReactiveFieldsStatus(watch = true, forceFromGetter = false) {
     $fields.value = null!;
     triggerRef($fields);
 
-    const unwrappedScopedRules = unwrapGetter(scopeRules.value, state.value);
     const scopedRulesStatus = Object.fromEntries(
-      Object.entries(unwrappedScopedRules)
+      Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
@@ -98,7 +97,7 @@ export function createReactiveNestedStatus({
 
     const externalRulesStatus = Object.fromEntries(
       Object.entries(unref(externalErrors) ?? {})
-        .filter(([key]) => !(key in unwrappedScopedRules))
+        .filter(([key]) => !(key in scopeRules.value))
         .map(([key, errors]) => {
           if (errors) {
             const statePropRulesRef = toRef(() => ({}));
@@ -206,16 +205,6 @@ export function createReactiveNestedStatus({
         { deep: true, flush: 'post' }
       );
     }
-    if (scopeRules.value instanceof Function) {
-      $unwatchState = watch(
-        state,
-        () => {
-          $unwatch();
-          createReactiveFieldsStatus();
-        },
-        { deep: true, flush: 'post' }
-      );
-    }
 
     scope = effectScope();
     scopeState = scope.run(() => {
@@ -294,7 +283,7 @@ export function createReactiveNestedStatus({
 
 interface CreateReactiveChildrenStatus {
   state: Ref<unknown>;
-  rulesDef: Ref<MaybeGetter<$InternalFormPropertyTypes, any>>;
+  rulesDef: Ref<$InternalFormPropertyTypes, any>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   index?: number;
@@ -315,7 +304,7 @@ export function createReactiveChildrenStatus({
   index,
   onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
-  if (isCollectionRulesDef(rulesDef, state)) {
+  if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
       state,
       rulesDef,

@@ -21,6 +21,7 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
+  { text: 'Modifiers', link: '/core-concepts/modifiers' },
 ];
 
 export default defineConfig({
@@ -28,8 +29,8 @@ export default defineConfig({
   description: 'A reactive and declarative vue form library',
   themeConfig: {
     logo: {
-      dark: '../../assets/logo-reversed.png',
-      light: '../../assets/logo.png',
+      dark: '/logo-reversed.png',
+      light: '/logo.png',
     },
     nav: Nav,
     search: {

@@ -20,7 +20,7 @@ export function applyIf<
 >(
   _condition: ParamDecl<boolean>,
   rule:
-    | InlineRuleDeclaration<TValue, TReturn>
+    | InlineRuleDeclaration<TValue, TParams, TReturn>
     | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
 ): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
   let _type: string | undefined;

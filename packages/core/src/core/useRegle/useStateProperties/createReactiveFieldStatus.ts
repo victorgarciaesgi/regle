@@ -80,10 +80,8 @@ export function createReactiveFieldStatus({
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
     );
 
-    const unwrappedRule = unwrapGetter(rulesDef.value, state.value, index);
-
     $rules.value = Object.fromEntries(
-      Object.entries(unwrappedRule)
+      Object.entries(rulesDef.value)
         .filter(([ruleKey]) => !ruleKey.startsWith('$'))
         .map(([ruleKey, rule]) => {
           if (rule) {
@@ -98,7 +96,6 @@ export function createReactiveFieldStatus({
                 state,
                 path,
                 storage,
-                options,
               }),
             ];
           }
@@ -154,7 +151,7 @@ export function createReactiveFieldStatus({
       });
 
       const $lazy = computed<boolean | undefined>(() => {
-        if ($localOptions.value.$lazy) {
+        if ($localOptions.value.$lazy != null) {
           return $localOptions.value.$lazy;
         }
         return unref(options.lazy);
@@ -262,11 +259,9 @@ export function createReactiveFieldStatus({
       if (rulesDef.value instanceof Function) {
         createReactiveRulesResult();
       }
-      if (!scopeState.$lazy.value) {
-        $commit();
-        if (!scopeState.$rewardEarly.value !== false) {
-          // $clearExternalErrors();
-        }
+      $commit();
+      if (!scopeState.$rewardEarly.value !== false) {
+        // $clearExternalErrors();
       }
     });
 
@@ -340,6 +335,10 @@ export function createReactiveFieldStatus({
 
   function $clearExternalErrors() {
     $externalErrors.value = [];
+  }
+
+  if (!scopeState.$lazy.value) {
+    $validateHandler();
   }
 
   return reactive({

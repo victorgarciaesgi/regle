@@ -56,57 +56,43 @@ Indicates the state of validation for this validator
 If the rule is async, indicates if it's currently pending. Always false if it's synchronous.
 
 
-### `$anyDirty`
+### `$message`
+- Type: `readonly string | string[]`
+
+Returns the current rule computed error message or messages
+
+
+### `$active`
 - Type: `readonly boolean`
-
-A flag very similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true if given model was $touched or any of its children are `$anyDirty` which means at least one descendant is `$dirty`.
-
-
-### `$value`
-- Type: `TValue` (The current property value type)
   
-A reference to the original validated model. It can be used to bind your form with `v-model` too
+Indicated whether or not the rule is enabled (for rules like `requiredIf`)
 
 
 
+### `$type`
+- Type: `readonly string`
 
-### `$error`
-- Type: `readonly boolean`
+The rule type name
 
-Convenience flag to easily decide if a message should be displayed. Equivalent to `$dirty && !$pending && $invalid`
+### `$validator`
+- Type: `readonly (value, ...metadata) => boolean | {$valid: true, [x:string]: any}`
 
+Returns the original rule validator function
 
-### `$errors`
+### `$path`
 - Type: `readonly string[]`
 
-Collection of all the error messages, collected for all child properties and nested forms. Only contains errors from properties where $dirty equals true.
+Returns the current path of the rule (used internally for tracking)
 
-### `$silentErrors`
-- Type: `readonly string[]`
-
-Collection of all the error messages, collected for all child properties.
-
-
-## Common methods for fields
+## Common methods for rules
 
 
 ### `$validate`
 - Type: `() => Promise<boolean>`
 
-Sets all properties as dirty, triggering all rules. Returns a Promise with a boolean, which resolves once all rules finish.
-
-### `$touch`
-- Type: `() => void`
-
-Sets its property and all nested properties $dirty state to true.
+Run the rule validator and compute its properties like `$message` and `$active`
 
 ### `$reset`
 - Type: `() => void`
 
-Resets the $dirty state on all nested properties of a form.
-
-### `$clearExternalResults`
-- Type: `() => void`
-
-Clears the $externalResults state back to an empty object.
-
+Reset the `$valid`, `$metadata` and `$pending` states

@@ -7,6 +7,7 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinition,
 } from './rule.definition.type';
+import type { UnwrapRegleUniversalParams } from './rule.params.types';
 
 /**
  * @public
@@ -145,10 +146,11 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
  */
 export type InlineRuleDeclaration<
   TValue extends any = any,
+  TParams extends any[] = any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
     | RegleRuleMetadataDefinition
     | Promise<RegleRuleMetadataDefinition>,
-> = (value: Maybe<TValue>, ...args: any[]) => TReturn;
+> = (value: Maybe<TValue>, ...args: UnwrapRegleUniversalParams<TParams>) => TReturn;
 
 /**
  * @public
@@ -163,5 +165,5 @@ export type FormRuleDeclaration<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
 > =
-  | InlineRuleDeclaration<TValue, TReturn>
+  | InlineRuleDeclaration<TValue, TParams, TReturn>
   | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;

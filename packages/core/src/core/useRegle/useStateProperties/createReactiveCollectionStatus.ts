@@ -16,7 +16,7 @@ import type {
   RegleBehaviourOptions,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { isObject } from '../../../utils';
+import { isObject, unwrapGetter } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
 import {
@@ -47,7 +47,7 @@ function createCollectionElement({
   customMessages?: CustomRulesDeclarationTree;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  rules: MaybeGetter<$InternalFormPropertyTypes, any>;
+  rules: $InternalFormPropertyTypes;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $fieldId = randomId();
@@ -107,7 +107,7 @@ function updateCollectionElement({
   customMessages?: CustomRulesDeclarationTree;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  rules: MaybeGetter<$InternalFormPropertyTypes, any>;
+  rules: $InternalFormPropertyTypes;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
 }): $InternalRegleStatusType | null {
   const $state = toRefs(value);
@@ -127,7 +127,7 @@ function updateCollectionElement({
 }
 
 interface CreateReactiveCollectionStatusArgs {
-  state: Ref<unknown>;
+  state: Ref<unknown[]>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
@@ -224,6 +224,12 @@ export function createReactiveCollectionStatus({
 
           $eachStatus.value = $eachStatus.value
             .map((status, newIndex) => {
+              const unwrapped$Each = unwrapGetter(
+                $each,
+                toRef(() => state.value[newIndex]),
+                newIndex
+              );
+
               if (
                 isObject(status) &&
                 (isFieldStatus(status) ||
@@ -234,7 +240,7 @@ export function createReactiveCollectionStatus({
                 return updateCollectionElement({
                   $id: $id.value,
                   path: `${path}.${status.$id}`,
-                  rules: $each!,
+                  rules: unwrapped$Each!,
                   value: state.value as any[],
                   index: newIndex,
                   options,
@@ -245,7 +251,7 @@ export function createReactiveCollectionStatus({
                 return createCollectionElement({
                   $id: $id.value,
                   path,
-                  rules: $each!,
+                  rules: unwrapped$Each!,
                   value: state.value as any[],
                   index: newIndex,
                   options,
@@ -289,11 +295,17 @@ export function createReactiveCollectionStatus({
             const index = parseInt(key);
             const existingStatus = $eachStatus.value[index];
 
-            if (!existingStatus && rulesDef.value.$each) {
+            const unwrapped$Each = unwrapGetter(
+              $each,
+              toRef(() => state.value[index]),
+              index
+            );
+
+            if (!existingStatus && unwrapped$Each) {
               const newElement = createCollectionElement({
                 $id: $id.value,
                 value: state.value as any[],
-                rules: rulesDef.value.$each,
+                rules: unwrapped$Each,
                 customMessages,
                 path,
                 storage,
@@ -328,10 +340,15 @@ export function createReactiveCollectionStatus({
 
     if (Array.isArray(state.value) && $each) {
       for (const [index, s] of state.value.entries()) {
+        const unwrapped$Each = unwrapGetter(
+          $each,
+          toRef(() => state.value[index]),
+          index
+        );
         const element = createCollectionElement({
           $id: $id.value,
           path,
-          rules: $each,
+          rules: unwrapped$Each,
           value: state.value as any[],
           index,
           options,
@@ -373,7 +390,7 @@ export function createReactiveCollectionStatus({
       const isPrimitiveArray = computed(() => {
         if (Array.isArray(state.value) && state.value.length) {
           return state.value.some((s) => typeof s !== 'object');
-        } else if (rulesDef.value.$each) {
+        } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {
           return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
         }
         return false;
@@ -428,6 +445,12 @@ export function createReactiveCollectionStatus({
 
       return { isPrimitiveArray, $dirty, $anyDirty, $invalid, $valid, $error, $pending };
     })!;
+
+    if (scopeState.isPrimitiveArray.value) {
+      console.warn(
+        `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. Only mutation properties like .splice, .push ...etc will work. We advise to use an Array of objects instead`
+      );
+    }
   }
 
   function $touch(): void {

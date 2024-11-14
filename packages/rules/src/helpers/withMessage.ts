@@ -16,7 +16,7 @@ export function withMessage<
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: InlineRuleDeclaration<TValue, TReturn>,
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TReturn extends Promise<infer M> ? M : TReturn>,

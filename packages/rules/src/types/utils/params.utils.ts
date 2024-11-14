@@ -41,7 +41,11 @@ type MetadataBase = {
 type ExtractMetaDataFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<any, any, any, infer M extends MetadataBase>
     ? [M, ...ExtractMetaDataFromRules<R>]
-    : F extends InlineRuleDeclaration<any, infer M extends MetadataBase | Promise<MetadataBase>>
+    : F extends InlineRuleDeclaration<
+          any,
+          any[],
+          infer M extends MetadataBase | Promise<MetadataBase>
+        >
       ? [M, ...ExtractMetaDataFromRules<R>]
       : [...ExtractMetaDataFromRules<R>]
   : [];

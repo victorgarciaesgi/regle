@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
-import { computed, effectScope, reactive, watch } from 'vue';
+import { computed, effectScope, reactive, toRaw, watch } from 'vue';
 import type {
   $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
@@ -8,7 +8,6 @@ import type {
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
-  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { InternalRuleType } from '../../../types';
 import { isEmpty } from '../../../utils';
@@ -19,12 +18,11 @@ import { isFormRuleDefinition } from '../guards';
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
-  rule: Ref<InlineRuleDeclaration<any, any> | RegleRuleDefinition<any, any, any>>;
+  rule: Ref<InlineRuleDeclaration<any, any[], any> | RegleRuleDefinition<any, any, any>>;
   $dirty: Ref<boolean>;
   customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
   storage: RegleStorage;
-  options: ResolvedRegleBehaviourOptions;
 }
 
 export function createReactiveRuleStatus({
@@ -38,7 +36,7 @@ export function createReactiveRuleStatus({
 }: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
-    $message: ComputedRef<string>;
+    $message: ComputedRef<string | string[]>;
     $type: ComputedRef<string>;
     $validator: ComputedRef<
       RegleRuleDefinitionProcessor<
@@ -124,7 +122,7 @@ export function createReactiveRuleStatus({
         if (isFormRuleDefinition(rule)) {
           return rule.value.validator;
         } else {
-          return rule.value as InlineRuleDeclaration<any, any>;
+          return rule.value as InlineRuleDeclaration<any, any[], any>;
         }
       });
 
@@ -144,8 +142,8 @@ export function createReactiveRuleStatus({
         $validator,
         $params,
         $path,
-      };
-    }) as ScopeState;
+      } satisfies ScopeState;
+    })!;
 
     $unwatchState = watch(scopeState.$params, $validate, {
       deep: true,

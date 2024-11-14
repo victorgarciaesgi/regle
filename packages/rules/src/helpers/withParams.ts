@@ -13,11 +13,11 @@ export function withParams<
   TReturn extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
 >(
-  rule: InlineRuleDeclaration<TValue, TReturn>,
+  rule: InlineRuleDeclaration<TValue, NoInfer<TParams>, TReturn>,
   depsArray: [...TParams]
 ): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata> {
-  const validator = (value: any | null | undefined) => {
-    return rule(value);
+  const validator = (value: any | null | undefined, ...params: any[]) => {
+    return rule(value, ...(params as any));
   };
 
   const newRule = createRule({

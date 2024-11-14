@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue';
+import type { MaybeRef, Ref } from 'vue';
 
 export type Prettify<T> = T extends infer R
   ? {
@@ -8,7 +8,7 @@ export type Prettify<T> = T extends infer R
 export type Maybe<T = any> = T | null | undefined;
 export type MaybeNull<T> = T | null;
 
-export type MaybeGetter<T, V = any> = T | ((value: V, index: number) => T);
+export type MaybeGetter<T, V = any> = T | ((value: Ref<V>, index: number) => T);
 
 export type ExtractFromGetter<T extends MaybeGetter<any, any>> =
   T extends MaybeGetter<infer U, any> ? U : never;

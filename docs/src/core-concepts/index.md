@@ -9,8 +9,7 @@ title: useRegle
 
 Let's see how to use it with the simplest case example
 
-``` vue twoslash
-<script setup lang='ts'>
+``` ts twoslash
 import {useRegle} from '@regle/core';
 
 const {regle, state, errors, invalid, validateState, resetAll} = useRegle({name: ''}, {
@@ -18,8 +17,6 @@ const {regle, state, errors, invalid, validateState, resetAll} = useRegle({name:
     // rules
   }
 })
-
-</script>
 ```
 
 In the returned helpers we have:

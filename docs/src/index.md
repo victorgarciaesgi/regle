@@ -4,13 +4,13 @@ layout: home
 
 hero:
   name: "Regle"
-  text: "TS first validation library for Vue.js"
+  text: "TS-first validation library for Vue.js"
   tagline: "Type safe, intuitive API and Zod compatible.
 
   The best way to handle your forms in Vue 3"
   image:
-    dark: ../assets/logo-reglejs-favicon-reversed.svg
-    light: ../assets/logo-reglejs-favicon.svg
+    dark: /logo-reglejs-favicon-reversed.svg
+    light: /logo-reglejs-favicon.svg
     alt: Regle logo
   actions:
     - theme: brand

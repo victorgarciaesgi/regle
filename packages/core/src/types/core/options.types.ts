@@ -38,7 +38,7 @@ export interface LocalRegleBehaviourOptions<
   TExternal extends RegleExternalErrorTree<TState>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
 > {
-  $externalErrors?: MaybeRef<TExternal>;
+  externalErrors?: MaybeRef<TExternal>;
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
 }
 

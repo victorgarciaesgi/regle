@@ -20,7 +20,7 @@ export function not<
 >(
   rule:
     | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-    | InlineRuleDeclaration<TValue, TReturn>,
+    | InlineRuleDeclaration<TValue, TParams, TReturn>,
   message?: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TParams, TMetadata>,

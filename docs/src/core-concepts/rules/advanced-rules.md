@@ -194,7 +194,7 @@ Like in inline rules, you can return any data from your validator function as lo
 
 It can be useful for returning computed data from the validator, or in async function to process api result, or api errors.
 
-```ts twoslash
+```ts twoslash {9}
 import { createRule, defineType } from '@regle/core';
 
 export const example = createRule({

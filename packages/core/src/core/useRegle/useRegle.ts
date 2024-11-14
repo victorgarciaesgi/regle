@@ -115,8 +115,6 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       return false;
     }
 
-    regle.$validate();
-
     return {
       regle: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
       errors: errors as RegleErrorTree<TRules>,

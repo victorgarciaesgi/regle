@@ -17,7 +17,7 @@ export function useStateProperties(
 ) {
   const storage = useStorage();
 
-  const externalErrors = computed(() => unref(options.$externalErrors));
+  const externalErrors = computed(() => unref(options.externalErrors));
 
   const regle = reactive(
     createReactiveNestedStatus({

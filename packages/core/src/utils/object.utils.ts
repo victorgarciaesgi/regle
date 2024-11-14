@@ -53,7 +53,7 @@ function getRegExpFlags(regExp: any) {
 
 export function unwrapGetter<T extends any>(
   getter: MaybeGetter<T, any>,
-  value: any,
+  value: Ref<any>,
   index?: number
 ): T {
   if (getter instanceof Function) {
