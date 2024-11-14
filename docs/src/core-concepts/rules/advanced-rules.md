@@ -2,7 +2,10 @@
 title: Advanced rules
 ---
 
-# Advanced rule declaration with `createRule`
+# Advanced rules
+
+
+## `createRule`
 
 If you want to create a reusable rule, it's advised to create using `createRule`. It will help you define the type, the params, the active state etc...
 
@@ -140,7 +143,7 @@ const {regle, errors, resetAll} = useRegle({name: ''}, {
 
 <template>
   <div>
-    <input v-model="condition" type='checkbox'/>
+    <input  v-model="condition" type='checkbox'/>
     <label>The field is required</label>
   </div>
   <div>
@@ -164,7 +167,7 @@ Result:
     <label>The field is required</label>
   </div>
   <div>
-    <input v-model='form.name' :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
+    <input :class="{valid: regle.$fields.name.$valid}" v-model='form.name' :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
     <button type="button" @click="resetAll">Reset</button>
   </div>
   <ul v-if="errors.name.length">

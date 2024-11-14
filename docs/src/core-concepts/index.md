@@ -62,7 +62,9 @@ State given as parameter can be either a raw object, a `Ref` object, a `Reactive
 ## Rules
 
 In the rules sections, you can declare a tree matching your input state. Each property can then declare a record of validation rules to define its `$invalid` state.
-Regle provide a list of default rules that you can use from `@regle/rules` 
+Regle provide a list of default rules that you can use from `@regle/rules`.
+
+You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
 ``` ts twoslash
 // @noErrors

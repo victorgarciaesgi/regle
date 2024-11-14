@@ -1,21 +1,14 @@
 import type { AllRulesDeclarations, RegleBehaviourOptions } from '../types';
 import { createUseRegleComposable } from './useRegle';
 
-/**
- * Root function that allows you to define project-wise all your custom rules or overwrite default ones
- *
- * It will return utility functions that let you build type-safe forms
- *
- * @param customRules
- */
 export function defineRegleConfig<TCustomRules extends Partial<AllRulesDeclarations>>({
   rules,
-  options,
+  modifiers,
 }: {
   rules?: () => TCustomRules;
-  options?: RegleBehaviourOptions;
+  modifiers?: RegleBehaviourOptions;
 }) {
-  const useRegle = createUseRegleComposable<TCustomRules>(rules, options);
+  const useRegle = createUseRegleComposable<TCustomRules>(rules, modifiers);
 
   return useRegle;
 }

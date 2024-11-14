@@ -17,9 +17,8 @@ export function isEmpty(value: unknown): value is null | undefined {
   if (typeof value === 'object' && value != null) {
     return Object.keys(value).length === 0;
   }
-  if (typeof value === 'number') {
-    return isNaN(value);
+  if (typeof value === 'string') {
+    return !String(value.trim()).length;
   }
-
-  return !String(value).trim().length;
+  return false;
 }

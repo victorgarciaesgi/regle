@@ -51,7 +51,7 @@ Indicates the state of validation for given model becomes true when any of its c
 ### `$valid`
 - Type: `readonly boolean`
   
-Same as `$invalid`, but for a truthy value
+This will be true only if the field is `$dirty` and the value is not empty. It's useful to display UI indicators that the field is correct.
 
 
 ### `$dirty`
@@ -114,7 +114,7 @@ Sets its property and all nested properties $dirty state to true.
 
 Resets the $dirty state on all nested properties of a form.
 
-### `$clearExternalResults`
+### `$clearExternalErrors`
 - Type: `() => void`
 
 Clears the $externalResults state back to an empty object.

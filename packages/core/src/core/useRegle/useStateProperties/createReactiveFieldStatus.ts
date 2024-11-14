@@ -9,7 +9,7 @@ import type {
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce, unwrapGetter } from '../../../utils';
+import { debounce, isEmpty, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { extractRulesErrors } from '../useErrors';
@@ -217,15 +217,18 @@ export function createReactiveFieldStatus({
       });
 
       const $valid = computed<boolean>(() => {
-        if ($externalErrors.value?.length) {
-          return false;
-        } else if ($rewardEarly.value) {
-          return Object.entries($rules.value).every(([key, ruleResult]) => {
-            return ruleResult.$valid;
-          });
-        } else {
-          return !$invalid.value;
+        if ($dirty.value && !isEmpty(state.value)) {
+          if ($externalErrors.value?.length) {
+            return false;
+          } else if ($rewardEarly.value) {
+            return Object.entries($rules.value).every(([key, ruleResult]) => {
+              return ruleResult.$valid;
+            });
+          } else {
+            return !$invalid.value;
+          }
         }
+        return false;
       });
 
       watch($valid, (value) => {

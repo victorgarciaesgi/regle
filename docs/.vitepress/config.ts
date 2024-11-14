@@ -17,11 +17,16 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
         text: 'Advanced rules',
         link: '/core-concepts/rules/advanced-rules',
       },
+      {
+        text: 'Built-in rules',
+        link: '/core-concepts/rules/built-in-rules',
+      },
     ],
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
+  { text: 'Global configuration', link: '/core-concepts/global-config' },
 ];
 
 export default defineConfig({

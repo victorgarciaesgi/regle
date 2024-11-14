@@ -42,7 +42,9 @@ It's heavily inspired by Vuelidate.
 
 # Documentation
 
-In Progress
+[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/) 
+
+(in progress)
 
 # Play with it
 
@@ -77,18 +79,17 @@ TODO
 - [x] Logo
 - [x] $silentErrors 
 - [x] Validation groups
-- [ ] `Valibot` support
-- [ ] Unit tests (in progress)
-- [ ] E2E tests
-- [ ] Readme (in progress)
 - [ ] Documentation (in progress)
+- [ ] Unit tests (in progress)
+- [ ] E2E tests (in progress)
+- [ ] `Valibot` support
 - [ ] TS docs
 
 # Maybe in roadmap
 
 - [ ] Typed plugin system (like scrollToError)
 
-# Quick start
+# Quick install
 
 ```bash
 pnpm install @regle/core @regle/rules
@@ -99,155 +100,6 @@ npm install @regle/core @regle/rules
 ```
 
 
-```vue
-<template>
-    <input v-model="form.email" placeholder="email" />
-    <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul>
-
-    <input v-model="form.password" placeholder="password"/>
-    <ul>
-      <li v-for="error of errors.password" :key="error">{{ error }}</li>
-    </ul>
-
-    <input v-model="form.confirmPassword" placeholder="password"/>
-    <ul>
-      <li v-for="error of errors.confirmPassword" :key="error">{{ error }}</li>
-    </ul>
-
-
-    <button type="submit" @click="submit">Submit</button>
-</template>
-
-<script setup lang='ts'>
-import {useRegle} from '@regle/core';
-import {email, required, minLength, sameAs} from '@regle/rules';
-
-type MyForm = {
-  email?: string,
-  password?: string,
-  confirmPassword?: string
-}
-
-const form = ref<MyForm>({
-  email: '',
-  password: '',
-  confirmPassword: '',
-})
-
-const {errors, validateState} = useRegle(form, () => ({
-  email: {
-    email,
-    required,
-  },
-  password: {
-    required,
-    minLength: minLength(8),
-  },
-  confirmPassword: {
-    required,
-    sameAs: withMessage(sameAs(() => form.value.password), 'Confirm password must be same as password')
-  }
-}));
-
-
-
-function submit() {
-  const result = await validateState();
-  if (result) {
-    console.log(result.email); // email: string
-    //          ^ type safe form result based on your rules
-  }
-}
-
-</script>
-```
-
-
-## Create your own rules
-
-```ts
-// validations.ts
-import {createRule, defineRegleConfig} from '@regle/core';
-
-const myCustomRule = createRule({
-  type: defineType<string, [foo: string]>('myCustomRule'),
-  validator(value, foo) {
-    return value === foo;
-  },
-  message: (_, {$params: [foo]}) => `Value is not ${foo}`
-})
-
-export const useRegle = defineRegleConfig({
-  rules: () => ({
-    maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
-      return `No no,  ${count} is the maximum value`;
-    }),
-    myCustomRule
-  }),
-  options: {
-    lazy: true,
-  }
-});
-```
-
-
-```vue
-<script setup lang='ts'>
-import {useRegle, myCustomRule} from './validations';
-
-
-const {errors} = useRegle(..., () => ({
-  foo: {
-    myCustomRule: myCustomRule('bar'),
-  // ^ autocompletes
-  }
-}))
-
-</script>
-```
-
-
-## Usage with Zod
-
-```bash
-pnpm install zod @regle/zod
-# or
-yarn add zod @regle/zod
-# or
-npm install zod @regle/zod
-```
-
-```vue
-<script setup lang='ts'>
-import {useZodForm} from '@regle/zod';
-import {z} from 'zod';
-
-const form = reactive({
-  email: '',
-  firstName: '',
-})
-
-const {errors, regle} = useZodForm(form, z.object({
-  email: z.string().email({message: 'This must be an email'}).min(1, {message: "This is required"}),
-  firstName: z.strin().min(1),
-}))
-
-</script>
-```
-
-
-
-
-
-## Development
-
-1. Clone this repository
-2. Install dependencies using `pnpm i`
-3. Build project for local tests `pnpm run test`
-4. Start dev playground `pnpm run dev`
-5. Build project for deploy `pnpm run build`
 
 ## 📑 License
 

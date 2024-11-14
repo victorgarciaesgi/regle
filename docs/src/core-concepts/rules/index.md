@@ -2,7 +2,6 @@
 title: Rules
 ---
 
-
 # Rules
 
 Rules are the core concept of Regle (and also it's name 🙄).

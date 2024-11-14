@@ -122,14 +122,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe, InlineRuleDeclaration } from '@regle/core';
-import {
-  createRule,
-  defineType,
-  RegleExternalErrorTree,
-  RegleFieldStatus,
-  useRegle,
-} from '@regle/core';
+import type { Maybe, InlineRuleDeclaration, RegleExternalErrorTree } from '@regle/core';
+import { createRule, defineType, RegleFieldStatus, useRegle } from '@regle/core';
 import {
   maxLength,
   minLength,
@@ -158,22 +152,11 @@ async function submit() {
   console.log(result);
 }
 
+const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
+
 const { errors, validateState, regle, resetAll, invalid, state } = useRegle(
   form,
   () => ({
-    // name: {
-    //   required: withParams(
-    //     (value) => {
-    //       console.log(value);
-    //       return { $valid: form.array2[0].name !== 'test', foo: form.array2[0].name };
-    //     },
-    //     [() => form.array2[0].name]
-    //   ),
-    // },
-    // array0: { $each: { numeric: numeric } },
-    // nested: {
-    //   array1: { $each: { minLength: minLength(2) } },
-    // },
     parents: {
       $each: (parent) => {
         console.log('parent');
@@ -210,8 +193,31 @@ const { errors, validateState, regle, resetAll, invalid, state } = useRegle(
       },
     },
   }),
-  { lazy: false }
+  {
+    lazy: false,
+    externalErrors,
+    validationGroups: (fields) => ({
+      group1: [fields.parents],
+    }),
+  }
 );
+
+const {} = useRegle(
+  { email: '', user: { firstName: '' } },
+  {
+    email: { required },
+    user: {
+      firstName: { required },
+    },
+  },
+  {
+    validationGroups: (fields) => ({
+      group1: [fields.email, fields.user.$fields.firstName],
+    }),
+  }
+);
+
+externalErrors.value;
 
 // regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
 

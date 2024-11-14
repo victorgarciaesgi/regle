@@ -35,6 +35,11 @@ html.dark {
   background-color: var(--vp-c-divider);
   padding: 4px 12px;
   border-radius: 6px;
+  border: 1px solid var(--vp-c-border);
+}
+
+.demo-container input.valid {
+  border-color: var(--vp-c-brand-1);
 }
 
 .demo-container ul {
