@@ -7,6 +7,7 @@ import type {
 } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { ruleMockIsEven } from './rules.fixtures';
+// eslint-disable-next-line
 export type { RefSymbol } from '@vue/reactivity';
 
 type ReturnRegleType = Regle<

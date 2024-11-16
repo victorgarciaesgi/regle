@@ -1,24 +1,11 @@
 <template>
   <div class="demo-container">
     <div>
-      <div v-for="(item, index) of regle.$fields.collection.$each" :key="index">
-        <div>
-          <input
-            v-model="item.$value.name"
-            :class="{ valid: item.$fields.name.$valid }"
-            placeholder="Type an item value"
-          />
-          <ul v-if="item.$fields.name.$errors.length">
-            <li v-for="error of item.$fields.name.$errors" :key="error">
-              {{ error }}
-            </li>
-          </ul>
-        </div>
+      <div>
+        <input v-model="form.level1.child.value" placeholder="Type an item value" />
       </div>
     </div>
     <button type="button" @click="resetAll">Reset</button>
-    <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
-    <button type="button" @click="removeRandomItem">Remove random item</button>
 
     <pre>{{ regle }}</pre>
   </div>
@@ -29,19 +16,19 @@ import { useRegle } from '@regle/core';
 import { ref } from 'vue';
 import { required } from '@regle/rules';
 
-const form = ref<{ collection: Array<{ name: '' }> }>({
-  collection: [{ name: '' }],
-});
-
-function removeRandomItem() {
-  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
-}
+const form = {
+  level0: ref(0),
+  level1: {
+    child: ref(1),
+    level2: {
+      child: ref(2),
+    },
+  },
+};
 
 const { regle, resetAll } = useRegle(form, {
-  collection: {
-    $each: {
-      name: { required },
-    },
+  level0: {
+    required,
   },
 });
 </script>

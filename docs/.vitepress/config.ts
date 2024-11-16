@@ -31,7 +31,13 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 ];
 
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
-  { text: 'Collections rules', link: '/advanced-usage/collections-rules' },
+  {
+    text: 'Collections',
+    items: [
+      { text: 'Declaring rules', link: '/advanced-usage/collections/collections-rules' },
+      { text: 'Displaying errors', link: '/advanced-usage/collections/collections-rules' },
+    ],
+  },
   { text: 'Usage with Pinia', link: '/advanced-usage/pinia' },
   { text: 'Using metadata from rules', link: '/' },
   { text: 'Rules operators', link: '/advanced-usage/operators' },

@@ -71,11 +71,11 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       customRules
     );
 
-    function resetAll() {
+    async function resetAll() {
       regle.$unwatch();
       resetValuesRecursively(state, initialState);
       regle.$reset();
-      regle.$validate();
+      await regle.$validate();
     }
 
     function resetValuesRecursively(
@@ -85,7 +85,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       Object.entries(initial).forEach(([key, value]) => {
         let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
         let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
-        let initialRef = isRef(initial[key]) ? initial[key].value : initial[key];
+        let initialRef = isRef(initial[key]) ? (initial[key] as any)._value : initial[key];
         if (Array.isArray(initialRef) && Array.isArray(currentValue)) {
           currentRef[key] = [];
           initialRef.forEach((val, index) => {
@@ -93,7 +93,6 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
             resetValuesRecursively(currentRef[key][index], initialRef[index]);
           });
         } else if (isObject(initialRef)) {
-          currentValue = {};
           resetValuesRecursively(currentValue, initialRef);
         } else {
           if (isRef(currentRef[key])) {
@@ -105,8 +104,8 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       });
     }
 
-    const invalid = computed<boolean>(() => {
-      return regle.$invalid || regle.$pending;
+    const ready = computed<boolean>(() => {
+      return !(regle.$invalid || regle.$pending);
     });
 
     async function validateState(): Promise<false | DeepSafeFormState<TState, TRules>> {
@@ -123,7 +122,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       errors: errors as RegleErrorTree<TRules>,
       resetAll,
       validateState,
-      invalid,
+      ready,
       state: processedState,
     };
   }

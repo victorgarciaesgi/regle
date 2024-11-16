@@ -51,7 +51,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(false);
     expect(vm.regle.$dirty).toBe(false);
@@ -90,7 +90,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -112,7 +112,7 @@ describe('useRegle with async rules and Object refs', async () => {
 
     expect(vm.errors.level0Async).toStrictEqual(['Custom error']);
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -149,7 +149,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.errors.level1.child).toStrictEqual(['Custom error']);
     expect(vm.errors.level1.level2.childAsync).toStrictEqual(['Custom error']);
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -192,7 +192,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.errors.level1.child).toStrictEqual([]);
     expect(vm.errors.level1.level2.childAsync).toStrictEqual([]);
 
-    expect(vm.invalid).toBe(false);
+    expect(vm.ready).toBe(true);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -250,7 +250,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(false);
     expect(vm.regle.$dirty).toBe(false);

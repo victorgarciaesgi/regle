@@ -5,10 +5,10 @@ import { defineComponent } from 'vue';
 export function createRegleComponent<T extends Regle<any, any>>(regleComposable: () => T) {
   return mount(
     defineComponent({
-      template: '<div></div>',
       setup() {
         return regleComposable();
       },
+      template: '<div></div>',
     })
   );
 }

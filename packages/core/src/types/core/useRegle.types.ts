@@ -25,7 +25,7 @@ export interface Regle<
    * It allow you to skip scouting the `regle` object
    */
   errors: RegleErrorTree<TRules, TExternal>;
-  invalid: ComputedRef<boolean>;
+  ready: ComputedRef<boolean>;
   resetAll: () => void;
   validateState: () => Promise<false | DeepSafeFormState<TState, TRules>>;
   state: Ref<TState>;

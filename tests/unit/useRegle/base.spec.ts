@@ -27,7 +27,7 @@ describe.each([
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(false);
     expect(vm.regle.$dirty).toBe(false);
@@ -63,7 +63,7 @@ describe.each([
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -83,7 +83,7 @@ describe.each([
 
     expect(vm.errors.level0).toStrictEqual(['Custom error']);
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -116,7 +116,7 @@ describe.each([
     expect(vm.errors.level1.child).toStrictEqual(['Custom error']);
     expect(vm.errors.level1.level2.child).toStrictEqual(['Custom error']);
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -155,7 +155,7 @@ describe.each([
     expect(vm.errors.level1.child).toStrictEqual([]);
     expect(vm.errors.level1.level2.child).toStrictEqual([]);
 
-    expect(vm.invalid).toBe(false);
+    expect(vm.ready).toBe(true);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
@@ -197,9 +197,9 @@ describe.each([
   });
 
   it('should reset on initial state when calling resetAll', async () => {
-    vm.resetAll();
+    await Promise.all([vm.resetAll(), flushPromises()]);
 
-    await flushPromises();
+    await nextTick();
 
     expect(vm.errors).toStrictEqual({
       level0: [],
@@ -211,7 +211,7 @@ describe.each([
       },
     });
 
-    expect(vm.invalid).toBe(true);
+    expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(false);
     expect(vm.regle.$dirty).toBe(false);
