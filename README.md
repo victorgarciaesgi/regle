@@ -23,7 +23,7 @@ It's heavily inspired by Vuelidate.
 > API or function names can still change
 
 
-# Documentation
+# 📚 Documentation
 
 [![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/) 
 

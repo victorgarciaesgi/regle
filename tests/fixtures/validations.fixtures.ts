@@ -154,7 +154,7 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
 //   };
 // }
 
-export function computedValidationsObjectWithRefs() {
+export function computedValidationsObjectWithRefs(): any {
   const conditional = ref(0);
   const number = ref(0);
   const validations = computed(() => {

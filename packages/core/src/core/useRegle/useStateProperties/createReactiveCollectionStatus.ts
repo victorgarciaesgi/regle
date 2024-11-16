@@ -16,6 +16,8 @@ import type {
   RegleBehaviourOptions,
   ResolvedRegleBehaviourOptions,
   RegleCollectionRuleDeclKeyProperty,
+  RegleExternalCollectionErrors,
+  RegleExternalValidationErrors,
 } from '../../../types';
 import { cloneDeep, isObject, unwrapGetter } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
@@ -51,7 +53,7 @@ function createCollectionElement({
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
-  externalErrors: Readonly<Ref<$InternalExternalRegleErrors[] | undefined>>;
+  externalErrors: ComputedRef<$InternalExternalRegleErrors[] | undefined>;
 }): $InternalRegleStatusType | null {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
@@ -105,15 +107,12 @@ interface CreateReactiveCollectionStatusArgs {
 }
 
 interface ScopeReturnState {
-  isPrimitiveArray: ComputedRef<boolean>;
   $dirty: ComputedRef<boolean>;
   $anyDirty: ComputedRef<boolean>;
   $invalid: ComputedRef<boolean>;
   $valid: ComputedRef<boolean>;
   $error: ComputedRef<boolean>;
   $pending: ComputedRef<boolean>;
-  $errors: ComputedRef<string[]>;
-  $silentErrors: ComputedRef<string[]>;
 }
 
 export function createReactiveCollectionStatus({
@@ -138,28 +137,37 @@ export function createReactiveCollectionStatus({
   const $fieldStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
 
-  const $externalErrorsField = computed(() => {
+  const isPrimitiveArray = computed(() => {
+    if (Array.isArray(state.value) && state.value.length) {
+      return state.value.some((s) => typeof s !== 'object');
+    } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {
+      return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
+    }
+    return false;
+  });
+
+  const $externalErrorsField = computed<string[]>(() => {
     if (externalErrors.value) {
       if (isExternalErrorCollection(externalErrors.value)) {
-        return externalErrors.value.$errors;
+        return externalErrors.value.$errors ?? [];
       }
       return [];
     }
     return [];
   });
 
-  const $externalErrorsEach = computed(() => {
+  const $externalErrorsEach = computed<$InternalExternalRegleErrors[]>(() => {
     if (externalErrors.value) {
       if (isExternalErrorCollection(externalErrors.value)) {
-        return externalErrors.value.$each;
+        return externalErrors.value.$each ?? [];
       }
       return [];
     }
     return [];
   });
 
-  $watch();
   createStatus();
+  $watch();
 
   function createStatus() {
     if (typeof state.value === 'object') {
@@ -178,6 +186,10 @@ export function createReactiveCollectionStatus({
       }
     }
 
+    if (!$id.value) {
+      return;
+    }
+
     $fieldStatus.value = createReactiveFieldStatus({
       state,
       rulesDef,
@@ -188,7 +200,7 @@ export function createReactiveCollectionStatus({
       externalErrors: $externalErrorsField,
     });
 
-    if (!$id.value) {
+    if (isPrimitiveArray.value) {
       return;
     }
 
@@ -302,15 +314,6 @@ export function createReactiveCollectionStatus({
       { deep: true, flush: 'pre' }
     );
     scopeState = scope.run(() => {
-      const isPrimitiveArray = computed(() => {
-        if (Array.isArray(state.value) && state.value.length) {
-          return state.value.some((s) => typeof s !== 'object');
-        } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {
-          return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
-        }
-        return false;
-      });
-
       const $dirty = computed<boolean>(() => {
         return (
           $fieldStatus.value.$dirty ||
@@ -364,31 +367,21 @@ export function createReactiveCollectionStatus({
         );
       });
 
-      const $errors = computed(() => {
-        return [];
-      });
-
-      const $silentErrors = computed(() => {
-        return [];
-      });
-
       return {
-        isPrimitiveArray,
         $dirty,
         $anyDirty,
         $invalid,
         $valid,
         $error,
         $pending,
-        $errors,
-        $silentErrors,
-      };
+      } satisfies ScopeReturnState;
     })!;
 
-    if (scopeState.isPrimitiveArray.value) {
+    if (isPrimitiveArray.value) {
       console.warn(
-        `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. Only mutation properties like .splice, .push ...etc will work. We advise to use an Array of objects instead`
+        `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. We advise to use an Array of objects instead`
       );
+      $unwatchState();
     }
   }
 
@@ -420,7 +413,9 @@ export function createReactiveCollectionStatus({
     }
   }
 
-  function $clearExternalErrors() {}
+  function $clearExternalErrors() {
+    // TODO clear external errors
+  }
 
   return reactive({
     $field: $fieldStatus,

@@ -84,6 +84,8 @@ export interface RegleFieldStatus<
 > extends RegleCommonStatus<TState> {
   $value: UnwrapNestedRefs<TState[TKey]>;
   readonly $externalErrors?: string[];
+  readonly $errors: string[];
+  readonly $silentErrors: string[];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
@@ -121,8 +123,6 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
-  readonly $errors: string[];
-  readonly $silentErrors: string[];
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;

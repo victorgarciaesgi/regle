@@ -33,16 +33,13 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
     text: 'Collections',
-    items: [
-      { text: 'Declaring rules', link: '/advanced-usage/collections/collections-rules' },
-      { text: 'Displaying errors', link: '/advanced-usage/collections/collections-rules' },
-    ],
+    link: '/advanced-usage/collections',
   },
-  { text: 'Usage with Pinia', link: '/advanced-usage/pinia' },
-  { text: 'Using metadata from rules', link: '/' },
-  { text: 'Rules operators', link: '/advanced-usage/operators' },
-  { text: 'Validation helpers', link: '/advanced-usage/helpers' },
-  { text: 'Usage with Zod', link: '/zod/' },
+  { text: 'Usage with Pinia', link: '/advanced-usage/usage-with-pinia' },
+  { text: 'Using metadata from rules', link: '/advanced-usage/rule-metadata' },
+  { text: 'Rules operators', link: '/advanced-usage/rules-operators' },
+  { text: 'Validation helpers', link: '/advanced-usage/validations-helpers' },
+  { text: 'Usage with Zod', link: '/advanced-usage/usage-with-zod/' },
 ];
 
 const Rules: DefaultTheme.NavItemWithLink[] = [{ text: 'required', link: '/rules/required' }];
@@ -78,6 +75,10 @@ export default defineConfig({
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],
+    footer: {
+      message: 'Released under the MIT License. Logo by Johannes Lacourly',
+      copyright: 'Copyright © 2023-present Victor Garcia',
+    },
   },
   markdown: {
     codeTransformers: [transformerTwoslash({})],
