@@ -1,234 +1,49 @@
 <template>
-  <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
-    <!-- <input :value="form.email" @input="updateEmail" placeholder="email" />
-    <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
-    <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul>
+  <div class="demo-container">
+    <div>
+      <div v-for="(item, index) of regle.$fields.collection.$each" :key="index">
+        <div>
+          <input
+            v-model="item.$value.name"
+            :class="{ valid: item.$fields.name.$valid }"
+            placeholder="Type an item value"
+          />
+          <ul v-if="item.$fields.name.$errors.length">
+            <li v-for="error of item.$fields.name.$errors" :key="error">
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <button type="button" @click="resetAll">Reset</button>
+    <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
+    <button type="button" @click="removeRandomItem">Remove random item</button>
 
-    <input v-model.number="limit" placeholder="limit" />
-
-    <input
-      :value="form.firstName"
-      @input="updateFirstName"
-      :placeholder="`firstName ${regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
-    />
-    <ul>
-      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
-    </ul>
-
-    <input type="date" v-model="form.birthDate" placeholder="Birth date" />
-    <ul>
-      <li v-for="error of errors.birthDate" :key="error">{{ error }}</li>
-    </ul>
-
-    <input type="date" v-model="form.today" placeholder="Today" />
-    <ul>
-      <li v-for="error of errors.today" :key="error">{{ error }}</li>
-    </ul>
-
-    <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
-      <input v-model="input.name" placeholder="name" />
-      <ul>
-        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">{{
-          error
-        }}</li>
-      </ul>
-    </template>
-
-    <button type="submit" @click="form.foo.bloublou.test.push({ name: '' })">Add entry</button>
-    <button type="submit" @click="form.foo.bloublou.test.splice(0, 1)">Remove first</button>
-    <button type="submit" @click="submit">Submit</button>
-
-    <pre style="max-width: 100%">
-      <code>
-{{ errors }}
-{{ regle }}
-      </code>
-    </pre>
-  </div> -->
-    <!-- <input v-model.number="form.count.value" placeholder="count" />
-
-    <input v-model="form.email.value" placeholder="email" /> -->
-    <!-- <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
-    <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
-    </ul> -->
-    <!-- 
-   
-
-    <button type="submit" @click="form.nested.array1?.push('')">Add entry</button>
-    <button type="submit" @click="form.nested.array1?.splice(0, 1)">Remove first</button> -->
-    <template v-for="(input, index) of state.parents[0].skills[0].items" :key="index">
-      <input v-model="input.name" placeholder="item" />
-      <ul>
-        <li
-          v-for="(error, index2) of errors.parents.$each[0].skills.$each[0].items.$each[index].name"
-          :key="index2"
-          >{{ error }}</li
-        >
-      </ul>
-    </template>
-    <input v-model="state.parents[0].firstName" placeholder="firstName" />
-
-    <button type="submit" @click="state.parents[0].skills[0].items?.push({ name: '' })">
-      Add entry
-    </button>
-
-    <ul>
-      <li v-for="error of errors.name" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-    <!-- <br />
-    <template :key="index" v-for="(input, index) of form.array0">
-      <input v-model="form.array0[index]" placeholder="name" />
-      <ul>
-        <li :key="index2" v-for="(error, index2) of errors.array0.$each[index]">{{ error }}</li>
-      </ul>
-    </template>
-
-    <button type="submit" @click="form.array0?.push(null)">Add entry</button>
-    <button type="submit" @click="form.array0.splice(0, 1)">Remove first</button> -->
-
-    <!-- <template v-for="(input, index) of form.array2" :key="index">
-      <input v-model="form.array2[index].name" placeholder="name" />
-      <input v-model="form.array2[index].deleted" type="checkbox" />
-      <ul>
-        <li v-for="(error, index2) of errors.array2.$each[index].name" :key="index2">
-          {{ error }}
-        </li>
-      </ul>
-    </template>
-
-    <button type="submit" @click="form.array2?.push({ name: '', deleted: false })">
-      Add entry
-    </button>
-    <button type="submit" @click="form.array2 = form.array2.filter((f) => f.name.length > 2)">
-      Remove first
-    </button>
-
-    <button type="submit" @click="resetAll"> reset </button>
-    <button type="submit" @click="submit"> Submit </button> -->
-
-    <pre>
-        <code>
- <!-- {{ errors }} -->
-{{ regle }}
-        
-      </code>
-    </pre>
+    <pre>{{ regle }}</pre>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Maybe, InlineRuleDeclaration, RegleExternalErrorTree } from '@regle/core';
-import { createRule, defineType, RegleFieldStatus, useRegle } from '@regle/core';
-import {
-  maxLength,
-  minLength,
-  numeric,
-  required,
-  requiredIf,
-  withAsync,
-  withMessage,
-  withParams,
-} from '@regle/rules';
-import { nextTick, reactive, ref, watch } from 'vue';
-import { timeout } from './../validations';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
+import { required } from '@regle/rules';
 
-const form = reactive({
-  name: '',
-  // array0: [null] as (number | null)[],
-  // nested: {
-  //   array1: null as string[] | null,
-  // },
-  parents: [{ firstName: '', skills: [{ items: [{ name: '' }] }] }],
+const form = ref<{ collection: Array<{ name: '' }> }>({
+  collection: [{ name: '' }],
 });
 
-async function submit() {
-  // regle.$value.count = 2;
-  const result = await validateState();
-  console.log(result);
+function removeRandomItem() {
+  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
 }
 
-const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
-
-const { errors, validateState, regle, resetAll, invalid, state } = useRegle(
-  form,
-  () => ({
-    parents: {
-      $each: (parent) => {
-        console.log('parent');
-
-        return {
-          skills: {
-            $each: (skill) => {
-              console.log('skill');
-
-              return {
-                items: {
-                  $each: (item, index) => {
-                    console.log('item', parent.value.firstName);
-
-                    return {
-                      name: {
-                        required: withParams(
-                          (value, _parent) => {
-                            return {
-                              $valid: _parent.firstName === 'regle',
-                              foo: _parent.firstName,
-                            };
-                          },
-                          [parent]
-                        ),
-                      },
-                    };
-                  },
-                },
-              };
-            },
-          },
-        };
-      },
-    },
-  }),
-  {
-    lazy: false,
-    externalErrors,
-    validationGroups: (fields) => ({
-      group1: [fields.parents],
-    }),
-  }
-);
-
-const {} = useRegle(
-  { email: '', user: { firstName: '' } },
-  {
-    email: { required },
-    user: {
-      firstName: { required },
+const { regle, resetAll } = useRegle(form, {
+  collection: {
+    $each: {
+      name: { required },
     },
   },
-  {
-    validationGroups: (fields) => ({
-      group1: [fields.email, fields.user.$fields.firstName],
-    }),
-  }
-);
-
-externalErrors.value;
-
-// regle.$fields.array2.$each[0].$fields.name.$rules.valid.$metadata.foo;
-
-// form.nested.array1 = ['b'];
-// nextTick(async () => {
-//   regle.$fields.nested.$fields.array1.$each[0].$touch();
-
-//   const result = await validateState();
-//   if (result) {
-//     // TODO bug never
-//     result.nested.array1;
-//   }
-// });
+});
 </script>
+
+<style lang="scss"></style>

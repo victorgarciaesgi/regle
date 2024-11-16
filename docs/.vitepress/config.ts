@@ -25,9 +25,21 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
+  { text: 'Displaying errors', link: '/core-concepts/displaying-errors' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
   { text: 'Global configuration', link: '/core-concepts/global-config' },
 ];
+
+const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+  { text: 'Collections rules', link: '/advanced-usage/collections-rules' },
+  { text: 'Usage with Pinia', link: '/advanced-usage/pinia' },
+  { text: 'Using metadata from rules', link: '/' },
+  { text: 'Rules operators', link: '/advanced-usage/operators' },
+  { text: 'Validation helpers', link: '/advanced-usage/helpers' },
+  { text: 'Usage with Zod', link: '/zod/' },
+];
+
+const Rules: DefaultTheme.NavItemWithLink[] = [{ text: 'required', link: '/rules/required' }];
 
 export default defineConfig({
   title: 'Regle',
@@ -51,8 +63,12 @@ export default defineConfig({
         items: CoreConcepts,
       },
       {
-        text: 'Zod',
-        items: [{ text: 'Usage with Zod', link: '/zod/' }],
+        text: 'Advanced Usage',
+        items: AdvancedUsage,
+      },
+      {
+        text: 'Built-in rules',
+        items: Rules,
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],

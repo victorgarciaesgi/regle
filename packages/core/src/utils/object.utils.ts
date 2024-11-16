@@ -9,22 +9,20 @@ export function isRefObject(obj: Ref<unknown>): obj is Ref<Record<string, any>> 
   return isObject(obj.value);
 }
 
-export function cloneDeep(obj: { [x: string]: any }): {
-  [x: string]: any;
-} {
-  let result = obj;
+export function cloneDeep<T>(obj: T): T {
+  let result = obj as any;
   let type = {}.toString.call(obj).slice(8, -1);
   if (type == 'Set') {
-    return new Set([...(obj as any)].map((value) => cloneDeep(value)));
+    result = new Set([...(obj as any)].map((value) => cloneDeep(value)));
   }
   if (type == 'Map') {
-    return new Map([...(obj as any)].map((kv) => [cloneDeep(kv[0]), cloneDeep(kv[1])]));
+    result = new Map([...(obj as any)].map((kv) => [cloneDeep(kv[0]), cloneDeep(kv[1])]));
   }
   if (type == 'Date') {
-    return new Date(obj.getTime());
+    result = new Date((obj as any).getTime());
   }
   if (type == 'RegExp') {
-    return RegExp(obj.source, getRegExpFlags(obj));
+    result = RegExp((obj as any).source, getRegExpFlags(obj));
   }
   if (type == 'Array' || type == 'Object') {
     result = Array.isArray(obj) ? [] : {};

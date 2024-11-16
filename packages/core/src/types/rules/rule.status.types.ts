@@ -1,4 +1,4 @@
-import type { UnwrapNestedRefs } from 'vue';
+import type { Ref, UnwrapNestedRefs } from 'vue';
 import type {
   AllRulesDeclarations,
   ExtractFromGetter,
@@ -84,8 +84,6 @@ export interface RegleFieldStatus<
 > extends RegleCommonStatus<TState> {
   $value: UnwrapNestedRefs<TState[TKey]>;
   readonly $externalErrors?: string[];
-  readonly $errors: string[];
-  readonly $silentErrors: string[];
   readonly $rules: {
     readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
       TState[TKey],
@@ -123,6 +121,8 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
+  readonly $errors: string[];
+  readonly $silentErrors: string[];
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
@@ -189,6 +189,7 @@ export interface RegleCollectionStatus<
   TState extends any[],
 > extends RegleFieldStatus<TRules, TState> {
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, TState, number>>;
+  readonly $field: RegleFieldStatus<TRules, TState>;
 }
 
 /**
@@ -196,13 +197,10 @@ export interface RegleCollectionStatus<
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
+  $field: $InternalRegleFieldStatus;
   $each: Array<$InternalRegleStatusType>;
-  $rules?: Record<string, $InternalRegleRuleStatus>;
   $externalErrors?: string[];
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;
-  $fields?: {
-    [x: string]: $InternalRegleStatusType;
-  };
 }

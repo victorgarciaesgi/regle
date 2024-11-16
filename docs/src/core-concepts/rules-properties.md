@@ -32,7 +32,7 @@ regle.$fields.email.$rules.required.
 <template>
   <input v-model='form.user.firstName' placeholder='Type your firstName'/>
   <ul>
-    <li v-for="error of errors.user.firstName">
+    <li v-for="error of errors.user.firstName" :key='error'>
       {{ error }}
     </li>
   </ul>

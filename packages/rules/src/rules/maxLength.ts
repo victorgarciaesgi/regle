@@ -21,7 +21,10 @@ export const maxLength: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, { $params: [count] }) => {
+  message: (value, { $params: [count] }) => {
+    if (Array.isArray(value)) {
+      return `This list should have maximum ${count} items`;
+    }
     return `The maximum length allowed is ${count}`;
   },
 });

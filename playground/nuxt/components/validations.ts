@@ -27,4 +27,9 @@ export const useRegle = defineRegleConfig({
     }),
     asyncEmail,
   }),
+  modifiers: {
+    autoDirty: false,
+    lazy: true,
+    rewardEarly: true,
+  },
 });

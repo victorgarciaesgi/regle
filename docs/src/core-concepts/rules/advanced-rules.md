@@ -100,7 +100,8 @@ useRegle({}, rules);
 
 Exemple: Recreating `requiredIf` rules
 
-```ts twoslash
+
+```ts twoslash include requiredIf
 // @noErrors
 import { createRule, defineType, useRegle } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
@@ -123,16 +124,20 @@ export const requiredIf = createRule({
     return condition;
   },
 });
+```
 
+```ts twoslash
+// @include: requiredIf
 ```
 
  Then use it in your form
 
-```vue
+```vue twoslash {20}
 <script setup lang='ts'>
+// @include: requiredIf
+import { ref } from 'vue';
+// ---cut---
 import { useRegle } from '@regle/core';
-import {requiredIf} from './';
-import {ref} from 'vue';
 
 const condition = ref(false);
 
@@ -148,11 +153,13 @@ const {regle, errors, resetAll} = useRegle({name: ''}, {
   </div>
   <div>
     <!-- Here we can use $active to know if the rule is enabled -->
-    <input v-model='form.name' :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
+    <input 
+      v-model='form.name'
+      :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
     <button type="button" @click="resetAll">Reset</button>
   </div>
   <ul v-if="errors.name.length">
-    <li v-for="error of errors.name">
+    <li v-for="error of errors.name" :key='error'>
       {{ error }}
     </li>
   </ul>
@@ -163,7 +170,7 @@ Result:
 
 <div class="demo-container">
   <div>
-    <input v-model="condition" type='checkbox'/>
+    <input v-model='condition' type='checkbox'/>
     <label>The field is required</label>
   </div>
   <div>
@@ -171,7 +178,7 @@ Result:
     <button type="button" @click="resetAll">Reset</button>
   </div>
   <ul v-if="errors.name.length">
-    <li v-for="error of errors.name">
+    <li v-for="error of errors.name" :key='error'>
       {{ error }}
     </li>
   </ul>

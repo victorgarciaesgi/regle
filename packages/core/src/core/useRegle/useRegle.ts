@@ -79,24 +79,27 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     }
 
     function resetValuesRecursively(
-      origin: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
-      state: Record<string, MaybeRef<any>>
+      current: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
+      initial: Record<string, MaybeRef<any>>
     ) {
-      Object.entries(state).forEach(([key, value]) => {
-        let originRef = isRef<Record<string, MaybeRef<any>>>(origin) ? origin.value : origin;
-        let originValue = isRef(originRef[key]) ? originRef[key].value : originRef[key];
-        const stateRef = isRef(state[key]) ? (state[key] as any)._value : state[key];
-        if (Array.isArray(stateRef) && Array.isArray(originValue)) {
-          stateRef.forEach((val, index) => {
-            resetValuesRecursively(originValue[index], stateRef[index]);
+      Object.entries(initial).forEach(([key, value]) => {
+        let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
+        let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
+        let initialRef = isRef(initial[key]) ? initial[key].value : initial[key];
+        if (Array.isArray(initialRef) && Array.isArray(currentValue)) {
+          currentRef[key] = [];
+          initialRef.forEach((val, index) => {
+            currentRef[key][index] = {};
+            resetValuesRecursively(currentRef[key][index], initialRef[index]);
           });
-        } else if (isObject(stateRef)) {
-          resetValuesRecursively(originValue, stateRef);
+        } else if (isObject(initialRef)) {
+          currentValue = {};
+          resetValuesRecursively(currentValue, initialRef);
         } else {
-          if (isRef(originRef[key])) {
-            originRef[key].value = stateRef;
+          if (isRef(currentRef[key])) {
+            currentRef[key].value = initialRef;
           } else {
-            originRef[key] = stateRef;
+            currentRef[key] = initialRef;
           }
         }
       });

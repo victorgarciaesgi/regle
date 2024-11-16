@@ -1,0 +1,126 @@
+:root {
+  --vp-c-brand-1: #00bb7f;
+  --vp-c-brand-2: #027d56;
+  --vp-c-brand-3: #048d62;
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #58816f 50%, rgb(4, 25, 14) 50%);
+  --vp-home-hero-image-filter: blur(72px);
+}
+
+html.dark {
+  --vp-c-bg: #191a19;
+  --vp-c-bg-alt: #131514;
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    var(--vp-c-brand-1) 50%,
+    var(--vp-c-brand-2) 50%
+  );
+}
+
+.VPHomeFeatures {
+  margin-top: 80px;
+
+  .icon {
+    padding: 10px;
+  }
+}
+
+.demo-container {
+  padding: 20px 16px;
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 8px;
+
+  input {
+    background-color: var(--vp-c-divider);
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--vp-c-border);
+
+    &.valid {
+      border-color: var(--vp-c-brand-1);
+    }
+
+    &.error {
+      border-color: #cc6464;
+    }
+  }
+
+  .list {
+    display: grid;
+    gap: 8px;
+
+    .item {
+      padding: 15px;
+      border: 1px solid var(--vp-c-border);
+      border-radius: 8px;
+    }
+  }
+
+  ul {
+    margin-bottom: 0;
+    color: #cc6464;
+    font-size: 14px;
+
+    li {
+      margin-top: 8px;
+    }
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  .button-list {
+    margin-top: 10px;
+  }
+
+  button {
+    border-radius: 8px;
+    color: var(--vp-c-text-1);
+    padding: 4px 8px;
+    background-color: var(--vp-c-gray-3);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--vp-c-gray-2);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: var(--vp-c-gray-1);
+    }
+
+    + button {
+      margin-left: 4px;
+    }
+  }
+}
+
+h2 .header-anchor {
+  opacity: 1 !important;
+}
+
+.vp-doc li + li {
+  margin-top: 20px;
+}
+
+/* Two slashs */
+
+.twoslash-completion-list .twoslash-completions-icon.completions-property {
+  color: #cb7676 !important;
+}
+.twoslash-completion-list
+  .twoslash-completions-icon.completions-property
+  + span
+  .twoslash-completions-unmatched {
+  color: #cb7676 !important;
+}
+
+.twoslash-completion-list .twoslash-completions-icon.completions-method {
+  color: #80a665 !important;
+}
+.twoslash-completion-list
+  .twoslash-completions-icon.completions-method
+  + span
+  .twoslash-completions-unmatched {
+  color: #80a665 !important;
+}

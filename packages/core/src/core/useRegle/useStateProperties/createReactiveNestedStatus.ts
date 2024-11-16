@@ -18,7 +18,12 @@ import type {
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isRefObject, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import {
+  isCollectionRulesDef,
+  isNestedRulesDef,
+  isStateArray,
+  isValidatorRulesDef,
+} from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 
@@ -57,6 +62,8 @@ export function createReactiveNestedStatus({
     $valid: ComputedRef<boolean>;
     $error: ComputedRef<boolean>;
     $pending: ComputedRef<boolean>;
+    $errors: ComputedRef<string[]>;
+    $silentErrors: ComputedRef<string[]>;
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
@@ -240,6 +247,9 @@ export function createReactiveNestedStatus({
         });
       });
 
+      const $errors = computed(() => []);
+      const $silentErrors = computed(() => []);
+
       return {
         $dirty,
         $anyDirty,
@@ -247,6 +257,8 @@ export function createReactiveNestedStatus({
         $valid,
         $error,
         $pending,
+        $errors,
+        $silentErrors,
       } satisfies ScopeState;
     }) as ScopeState;
   }
@@ -304,7 +316,7 @@ export function createReactiveChildrenStatus({
   index,
   onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
-  if (isCollectionRulesDef(rulesDef)) {
+  if (isCollectionRulesDef(rulesDef) && isStateArray(state)) {
     return createReactiveCollectionStatus({
       state,
       rulesDef,

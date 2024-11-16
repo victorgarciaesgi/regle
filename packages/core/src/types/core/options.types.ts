@@ -44,7 +44,8 @@ export interface LocalRegleBehaviourOptions<
 
 export type RegleValidationGroupEntry =
   | RegleFieldStatus<any, any, any>
-  | RegleCollectionStatus<any, any>;
+  | RegleCollectionStatus<any, any>
+  | RegleStatus<any, any, never>;
 
 export interface RegleValidationGroupOutput {
   $invalid: boolean;

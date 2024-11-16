@@ -48,3 +48,7 @@ export function isFormInline(
 ): rule is Ref<InlineRuleDeclaration<any, any[], any>> {
   return typeof rule.value === 'function';
 }
+
+export function isStateArray(state: Ref<unknown>): state is Ref<(unknown & { $id?: string })[]> {
+  return Array.isArray(state.value);
+}

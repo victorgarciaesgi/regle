@@ -80,7 +80,7 @@ Result:
     <div>
        <input v-model='form.email' placeholder='Type your email'/>
         <ul v-if="errors.email.length">
-          <li v-for="error of errors.email">
+          <li v-for="error of errors.email" :key='error'>
             {{ error }}
           </li>
         </ul>
@@ -88,7 +88,7 @@ Result:
     <div>
         <input v-model='form.name.pseudo' placeholder='Type your pseudo'/>
         <ul v-if="errors.name.pseudo.length">
-          <li v-for="error of errors.name.pseudo">
+          <li v-for="error of errors.name.pseudo" :key='error'>
             {{ error }}
           </li>
         </ul>

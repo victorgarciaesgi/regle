@@ -23,28 +23,21 @@ It's heavily inspired by Vuelidate.
 > API or function names can still change
 
 
-# Improvements from Vuelidate
-
-- 100% type safety and autocomplete
-- [Zod](https://zod.dev/) support
-- Made for Vue 3 and composition API first 
-- Collection validation (`$each` is back)
-- Typed rule metadata
-- Global config
-- Async rules with params
-- Per field options (debounce, lazy...)
-- Easier rule declaration
-
-# What is not planned
-
-- Nested component validation collection (not possible to infer types)
-
-
 # Documentation
 
 [![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/) 
 
-(in progress)
+## Features
+- ✅ Typescript first
+- 🤖 100% type inference
+- 📖 Model based validation
+- 🦸‍♂️ [Zod](https://zod.dev/) support
+- 🪶 Light (~6kb gzip)
+- 🛒 Collection validation
+
+## What is not planned
+
+- Nested component validation collection (not possible to infer types)
 
 # Play with it
 

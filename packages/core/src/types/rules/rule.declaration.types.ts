@@ -116,13 +116,21 @@ export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any
 /**
  * @public
  */
+export type RegleCollectionRuleDeclKeyProperty = {
+  $key?: PropertyKey;
+};
+
+/**
+ * @public
+ */
 export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
       $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules> &
+          RegleCollectionRuleDeclKeyProperty,
         ArrayElement<TValue>
       >;
     })
@@ -138,7 +146,7 @@ export type RegleCollectionRuleDecl<
  * @reference {@link RegleCollectionRuleDecl}
  */
 export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
-  $each?: MaybeGetter<$InternalFormPropertyTypes, any>;
+  $each?: MaybeGetter<$InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty, any>;
 };
 
 /**

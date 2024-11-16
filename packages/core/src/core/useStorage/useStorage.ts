@@ -50,17 +50,17 @@ export function useStorage() {
 
   // Collections
 
-  function addArrayStatus($arrayId: string, index: string, value: $InternalRegleStatusType) {
-    arrayStatusStorage.value.set(`${$arrayId}-${index}`, value);
+  function addArrayStatus($arrayId: string, itemId: string, value: $InternalRegleStatusType) {
+    arrayStatusStorage.value.set(`${$arrayId}-${itemId}`, value);
   }
 
-  function getArrayStatus($arrayId: string, index: string) {
-    return arrayStatusStorage.value.get(`${$arrayId}-${index}`);
+  function getArrayStatus($arrayId: string, itemId: string) {
+    return arrayStatusStorage.value.get(`${$arrayId}-${itemId}`);
   }
 
-  function deleteArrayStatus($arrayId: string, index?: string) {
-    if ($arrayId && index != null) {
-      arrayStatusStorage.value.delete(`${$arrayId}-${index}`);
+  function deleteArrayStatus($arrayId: string, itemId?: string) {
+    if ($arrayId && itemId != null) {
+      arrayStatusStorage.value.delete(`${$arrayId}-${itemId}`);
     }
   }
 

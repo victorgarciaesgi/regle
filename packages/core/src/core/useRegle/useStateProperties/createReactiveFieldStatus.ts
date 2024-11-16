@@ -158,14 +158,14 @@ export function createReactiveFieldStatus({
       });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
-        if ($localOptions.value.$rewardEarly) {
+        if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
         }
         return unref(options.rewardEarly);
       });
 
       const $autoDirty = computed<boolean | undefined>(() => {
-        if ($localOptions.value.$autoDirty) {
+        if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
         }
         return unref(options.autoDirty);
@@ -253,20 +253,24 @@ export function createReactiveFieldStatus({
     }) as ScopeReturnState;
 
     $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
-    $unwatchState = watch(state, () => {
-      if (scopeState.$autoDirty.value) {
-        if (!$dirty.value) {
-          $dirty.value = true;
+    $unwatchState = watch(
+      state,
+      () => {
+        if (scopeState.$autoDirty.value) {
+          if (!$dirty.value) {
+            $dirty.value = true;
+          }
         }
-      }
-      if (rulesDef.value instanceof Function) {
-        createReactiveRulesResult();
-      }
-      $commit();
-      if (!scopeState.$rewardEarly.value !== false) {
-        // $clearExternalErrors();
-      }
-    });
+        if (rulesDef.value instanceof Function) {
+          createReactiveRulesResult();
+        }
+        $commit();
+        if (!scopeState.$rewardEarly.value !== false) {
+          // $clearExternalErrors();
+        }
+      },
+      { deep: true }
+    );
 
     $unwatchDirty = watch($dirty, () => {
       storage.setDirtyEntry(path, $dirty.value);

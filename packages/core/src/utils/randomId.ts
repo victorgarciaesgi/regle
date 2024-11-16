@@ -7,6 +7,6 @@ export function randomId(): string {
     return uniqueIDNuxt();
   } else {
     const uint32 = window.crypto.getRandomValues(new Uint32Array(1))[0];
-    return uint32.toString(8);
+    return uint32.toString(10);
   }
 }
