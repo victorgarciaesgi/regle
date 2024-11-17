@@ -1,10 +1,16 @@
 import type { Ref, UnwrapNestedRefs } from 'vue';
 import type {
+  $InternalRegleCollectionErrors,
+  $InternalRegleErrors,
   AllRulesDeclarations,
   ExtractFromGetter,
+  FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
+  LocalRegleBehaviourOptions,
+  RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
+  RegleErrorTree,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
@@ -25,6 +31,8 @@ export type RegleStatus<
   readonly $fields: {
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
+  readonly $errors: RegleErrorTree<TRules>;
+  readonly $silentErrors: RegleErrorTree<TRules>;
 } & ([TValidationGroups] extends [never]
     ? object
     : {
@@ -40,6 +48,8 @@ export interface $InternalRegleStatus extends RegleCommonStatus {
   $fields: {
     [x: string]: $InternalRegleStatusType;
   };
+  readonly $errors: Record<string, $InternalRegleErrors>;
+  readonly $silentErrors: Record<string, $InternalRegleErrors>;
 }
 
 /**
@@ -53,7 +63,7 @@ export type InferRegleStatusType<
   TRule extends RegleCollectionRuleDefinition<any, any>
     ? NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
       ? ExtractFromGetter<TRule['$each']> extends RegleRuleDecl | ReglePartialValidationTree<any>
-        ? RegleCollectionStatus<ExtractFromGetter<TRule['$each']>, TState[TKey]>
+        ? RegleCollectionStatus<ExtractFromGetter<TRule['$each']>, TState[TKey], TRule>
         : never
       : RegleFieldStatus<TRule, TState, TKey>
     : TRule extends ReglePartialValidationTree<any>
@@ -83,11 +93,14 @@ export interface RegleFieldStatus<
   TKey extends PropertyKey = string,
 > extends RegleCommonStatus<TState> {
   $value: UnwrapNestedRefs<TState[TKey]>;
-  readonly $externalErrors?: string[];
   readonly $errors: string[];
   readonly $silentErrors: string[];
+  readonly $externalErrors?: string[];
   readonly $rules: {
-    readonly [TRuleKey in keyof TRules]: RegleRuleStatus<
+    readonly [TRuleKey in keyof Omit<
+      TRules,
+      '$each' | keyof FieldRegleBehaviourOptions
+    >]: RegleRuleStatus<
       TState[TKey],
       TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
       TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
@@ -109,8 +122,6 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
   $rules: Record<string, $InternalRegleRuleStatus>;
   $externalErrors?: string[];
-  $errors: string[];
-  $silentErrors: string[];
 }
 
 /**
@@ -187,19 +198,25 @@ export interface $InternalRegleRuleStatus {
 export interface RegleCollectionStatus<
   TRules extends RegleRuleDecl | ReglePartialValidationTree<any>,
   TState extends any[],
-> extends RegleFieldStatus<TRules, TState> {
-  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, TState, number>>;
-  readonly $field: RegleFieldStatus<TRules, TState>;
+  TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
+> extends Omit<RegleFieldStatus<TRules, TState>, '$errors' | '$silentErrors'> {
+  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number>>;
+  readonly $field: RegleFieldStatus<TFieldRule, TState>;
+  readonly $errors: RegleErrorTree<TRules>;
+  readonly $silentErrors: RegleErrorTree<TRules>;
 }
 
 /**
  * @internal
  * @reference {@link RegleCollectionStatus}
  */
-export interface $InternalRegleCollectionStatus extends Omit<$InternalRegleStatus, '$fields'> {
+export interface $InternalRegleCollectionStatus
+  extends Omit<$InternalRegleStatus, '$fields' | '$errors' | '$silentErrors'> {
   $field: $InternalRegleFieldStatus;
   $each: Array<$InternalRegleStatusType>;
-  $externalErrors?: string[];
+  readonly $errors: $InternalRegleCollectionErrors;
+  readonly $silentErrors: $InternalRegleCollectionErrors;
+  readonly $externalErrors?: string[];
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;

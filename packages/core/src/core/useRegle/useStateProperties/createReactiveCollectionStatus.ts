@@ -1,34 +1,25 @@
-// eslint-disable-next-line vue/prefer-import-from-vue
-import { pauseTracking, resetTracking } from '@vue/reactivity';
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';
-import { computed, effectScope, reactive, ref, toRaw, toRef, toRefs, watch } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, toRefs, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
+  $InternalRegleCollectionErrors,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
   $InternalRegleStatusType,
-  DeepMaybeRef,
   CustomRulesDeclarationTree,
-  MaybeGetter,
+  DeepMaybeRef,
   RegleBehaviourOptions,
-  ResolvedRegleBehaviourOptions,
   RegleCollectionRuleDeclKeyProperty,
-  RegleExternalCollectionErrors,
-  RegleExternalValidationErrors,
+  ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { cloneDeep, isObject, unwrapGetter } from '../../../utils';
+import { cloneDeep, unwrapGetter } from '../../../utils';
 import { randomId } from '../../../utils/randomId';
 import type { RegleStorage } from '../../useStorage';
-import {
-  isCollectionRulesStatus,
-  isExternalErrorCollection,
-  isFieldStatus,
-  isNestedRulesStatus,
-  isRuleDef,
-} from '../guards';
+import { isExternalErrorCollection, isRuleDef } from '../guards';
+import { extractCollectionError, extractRulesErrors } from '../useErrors';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 
@@ -113,6 +104,14 @@ interface ScopeReturnState {
   $valid: ComputedRef<boolean>;
   $error: ComputedRef<boolean>;
   $pending: ComputedRef<boolean>;
+  $errors: ComputedRef<$InternalRegleCollectionErrors>;
+  $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
+}
+
+interface ImmediateScopeReturnState {
+  isPrimitiveArray: ComputedRef<boolean>;
+  $externalErrorsField: ComputedRef<string[]>;
+  $externalErrorsEach: ComputedRef<$InternalExternalRegleErrors[]>;
 }
 
 export function createReactiveCollectionStatus({
@@ -126,6 +125,10 @@ export function createReactiveCollectionStatus({
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
+
+  let immediateScope = effectScope();
+  let immediateScopeState!: ImmediateScopeReturnState;
+
   if (Array.isArray(state.value) && !rulesDef.value.$each) {
     return null;
   }
@@ -137,34 +140,41 @@ export function createReactiveCollectionStatus({
   const $fieldStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
 
-  const isPrimitiveArray = computed(() => {
-    if (Array.isArray(state.value) && state.value.length) {
-      return state.value.some((s) => typeof s !== 'object');
-    } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {
-      return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
-    }
-    return false;
-  });
+  immediateScopeState = immediateScope.run(() => {
+    const isPrimitiveArray = computed(() => {
+      if (Array.isArray(state.value) && state.value.length) {
+        return state.value.some((s) => typeof s !== 'object');
+      } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {
+        return Object.values(rulesDef.value.$each).every((rule) => isRuleDef(rule));
+      }
+      return false;
+    });
 
-  const $externalErrorsField = computed<string[]>(() => {
-    if (externalErrors.value) {
-      if (isExternalErrorCollection(externalErrors.value)) {
-        return externalErrors.value.$errors ?? [];
+    const $externalErrorsField = computed<string[]>(() => {
+      if (externalErrors.value) {
+        if (isExternalErrorCollection(externalErrors.value)) {
+          return externalErrors.value.$errors ?? [];
+        }
+        return [];
       }
       return [];
-    }
-    return [];
-  });
+    });
 
-  const $externalErrorsEach = computed<$InternalExternalRegleErrors[]>(() => {
-    if (externalErrors.value) {
-      if (isExternalErrorCollection(externalErrors.value)) {
-        return externalErrors.value.$each ?? [];
+    const $externalErrorsEach = computed<$InternalExternalRegleErrors[]>(() => {
+      if (externalErrors.value) {
+        if (isExternalErrorCollection(externalErrors.value)) {
+          return externalErrors.value.$each ?? [];
+        }
+        return [];
       }
       return [];
-    }
-    return [];
-  });
+    });
+    return {
+      isPrimitiveArray,
+      $externalErrorsField,
+      $externalErrorsEach,
+    } satisfies ImmediateScopeReturnState;
+  })!;
 
   createStatus();
   $watch();
@@ -186,21 +196,7 @@ export function createReactiveCollectionStatus({
       }
     }
 
-    if (!$id.value) {
-      return;
-    }
-
-    $fieldStatus.value = createReactiveFieldStatus({
-      state,
-      rulesDef,
-      customMessages,
-      path,
-      storage,
-      options,
-      externalErrors: $externalErrorsField,
-    });
-
-    if (isPrimitiveArray.value) {
+    if (immediateScopeState.isPrimitiveArray.value) {
       return;
     }
 
@@ -223,7 +219,7 @@ export function createReactiveCollectionStatus({
               index,
               options,
               storage,
-              externalErrors: $externalErrorsEach,
+              externalErrors: immediateScopeState.$externalErrorsEach,
             });
             if (element) {
               return element;
@@ -235,6 +231,16 @@ export function createReactiveCollectionStatus({
     } else {
       $eachStatus.value = [];
     }
+
+    $fieldStatus.value = createReactiveFieldStatus({
+      state,
+      rulesDef,
+      customMessages,
+      path,
+      storage,
+      options,
+      externalErrors: immediateScopeState.$externalErrorsField,
+    });
   }
 
   function updateStatus() {
@@ -246,6 +252,7 @@ export function createReactiveCollectionStatus({
           if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
             const existingStatus = storage.getArrayStatus($id.value, value.$id);
             if (existingStatus) {
+              existingStatus.$value = toRef(() => value);
               return existingStatus;
             }
             return null;
@@ -264,7 +271,7 @@ export function createReactiveCollectionStatus({
                 index,
                 options,
                 storage,
-                externalErrors: $externalErrorsEach,
+                externalErrors: immediateScopeState.$externalErrorsEach,
               });
               if (element) {
                 return element;
@@ -285,22 +292,6 @@ export function createReactiveCollectionStatus({
     }
   }
 
-  function $unwatch() {
-    if ($unwatchState) {
-      $unwatchState();
-    }
-    if ($fieldStatus.value) {
-      $fieldStatus.value.$unwatch();
-    }
-    if ($eachStatus.value) {
-      $eachStatus.value.forEach((element) => {
-        if ('$dirty' in element) {
-          element.$unwatch();
-        }
-      });
-    }
-  }
-
   function $watch() {
     $unwatchState = watch(
       state,
@@ -316,7 +307,7 @@ export function createReactiveCollectionStatus({
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$dirty ||
+          $fieldStatus.value.$dirty &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$dirty;
           })
@@ -367,6 +358,20 @@ export function createReactiveCollectionStatus({
         );
       });
 
+      const $errors = computed<$InternalRegleCollectionErrors>(() => {
+        return {
+          $errors: extractRulesErrors({ field: $fieldStatus.value, silent: false }),
+          $each: extractCollectionError($eachStatus.value),
+        };
+      });
+
+      const $silentErrors = computed<$InternalRegleCollectionErrors>(() => {
+        return {
+          $errors: extractRulesErrors({ field: $fieldStatus.value, silent: true }),
+          $each: extractCollectionError($eachStatus.value, true),
+        };
+      });
+
       return {
         $dirty,
         $anyDirty,
@@ -374,15 +379,37 @@ export function createReactiveCollectionStatus({
         $valid,
         $error,
         $pending,
+        $errors,
+        $silentErrors,
       } satisfies ScopeReturnState;
     })!;
 
-    if (isPrimitiveArray.value) {
+    if (immediateScopeState.isPrimitiveArray.value) {
       console.warn(
         `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. We advise to use an Array of objects instead`
       );
       $unwatchState();
     }
+  }
+
+  function $unwatch() {
+    if ($unwatchState) {
+      $unwatchState();
+    }
+    if ($fieldStatus.value) {
+      $fieldStatus.value.$unwatch();
+    }
+    if ($eachStatus.value) {
+      $eachStatus.value.forEach((element) => {
+        if ('$dirty' in element) {
+          element.$unwatch();
+        }
+      });
+    }
+    scope.stop();
+    scope = effectScope();
+    immediateScope.stop();
+    immediateScope = effectScope(true);
   }
 
   function $touch(): void {

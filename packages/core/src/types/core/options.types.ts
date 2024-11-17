@@ -42,10 +42,7 @@ export interface LocalRegleBehaviourOptions<
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
 }
 
-export type RegleValidationGroupEntry =
-  | RegleFieldStatus<any, any, any>
-  | RegleCollectionStatus<any, any>
-  | RegleStatus<any, any, never>;
+export type RegleValidationGroupEntry = RegleFieldStatus<any, any, any>;
 
 export interface RegleValidationGroupOutput {
   $invalid: boolean;

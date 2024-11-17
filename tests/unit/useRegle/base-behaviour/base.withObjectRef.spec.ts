@@ -1,7 +1,7 @@
 import { flushPromises } from '@vue/test-utils';
 import { useRegle } from '@regle/core';
-import { ruleMockIsEven } from '../../fixtures';
-import { createRegleComponent } from '../../utils/test.utils';
+import { ruleMockIsEven } from '../../../fixtures';
+import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
 
 function nesteObjectWithRefsValidation() {

@@ -32,7 +32,7 @@ import { useRegle } from '@regle/core';
 import { ref } from 'vue';
 import { minLength, required } from '@regle/rules';
 
-function shuffle(arr, options?: any) {
+function shuffle(arr: any[], options?: any) {
   if (!Array.isArray(arr)) {
     throw new Error('expected an array');
   }

@@ -37,18 +37,24 @@ export function extractRulesErrors({
     .concat(field.$externalErrors ?? []);
 }
 
-function processFieldErrors(fieldStatus: $InternalRegleStatusType): $InternalRegleErrors {
+function processFieldErrors(
+  fieldStatus: $InternalRegleStatusType,
+  silent = false
+): $InternalRegleErrors {
   if (isNestedRulesStatus(fieldStatus)) {
     return extractNestedErrors(fieldStatus.$fields);
   } else if (isCollectionRulesStatus(fieldStatus)) {
     return {
-      $errors: fieldStatus.$field.$rules ? extractRulesErrors({ field: fieldStatus.$field }) : [],
-      $each: fieldStatus.$each.map(processFieldErrors),
+      $errors: fieldStatus.$field.$rules
+        ? extractRulesErrors({ field: fieldStatus.$field, silent })
+        : [],
+      $each: fieldStatus.$each.map((field) => processFieldErrors(field, silent)),
     };
   } else if (isFieldStatus(fieldStatus)) {
     if (fieldStatus.$error) {
       return extractRulesErrors({
         field: fieldStatus,
+        silent,
       });
     } else {
       return fieldStatus.$externalErrors ?? [];
@@ -57,25 +63,27 @@ function processFieldErrors(fieldStatus: $InternalRegleStatusType): $InternalReg
   return [];
 }
 
-function extractCollectionError(field: $InternalRegleCollectionStatus): $InternalRegleErrors[] {
-  return field.$each.map(processFieldErrors);
+export function extractCollectionError(
+  each: $InternalRegleStatusType[],
+  silent = false
+): $InternalRegleErrors[] {
+  return each.map((field) => processFieldErrors(field, silent));
 }
 
 export function extractNestedErrors(
-  fields: Record<string, $InternalRegleStatusType> | $InternalRegleStatusType[]
+  fields: Record<string, $InternalRegleStatusType> | $InternalRegleStatusType[],
+  silent = false
 ): Record<string, $InternalRegleErrors> {
   return Object.fromEntries(
     Object.entries(fields).map(([fieldKey, fieldStatus]) => {
       if (isNestedRulesStatus(fieldStatus)) {
-        return [fieldKey, extractNestedErrors(fieldStatus.$fields)];
+        return [fieldKey, extractNestedErrors(fieldStatus.$fields, silent)];
       } else if (isCollectionRulesStatus(fieldStatus)) {
         return [
           fieldKey,
           {
-            ...(fieldStatus.$field.$rules && {
-              $errors: extractRulesErrors({ field: fieldStatus.$field }),
-            }),
-            $each: extractCollectionError(fieldStatus),
+            $errors: extractRulesErrors({ field: fieldStatus.$field, silent }),
+            $each: extractCollectionError(fieldStatus.$each, silent),
           },
         ];
       } else if (isFieldStatus(fieldStatus)) {
@@ -84,6 +92,7 @@ export function extractNestedErrors(
             fieldKey,
             extractRulesErrors({
               field: fieldStatus,
+              silent,
             }),
           ];
         } else {

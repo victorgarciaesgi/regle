@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import type {
   Regle,
   RegleComputedRules,
@@ -7,6 +7,7 @@ import type {
 } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { ruleMockIsEven } from './rules.fixtures';
+import { email, required, requiredIf } from '@regle/rules';
 // eslint-disable-next-line
 export type { RefSymbol } from '@vue/reactivity';
 
@@ -161,4 +162,60 @@ export function computedValidationsObjectWithRefs(): any {
     return conditional.value > 5 ? {} : { number: { ruleMockIsEven } };
   });
   return { form: { conditional, number }, ...useRegle({ number, conditional }, validations) };
+}
+
+export function simpleNestedStateWithMixedValidation() {
+  const form = ref({
+    email: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    contacts: [{ name: '' }],
+  });
+
+  return useRegle(form, {
+    email: { required: required, email: email },
+    user: {
+      firstName: { required },
+      lastName: { required },
+    },
+    contacts: {
+      $each: {
+        name: { required },
+      },
+    },
+  });
+}
+
+export function simpleNestedStateWithComputedValidation() {
+  const form = ref({
+    email: '',
+    userRequired: false,
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    contacts: [] as { name: '' }[],
+  });
+
+  const rules = computed(
+    () =>
+      ({
+        email: { required: required, email: email },
+        user: {
+          ...(form.value.userRequired && {
+            firstName: { required },
+            lastName: { required },
+          }),
+        },
+        contacts: {
+          $each: {
+            name: { required },
+          },
+        },
+      }) satisfies ReglePartialValidationTree<UnwrapRef<typeof form>>
+  );
+
+  return useRegle(form, rules);
 }

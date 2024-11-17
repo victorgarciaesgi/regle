@@ -12,7 +12,7 @@ Let's see how to use it with the simplest case example
 ``` ts twoslash
 import {useRegle} from '@regle/core';
 
-const {regle, state, errors, invalid, validateState, resetAll} = useRegle({name: ''}, {
+const {regle, state, errors, ready, validateState, resetAll} = useRegle({name: ''}, {
   name: {
     // rules
   }
@@ -40,7 +40,7 @@ Most of the time, you would only need the `errors` property, but for custom beha
 import {useRegle} from '@regle/core';
 import {required} from '@regle/rules';
 
-const {regle, state, errors, invalid, validateState, resetAll} = useRegle({name: ''}, {
+const {regle, state, errors, ready, validateState, resetAll} = useRegle({name: ''}, {
   name: {required}
 })
 regle.$fields.

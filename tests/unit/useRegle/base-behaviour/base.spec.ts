@@ -1,52 +1,28 @@
 import { flushPromises } from '@vue/test-utils';
-import { useRegle } from '@regle/core';
-import { ruleMockIsEvenAsync, ruleMockIsEven, ruleMockIsFooAsync } from '../../fixtures';
-import { createRegleComponent } from '../../utils/test.utils';
-import { nextTick, ref } from 'vue';
+import {
+  nestedReactiveObjectValidation,
+  nestedRefObjectValidation,
+  nestedReactiveWithRefsValidation,
+  nestedRefObjectValidationComputed,
+} from '../../../fixtures';
+import { createRegleComponent } from '../../../utils/test.utils';
+import { nextTick } from 'vue';
 
-function nesteAsyncObjectWithRefsValidation() {
-  const form = {
-    level0Async: ref(0),
-    level1: {
-      child: ref(1),
-      level2: {
-        childAsync: ref(''),
-      },
-    },
-  };
-
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0Async: { rule: ruleMockIsEvenAsync() },
-      level1: {
-        child: { rule: ruleMockIsEven },
-        level2: {
-          childAsync: { rule: ruleMockIsFooAsync() },
-        },
-      },
-    })),
-  };
-}
-
-describe('useRegle with async rules and Object refs', async () => {
-  beforeAll(() => {
-    vi.useFakeTimers();
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
-  const { vm } = createRegleComponent(nesteAsyncObjectWithRefsValidation);
+describe.each([
+  ['reactive', nestedReactiveObjectValidation],
+  ['ref', nestedRefObjectValidation],
+  ['ref state with computed rules', nestedRefObjectValidationComputed],
+  ['reactive with ref', nestedReactiveWithRefsValidation],
+])('useRegle with %s', async (title, regle) => {
+  const { vm } = createRegleComponent(regle);
 
   it('should have a initial state', () => {
     expect(vm.errors).toStrictEqual({
-      level0Async: [],
+      level0: [],
       level1: {
         child: [],
         level2: {
-          childAsync: [],
+          child: [],
         },
       },
     });
@@ -58,34 +34,31 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$error).toBe(false);
     expect(vm.regle.$pending).toBe(false);
     expect(vm.regle.$value).toStrictEqual({
-      level0Async: 0,
+      level0: 0,
       level1: {
         child: 1,
         level2: {
-          childAsync: '',
+          child: 2,
         },
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
   });
 
   it('should error on initial submit', async () => {
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
-
-    await nextTick();
-    await flushPromises();
+    const result = await vm.validateState();
 
     expect(result).toBe(false);
     expect(vm.errors).toStrictEqual({
-      level0Async: [],
+      level0: [],
       level1: {
         child: ['Custom error'],
         level2: {
-          childAsync: [],
+          child: [],
         },
       },
     });
@@ -97,57 +70,51 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$error).toBe(true);
     expect(vm.regle.$pending).toBe(false);
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(true);
+    expect(vm.regle.$fields.level0.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
   });
 
   it('should update dirty state and errors when updating form', async () => {
-    vm.regle.$value.level0Async = 1;
-    await nextTick();
-    vi.advanceTimersByTimeAsync(1000);
-    await nextTick();
-    await flushPromises();
+    vm.regle.$value.level0 = 1;
 
-    expect(vm.errors.level0Async).toStrictEqual(['Custom error']);
+    await nextTick();
+
+    expect(vm.errors.level0).toStrictEqual(['Custom error']);
 
     expect(vm.ready).toBe(false);
 
     expect(vm.regle.$anyDirty).toBe(true);
     expect(vm.regle.$dirty).toBe(true);
-    expect(vm.regle.$fields.level0Async.$dirty).toBe(true);
+    expect(vm.regle.$fields.level0.$dirty).toBe(true);
     expect(vm.regle.$error).toBe(true);
-    expect(vm.regle.$fields.level0Async.$error).toBe(true);
+    expect(vm.regle.$fields.level0.$error).toBe(true);
     expect(vm.regle.$pending).toBe(false);
     expect(vm.regle.$value).toStrictEqual({
-      level0Async: 1,
+      level0: 1,
       level1: {
         child: 1,
         level2: {
-          childAsync: '',
+          child: 2,
         },
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
     vm.regle.$value.level1.child = 3;
-    vm.regle.$value.level1.level2.childAsync = 'bar';
+    vm.regle.$value.level1.level2.child = 3;
 
     await nextTick();
-
-    vi.advanceTimersByTime(1000);
-    await nextTick();
-    await flushPromises();
 
     expect(vm.errors.level1.child).toStrictEqual(['Custom error']);
-    expect(vm.errors.level1.level2.childAsync).toStrictEqual(['Custom error']);
+    expect(vm.errors.level1.level2.child).toStrictEqual(['Custom error']);
 
     expect(vm.ready).toBe(false);
 
@@ -157,40 +124,36 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$error).toBe(true);
     expect(vm.regle.$fields.level1.$fields.child.$dirty).toBe(true);
     expect(vm.regle.$fields.level1.$fields.child.$error).toBe(true);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$dirty).toBe(true);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$dirty).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$error).toBe(true);
     expect(vm.regle.$error).toBe(true);
     expect(vm.regle.$pending).toBe(false);
     expect(vm.regle.$value).toStrictEqual({
-      level0Async: 1,
+      level0: 1,
       level1: {
         child: 3,
         level2: {
-          childAsync: 'bar',
+          child: 3,
         },
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
   });
 
   it('should remove errors when all values are valid', async () => {
-    vm.regle.$value.level0Async = 2;
+    vm.regle.$value.level0 = 2;
     vm.regle.$value.level1.child = 2;
-    vm.regle.$value.level1.level2.childAsync = 'foo';
+    vm.regle.$value.level1.level2.child = 2;
 
     await nextTick();
 
-    vi.advanceTimersByTime(1000);
-    await nextTick();
-    await flushPromises();
-
-    expect(vm.errors.level0Async).toStrictEqual([]);
+    expect(vm.errors.level0).toStrictEqual([]);
     expect(vm.errors.level1.child).toStrictEqual([]);
-    expect(vm.errors.level1.level2.childAsync).toStrictEqual([]);
+    expect(vm.errors.level1.level2.child).toStrictEqual([]);
 
     expect(vm.ready).toBe(true);
 
@@ -200,52 +163,50 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$error).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$dirty).toBe(true);
     expect(vm.regle.$fields.level1.$fields.child.$error).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$dirty).toBe(true);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$dirty).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$error).toBe(false);
     expect(vm.regle.$error).toBe(false);
     expect(vm.regle.$pending).toBe(false);
     expect(vm.regle.$value).toStrictEqual({
-      level0Async: 2,
+      level0: 2,
       level1: {
         child: 2,
         level2: {
-          childAsync: 'foo',
+          child: 2,
         },
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(true);
-    expect(vm.regle.$fields.level0Async.$valid).toBe(true);
+    expect(vm.regle.$fields.level0.$valid).toBe(true);
+    expect(vm.regle.$fields.level0.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(true);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(true);
 
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
+    const result = await vm.validateState();
 
     expect(result).toStrictEqual({
-      level0Async: 2,
+      level0: 2,
       level1: {
         child: 2,
         level2: {
-          childAsync: 'foo',
+          child: 2,
         },
       },
     });
   });
 
   it('should reset on initial state when calling resetAll', async () => {
-    vm.resetAll();
+    await Promise.all([vm.resetAll(), flushPromises()]);
 
-    vi.advanceTimersByTime(1000);
     await nextTick();
-    await flushPromises();
 
     expect(vm.errors).toStrictEqual({
-      level0Async: [],
+      level0: [],
       level1: {
         child: [],
         level2: {
-          childAsync: [],
+          child: [],
         },
       },
     });
@@ -257,18 +218,18 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$error).toBe(false);
     expect(vm.regle.$pending).toBe(false);
     expect(vm.regle.$value).toStrictEqual({
-      level0Async: 0,
+      level0: 0,
       level1: {
         child: 1,
         level2: {
-          childAsync: '',
+          child: 2,
         },
       },
     });
 
-    expect(vm.regle.$fields.level0Async.$valid).toBe(false);
+    expect(vm.regle.$fields.level0.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$valid).toBe(false);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
   });
 });

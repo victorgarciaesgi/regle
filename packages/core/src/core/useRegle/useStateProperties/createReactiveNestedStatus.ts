@@ -14,6 +14,7 @@ import type {
   RegleExternalErrorTree,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
+  $InternalRegleErrors,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isRefObject, unwrapGetter } from '../../../utils';
@@ -26,6 +27,7 @@ import {
 } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+import { extractNestedErrors } from '../useErrors';
 
 interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialValidationTree>;
@@ -62,8 +64,8 @@ export function createReactiveNestedStatus({
     $valid: ComputedRef<boolean>;
     $error: ComputedRef<boolean>;
     $pending: ComputedRef<boolean>;
-    $errors: ComputedRef<string[]>;
-    $silentErrors: ComputedRef<string[]>;
+    $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
+    $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
@@ -216,9 +218,12 @@ export function createReactiveNestedStatus({
     scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
-        return Object.entries($fields.value).every(([key, statusOrField]) => {
-          return statusOrField.$dirty;
-        });
+        return (
+          !!Object.entries($fields.value).length &&
+          Object.entries($fields.value).every(([key, statusOrField]) => {
+            return statusOrField.$dirty;
+          })
+        );
       });
 
       const $anyDirty = computed<boolean>(() => {
@@ -247,8 +252,12 @@ export function createReactiveNestedStatus({
         });
       });
 
-      const $errors = computed(() => []);
-      const $silentErrors = computed(() => []);
+      const $errors = computed(() => {
+        return extractNestedErrors($fields.value);
+      });
+      const $silentErrors = computed(() => {
+        return extractNestedErrors($fields.value, true);
+      });
 
       return {
         $dirty,
@@ -260,7 +269,7 @@ export function createReactiveNestedStatus({
         $errors,
         $silentErrors,
       } satisfies ScopeState;
-    }) as ScopeState;
+    })!;
   }
 
   function $unwatch() {
@@ -269,9 +278,12 @@ export function createReactiveNestedStatus({
         field.$unwatch();
       });
     }
+
     $unwatchFields?.();
     $unwatchState?.();
     $unwatchGroups?.();
+    scope.stop();
+    scope = effectScope();
   }
 
   function $clearExternalErrors() {
@@ -316,9 +328,9 @@ export function createReactiveChildrenStatus({
   index,
   onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
-  if (isCollectionRulesDef(rulesDef) && isStateArray(state)) {
+  if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
-      state,
+      state: state as Ref<unknown & { $id?: string }[]>,
       rulesDef,
       customMessages,
       path,

@@ -47,10 +47,23 @@ export type RegleCollectionErrors<
   readonly $each: RegleValidationErrors<TRule, TExternalError>[];
 };
 
+/** @internal */
+export type $InternalRegleCollectionErrors = {
+  readonly $errors: string[];
+  readonly $each: $InternalRegleErrors[];
+};
+
+export type $InternalRegleErrorTree = {
+  [x: string]: $InternalRegleErrors;
+};
+
 /**
  * @internal
  */
-export type $InternalRegleErrors = RegleCollectionErrors<any> | string[] | RegleErrorTree<any>;
+export type $InternalRegleErrors =
+  | $InternalRegleCollectionErrors
+  | string[]
+  | $InternalRegleErrorTree;
 
 //-
 // ------- External errors

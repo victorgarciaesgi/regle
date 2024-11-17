@@ -16,6 +16,7 @@ export function createRegleComponent<T extends Regle<any, any>>(regleComposable:
 export function shouldBePristineValidationObj(regle: Regle<any, any>) {
   expect(regle).toHaveProperty('$error', false);
   expect(regle).toHaveProperty('$invalid', false);
+  expect(regle).toHaveProperty('$valid', false);
   expect(regle).toHaveProperty('$pending', false);
   expect(regle).toHaveProperty('$dirty', false);
   expect(regle).toHaveProperty('$anyDirty', false);
