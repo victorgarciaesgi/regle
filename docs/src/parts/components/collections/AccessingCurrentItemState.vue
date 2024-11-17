@@ -1,31 +1,35 @@
 <template>
   <div class="demo-container">
-    <input v-model.number="form.size" placeholder="Size" />
     <div class="list">
       <div v-for="item of regle.$fields.collection.$each" :key="item.$id" class="item">
-        <div>
+        <div class="field">
           <input
             v-model="item.$value.name"
             :class="{ valid: item.$fields.name.$valid }"
             placeholder="Type an item value"
           />
-          <ul v-if="item.$fields.name.$errors.length">
-            <li v-for="error of item.$fields.name.$errors" :key="error">
-              {{ error }}
-            </li>
-          </ul>
+          <div>
+            <input v-model="item.$value.condition" type="checkbox" />
+            <label>Required</label>
+          </div>
         </div>
+        <ul v-if="item.$fields.name.$errors.length">
+          <li v-for="error of item.$fields.name.$errors" :key="error">
+            {{ error }}
+          </li>
+        </ul>
       </div>
     </div>
     <div class="button-list">
-      <button type="button" @click="form.collection?.push({ name: '' })">Add item</button>
-      <button :disabled="form.collection?.length < 2" type="button" @click="removeRandomItem"
+      <button type="button" @click="form.collection.push({ name: '', condition: false })"
+        >Add item</button
+      >
+      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem"
         >Remove random item</button
       >
       <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
       <button type="button" @click="resetAll">Reset</button>
     </div>
-    <pre>{{ regle.$fields.collection }}</pre>
   </div>
 </template>
 
@@ -59,26 +63,21 @@ function shuffle(arr: any[], options?: any) {
   return result;
 }
 
-const form = ref<{ size: number; collection?: Array<{ name: string }> }>({
-  size: 3,
-  collection: [],
+const form = ref({
+  collection: [{ name: '', condition: false }],
 });
 
 function removeRandomItem() {
-  form.value.collection?.splice(Math.floor(Math.random() * form.value.collection.length), 1);
+  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
 }
 
-const { errors, regle, resetAll } = useRegle(form, () => ({
+const { errors, regle, resetAll } = useRegle(form, {
   collection: {
-    $autoDirty: false,
-    minLength: minLength(form.value.size),
     $each: (item) => ({
-      name: { required },
+      name: { required: requiredIf(() => item.value.condition) },
     }),
   },
-}));
-
-regle.$touch();
+});
 </script>
 
 <style lang="scss"></style>

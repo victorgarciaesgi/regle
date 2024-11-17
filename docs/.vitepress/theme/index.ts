@@ -6,6 +6,8 @@ import './custom.scss';
 import '@shikijs/vitepress-twoslash/style.css';
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client';
 import type { EnhanceAppContext } from 'vitepress';
+import 'virtual:group-icons.css';
+import { createPinia } from 'pinia';
 
 export default {
   extends: DefaultTheme,
@@ -14,5 +16,7 @@ export default {
   },
   enhanceApp({ app }: EnhanceAppContext) {
     app.use(TwoslashFloatingVue as any);
+    const pinia = createPinia();
+    app.use(pinia);
   },
 } satisfies Theme;

@@ -301,14 +301,17 @@ export function createReactiveFieldStatus({
     Object.entries($rules.value).forEach(([key, rule]) => {
       rule.$reset();
     });
+    if (!scopeState.$lazy.value) {
+      Object.entries($rules.value).map(([key, rule]) => {
+        return rule.$validate();
+      });
+    }
   }
 
   function $touch(): void {
     $dirty.value = true;
-    if (!scopeState.$lazy.value) {
-      if (!scopeState.$rewardEarly.value !== false) {
-        // $clearExternalErrors();
-      }
+    if (!scopeState.$rewardEarly.value !== false) {
+      // $clearExternalErrors();
     }
   }
 
@@ -319,7 +322,7 @@ export function createReactiveFieldStatus({
   async function $validateHandler(): Promise<boolean> {
     try {
       triggerPunishment.value = true;
-      if (!scopeState.$lazy.value && scopeState.$anyDirty.value && !scopeState.$pending) {
+      if (scopeState.$anyDirty.value && !scopeState.$pending) {
         return !scopeState.$error.value;
       } else {
         const promises = Object.entries($rules.value).map(([key, rule]) => {

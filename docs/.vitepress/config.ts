@@ -1,6 +1,7 @@
 import type { DefaultTheme } from 'vitepress';
 import { defineConfig } from 'vitepress';
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash';
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
 
 const Nav: DefaultTheme.NavItemWithLink[] = [
   { text: 'Getting Started', link: '/introduction/' },
@@ -80,9 +81,39 @@ export default defineConfig({
       copyright: 'Copyright © 2023-present Victor Garcia',
     },
   },
+  head: [
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }],
+    ['meta', { name: 'theme-color', content: '#00bb7f' }],
+    ['meta', { property: 'og:url', content: 'https://regle.vercel.app/' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Regle' }],
+    [
+      'meta',
+      {
+        property: 'og:description',
+        content: 'Typescript-first model-based validation library for Vue 3',
+      },
+    ],
+    [
+      'meta',
+      {
+        property: 'og:image',
+        content:
+          'https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png',
+      },
+    ],
+    ['meta', { name: 'twitter:site', content: '@regle' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+  ],
   markdown: {
     codeTransformers: [transformerTwoslash({})],
     theme: 'vitesse-dark',
+    config(md) {
+      md.use(groupIconMdPlugin);
+    },
+  },
+  vite: {
+    plugins: [groupIconVitePlugin()],
   },
   srcDir: './src',
 });

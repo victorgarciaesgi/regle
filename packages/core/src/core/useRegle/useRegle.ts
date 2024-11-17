@@ -71,11 +71,10 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       customRules
     );
 
-    async function resetAll() {
+    function resetAll() {
       regle.$unwatch();
       resetValuesRecursively(state, initialState);
       regle.$reset();
-      await regle.$validate();
     }
 
     function resetValuesRecursively(

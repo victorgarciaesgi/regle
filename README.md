@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png" alt="regle cover">
+  <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png"
+    alt="regle cover" />
 </p>
 
 # Regle
@@ -25,7 +26,7 @@ It's heavily inspired by Vuelidate.
 
 # 📚 Documentation
 
-[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/) 
+[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
 
 ## Features
 - ✅ Typescript first
@@ -70,7 +71,7 @@ TODO
 - [x] Zod support
 - [x] Per field validation option (lazy, debounce, etc...)
 - [x] Logo
-- [x] $silentErrors 
+- [x] $silentErrors
 - [x] Validation groups
 - [ ] Documentation (in progress)
 - [ ] Unit tests (in progress)

@@ -42,6 +42,10 @@ html.dark {
     &.error {
       border-color: #cc6464;
     }
+
+    & + button {
+      margin-left: 4px;
+    }
   }
 
   .list {
@@ -52,6 +56,13 @@ html.dark {
       padding: 15px;
       border: 1px solid var(--vp-c-border);
       border-radius: 8px;
+
+      .field {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        gap: 8px;
+      }
     }
   }
 
@@ -60,8 +71,12 @@ html.dark {
     color: #cc6464;
     font-size: 14px;
 
-    li {
+    li + li {
       margin-top: 8px;
+    }
+
+    &.standalone {
+      margin-top: 0px;
     }
   }
 
@@ -92,6 +107,10 @@ html.dark {
     + button {
       margin-left: 4px;
     }
+  }
+
+  & + .demo-container {
+    margin-top: 20px;
   }
 }
 

@@ -20,20 +20,20 @@ You can write inline rules like simple function receiving the value you're evalu
 // @noErrors
 const someAsyncCall = async () => await Promise.resolve(true);
 // ---cut---
-import type { Maybe } from '@regle/core';
+import type { Maybe, InlineRuleDeclaration } from '@regle/core';
 
-const customRuleInline = ((value: Maybe<string>) => value === 'regle')
+const customRuleInline = (value: Maybe<string>) => value === 'regle'
 
 /** Async rule that will activate the $pending state of your field  */
-const customRuleInlineAsync = (async (value: Maybe<string>) => {
+const customRuleInlineAsync = async (value: Maybe<string>) => {
   return await someAsyncCall();
-});
+};
 
 /** You can return any data from your rule as long as the $valid property is present  */
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   $valid: value === 'regle',
   foo: 'bar'
-}));
+})) satisfies InlineRuleDeclaration;
 ```
 
 Inline rules are then usable with a set of tools from `@regle/rules`

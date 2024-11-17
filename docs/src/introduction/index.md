@@ -1,3 +1,10 @@
+---
+title: Introduction
+---
+
+<script setup>
+import QuickUsage from '../parts/components/QuickUsage.vue';
+</script>
 
 # Introduction
 
@@ -43,3 +50,7 @@ bun add @regle/core @regle/rules
 ## Quick usage
 
 <!-- @include: @/parts/QuickUsage.md -->
+
+Result:
+
+<QuickUsage/>

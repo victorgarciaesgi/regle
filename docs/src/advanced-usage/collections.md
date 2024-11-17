@@ -4,6 +4,7 @@ title: Collections - Declaring rules
 
 <script setup>
 import DisplayingCollectionErrors from '../parts/components/collections/DisplayingCollectionErrors.vue';
+import AccessingCurrentItemState from '../parts/components/collections/AccessingCurrentItemState.vue';
 </script>
 
 # Collections
@@ -144,3 +145,60 @@ const { regle, errors, resetAll } = useRegle(form, {
 </script>
 ```
 
+
+## Accessing the current item state
+
+In each item of your collection, you may have a validation that depends on another property of the item.
+You can access the current item state and index by providing a function callback to `$each`.
+
+```ts twoslash
+//---cut---
+import { ref } from 'vue';
+import { required, requiredIf } from '@regle/rules';
+//---cut---
+import { useRegle } from '@regle/core';
+
+const form = ref({
+  collection: [{ name: '', condition: false }],
+});
+
+const { regle, errors, resetAll } = useRegle(form, {
+  collection: {
+    $each: (item, index) => ({
+      name: { required: requiredIf(() => item.value.condition) },
+    }),
+  },
+});
+```
+
+Result:
+
+<AccessingCurrentItemState/>
+
+## Providing custom key to track item
+
+By default, Regle will generate a random ID to track your items and keep its state through mutations. This ID is stored in `$id` and can be used in Vue as a `key` for rendering.
+
+You can also provide your own key to the rule for custom tracking
+
+
+```ts twoslash
+//---cut---
+import { ref } from 'vue';
+import { required, requiredIf } from '@regle/rules';
+//---cut---
+import { useRegle } from '@regle/core';
+
+const form = ref({
+  collection: [{ name: '', uuid: '28xja83' }],
+});
+
+const { regle, errors, resetAll } = useRegle(form, {
+  collection: {
+    $each: (item) => ({
+      $key: item.value.uuid,
+      name: { required },
+    }),
+  },
+});
+```

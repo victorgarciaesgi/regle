@@ -259,7 +259,7 @@ export function createReactiveCollectionStatus({
           } else {
             const unwrapped$Each = unwrapGetter(
               rulesDef.value.$each,
-              toRef(() => state.value[index]),
+              toRef(() => toRef(() => value)),
               index
             );
             if (unwrapped$Each) {
