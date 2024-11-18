@@ -177,7 +177,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 
-  it.only('should remove errors when all values are valid', async () => {
+  it('should remove errors when all values are valid', async () => {
     vm.regle.$value.level0Async = 2;
     vm.regle.$value.level1.child = 2;
     vm.regle.$value.level1.level2.childAsync = 'foo';

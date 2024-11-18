@@ -192,8 +192,6 @@ export function createReactiveRuleStatus({
 
     $validating.value = false;
 
-    console.log(ruleKey, ruleResult);
-
     return ruleResult;
   }
 
