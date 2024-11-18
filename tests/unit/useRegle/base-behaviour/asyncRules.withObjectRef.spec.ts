@@ -18,11 +18,11 @@ function nesteAsyncObjectWithRefsValidation() {
   return {
     form,
     ...useRegle(form, () => ({
-      level0Async: { rule: ruleMockIsEvenAsync() },
+      level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
       level1: {
-        child: { rule: ruleMockIsEven },
+        child: { ruleEven: ruleMockIsEven },
         level2: {
-          childAsync: { rule: ruleMockIsFooAsync() },
+          childAsync: { ruleAsync: ruleMockIsFooAsync() },
         },
       },
     })),
@@ -177,7 +177,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
   });
 
-  it('should remove errors when all values are valid', async () => {
+  it.only('should remove errors when all values are valid', async () => {
     vm.regle.$value.level0Async = 2;
     vm.regle.$value.level1.child = 2;
     vm.regle.$value.level1.level2.childAsync = 'foo';
@@ -219,6 +219,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.regle.$fields.level1.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(true);
     expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.regle.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
     const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
 

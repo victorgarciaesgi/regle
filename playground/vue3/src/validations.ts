@@ -1,4 +1,4 @@
-import { createRule, defineRegleConfig, defineType } from '@regle/core';
+import { createRule, defineRegleConfig } from '@regle/core';
 import { ruleHelpers, withMessage, maxLength } from '@regle/rules';
 import { ref } from 'vue';
 
@@ -7,8 +7,7 @@ export function timeout(count: number) {
 }
 
 export const asyncEmail = createRule({
-  type: defineType<string, [limit: number]>('asyncEmail'),
-  async validator(value, limit) {
+  async validator(value, limit: number) {
     if (ruleHelpers.isEmpty(value)) {
       return { $valid: true };
     }

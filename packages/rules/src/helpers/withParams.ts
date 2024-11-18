@@ -5,7 +5,7 @@ import type {
   RegleRuleMetadataDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
-import { createRule, defineType, InternalRuleType } from '@regle/core';
+import { createRule, InternalRuleType } from '@regle/core';
 
 export function withParams<
   TValue,
@@ -21,7 +21,7 @@ export function withParams<
   };
 
   const newRule = createRule({
-    type: defineType<any>(InternalRuleType.Inline),
+    type: InternalRuleType.Inline,
     validator: validator as any,
     message: '',
   });

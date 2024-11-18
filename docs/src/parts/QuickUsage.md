@@ -1,4 +1,4 @@
-``` vue twoslash
+``` vue twoslash [App.vue]
 <template>
   <input v-model='state.email' placeholder='Type your email'/>
   <ul>

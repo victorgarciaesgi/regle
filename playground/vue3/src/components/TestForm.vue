@@ -1,84 +1,82 @@
 <template>
   <div class="demo-container">
-    <input v-model.number="form.size" placeholder="Size" />
-    <div class="list">
-      <div v-for="item of regle.$fields.collection.$each" :key="item.$id" class="item">
-        <div>
-          <input
-            v-model="item.$value.name"
-            :class="{ valid: item.$fields.name.$valid }"
-            placeholder="Type an item value"
-          />
-          <ul v-if="item.$fields.name.$errors.length">
-            <li v-for="error of item.$fields.name.$errors" :key="error">
-              {{ error }}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <input v-model.number="form.level0Async.value" placeholder="level 0" />
+    <input v-model.number="form.level1.level2.childAsync.value" placeholder="Level 1" />
     <div class="button-list">
-      <button type="button" @click="form.collection?.push({ name: '' })">Add item</button>
-      <button :disabled="form.collection?.length < 2" type="button" @click="removeRandomItem"
-        >Remove random item</button
-      >
-      <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="validate">Submit</button>
     </div>
-    <pre>{{ regle.$fields.collection }}</pre>
+    <pre>{{ regle }}</pre>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
+import type { Maybe } from '@regle/core';
+import { createRule, useRegle } from '@regle/core';
 import { ref } from 'vue';
-import { minLength, required, requiredIf } from '@regle/rules';
+import { minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
+import { timeout } from '@/validations';
 
-function shuffle(arr: any[], options?: any) {
-  if (!Array.isArray(arr)) {
-    throw new Error('expected an array');
-  }
-  if (arr.length < 2) {
-    return arr;
-  }
-  var shuffleAll = options && options.shuffleAll;
-  var result = arr.slice();
-  var i = arr.length,
-    rand,
-    temp;
-  while (--i > 0) {
-    do {
-      rand = Math.floor(Math.random() * (i + 1));
-    } while (shuffleAll && rand == i);
-    if (!shuffleAll || rand != i) {
-      temp = result[i];
-      result[i] = result[rand];
-      result[rand] = temp;
-    }
-  }
-  return result;
+function ruleMockIsEvenAsync() {
+  return createRule({
+    async validator(value: Maybe<number>) {
+      if (ruleHelpers.isFilled(value)) {
+        await timeout(1000);
+        return value % 2 === 0;
+      }
+      return true;
+    },
+    message: 'Custom error',
+  });
 }
 
-const form = ref<{ size: number; collection?: Array<{ name: string }> }>({
-  size: 3,
-  collection: [],
+function ruleMockIsFooAsync() {
+  return createRule({
+    async validator(value: Maybe<string>) {
+      if (ruleHelpers.isFilled(value)) {
+        await timeout(1000);
+        console.log(value === 'foo');
+        return value === 'foo';
+      }
+      return true;
+    },
+    message: 'Custom error',
+  });
+}
+
+const ruleMockIsEven = createRule({
+  validator(value: Maybe<number>) {
+    if (ruleHelpers.isFilled(value)) {
+      return value % 2 === 0;
+    }
+    return true;
+  },
+  message: 'Custom error',
 });
 
-function removeRandomItem() {
-  form.value.collection?.splice(Math.floor(Math.random() * form.value.collection.length), 1);
+const form = {
+  level0Async: ref(1),
+  level1: {
+    child: ref(2),
+    level2: {
+      childAsync: ref(''),
+    },
+  },
+};
+
+async function validate() {
+  const result = await validateState();
+  console.log(result);
 }
 
-const { errors, regle, resetAll } = useRegle(form, () => ({
-  collection: {
-    $autoDirty: false,
-    minLength: minLength(form.value.size),
-    $each: (item) => ({
-      name: { required },
-    }),
+const { regle, validateState } = useRegle(form, () => ({
+  level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
+  level1: {
+    child: { ruleEven: ruleMockIsEven },
+    level2: {
+      childAsync: { ruleAsync: ruleMockIsFooAsync() },
+    },
   },
 }));
-
-regle.$touch();
 </script>
 
 <style lang="scss"></style>

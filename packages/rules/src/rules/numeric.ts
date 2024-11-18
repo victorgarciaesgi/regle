@@ -1,13 +1,13 @@
-import type { RegleRuleDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 const numericRegex = /^\d*(\.\d+)?$/;
 
 export const numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number> =
   createRule({
-    type: defineType<number | string>('numeric'),
-    validator(value) {
+    type: 'numeric',
+    validator(value: Maybe<string | number>) {
       if (ruleHelpers.isEmpty(value)) {
         return true;
       }

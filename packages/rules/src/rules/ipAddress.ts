@@ -1,5 +1,5 @@
-import type { RegleRuleDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 function nibbleValid(nibble: string) {
@@ -20,8 +20,8 @@ function nibbleValid(nibble: string) {
 }
 
 export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
-  type: defineType<string>('ipAddress'),
-  validator(value) {
+  type: 'ipAddress',
+  validator(value: Maybe<string>) {
     if (ruleHelpers.isEmpty(value)) {
       return true;
     }

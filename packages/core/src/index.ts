@@ -1,4 +1,4 @@
-export { createRule, defineType, defineRegleConfig, unwrapRuleParameters, useRegle } from './core';
+export { createRule, defineRegleConfig, unwrapRuleParameters, useRegle } from './core';
 export {
   Regle,
   RegleBehaviourOptions,
@@ -35,4 +35,11 @@ export {
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
   RegleComputedRules,
+  RegleCollectionRuleDefinition,
+  RegleValidationGroupOutput,
+  RegleValidationGroupEntry,
+  RegleValidationErrors,
+  RegleUniversalParams,
+  RegleInternalRuleDefs,
+  RegleExternalValidationErrorsReport,
 } from './types';

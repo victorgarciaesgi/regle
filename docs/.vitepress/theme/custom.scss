@@ -4,6 +4,7 @@
   --vp-c-brand-3: #048d62;
   --vp-home-hero-image-background-image: linear-gradient(-45deg, #58816f 50%, rgb(4, 25, 14) 50%);
   --vp-home-hero-image-filter: blur(72px);
+  --vp-c-form-error: #cc6464;
 }
 
 html.dark {
@@ -25,9 +26,11 @@ html.dark {
 }
 
 .demo-container {
+  position: relative;
   padding: 20px 16px;
   background-color: var(--vp-c-bg-soft);
   border-radius: 8px;
+  font-size: 14px;
 
   input {
     background-color: var(--vp-c-divider);
@@ -40,12 +43,16 @@ html.dark {
     }
 
     &.error {
-      border-color: #cc6464;
+      border-color: var(--vp-c-form-error);
     }
 
     & + button {
       margin-left: 4px;
     }
+  }
+
+  .block {
+    margin-bottom: 8px;
   }
 
   .list {
@@ -68,7 +75,7 @@ html.dark {
 
   ul {
     margin-bottom: 0;
-    color: #cc6464;
+    color: var(--vp-c-form-error);
     font-size: 14px;
 
     li + li {
@@ -111,6 +118,55 @@ html.dark {
 
   & + .demo-container {
     margin-top: 20px;
+  }
+
+  .success {
+    margin-top: 8px;
+    color: var(--vp-c-brand-1);
+  }
+
+  .password-strength {
+    margin: 8px 8px 0 8px;
+    width: 150px;
+    height: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--vp-c-border);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 100%;
+      background-color: var(--vp-c-form-error);
+      transition: width 0.2s ease;
+    }
+
+    &.level-0 {
+      &::before {
+        width: 10%;
+      }
+    }
+    &.level-1 {
+      &::before {
+        width: 40%;
+        background-color: var(--vp-c-warning-2);
+      }
+    }
+    &.level-2 {
+      &::before {
+        width: 75%;
+        background-color: var(--vp-c-brand-1);
+      }
+    }
+    &.level-3 {
+      &::before {
+        width: 100%;
+        background-color: var(--vp-c-brand-1);
+      }
+    }
   }
 }
 

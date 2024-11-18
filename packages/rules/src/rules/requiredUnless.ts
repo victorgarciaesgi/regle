@@ -1,5 +1,5 @@
 import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const requiredUnless: RegleRuleWithParamsDefinition<
@@ -8,8 +8,8 @@ export const requiredUnless: RegleRuleWithParamsDefinition<
   false,
   boolean
 > = createRule({
-  type: defineType<unknown, [condition: boolean]>('required'),
-  validator(value, condition) {
+  type: 'required',
+  validator(value: unknown, condition: boolean) {
     if (!condition) {
       return ruleHelpers.isFilled(value);
     }

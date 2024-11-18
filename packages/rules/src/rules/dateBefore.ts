@@ -1,6 +1,6 @@
 import { ruleHelpers } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,
@@ -16,8 +16,8 @@ export const dateBefore: RegleRuleWithParamsDefinition<
       error: 'value-or-paramater-not-a-date';
     }
 > = createRule({
-  type: defineType<Date | string, [before: Maybe<Date | string>]>('dateBefore'),
-  validator: (value, before) => {
+  type: 'dateBefore',
+  validator: (value: Maybe<Date | string>, before: Maybe<Date | string>) => {
     if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(before)) {
       if (ruleHelpers.isDate(value) && ruleHelpers.isDate(before)) {
         const result = ruleHelpers.toDate(value).getTime() < ruleHelpers.toDate(before).getTime();

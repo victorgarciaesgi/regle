@@ -1,10 +1,9 @@
-import type { RegleRuleDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
-import { ruleHelpers } from '../helpers';
+import type { Maybe, RegleRuleDefinition } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const checked: RegleRuleDefinition<boolean, [], false, boolean, boolean> = createRule({
-  type: defineType<boolean>('checked'),
-  validator: (value) => {
+  type: 'checked',
+  validator: (value: Maybe<boolean>) => {
     return value === true;
   },
   message: 'This field must be checked',

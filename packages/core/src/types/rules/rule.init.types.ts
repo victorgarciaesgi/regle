@@ -1,4 +1,4 @@
-import type { Maybe } from '../utils';
+import type { Maybe, NoInferLegacy } from '../utils';
 import type {
   $InternalRegleRuleMetadataConsumer,
   RegleRuleMetadataConsumer,
@@ -11,23 +11,26 @@ import type {
  */
 export interface RegleRuleInit<
   TValue extends any,
-  TParams extends any[],
+  TParams extends [...any[]],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > {
-  type: { value: TValue; params: TParams };
+  type?: string;
   validator: (value: Maybe<TValue>, ...args: TParams) => TReturn;
   message:
     | string
     | string[]
     | ((
         value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
+        metadata: RegleRuleMetadataConsumer<NoInferLegacy<TParams>, TMetadata>
       ) => string | string[]);
   active?:
     | boolean
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+    | ((
+        value: Maybe<TValue>,
+        metadata: RegleRuleMetadataConsumer<NoInferLegacy<TParams>, TMetadata>
+      ) => boolean);
 }
 
 /**
@@ -71,3 +74,8 @@ export interface $InternalRegleRuleInit {
   active?: boolean | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => boolean);
   type?: string;
 }
+
+export type RegleRuleTypeReturn<TValue, TParams extends [...any[]]> = {
+  value: TValue;
+  params: [...TParams];
+};

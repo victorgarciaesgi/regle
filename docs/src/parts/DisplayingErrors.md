@@ -1,4 +1,4 @@
-``` vue twoslash
+``` vue twoslash [App.vue]
 <template>
   <input 
     :class="{

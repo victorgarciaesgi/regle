@@ -3,7 +3,7 @@ import type {
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
 } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import type {
   ExtractValueFromRules,
   ExtractParamsFromRules,
@@ -108,7 +108,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
   }
 
   const newRule = createRule({
-    type: defineType<any>('and'),
+    type: 'and',
     validator: validator as any,
     message: 'The value does not match all of the provided validators',
   });

@@ -6,12 +6,12 @@ import type {
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
 } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from './ruleHelpers';
 
 export function not<
   TValue,
-  TParams extends any[] = any[],
+  TParams extends any[] = [],
   TReturn extends
     | RegleRuleMetadataDefinition
     | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
@@ -60,12 +60,12 @@ export function not<
   }
 
   const newRule = createRule({
-    type: defineType('not') as any,
+    type: 'not',
     validator: newValidator as any,
-    message: message ?? 'Error',
+    message: (message as any) ?? 'Error',
   });
 
   newRule._params = _params as any;
 
-  return newRule as RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+  return newRule as any;
 }

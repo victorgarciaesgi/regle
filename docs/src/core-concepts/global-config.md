@@ -78,12 +78,11 @@ in `useRegle`, you can already use any rule key you want. But if you want autoco
 const someAsyncCall = async () => await Promise.resolve(true);
 // ---cut---
 // @noErrors
-import { defineRegleConfig, createRule, defineType } from '@regle/core';
+import { defineRegleConfig, createRule, Maybe } from '@regle/core';
 import { withMessage, ruleHelpers } from '@regle/rules';
 
 const asyncEmail = createRule({
-  type: defineType<string>('asyncEmail'),
-  async validator(value) {
+  async validator(value: Maybe<string>) {
     if (!ruleHelpers.isFilled(value)) {
       return true;
     }

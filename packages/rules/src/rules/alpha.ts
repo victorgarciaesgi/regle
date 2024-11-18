@@ -1,12 +1,12 @@
-import type { RegleRuleDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 const alphaRegex = /^[a-zA-Z]*$/;
 
 export const alpha: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
-  type: defineType<string>('alpha'),
-  validator(value) {
+  type: 'alpha',
+  validator(value: Maybe<string>) {
     if (ruleHelpers.isEmpty(value)) {
       return true;
     }

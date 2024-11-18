@@ -4,7 +4,7 @@ interface DebouncedFunction {
   doImmediately(...args: unknown[]): Promise<unknown>;
 }
 
-export function debounce<T extends () => any>(
+export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   this: any,
   func: T,
   wait: number,

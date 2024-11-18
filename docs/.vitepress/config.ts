@@ -56,6 +56,11 @@ export default defineConfig({
     nav: Nav,
     search: {
       provider: 'local',
+      // options: {
+      //   indexName: 'regle',
+      //   appId: 'G5JKVPJTYU',
+      //   apiKey: 'a58d2d77b3755f50b110c8aef5740682',
+      // },
     },
     sidebar: [
       {

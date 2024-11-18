@@ -274,7 +274,6 @@ export function createReactiveFieldStatus({
 
     $unwatchDirty = watch($dirty, () => {
       storage.setDirtyEntry(path, $dirty.value);
-      $validate();
     });
 
     $unwatchValid = watch(scopeState.$valid, (valid) => {
@@ -313,6 +312,7 @@ export function createReactiveFieldStatus({
     if (!scopeState.$rewardEarly.value !== false) {
       // $clearExternalErrors();
     }
+    $commit();
   }
 
   const $validate = scopeState.$debounce.value

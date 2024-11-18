@@ -55,7 +55,7 @@ export function withMessage(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     any,
-    RegleRuleMetadataConsumer<[any], any>,
+    RegleRuleMetadataConsumer<any[], any>,
     string | string[]
   >
 ): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {

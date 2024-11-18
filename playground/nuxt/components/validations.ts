@@ -1,4 +1,5 @@
-import { createRule, defineRegleConfig, defineType } from '@regle/core';
+import type { Maybe } from '@regle/core';
+import { createRule, defineRegleConfig } from '@regle/core';
 import { ruleHelpers, withMessage, maxLength } from '@regle/rules';
 
 export function timeout(count: number) {
@@ -6,8 +7,8 @@ export function timeout(count: number) {
 }
 
 export const asyncEmail = createRule({
-  type: defineType<string, [limit: number]>('asyncEmail'),
-  async validator(value, limit) {
+  type: 'asyncEmail',
+  async validator(value: Maybe<string>, limit: number) {
     if (ruleHelpers.isEmpty(value)) {
       return { $valid: true };
     }

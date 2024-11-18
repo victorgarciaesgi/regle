@@ -27,3 +27,5 @@ export type NonPresentKeys<
   TSource extends Record<string, any>,
   Target extends Record<string, any>,
 > = Omit<Target, keyof TSource>;
+
+export type NoInferLegacy<A extends any> = [A][A extends any ? 0 : never];

@@ -1,11 +1,11 @@
 import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown], false, boolean> =
   createRule({
-    type: defineType<unknown, [target: unknown]>('sameAs'),
-    validator(value, target) {
+    type: 'sameAs',
+    validator(value: unknown, target: unknown) {
       if (ruleHelpers.isEmpty(value)) {
         return true;
       }

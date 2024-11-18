@@ -159,25 +159,23 @@ export function createReactiveRuleStatus({
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
 
     if (resultOrPromise instanceof Promise) {
-      if (!$pending.value) {
-        try {
-          $valid.value = true;
-          if ($dirty.value) {
-            $pending.value = true;
-          }
-          const promiseResult = await resultOrPromise;
-          if (typeof promiseResult === 'boolean') {
-            ruleResult = promiseResult;
-          } else {
-            const { $valid, ...rest } = promiseResult;
-            ruleResult = $valid;
-            $metadata.value = rest;
-          }
-        } catch (e) {
-          ruleResult = false;
-        } finally {
-          $pending.value = false;
+      try {
+        $valid.value = true;
+        if ($dirty.value) {
+          $pending.value = true;
         }
+        const promiseResult = await resultOrPromise;
+        if (typeof promiseResult === 'boolean') {
+          ruleResult = promiseResult;
+        } else {
+          const { $valid, ...rest } = promiseResult;
+          ruleResult = $valid;
+          $metadata.value = rest;
+        }
+      } catch (e) {
+        ruleResult = false;
+      } finally {
+        $pending.value = false;
       }
     } else {
       if (resultOrPromise != null) {
@@ -193,6 +191,8 @@ export function createReactiveRuleStatus({
     $valid.value = ruleResult;
 
     $validating.value = false;
+
+    console.log(ruleKey, ruleResult);
 
     return ruleResult;
   }

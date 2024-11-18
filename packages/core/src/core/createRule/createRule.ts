@@ -2,6 +2,7 @@ import type {
   InferRegleRule,
   RegleRuleInit,
   RegleRuleMetadataDefinition,
+  RegleRuleTypeReturn,
   RegleUniversalParams,
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
@@ -28,8 +29,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  * import {ruleHelpers} from '@regle/rules';
  *
  * export const isFoo = createRule({
- *   type: defineType<string>('foo'),
- *   validator(value) {
+ *   validator(value: string) {
  *       if (ruleHelpers.isFilled(value)) {
  *           return value === 'foo';
  *       }
@@ -79,10 +79,4 @@ export function createRule<
     }
   }
   throw new Error('Validator must be a function');
-}
-
-export function defineType<TValue extends any = unknown, TParams extends any[] = []>(
-  ruleName: string
-): { value: TValue; params: TParams } {
-  return ruleName as any;
 }

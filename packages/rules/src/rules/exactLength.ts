@@ -1,6 +1,6 @@
 import { ruleHelpers } from '../helpers';
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const exactLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
@@ -8,8 +8,8 @@ export const exactLength: RegleRuleWithParamsDefinition<
   false,
   boolean
 > = createRule({
-  type: defineType<string | Record<PropertyKey, any> | any[], [count: number]>('exactLength'),
-  validator: (value, count) => {
+  type: 'exactLength',
+  validator: (value: Maybe<string | Record<PropertyKey, any> | any[]>, count: number) => {
     if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(count)) {
       if (ruleHelpers.isNumber(count)) {
         return ruleHelpers.size(value) === count;

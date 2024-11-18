@@ -1,6 +1,6 @@
 import { ruleHelpers } from '../helpers';
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const between: RegleRuleWithParamsDefinition<
   number,
@@ -8,8 +8,8 @@ export const between: RegleRuleWithParamsDefinition<
   false,
   boolean
 > = createRule({
-  type: defineType<number, [min: number, max: number]>('between'),
-  validator: (value, min, max) => {
+  type: 'between',
+  validator: (value: Maybe<number>, min: number, max: number) => {
     if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(min) && ruleHelpers.isFilled(max)) {
       const tValue = ruleHelpers.toNumber(value);
       const tMin = ruleHelpers.toNumber(min);

@@ -238,7 +238,11 @@ export function createReactiveNestedStatus({
         });
       });
 
-      const $valid = computed<boolean>(() => !$invalid.value);
+      const $valid = computed<boolean>(() => {
+        return Object.entries($fields.value).every(([key, statusOrField]) => {
+          return statusOrField.$valid;
+        });
+      });
 
       const $error = computed<boolean>(() => {
         return Object.entries($fields.value).some(([key, statusOrField]) => {

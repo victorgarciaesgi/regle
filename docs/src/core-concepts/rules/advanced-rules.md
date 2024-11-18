@@ -13,31 +13,18 @@ Exemple: Recreating a simple `required` rule
 
 ```ts twoslash
 // @noErrors
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
 
 export const required = createRule({
-  type: defineType('required'),
-  validator: (value) => {
+  type: 'required',
+  validator: (value: unknown) => {
     return ruleHelpers.isFilled(value);
   },
   message: 'This field is required',
 });
 ```
 Let's break down the options 
-
-### `type` 
-Type: `ReturnType<defineType>`
-
-*required*
-
-This property value should always be `defineType`. This tool will help you define the name of the validator and it's type. It will default to `unknwown`.
-
-If you want to force a type for your validator to be used with you can do it like this:
-
-```ts
-type: defineType<number | string>('numeric')
-```
 
 ### `validator`
 Type: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
@@ -53,6 +40,14 @@ Type: `string | (value, ...metadata) => (string | string[])`
 
 This will define what error message you assign to your rule. It can be a string or a function receiving the value, params and metadata as parameters
 
+### `type` 
+Type: `string
+
+*optional*
+
+This property define a type of validator, because multiple rules can share the same target as a result (like `required` & `requiredIf`)
+
+
 ### `active`
 Type: `boolean | (value, ...metadata) => boolean`
 
@@ -66,17 +61,7 @@ This will define the `$active` state of the rule. This will compute wether or no
 
 With `createRule` you can easily define a rule that will depends on external parameters, and having an `$active` state
 
-To declare parameters you need to provide a second type parameter to the `defineType` helper
-
-```ts
-type: defineType<unknown, [foo: number]>('bar')
-// Optional params
-type: defineType<unknown, [optional?: string]>('bar')
-// Multiple params
-type: defineType<unknown, [param1: string, param2?: number]>('bar')
-```
-
-Declaring a parameter will transform your rule as a function accepting the params you declared as either a raw value, a Ref, or a getter function.
+Regle will detect that your validator requires parameters and transform your rule to a function accepting the params you declared as either a raw value, a Ref, or a getter function.
 
 ```ts
 myValidator(5);
@@ -101,17 +86,18 @@ useRegle({}, rules);
 Exemple: Recreating `requiredIf` rules
 
 
-```ts twoslash include requiredIf
+::: code-group
+```ts twoslash include requiredIf [requiredIf.ts]
 // @noErrors
-import { createRule, defineType, useRegle } from '@regle/core';
+import { createRule, useRegle } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
 import { ref } from 'vue';
 
 export const requiredIf = createRule({
-  type: defineType<unknown, [condition: boolean]>('required'),
-  validator(value, condition) {
+  type: 'required',
+  validator(value: unknown, condition: boolean) {
     // Params like `condition` will always be unwrapped here
-    // no need to check if it's a value or a getter function
+    // no need to check if it's a value, a ref or a getter function
     if (condition) {
       return ruleHelpers.isFilled(value);
     }
@@ -126,13 +112,7 @@ export const requiredIf = createRule({
 });
 ```
 
-```ts twoslash
-// @include: requiredIf
-```
-
- Then use it in your form
-
-```vue twoslash {20}
+```vue twoslash {20} [Form.vue]
 <script setup lang='ts'>
 // @include: requiredIf
 import { ref } from 'vue';
@@ -165,11 +145,12 @@ const {regle, errors, resetAll} = useRegle({name: ''}, {
   </ul>
 </template>
 ```
+:::
 
 Result: 
 
 <div class="demo-container">
-  <div>
+  <div class='block'>
     <input v-model='condition' type='checkbox'/>
     <label>The field is required</label>
   </div>
@@ -205,10 +186,9 @@ Like in inline rules, you can return any data from your validator function as lo
 It can be useful for returning computed data from the validator, or in async function to process api result, or api errors.
 
 ```ts twoslash {9}
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const example = createRule({
-  type: defineType('example'),
   validator: (value) => {
     if (value === 'regle') {
       return {

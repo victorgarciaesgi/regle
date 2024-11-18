@@ -1,11 +1,11 @@
 import { ruleHelpers } from '../helpers';
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> =
   createRule({
-    type: defineType<number, [count: number]>('minValue'),
-    validator: (value, count) => {
+    type: 'minValue',
+    validator: (value: Maybe<number>, count: number) => {
       if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(count)) {
         if (ruleHelpers.isNumber(count) && ruleHelpers.isNumber(value)) {
           return value >= count;

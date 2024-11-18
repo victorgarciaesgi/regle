@@ -1,10 +1,10 @@
-import { createRule, defineType } from '@regle/core';
+import type { Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
 import { timeout } from '../utils';
 
 export const ruleMockIsFoo = createRule({
-  type: defineType<string>('ruleMockIsFoo'),
-  validator(value) {
+  validator(value: Maybe<string>) {
     if (ruleHelpers.isFilled(value)) {
       return value === 'foo';
     }
@@ -14,8 +14,7 @@ export const ruleMockIsFoo = createRule({
 });
 
 export const ruleMockIsEven = createRule({
-  type: defineType<number>('ruleMockIsEven'),
-  validator(value) {
+  validator(value: Maybe<number>) {
     if (ruleHelpers.isFilled(value)) {
       return value % 2 === 0;
     }
@@ -26,8 +25,7 @@ export const ruleMockIsEven = createRule({
 
 export function ruleMockIsEvenAsync() {
   return createRule({
-    type: defineType<number>('ruleMockIsEven'),
-    async validator(value) {
+    async validator(value: Maybe<number>) {
       if (ruleHelpers.isFilled(value)) {
         await timeout(1000);
         return value % 2 === 0;
@@ -40,8 +38,7 @@ export function ruleMockIsEvenAsync() {
 
 export function ruleMockIsFooAsync() {
   return createRule({
-    type: defineType<string>('ruleMockAsyncIsFoo'),
-    async validator(value) {
+    async validator(value: Maybe<string>) {
       if (ruleHelpers.isFilled(value)) {
         await timeout(1000);
         return value === 'foo';
@@ -53,8 +50,7 @@ export function ruleMockIsFooAsync() {
 }
 
 export const ruleMockIsEqualParam = createRule({
-  type: defineType<string, [foo: string]>('ruleMockIsEqualParam'),
-  validator(value, foo) {
+  validator(value: Maybe<string>, foo: string) {
     if (ruleHelpers.isFilled(value)) {
       return value === foo;
     }
@@ -66,8 +62,7 @@ export const ruleMockIsEqualParam = createRule({
 });
 
 export const ruleMockIsEqualParamAsync = createRule({
-  type: defineType<string, [foo: string]>('ruleMockIsEqualParam'),
-  async validator(value, foo) {
+  async validator(value: Maybe<string>, foo: string) {
     if (ruleHelpers.isFilled(value)) {
       await timeout(1000);
       return value === foo;

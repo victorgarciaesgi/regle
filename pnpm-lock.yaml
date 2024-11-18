@@ -47,6 +47,9 @@ importers:
       changelogithub:
         specifier: 0.13.11
         version: 0.13.11(magicast@0.3.5)
+      check-password-strength:
+        specifier: 2.0.10
+        version: 2.0.10
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -2126,6 +2129,9 @@ packages:
   check-error@2.1.1:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
+
+  check-password-strength@2.0.10:
+    resolution: {integrity: sha512-HRM5ICPmtnNtLnTv2QrfVkq1IxI9z3bzYpDJ1k5ixwD9HtJGHuv265R6JmHOV6r8wLhQMlULnIUVpkrC2yaiCw==}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -7143,6 +7149,8 @@ snapshots:
   character-entities@2.0.2: {}
 
   check-error@2.1.1: {}
+
+  check-password-strength@2.0.10: {}
 
   chokidar@3.6.0:
     dependencies:

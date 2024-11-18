@@ -5,6 +5,7 @@ import {
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeInvalidField } from '../../../utils/validations.utils';
+import { flushPromises } from '@vue/test-utils';
 
 describe('.$reset', () => {
   it('should update the $dirty state to false', async () => {
@@ -73,7 +74,7 @@ describe('.$reset', () => {
     shouldBeErrorField(vm.regle.$fields.user.$fields.firstName);
     shouldBeErrorField(vm.regle.$fields.user.$fields.lastName);
 
-    vm.regle.$fields.user.$reset();
+    await Promise.all([vm.regle.$fields.user.$reset(), flushPromises()]);
 
     shouldBeInvalidField(vm.regle.$fields.user.$fields.firstName);
     shouldBeInvalidField(vm.regle.$fields.user.$fields.lastName);

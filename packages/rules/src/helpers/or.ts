@@ -1,5 +1,5 @@
 import type { FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import { createRule } from '@regle/core';
 import type {
   ExtractParamsFromRules,
   ExtractValueFromRules,
@@ -91,7 +91,7 @@ export function or<TRules extends FormRuleDeclaration<any, any>[]>(
       };
 
   const newRule = createRule({
-    type: defineType('or'),
+    type: 'or',
     validator: validator as any,
     message: 'The value does not match any of the provided validators',
   });

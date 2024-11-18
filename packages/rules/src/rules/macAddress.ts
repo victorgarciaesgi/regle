@@ -1,5 +1,5 @@
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const macAddress: RegleRuleWithParamsDefinition<
@@ -8,8 +8,8 @@ export const macAddress: RegleRuleWithParamsDefinition<
   false,
   boolean
 > = createRule({
-  type: defineType<string, [separator?: string]>('macAddress'),
-  validator(value, separator = ':') {
+  type: 'macAddress',
+  validator(value: Maybe<string>, separator = ':') {
     if (ruleHelpers.isEmpty(value)) {
       return true;
     }

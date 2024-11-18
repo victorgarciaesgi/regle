@@ -5,7 +5,7 @@ import type {
   RegleRuleMetadataDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
-import { createRule, defineType, InternalRuleType } from '@regle/core';
+import { createRule, InternalRuleType } from '@regle/core';
 
 export function withAsync<
   TValue,
@@ -23,7 +23,7 @@ export function withAsync<
   };
 
   const newRule = createRule({
-    type: defineType<any>(InternalRuleType.Async),
+    type: InternalRuleType.Async,
     validator: validator as any,
     message: '',
   });

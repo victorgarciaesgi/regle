@@ -334,8 +334,8 @@ export function createReactiveCollectionStatus({
 
       const $valid = computed<boolean>(
         () =>
-          $fieldStatus.value.$valid ||
-          $eachStatus.value.some((statusOrField) => {
+          $fieldStatus.value.$valid &&
+          $eachStatus.value.every((statusOrField) => {
             return statusOrField.$valid;
           })
       );

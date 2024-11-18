@@ -93,8 +93,11 @@ Result:
           </li>
         </ul>
     </div>
-    <button type="button" @click="regle.$clearExternalErrors">Reset Errors</button>
-    <button type="button" @click="submit">Submit</button>
+    <div>
+      <button type="button" @click="submit">Submit</button>
+      <button type="button" @click="regle.$clearExternalErrors">Reset Errors</button>
+      <button type="button" @click="resetAll">Reset All</button>
+    </div>
   </div>
  
 </div>

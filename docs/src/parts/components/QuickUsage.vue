@@ -19,7 +19,6 @@
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';
-import { ref } from 'vue';
 
 const { errors, regle, state, resetAll } = useRegle(
   { email: '' },

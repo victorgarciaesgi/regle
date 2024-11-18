@@ -9,7 +9,7 @@ title: useRegle
 
 Let's see how to use it with the simplest case example
 
-``` ts twoslash
+``` ts twoslash [useRegle.ts]
 import {useRegle} from '@regle/core';
 
 const {regle, state, errors, ready, validateState, resetAll} = useRegle({name: ''}, {
@@ -66,7 +66,7 @@ Regle provide a list of default rules that you can use from `@regle/rules`.
 
 You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
-``` ts twoslash
+``` ts twoslash 
 // @noErrors
 import {useRegle} from '@regle/core';
 import {required, num } from '@regle/rules';

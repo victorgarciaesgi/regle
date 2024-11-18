@@ -20,6 +20,7 @@ Using a Pinia store is great for avoiding to do prop drilling with all the prope
 ```ts twoslash include store [demo.store.ts] 
 // @module: esnext
 // @filename: demo.store.ts
+// ---cut---
 import {required, minLength, email} from '@regle/rules';
 import {defineStore} from 'pinia';
 import {useRegle} from '@regle/core';
@@ -30,6 +31,8 @@ export const useDemoStore = defineStore('demo-store', () => {
     email: {required, minLength: minLength(4), email}
   })
 
+  // This is a proposed way to export the properties without redundant code
+  // You can also export it one my one as each property is reactive
   return {
     ...regleProperties
   }

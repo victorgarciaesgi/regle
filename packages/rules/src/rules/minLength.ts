@@ -1,6 +1,6 @@
 import { ruleHelpers } from '../helpers';
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, defineType } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 
 export const minLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
@@ -8,8 +8,8 @@ export const minLength: RegleRuleWithParamsDefinition<
   false,
   boolean
 > = createRule({
-  type: defineType<string | Record<PropertyKey, any> | any[], [count: number]>('minLength'),
-  validator: (value, count) => {
+  type: 'minLength',
+  validator: (value: Maybe<string | Record<PropertyKey, any> | any[]>, count: number) => {
     if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(count)) {
       if (ruleHelpers.isNumber(count)) {
         return ruleHelpers.size(value) >= count;
