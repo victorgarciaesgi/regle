@@ -17,12 +17,13 @@
         </ul>
       </div>
     </div>
+    <ul v-if="errors.collection.$errors.length">
+      <li v-for="error of errors.collection.$errors" :key="error">
+        {{ error }}
+      </li>
+    </ul>
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
-      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem"
-        >Remove random item</button
-      >
-      <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
       <button type="button" @click="resetAll">Reset</button>
     </div>
   </div>
@@ -33,41 +34,13 @@ import { useRegle } from '@regle/core';
 import { ref } from 'vue';
 import { minLength, required } from '@regle/rules';
 
-function shuffle(arr: any[], options?: any) {
-  if (!Array.isArray(arr)) {
-    throw new Error('expected an array');
-  }
-  if (arr.length < 2) {
-    return arr;
-  }
-  var shuffleAll = options && options.shuffleAll;
-  var result = arr.slice();
-  var i = arr.length,
-    rand,
-    temp;
-  while (--i > 0) {
-    do {
-      rand = Math.floor(Math.random() * (i + 1));
-    } while (shuffleAll && rand == i);
-    if (!shuffleAll || rand != i) {
-      temp = result[i];
-      result[i] = result[rand];
-      result[rand] = temp;
-    }
-  }
-  return result;
-}
-
 const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-function removeRandomItem() {
-  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
-}
-
 const { errors, regle, resetAll } = useRegle(form, {
   collection: {
+    minLength: minLength(4),
     $each: {
       name: { required },
     },

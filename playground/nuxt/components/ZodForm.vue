@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { useZodForm } from '@regle/zod';
+import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive } from 'vue';
 import { z } from 'zod';
 
@@ -54,7 +54,7 @@ async function submit() {
   const result = await validateState();
 }
 
-const { errors, regle, validateState } = useZodForm(
+const { errors, regle, validateState } = useZodRegle(
   form,
   z.object({
     email: z

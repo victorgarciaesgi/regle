@@ -105,9 +105,12 @@ describe('useRegle with async rules and Object refs', async () => {
 
   it('should update dirty state and errors when updating form', async () => {
     vm.regle.$value.level0Async = 1;
+
+    await vi.advanceTimersByTimeAsync(100);
     await nextTick();
-    vi.advanceTimersByTimeAsync(1000);
-    await nextTick();
+    expect(vm.regle.$fields.level0Async.$pending).toBe(true);
+
+    vi.advanceTimersByTime(1000);
     await flushPromises();
 
     expect(vm.errors.level0Async).toStrictEqual(['Custom error']);

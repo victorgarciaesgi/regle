@@ -32,11 +32,20 @@ html.dark {
   border-radius: 8px;
   font-size: 14px;
 
+  * {
+    position: relative;
+  }
+
+  div.input-container {
+    max-width: 200px;
+  }
+
   input {
     background-color: var(--vp-c-divider);
     padding: 4px 12px;
     border-radius: 6px;
     border: 1px solid var(--vp-c-border);
+    width: 190px;
 
     &.valid {
       border-color: var(--vp-c-brand-1);
@@ -44,6 +53,10 @@ html.dark {
 
     &.error {
       border-color: var(--vp-c-form-error);
+    }
+
+    &.pending {
+      border-color: var(--vp-c-warning-2);
     }
 
     & + button {
@@ -58,11 +71,13 @@ html.dark {
   .list {
     display: grid;
     gap: 8px;
+    max-width: none;
 
     .item {
       padding: 15px;
       border: 1px solid var(--vp-c-border);
       border-radius: 8px;
+      width: max-content;
 
       .field {
         display: flex;
@@ -77,6 +92,7 @@ html.dark {
     margin-bottom: 0;
     color: var(--vp-c-form-error);
     font-size: 14px;
+    max-width: 100%;
 
     li + li {
       margin-top: 8px;
@@ -123,6 +139,10 @@ html.dark {
   .success {
     margin-top: 8px;
     color: var(--vp-c-brand-1);
+  }
+
+  .pending-text {
+    color: var(--vp-c-warning-2);
   }
 
   .password-strength {

@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="state.email"
-        :class="{ valid: regle.$fields.email.$valid }"
+        :class="{ valid: regle.$fields.email.$valid, error: regle.$fields.email.$error }"
         placeholder="Type your email"
       />
       <button type="button" @click="resetAll">Reset</button>

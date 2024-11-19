@@ -10,7 +10,7 @@ import type {
   RegleRuleMetadataDefinition,
 } from '../../../types';
 import { InternalRuleType } from '../../../types';
-import { isEmpty } from '../../../utils';
+import { debounce, isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition } from '../guards';
@@ -23,6 +23,7 @@ interface CreateReactiveRuleStatusOptions {
   customMessages?: Partial<CustomRulesDeclarationTree>;
   path: string;
   storage: RegleStorage;
+  $debounce?: number;
 }
 
 export function createReactiveRuleStatus({
@@ -33,6 +34,7 @@ export function createReactiveRuleStatus({
   state,
   path,
   storage,
+  $debounce,
 }: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
@@ -108,9 +110,7 @@ export function createReactiveRuleStatus({
 
       const $type = computed(() => {
         if (isFormRuleDefinition(rule) && rule.value.type) {
-          return Object.values(InternalRuleType).includes(rule.value.type)
-            ? ruleKey
-            : rule.value.type;
+          return rule.value.type;
         } else {
           return ruleKey;
         }
@@ -152,6 +152,32 @@ export function createReactiveRuleStatus({
 
   $watch();
 
+  async function computeAsyncResult(promise: Promise<RegleRuleMetadataDefinition>) {
+    let ruleResult = false;
+    try {
+      $valid.value = true;
+      if ($dirty.value) {
+        $pending.value = true;
+      }
+      const promiseResult = await promise;
+      if (typeof promiseResult === 'boolean') {
+        ruleResult = promiseResult;
+      } else {
+        const { $valid, ...rest } = promiseResult;
+        ruleResult = $valid;
+        $metadata.value = rest;
+      }
+    } catch (e) {
+      ruleResult = false;
+    } finally {
+      $pending.value = false;
+    }
+
+    return ruleResult;
+  }
+
+  const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 100);
+
   async function $validate(): Promise<boolean> {
     $validating.value = true;
     const validator = scopeState.$validator.value;
@@ -159,24 +185,8 @@ export function createReactiveRuleStatus({
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
 
     if (resultOrPromise instanceof Promise) {
-      try {
-        $valid.value = true;
-        if ($dirty.value) {
-          $pending.value = true;
-        }
-        const promiseResult = await resultOrPromise;
-        if (typeof promiseResult === 'boolean') {
-          ruleResult = promiseResult;
-        } else {
-          const { $valid, ...rest } = promiseResult;
-          ruleResult = $valid;
-          $metadata.value = rest;
-        }
-      } catch (e) {
-        ruleResult = false;
-      } finally {
-        $pending.value = false;
-      }
+      const promiseDebounce = $computeAsyncDebounce(resultOrPromise);
+      ruleResult = await promiseDebounce;
     } else {
       if (resultOrPromise != null) {
         if (typeof resultOrPromise === 'boolean') {

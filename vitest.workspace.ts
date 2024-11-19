@@ -11,6 +11,7 @@ export default defineWorkspace([
       include: ['./packages/**/*.spec.ts', './tests/**/*.spec.ts'],
       typecheck: {
         enabled: true,
+        include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
       },
     },
   },

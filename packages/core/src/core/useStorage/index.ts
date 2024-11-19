@@ -1,1 +1,1 @@
-export { useStorage, RegleStorage } from './useStorage';
+export { useStorage, type RegleStorage } from './useStorage';

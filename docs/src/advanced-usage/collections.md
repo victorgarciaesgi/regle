@@ -5,6 +5,7 @@ title: Collections - Declaring rules
 <script setup>
 import DisplayingCollectionErrors from '../parts/components/collections/DisplayingCollectionErrors.vue';
 import AccessingCurrentItemState from '../parts/components/collections/AccessingCurrentItemState.vue';
+import ValidatingArray from '../parts/components/collections/ValidatingArray.vue';
 </script>
 
 # Collections
@@ -98,32 +99,12 @@ Result:
 
 Sometimes you not only want to validate each field in every element of the array, but validating the array it self, like its size.
 
-You can do this exactly like a normal field:
+You can do this exactly like a normal field.
+
+The errors can be displayed either by `errors.[field].$errors` or `regle.$fields.[field].$field.$errors`
 
 
-```vue twoslash
-<template>
-  <div 
-    v-for="item of regle.$fields.collection.$each" 
-    :key="item.$id">
-      <div>
-        <input
-          v-model="item.$value.name"
-          :class="{ valid: item.$fields.name.$valid }"
-          placeholder="Type an item value"
-        />
-      </div>
-    </div>
-    <ul>
-      <li v-for="error of errors.collection.$errors" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-  <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
-  <button type="button" @click="resetAll">Reset</button>
-</template>
-
-<script setup lang="ts">
+```ts twoslash
 //---cut---
 import { ref } from 'vue';
 import { required, minLength } from '@regle/rules';
@@ -142,8 +123,11 @@ const { regle, errors, resetAll } = useRegle(form, {
     },
   },
 });
-</script>
 ```
+
+Result:
+
+<ValidatingArray/>
 
 
 ## Accessing the current item state

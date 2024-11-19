@@ -2,6 +2,10 @@
 title: Global configuration
 ---
 
+<script setup>
+import CustomMessages from '../parts/components/global-config/CustomMessages.vue';
+</script>
+
 # Global configuration
 
 If you have multiple forms in your app, you may want to have a global config containing your custom validators, custom error messages and your modifiers without the need to declare it every time with every `useRegle` call.
@@ -37,37 +41,7 @@ const {errors} = useCustomRegle({name: ''}, {
 
 Result: 
 
-<div class="demo-container">
-  <div>
-    <input :class="{valid: regle.$fields.name.$valid}" v-model='state.name' placeholder='Type your name'/>
-    <button type="button" @click="resetAll">Reset</button>
-  </div>
-  <ul v-if="errors.name.length">
-    <li v-for="error of errors.name" :key='error'>
-      {{ error }}
-    </li>
-  </ul>
-</div>
-
-<script setup lang='ts'>
-import {defineRegleConfig} from '@regle/core';
-import { withMessage, minLength, required } from '@regle/rules';
-
-const useCustomRegle = defineRegleConfig({
-  rules: () => ({
-    required: withMessage(required, 'You need to provide a value'),
-    minLength: withMessage(minLength, (value, { $params: [count] }) => {
-      return `Minimum length is ${count}. Current length: ${value?.length}`;
-    })
-  })
-})
-
-const {errors, state, regle, resetAll} = useCustomRegle({name: ''}, {
-  name: {
-    required, minLength: minLength(6)
-  }
-})
-</script>
+<CustomMessages/>
 
 
 ## Declare new rules

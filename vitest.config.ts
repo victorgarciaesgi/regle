@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
-      include: ['packages/*/src/**'],
+      include: ['packages/*/src/**', 'packages/*/dist/**'],
       exclude: ['**/index.ts', '**/types/**', '**/*.d.ts'],
     },
   },

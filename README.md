@@ -73,6 +73,7 @@ TODO
 - [x] Logo
 - [x] $silentErrors
 - [x] Validation groups
+- [ ] withErrorType
 - [ ] Documentation (in progress)
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)

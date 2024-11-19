@@ -1,2 +1,2 @@
 export * from './parser';
-export { useZodForm } from './useZodForm';
+export { useZodRegle } from './useZodRegle';

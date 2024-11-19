@@ -1,1 +1,1 @@
-export { useZodForm } from './core';
+export { useZodRegle } from './core';

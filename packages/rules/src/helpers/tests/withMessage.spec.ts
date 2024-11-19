@@ -1,7 +1,7 @@
 import type { RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
-import { Ref, defineComponent, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { and } from '../and';
 import { email, minLength, required } from '../../rules';
 import { withMessage } from '../withMessage';
@@ -43,6 +43,14 @@ describe('withMessage helper', () => {
     },
   });
 
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   const { vm } = mount(testComponent);
 
   it('should return empty errors', () => {
@@ -73,6 +81,10 @@ describe('withMessage helper', () => {
     vm.form.email = 'foo@bar.fr';
     vm.form.lastName = '';
 
+    await nextTick();
+
+    vi.advanceTimersByTimeAsync(1000);
+    await nextTick();
     await flushPromises();
 
     expect(vm.errors.firstName).toStrictEqual([]);

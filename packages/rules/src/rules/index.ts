@@ -23,3 +23,6 @@ export * from './dateBetween';
 export * from './ipAddress';
 export * from './macAddress';
 export * from './checked';
+export * from './contains';
+export * from './startsWith';
+export * from './endsWith';

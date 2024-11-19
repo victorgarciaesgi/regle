@@ -6,7 +6,7 @@ export default [
   ts.configs.base,
   ...eslintPluginVue.configs['flat/recommended'],
   {
-    files: ['**/*.ts', '*.vue', '**/*.vue'],
+    files: ['**/*.ts', '*.vue', '**/*.vue', '**/*.spec.ts'],
     languageOptions: {
       parserOptions: {
         parser: '@typescript-eslint/parser',

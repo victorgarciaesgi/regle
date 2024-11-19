@@ -13,7 +13,7 @@
 import type { Maybe } from '@regle/core';
 import { createRule, useRegle } from '@regle/core';
 import { ref } from 'vue';
-import { minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
+import { email, minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
 import { timeout } from '@/validations';
 
 function ruleMockIsEvenAsync() {
@@ -53,15 +53,9 @@ const ruleMockIsEven = createRule({
   message: 'Custom error',
 });
 
-const form = {
-  level0Async: ref(1),
-  level1: {
-    child: ref(2),
-    level2: {
-      childAsync: ref(''),
-    },
-  },
-};
+const form = ref<{ name?: string }>({
+  name: undefined,
+});
 
 async function validate() {
   const result = await validateState();
@@ -69,13 +63,7 @@ async function validate() {
 }
 
 const { regle, validateState } = useRegle(form, () => ({
-  level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
-  level1: {
-    child: { ruleEven: ruleMockIsEven },
-    level2: {
-      childAsync: { ruleAsync: ruleMockIsFooAsync() },
-    },
-  },
+  name: { email },
 }));
 </script>
 

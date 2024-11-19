@@ -1,5 +1,5 @@
 import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, Maybe } from '@regle/core';
+import { createRule } from '@regle/core';
 import { ruleHelpers } from '../helpers';
 
 export const requiredIf: RegleRuleWithParamsDefinition<

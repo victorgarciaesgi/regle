@@ -26,12 +26,11 @@ describe('not validator', () => {
   });
 
   it('should have correct return types', () => {
-    const test = not(() => ({ $valid: true, foo: 'bar' }));
     expectTypeOf(not(() => true)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, any[], false, true, unknown>
+      RegleRuleDefinition<unknown, [], false, true, unknown>
     >();
     expectTypeOf(not(async () => true)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, any[], true, boolean, unknown>
+      RegleRuleDefinition<unknown, [], true, boolean, unknown>
     >();
 
     expectTypeOf(not(minLength(6))).toEqualTypeOf<
@@ -47,7 +46,7 @@ describe('not validator', () => {
     expectTypeOf(not(() => ({ $valid: true, foo: 'bar' }))).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
-        any[],
+        [],
         false,
         {
           $valid: true;

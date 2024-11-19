@@ -1,33 +1,79 @@
-import type { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
 export type DefaultValidators = {
   alpha: RegleRuleDefinition<string>;
   alphaNum: RegleRuleDefinition<string | number>;
-  between: RegleRuleWithParamsDefinition<number, [min: number, max: number]>;
+  between: RegleRuleWithParamsDefinition<number, [min: Maybe<number>, max: Maybe<number>]>;
   checked: RegleRuleDefinition<boolean, [], false, boolean, boolean>;
-  dateAfter: RegleRuleWithParamsDefinition<Date, [after: Date]>;
-  dateBefore: RegleRuleWithParamsDefinition<Date, [before: Date]>;
-  dateBetween: RegleRuleWithParamsDefinition<Date, [before: Date, after: Date]>;
-  decimal: RegleRuleDefinition<number | string>;
-  email: RegleRuleDefinition<string>;
+  contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
+  dateAfter: RegleRuleWithParamsDefinition<
+    string | Date,
+    [after: Maybe<string | Date>],
+    false,
+    | true
+    | {
+        $valid: false;
+        error: 'date-not-after';
+      }
+    | {
+        $valid: false;
+        error: 'value-or-paramater-not-a-date';
+      }
+  >;
+  dateBefore: RegleRuleWithParamsDefinition<
+    string | Date,
+    [before: Maybe<string | Date>],
+    false,
+    | true
+    | {
+        $valid: false;
+        error: 'date-not-before';
+      }
+    | {
+        $valid: false;
+        error: 'value-or-paramater-not-a-date';
+      }
+  >;
+  dateBetween: RegleRuleWithParamsDefinition<
+    string | Date,
+    [before: Maybe<string | Date>, after: Maybe<string | Date>],
+    false,
+    boolean
+  >;
+  decimal: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+  email: RegleRuleDefinition<string, [], false, boolean, string>;
+  endsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
   exactLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
     [count: number],
     false,
     boolean
   >;
-  integer: RegleRuleDefinition<number | string>;
-  ipAddress: RegleRuleDefinition<string, [], false>;
-  macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false>;
-  maxLength: RegleRuleWithParamsDefinition<string, [count: number]>;
-  maxValue: RegleRuleWithParamsDefinition<number, [count: number]>;
-  minLength: RegleRuleWithParamsDefinition<
-    string | Record<PropertyKey, any> | any[],
-    [count: number]
+  integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+  ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
+  macAddress: RegleRuleWithParamsDefinition<
+    string,
+    [separator?: string | undefined],
+    false,
+    boolean
   >;
-  minValue: RegleRuleWithParamsDefinition<number, [count: number]>;
-  numeric: RegleRuleDefinition<number | string>;
+  maxLength: RegleRuleWithParamsDefinition<
+    string | any[] | Record<PropertyKey, any>,
+    [count: number],
+    false,
+    boolean
+  >;
+  maxValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  minLength: RegleRuleWithParamsDefinition<
+    string | any[] | Record<PropertyKey, any>,
+    [count: number],
+    false,
+    boolean
+  >;
+  minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   required: RegleRuleDefinition<unknown, []>;
-  sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown]>;
-  url: RegleRuleDefinition<string>;
+  sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown], false, boolean>;
+  startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
+  url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

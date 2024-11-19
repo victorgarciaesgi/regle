@@ -7,9 +7,9 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
@@ -28,5 +28,6 @@
   "include": [
     "./packages/**/*",
     "./tests/**/*",
+    "**/tsup*"
   ],
 }

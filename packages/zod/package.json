@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit",
     "release": "pnpm publish --report-summary",
     "build": "tsup --minify",
-    "build:local": "tsup --clean false",
+    "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"
   },

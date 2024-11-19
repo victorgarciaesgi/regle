@@ -4,15 +4,15 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
-  FieldRegleBehaviourOptions,
   CustomRulesDeclarationTree,
+  FieldRegleBehaviourOptions,
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce, isEmpty, unwrapGetter } from '../../../utils';
+import { debounce, isEmpty } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
-import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { extractRulesErrors } from '../useErrors';
+import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
@@ -96,6 +96,7 @@ export function createReactiveFieldStatus({
                 state,
                 path,
                 storage,
+                $debounce: $localOptions.value.$debounce,
               }),
             ];
           }
@@ -308,11 +309,13 @@ export function createReactiveFieldStatus({
   }
 
   function $touch(): void {
-    $dirty.value = true;
-    if (!scopeState.$rewardEarly.value !== false) {
-      // $clearExternalErrors();
+    if (!$dirty.value) {
+      $dirty.value = true;
+      if (!scopeState.$rewardEarly.value !== false) {
+        // $clearExternalErrors();
+      }
+      $commit();
     }
-    $commit();
   }
 
   const $validate = scopeState.$debounce.value
@@ -322,7 +325,7 @@ export function createReactiveFieldStatus({
   async function $validateHandler(): Promise<boolean> {
     try {
       triggerPunishment.value = true;
-      if (scopeState.$anyDirty.value && !scopeState.$pending) {
+      if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
         return !scopeState.$error.value;
       } else {
         const promises = Object.entries($rules.value).map(([key, rule]) => {
@@ -353,13 +356,7 @@ export function createReactiveFieldStatus({
 
   return reactive({
     $dirty,
-    $anyDirty: scopeState.$anyDirty,
-    $invalid: scopeState.$invalid,
-    $error: scopeState.$error,
-    $pending: scopeState.$pending,
-    $valid: scopeState.$valid,
-    $errors: scopeState.$errors,
-    $silentErrors: scopeState.$silentErrors,
+    ...scopeState,
     $externalErrors,
     $value: state,
     $rules: $rules,

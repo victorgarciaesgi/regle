@@ -4,10 +4,10 @@
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "tsc --noEmit && vitest run --typecheck",
+    "typecheck": "tsc --noEmit",
     "release": "pnpm publish --report-summary",
     "build": "tsup --minify",
-    "build:local": "tsup --clean false",
+    "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "vitest run"
   },

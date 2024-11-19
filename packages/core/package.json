@@ -4,10 +4,10 @@
   "description": "Typescript-first model-based validation library for Vue 3",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
-    "typecheck": "tsc --noEmit && vitest run --typecheck",
+    "typecheck": "tsc --noEmit",
     "release": "pnpm publish --report-summary",
     "build": "tsup --minify",
-    "build:local": "tsup --clean false --sourcemap inline",
+    "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"
   },

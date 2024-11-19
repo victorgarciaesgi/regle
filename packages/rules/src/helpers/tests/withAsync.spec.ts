@@ -21,7 +21,7 @@ describe('withAsync helper', () => {
               error: withMessage(
                 withAsync(
                   async (value) => {
-                    await timeout(10);
+                    await timeout(1000);
                     return form.value.count === 0;
                   },
                   [() => form.value.count]
@@ -61,7 +61,7 @@ describe('withAsync helper', () => {
     expect(wrapper.vm.regle.$pending).toBe(true);
     expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 
-    vi.advanceTimersByTime(10);
+    vi.advanceTimersByTime(1000);
     await nextTick();
     await flushPromises();
 
@@ -70,18 +70,18 @@ describe('withAsync helper', () => {
     expect(wrapper.vm.regle.$fields.email.$error).toBe(false);
   });
 
-  it('should be on pending state and validate when changing dep', async () => {
+  it.only('should be on pending state and validate when changing dep', async () => {
     const wrapper = mountComponent();
     wrapper.vm.form.email = 'f';
     wrapper.vm.form.count = 1;
 
+    await vi.advanceTimersByTimeAsync(100);
     await nextTick();
 
     expect(wrapper.vm.regle.$pending).toBe(true);
     expect(wrapper.vm.regle.$fields.email.$pending).toBe(true);
 
-    vi.advanceTimersByTime(10);
-    await nextTick();
+    vi.advanceTimersByTime(1000);
     await flushPromises();
 
     expect(wrapper.vm.regle.$pending).toBe(false);

@@ -12,7 +12,7 @@ import { computed, ref, unref, watch } from 'vue';
 import type { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
 import { processZodTypeDef } from './parser/processZodTypeDef';
 
-export function useZodForm<
+export function useZodRegle<
   TState extends Record<string, any>,
   TExternal extends RegleExternalErrorTree<TState>,
   TZodSchema extends toZod<TState> = toZod<TState>,

@@ -1,5 +1,6 @@
 export { createRule, defineRegleConfig, unwrapRuleParameters, useRegle } from './core';
-export {
+export { InternalRuleType } from './types';
+export type {
   Regle,
   RegleBehaviourOptions,
   RegleCollectionErrors,
@@ -24,7 +25,6 @@ export {
   RegleValidationTree,
   RegleRuleWithParamsDefinition,
   RegleRuleMetadataDefinition,
-  InternalRuleType,
   InlineRuleDeclaration,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,

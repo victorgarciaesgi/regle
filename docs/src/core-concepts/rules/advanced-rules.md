@@ -2,6 +2,12 @@
 title: Advanced rules
 ---
 
+<script setup>
+  import ParametersAndActiveMode from '../../parts/components/rules/ParametersAndActiveMode.vue';
+    import AsyncRule from '../../parts/components/rules/AsyncRule.vue';
+
+</script>
+
 # Advanced rules
 
 
@@ -149,35 +155,68 @@ const {regle, errors, resetAll} = useRegle({name: ''}, {
 
 Result: 
 
-<div class="demo-container">
-  <div class='block'>
-    <input v-model='condition' type='checkbox'/>
-    <label>The field is required</label>
-  </div>
-  <div>
-    <input :class="{valid: regle.$fields.name.$valid}" v-model='form.name' :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
-    <button type="button" @click="resetAll">Reset</button>
-  </div>
-  <ul v-if="errors.name.length">
-    <li v-for="error of errors.name" :key='error'>
-      {{ error }}
-    </li>
-  </ul>
-</div>
+<ParametersAndActiveMode/>
 
-<script setup lang='ts'>
-import { useRegle } from '@regle/core';
-import { requiredIf } from '@regle/rules';
+## Async rules
+
+
+Async rules let you handle validations that are only possible on server, or expensive local ones. It will update the `$pending` status each time it's called.
+
+```vue twoslash [App.vue]
+<template>
+  <div class="demo-container">
+    <div>
+      <input
+        v-model="form.email"
+        :class="{ pending: regle.$fields.email.$pending }"
+        placeholder="Type your email"
+      />
+      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="validateState">Submit</button>
+    </div>
+    <span v-if="regle.$fields.email.$pending"> Checking... </span>
+    <ul v-if="errors.email.length">
+      <li v-for="error of errors.email" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup lang="ts">
+function randomBoolean(): boolean {
+  return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
+}
+
+function timeout(count: number) {
+  return new Promise((resolve) => setTimeout(resolve, count));
+}
+// ---cut---
+import { createRule, useRegle, type Maybe } from '@regle/core';
+import { email, ruleHelpers } from '@regle/rules';
 import { ref } from 'vue';
 
-const form = ref({name: ''});
-const condition = ref(false);
+const checkEmailExists = createRule({
+  async validator(value: Maybe<string>) {
+    if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
+      return true;
+    }
+    await timeout(1000);
+    return randomBoolean();
+  },
+  message: 'This email already exists',
+});
 
-const {regle, errors, resetAll} = useRegle(form, {
-  name: {required: requiredIf(condition)}
-})
+const form = ref({ email: '' });
+
+const { regle, errors, resetAll, validateState } = useRegle(form, {
+  email: { email, checkEmailExists },
+});
 </script>
+```
 
+
+<AsyncRule/>
 
 ## Metadata
 

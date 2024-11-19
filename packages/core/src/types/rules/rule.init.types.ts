@@ -1,4 +1,4 @@
-import type { Maybe, NoInferLegacy } from '../utils';
+import type { Maybe } from '../utils';
 import type {
   $InternalRegleRuleMetadataConsumer,
   RegleRuleMetadataConsumer,
@@ -11,9 +11,9 @@ import type {
  */
 export interface RegleRuleInit<
   TValue extends any,
-  TParams extends [...any[]],
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
-  TMetadata extends RegleRuleMetadataDefinition,
+  TParams extends [...any[]] = [],
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = boolean,
+  TMetadata extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > {
   type?: string;
@@ -23,14 +23,11 @@ export interface RegleRuleInit<
     | string[]
     | ((
         value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<NoInferLegacy<TParams>, TMetadata>
+        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
       ) => string | string[]);
   active?:
     | boolean
-    | ((
-        value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<NoInferLegacy<TParams>, TMetadata>
-      ) => boolean);
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
 }
 
 /**

@@ -6,16 +6,34 @@ export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,
   [after: Maybe<string | Date>],
   false,
-  boolean
+  | true
+  | {
+      $valid: false;
+      error: 'date-not-after';
+    }
+  | {
+      $valid: false;
+      error: 'value-or-paramater-not-a-date';
+    }
 > = createRule({
   type: 'dateAfter',
   validator: (value: Maybe<Date | string>, after: Maybe<Date | string>) => {
-    if (ruleHelpers.isDate(value) && ruleHelpers.isDate(after)) {
-      return ruleHelpers.toDate(value).getTime() > ruleHelpers.toDate(after).getTime();
+    if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(after)) {
+      if (ruleHelpers.isDate(value) && ruleHelpers.isDate(after)) {
+        const result = ruleHelpers.toDate(value).getTime() > ruleHelpers.toDate(after).getTime();
+        if (result) {
+          return true;
+        }
+        return { $valid: false, error: 'date-not-after' as const };
+      }
+      return { $valid: false, error: 'value-or-paramater-not-a-date' as const };
     }
     return true;
   },
   message: (_, { $params: [after] }) => {
+    // if (error === 'value-or-paramater-not-a-date') {
+    //   return 'The inputs must be Dates';
+    // }
     return `The date must be after ${after}`;
   },
 });

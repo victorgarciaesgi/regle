@@ -31,7 +31,7 @@ function createCollectionElement({
   index,
   options,
   storage,
-  value,
+  stateValue,
   customMessages,
   rules,
   externalErrors,
@@ -39,7 +39,7 @@ function createCollectionElement({
   $id: string;
   path: string;
   index: number;
-  value: StateWithId[];
+  stateValue: Ref<StateWithId>;
   customMessages?: CustomRulesDeclarationTree;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
@@ -49,9 +49,9 @@ function createCollectionElement({
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
 
-  if (typeof value[index] === 'object' && value[index] != null) {
-    if (!value[index].$id) {
-      Object.defineProperties(value[index], {
+  if (typeof stateValue.value === 'object' && stateValue.value != null) {
+    if (!stateValue.value.$id) {
+      Object.defineProperties(stateValue.value, {
         $id: {
           value: $fieldId,
           enumerable: false,
@@ -60,15 +60,14 @@ function createCollectionElement({
         },
       });
     } else {
-      $path = `${path}.${value[index].$id}`;
+      $path = `${path}.${stateValue.value.$id}`;
     }
   }
 
-  const $state = toRefs(value);
   const $externalErrors = toRef(() => externalErrors.value?.[index]);
 
   const $status = createReactiveChildrenStatus({
-    state: $state[index],
+    state: stateValue,
     rulesDef: toRef(() => rules),
     customMessages,
     path: $path,
@@ -78,7 +77,7 @@ function createCollectionElement({
   });
 
   if ($status) {
-    const valueId = value[index]?.$id;
+    const valueId = stateValue.value?.$id;
     $status.$id = valueId ?? String($fieldId);
     storage.addArrayStatus($id, $status.$id, $status);
   }
@@ -207,7 +206,7 @@ export function createReactiveCollectionStatus({
         .map((value, index) => {
           const unwrapped$Each = unwrapGetter(
             rulesDef.value.$each,
-            toRef(() => state.value[index]),
+            toRef(() => value),
             index
           );
           if (unwrapped$Each) {
@@ -215,7 +214,7 @@ export function createReactiveCollectionStatus({
               $id: $id.value,
               path,
               rules: unwrapped$Each,
-              value: state.value as any[],
+              stateValue: toRef(() => value),
               index,
               options,
               storage,
@@ -249,25 +248,22 @@ export function createReactiveCollectionStatus({
 
       $eachStatus.value = state.value
         .map((value, index) => {
+          const currentValue = toRef(() => value);
           if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
             const existingStatus = storage.getArrayStatus($id.value, value.$id);
             if (existingStatus) {
-              existingStatus.$value = toRef(() => value);
+              existingStatus.$value = currentValue;
               return existingStatus;
             }
             return null;
           } else {
-            const unwrapped$Each = unwrapGetter(
-              rulesDef.value.$each,
-              toRef(() => toRef(() => value)),
-              index
-            );
+            const unwrapped$Each = unwrapGetter(rulesDef.value.$each, currentValue, index);
             if (unwrapped$Each) {
               const element = createCollectionElement({
                 $id: $id.value,
                 path,
                 rules: unwrapped$Each,
-                value: state.value as any[],
+                stateValue: currentValue,
                 index,
                 options,
                 storage,

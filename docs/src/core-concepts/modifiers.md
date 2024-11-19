@@ -2,6 +2,10 @@
 title: Modifiers
 ---
 
+<script setup>
+import ExternalErrors from '../parts/components/modifiers/ExternalErrors.vue';
+</script>
+
 # Modifiers
 
 Modifiers are behaviours or settings letting you control how the rules will behave.
@@ -75,64 +79,7 @@ function submit() {
 
 Result:
 
-<div class="demo-container">
-  <div style="display: flex; gap: 8px; align-items: flex-start">
-    <div>
-       <input v-model='form.email' placeholder='Type your email'/>
-        <ul v-if="errors.email.length">
-          <li v-for="error of errors.email" :key='error'>
-            {{ error }}
-          </li>
-        </ul>
-    </div>
-    <div>
-        <input v-model='form.name.pseudo' placeholder='Type your pseudo'/>
-        <ul v-if="errors.name.pseudo.length">
-          <li v-for="error of errors.name.pseudo" :key='error'>
-            {{ error }}
-          </li>
-        </ul>
-    </div>
-    <div>
-      <button type="button" @click="submit">Submit</button>
-      <button type="button" @click="regle.$clearExternalErrors">Reset Errors</button>
-      <button type="button" @click="resetAll">Reset All</button>
-    </div>
-  </div>
- 
-</div>
-
-
-<script setup lang='ts'>
-import { required } from '@regle/rules';
-import {ref, reactive} from 'vue';
-import { type RegleExternalErrorTree, useRegle } from '@regle/core';
-
-const form = reactive({
-  email: '',
-  name: {
-    pseudo: '',
-  }
-})
-
-const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
-
-const {errors, resetAll, regle} = useRegle(form, {
-  email: {required},
-  name: {pseudo: {required}}
-}, {
-  externalErrors
-})
-
-function submit() {
-  externalErrors.value = {
-    email: ["Email already exists"],
-    name: {
-      pseudo: ["Pseudo already exists"]
-    }
-  }
-}
-</script>
+<ExternalErrors/>
 
 
 ### `rewardEarly`

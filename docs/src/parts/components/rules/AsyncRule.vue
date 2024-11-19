@@ -1,0 +1,50 @@
+<template>
+  <div class="demo-container">
+    <div>
+      <input
+        v-model="form.email"
+        :class="{ valid: regle.$fields.email.$valid, pending: regle.$fields.email.$pending }"
+        placeholder="Type your email"
+      />
+      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="validateState">Validate</button>
+    </div>
+    <span v-if="regle.$fields.email.$pending" class="pending-text"> Checking... </span>
+    <ul v-if="errors.email.length">
+      <li v-for="error of errors.email" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { createRule, useRegle, type Maybe } from '@regle/core';
+import { email, ruleHelpers } from '@regle/rules';
+import { ref } from 'vue';
+
+function randomBoolean(): boolean {
+  return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
+}
+
+function timeout(count: number) {
+  return new Promise((resolve) => setTimeout(resolve, count));
+}
+
+const checkEmailExists = createRule({
+  async validator(value: Maybe<string>) {
+    if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
+      return true;
+    }
+    await timeout(1000);
+    return randomBoolean();
+  },
+  message: 'This email already exists',
+});
+
+const form = ref({ email: '' });
+
+const { regle, errors, resetAll, validateState } = useRegle(form, {
+  email: { email, checkEmailExists },
+});
+</script>

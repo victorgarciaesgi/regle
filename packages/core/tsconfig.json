@@ -1,21 +1,31 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "DOM"],
+    "lib": [
+      "esnext",
+      "DOM"
+    ],
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "moduleDetection": "force",
+    "noEmit": true,
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "vitest/globals"],
     "noErrorTruncation": true,
+    "types": [
+      "vitest/globals"
+    ],
   },
-  "include": ["./src/**/*.ts", "./src/reset.d.ts", "./tests/**/*"],
+  "include": [
+    "./src/**/*.ts",
+    "./src/reset.d.ts",
+    "./tests/**/*"
+  ],
 }

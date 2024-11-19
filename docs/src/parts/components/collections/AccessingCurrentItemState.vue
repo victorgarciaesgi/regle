@@ -1,17 +1,18 @@
 <template>
   <div class="demo-container">
     <div class="list">
-      <div v-for="item of regle.$fields.collection.$each" :key="item.$id" class="item">
+      <div v-for="(item, index) of regle.$fields.collection.$each" :key="item.$id" class="item">
         <div class="field">
           <input
             v-model="item.$value.name"
-            :class="{ valid: item.$fields.name.$valid }"
+            :class="{ valid: item.$fields.name.$valid, error: item.$fields.name.$error }"
             placeholder="Type an item value"
           />
           <div>
             <input v-model="item.$value.condition" type="checkbox" />
             <label>Required</label>
           </div>
+          <div v-if="form.collection.length > 1" @click="form.collection.splice(index, 1)">❌</div>
         </div>
         <ul v-if="item.$fields.name.$errors.length">
           <li v-for="error of item.$fields.name.$errors" :key="error">
@@ -22,7 +23,7 @@
     </div>
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '', condition: false })"
-        >Add item</button
+        >🆕 Add item</button
       >
       <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem"
         >Remove random item</button
@@ -73,9 +74,11 @@ function removeRandomItem() {
 
 const { errors, regle, resetAll } = useRegle(form, {
   collection: {
-    $each: (item) => ({
-      name: { required: requiredIf(() => item.value.condition) },
-    }),
+    $each: (item) => {
+      return {
+        name: { required: requiredIf(() => item.value.condition) },
+      };
+    },
   },
 });
 </script>

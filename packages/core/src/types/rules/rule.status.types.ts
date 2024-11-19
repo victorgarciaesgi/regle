@@ -1,4 +1,4 @@
-import type { Ref, UnwrapNestedRefs } from 'vue';
+import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleErrors,
@@ -6,8 +6,6 @@ import type {
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
-  LocalRegleBehaviourOptions,
-  RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,

@@ -1,5 +1,4 @@
 import type { RegleRuleCore } from './rule.init.types';
-import { RegleRuleInit } from './rule.init.types';
 import type { RegleUniversalParams } from './rule.params.types';
 import type { RegleInternalRuleDefs } from './rule.internal.types';
 import type {

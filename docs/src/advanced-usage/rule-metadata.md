@@ -35,7 +35,7 @@ export const strongPassword = createRule({
         result,
       };
     }
-    return true;
+    return {$valid: true};
   },
   message(value, { result }) {
     return `Your password is ${result?.value}`;
