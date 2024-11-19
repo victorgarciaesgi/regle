@@ -70,7 +70,7 @@ describe('withAsync helper', () => {
     expect(wrapper.vm.regle.$fields.email.$error).toBe(false);
   });
 
-  it.only('should be on pending state and validate when changing dep', async () => {
+  it('should be on pending state and validate when changing dep', async () => {
     const wrapper = mountComponent();
     wrapper.vm.form.email = 'f';
     wrapper.vm.form.count = 1;
