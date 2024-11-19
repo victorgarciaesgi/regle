@@ -61,7 +61,7 @@ Result:
 
 ```ts twoslash
 import { useRegle } from '@regle/core';
-import { and, startsWith, endsWith, withMessage } from '@regle/rules';
+import { or, startsWith, endsWith, withMessage } from '@regle/rules';
 
 const { state, errors, regle, resetAll } = useRegle(
   { regex: '' },
