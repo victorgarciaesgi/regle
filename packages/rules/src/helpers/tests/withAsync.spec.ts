@@ -56,6 +56,7 @@ describe('withAsync helper', () => {
     const wrapper = mountComponent();
     wrapper.vm.form.email = 'f';
 
+    await vi.advanceTimersByTimeAsync(100);
     await nextTick();
 
     expect(wrapper.vm.regle.$pending).toBe(true);
