@@ -19,6 +19,7 @@ jobs:
         with:
           version: 8
       - run: pnpm i
+      - run: pnpm build
       - run: pnpm run typecheck
       - run: pnpm run test
         env:
