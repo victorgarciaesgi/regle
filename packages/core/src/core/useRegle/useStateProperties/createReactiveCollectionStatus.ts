@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, toRefs, watch } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -15,8 +15,8 @@ import type {
   RegleCollectionRuleDeclKeyProperty,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { cloneDeep, unwrapGetter } from '../../../utils';
-import { randomId } from '../../../utils/randomId';
+import { cloneDeep, randomId, unwrapGetter } from '../../../utils';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
 import type { RegleStorage } from '../../useStorage';
 import { isExternalErrorCollection, isRuleDef } from '../guards';
 import { extractCollectionError, extractRulesErrors } from '../useErrors';
@@ -298,7 +298,7 @@ export function createReactiveCollectionStatus({
           updateStatus();
         }
       },
-      { deep: true, flush: 'pre' }
+      { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'pre' }
     );
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {

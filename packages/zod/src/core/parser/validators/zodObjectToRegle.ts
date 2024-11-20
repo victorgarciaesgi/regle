@@ -3,10 +3,7 @@ import type { PossibleDefTypes } from '../../../types';
 import type { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 
-export function zodObjectToRegle(
-  def: z.ZodObjectDef,
-  schema: z.ZodSchema<any>
-): ReglePartialValidationTree<any, any> {
+export function zodObjectToRegle(def: z.ZodObjectDef): ReglePartialValidationTree<any, any> {
   return Object.fromEntries(
     Object.entries(def.shape()).map(([key, shape]) => {
       if (typeof shape === 'object' && '_def' in shape) {

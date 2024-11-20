@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 
 export type ZodObj<T extends Record<PropertyKey, any>> = {
-  [K in keyof T]: undefined extends T[K] ? z.ZodOptional<ZodChild<T[K]>> : ZodChild<T[K]>;
+  [K in keyof T]: ZodChild<T[K]> | z.ZodOptional<ZodChild<T[K]>> | z.ZodEffects<T[K]>;
 };
 
 export type ZodChild<T extends any> = NonNullable<

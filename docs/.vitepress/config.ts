@@ -27,6 +27,7 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
   { text: 'Displaying errors', link: '/core-concepts/displaying-errors' },
+  { text: 'Type safe output', link: '/core-concepts/type-safe-output' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
   { text: 'Global configuration', link: '/core-concepts/global-config' },
 ];
@@ -55,13 +56,14 @@ export default defineConfig({
     },
     nav: Nav,
     search: {
-      provider: 'local',
-      // options: {
-      //   indexName: 'regle',
-      //   appId: 'G5JKVPJTYU',
-      //   apiKey: 'a58d2d77b3755f50b110c8aef5740682',
-      // },
+      provider: 'algolia',
+      options: {
+        indexName: 'regle',
+        appId: '1ELQQKBPXN',
+        apiKey: '5f6ac82c6d47d8a3d7fdd93dcf430d05',
+      },
     },
+    outline: 'deep',
     sidebar: [
       {
         text: 'Introduction',
@@ -74,10 +76,6 @@ export default defineConfig({
       {
         text: 'Advanced Usage',
         items: AdvancedUsage,
-      },
-      {
-        text: 'Built-in rules',
-        items: Rules,
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],

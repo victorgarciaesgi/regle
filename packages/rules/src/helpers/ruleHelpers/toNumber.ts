@@ -1,11 +1,15 @@
-export function toNumber(argument: number | string) {
+/**
+ * @returns ⚠️ Warning, returned value can be NaN
+ */
+export function toNumber<T extends number | string | undefined>(argument: T): number {
   if (typeof argument === 'number') {
     return argument;
-  } else {
+  } else if (argument != null) {
     const isPadded = argument.trim() !== argument;
     if (isPadded) {
-      return null;
+      return NaN;
     }
     return +argument;
   }
+  return NaN;
 }

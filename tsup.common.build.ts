@@ -2,7 +2,7 @@ import type { Options } from 'tsup';
 
 export const defaultOptions: Options = {
   entry: ['src/index.ts'],
-  format: ['esm'],
+  format: ['esm', 'cjs'],
   dts: {
     resolve: true,
   },

@@ -33,21 +33,21 @@ export const required = createRule({
 Let's break down the options 
 
 ### `validator`
-Type: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
+_**Type**_: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
 
 *required*
 
 The `validator` function is what should define if the field is valid or not. You can write it exactly like a Inline rule.
 
 ### `message`
-Type: `string | (value, ...metadata) => (string | string[])`
+_**Type**_: `string | (value, ...metadata) => (string | string[])`
 
 *required*
 
 This will define what error message you assign to your rule. It can be a string or a function receiving the value, params and metadata as parameters
 
 ### `type` 
-Type: `string
+_**Type**_: `string`
 
 *optional*
 
@@ -55,7 +55,7 @@ This property define a type of validator, because multiple rules can share the s
 
 
 ### `active`
-Type: `boolean | (value, ...metadata) => boolean`
+_**Type**_: `boolean | (value, ...metadata) => boolean`
 
 *optional*
 

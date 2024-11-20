@@ -32,7 +32,7 @@ export type RegleStatus<
   readonly $errors: RegleErrorTree<TRules>;
   readonly $silentErrors: RegleErrorTree<TRules>;
 } & ([TValidationGroups] extends [never]
-    ? object
+    ? {}
     : {
         $groups: {
           readonly [TKey in keyof TValidationGroups]: RegleValidationGroupOutput;
@@ -161,7 +161,7 @@ export type RegleRuleStatus<
   $validate(): Promise<boolean>;
   $reset(): void;
 } & ([TParams] extends [[]]
-  ? object
+  ? {}
   : {
       readonly $params: TParams;
     });

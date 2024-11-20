@@ -3,7 +3,6 @@ import type {
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
-  RegleFieldStatus,
   ReglePartialValidationTree,
 } from '@regle/core';
 import { useRegle } from '@regle/core';

@@ -72,6 +72,7 @@ export type DefaultValidators = {
   >;
   minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+  regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown], false, boolean>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;

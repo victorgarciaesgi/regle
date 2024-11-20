@@ -1,4 +1,6 @@
-export function isEmpty(value: unknown): value is null | undefined {
+import type { EmptyObject } from 'type-fest';
+
+export function isEmpty(value: unknown): value is null | undefined | [] | EmptyObject {
   if (value === undefined || value === null) {
     return true;
   }

@@ -98,6 +98,9 @@ importers:
       vue-tsc:
         specifier: 2.1.10
         version: 2.1.10(typescript@5.6.3)
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/core:
     devDependencies:

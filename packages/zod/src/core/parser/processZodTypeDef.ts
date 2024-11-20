@@ -17,7 +17,7 @@ export function processZodTypeDef(
     if (def.typeName === z.ZodFirstPartyTypeKind.ZodArray) {
       return zodArrayToRegle(def, schema);
     } else if (def.typeName === z.ZodFirstPartyTypeKind.ZodObject) {
-      return zodObjectToRegle(def, schema);
+      return zodObjectToRegle(def);
     } else {
       return {
         [schema.constructor.name]: withMessage(

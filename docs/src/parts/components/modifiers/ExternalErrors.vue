@@ -1,6 +1,6 @@
 <template>
   <div class="demo-container">
-    <div style="display: flex; gap: 8px; align-items: flex-start">
+    <div class="row">
       <div>
         <input
           v-model="form.email"

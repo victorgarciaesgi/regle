@@ -9,7 +9,7 @@ import type {
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce, isEmpty } from '../../../utils';
+import { debounce, isEmpty, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { extractRulesErrors } from '../useErrors';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
@@ -270,7 +270,7 @@ export function createReactiveFieldStatus({
           // $clearExternalErrors();
         }
       },
-      { deep: true }
+      { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
 
     $unwatchDirty = watch($dirty, () => {

@@ -26,3 +26,4 @@ export * from './checked';
 export * from './contains';
 export * from './startsWith';
 export * from './endsWith';
+export * from './regex';

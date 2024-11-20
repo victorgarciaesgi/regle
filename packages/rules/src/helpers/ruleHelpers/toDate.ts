@@ -1,6 +1,13 @@
-export function toDate(argument: Date) {
+import type { Maybe } from '@regle/core';
+
+export function toDate(argument: Maybe<Date | number | string>): Date {
   const argStr = Object.prototype.toString.call(argument);
-  if (argument instanceof Date || (typeof argument === 'object' && argStr === '[object Date]')) {
+  if (argument == null) {
+    return new Date(NaN);
+  } else if (
+    argument instanceof Date ||
+    (typeof argument === 'object' && argStr === '[object Date]')
+  ) {
     return new Date(argument.getTime());
   } else if (typeof argument === 'number' || argStr === '[object Number]') {
     return new Date(argument);

@@ -17,7 +17,7 @@ import type {
   $InternalRegleErrors,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isRefObject, unwrapGetter } from '../../../utils';
+import { isRefObject, isVueSuperiorOrEqualTo3dotFive, unwrapGetter } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import {
   isCollectionRulesDef,
@@ -211,7 +211,7 @@ export function createReactiveNestedStatus({
           $unwatch();
           createReactiveFieldsStatus();
         },
-        { deep: true, flush: 'post' }
+        { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'post' }
       );
     }
 

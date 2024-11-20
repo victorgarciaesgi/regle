@@ -39,7 +39,7 @@ export type DeepSafeFormState<
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
 > = [unknown] extends [TState]
-  ? object
+  ? {}
   : {
       [K in keyof TState as [SafeProperty<TState[K], TRules[K]>] extends [never] ? K : never]?: [
         SafeProperty<TState[K], TRules[K]>,
@@ -55,22 +55,23 @@ export type DeepSafeFormState<
 export type SafeProperty<
   TState,
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
-> = TRule extends RegleCollectionRuleDefinition
-  ? TState extends Array<any>
-    ? SafeProperty<TState[number], ExtractFromGetter<TRule['$each']>>[]
-    : never
-  : TRule extends ReglePartialValidationTree<any, any>
-    ? TState extends Record<string, any>
-      ? DeepSafeFormState<TState, TRule>
+> =
+  TRule extends RegleCollectionRuleDefinition<any, any>
+    ? TState extends Array<any>
+      ? SafeProperty<TState[number], ExtractFromGetter<TRule['$each']>>[]
       : never
-    : TRule extends RegleRuleDecl<any, any>
-      ? unknown extends TRule['required']
-        ? never
-        : TRule['required'] extends undefined
-          ? never
-          : TRule['required'] extends RegleRuleDefinition<any, infer Params>
-            ? Params extends never[]
-              ? TState
-              : never
-            : never
+    : TRule extends ReglePartialValidationTree<any, any>
+      ? TState extends Record<string, any>
+        ? DeepSafeFormState<TState, TRule>
+        : TRule extends RegleRuleDecl<any, any>
+          ? unknown extends TRule['required']
+            ? never
+            : TRule['required'] extends undefined
+              ? never
+              : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+                ? Params extends never[]
+                  ? TState
+                  : never
+                : never
+          : never
       : never;

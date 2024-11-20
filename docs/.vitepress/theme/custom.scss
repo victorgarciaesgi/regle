@@ -45,7 +45,10 @@ html.dark {
     padding: 4px 12px;
     border-radius: 6px;
     border: 1px solid var(--vp-c-border);
-    width: 190px;
+
+    &:not([type='checkbox']) {
+      width: 190px;
+    }
 
     &.valid {
       border-color: var(--vp-c-brand-1);
@@ -86,6 +89,12 @@ html.dark {
         gap: 8px;
       }
     }
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
   }
 
   ul {
@@ -194,8 +203,27 @@ h2 .header-anchor {
   opacity: 1 !important;
 }
 
+h2:has(+ h2) {
+  font-size: 28px !important;
+}
+
+h2 + h2 {
+  border-top: none !important;
+}
+
 .vp-doc li + li {
   margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+  .vp-doc div[class*='language-'] {
+    margin: 16px -16px;
+    border-radius: 8px;
+  }
+  .vp-code-group .tabs {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
 }
 
 /* Two slashs */
