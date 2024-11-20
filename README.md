@@ -73,8 +73,8 @@ TODO
 - [x] Logo
 - [x] $silentErrors
 - [x] Validation groups
+- [x] Documentation (in progress)
 - [ ] withErrorType
-- [ ] Documentation (in progress)
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
 - [ ] `Valibot` support

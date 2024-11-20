@@ -21,6 +21,7 @@ export interface Regle<
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
 > {
   regle: RegleStatus<TState, TRules, TValidationGroups>;
+  r$: RegleStatus<TState, TRules, TValidationGroups>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
    * It allow you to skip scouting the `regle` object
    */

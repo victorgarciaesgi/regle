@@ -118,6 +118,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
     return {
       regle: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
+      r$: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
       errors: errors as RegleErrorTree<TRules>,
       resetAll,
       validateState,

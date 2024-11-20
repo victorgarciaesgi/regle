@@ -2,7 +2,6 @@
 title: useRegle
 ---
 
-
 # `useRegle`
 
 `useRegle` is the center piece of all your forms. The composable will take a state and rules as input and return everything you need as an ouput.
@@ -22,6 +21,11 @@ const {regle, state, errors, ready, validateState, resetAll} = useRegle({name: '
 In the returned helpers we have:
 
 - `regle`: it's the source of truth of all your form validation state (if you used Vuelidate, it's the same as `v$`)
+
+:::tip
+If you are nostalgic of the `v$`, an alias or `regle` is also returned as `r$`
+:::
+
 - `state`: a copy of your form state. You can bind your model on this state if you have a non-reactive one as parameter
 - `errors`: a computed tree focusing only on displaying errors to the user when it's needed. You can map on this tree to display the field error. It will contain an error only if the field is dirty
 - `ready`: a computed state indicating if your form is ready to submit (to compute a disabled state on a button).

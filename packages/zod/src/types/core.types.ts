@@ -7,6 +7,7 @@ import type { toZod } from './zod.types';
 export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
   state: Ref<PartialDeep<TState>>;
   regle: ZodRegleStatus<TState, TSchema>;
+  r$: ZodRegleStatus<TState, TSchema>;
   /** Show active errors based on your behaviour options (lazy, autoDirty)
    * It allow you to skip scouting the `$regle` object
    */

@@ -7,6 +7,7 @@ import {
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick } from 'vue';
+import { shouldBeInvalidField } from '../../../utils/validations.utils';
 
 describe.each([
   ['reactive', nestedReactiveObjectValidation],
@@ -29,10 +30,8 @@ describe.each([
 
     expect(vm.ready).toBe(false);
 
-    expect(vm.regle.$anyDirty).toBe(false);
-    expect(vm.regle.$dirty).toBe(false);
-    expect(vm.regle.$error).toBe(false);
-    expect(vm.regle.$pending).toBe(false);
+    shouldBeInvalidField(vm.r$);
+
     expect(vm.regle.$value).toStrictEqual({
       level0: 0,
       level1: {
