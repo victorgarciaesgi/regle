@@ -33,5 +33,3 @@ const { state, errors, regle, resetAll } = useRegle(
   }
 );
 </script>
-
-<style lang="scss" scoped></style>

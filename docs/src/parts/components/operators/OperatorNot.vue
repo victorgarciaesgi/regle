@@ -45,5 +45,3 @@ const { state, errors, regle, resetAll } = useRegle(form, {
   },
 });
 </script>
-
-<style lang="scss" scoped></style>

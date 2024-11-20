@@ -1,0 +1,70 @@
+{
+  "name": "@regle/nuxt",
+  "version": "0.1.7",
+  "description": "Regle nuxt module",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "typecheck": "nuxi typecheck",
+    "build": "nuxt-module-build build",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "echo 'no test'",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.14.1592",
+    "@regle/core": "workspace:*",
+    "@regle/rules": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@regle/zod": "workspace:*"
+  },
+  "devDependencies": {
+    "eslint": "9.14.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-vue": "9.30.0",
+    "prettier": "3.3.3",
+    "tsup": "8.3.5",
+    "type-fest": "4.26.1",
+    "typescript": "5.6.3",
+    "vitest": "2.1.4",
+    "vue-tsc": "2.1.10",
+    "@regle/zod": "workspace:*",
+    "@nuxt/devtools": "^1.6.0",
+    "@nuxt/eslint-config": "^0.7.1",
+    "@nuxt/module-builder": "^0.8.4",
+    "@nuxt/schema": "^3.14.1592",
+    "@nuxt/test-utils": "^3.14.4",
+    "@types/node": "latest",
+    "changelogen": "^0.5.7",
+    "nuxt": "^3.14.1592",
+    "c12": "2.0.1"
+  },
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "homepage": "https://regle.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  }
+}

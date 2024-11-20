@@ -2,7 +2,7 @@
   --vp-c-brand-1: #00bb7f;
   --vp-c-brand-2: #027d56;
   --vp-c-brand-3: #048d62;
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #58816f 50%, rgb(4, 25, 14) 50%);
+  --vp-home-hero-image-background-image: radial-gradient(rgb(191, 208, 191), rgb(90, 220, 189));
   --vp-home-hero-image-filter: blur(72px);
   --vp-c-form-error: #cc6464;
 }
@@ -15,6 +15,16 @@ html.dark {
     var(--vp-c-brand-1) 50%,
     var(--vp-c-brand-2) 50%
   );
+}
+
+.VPHero {
+  @media (min-width: 960px) {
+    .name[data-v-b84435b6],
+    .text[data-v-b84435b6] {
+      line-height: 64px;
+      font-size: 54px;
+    }
+  }
 }
 
 .VPHomeFeatures {
@@ -216,10 +226,10 @@ h2 + h2 {
 }
 
 @media (max-width: 640px) {
-  .vp-doc div[class*='language-'] {
-    margin: 16px -16px;
-    border-radius: 8px;
-  }
+  // .vp-doc div[class*='language-'] {
+  //   margin: 16px -16px;
+  //   border-radius: 8px;
+  // }
   .vp-code-group .tabs {
     margin-left: -16px;
     margin-right: -16px;
@@ -227,6 +237,15 @@ h2 + h2 {
 }
 
 /* Two slashs */
+
+.twoslash-floating .twoslash-popup-code:has(.shiki) {
+  padding: 0px !important;
+}
+
+.shiki .vitesse-dark {
+  margin: 0 !important;
+  padding: 12px !important;
+}
 
 .twoslash-completion-list .twoslash-completions-icon.completions-property {
   color: #cb7676 !important;

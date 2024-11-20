@@ -41,14 +41,15 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
   { text: 'Using metadata from rules', link: '/advanced-usage/rule-metadata' },
   { text: 'Rules operators', link: '/advanced-usage/rules-operators' },
   { text: 'Validation helpers', link: '/advanced-usage/validations-helpers' },
+  { text: 'Typing props', link: '/advanced-usage/typing-props' },
   { text: 'Usage with Zod', link: '/advanced-usage/usage-with-zod/' },
 ];
 
-const Rules: DefaultTheme.NavItemWithLink[] = [{ text: 'required', link: '/rules/required' }];
+const Examples: DefaultTheme.NavItemWithLink[] = [{ text: 'Base example', link: '/examples/base' }];
 
 export default defineConfig({
   title: 'Regle',
-  description: 'A reactive and declarative vue form library',
+  description: 'Typescript-first model-based form validation library for Vue 3',
   themeConfig: {
     logo: {
       dark: '/logo-reversed.png',
@@ -67,7 +68,10 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Introduction',
-        items: [{ text: 'Getting Started', link: '/introduction/' }],
+        items: [
+          { text: 'Getting Started', link: '/introduction/' },
+          { text: 'Integrations', link: '/introduction/integrations' },
+        ],
       },
       {
         text: 'Core concepts',
@@ -76,6 +80,10 @@ export default defineConfig({
       {
         text: 'Advanced Usage',
         items: AdvancedUsage,
+      },
+      {
+        text: 'Example',
+        items: Examples,
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],
@@ -87,6 +95,14 @@ export default defineConfig({
   head: [
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }],
     ['meta', { name: 'theme-color', content: '#00bb7f' }],
+    [
+      'meta',
+      {
+        name: 'keywords',
+        content:
+          'vue forms, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms',
+      },
+    ],
     ['meta', { property: 'og:url', content: 'https://regle.vercel.app/' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Regle' }],
@@ -94,15 +110,14 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: 'Typescript-first model-based validation library for Vue 3',
+        content: 'Typescript-first model-based form validation library for Vue 3',
       },
     ],
     [
       'meta',
       {
         property: 'og:image',
-        content:
-          'https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png',
+        content: 'https://regle.vercel.app/regle-github-banner.png',
       },
     ],
     ['meta', { name: 'twitter:site', content: '@regle' }],
@@ -116,7 +131,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [groupIconVitePlugin()],
+    plugins: [groupIconVitePlugin() as any],
   },
   srcDir: './src',
 });

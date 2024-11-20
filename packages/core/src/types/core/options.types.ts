@@ -1,16 +1,13 @@
 import type { RequiredDeep } from 'type-fest';
-import type { DeepMaybeRef } from '../../types/utils';
 import type { MaybeRef } from 'vue';
 import type {
-  AllRulesDeclarations,
   CustomRulesDeclarationTree,
-  RegleCollectionStatus,
   RegleExternalErrorTree,
   RegleFieldStatus,
-  RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleStatus,
 } from '../../types/rules';
+import type { DeepMaybeRef } from '../../types/utils';
 
 export interface RegleBehaviourOptions {
   /**
@@ -42,7 +39,7 @@ export interface LocalRegleBehaviourOptions<
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
 }
 
-export type RegleValidationGroupEntry = RegleFieldStatus<any, any, any>;
+export type RegleValidationGroupEntry = RegleFieldStatus<any, any>;
 
 export interface RegleValidationGroupOutput {
   $invalid: boolean;

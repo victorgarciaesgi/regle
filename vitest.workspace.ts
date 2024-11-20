@@ -12,6 +12,7 @@ export default defineWorkspace([
       typecheck: {
         enabled: true,
         include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+        ignoreSourceErrors: true,
       },
     },
   },

@@ -3,5 +3,6 @@ packages:
  - packages/rules
  - packages/zod
  - packages/tests
+ - packages/nuxt
  - playground/vue3
  - playground/nuxt

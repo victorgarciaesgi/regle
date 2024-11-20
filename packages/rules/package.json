@@ -15,7 +15,6 @@
     "@regle/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/prettier": "3.0.0",
     "@typescript-eslint/eslint-plugin": "8.14.0",
     "@typescript-eslint/parser": "8.14.0",
     "@vue/test-utils": "2.4.6",
@@ -53,6 +52,11 @@
   "author": {
     "name": "Victor Garcia",
     "url": "https://github.com/victorgarciaesgi"
+  },
+  "homepage": "https://regle.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
   "license": "MIT"
 }

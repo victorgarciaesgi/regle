@@ -1,7 +1,7 @@
 {
   "name": "@regle/core",
   "version": "0.1.7",
-  "description": "Typescript-first model-based validation library for Vue 3",
+  "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
@@ -15,10 +15,8 @@
     "vue": "^3.1.0"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "7.47.11",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "22.9.0",
-    "@types/prettier": "3.0.0",
     "@typescript-eslint/eslint-plugin": "8.14.0",
     "@typescript-eslint/parser": "8.14.0",
     "@vue/test-utils": "2.4.6",
@@ -52,6 +50,11 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://regle.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
   "author": {
     "name": "Victor Garcia",
