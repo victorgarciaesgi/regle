@@ -21,7 +21,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "typecheck": "nuxi typecheck",
-    "build": "nuxt-module-build build",
+    "build": "nuxt-module-build prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "pnpm publish --report-summary",
     "lint": "eslint .",
@@ -57,6 +57,9 @@
     "changelogen": "^0.5.7",
     "nuxt": "^3.14.1592",
     "c12": "2.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": {
     "name": "Victor Garcia",
