@@ -4,23 +4,24 @@ import type {
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ReglePartialValidationTree,
+  Unwrap,
 } from '@regle/core';
 import { useRegle } from '@regle/core';
-import type { MaybeRef, Ref } from 'vue';
+import type { MaybeRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
 import type { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
 import { processZodTypeDef } from './parser/processZodTypeDef';
 
 export function useZodRegle<
   TState extends Record<string, any>,
-  TExternal extends RegleExternalErrorTree<TState>,
-  TZodSchema extends toZod<TState> = toZod<TState>,
+  TExternal extends RegleExternalErrorTree<Unwrap<TState>>,
+  TZodSchema extends toZod<Unwrap<TState>> = toZod<Unwrap<TState>>,
 >(
-  state: Ref<TState> | DeepReactiveState<TState>,
+  state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TZodSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<TState, object, TExternal, never>
-): ZodRegle<TState, TZodSchema> {
+    LocalRegleBehaviourOptions<Unwrap<TState>, {}, TExternal, never>
+): ZodRegle<Unwrap<TState>, TZodSchema> {
   const rules = ref<ReglePartialValidationTree<any, any>>({});
 
   const computedSchema = computed(() => unref(schema));
@@ -46,5 +47,5 @@ export function useZodRegle<
   );
   zodShapeToRegleRules();
 
-  return useRegle(state, computed(() => rules.value) as any, options) as any;
+  return useRegle(state, computed(() => rules.value) as any, options as any) as any;
 }

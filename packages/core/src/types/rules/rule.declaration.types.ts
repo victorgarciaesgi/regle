@@ -1,6 +1,6 @@
-import type { MaybeRef, Ref } from 'vue';
-import type { FieldRegleBehaviourOptions, Regle } from '../../types/core';
-import type { ArrayElement, Maybe, MaybeGetter } from '../utils';
+import type { MaybeRef, Ref, UnwrapNestedRefs } from 'vue';
+import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
+import type { ArrayElement, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
@@ -33,11 +33,11 @@ export type RegleValidationTree<
  * @public
  */
 export type RegleComputedRules<
-  TForm extends MaybeRef<Record<string, any>>,
+  TForm extends MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
   TCustomRules extends
     | Partial<AllRulesDeclarations>
     | Regle<any, any> = Partial<AllRulesDeclarations>,
-  TState = TForm extends Ref<infer R> ? R : TForm,
+  TState = Unwrap<TForm>,
   TCustom = TCustomRules extends Regle<any, infer R>
     ? R extends ReglePartialValidationTree<any, infer C>
       ? C

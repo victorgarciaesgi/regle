@@ -1,5 +1,5 @@
 <template>
-  <div class="my-input">
+  <div class="my-input input-container">
     <input
       v-model="modelValue"
       :class="{ valid: field.$valid, error: field.$error }"

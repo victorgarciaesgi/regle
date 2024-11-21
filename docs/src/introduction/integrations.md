@@ -11,9 +11,26 @@ Adding Nuxt module will provide auto-imports for selected exports
 
 Run this command into your nuxt app
 
+:::code-group
 ```bash [nuxt]
 npx nuxi module add regle
 ```
+```sh [pnpm]
+pnpm add @regle/core @regle/rules @regle/nuxt
+```
+
+```sh [npm]
+npm install @regle/core @regle/rules @regle/nuxt
+```
+
+```sh [yarn]
+yarn add @regle/core @regle/rules @regle/nuxt
+```
+
+```sh [bun]
+bun add @regle/core @regle/rules @regle/nuxt
+```
+:::
 
 This exports will become globally available in your nuxt app
 

@@ -11,34 +11,9 @@ import { email, required, requiredIf } from '@regle/rules';
 // eslint-disable-next-line
 export type { RefSymbol } from '@vue/reactivity';
 
-type ReturnRegleType = Regle<
-  {
-    level0: number;
-    level1: {
-      child: number;
-      level2: {
-        child: number;
-      };
-    };
-  },
-  {
-    level0: {
-      rule: RegleRuleDefinition<number, [], false, boolean, number>;
-    };
-    level1: {
-      child: {
-        rule: RegleRuleDefinition<number, [], false, boolean, number>;
-      };
-      level2: {
-        child: {
-          rule: RegleRuleDefinition<number, [], false, boolean, number>;
-        };
-      };
-    };
-  }
->;
+type ReturnRegleType = ReturnType<typeof nestedReactiveObjectValidation>;
 
-export function nestedReactiveObjectValidation(): ReturnRegleType {
+export function nestedReactiveObjectValidation() {
   const form = reactive({
     level0: 0,
     level1: {
@@ -46,17 +21,23 @@ export function nestedReactiveObjectValidation(): ReturnRegleType {
       level2: {
         child: 2,
       },
+      collection: [{ name: 0 }],
     },
   });
-  return useRegle(form, () => ({
+  return useRegle(form, {
     level0: { rule: ruleMockIsEven },
     level1: {
       child: { rule: ruleMockIsEven },
       level2: {
         child: { rule: ruleMockIsEven },
       },
+      collection: {
+        $each: {
+          name: { required, ruleMockIsEven },
+        },
+      },
     },
-  }));
+  } satisfies RegleComputedRules<typeof form>);
 }
 
 export function nestedRefObjectValidation(): ReturnRegleType {
@@ -67,17 +48,27 @@ export function nestedRefObjectValidation(): ReturnRegleType {
       level2: {
         child: 2,
       },
+      collection: [{ name: 0 }],
     },
   });
-  return useRegle(form, () => ({
-    level0: { rule: ruleMockIsEven },
-    level1: {
-      child: { rule: ruleMockIsEven },
-      level2: {
-        child: { rule: ruleMockIsEven },
-      },
-    },
-  }));
+  return useRegle(
+    form,
+    () =>
+      ({
+        level0: { rule: ruleMockIsEven },
+        level1: {
+          child: { rule: ruleMockIsEven },
+          level2: {
+            child: { rule: ruleMockIsEven },
+          },
+          collection: {
+            $each: {
+              name: { required, ruleMockIsEven },
+            },
+          },
+        },
+      }) satisfies RegleComputedRules<typeof form>
+  );
 }
 
 export function nestedRefObjectValidationComputed(): ReturnRegleType {
@@ -88,6 +79,7 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
       level2: {
         child: 2,
       },
+      collection: [{ name: 0 }],
     },
   });
 
@@ -99,6 +91,11 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
           child: { rule: ruleMockIsEven },
           level2: {
             child: { rule: ruleMockIsEven },
+          },
+          collection: {
+            $each: {
+              name: { required, ruleMockIsEven },
+            },
           },
         },
       }) satisfies RegleComputedRules<typeof form>
@@ -115,18 +112,60 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
       level2: {
         child: ref(2),
       },
+      collection: [{ name: 0 }],
     },
   });
 
-  return useRegle(form, () => ({
-    level0: { rule: ruleMockIsEven },
+  return useRegle(
+    form,
+    () =>
+      ({
+        level0: { rule: ruleMockIsEven },
+        level1: {
+          child: { rule: ruleMockIsEven },
+          level2: {
+            child: { rule: ruleMockIsEven },
+          },
+          collection: {
+            $each: {
+              name: { required, ruleMockIsEven },
+            },
+          },
+        },
+      }) satisfies RegleComputedRules<typeof form>
+  );
+}
+
+export function nesteObjectWithRefsValidation(): ReturnRegleType {
+  const form = {
+    level0: ref(0),
     level1: {
-      child: { rule: ruleMockIsEven },
+      child: ref(1),
       level2: {
-        child: { rule: ruleMockIsEven },
+        child: ref(2),
       },
+      collection: ref([{ name: 0 }]),
     },
-  }));
+  };
+
+  return useRegle(
+    form,
+    () =>
+      ({
+        level0: { rule: ruleMockIsEven },
+        level1: {
+          child: { rule: ruleMockIsEven },
+          level2: {
+            child: { rule: ruleMockIsEven },
+          },
+          collection: {
+            $each: {
+              name: { required, ruleMockIsEven },
+            },
+          },
+        },
+      }) satisfies RegleComputedRules<typeof form>
+  );
 }
 
 // Fucking ts error

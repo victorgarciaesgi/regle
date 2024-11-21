@@ -108,3 +108,9 @@ const { state, errors, regle, resetAll } = useRegle(form, {
 Result: 
 
 <OperatorNot/>
+
+
+## `applyIf`
+
+`applyIf` is like `requiredIf`, but usable for any rule. It's easier that to do spread conditions in the rules declaration.
+

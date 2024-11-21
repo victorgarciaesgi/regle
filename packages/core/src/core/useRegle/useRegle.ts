@@ -16,7 +16,7 @@ import type {
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import type { DeepMaybeRef } from '../../types/utils';
+import type { DeepMaybeRef, Unwrap } from '../../types/utils';
 import { cloneDeep, isObject } from '../../utils';
 import { useStateProperties } from './useStateProperties';
 
@@ -32,11 +32,14 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
   function useRegle<
     TState extends Record<string, any>,
-    TRules extends ReglePartialValidationTree<TState, Partial<AllRulesDeclarations> & TCustomRules>,
-    TExternal extends RegleExternalErrorTree<TState>,
+    TRules extends ReglePartialValidationTree<
+      Unwrap<TState>,
+      Partial<AllRulesDeclarations> & TCustomRules
+    >,
+    TExternal extends RegleExternalErrorTree<Unwrap<TState>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
     TValid = keyof TRules extends keyof ReglePartialValidationTree<
-      TState,
+      Unwrap<TState>,
       Partial<AllRulesDeclarations> & TCustomRules
     >
       ? true
@@ -45,8 +48,8 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<TState, TRules, TExternal, TValidationGroups>
-  ): Regle<TState, TRules, TExternal, TValidationGroups> {
+      LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TExternal, TValidationGroups>
+  ): Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups> {
     const scopeRules = isRef(rulesFactory)
       ? rulesFactory
       : computed(
@@ -60,7 +63,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       ...options,
     } as any;
 
-    const processedState = isRef(state) ? state : (ref(state) as Ref<TState>);
+    const processedState = isRef(state) ? state : (ref(state) as Ref<Unwrap<TState>>);
 
     const initialState = cloneDeep(toRaw(processedState.value));
 
@@ -107,7 +110,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       return !(regle.$invalid || regle.$pending);
     });
 
-    async function validateState(): Promise<false | DeepSafeFormState<TState, TRules>> {
+    async function validateState(): Promise<false | DeepSafeFormState<Unwrap<TState>, TRules>> {
       regle.$touch();
       const result = await regle.$validate();
       if (result) {
@@ -117,13 +120,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     }
 
     return {
-      regle: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
-      r$: regle as unknown as RegleStatus<TState, TRules, TValidationGroups>,
+      regle: regle as unknown as RegleStatus<Unwrap<TState>, TRules, TValidationGroups>,
+      r$: regle as unknown as RegleStatus<Unwrap<TState>, TRules, TValidationGroups>,
       errors: errors as RegleErrorTree<TRules>,
       resetAll,
       validateState,
       ready,
-      state: processedState,
+      state: processedState as any,
     };
   }
 

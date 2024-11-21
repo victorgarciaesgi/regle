@@ -32,6 +32,7 @@ export type {
   UnwrapRegleUniversalParams,
   FormRuleDeclaration,
   ParamDecl,
+  Unwrap,
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
   RegleComputedRules,

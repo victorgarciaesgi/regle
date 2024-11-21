@@ -52,7 +52,6 @@ export function useMyForm() {
 
 ```vue twoslash [Parent.vue]
 <template>
-  <div>Parent</div>
   <input v-model="state.age" placeholder="age" />
   <Child :errors="errors" />
 </template>

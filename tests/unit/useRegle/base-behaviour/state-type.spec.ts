@@ -1,36 +1,23 @@
 import { flushPromises } from '@vue/test-utils';
-import { useRegle } from '@regle/core';
-import { ruleMockIsEven } from '../../../fixtures';
+import {
+  nestedReactiveObjectValidation,
+  nestedRefObjectValidation,
+  nestedReactiveWithRefsValidation,
+  nestedRefObjectValidationComputed,
+  nesteObjectWithRefsValidation,
+} from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { nextTick, ref } from 'vue';
+import { nextTick } from 'vue';
+import { shouldBeInvalidField, shouldBePristineField } from '../../../utils/validations.utils';
 
-function nesteObjectWithRefsValidation() {
-  const form = {
-    level0: ref(0),
-    level1: {
-      child: ref(1),
-      level2: {
-        child: ref(2),
-      },
-    },
-  };
-
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0: { rule: ruleMockIsEven },
-      level1: {
-        child: { rule: ruleMockIsEven },
-        level2: {
-          child: { rule: ruleMockIsEven },
-        },
-      },
-    })),
-  };
-}
-
-describe('useRegle with Object refs', async () => {
-  const { vm } = createRegleComponent(nesteObjectWithRefsValidation);
+describe.each([
+  ['reactive', nestedReactiveObjectValidation],
+  ['ref', nestedRefObjectValidation],
+  ['ref state with computed rules', nestedRefObjectValidationComputed],
+  ['reactive with ref', nestedReactiveWithRefsValidation],
+  ['object with refs state', nesteObjectWithRefsValidation],
+])('useRegle with %s', async (title, regle) => {
+  const { vm } = await createRegleComponent(regle);
 
   it('should have a initial state', () => {
     expect(vm.errors).toStrictEqual({
@@ -40,15 +27,17 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: [],
         },
+        collection: {
+          $errors: [],
+          $each: [{ name: [] }],
+        },
       },
     });
 
     expect(vm.ready).toBe(false);
 
-    expect(vm.regle.$anyDirty).toBe(false);
-    expect(vm.regle.$dirty).toBe(false);
-    expect(vm.regle.$error).toBe(false);
-    expect(vm.regle.$pending).toBe(false);
+    shouldBeInvalidField(vm.r$);
+
     expect(vm.regle.$value).toStrictEqual({
       level0: 0,
       level1: {
@@ -56,13 +45,15 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 2,
         },
+        collection: [{ name: 0 }],
       },
     });
 
-    expect(vm.regle.$fields.level0.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.regle.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);
+    shouldBePristineField(vm.regle.$fields.level0);
+    shouldBeInvalidField(vm.regle.$fields.level1);
+    shouldBeInvalidField(vm.regle.$fields.level1.$fields.child);
+    shouldBePristineField(vm.regle.$fields.level1.$fields.level2.$fields.child);
+    shouldBePristineField(vm.regle.$fields.level1.$fields.collection.$each[0].$fields.name);
   });
 
   it('should error on initial submit', async () => {
@@ -75,6 +66,10 @@ describe('useRegle with Object refs', async () => {
         child: ['Custom error'],
         level2: {
           child: [],
+        },
+        collection: {
+          $errors: [],
+          $each: [{ name: [] }],
         },
       },
     });
@@ -114,6 +109,7 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 2,
         },
+        collection: [{ name: 0 }],
       },
     });
 
@@ -151,6 +147,7 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 3,
         },
+        collection: [{ name: 0 }],
       },
     });
 
@@ -166,7 +163,6 @@ describe('useRegle with Object refs', async () => {
     vm.regle.$value.level1.level2.child = 2;
 
     await nextTick();
-    await flushPromises();
 
     expect(vm.errors.level0).toStrictEqual([]);
     expect(vm.errors.level1.child).toStrictEqual([]);
@@ -191,6 +187,7 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 2,
         },
+        collection: [{ name: 0 }],
       },
     });
 
@@ -209,14 +206,15 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 2,
         },
+        collection: [{ name: 0 }],
       },
     });
   });
 
   it('should reset on initial state when calling resetAll', async () => {
-    vm.resetAll();
+    await Promise.all([vm.resetAll(), flushPromises()]);
 
-    await flushPromises();
+    await nextTick();
 
     expect(vm.errors).toStrictEqual({
       level0: [],
@@ -224,6 +222,10 @@ describe('useRegle with Object refs', async () => {
         child: [],
         level2: {
           child: [],
+        },
+        collection: {
+          $errors: [],
+          $each: [{ name: [] }],
         },
       },
     });
@@ -241,6 +243,7 @@ describe('useRegle with Object refs', async () => {
         level2: {
           child: 2,
         },
+        collection: [{ name: 0 }],
       },
     });
 
