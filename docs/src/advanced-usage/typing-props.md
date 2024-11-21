@@ -138,6 +138,7 @@ defineProps<{
 </template>
 
 <script setup lang="ts">
+// @noErrors
 import MyInput from './MyInput.vue';
 import { useRegle } from '@regle/core';
 import { email, required } from '@regle/rules';
