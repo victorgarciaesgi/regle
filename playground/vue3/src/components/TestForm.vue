@@ -24,14 +24,13 @@ type Form = {
 const form = ref<Form>({ firstName: '', lastName: '' });
 
 const { errors, regle, validateState } = useRegle(form, {
-  lastName: { required },
+  lastName: { required: minLength(6) },
 });
 
 async function submit() {
   const result = await validateState();
   if (result) {
     console.log(result);
-    //            ^?
   }
 }
 </script>

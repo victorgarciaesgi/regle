@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, toRaw, watch } from 'vue';
 import type {
   $InternalRegleRuleMetadataConsumer,
@@ -53,7 +53,7 @@ export function createReactiveRuleStatus({
   let scope = effectScope();
   let scopeState!: ScopeState;
 
-  let $unwatchState: () => void;
+  let $unwatchState: WatchStopHandle;
 
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(
     `${path}.${ruleKey}`

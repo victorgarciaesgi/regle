@@ -26,7 +26,7 @@ Declare your form rules inside a component or a Pinia store and use it wherever 
   - [VSCode](https://code.visualstudio.com/) is recommended, along with the [official Vue extension](https://marketplace.visualstudio.com/items?itemName=Vue.volar).
 
 - If you're using [Nuxt](https://nuxt.com/)
-  - Nuxt version 3.0 or higher, and check docs for [Nuxt module](/)
+  - Nuxt version 3.0 or higher, and check docs for [Nuxt module](/introduction/integrations/#nuxt)
 
 <br/>
 

@@ -8,6 +8,7 @@ import type {
   RegleRuleDecl,
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
+import type { FieldRegleBehaviourOptions } from '../core';
 
 /**
  * Returned typed of rules created with `createRule`
@@ -157,9 +158,9 @@ export type RegleCollectionRuleDefinition<
         ArrayElement<TValue>
       >;
     })
-  | {
+  | ({
       $each: MaybeGetter<
         RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
         ArrayElement<TValue>
       >;
-    };
+    } & FieldRegleBehaviourOptions);

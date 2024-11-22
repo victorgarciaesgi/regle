@@ -15,18 +15,15 @@ function nesteAsyncObjectWithRefsValidation() {
     },
   };
 
-  return {
-    form,
-    ...useRegle(form, () => ({
-      level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
-      level1: {
-        child: { ruleEven: ruleMockIsEven },
-        level2: {
-          childAsync: { ruleAsync: ruleMockIsFooAsync() },
-        },
+  return useRegle(form, () => ({
+    level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
+    level1: {
+      child: { ruleEven: ruleMockIsEven },
+      level2: {
+        childAsync: { ruleAsync: ruleMockIsFooAsync() },
       },
-    })),
-  };
+    },
+  }));
 }
 
 describe('useRegle with async rules and Object refs', async () => {

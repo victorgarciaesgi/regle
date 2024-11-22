@@ -17,6 +17,7 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
 } from '..';
+import type { EmptyObject } from 'type-fest';
 
 /**
  * @public
@@ -78,7 +79,6 @@ export type InferRegleStatusType<
  */
 export type $InternalRegleStatusType =
   | $InternalRegleCollectionStatus
-  | RegleCommonStatus
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
 
@@ -117,8 +117,10 @@ export interface RegleFieldStatus<
  */
 export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
-  $rules: Record<string, $InternalRegleRuleStatus>;
-  $externalErrors?: string[];
+  readonly $rules: Record<string, $InternalRegleRuleStatus>;
+  readonly $externalErrors?: string[];
+  readonly $errors: string[];
+  readonly $silentErrors: string[];
 }
 
 /**
@@ -131,7 +133,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
-  $id?: string;
+  readonly $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;

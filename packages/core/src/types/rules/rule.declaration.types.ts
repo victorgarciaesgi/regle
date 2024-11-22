@@ -1,4 +1,4 @@
-import type { MaybeRef, Ref, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, Ref } from 'vue';
 import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
 import type { ArrayElement, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
@@ -127,19 +127,20 @@ export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
-  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-      $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules> &
-          RegleCollectionRuleDeclKeyProperty,
-        ArrayElement<TValue>
-      >;
-    })
-  | {
+  | ({
       $each?: MaybeGetter<
         RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>
+        ArrayElement<TValue>,
+        RegleCollectionRuleDeclKeyProperty
       >;
-    };
+    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules>)
+  | ({
+      $each?: MaybeGetter<
+        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+        ArrayElement<TValue>,
+        RegleCollectionRuleDeclKeyProperty
+      >;
+    } & FieldRegleBehaviourOptions);
 
 /**
  * @internal

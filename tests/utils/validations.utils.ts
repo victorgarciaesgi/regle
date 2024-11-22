@@ -41,7 +41,9 @@ export function shouldBeValidField(field?: RegleStatus<any, any> | RegleFieldSta
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(true);
-  expect(field?.$errors).toEqual([]);
+  if (field && !('$fields' in field)) {
+    expect(field?.$errors).toStrictEqual([]);
+  }
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
 }

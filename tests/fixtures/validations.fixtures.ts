@@ -21,7 +21,7 @@ export function nestedReactiveObjectValidation() {
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 }],
+      collection: [{ name: 0 as number | null }],
     },
   });
   return useRegle(form, {
@@ -37,7 +37,7 @@ export function nestedReactiveObjectValidation() {
         },
       },
     },
-  } satisfies RegleComputedRules<typeof form>);
+  });
 }
 
 export function nestedRefObjectValidation(): ReturnRegleType {
@@ -48,7 +48,7 @@ export function nestedRefObjectValidation(): ReturnRegleType {
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 }],
+      collection: [{ name: 0 as number | null }],
     },
   });
   return useRegle(
@@ -79,7 +79,7 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 }],
+      collection: [{ name: 0 as number | null }],
     },
   });
 
@@ -112,7 +112,7 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
       level2: {
         child: ref(2),
       },
-      collection: [{ name: 0 }],
+      collection: [{ name: 0 as number | null }],
     },
   });
 
@@ -144,7 +144,7 @@ export function nesteObjectWithRefsValidation(): ReturnRegleType {
       level2: {
         child: ref(2),
       },
-      collection: ref([{ name: 0 }]),
+      collection: ref([{ name: 0 as number | null }]),
     },
   };
 
@@ -167,32 +167,6 @@ export function nesteObjectWithRefsValidation(): ReturnRegleType {
       }) satisfies RegleComputedRules<typeof form>
   );
 }
-
-// Fucking ts error
-// export function nesteObjectWithRefsValidation() {
-//   const form = {
-//     level0: ref(0),
-//     level1: {
-//       child: ref(1),
-//       level2: {
-//         child: ref(2),
-//       },
-//     },
-//   };
-
-//   return {
-//     form,
-//     ...useRegle(form, () => ({
-//       level0: { rule: ruleMockIsEven },
-//       level1: {
-//         child: { rule: ruleMockIsEven },
-//         level2: {
-//           child: { rule: ruleMockIsEven },
-//         },
-//       },
-//     })),
-//   };
-// }
 
 export function computedValidationsObjectWithRefs(): any {
   const conditional = ref(0);
@@ -238,6 +212,9 @@ export function simpleNestedStateWithComputedValidation() {
     contacts: [] as { name: '' }[],
   });
 
+  // TODO inferRules function util
+  // All type utils
+  // Change doc
   const rules = computed(
     () =>
       ({

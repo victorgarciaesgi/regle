@@ -1,5 +1,5 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
@@ -134,7 +134,7 @@ export function createReactiveCollectionStatus({
   const $id = ref<string>() as Ref<string>;
   const $value = ref(state.value);
 
-  let $unwatchState: (() => void) | null = null;
+  let $unwatchState: WatchStopHandle;
 
   const $fieldStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
@@ -356,15 +356,15 @@ export function createReactiveCollectionStatus({
 
       const $errors = computed<$InternalRegleCollectionErrors>(() => {
         return {
-          $errors: extractRulesErrors({ field: $fieldStatus.value, silent: false }),
-          $each: extractCollectionError($eachStatus.value),
+          $errors: $fieldStatus.value.$errors,
+          $each: $eachStatus.value.map(($each) => $each.$errors),
         };
       });
 
       const $silentErrors = computed<$InternalRegleCollectionErrors>(() => {
         return {
-          $errors: extractRulesErrors({ field: $fieldStatus.value, silent: true }),
-          $each: extractCollectionError($eachStatus.value, true),
+          $errors: $fieldStatus.value.$silentErrors,
+          $each: $eachStatus.value.map(($each) => $each.$silentErrors),
         };
       });
 

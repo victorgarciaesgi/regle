@@ -257,10 +257,18 @@ export function createReactiveNestedStatus({
       });
 
       const $errors = computed(() => {
-        return extractNestedErrors($fields.value);
+        return Object.fromEntries(
+          Object.entries($fields.value).map(([key, statusOrField]) => {
+            return [key, statusOrField.$errors];
+          })
+        );
       });
       const $silentErrors = computed(() => {
-        return extractNestedErrors($fields.value, true);
+        return Object.fromEntries(
+          Object.entries($fields.value).map(([key, statusOrField]) => {
+            return [key, statusOrField.$silentErrors];
+          })
+        );
       });
 
       return {

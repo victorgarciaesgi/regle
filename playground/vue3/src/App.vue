@@ -3,11 +3,10 @@
     <!-- <MyForm />
     <MyForm /> -->
 
-    <!-- <TestForm /> -->
+    <TestForm />
     <!-- <Repro /> -->
 
     <!-- <ZodForm /> -->
-    <Parent />
   </div>
 </template>
 

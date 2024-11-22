@@ -38,20 +38,4 @@ describe('$autoDirty', () => {
     await nextTick();
     shouldBeErrorField(vm.r$.$fields.email);
   });
-
-  it('when used at root with plain object, should update the $dirty state', async () => {
-    // const number = ref(1)
-    // const { vm } = await createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
-    // shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
-    // number.value = 3
-    // await vm.$nextTick()
-    // shouldBeErroredValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
-    // number.value = 2
-    // await vm.$nextTick()
-    // expect(vm.v.$errors).toHaveLength(0)
-    // expect(vm.v.number).toHaveProperty('$error', false)
-    // expect(vm.v.number).toHaveProperty('$dirty', true)
-    // expect(vm.v.number).toHaveProperty('$anyDirty', true)
-    // expect(vm.v.number).toHaveProperty('$invalid', false)
-  });
 });

@@ -1,4 +1,4 @@
-import type { RequiredDeep } from 'type-fest';
+import type { EmptyObject, RequiredDeep, IsEqual } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref } from 'vue';
 import { computed, isRef, ref, toRaw } from 'vue';
 import type {
@@ -6,17 +6,16 @@ import type {
   AllRulesDeclarations,
   DeepReactiveState,
   DeepSafeFormState,
+  isDeepExact,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
-  RegleErrorTree,
   RegleExternalErrorTree,
   ReglePartialValidationTree,
-  RegleStatus,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import type { DeepMaybeRef, Unwrap } from '../../types/utils';
+import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
 import { cloneDeep, isObject } from '../../utils';
 import { useStateProperties } from './useStateProperties';
 
@@ -35,18 +34,19 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     TRules extends ReglePartialValidationTree<
       Unwrap<TState>,
       Partial<AllRulesDeclarations> & TCustomRules
-    >,
+    > &
+      TValid,
     TExternal extends RegleExternalErrorTree<Unwrap<TState>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
-    TValid = keyof TRules extends keyof ReglePartialValidationTree<
-      Unwrap<TState>,
-      Partial<AllRulesDeclarations> & TCustomRules
-    >
-      ? true
-      : false,
+    TValid = isDeepExact<
+      NoInferLegacy<TRules>,
+      ReglePartialValidationTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+    > extends true
+      ? {}
+      : "Rule schema doesn't match your state",
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState>,
-    rulesFactory: TValid extends true ? TRules | (() => TRules) | ComputedRef<TRules> : never,
+    rulesFactory: TRules | (() => TRules) | ComputedRef<TRules>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TExternal, TValidationGroups>
   ): Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups> {
@@ -110,7 +110,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       return !(regle.$invalid || regle.$pending);
     });
 
-    async function validateState(): Promise<false | DeepSafeFormState<Unwrap<TState>, TRules>> {
+    async function validateState(): Promise<
+      | false
+      | DeepSafeFormState<
+          Unwrap<TState>,
+          TRules extends ReglePartialValidationTree<any, any> ? TRules : EmptyObject
+        >
+    > {
       regle.$touch();
       const result = await regle.$validate();
       if (result) {
@@ -120,11 +126,11 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     }
 
     return {
-      regle: regle as unknown as RegleStatus<Unwrap<TState>, TRules, TValidationGroups>,
-      r$: regle as unknown as RegleStatus<Unwrap<TState>, TRules, TValidationGroups>,
-      errors: errors as RegleErrorTree<TRules>,
+      regle: regle as any,
+      r$: regle as any,
+      errors: errors as any,
       resetAll,
-      validateState,
+      validateState: validateState as any,
       ready,
       state: processedState as any,
     };

@@ -1,7 +1,8 @@
-import type { EmptyObject } from 'type-fest';
+import type { EmptyObject, UnionToIntersection } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref } from 'vue';
 import type {
   CustomRulesDeclarationTree,
+  RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
   RegleExternalErrorTree,
@@ -11,7 +12,7 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { ExtractFromGetter } from '../utils';
+import type { ExtractFromGetter, Prettify } from '../utils';
 import type { RegleValidationGroupEntry } from './options.types';
 
 export interface Regle<
@@ -28,9 +29,34 @@ export interface Regle<
   errors: RegleErrorTree<TRules, TExternal>;
   ready: ComputedRef<boolean>;
   resetAll: () => void;
-  validateState: () => Promise<false | DeepSafeFormState<TState, TRules>>;
+  validateState: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
   state: Ref<TState>;
 }
+
+export type isDeepExact<T, U> = {
+  [K in keyof T]-?: CheckDeepExact<
+    NonNullable<T[K]>,
+    K extends keyof U ? NonNullable<U[K]> : never
+  >;
+}[keyof T] extends true
+  ? true
+  : false;
+
+type CheckDeepExact<T, U> = [U] extends [never]
+  ? false
+  : T extends RegleCollectionRuleDecl
+    ? U extends RegleCollectionRuleDecl
+      ? isDeepExact<NonNullable<T['$each']>, UnionToIntersection<NonNullable<U['$each']>>>
+      : T extends RegleRuleDecl
+        ? true
+        : T extends ReglePartialValidationTree<any>
+          ? isDeepExact<T, U>
+          : false
+    : T extends RegleRuleDecl
+      ? true
+      : T extends ReglePartialValidationTree<any>
+        ? isDeepExact<T, U>
+        : false;
 
 export type DeepReactiveState<T extends Record<string, any>> = {
   [K in keyof T]: MaybeRef<T[K]>;
