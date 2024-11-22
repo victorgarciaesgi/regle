@@ -41,8 +41,18 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
   { text: 'Using metadata from rules', link: '/advanced-usage/rule-metadata' },
   { text: 'Rules operators', link: '/advanced-usage/rules-operators' },
   { text: 'Validation helpers', link: '/advanced-usage/validations-helpers' },
-  { text: 'Typing props', link: '/advanced-usage/typing-props' },
   { text: 'Usage with Zod', link: '/advanced-usage/usage-with-zod/' },
+];
+
+const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+  {
+    text: 'Typing props',
+    link: '/typescript/typing-props',
+  },
+  {
+    text: 'Typing rules',
+    link: '/typescript/typing-rules',
+  },
 ];
 
 const Examples: DefaultTheme.NavItemWithLink[] = [{ text: 'Base example', link: '/examples/base' }];
@@ -70,7 +80,7 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'Getting Started', link: '/introduction/' },
-          { text: 'Integrations', link: '/introduction/integrations' },
+          { text: 'Integrations', link: '/introduction/integrations/' },
         ],
       },
       {
@@ -78,11 +88,15 @@ export default defineConfig({
         items: CoreConcepts,
       },
       {
+        text: 'Typescript',
+        items: Typescript,
+      },
+      {
         text: 'Advanced Usage',
         items: AdvancedUsage,
       },
       {
-        text: 'Example',
+        text: 'Examples',
         items: Examples,
       },
     ],

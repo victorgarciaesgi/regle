@@ -82,7 +82,7 @@ const { errors, state } = useMyForm();
 // @noErrors
 import type { useMyForm } from './myForm';
 
-defineProps<{
+const props = defineProps<{
   errors: ReturnType<typeof useMyForm>['errors'];
 }>();
 </script>
@@ -121,7 +121,7 @@ import type { RegleFieldStatus } from '@regle/core';
 
 const modelValue = defineModel<string>();
 
-defineProps<{
+const props = defineProps<{
   field: RegleFieldStatus<string>;
   placeholder: string;
 }>();

@@ -133,7 +133,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
-  readonly $id?: string;
+  $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;
