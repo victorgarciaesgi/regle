@@ -1,3 +1,3 @@
 export { createRule, unwrapRuleParameters } from './createRule';
-export { useRegle } from './useRegle';
+export { useRegle, inferRules } from './useRegle';
 export { defineRegleConfig } from './defineRegleConfig';

@@ -3,6 +3,11 @@ import { useRegle } from '@regle/core';
 import { ruleMockIsEvenAsync, ruleMockIsEven, ruleMockIsFooAsync } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
+import {
+  shouldBeErrorField,
+  shouldBeInvalidField,
+  shouldBePristineField,
+} from '../../../utils/validations.utils';
 
 function nesteAsyncObjectWithRefsValidation() {
   const form = ref({
@@ -19,15 +24,43 @@ function nesteAsyncObjectWithRefsValidation() {
       child: { ruleEven: ruleMockIsEven },
     },
     collection: {
-      $each: (value) => ({
-        child: {},
-      }),
+      $each: {
+        child: { ruleEvenAsync: ruleMockIsEvenAsync() },
+      },
     },
   });
 }
 
 describe('$pending', () => {
-  it('sets `$pending` to `true`, when async validators are used and are being resolved', () => {});
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
+  it('sets `$pending` to `true`, when async validators are used and are being resolved', async () => {
+    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+
+    shouldBePristineField(vm.r$);
+
+    await vi.advanceTimersByTimeAsync(100);
+    await nextTick();
+
+    shouldBePristineField(vm.r$);
+
+    vm.r$.$value.level0 = 1;
+    await vi.advanceTimersByTimeAsync(100);
+    await nextTick();
+
+    expect(vm.r$.$fields.level0.$pending).toBe(true);
+
+    vi.advanceTimersByTime(1000);
+    await flushPromises();
+
+    shouldBeErrorField(vm.r$.$fields.level0);
+  });
 
   it('propagates `$pending` up to the top most parent', () => {});
 

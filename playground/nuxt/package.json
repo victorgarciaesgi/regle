@@ -14,7 +14,8 @@
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
     "pinia": "^2.2.6",
-    "zod": "3.23.8"
+    "zod": "3.23.8",
+    "typescript": "5.6.3"
   },
   "devDependencies": {
     "nuxt": "^3.14.159",

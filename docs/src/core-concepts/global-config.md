@@ -23,7 +23,7 @@ Each `@regle/rules` rule provide a default error message. You may don't want to 
 import {defineRegleConfig} from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-const useCustomRegle = defineRegleConfig({
+const {useRegle: useCustomRegle} = defineRegleConfig({
   rules: () => ({
     required: withMessage(required, 'You need to provide a value'),
     minLength: withMessage(minLength, (value, { $params: [count] }) => {
@@ -66,7 +66,7 @@ const asyncEmail = createRule({
   message: 'Email already exists',
 });
 
-const useCustomRegle = defineRegleConfig({
+const {useRegle: useCustomRegle} = defineRegleConfig({
   rules: () => ({
     asyncEmail
   })
@@ -87,11 +87,25 @@ const {errors} = useCustomRegle({name: ''}, {
 import {defineRegleConfig} from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-const useCustomRegle = defineRegleConfig({
+export const {useRegle: useCustomRegle} = defineRegleConfig({
   modifiers: {
     autoDirty: false,
     lazy: true,
     rewardEarly: true
   }
 })
+```
+
+
+## Export scoped `inferRules` helper
+
+`defineRegleConfig` also return a scoped `inferRules` helper, similar to the one exported from `@regle/core`, but that will autocomplete and checks your custom rules.
+
+For informations about `inferRules`, check [Typing rules docs](/typescript/typing-rules)
+
+```ts twoslash
+import {defineRegleConfig} from '@regle/core';
+import { withMessage, minLength, required } from '@regle/rules';
+
+export const {useRegle, inferRules} = defineRegleConfig({/* */})
 ```

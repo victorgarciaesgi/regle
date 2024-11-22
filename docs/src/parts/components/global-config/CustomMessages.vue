@@ -19,7 +19,7 @@
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-const useCustomRegle = defineRegleConfig({
+const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     required: withMessage(required, 'You need to provide a value'),
     minLength: withMessage(minLength, (value, { $params: [count] }) => {

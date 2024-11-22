@@ -13,7 +13,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsSources({
       from: '@regle/core',
-      imports: ['useRegle', 'createRule', 'defineRegleConfig'] as Array<
+      imports: ['useRegle', 'createRule', 'defineRegleConfig', 'inferRules'] as Array<
         keyof typeof import('@regle/core')
       >,
     });

@@ -1,9 +1,7 @@
+import './assets/main.css';
+
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 import App from './App.vue';
+import { defineRegleConfig } from '@regle/core';
 
-const app = createApp(App);
-
-app.use(createPinia());
-
-app.mount('#app');
+createApp(App).mount('#app');

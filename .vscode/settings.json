@@ -2,6 +2,16 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "prettier.configPath": ".prettierrc",
   "references.preferredLocation": "peek",
-  "vitest.enable": true,
-  "window.title": "Regle"
+  "window.title": "Regle",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .prettier*, prettier*, .editorconfig"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

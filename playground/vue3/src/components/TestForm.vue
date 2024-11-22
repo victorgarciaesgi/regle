@@ -1,38 +1,23 @@
 <template>
-  <div class="demo-container">
-    <!-- <input v-model.number="form.level0Async.value" placeholder="level 0" />
-    <input v-model.number="form.level1.level2.childAsync.value" placeholder="Level 1" /> -->
-    <div class="button-list">
-      <button type="button" @click="validate">Submit</button>
-    </div>
-    <pre>{{ regle }}</pre>
-  </div>
+  <div>{{ regle }}</div>
 </template>
 
 <script setup lang="ts">
-import type { Maybe } from '@regle/core';
-import { createRule, useRegle } from '@regle/core';
-import { ref } from 'vue';
-import { email, minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
-import { timeout } from '@/validations';
+import { inferRules, useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+import { computed, ref } from 'vue';
 
-type Form = {
-  firstName?: string;
-  lastName?: string;
-};
+const form = ref({ name: { firstName: '', lastName: '' } });
 
-const form = ref<Form>({ firstName: '', lastName: '' });
+const rules = computed(() =>
+  inferRules(form, {
+    name: {
+      firstName: {},
+    },
+  })
+);
 
-const { errors, regle, validateState } = useRegle(form, {
-  lastName: { required: minLength(6) },
-});
-
-async function submit() {
-  const result = await validateState();
-  if (result) {
-    console.log(result);
-  }
-}
+const { regle } = useRegle(form, rules);
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

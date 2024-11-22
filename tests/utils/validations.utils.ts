@@ -7,7 +7,9 @@ export function shouldBePristineField(field?: RegleStatus<any, any> | RegleField
   expect(field?.$anyDirty).toBe(false);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(false);
-  expect(field?.$errors).toEqual([]);
+  if (field && !('$fields' in field)) {
+    expect(field?.$errors).toStrictEqual([]);
+  }
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
 }

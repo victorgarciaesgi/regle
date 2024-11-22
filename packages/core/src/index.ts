@@ -1,4 +1,4 @@
-export { createRule, defineRegleConfig, unwrapRuleParameters, useRegle } from './core';
+export { createRule, defineRegleConfig, inferRules, unwrapRuleParameters, useRegle } from './core';
 export { InternalRuleType } from './types';
 export type {
   Regle,

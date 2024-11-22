@@ -21,12 +21,12 @@ export const asyncEmail = createRule({
   message: 'Value is not an email',
 });
 
-export const useRegle = defineRegleConfig({
+export const { useRegle, inferRules } = defineRegleConfig({
   rules: () => ({
     maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
       return `ehooo ${count} is max`;
     }),
-    asyncEmail,
+    asyncEmail: withMessage(asyncEmail, () => ''),
   }),
   modifiers: {
     autoDirty: false,

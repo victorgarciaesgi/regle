@@ -38,6 +38,7 @@ This exports will become globally available in your nuxt app
   - useRegle 
   - createRule
   - defineRegleConfig
+  - inferRules
 - `@regle/rules` Built-in rules are not injected to reduce risk of name conflict
   - ruleHelpers
   - withAsync
