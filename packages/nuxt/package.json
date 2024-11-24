@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.14.1592",
+    "@nuxt/schema": "^3.14.1592",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*"
   },
@@ -54,7 +55,7 @@
     "prettier": "3.3.3",
     "tsup": "8.3.5",
     "type-fest": "4.28.0",
-    "typescript": "5.7.2",
+    "typescript": "5.6.3",
     "vitest": "2.1.5",
     "vue-tsc": "2.1.10"
   },

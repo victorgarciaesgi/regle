@@ -62,9 +62,9 @@ export function createReactiveNestedStatus({
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
-  let $unwatchFields: WatchStopHandle;
-  let $unwatchState: WatchStopHandle;
-  let $unwatchGroups: WatchStopHandle;
+  let $unwatchFields: WatchStopHandle | null = null;
+  let $unwatchState: WatchStopHandle | null = null;
+  let $unwatchGroups: WatchStopHandle | null = null;
 
   function createReactiveFieldsStatus(watch = true, forceFromGetter = false) {
     $fields.value = null!;

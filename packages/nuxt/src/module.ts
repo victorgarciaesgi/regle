@@ -1,3 +1,4 @@
+import type {} from 'nuxt/app';
 import { defineNuxtModule, createResolver, addImportsSources } from '@nuxt/kit';
 
 export interface ModuleOptions {}

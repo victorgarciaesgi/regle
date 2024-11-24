@@ -14,7 +14,7 @@
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
     "pinia": "^2.2.6",
-    "typescript": "5.7.2",
+    "typescript": "5.6.3",
     "zod": "3.23.8"
   },
   "devDependencies": {
