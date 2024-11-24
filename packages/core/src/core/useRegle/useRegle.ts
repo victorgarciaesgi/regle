@@ -1,6 +1,6 @@
 import type { EmptyObject, RequiredDeep, IsEqual } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref } from 'vue';
-import { computed, isRef, ref, toRaw } from 'vue';
+import { computed, isRef, onScopeDispose, ref, toRaw } from 'vue';
 import type {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,

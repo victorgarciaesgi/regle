@@ -1,5 +1,5 @@
-interface DebouncedFunction {
-  (...args: unknown[]): Promise<unknown>;
+interface DebouncedFunction<T extends (...args: any[]) => any | Promise<any>> {
+  (...args: Parameters<T>): Promise<ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>>;
   cancel(): void;
   doImmediately(...args: unknown[]): Promise<unknown>;
 }
@@ -9,9 +9,9 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   func: T,
   wait: number,
   immediate?: boolean
-): T {
+): DebouncedFunction<T> {
   let timeout: NodeJS.Timeout | undefined;
-  const debouncedFn: DebouncedFunction = (...args) =>
+  const debouncedFn: DebouncedFunction<T> = (...args) =>
     new Promise((resolve) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -39,5 +39,5 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
       }, 0);
     });
 
-  return debouncedFn as unknown as T;
+  return debouncedFn;
 }

@@ -45,13 +45,13 @@ describe('$pending', () => {
 
     shouldBePristineField(vm.r$);
 
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
     shouldBePristineField(vm.r$);
 
     vm.r$.$value.level0 = 1;
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
     expect(vm.r$.$fields.level0.$pending).toBe(true);
@@ -63,7 +63,7 @@ describe('$pending', () => {
     expect(vm.r$.$fields.level0.$errors).toStrictEqual(['Custom error']);
 
     vm.r$.$value.level0 = 2;
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
     expect(vm.r$.$fields.level0.$pending).toBe(true);
@@ -92,7 +92,7 @@ describe('$pending', () => {
     const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
 
     vm.r$.$value.level1.child = 1;
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
     expect(vm.r$.$fields.level1.$fields.child.$pending).toBe(true);
@@ -110,7 +110,7 @@ describe('$pending', () => {
     const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
 
     vm.r$.$value.collection[0].child = 1;
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
     expect(vm.r$.$fields.collection.$each[0].$pending).toBe(true);

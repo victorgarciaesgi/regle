@@ -20,7 +20,7 @@ export function extractRulesErrors({
     .map(([ruleKey, rule]) => {
       if (silent) {
         return rule.$message;
-      } else if (!rule.$valid && field.$dirty) {
+      } else if (!rule.$valid && field.$dirty && !rule.$validating) {
         return rule.$message;
       }
 

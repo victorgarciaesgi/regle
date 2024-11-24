@@ -286,6 +286,16 @@ describe('$params', () => {
       vm.state.email = 'azertyuio';
       vm.state.user.firstName = 'azertyuio';
       vm.state.contacts[0].name = 'azertyuio';
+
+      await vi.advanceTimersByTimeAsync(200);
+      await nextTick();
+
+      expect(vm.r$.$pending).toBe(true);
+      expect(vm.r$.$fields.email.$pending).toBe(true);
+      expect(vm.r$.$fields.user.$pending).toBe(true);
+      expect(vm.r$.$fields.user.$fields.firstName.$pending).toBe(true);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$pending).toBe(true);
+
       await vi.advanceTimersByTimeAsync(1000);
       await nextTick();
 
@@ -304,7 +314,7 @@ describe('$params', () => {
 
       vm.min = 20;
 
-      await vi.advanceTimersByTimeAsync(100);
+      await vi.advanceTimersByTimeAsync(200);
       await nextTick();
 
       expect(vm.r$.$pending).toBe(true);

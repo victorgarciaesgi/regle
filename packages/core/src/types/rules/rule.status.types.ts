@@ -86,7 +86,7 @@ export type $InternalRegleStatusType =
  * @public
  */
 export interface RegleFieldStatus<
-  TState extends any = unknown,
+  TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
 > extends RegleCommonStatus<TState> {
   $value: UnwrapNestedRefs<TState>;
@@ -181,6 +181,8 @@ export interface $InternalRegleRuleStatus {
   $externalErrors?: string[];
   $params?: any[];
   $metadata: any;
+  _haveAsync: boolean;
+  $validating: boolean;
   $validator(
     value: any,
     ...args: any[]

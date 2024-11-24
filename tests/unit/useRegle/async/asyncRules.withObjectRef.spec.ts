@@ -71,7 +71,7 @@ describe('useRegle with async rules and Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
+    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1200)]);
 
     await nextTick();
     await flushPromises();
@@ -103,7 +103,7 @@ describe('useRegle with async rules and Object refs', async () => {
   it('should update dirty state and errors when updating form', async () => {
     vm.regle.$value.level0Async = 1;
 
-    await vi.advanceTimersByTimeAsync(100);
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
     expect(vm.regle.$fields.level0Async.$pending).toBe(true);
 
@@ -139,6 +139,10 @@ describe('useRegle with async rules and Object refs', async () => {
   it('should update dirty state and errors when updating nested properties', async () => {
     vm.regle.$value.level1.child = 3;
     vm.regle.$value.level1.level2.childAsync = 'bar';
+
+    await vi.advanceTimersByTimeAsync(200);
+    await nextTick();
+    expect(vm.regle.$pending).toBe(true);
 
     await nextTick();
 
@@ -182,9 +186,11 @@ describe('useRegle with async rules and Object refs', async () => {
     vm.regle.$value.level1.child = 2;
     vm.regle.$value.level1.level2.childAsync = 'foo';
 
+    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
+    expect(vm.regle.$pending).toBe(true);
 
-    vi.advanceTimersByTime(1000);
+    await vi.advanceTimersByTimeAsync(1000);
     await nextTick();
     await flushPromises();
 

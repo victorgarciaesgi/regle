@@ -39,6 +39,7 @@ type ScopeReturnState = {
   $rewardEarly: ComputedRef<boolean | undefined>;
   $autoDirty: ComputedRef<boolean | undefined>;
   $anyDirty: ComputedRef<boolean>;
+  haveAnyAsyncRule: ComputedRef<boolean>;
 };
 
 export function createReactiveFieldStatus({
@@ -66,6 +67,7 @@ export function createReactiveFieldStatus({
   let $unwatchValid: WatchStopHandle;
   let $unwatchExternalErrors: WatchStopHandle;
   let $unwatchDirty: WatchStopHandle;
+  let $unwatchAsync: WatchStopHandle;
 
   let $commit = () => {};
 
@@ -109,9 +111,7 @@ export function createReactiveFieldStatus({
 
     $watch();
 
-    $commit = scopeState.$debounce.value
-      ? debounce($commitHandler, scopeState.$debounce.value ?? 0)
-      : $commitHandler;
+    define$commit();
 
     if (storeResult?.valid != null) {
       $dirty.value = storage.getDirtyState(path);
@@ -121,6 +121,15 @@ export function createReactiveFieldStatus({
     }
 
     storage.addRuleDeclEntry(path, declaredRules);
+  }
+
+  function define$commit() {
+    $commit = scopeState.$debounce.value
+      ? debounce(
+          $commitHandler,
+          (scopeState.$debounce.value ?? scopeState.haveAnyAsyncRule) ? 100 : 0
+        )
+      : $commitHandler;
   }
 
   function $unwatch() {
@@ -139,6 +148,7 @@ export function createReactiveFieldStatus({
     scope.stop();
     scope = effectScope();
     onUnwatch?.();
+    $unwatchAsync?.();
   }
 
   function $watch() {
@@ -174,18 +184,27 @@ export function createReactiveFieldStatus({
         return unref(options.autoDirty);
       });
 
+      const $validating = computed(() => {
+        return Object.entries($rules.value).some(([key, ruleResult]) => {
+          return ruleResult.$validating;
+        });
+      });
+
       const $error = computed<boolean>(() => {
         return $invalid.value && !$pending.value && $dirty.value;
       });
 
       const $errors = computed<string[]>(() => {
-        return extractRulesErrors({
-          field: {
-            $dirty: $dirty.value,
-            $externalErrors: $externalErrors.value,
-            $rules: $rules.value,
-          },
-        });
+        if ($error.value) {
+          return extractRulesErrors({
+            field: {
+              $dirty: $dirty.value,
+              $externalErrors: $externalErrors.value,
+              $rules: $rules.value,
+            },
+          });
+        }
+        return [];
       });
 
       const $silentErrors = computed<string[]>(() => {
@@ -220,7 +239,7 @@ export function createReactiveFieldStatus({
       });
 
       const $valid = computed<boolean>(() => {
-        if ($dirty.value && !isEmpty(state.value)) {
+        if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if ($externalErrors.value?.length) {
             return false;
           } else if ($rewardEarly.value) {
@@ -232,6 +251,12 @@ export function createReactiveFieldStatus({
           }
         }
         return false;
+      });
+
+      const haveAnyAsyncRule = computed(() => {
+        return Object.entries($rules.value).some(([key, ruleResult]) => {
+          return ruleResult._haveAsync;
+        });
       });
 
       watch($valid, (value) => {
@@ -252,6 +277,7 @@ export function createReactiveFieldStatus({
         $rewardEarly,
         $autoDirty,
         $anyDirty,
+        haveAnyAsyncRule,
       } satisfies ScopeReturnState;
     }) as ScopeReturnState;
 
@@ -284,6 +310,8 @@ export function createReactiveFieldStatus({
         triggerPunishment.value = false;
       }
     });
+
+    $unwatchAsync = watch(scopeState.haveAnyAsyncRule, define$commit);
   }
 
   function $commitHandler() {

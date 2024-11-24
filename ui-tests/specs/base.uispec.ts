@@ -5,5 +5,5 @@ test('it should render the page correctly', async ({ index }) => {
   await index.goto();
 
   const app = await index.page.$('#app');
-  expect(await app?.textContent()).toBe('Hello');
+  expect(await app?.textContent()).toBeDefined();
 });

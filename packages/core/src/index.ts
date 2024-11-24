@@ -29,6 +29,7 @@ export type {
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   Maybe,
+  InferRegleRule,
   UnwrapRegleUniversalParams,
   FormRuleDeclaration,
   ParamDecl,

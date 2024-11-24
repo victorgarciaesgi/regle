@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, toRaw, watch } from 'vue';
+import { computed, effectScope, reactive, ref, toRaw, watch } from 'vue';
 import type {
   $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
@@ -10,10 +10,10 @@ import type {
   RegleRuleMetadataDefinition,
 } from '../../../types';
 import { InternalRuleType } from '../../../types';
-import { debounce, isEmpty } from '../../../utils';
+import { cloneDeep, debounce, isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
-import { isFormRuleDefinition } from '../guards';
+import { isFormRuleDefinition, isRuleDef } from '../guards';
 
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
@@ -54,6 +54,8 @@ export function createReactiveRuleStatus({
   let scopeState!: ScopeState;
 
   let $unwatchState: WatchStopHandle;
+
+  const _haveAsync = ref(false);
 
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(
     `${path}.${ruleKey}`
@@ -159,15 +161,27 @@ export function createReactiveRuleStatus({
     }
   }
 
-  async function computeAsyncResult(promise: Promise<RegleRuleMetadataDefinition>) {
+  async function computeAsyncResult() {
+    const validator = scopeState.$validator.value;
+    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
     let ruleResult = false;
+    let cachedValue = state.value;
     try {
       updatePendingState();
-      const promiseResult = await promise;
-      if (typeof promiseResult === 'boolean') {
-        ruleResult = promiseResult;
+      let validatorResult;
+      if (resultOrPromise instanceof Promise) {
+        validatorResult = await resultOrPromise;
       } else {
-        const { $valid, ...rest } = promiseResult;
+        validatorResult = resultOrPromise;
+      }
+
+      if (state.value !== cachedValue) {
+        return true;
+      }
+      if (typeof validatorResult === 'boolean') {
+        ruleResult = validatorResult;
+      } else {
+        const { $valid, ...rest } = validatorResult;
         ruleResult = $valid;
         $metadata.value = rest;
       }
@@ -180,29 +194,35 @@ export function createReactiveRuleStatus({
     return ruleResult;
   }
 
-  const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 100);
+  const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 200);
 
   async function $validate(): Promise<boolean> {
     $validating.value = true;
-    const validator = scopeState.$validator.value;
+
     let ruleResult = false;
-    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
 
-    if (resultOrPromise instanceof Promise) {
-      const promiseDebounce = $computeAsyncDebounce(resultOrPromise);
-
-      ruleResult = await promiseDebounce;
+    if (isRuleDef(rule.value) && rule.value._async) {
+      ruleResult = await $computeAsyncDebounce();
     } else {
-      if (resultOrPromise != null) {
-        if (typeof resultOrPromise === 'boolean') {
-          ruleResult = resultOrPromise;
-        } else {
-          const { $valid, ...rest } = resultOrPromise;
-          ruleResult = $valid;
-          $metadata.value = rest;
+      const validator = scopeState.$validator.value;
+      const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+      if (resultOrPromise instanceof Promise) {
+        console.warn(
+          'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
+        );
+      } else {
+        if (resultOrPromise != null) {
+          if (typeof resultOrPromise === 'boolean') {
+            ruleResult = resultOrPromise;
+          } else {
+            const { $valid, ...rest } = resultOrPromise;
+            ruleResult = $valid;
+            $metadata.value = rest;
+          }
         }
       }
     }
+
     $valid.value = ruleResult;
 
     $validating.value = false;
@@ -230,6 +250,8 @@ export function createReactiveRuleStatus({
     $pending,
     $valid,
     $metadata,
+    _haveAsync,
+    $validating,
     $validate,
     $unwatch,
     $watch,

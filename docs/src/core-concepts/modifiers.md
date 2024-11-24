@@ -140,6 +140,10 @@ const {regle} = useRegle({name: ''}, {
 `$autoDirty` `$lazy` and `$rewardEarly` work the same as the deep modifiers
 
 ### `$debounce`
-Type: `number`
+Type: `number` (ms)
 
-This let you declare the number of milliseconds the rule need to wait before executing. Useful for async or heavy computations
+This let you declare the number of milliseconds the rule need to wait before executing. Useful for async or heavy computations.
+
+:::tip
+All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
+:::

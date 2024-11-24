@@ -1,8 +1,9 @@
-import type {
-  $InternalRegleRuleDefinition,
-  $InternalRegleRuleInit,
-  $InternalRegleRuleMetadataConsumer,
-  RegleRuleMetadataDefinition,
+import {
+  InternalRuleType,
+  type $InternalRegleRuleDefinition,
+  type $InternalRegleRuleInit,
+  type $InternalRegleRuleMetadataConsumer,
+  type RegleRuleMetadataDefinition,
 } from '../../types';
 import { createReactiveParams, unwrapRuleParameters } from './unwrapRuleParameters';
 
@@ -10,9 +11,9 @@ export function defineRuleProcessors(
   definition: $InternalRegleRuleInit,
   ...params: any[]
 ): $InternalRegleRuleDefinition {
-  const { message, validator, active, ...properties } = definition;
+  const { message, validator, active, type, ...properties } = definition;
 
-  const isAsync = validator.constructor.name === 'AsyncFunction';
+  const isAsync = type === InternalRuleType.Async || validator.constructor.name === 'AsyncFunction';
 
   const defaultProcessors = {
     validator(value: any, ...args: any[]) {

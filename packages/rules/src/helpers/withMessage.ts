@@ -7,6 +7,7 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
+  InferRegleRule,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
@@ -22,7 +23,7 @@ export function withMessage<
     RegleRuleMetadataConsumer<TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, [], TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): InferRegleRule<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withMessage<
   TValue extends any,
   TParams extends any[],
