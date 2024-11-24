@@ -48,7 +48,7 @@ TODO
 
 
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.1+
--  <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3
+- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia
 
 
@@ -73,11 +73,13 @@ TODO
 - [x] Logo
 - [x] $silentErrors
 - [x] Validation groups
-- [ ] Documentation (in progress)
+- [x] Nuxt Module
+- [x] Documentation
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
-- [ ] Nuxt Module
-- [ ] withErrorType
+- [ ] Examples
+- [ ] `withErrorType`
+- [ ] `extractDirtyFields`
 - [ ] Issue template
 - [ ] `Valibot` support
 - [ ] TS docs
