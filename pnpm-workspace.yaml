@@ -1,8 +1,8 @@
-packages: 
- - packages/core
- - packages/rules
- - packages/zod
- - packages/tests
- - packages/nuxt
- - playground/vue3
- - playground/nuxt
+packages:
+  - packages/core
+  - packages/rules
+  - packages/zod
+  - packages/nuxt
+  - playground/vue3
+  - playground/nuxt
+  - ui-tests/fixtures/ui-vue3

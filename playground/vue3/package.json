@@ -1,6 +1,5 @@
 {
   "name": "vue-project",
-  "version": "0.1.10",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,20 +15,20 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
-    "vue": "^3.5.12"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^20.16.11",
-    "@vitejs/plugin-vue": "^5.1.4",
+    "@types/node": "^22.9.3",
+    "@vitejs/plugin-vue": "^5.2.0",
     "@vue/eslint-config-prettier": "^10.0.0",
     "@vue/eslint-config-typescript": "^14.0.1",
-    "@vue/tsconfig": "^0.5.1",
-    "eslint": "^9.12.0",
-    "eslint-plugin-vue": "^9.29.0",
-    "npm-run-all2": "^6.2.3",
+    "@vue/tsconfig": "^0.6.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-vue": "^9.31.0",
+    "npm-run-all2": "^7.0.1",
     "prettier": "^3.3.3",
-    "typescript": "~5.5.4",
+    "typescript": "~5.7.2",
     "vite": "^5.4.8",
     "vue-tsc": "^2.1.6"
   }
