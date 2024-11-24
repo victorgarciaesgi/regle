@@ -2,32 +2,25 @@ import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
 import type {
-  DeepMaybeRef,
-  CustomRulesDeclarationTree,
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
+  $InternalRegleErrors,
   $InternalReglePartialValidationTree,
   $InternalRegleStatus,
   $InternalRegleStatusType,
-  MaybeGetter,
+  CustomRulesDeclarationTree,
+  DeepMaybeRef,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
-  $InternalRegleErrors,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isRefObject, isVueSuperiorOrEqualTo3dotFive, unwrapGetter } from '../../../utils';
+import { isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
-import {
-  isCollectionRulesDef,
-  isNestedRulesDef,
-  isStateArray,
-  isValidatorRulesDef,
-} from '../guards';
+import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
-import { extractNestedErrors } from '../useErrors';
 
 interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialValidationTree>;
@@ -245,9 +238,7 @@ export function createReactiveNestedStatus({
       });
 
       const $error = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField.$error;
-        });
+        return $dirty.value && !$pending.value && $invalid.value;
       });
 
       const $pending = computed<boolean>(() => {

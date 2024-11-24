@@ -22,7 +22,7 @@ export function applyIf<
   rule:
     | InlineRuleDeclaration<TValue, TParams, TReturn>
     | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-): RegleRuleDefinition<TValue, [], TAsync, TMetadata> {
+): RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined;

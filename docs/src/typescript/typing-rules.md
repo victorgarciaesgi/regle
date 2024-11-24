@@ -32,6 +32,16 @@ const rules = computed(() =>
 const { regle } = useRegle(form, rules);
 ```
 
+:::tip
+If you don't want to write your rules in a separate computed, you can still write inline computed one.
+
+```ts
+const min = ref(1);
+useRegle({name: ''}, () => ({
+  name: {minLength: minLength(min.value)}
+}))
+```
+:::
 
 ## Typing external nested properties
 

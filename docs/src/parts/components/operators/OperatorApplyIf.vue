@@ -2,13 +2,13 @@
   <div class="demo-container">
     <div class="block">
       <input v-model="condition" type="checkbox" />
-      <label>The field is required</label>
+      <label>Require min length of 6</label>
     </div>
     <div>
       <input
         v-model="form.name"
         :class="{ valid: regle.$fields.name.$valid, error: regle.$fields.name.$error }"
-        :placeholder="`Type your name${regle.$fields.name.$rules.required.$active ? '*' : ''}`"
+        placeholder="Type your name"
       />
       <button type="button" @click="resetAll">Reset</button>
     </div>
@@ -22,13 +22,16 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import { requiredIf } from '@regle/rules';
+import { minLength, applyIf } from '@regle/rules';
 import { ref } from 'vue';
 
-const form = ref({ name: '' });
 const condition = ref(false);
 
-const { regle, errors, resetAll } = useRegle(form, {
-  name: { required: requiredIf(condition) },
+const form = ref({ name: '' });
+
+const { state, errors, regle, resetAll } = useRegle(form, {
+  name: {
+    minLength: applyIf(condition, minLength(6)),
+  },
 });
 </script>

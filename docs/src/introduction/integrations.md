@@ -5,7 +5,7 @@ title: Integrations
 # Integrations
 
 
-## Nuxt
+## Nuxt <span data-title="nuxt"></span>
 
 Adding Nuxt module will provide auto-imports for selected exports
 

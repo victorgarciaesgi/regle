@@ -236,6 +236,15 @@ h2 + h2 {
   }
 }
 
+[data-title]::before {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
+  margin-bottom: -0.2em;
+  background: var(--icon) no-repeat center / contain;
+}
+
 /* Two slashs */
 
 .twoslash-floating .twoslash-popup-code:has(.shiki) {

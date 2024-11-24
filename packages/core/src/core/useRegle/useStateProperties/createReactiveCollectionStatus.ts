@@ -19,7 +19,6 @@ import { cloneDeep, randomId, unwrapGetter } from '../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
 import type { RegleStorage } from '../../useStorage';
 import { isExternalErrorCollection, isRuleDef } from '../guards';
-import { extractCollectionError, extractRulesErrors } from '../useErrors';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 
@@ -239,6 +238,7 @@ export function createReactiveCollectionStatus({
       storage,
       options,
       externalErrors: immediateScopeState.$externalErrorsField,
+      $isArray: true,
     });
   }
 

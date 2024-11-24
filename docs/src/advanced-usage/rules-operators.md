@@ -6,6 +6,7 @@ title: Rules operators
 import OperatorAnd from '../parts/components/operators/OperatorAnd.vue';
 import OperatorOr from '../parts/components/operators/OperatorOr.vue';
 import OperatorNot from '../parts/components/operators/OperatorNot.vue';
+import OperatorApplyIf from '../parts/components/operators/OperatorApplyIf.vue';
 </script>
 
 
@@ -114,3 +115,21 @@ Result:
 
 `applyIf` is like `requiredIf`, but usable for any rule. It's easier that to do spread conditions in the rules declaration.
 
+
+```ts twoslash
+import { useRegle } from '@regle/core';
+import { minLength, applyIf } from '@regle/rules';
+import { ref } from 'vue';
+
+const condition = ref(false);
+
+const form = ref({name: ''});
+
+const { state, errors, regle, resetAll } = useRegle(form, {
+  name: {
+    minLength: applyIf(condition, minLength(6))
+  },
+});
+```
+
+<OperatorApplyIf/>

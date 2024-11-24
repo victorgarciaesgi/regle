@@ -23,11 +23,11 @@ export const ruleMockIsEven = createRule({
   message: 'Custom error',
 });
 
-export function ruleMockIsEvenAsync() {
+export function ruleMockIsEvenAsync(time = 1000) {
   return createRule({
     async validator(value: Maybe<number>) {
       if (ruleHelpers.isFilled(value)) {
-        await timeout(1000);
+        await timeout(time);
         return value % 2 === 0;
       }
       return true;

@@ -152,13 +152,17 @@ export function createReactiveRuleStatus({
 
   $watch();
 
+  function updatePendingState() {
+    $valid.value = true;
+    if ($dirty.value) {
+      $pending.value = true;
+    }
+  }
+
   async function computeAsyncResult(promise: Promise<RegleRuleMetadataDefinition>) {
     let ruleResult = false;
     try {
-      $valid.value = true;
-      if ($dirty.value) {
-        $pending.value = true;
-      }
+      updatePendingState();
       const promiseResult = await promise;
       if (typeof promiseResult === 'boolean') {
         ruleResult = promiseResult;
@@ -186,6 +190,7 @@ export function createReactiveRuleStatus({
 
     if (resultOrPromise instanceof Promise) {
       const promiseDebounce = $computeAsyncDebounce(resultOrPromise);
+
       ruleResult = await promiseDebounce;
     } else {
       if (resultOrPromise != null) {

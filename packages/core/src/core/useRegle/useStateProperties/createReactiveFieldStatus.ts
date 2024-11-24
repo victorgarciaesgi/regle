@@ -24,6 +24,7 @@ interface CreateReactiveFieldStatusArgs {
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<string[] | undefined>>;
   onUnwatch?: () => void;
+  $isArray?: boolean;
 }
 
 type ScopeReturnState = {
@@ -50,6 +51,7 @@ export function createReactiveFieldStatus({
   externalErrors,
   index,
   onUnwatch,
+  $isArray,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
@@ -270,7 +272,7 @@ export function createReactiveFieldStatus({
           // $clearExternalErrors();
         }
       },
-      { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true }
+      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
 
     $unwatchDirty = watch($dirty, () => {
