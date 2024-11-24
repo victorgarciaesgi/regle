@@ -50,7 +50,7 @@ describe('applyIf helper', () => {
       () => ({ $valid: true, foo: 'bar' })
     );
     expectTypeOf(applyIf(() => true, required)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], false, boolean, unknown>
+      RegleRuleDefinition<unknown, [condition: boolean], false, boolean, unknown>
     >();
 
     expectTypeOf(
@@ -58,7 +58,7 @@ describe('applyIf helper', () => {
         () => true,
         async () => true
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [condition: boolean], true, boolean, unknown>>();
 
     expectTypeOf(
       applyIf(
@@ -68,7 +68,7 @@ describe('applyIf helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
-        [],
+        [condition: boolean],
         false,
         {
           $valid: true;
