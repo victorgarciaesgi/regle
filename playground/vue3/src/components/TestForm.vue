@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { inferRules, useRegle, type Maybe } from '@regle/core';
-import { required, withAsync, withParams } from '@regle/rules';
+import { applyIf, maxLength, minLength, required, withAsync, withParams } from '@regle/rules';
 import { computed, ref } from 'vue';
 import { timeout } from './validations';
 
@@ -24,6 +24,18 @@ async function asyncMin(value: Maybe<string>, min: number) {
   await timeout(1000);
   return { $valid: (value?.length ?? 0) > min, foo: min };
 }
+
+const condition = ref(false);
+
+const test = applyIf(condition, minLength(6));
+const {} = useRegle(
+  { name: '' },
+  {
+    name: {
+      minLength: applyIf(condition, minLength(6)),
+    },
+  }
+);
 
 const { regle } = useRegle(form, {
   email: { testParams: withAsync(asyncMin, [min]) },

@@ -99,7 +99,7 @@ export type RegleRuleDecl<
   [TKey in keyof TCustomRules]?: NonNullable<
     TCustomRules[TKey]
   > extends RegleRuleWithParamsDefinition<any, infer TParams>
-    ? RegleRuleDefinition<TValue, TParams, boolean>
+    ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
     : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
       ? FormRuleDeclaration<TValue, any>
       :
