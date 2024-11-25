@@ -1,6 +1,6 @@
 {
   "name": "@regle/rules",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
