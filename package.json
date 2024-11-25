@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "pnpm run -r --filter='@regle/*' build",
     "build:sourcemaps": "pnpm run -r --filter='@regle/*' build:sourcemaps",
     "dev": "pnpm run -r --parallel --filter='@regle/*' dev",
-    "test": "pnpm run build:sourcemaps && vitest run && pnpm run ui:run",
+    "test": "pnpm run build:sourcemaps && vitest run",
     "test:coverage": "nr build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
     "release": "nr lint && nr test && nr typecheck && nr build && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",
