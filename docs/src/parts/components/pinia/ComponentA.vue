@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="state.email"
-        :class="{ valid: regle.$fields.email.$valid }"
+        :class="{ valid: r$.$fields.email.$valid, error: r$.$fields.email.$error }"
         placeholder="Type your email"
       />
       <button type="button" @click="demoStore.resetAll">Reset</button>
@@ -16,5 +16,5 @@ import { useDemoStore } from './demo.store';
 import { storeToRefs } from 'pinia';
 
 const demoStore = useDemoStore();
-const { state, regle } = storeToRefs(demoStore);
+const { state, r$ } = storeToRefs(demoStore);
 </script>

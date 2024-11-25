@@ -54,7 +54,7 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
 
 
 // ---cut---
-const {regle} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {
     // Inline functions can be also written... inline
     customRule1: withMessage((value) => !!value, "Custom Error"),
@@ -100,7 +100,7 @@ import {withParams} from '@regle/rules';
 
 const base = ref('foo');
 
-const {regle} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {
     customRule: withParams((value, param) => value === param, [base]),
     // or
@@ -125,7 +125,7 @@ import {withAsync} from '@regle/rules';
 
 const base = ref('foo');
 
-const {regle} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {
     customRule: withAsync(async (value, param) => await someAsyncCall(param), [base]),
   }
@@ -147,7 +147,7 @@ import {withAsync, withMessage} from '@regle/rules';
 
 const base = ref(1);
 
-const { regle } = useRegle(
+const { r$ } = useRegle(
   { name: 0 },
   {
     name: {

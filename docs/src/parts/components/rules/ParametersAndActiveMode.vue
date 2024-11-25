@@ -7,13 +7,13 @@
     <div>
       <input
         v-model="form.name"
-        :class="{ valid: regle.$fields.name.$valid, error: regle.$fields.name.$error }"
-        :placeholder="`Type your name${regle.$fields.name.$rules.required.$active ? '*' : ''}`"
+        :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
+        :placeholder="`Type your name${r$.$fields.name.$rules.required.$active ? '*' : ''}`"
       />
       <button type="button" @click="resetAll">Reset</button>
     </div>
-    <ul v-if="errors.name.length">
-      <li v-for="error of errors.name" :key="error">
+    <ul v-if="r$.$errors.name.length">
+      <li v-for="error of r$.$errors.name" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -28,7 +28,7 @@ import { ref } from 'vue';
 const form = ref({ name: '' });
 const condition = ref(false);
 
-const { regle, errors, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   name: { required: requiredIf(condition) },
 });
 </script>

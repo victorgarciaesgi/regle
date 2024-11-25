@@ -29,7 +29,7 @@ const rules = computed(() =>
   })
 );
 
-const { regle } = useRegle(form, rules);
+const { r$ } = useRegle(form, rules);
 ```
 
 :::tip
@@ -69,7 +69,7 @@ const rules = computed(() =>
   })
 );
 
-const { regle } = useRegle(form, rules);
+const { r$ } = useRegle(form, rules);
 ```
 
 
@@ -98,5 +98,5 @@ const rules = computed(() =>
   })
 );
 
-const { regle } = useRegle(form, rules);
+const { r$ } = useRegle(form, rules);
 ```

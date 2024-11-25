@@ -4,11 +4,11 @@
       <div>
         <input
           v-model="form.email"
-          :class="{ valid: regle.$fields.email.$valid, error: regle.$fields.email.$error }"
+          :class="{ valid: r$.$fields.email.$valid, error: r$.$fields.email.$error }"
           placeholder="Type your email"
         />
-        <ul v-if="errors.email.length">
-          <li v-for="error of errors.email" :key="error">
+        <ul v-if="r$.$errors.email.length">
+          <li v-for="error of r$.$errors.email" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -17,20 +17,20 @@
         <input
           v-model="form.name.pseudo"
           :class="{
-            valid: regle.$fields.name.$valid,
-            error: regle.$fields.name.$fields.pseudo.$error,
+            valid: r$.$fields.name.$valid,
+            error: r$.$fields.name.$fields.pseudo.$error,
           }"
           placeholder="Type your pseudo"
         />
-        <ul v-if="errors.name.pseudo.length">
-          <li v-for="error of errors.name.pseudo" :key="error">
+        <ul v-if="r$.$errors.name.pseudo.length">
+          <li v-for="error of r$.$errors.name.pseudo" :key="error">
             {{ error }}
           </li>
         </ul>
       </div>
       <div>
         <button type="button" @click="submit">Submit</button>
-        <button type="button" @click="regle.$clearExternalErrors">Reset Errors</button>
+        <button type="button" @click="r$.$clearExternalErrors">Reset Errors</button>
         <button type="button" @click="resetAll">Reset All</button>
       </div>
     </div>
@@ -51,7 +51,7 @@ const form = reactive({
 
 const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const { errors, resetAll, regle } = useRegle(
+const { r$, resetAll } = useRegle(
   form,
   {
     email: { required },

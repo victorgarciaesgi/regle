@@ -1,6 +1,7 @@
 import type { EmptyObject, UnionToIntersection } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref } from 'vue';
 import type {
+  AllRulesDeclarations,
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -11,9 +12,12 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleStatus,
+  UnwrapRuleTree,
 } from '../rules';
 import type { ExtractFromGetter, Prettify } from '../utils';
 import type { RegleValidationGroupEntry } from './options.types';
+import type { useRegleFn } from '../../core/useRegle';
+import type { DefaultValidators } from '../../core';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
@@ -21,12 +25,7 @@ export interface Regle<
   TExternal extends RegleExternalErrorTree<TState> = never,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
 > {
-  regle: RegleStatus<TState, TRules, TValidationGroups>;
-  r$: RegleStatus<TState, TRules, TValidationGroups>;
-  /** Show active errors based on your behaviour options (lazy, autoDirty)
-   * It allow you to skip scouting the `regle` object
-   */
-  errors: RegleErrorTree<TRules, TExternal>;
+  r$: RegleStatus<TState, TRules, TValidationGroups, TExternal>;
   ready: ComputedRef<boolean>;
   resetAll: () => void;
   validateState: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
@@ -102,3 +101,26 @@ export type SafeProperty<
                 : never
           : never
       : never;
+
+export type InferRegleRules<T extends useRegleFn<any>> =
+  T extends useRegleFn<infer U> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
+
+export type RegleRequiredRules<
+  T extends Partial<AllRulesDeclarations> | useRegleFn<any>,
+  TRules extends T extends useRegleFn<any> ? keyof InferRegleRules<T> : keyof T,
+> = Omit<
+  T extends useRegleFn<any>
+    ? InferRegleRules<T>
+    : T extends Partial<AllRulesDeclarations>
+      ? UnwrapRuleTree<T>
+      : {},
+  TRules
+> & {
+  [K in TRules]-?: T extends useRegleFn<any>
+    ? K extends keyof InferRegleRules<T>
+      ? NonNullable<InferRegleRules<T>[K]>
+      : never
+    : K extends keyof T
+      ? NonNullable<T[K]>
+      : never;
+};

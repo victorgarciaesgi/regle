@@ -24,8 +24,6 @@ describe('$silentErrors', () => {
 
     expect(vm.r$.$errors).toStrictEqual(expectedErrors1);
 
-    expect(vm.errors).toStrictEqual(expectedErrors1);
-
     vm.r$.$touch();
 
     let expectedErrors2 = {
@@ -45,7 +43,6 @@ describe('$silentErrors', () => {
     };
 
     expect(vm.r$.$errors).toStrictEqual(expectedErrors2);
-    expect(vm.errors).toStrictEqual(expectedErrors2);
 
     vm.state.email = 'foo';
 
@@ -67,6 +64,6 @@ describe('$silentErrors', () => {
       },
     };
 
-    expect(vm.errors).toStrictEqual(expectedErrors3);
+    expect(vm.r$.$errors).toStrictEqual(expectedErrors3);
   });
 });

@@ -14,34 +14,32 @@ describe('applyIf helper', () => {
         count: 0,
       });
 
-      const { errors, validateState, regle } = useRegle(form, () => ({
+      return useRegle(form, () => ({
         email: {
           error: applyIf(() => form.value.count === 1, required),
         },
       }));
-
-      return { form, errors, validateState, regle };
     },
   });
 
   const { vm } = mount(testComponent);
 
   it('should return empty errors', () => {
-    expect(vm.errors.email).toStrictEqual([]);
+    expect(vm.r$.$errors.email).toStrictEqual([]);
   });
 
   it('should be valid when touching field', async () => {
-    vm.regle.$fields.email.$touch();
+    vm.r$.$fields.email.$touch();
     await timeout(0);
-    expect(vm.errors.email).toStrictEqual([]);
-    expect(vm.regle.$error).toBe(false);
+    expect(vm.r$.$errors.email).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
   });
 
   it('should be invalid when touching activating helper', async () => {
-    vm.form.count = 1;
+    vm.state.count = 1;
     await timeout(0);
-    expect(vm.errors.email).toStrictEqual(['This field is required']);
-    expect(vm.regle.$error).toBe(true);
+    expect(vm.r$.$errors.email).toStrictEqual(['This field is required']);
+    expect(vm.r$.$error).toBe(true);
   });
 
   it('should have correct types', () => {

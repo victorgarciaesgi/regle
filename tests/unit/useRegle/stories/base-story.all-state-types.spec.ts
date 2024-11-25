@@ -25,7 +25,7 @@ describe.each([
   const { vm } = await createRegleComponent(regle);
 
   it('should have a initial state', () => {
-    expect(vm.errors).toStrictEqual({
+    expect(vm.r$.$errors).toStrictEqual({
       level0: [],
       level1: {
         child: [],
@@ -65,7 +65,7 @@ describe.each([
     const result = await vm.validateState();
 
     expect(result).toBe(false);
-    expect(vm.errors).toStrictEqual({
+    expect(vm.r$.$errors).toStrictEqual({
       level0: [],
       level1: {
         child: ['Custom error'],
@@ -95,8 +95,8 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.errors.level0).toStrictEqual(['Custom error']);
-    expect(vm.errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level0).toStrictEqual(['Custom error']);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
 
@@ -109,7 +109,7 @@ describe.each([
     shouldBeErrorField(vm.r$.$fields.level0);
     shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
 
-    expect(vm.errors.level1.collection.$each).toStrictEqual([
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
       { name: [] },
       { name: ['This field is required'] },
     ]);
@@ -138,8 +138,8 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.errors.level1.child).toStrictEqual(['Custom error']);
-    expect(vm.errors.level1.level2.child).toStrictEqual(['Custom error']);
+    expect(vm.r$.$errors.level1.child).toStrictEqual(['Custom error']);
+    expect(vm.r$.$errors.level1.level2.child).toStrictEqual(['Custom error']);
 
     expect(vm.ready).toBe(false);
 
@@ -174,10 +174,10 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.errors.level0).toStrictEqual([]);
-    expect(vm.errors.level1.child).toStrictEqual([]);
-    expect(vm.errors.level1.level2.child).toStrictEqual([]);
-    expect(vm.errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level0).toStrictEqual([]);
+    expect(vm.r$.$errors.level1.child).toStrictEqual([]);
+    expect(vm.r$.$errors.level1.level2.child).toStrictEqual([]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
     expect(vm.ready).toBe(true);
 
@@ -204,7 +204,7 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.errors.level1.collection.$each).toStrictEqual([{ name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }]);
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
@@ -227,7 +227,7 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.errors).toStrictEqual({
+    expect(vm.r$.$errors).toStrictEqual({
       level0: [],
       level1: {
         child: [],

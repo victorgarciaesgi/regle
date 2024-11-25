@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
-    <ul v-if="errors.email.length" class="standalone">
-      <li v-for="error of errors.email" :key="error">
+    <ul v-if="r$.$errors.email.length" class="standalone">
+      <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -14,5 +14,5 @@ import { useDemoStore } from './demo.store';
 import { storeToRefs } from 'pinia';
 
 const demoStore = useDemoStore();
-const { errors } = storeToRefs(demoStore);
+const { r$ } = storeToRefs(demoStore);
 </script>

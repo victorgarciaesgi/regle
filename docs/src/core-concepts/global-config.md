@@ -32,7 +32,7 @@ const {useRegle: useCustomRegle} = defineRegleConfig({
   })
 })
 
-const {errors} = useCustomRegle({name: ''}, {
+const {r$} = useCustomRegle({name: ''}, {
   name: {
     required, minLength: minLength(6)
   }
@@ -72,7 +72,7 @@ const {useRegle: useCustomRegle} = defineRegleConfig({
   })
 })
 
-const {errors} = useCustomRegle({name: ''}, {
+const {r$} = useCustomRegle({name: ''}, {
   name: {
     asy
 //     ^|

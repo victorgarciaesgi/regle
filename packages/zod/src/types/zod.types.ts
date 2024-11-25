@@ -14,6 +14,10 @@ export type ZodChild<T extends any> = NonNullable<
 
 export type toZod<T extends Record<PropertyKey, any>> = z.ZodObject<ZodObj<T>>;
 
+export type NonPresentKeys<
+  TSource extends Record<string, any>,
+  Target extends Record<string, any>,
+> = Omit<Target, keyof TSource>;
 // Types
 
 export type PossibleDefTypes =

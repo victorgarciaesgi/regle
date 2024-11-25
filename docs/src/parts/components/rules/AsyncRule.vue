@@ -3,15 +3,15 @@
     <div>
       <input
         v-model="form.email"
-        :class="{ valid: regle.$fields.email.$valid, pending: regle.$fields.email.$pending }"
+        :class="{ valid: r$.$fields.email.$valid, pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
       <button type="button" @click="resetAll">Reset</button>
       <button type="button" @click="validateState">Validate</button>
     </div>
-    <span v-if="regle.$fields.email.$pending" class="pending-text"> Checking... </span>
-    <ul v-if="errors.email.length">
-      <li v-for="error of errors.email" :key="error">
+    <span v-if="r$.$fields.email.$pending" class="pending-text"> Checking... </span>
+    <ul v-if="r$.$errors.email.length">
+      <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -44,7 +44,7 @@ const checkEmailExists = createRule({
 
 const form = ref({ email: '' });
 
-const { regle, errors, resetAll, validateState } = useRegle(form, {
+const { r$, resetAll, validateState } = useRegle(form, {
   email: { email, checkEmailExists },
 });
 </script>

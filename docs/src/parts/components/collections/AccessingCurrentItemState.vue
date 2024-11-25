@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
     <div class="list">
-      <div v-for="(item, index) of regle.$fields.collection.$each" :key="item.$id" class="item">
+      <div v-for="(item, index) of r$.$fields.collection.$each" :key="item.$id" class="item">
         <div class="field">
           <input
             v-model="item.$value.name"
@@ -72,7 +72,7 @@ function removeRandomItem() {
   form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
 }
 
-const { errors, regle, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     $each: (item) => {
       return {

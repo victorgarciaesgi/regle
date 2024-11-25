@@ -6,18 +6,20 @@ import type {
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
+  Maybe,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
+  RegleExternalErrorTree,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
+  RegleRuleRaw,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
 } from '..';
-import type { EmptyObject } from 'type-fest';
 
 /**
  * @public
@@ -26,12 +28,13 @@ export type RegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
+  TExternal extends RegleExternalErrorTree<TState> = never,
 > = RegleCommonStatus<TState> & {
   readonly $fields: {
     readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
   };
-  readonly $errors: RegleErrorTree<TRules>;
-  readonly $silentErrors: RegleErrorTree<TRules>;
+  readonly $errors: RegleErrorTree<TRules, TExternal>;
+  readonly $silentErrors: RegleErrorTree<TRules, TExternal>;
 } & ([TValidationGroups] extends [never]
     ? {}
     : {
@@ -149,7 +152,7 @@ export interface RegleCommonStatus<TValue = any> {
 export type RegleRuleStatus<
   TValue = any,
   TParams extends any[] = any[],
-  TMetadata extends RegleRuleMetadataDefinition = never,
+  TMetadata extends RegleRuleMetadataDefinition = any,
 > = {
   readonly $type: string;
   readonly $message: string | string[];
@@ -158,14 +161,21 @@ export type RegleRuleStatus<
   readonly $pending: boolean;
   readonly $path: string;
   readonly $metadata: TMetadata;
-  $validator: (value: TValue, ...args: TParams) => boolean | Promise<boolean>;
+  $validator: (
+    value: Maybe<TValue>,
+    ...args: TParams
+  ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
   $reset(): void;
-} & ([TParams] extends [[]]
+} & ([TParams] extends [never[]]
   ? {}
-  : {
-      readonly $params: TParams;
-    });
+  : [unknown[]] extends [TParams]
+    ? {
+        readonly $params?: any[];
+      }
+    : {
+        readonly $params: TParams;
+      });
 
 /**
  * @internal

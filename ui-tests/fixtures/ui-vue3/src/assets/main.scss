@@ -13,12 +13,96 @@
   --vp-c-warning-soft: var(--vp-c-yellow-soft);
 }
 
+body {
+  padding: 100px 20px;
+  width: 100%;
+  position: relative;
+}
+#app {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 form {
   position: relative;
   padding: 20px 16px;
   background-color: var(--vp-c-bg-soft);
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
+  width: 600px;
+  max-width: 100%;
+  box-shadow: 0 0 20px rgb(0, 0, 0, 0.1);
+  padding: 40px;
+
+  .fields {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+  }
+
+  .projects {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    overflow-x: auto;
+    border: 1px solid var(--vp-c-border);
+    padding: 10px;
+    border-radius: 8px;
+    gap: 16px;
+
+    .project {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 20px;
+      border: 1px solid var(--vp-c-border);
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+      gap: 8px;
+      flex: 0 0 auto;
+
+      label {
+        margin-bottom: 4px;
+      }
+      input {
+        padding: 4px 8px;
+        font-size: 14px;
+      }
+
+      .delete {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        cursor: pointer;
+      }
+    }
+    .add {
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      padding: 0 20px;
+      align-self: center;
+      flex: 0 0 auto;
+      button {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+  .button-list {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
 
   * {
     position: relative;
@@ -30,19 +114,26 @@ form {
     flex-flow: column nowrap;
 
     label {
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+
+      .required-mark {
+        color: var(--vp-c-form-error);
+      }
     }
   }
 
   input,
   textarea {
     background-color: var(--vp-c-divider);
-    padding: 4px 12px;
+    padding: 12px 16px;
     border-radius: 6px;
     border: 1px solid var(--vp-c-border);
-    width: 100%;
+    font-family: var(--vp-font-family-base);
+
+    font-size: 16px;
 
     &:not([type='checkbox']) {
+      width: 100%;
     }
 
     &.valid {
@@ -96,8 +187,10 @@ form {
     margin-top: 4px;
     margin-bottom: 0;
     color: var(--vp-c-form-error);
+    padding-left: 20px;
     font-size: 14px;
     max-width: 100%;
+    list-style: disc;
 
     li + li {
       margin-top: 4px;
@@ -108,23 +201,16 @@ form {
     }
   }
 
-  label {
-    font-size: 14px;
-  }
-
-  .button-list {
-    margin-top: 10px;
-  }
-
   button {
     border-radius: 8px;
     color: var(--vp-c-text-1);
-    padding: 4px 8px;
-    background-color: var(--vp-c-gray-3);
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: var(--vp-c-indigo-3);
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      background-color: var(--vp-c-gray-2);
+      background-color: var(--vp-c-indigo-2);
     }
 
     &:disabled {
@@ -152,7 +238,7 @@ form {
 
   .password-strength {
     margin: 8px 8px 0 8px;
-    width: 150px;
+    width: calc(100% - 15px);
     height: 4px;
     border-radius: 4px;
     border: 1px solid var(--vp-c-border);

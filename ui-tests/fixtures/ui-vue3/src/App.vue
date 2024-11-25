@@ -1,79 +1,143 @@
 <template>
-  <form>
+  <form @submit.prevent="submit">
     <h1>Sign up</h1>
-    <MyInput
-      v-model="form.user.firstName"
-      :field="r$.$fields.user.$fields.firstName"
-      placeholder="Type your first name"
-      label="First name"
-    />
-    <MyInput
-      v-model="form.user.lastName"
-      :field="r$.$fields.user.$fields.lastName"
-      placeholder="Type your last name"
-      label="Last name"
-    />
-    <MyInput
-      v-model="form.user.pseudo"
-      :field="r$.$fields.user.$fields.pseudo"
-      placeholder="Type your pseudo"
-      label="Pseudo"
-    />
-    <MyTextArea
-      v-model="form.description"
-      :field="r$.$fields.user.$fields.pseudo"
-      placeholder="Type your pseudo"
-      label="Pseudo"
-    />
+    <div class="fields">
+      <MyInput
+        v-model="form.user.name"
+        :field="r$.$fields.user.$fields.name"
+        placeholder="Type your name"
+        label="Name"
+      />
+      <MyInput
+        v-model="form.user.email"
+        :field="r$.$fields.user.$fields.email"
+        placeholder="Type your email"
+        label="Email"
+      />
+      <MyInput
+        v-model="form.user.pseudo"
+        :field="r$.$fields.user.$fields.pseudo"
+        placeholder="Type your pseudo"
+        label="Pseudo"
+      />
+      <MyTextArea
+        v-model="form.description"
+        :field="r$.$fields.description"
+        placeholder="Type your description"
+        label="Description"
+      />
+      <label>Your projects</label>
+      <div class="projects">
+        <div
+          v-for="(project, index) of r$.$fields.projects.$each"
+          :key="project.$id"
+          class="project"
+        >
+          <MyInput
+            v-model="project.$fields.name.$value"
+            :field="project.$fields.name"
+            placeholder="Name of the project"
+            label="Name"
+          />
+          <MyInput
+            v-model.number="project.$fields.price.$value"
+            :field="project.$fields.price"
+            placeholder="Price of the project"
+            label="Price"
+          />
+          <MyInput
+            v-model="project.$fields.github_url.$value"
+            :field="project.$fields.github_url"
+            placeholder="Url of the project"
+            label="Url"
+          />
+          <span class="delete" @click="form.projects.splice(index, 1)">❌</span>
+        </div>
+        <div class="add">
+          <button type="button" @click="form.projects.push({})">⊕ Add project</button>
+        </div>
+      </div>
+      <ul v-if="r$.$errors.projects.$errors.length">
+        <li v-for="error of r$.$errors.projects.$errors" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+      <MyCheckBox
+        v-model="form.acceptTC"
+        :field="r$.$fields.acceptTC"
+        placeholder="Accept our terms and conditions"
+      />
+      <Password
+        v-model="form.password"
+        :field="r$.$fields.password"
+        placeholder="Type your password"
+        label="Password"
+      />
+      <MyInput
+        v-model="form.confirmPassword"
+        type="password"
+        :field="r$.$fields.confirmPassword"
+        placeholder="Confirm your password"
+        label="Confirm your password"
+      />
+    </div>
+    <div class="button-list">
+      <button type="button" @click="resetAll">Reset</button>
+      <button type="submit">Submit</button>
+    </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { maxLength, minLength, required, withMessage } from '@regle/rules';
+import {
+  checked,
+  contains,
+  email,
+  maxLength,
+  maxValue,
+  minLength,
+  minValue,
+  numeric,
+  required,
+  sameAs,
+  url,
+  withMessage,
+} from '@regle/rules';
 import { reactive } from 'vue';
-import { checkPseudo, useCustomRegle } from './components/regle.global.config';
+import MyCheckBox from './components/MyCheckBox.vue';
 import MyInput from './components/MyInput.vue';
 import MyTextArea from './components/MyTextArea.vue';
+import Password from './components/Password.vue';
+import { checkPseudo, strongPassword, useCustomRegle } from './components/regle.global.config';
 
 type Form = {
   user: {
-    firstName?: string;
-    lastName?: string;
+    name?: string;
+    email?: string;
     pseudo?: string;
   };
-  email?: string;
   description?: string;
   acceptTC?: boolean;
-  projects: Array<{ name: string; url: string; price: number }>;
+  projects: Array<{ name?: string; github_url?: string; price?: number }>;
   password?: string;
   confirmPassword?: string;
 };
 
 const form = reactive<Form>({
-  user: {
-    firstName: undefined,
-    lastName: undefined,
-    pseudo: undefined,
-  },
-  email: undefined,
-  acceptTC: undefined,
-  projects: [],
-  description: undefined,
-  password: undefined,
-  confirmPassword: undefined,
+  user: {},
+  projects: [{}],
 });
 
-const { r$ } = useCustomRegle(form, {
+const { r$, validateState, resetAll } = useCustomRegle(form, {
   user: {
-    firstName: {
+    name: {
       required,
       minLength: minLength(4),
       maxLength: maxLength(30),
     },
-    lastName: {
+    email: {
       required,
-      minLength: minLength(4),
-      maxLength: maxLength(30),
+      email,
     },
     pseudo: {
       required,
@@ -86,27 +150,33 @@ const { r$ } = useCustomRegle(form, {
       (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
     ),
   },
+  projects: {
+    $autoDirty: false,
+    minLength: withMessage(
+      minLength(4),
+      (value, { $params: [min] }) => `You need at least ${min} projects`
+    ),
+    $each: {
+      name: { required },
+      price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
+      github_url: { url, contains: contains('github') },
+    },
+  },
+  acceptTC: { required, checked, $autoDirty: false },
+  password: { required, strongPassword: strongPassword() },
+  confirmPassword: {
+    required,
+    sameAs: sameAs(() => form.password, 'password'),
+  },
 });
+
+async function submit() {
+  const result = await validateState();
+  if (result) {
+    result.acceptTC;
+    // Check autocompletion for type safe output
+  }
+}
 </script>
 
-<style lang="scss">
-body {
-  display: flex;
-  justify-content: center;
-  padding-top: 200px;
-}
-
-h1 {
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-form {
-  width: 400px;
-  box-shadow: 0 0 20px rgb(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 20px;
-}
-</style>
+<style lang="scss"></style>

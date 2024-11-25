@@ -467,6 +467,9 @@ importers:
       '@regle/zod':
         specifier: workspace:*
         version: link:../../../packages/zod
+      check-password-strength:
+        specifier: 2.0.10
+        version: 2.0.10
       pinia:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
@@ -495,6 +498,9 @@ importers:
       npm-run-all2:
         specifier: ^7.0.1
         version: 7.0.1
+      prettier:
+        specifier: 3.3.3
+        version: 3.3.3
       typescript:
         specifier: ~5.6.3
         version: 5.6.3

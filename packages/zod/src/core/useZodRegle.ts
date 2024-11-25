@@ -21,7 +21,7 @@ export function useZodRegle<
   schema: MaybeRef<TZodSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<Unwrap<TState>, {}, TExternal, never>
-): ZodRegle<Unwrap<TState>, TZodSchema> {
+): ZodRegle<Unwrap<TState>, TZodSchema, TExternal> {
   const rules = ref<ReglePartialValidationTree<any, any>>({});
 
   const computedSchema = computed(() => unref(schema));

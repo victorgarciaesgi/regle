@@ -29,7 +29,7 @@ type Form = {
 
 const form: Ref<Form> = ref({firstName: '', lastName: ''})
 
-const {errors, regle, validateState} = useRegle(form, {
+const {r$, validateState} = useRegle(form, {
   lastName: {required},
 });
 

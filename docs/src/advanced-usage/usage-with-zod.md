@@ -54,7 +54,7 @@ All your schemas will be parsed using `safeParse` and `safeParseAsync` (if there
 import {useZodRegle} from '@regle/zod';
 import {z} from 'zod';
 
-const {errors, regle} = useZodRegle({name: ''}, z.object({
+const {r$} = useZodRegle({name: ''}, z.object({
   name: z.string().min(1)
 }))
 
@@ -86,7 +86,7 @@ const schema = computed(() => z.object({
   }),
 }) satisfies toZod<Form>)
 
-const {errors, regle} = useZodRegle(form, schema);
+const {r$} = useZodRegle(form, schema);
 
 ```
 
@@ -117,7 +117,7 @@ const schema = computed(() => z.object({
   }),
 }) satisfies toZod<Form>)
 
-const {errors, regle, validateState} = useZodRegle(form, schema);
+const {r$, validateState} = useZodRegle(form, schema);
 
 async function submit() {
   const result = await validateState();

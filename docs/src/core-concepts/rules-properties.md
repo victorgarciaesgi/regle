@@ -18,21 +18,21 @@ import {ref} from 'vue';
 
 const form = ref({email: '', user: {firstName: '', lastName: ''}});
 
-const {regle, errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   email: {required},
   user: {
     firstName: {required},
   }
 })
 
-regle.$fields.email.$rules.required.
-//                                  ^|
+r$.$fields.email.$rules.required.
+//                               ^|
 </script>
 
 <template>
   <input v-model='form.user.firstName' placeholder='Type your firstName'/>
   <ul>
-    <li v-for="error of errors.user.firstName" :key='error'>
+    <li v-for="error of r$.$errors.user.firstName" :key='error'>
       {{ error }}
     </li>
   </ul>

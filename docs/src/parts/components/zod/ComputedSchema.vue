@@ -4,11 +4,11 @@
       <div class="input-container">
         <input
           v-model="form.firstName"
-          :class="{ valid: regle.$fields.firstName.$valid, error: regle.$fields.firstName.$error }"
+          :class="{ valid: r$.$fields.firstName.$valid, error: r$.$fields.firstName.$error }"
           placeholder="Type your first name"
         />
-        <ul v-if="errors.firstName.length">
-          <li v-for="error of errors.firstName" :key="error">
+        <ul v-if="r$.$errors.firstName.length">
+          <li v-for="error of r$.$errors.firstName" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -16,11 +16,11 @@
       <div class="input-container">
         <input
           v-model="form.lastName"
-          :class="{ valid: regle.$fields.lastName.$valid, error: regle.$fields.lastName.$error }"
+          :class="{ valid: r$.$fields.lastName.$valid, error: r$.$fields.lastName.$error }"
           placeholder="Type your last name"
         />
-        <ul v-if="errors.lastName.length">
-          <li v-for="error of errors.lastName" :key="error">
+        <ul v-if="r$.$errors.lastName.length">
+          <li v-for="error of r$.$errors.lastName" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -46,5 +46,5 @@ const schema = computed(() =>
   })
 );
 
-const { errors, regle, resetAll } = useZodRegle(form, schema);
+const { r$, resetAll } = useZodRegle(form, schema);
 </script>

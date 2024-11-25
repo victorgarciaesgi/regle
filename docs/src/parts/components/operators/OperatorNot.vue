@@ -3,8 +3,8 @@
     <div class="row">
       <div>
         <input v-model="state.password" type="password" placeholder="Type your password" />
-        <ul v-if="errors.password.length">
-          <li v-for="error of errors.password" :key="error">
+        <ul v-if="r$.$errors.password.length">
+          <li v-for="error of r$.$errors.password" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -13,11 +13,11 @@
         <input
           v-model="state.confirm"
           type="password"
-          :class="{ error: regle.$fields.confirm.$error }"
+          :class="{ error: r$.$fields.confirm.$error }"
           placeholder="Confirm your password"
         />
-        <ul v-if="errors.confirm.length">
-          <li v-for="error of errors.confirm" :key="error">
+        <ul v-if="r$.$errors.confirm.length">
+          <li v-for="error of r$.$errors.confirm" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -33,7 +33,7 @@ import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
 const form = ref({ password: '', confirm: '' });
-const { state, errors, regle, resetAll } = useRegle(form, {
+const { state, r$, resetAll } = useRegle(form, {
   password: {
     required,
   },

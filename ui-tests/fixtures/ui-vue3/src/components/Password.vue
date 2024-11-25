@@ -3,33 +3,36 @@
     <label v-if="label"> {{ label }}<span v-if="isRequired" class="required-mark">*</span> </label>
     <input
       v-model="modelValue"
-      :type
+      type="password"
       :class="{ valid: field.$valid, error: field.$error, pending: field.$pending }"
       :placeholder
     />
-    <span v-if="field.$pending" class="pending-text"> Checking... </span>
+    <div
+      v-if="modelValue"
+      class="password-strength"
+      :class="[`level-${field.$rules.strongPassword.$metadata.result?.id}`]"
+    ></div>
     <ul v-if="field.$errors.length">
       <li v-for="error of field.$errors" :key="error">
         {{ error }}
       </li>
     </ul>
+    <div v-else-if="field.$valid" class="success">Your password is strong enough</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Maybe, RegleFieldStatus } from '@regle/core';
-import { computed, type InputTypeHTMLAttribute } from 'vue';
+import { type Maybe, type RegleFieldStatus, type RegleRequiredRules } from '@regle/core';
+import { computed } from 'vue';
+import type { useCustomRegle } from './regle.global.config';
 
-const modelValue = defineModel<Maybe<string | number>>();
+const modelValue = defineModel<Maybe<string>>();
 
-const { type = 'text', ...props } = defineProps<{
-  field: RegleFieldStatus<string> | RegleFieldStatus<number>;
+const props = defineProps<{
+  field: RegleFieldStatus<string, RegleRequiredRules<typeof useCustomRegle, 'strongPassword'>>;
   label?: string;
-  type?: InputTypeHTMLAttribute;
   placeholder: string;
 }>();
-
-type foo = unknown | null | undefined;
 
 const isRequired = computed(() => {
   return props.field.$rules.required?.$active ?? false;

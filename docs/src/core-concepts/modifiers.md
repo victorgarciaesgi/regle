@@ -18,8 +18,8 @@ Deep modifiers can be defined as 3rd argument of the `useRegle` composable. They
 // @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
-const {regle} = useRegle({}, {}, {""})
-//                                 ^|
+const {r$} = useRegle({}, {}, {""})
+//                              ^|
 ```
 
 ### `autoDirty`
@@ -60,7 +60,7 @@ const form = reactive({
 
 const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const {errors, resetAll, regle} = useRegle(form, {
+const {resetAll, r$} = useRegle(form, {
   email: {required},
   name: {pseudo: {required}}
 }, {
@@ -95,7 +95,7 @@ Type: `(fields) => Record<string, (RegleFieldStatus |RegleCollectionStatus)[]>`
 
 Validation groups let you merge fields properties under one, to better handle validation status.
 
-You will have access to your declared groups in the `regle.$groups` object
+You will have access to your declared groups in the `r$.$groups` object
 
 ```ts twoslash
 // @noErrors
@@ -104,7 +104,7 @@ import {ref} from 'vue';
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 
-const {regle, errors} = useRegle({email: '', user: {firstName: ''}}, {
+const {r$} = useRegle({email: '', user: {firstName: ''}}, {
   email: {required},
   user: {
     firstName: {required},
@@ -115,8 +115,8 @@ const {regle, errors} = useRegle({email: '', user: {firstName: ''}}, {
   })
 })
 
-regle.$groups.group1.
-//                   ^|
+r$.$groups.group1.
+//                ^|
 ```
 <br><br><br><br>
 
@@ -128,7 +128,7 @@ Per-field modifiers allow to customize more precisely which behaviour you want f
 // @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
-const {regle} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {$}
 //        ^|    
 })

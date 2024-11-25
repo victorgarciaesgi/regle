@@ -1,25 +1,27 @@
-import type { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
+import type { RegleCommonStatus, RegleExternalErrorTree, RegleRuleStatus } from '@regle/core';
 import type { PartialDeep } from 'type-fest';
 import type { ComputedRef, Ref } from 'vue';
 import type { z } from 'zod';
-import type { toZod } from './zod.types';
+import type { NonPresentKeys, toZod } from './zod.types';
 
-export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
+export interface ZodRegle<
+  TState extends Record<string, any>,
+  TSchema extends toZod<any>,
+  TExternal extends RegleExternalErrorTree<TState> = never,
+> {
   state: Ref<PartialDeep<TState>>;
-  regle: ZodRegleStatus<TState, TSchema>;
-  r$: ZodRegleStatus<TState, TSchema>;
-  /** Show active errors based on your behaviour options (lazy, autoDirty)
-   * It allow you to skip scouting the `$regle` object
-   */
-  errors: ZodToRegleErrorTree<TSchema>;
-  invalid: ComputedRef<boolean>;
+  r$: ZodRegleStatus<TState, TSchema, TExternal>;
+  ready: ComputedRef<boolean>;
   resetAll: () => void;
   validateState: () => Promise<false | z.output<TSchema>>;
 }
 
 // - Zod errors
 
-export type ZodToRegleErrorTree<TSchema extends toZod<any>> =
+export type ZodToRegleErrorTree<
+  TSchema extends toZod<any>,
+  TExternal extends RegleExternalErrorTree<Record<string, unknown>> = never,
+> =
   TSchema extends z.ZodObject<infer O>
     ? {
         readonly [K in keyof O]: ZodDefToRegleValidationErrors<O[K]>;
@@ -46,6 +48,7 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
 export interface ZodRegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends toZod<any> = toZod<any>,
+  TExternal extends RegleExternalErrorTree<TState> = never,
 > extends RegleCommonStatus<TState> {
   readonly $fields: TSchema extends z.ZodObject<infer O extends z.ZodRawShape>
     ? {
@@ -54,6 +57,8 @@ export interface ZodRegleStatus<
           : never;
       }
     : never;
+  readonly $errors: ZodToRegleErrorTree<TSchema, TExternal>;
+  readonly $silentErrors: ZodToRegleErrorTree<TSchema, TExternal>;
 }
 
 /**

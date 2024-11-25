@@ -16,8 +16,12 @@ export type Unwrap<T extends MaybeRef<Record<string, any>>> = T extends Ref
   ? UnwrapRef<T>
   : UnwrapNestedRefs<T>;
 
-export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> =
-  T extends MaybeGetter<infer U, any, any> ? U : never;
+export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends ((
+  value: Ref<any>,
+  index: number
+) => infer U extends Record<string, any>)
+  ? U
+  : T;
 
 export type DeepMaybeRef<T extends Record<string, any>> = {
   [K in keyof T]: MaybeRef<T[K]>;

@@ -11,72 +11,72 @@ describe('.$reset', () => {
   it('should update the $dirty state to false', async () => {
     const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    shouldBeInvalidField(vm.regle.$fields.email);
+    shouldBeInvalidField(vm.r$.$fields.email);
 
-    vm.regle.$fields.email.$touch();
+    vm.r$.$fields.email.$touch();
     await nextTick();
 
-    shouldBeErrorField(vm.regle.$fields.email);
+    shouldBeErrorField(vm.r$.$fields.email);
 
-    vm.regle.$fields.email.$reset();
+    vm.r$.$fields.email.$reset();
 
-    shouldBeInvalidField(vm.regle.$fields.email);
+    shouldBeInvalidField(vm.r$.$fields.email);
   });
 
   it('should update the $dirty state to false, only on the current property', async () => {
     const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    shouldBeInvalidField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeInvalidField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
 
-    vm.regle.$fields.user.$fields.firstName.$touch();
-    vm.regle.$fields.user.$fields.lastName.$touch();
+    vm.r$.$fields.user.$fields.firstName.$touch();
+    vm.r$.$fields.user.$fields.lastName.$touch();
 
     await nextTick();
 
-    shouldBeErrorField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
 
-    vm.regle.$fields.user.$fields.firstName.$reset();
+    vm.r$.$fields.user.$fields.firstName.$reset();
 
-    shouldBeInvalidField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
   });
 
   it('should reset even after coming back from cache', async () => {
     const { vm } = await createRegleComponent(simpleNestedStateWithComputedValidation);
 
-    expect(vm.regle.$fields.user.$fields.firstName).toBe(undefined);
-    expect(vm.regle.$fields.user.$fields.lastName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
 
     vm.state.userRequired = true;
     await vm.$nextTick();
 
-    expect(vm.regle.$fields.user.$fields.firstName?.$dirty).toBe(false);
-    expect(vm.regle.$fields.user.$fields.lastName?.$dirty).toBe(false);
+    expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(false);
+    expect(vm.r$.$fields.user.$fields.lastName?.$dirty).toBe(false);
 
-    vm.regle.$fields.user.$fields.firstName?.$touch();
-    vm.regle.$fields.user.$fields.lastName?.$touch();
+    vm.r$.$fields.user.$fields.firstName?.$touch();
+    vm.r$.$fields.user.$fields.lastName?.$touch();
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
 
     vm.state.userRequired = false;
     await vm.$nextTick();
 
-    expect(vm.regle.$fields.user.$fields.firstName).toBe(undefined);
-    expect(vm.regle.$fields.user.$fields.lastName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
 
     vm.state.userRequired = true;
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
 
-    await Promise.all([vm.regle.$fields.user.$reset(), flushPromises()]);
+    await Promise.all([vm.r$.$fields.user.$reset(), flushPromises()]);
 
-    shouldBeInvalidField(vm.regle.$fields.user.$fields.firstName);
-    shouldBeInvalidField(vm.regle.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
   });
 });

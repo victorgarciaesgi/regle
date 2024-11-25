@@ -3,13 +3,13 @@
     <div>
       <input
         v-model="state.regex"
-        :class="{ valid: regle.$fields.regex.$valid }"
+        :class="{ valid: r$.$fields.regex.$valid, error: r$.$fields.regex.$error }"
         placeholder="Type your regex"
       />
       <button type="button" @click="resetAll">Reset</button>
     </div>
-    <ul v-if="errors.regex.length">
-      <li v-for="error of errors.regex" :key="error">
+    <ul v-if="r$.$errors.regex.length">
+      <li v-for="error of r$.$errors.regex" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -20,7 +20,7 @@
 import { useRegle } from '@regle/core';
 import { and, startsWith, endsWith, withMessage } from '@regle/rules';
 
-const { state, errors, regle, resetAll } = useRegle(
+const { state, r$, resetAll } = useRegle(
   { regex: '' },
   {
     regex: {

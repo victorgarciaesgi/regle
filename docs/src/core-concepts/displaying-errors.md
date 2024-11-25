@@ -15,9 +15,9 @@ You can also trigger classes or beahviour depending of the internal `regle` stat
 
 ## Showing errors messages
 
-You can display your errors by iterating though `errors.xxx`, `xxx` being the field you need to check.
+You can display your errors by iterating though `r$.$errors.xxx`, `xxx` being the field you need to check.
 
-You can also access `regle.xxx.$errors` or `regle.xxx.$silentErrors`.
+You can also access `r$.$fields.xxx.$errors` or `r$.$fields.xxx.$silentErrors`.
 
 <!-- @include: @/parts/QuickUsage.md -->
 

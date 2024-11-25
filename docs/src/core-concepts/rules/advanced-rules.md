@@ -127,25 +127,25 @@ import { useRegle } from '@regle/core';
 
 const condition = ref(false);
 
-const {regle, errors, resetAll} = useRegle({name: ''}, {
+const {r$, resetAll} = useRegle({name: ''}, {
   name: {required: requiredIf(condition)}
 })
 </script>
 
 <template>
   <div>
-    <input  v-model="condition" type='checkbox'/>
+    <input v-model="condition" type='checkbox'/>
     <label>The field is required</label>
   </div>
   <div>
     <!-- Here we can use $active to know if the rule is enabled -->
     <input 
       v-model='form.name'
-      :placeholder='`Type your name${regle.$fields.name.$rules.required.$active ? "*": ""}`'/>
+      :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'/>
     <button type="button" @click="resetAll">Reset</button>
   </div>
-  <ul v-if="errors.name.length">
-    <li v-for="error of errors.name" :key='error'>
+  <ul v-if="r$.$errors.name.length">
+    <li v-for="error of r$.$errors.name" :key='error'>
       {{ error }}
     </li>
   </ul>
@@ -168,15 +168,15 @@ Async rules let you handle validations that are only possible on server, or expe
     <div>
       <input
         v-model="form.email"
-        :class="{ pending: regle.$fields.email.$pending }"
+        :class="{ pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
       <button type="button" @click="resetAll">Reset</button>
       <button type="button" @click="validateState">Submit</button>
     </div>
-    <span v-if="regle.$fields.email.$pending"> Checking... </span>
-    <ul v-if="errors.email.length">
-      <li v-for="error of errors.email" :key="error">
+    <span v-if="r$.$fields.email.$pending"> Checking... </span>
+    <ul v-if="r$.$errors.email.length">
+      <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -209,7 +209,7 @@ const checkEmailExists = createRule({
 
 const form = ref({ email: '' });
 
-const { regle, errors, resetAll, validateState } = useRegle(form, {
+const { r$, resetAll, validateState } = useRegle(form, {
   email: { email, checkEmailExists },
 });
 </script>

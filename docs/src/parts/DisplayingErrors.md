@@ -2,13 +2,13 @@
 <template>
   <input 
     :class="{
-      error: regle.$fields.email.$error,
-      valid: regle.$fields.email.$valid
+      error: r$.$fields.email.$error,
+      valid: r$.$fields.email.$valid
     }" 
     v-model='state.email' 
     placeholder='Type your email'/>
   <ul>
-    <li v-for="error of errors.email" :key='error'>
+    <li v-for="error of r$.$errors.email" :key='error'>
       {{ error }}
     </li>
   </ul>
@@ -19,7 +19,7 @@ import {useRegle} from '@regle/core';
 import {required, minLength, email} from '@regle/rules';
 import {ref} from 'vue';
 
-const {errors, state, regle} = useRegle({email: ''}, {
+const { state, r$} = useRegle({email: ''}, {
   email: {required, minLength: minLength(4), email}
 })
 

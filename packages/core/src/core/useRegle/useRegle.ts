@@ -1,5 +1,5 @@
 import type { EmptyObject, RequiredDeep, IsEqual } from 'type-fest';
-import type { ComputedRef, MaybeRef, Ref } from 'vue';
+import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { computed, isRef, onScopeDispose, ref, toRaw } from 'vue';
 import type {
   $InternalReglePartialValidationTree,
@@ -14,10 +14,12 @@ import type {
   ReglePartialValidationTree,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
+  UnwrapRuleTree,
 } from '../../types';
 import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
 import { cloneDeep, isObject } from '../../utils';
 import { useStateProperties } from './useStateProperties';
+import type { DefaultValidators } from '../defaultValidators';
 
 export type useRegleFn<TCustomRules extends Partial<AllRulesDeclarations>> = <
   TState extends Record<string, any>,
@@ -36,7 +38,7 @@ export type useRegleFn<TCustomRules extends Partial<AllRulesDeclarations>> = <
     : never,
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
-  rulesFactory: TRules | (() => TRules) | ComputedRef<TRules>,
+  rulesFactory: MaybeRefOrGetter<TRules>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TExternal, TValidationGroups>
 ) => Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups>;
@@ -73,7 +75,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
     const initialState = cloneDeep(toRaw(processedState.value));
 
-    const { regle, errors } = useStateProperties(
+    const { regle } = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
       processedState,
       resolvedOptions,
@@ -126,9 +128,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
     }
 
     return {
-      regle: regle as any,
       r$: regle as any,
-      errors: errors as any,
       resetAll,
       validateState: validateState as any,
       ready,

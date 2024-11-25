@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
     <div class="list">
-      <div v-for="(item, index) of regle.$fields.collection.$each" :key="item.$id" class="item">
+      <div v-for="(item, index) of r$.$fields.collection.$each" :key="item.$id" class="item">
         <div class="field">
           <input
             v-model="item.$value.name"
@@ -17,8 +17,8 @@
         </ul>
       </div>
     </div>
-    <ul v-if="errors.collection.$errors.length">
-      <li v-for="error of errors.collection.$errors" :key="error">
+    <ul v-if="r$.$errors.collection.$errors.length">
+      <li v-for="error of r$.$errors.collection.$errors" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -38,7 +38,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { errors, regle, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     minLength: minLength(4),
     $each: {

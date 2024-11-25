@@ -70,6 +70,20 @@ export type RegleRuleMetadataExtended = {
   [x: string]: any;
 };
 
+export type UnwrapRuleTree<T extends { [x: string]: RegleRuleRaw<any> | undefined }> = {
+  [K in keyof T]: UnwrapRuleWithParams<T[K]>;
+};
+
+export type UnwrapRuleWithParams<T extends RegleRuleRaw<any> | undefined> =
+  T extends RegleRuleWithParamsDefinition<
+    infer TValue,
+    infer TParams,
+    infer TAsync,
+    infer TMetadata
+  >
+    ? RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+    : T;
+
 /**
  * Define a rule Metadata definition
  */
@@ -116,7 +130,7 @@ export type $InternalRegleRuleMetadataConsumer = DefaultMetadataProperties & {
 export type RegleRuleRaw<
   TValue extends any = any,
   TParams extends any[] = [],
-  TAsync extends boolean = false,
+  TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = boolean,
 > =
   | RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>

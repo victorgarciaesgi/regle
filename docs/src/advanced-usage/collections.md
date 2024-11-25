@@ -31,7 +31,7 @@ const form = ref<{collection: Array<{name: string}>}>({
   collection: []
 })
 
-const {regle, errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   collection: {
     $each: {
       name: {required},
@@ -43,14 +43,14 @@ const {regle, errors} = useRegle(form, {
 
 ## Displaying collections errors
 
-For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this exemple `regle.$fields.collection.$each`.
+For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this exemple `r$.$fields.collection.$each`.
 
-But you can also map your errors to the `errors.collection.$each`.
+But you can also map your errors to the `r$.$errors.collection.$each`.
 
 ```vue twoslash
 <template>
   <div 
-    v-for="item of regle.$fields.collection.$each" 
+    v-for="item of r$.$fields.collection.$each" 
     :key="item.$id">
     <div>
       <input
@@ -80,7 +80,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { regle, errors, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     $each: {
       name: { required },
@@ -101,7 +101,7 @@ Sometimes you not only want to validate each field in every element of the array
 
 You can do this exactly like a normal field.
 
-The errors can be displayed either by `errors.[field].$errors` or `regle.$fields.[field].$field.$errors`
+The errors can be displayed either by `r$.$errors.[field].$errors` or `r$.$fields.[field].$field.$errors`
 
 
 ```ts twoslash
@@ -115,7 +115,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { regle, errors, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     minLength: minLength(4),
     $each: {
@@ -146,7 +146,7 @@ const form = ref({
   collection: [{ name: '', condition: false }],
 });
 
-const { regle, errors, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     $each: (item, index) => ({
       name: { required: requiredIf(() => item.value.condition) },
@@ -177,7 +177,7 @@ const form = ref({
   collection: [{ name: '', uuid: '28xja83' }],
 });
 
-const { regle, errors, resetAll } = useRegle(form, {
+const { r$, resetAll } = useRegle(form, {
   collection: {
     $each: (item) => ({
       $key: item.value.uuid,

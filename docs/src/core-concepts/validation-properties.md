@@ -4,7 +4,7 @@ title: Validation properties
 
 # Validation properties
 
-Validation properties are computed values or methods available in every nested rule status (including `regle`)
+Validation properties are computed values or methods available in every nested rule status (including `r$` and `regle`)
 
 
 Let's make a simple exemple to explain the different properties
@@ -18,21 +18,21 @@ import {ref} from 'vue';
 
 const form = ref({email: '', user: {firstName: '', lastName: ''}});
 
-const {regle, errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   email: {required},
   user: {
     firstName: {required},
   }
 })
 
-regle.$fields.email.
-//                  ^|
+r$.$fields.email.
+//               ^|
 </script>
 
 <template>
   <input v-model='form.user.firstName' placeholder='Type your firstName'/>
   <ul>
-    <li v-for="error of errors.user.firstName" :key='error'>
+    <li v-for="error of r$.$errors.user.firstName" :key='error'>
       {{ error }}
     </li>
   </ul>

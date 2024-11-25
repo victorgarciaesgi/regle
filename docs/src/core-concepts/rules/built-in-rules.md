@@ -35,7 +35,7 @@ Requires non-empty data. Checks for empty arrays and strings containing only whi
 ```ts
 import {required} from '@regle/rules';
 
-const {errors} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {required},
 })
 ```
@@ -54,7 +54,7 @@ const form = ref({name: '', condition: false});
 
 const conditionRef = ref(false);
 
-const {errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   name: {
     required: requiredIf(() => form.value.condition),
     required: requiredIf(conditionRef),
@@ -77,7 +77,7 @@ const form = ref({name: '', condition: false});
 
 const conditionRef = ref(false);
 
-const {errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   name: {
     required: requiredUnless(() => form.value.condition),
     required: requiredUnless(conditionRef)
@@ -104,7 +104,7 @@ import {minLength} from '@regle/rules';
 
 const minValue = ref(6);
 
-const {errors} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {
     minLength: minLength(6),
     minLength: minLength(minValue),
@@ -129,7 +129,7 @@ import {maxLength} from '@regle/rules';
 
 const maxValue = ref(6);
 
-const {errors} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {
     maxLength: maxLength(6),
     maxLength: maxLength(maxValue),
@@ -153,7 +153,7 @@ import {minValue} from '@regle/rules';
 
 const minCount = ref(6);
 
-const {errors} = useRegle({count: 0}, {
+const {r$} = useRegle({count: 0}, {
   count: {
     minValue: minValue(6),
     minValue: minValue(minCount),
@@ -175,7 +175,7 @@ import {maxValue} from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {errors} = useRegle({count: 0}, {
+const {r$} = useRegle({count: 0}, {
   count: {
     maxValue: maxValue(6),
     maxValue: maxValue(maxCount),
@@ -199,7 +199,7 @@ import {between} from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {errors} = useRegle({count: 0}, {
+const {r$} = useRegle({count: 0}, {
   count: {
     between: between(1, 6),
     between: between(1, maxCount),
@@ -333,7 +333,7 @@ import {macAddress} from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {errors} = useRegle({address: ''}, {
+const {r$} = useRegle({address: ''}, {
   address: {
     macAddress: macAddress(),
   },
@@ -359,7 +359,7 @@ const form = ref({
   confirmPassword: '',
 });
 
-const {errors} = useRegle(form, {
+const {r$} = useRegle(form, {
   confirmPassword: {
     sameAs: sameAs(() => form.value.password),
   }

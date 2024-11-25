@@ -7,13 +7,13 @@
     <div>
       <input
         v-model="form.name"
-        :class="{ valid: regle.$fields.name.$valid, error: regle.$fields.name.$error }"
+        :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
         placeholder="Type your name"
       />
       <button type="button" @click="resetAll">Reset</button>
     </div>
-    <ul v-if="errors.name.length">
-      <li v-for="error of errors.name" :key="error">
+    <ul v-if="r$.$errors.name.length">
+      <li v-for="error of r$.$errors.name" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -29,7 +29,7 @@ const condition = ref(false);
 
 const form = ref({ name: '' });
 
-const { state, errors, regle, resetAll } = useRegle(form, {
+const { state, r$, resetAll } = useRegle(form, {
   name: {
     minLength: applyIf(condition, minLength(6)),
   },

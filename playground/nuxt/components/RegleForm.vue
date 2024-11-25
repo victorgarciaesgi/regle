@@ -1,37 +1,37 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.email" placeholder="email" />
-    <span v-if="regle.$fields.email.$pending" style="color: orange">Loading</span>
+    <span v-if="r$.$fields.email.$pending" style="color: orange">Loading</span>
     <ul>
-      <li v-for="error of errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of r$.$errors.email" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model.number="limit" placeholder="limit" />
 
     <input
       v-model="form.firstName"
-      :placeholder="`firstName ${regle.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
+      :placeholder="`firstName ${r$.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
-      <li v-for="error of errors.firstName" :key="error">{{ error }}</li>
+      <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
-    <input type="date" v-model="form.birthDate" placeholder="Birth date" />
+    <input v-model="form.birthDate" type="date" placeholder="Birth date" />
     <ul>
-      <li v-for="error of errors.birthDate" :key="error">{{ error }}</li>
+      <li v-for="error of r$.$errors.birthDate" :key="error">{{ error }}</li>
     </ul>
 
-    <input type="date" v-model="form.today" placeholder="Today" />
+    <input v-model="form.today" type="date" placeholder="Today" />
     <ul>
-      <li v-for="error of errors.today" :key="error">{{ error }}</li>
+      <li v-for="error of r$.$errors.today" :key="error">{{ error }}</li>
     </ul>
 
     <h2>Collection validation</h2>
 
-    <template :key="index" v-for="(input, index) of form.foo.bloublou.test">
+    <template v-for="(input, index) of form.foo.bloublou.test" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <li v-for="error of errors.foo.bloublou.test.$each[index].name" :key="error">
+        <li v-for="error of r$.$errors.foo.bloublou.test.$each[index].name" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -91,7 +91,7 @@ const limit = ref(2);
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({});
 
-const { regle, errors, validateState } = useRegle(
+const { r$, validateState } = useRegle(
   form,
   () => ({
     email: {

@@ -44,4 +44,8 @@ export type {
   RegleUniversalParams,
   RegleInternalRuleDefs,
   RegleExternalValidationErrorsReport,
+  AllRulesDeclarations,
+  UnwrapRuleWithParams,
+  InferRegleRules,
+  RegleRequiredRules,
 } from './types';
