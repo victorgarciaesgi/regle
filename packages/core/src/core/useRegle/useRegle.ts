@@ -1,11 +1,10 @@
-import type { EmptyObject, RequiredDeep, IsEqual } from 'type-fest';
+import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, onScopeDispose, ref, toRaw } from 'vue';
+import { computed, isRef, ref, toRaw } from 'vue';
 import type {
   $InternalReglePartialValidationTree,
   AllRulesDeclarations,
   DeepReactiveState,
-  DeepSafeFormState,
   isDeepExact,
   LocalRegleBehaviourOptions,
   Regle,
@@ -14,12 +13,10 @@ import type {
   ReglePartialValidationTree,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
-  UnwrapRuleTree,
 } from '../../types';
 import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
-import { cloneDeep, isObject } from '../../utils';
+import { cloneDeep } from '../../utils';
 import { useStateProperties } from './useStateProperties';
-import type { DefaultValidators } from '../defaultValidators';
 
 export type useRegleFn<TCustomRules extends Partial<AllRulesDeclarations>> = <
   TState extends Record<string, any>,
@@ -75,64 +72,17 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
     const initialState = cloneDeep(toRaw(processedState.value));
 
-    const { regle } = useStateProperties(
+    const regle = useStateProperties(
       scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
       processedState,
       resolvedOptions,
+      processedState,
+      initialState,
       customRules
     );
 
-    function resetAll() {
-      regle.$unwatch();
-      resetValuesRecursively(state, initialState);
-      regle.$reset();
-    }
-
-    function resetValuesRecursively(
-      current: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
-      initial: Record<string, MaybeRef<any>>
-    ) {
-      Object.entries(initial).forEach(([key, value]) => {
-        let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
-        let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
-        let initialRef = isRef(initial[key]) ? (initial[key] as any)._value : initial[key];
-        if (Array.isArray(initialRef) && Array.isArray(currentValue)) {
-          currentRef[key] = [];
-          initialRef.forEach((val, index) => {
-            currentRef[key][index] = {};
-            resetValuesRecursively(currentRef[key][index], initialRef[index]);
-          });
-        } else if (isObject(initialRef)) {
-          resetValuesRecursively(currentValue, initialRef);
-        } else {
-          if (isRef(currentRef[key])) {
-            currentRef[key].value = initialRef;
-          } else {
-            currentRef[key] = initialRef;
-          }
-        }
-      });
-    }
-
-    const ready = computed<boolean>(() => {
-      return !(regle.$invalid || regle.$pending);
-    });
-
-    async function validateState(): Promise<false | Record<string, any>> {
-      regle.$touch();
-      const result = await regle.$validate();
-      if (result) {
-        return processedState.value as any;
-      }
-      return false;
-    }
-
     return {
       r$: regle as any,
-      resetAll,
-      validateState: validateState as any,
-      ready,
-      state: processedState as any,
     };
   }
 

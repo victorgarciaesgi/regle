@@ -52,7 +52,7 @@ describe('withAsync helper', () => {
 
   it('should be on pending state when changing value', async () => {
     const wrapper = mountComponent();
-    wrapper.vm.state.email = 'f';
+    wrapper.vm.r$.$value.email = 'f';
 
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
@@ -71,8 +71,8 @@ describe('withAsync helper', () => {
 
   it('should be on pending state and validate when changing dep', async () => {
     const wrapper = mountComponent();
-    wrapper.vm.state.email = 'f';
-    wrapper.vm.state.count = 1;
+    wrapper.vm.r$.$value.email = 'f';
+    wrapper.vm.r$.$value.count = 1;
 
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();

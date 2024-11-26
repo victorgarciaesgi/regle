@@ -49,7 +49,7 @@ describe('.$reset', () => {
     expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
     expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
 
-    vm.state.userRequired = true;
+    vm.r$.$value.userRequired = true;
     await vm.$nextTick();
 
     expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(false);
@@ -62,13 +62,13 @@ describe('.$reset', () => {
     shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
     shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
 
-    vm.state.userRequired = false;
+    vm.r$.$value.userRequired = false;
     await vm.$nextTick();
 
     expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
     expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
 
-    vm.state.userRequired = true;
+    vm.r$.$value.userRequired = true;
     await vm.$nextTick();
 
     shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);

@@ -1,12 +1,15 @@
+import type { PartialDeep } from 'type-fest';
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleErrors,
   AllRulesDeclarations,
+  DeepSafeFormState,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
   Maybe,
+  Prettify,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
@@ -16,25 +19,21 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  RegleRuleRaw,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
+  SafeProperty,
 } from '..';
 
 /**
  * @public
  */
-export type RegleStatus<
+export type RegleRoot<
   TState extends Record<string, any> = Record<string, any>,
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TExternal extends RegleExternalErrorTree<TState> = never,
-> = RegleCommonStatus<TState> & {
-  readonly $fields: {
-    readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
-  };
-  readonly $errors: RegleErrorTree<TRules, TExternal>;
-  readonly $silentErrors: RegleErrorTree<TRules, TExternal>;
+> = RegleStatus<TState, TRules, TExternal> & {
+  $resetAll: () => void;
 } & ([TValidationGroups] extends [never]
     ? {}
     : {
@@ -42,6 +41,23 @@ export type RegleStatus<
           readonly [TKey in keyof TValidationGroups]: RegleValidationGroupOutput;
         };
       });
+
+/**
+ * @public
+ */
+export type RegleStatus<
+  TState extends Record<string, any> = Record<string, any>,
+  TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
+  TExternal extends RegleExternalErrorTree<TState> = never,
+> = RegleCommonStatus<TState> & {
+  readonly $fields: {
+    readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
+  };
+  readonly $errors: RegleErrorTree<TRules, TExternal>;
+  readonly $silentErrors: RegleErrorTree<TRules, TExternal>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $parse: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
+};
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -52,6 +68,9 @@ export interface $InternalRegleStatus extends RegleCommonStatus {
   };
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
+  $parse: () => Promise<false | Record<string, any>>;
+  $resetAll?: () => void;
 }
 
 /**
@@ -91,11 +110,12 @@ export type $InternalRegleStatusType =
 export interface RegleFieldStatus<
   TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
-> extends RegleCommonStatus<TState> {
-  $value: UnwrapNestedRefs<TState>;
+> extends Omit<RegleCommonStatus<TState>, '$value'> {
+  $value: Maybe<UnwrapNestedRefs<TState>>;
   readonly $errors: string[];
   readonly $silentErrors: string[];
   readonly $externalErrors?: string[];
+  $extractDirtyFields: (filterNullishValues?: boolean) => TState | null;
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<
       TRules,
@@ -109,7 +129,7 @@ export interface RegleFieldStatus<
           ? TMetadata extends Promise<infer P>
             ? P
             : TMetadata
-          : never
+          : any
     >;
   };
 }
@@ -124,6 +144,7 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   readonly $externalErrors?: string[];
   readonly $errors: string[];
   readonly $silentErrors: string[];
+  $extractDirtyFields: (filterNullishValues?: boolean) => any;
 }
 
 /**
@@ -136,6 +157,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $anyDirty: boolean;
   readonly $pending: boolean;
   readonly $error: boolean;
+  readonly $ready: boolean;
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
@@ -161,10 +183,14 @@ export type RegleRuleStatus<
   readonly $pending: boolean;
   readonly $path: string;
   readonly $metadata: TMetadata;
-  $validator: (
+  $validator: ((
     value: Maybe<TValue>,
-    ...args: TParams
-  ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
+    ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
+  ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>) &
+    ((
+      value: TValue,
+      ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
+    ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>);
   $validate(): Promise<boolean>;
   $reset(): void;
 } & ([TParams] extends [never[]]
@@ -210,11 +236,16 @@ export interface RegleCollectionStatus<
   TState extends any[] = any[],
   TRules extends RegleRuleDecl | ReglePartialValidationTree<any> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
-> extends Omit<RegleFieldStatus<TState, TRules>, '$errors' | '$silentErrors'> {
+> extends Omit<
+    RegleFieldStatus<TState, TRules>,
+    '$errors' | '$silentErrors' | '$extractDirtyFields'
+  > {
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number>>;
   readonly $field: RegleFieldStatus<TState, TFieldRule>;
   readonly $errors: RegleErrorTree<TRules>;
   readonly $silentErrors: RegleErrorTree<TRules>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $parse: () => Promise<false | SafeProperty<TState, TRules>>;
 }
 
 /**
@@ -228,6 +259,8 @@ export interface $InternalRegleCollectionStatus
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  $extractDirtyFields: (filterNullishValues?: boolean) => any[];
+  $parse: () => Promise<false | any[]>;
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;

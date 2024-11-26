@@ -66,7 +66,7 @@ But you can also map your errors to the `r$.$errors.collection.$each`.
     </div>
   </div>
   <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
-  <button type="button" @click="resetAll">Reset</button>
+  <button type="button" @click="r$.$resetAll">Reset</button>
 </template>
 
 <script setup lang="ts">
@@ -80,7 +80,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     $each: {
       name: { required },
@@ -115,7 +115,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     minLength: minLength(4),
     $each: {
@@ -146,7 +146,7 @@ const form = ref({
   collection: [{ name: '', condition: false }],
 });
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     $each: (item, index) => ({
       name: { required: requiredIf(() => item.value.condition) },
@@ -177,7 +177,7 @@ const form = ref({
   collection: [{ name: '', uuid: '28xja83' }],
 });
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     $each: (item) => ({
       $key: item.value.uuid,

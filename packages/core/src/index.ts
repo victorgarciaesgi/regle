@@ -2,6 +2,7 @@ export { createRule, defineRegleConfig, inferRules, unwrapRuleParameters, useReg
 export { InternalRuleType } from './types';
 export type {
   Regle,
+  RegleRoot,
   RegleBehaviourOptions,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,

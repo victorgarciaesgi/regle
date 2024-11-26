@@ -5,7 +5,7 @@
       error: r$.$fields.email.$error,
       valid: r$.$fields.email.$valid
     }" 
-    v-model='state.email' 
+    v-model='r$.$value.email' 
     placeholder='Type your email'/>
   <ul>
     <li v-for="error of r$.$errors.email" :key='error'>
@@ -19,7 +19,7 @@ import {useRegle} from '@regle/core';
 import {required, minLength, email} from '@regle/rules';
 import {ref} from 'vue';
 
-const { state, r$} = useRegle({email: ''}, {
+const {r$} = useRegle({email: ''}, {
   email: {required, minLength: minLength(4), email}
 })
 

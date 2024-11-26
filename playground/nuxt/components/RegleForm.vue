@@ -80,7 +80,7 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const result = await validateState();
+  const result = await r$.$parse();
 
   if (result) {
     const test: string = result.foo.bloublou.test[0].name;
@@ -91,7 +91,7 @@ const limit = ref(2);
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({});
 
-const { r$, validateState } = useRegle(
+const { r$ } = useRegle(
   form,
   () => ({
     email: {
@@ -126,6 +126,6 @@ const { r$, validateState } = useRegle(
       },
     },
   }),
-  { $externalErrors: externalErrors }
+  { externalErrors }
 );
 </script>

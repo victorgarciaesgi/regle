@@ -23,7 +23,7 @@
         >Remove random item</button
       >
       <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
 </template>
@@ -66,7 +66,7 @@ function removeRandomItem() {
   form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
 }
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     $each: {
       name: { required },

@@ -1,7 +1,7 @@
 <template>
   <input v-model="min" placeholder="min" />
   <input v-model="form.email" placeholder="name" />
-  <pre>{{ regle }}</pre>
+  <pre>{{ r$ }}</pre>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +37,7 @@ const {} = useRegle(
   }
 );
 
-const { regle } = useRegle(form, {
+const { r$ } = useRegle(form, {
   email: { testParams: withAsync(asyncMin, [min]) },
   user: {
     firstName: {

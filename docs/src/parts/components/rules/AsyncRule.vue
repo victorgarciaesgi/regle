@@ -6,8 +6,8 @@
         :class="{ valid: r$.$fields.email.$valid, pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
-      <button type="button" @click="resetAll">Reset</button>
-      <button type="button" @click="validateState">Validate</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$parse">Validate</button>
     </div>
     <span v-if="r$.$fields.email.$pending" class="pending-text"> Checking... </span>
     <ul v-if="r$.$errors.email.length">
@@ -44,7 +44,7 @@ const checkEmailExists = createRule({
 
 const form = ref({ email: '' });
 
-const { r$, resetAll, validateState } = useRegle(form, {
+const { r$ } = useRegle(form, {
   email: { email, checkEmailExists },
 });
 </script>

@@ -48,7 +48,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);
@@ -71,7 +71,7 @@ describe('useRegle with async rules and Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1200)]);
+    const [result] = await Promise.all([vm.r$.$parse(), vi.advanceTimersByTimeAsync(1200)]);
 
     await nextTick();
     await flushPromises();
@@ -87,7 +87,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
@@ -112,7 +112,7 @@ describe('useRegle with async rules and Object refs', async () => {
 
     expect(vm.r$.$errors.level0Async).toStrictEqual(['Custom error']);
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
@@ -153,7 +153,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.$errors.level1.child).toStrictEqual(['Custom error']);
     expect(vm.r$.$errors.level1.level2.childAsync).toStrictEqual(['Custom error']);
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
@@ -198,7 +198,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.$errors.level1.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.level2.childAsync).toStrictEqual([]);
 
-    expect(vm.ready).toBe(true);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
@@ -227,7 +227,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(1000)]);
+    const [result] = await Promise.all([vm.r$.$parse(), vi.advanceTimersByTimeAsync(1000)]);
 
     expect(result).toStrictEqual({
       level0Async: 2,
@@ -240,8 +240,8 @@ describe('useRegle with async rules and Object refs', async () => {
     });
   });
 
-  it('should reset on initial state when calling resetAll', async () => {
-    vm.resetAll();
+  it('should reset on initial state when calling r$.$resetAll', async () => {
+    vm.r$.$resetAll();
 
     vi.advanceTimersByTime(1000);
     await nextTick();
@@ -257,7 +257,7 @@ describe('useRegle with async rules and Object refs', async () => {
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);

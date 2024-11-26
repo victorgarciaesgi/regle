@@ -56,7 +56,7 @@ TODO
 
 - [x] Async rules
 - [x] resetAll
-- [x] validateState typesafe
+- [x] parse typesafe
 - [x] Deep nested rules
 - [x] Collection validation
 - [x] `applyIf` helper (like requiredIf for any rule)
@@ -82,6 +82,7 @@ TODO
 - [ ] `extractDirtyFields`
 - [ ] Issue template
 - [ ] `Valibot` support
+- [ ] `Yup` support
 - [ ] TS docs
 
 ## Maybe in roadmap

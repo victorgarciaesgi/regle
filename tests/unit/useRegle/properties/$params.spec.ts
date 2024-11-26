@@ -98,9 +98,9 @@ describe('$params', () => {
 
       await nextTick();
 
-      vm.state.email = 'azertyuio';
-      vm.state.user.firstName = 'azertyuio';
-      vm.state.contacts[0].name = 'azertyuio';
+      vm.r$.$value.email = 'azertyuio';
+      vm.r$.$value.user.firstName = 'azertyuio';
+      vm.r$.$value.contacts[0].name = 'azertyuio';
       await nextTick();
 
       shouldBeValidField(vm.r$);
@@ -116,7 +116,7 @@ describe('$params', () => {
         6,
       ]);
 
-      vm.state.contacts.push({ name: '' });
+      vm.r$.$value.contacts.push({ name: '' });
       await nextTick();
 
       vm.min = 10;
@@ -158,7 +158,7 @@ describe('$params', () => {
         5,
       ]);
 
-      vm.state.contacts[1].name = 'aeeyeziyr';
+      vm.r$.$value.contacts[1].name = 'aeeyeziyr';
       await nextTick();
 
       shouldBeValidField(vm.r$);
@@ -283,9 +283,9 @@ describe('$params', () => {
       shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
       shouldBeInvalidField(vm.r$.$fields.contacts.$each[0].$fields.name);
 
-      vm.state.email = 'azertyuio';
-      vm.state.user.firstName = 'azertyuio';
-      vm.state.contacts[0].name = 'azertyuio';
+      vm.r$.$value.email = 'azertyuio';
+      vm.r$.$value.user.firstName = 'azertyuio';
+      vm.r$.$value.contacts[0].name = 'azertyuio';
 
       await vi.advanceTimersByTimeAsync(200);
       await nextTick();

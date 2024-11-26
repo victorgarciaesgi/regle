@@ -2,11 +2,11 @@
   <div class="demo-container">
     <div>
       <input
-        v-model="state.password"
+        v-model="r$.$value.password"
         :class="{ valid: r$.$fields.password.$valid }"
         placeholder="Type your password"
       />
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
     <div
       class="password-strength"
@@ -42,7 +42,7 @@ const strongPassword = createRule({
   },
 });
 
-const { state, r$, resetAll } = useRegle(
+const { r$ } = useRegle(
   { password: '' },
   {
     password: {

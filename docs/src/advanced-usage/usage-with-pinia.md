@@ -41,8 +41,8 @@ export const useDemoStore = defineStore('demo-store', () => {
 
 ``` vue twoslash [ComponentA.vue]
 <template>
-  <input v-model='state.email' placeholder='Type your email'/>
-  <button type="button" @click="demoStore.resetAll">Reset</button>
+  <input v-model='r$.$value.email' placeholder='Type your email'/>
+  <button type="button" @click="r$.$resetAll">Reset</button>
 </template>
 
 <script setup lang='ts'>
@@ -54,7 +54,7 @@ import {useDemoStore} from './demo.store';
 import {storeToRefs} from 'pinia';
 
 const demoStore = useDemoStore();
-const {state} = storeToRefs(demoStore);
+const {r$} = storeToRefs(demoStore);
 
 </script>
 ```

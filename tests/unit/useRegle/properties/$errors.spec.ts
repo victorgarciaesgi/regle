@@ -44,7 +44,7 @@ describe('$silentErrors', () => {
 
     expect(vm.r$.$errors).toStrictEqual(expectedErrors2);
 
-    vm.state.email = 'foo';
+    vm.r$.$value.email = 'foo';
 
     await nextTick();
 

@@ -60,7 +60,7 @@ const form = reactive({
 
 const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const {resetAll, r$} = useRegle(form, {
+const {r$} = useRegle(form, {
   email: {required},
   name: {pseudo: {required}}
 }, {

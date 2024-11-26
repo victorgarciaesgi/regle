@@ -28,9 +28,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'pnpm run -r --filter="ui-vue3" dev',
-      stdout: 'pipe',
-      stderr: 'pipe',
+      command: 'pnpm run ui-tests:server',
+      url: `http://localhost:${appPortForTests}`,
     },
   ],
 });

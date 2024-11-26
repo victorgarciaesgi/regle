@@ -25,7 +25,7 @@
           </li>
         </ul>
       </div>
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
 </template>
@@ -46,5 +46,5 @@ const schema = computed(() =>
   })
 );
 
-const { r$, resetAll } = useZodRegle(form, schema);
+const { r$ } = useZodRegle(form, schema);
 </script>

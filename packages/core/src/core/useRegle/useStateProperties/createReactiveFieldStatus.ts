@@ -40,6 +40,7 @@ type ScopeReturnState = {
   $autoDirty: ComputedRef<boolean | undefined>;
   $anyDirty: ComputedRef<boolean>;
   haveAnyAsyncRule: ComputedRef<boolean>;
+  $ready: ComputedRef<boolean>;
 };
 
 export function createReactiveFieldStatus({
@@ -218,6 +219,10 @@ export function createReactiveFieldStatus({
         });
       });
 
+      const $ready = computed<boolean>(() => {
+        return !$invalid.value && !$pending.value;
+      });
+
       const $pending = computed<boolean>(() => {
         if (triggerPunishment.value || !$rewardEarly.value) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
@@ -273,6 +278,7 @@ export function createReactiveFieldStatus({
         $debounce,
         $lazy,
         $errors,
+        $ready,
         $silentErrors,
         $rewardEarly,
         $autoDirty,
@@ -376,6 +382,13 @@ export function createReactiveFieldStatus({
     }
   }
 
+  function $extractDirtyFields(filterNullishValues: boolean = true): any | null {
+    if ($dirty.value) {
+      return state.value;
+    }
+    return null;
+  }
+
   function $clearExternalErrors() {
     $externalErrors.value = [];
   }
@@ -395,6 +408,7 @@ export function createReactiveFieldStatus({
     $validate,
     $unwatch,
     $watch,
+    $extractDirtyFields,
     $clearExternalErrors,
   }) satisfies $InternalRegleFieldStatus;
 }

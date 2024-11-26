@@ -10,7 +10,7 @@
         :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
         placeholder="Type your name"
       />
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
     <ul v-if="r$.$errors.name.length">
       <li v-for="error of r$.$errors.name" :key="error">
@@ -29,7 +29,7 @@ const condition = ref(false);
 
 const form = ref({ name: '' });
 
-const { state, r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   name: {
     minLength: applyIf(condition, minLength(6)),
   },

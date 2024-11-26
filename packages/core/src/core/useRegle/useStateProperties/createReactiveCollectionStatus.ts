@@ -15,10 +15,10 @@ import type {
   RegleCollectionRuleDeclKeyProperty,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { cloneDeep, randomId, unwrapGetter } from '../../../utils';
+import { cloneDeep, isEmpty, isObject, randomId, unwrapGetter } from '../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
 import type { RegleStorage } from '../../useStorage';
-import { isExternalErrorCollection, isRuleDef } from '../guards';
+import { isExternalErrorCollection, isNestedRulesStatus, isRuleDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 
@@ -104,6 +104,7 @@ interface ScopeReturnState {
   $pending: ComputedRef<boolean>;
   $errors: ComputedRef<$InternalRegleCollectionErrors>;
   $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
+  $ready: ComputedRef<boolean>;
 }
 
 interface ImmediateScopeReturnState {
@@ -345,6 +346,10 @@ export function createReactiveCollectionStatus({
         );
       });
 
+      const $ready = computed<boolean>(() => {
+        return !$invalid.value && !$pending.value;
+      });
+
       const $pending = computed<boolean>(() => {
         return (
           $fieldStatus.value.$pending ||
@@ -377,6 +382,7 @@ export function createReactiveCollectionStatus({
         $pending,
         $errors,
         $silentErrors,
+        $ready,
       } satisfies ScopeReturnState;
     })!;
 
@@ -437,7 +443,38 @@ export function createReactiveCollectionStatus({
   }
 
   function $clearExternalErrors() {
-    // TODO clear external errors
+    $fieldStatus.value.$clearExternalErrors();
+    $eachStatus.value.forEach(($each) => {
+      $each.$clearExternalErrors();
+    });
+  }
+
+  function $extractDirtyFields(filterNullishValues: boolean = true): any[] {
+    let dirtyFields = $eachStatus.value.map(($each) => {
+      if (isNestedRulesStatus($each)) {
+        return $each.$extractDirtyFields(filterNullishValues);
+      }
+    });
+
+    if (filterNullishValues) {
+      dirtyFields = dirtyFields.filter((value) => {
+        if (isObject(value)) {
+          return !isEmpty(value);
+        } else {
+          return !!value;
+        }
+      });
+    }
+    return dirtyFields;
+  }
+
+  async function $parse(): Promise<false | any[]> {
+    $touch();
+    const result = await $validate();
+    if (result) {
+      return state.value;
+    }
+    return false;
   }
 
   return reactive({
@@ -450,6 +487,8 @@ export function createReactiveCollectionStatus({
     $watch,
     $touch,
     $reset,
+    $extractDirtyFields,
+    $parse,
     $clearExternalErrors,
   }) satisfies $InternalRegleCollectionStatus;
 }

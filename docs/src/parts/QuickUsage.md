@@ -1,6 +1,6 @@
 ``` vue twoslash [App.vue]
 <template>
-  <input v-model='state.email' placeholder='Type your email'/>
+  <input v-model='r$.$value.email' placeholder='Type your email'/>
   <ul>
     <li v-for="error of r$.$errors.email" :key='error'>
       //                            ^?
@@ -13,7 +13,7 @@
 import {useRegle} from '@regle/core';
 import {required, minLength, email} from '@regle/rules';
 
-const {r$, state} = useRegle({email: ''}, {
+const {r$} = useRegle({email: ''}, {
   email: {required, minLength: minLength(4), email}
 })
 

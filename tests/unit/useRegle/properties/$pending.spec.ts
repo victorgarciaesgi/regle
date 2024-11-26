@@ -72,10 +72,10 @@ describe('$pending', () => {
     await flushPromises();
 
     shouldBeValidField(vm.r$.$fields.level0);
-    expect(vm.ready).toBe(true);
+    expect(vm.r$.$ready).toBe(true);
 
     // Should not run async rules as the result is already validated
-    const [result] = await Promise.all([vm.validateState(), vi.advanceTimersByTimeAsync(100)]);
+    const [result] = await Promise.all([vm.r$.$parse(), vi.advanceTimersByTimeAsync(100)]);
 
     expect(vm.r$.$fields.level0.$pending).toBe(false);
 

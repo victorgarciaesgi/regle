@@ -1,18 +1,19 @@
 import type { ComputedRef, Ref } from 'vue';
-import { computed, onScopeDispose, reactive, unref } from 'vue';
+import { computed, reactive, unref } from 'vue';
 import type {
   $InternalReglePartialValidationTree,
   CustomRulesDeclarationTree,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
-import { useErrors } from '../useErrors';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 
 export function useStateProperties(
   scopeRules: ComputedRef<$InternalReglePartialValidationTree>,
   state: Ref<Record<string, any>>,
   options: ResolvedRegleBehaviourOptions,
+  processedState: Ref<Record<string, any>>,
+  initialState: Record<string, any>,
   customRules?: () => CustomRulesDeclarationTree
 ) {
   const storage = useStorage();
@@ -29,10 +30,10 @@ export function useStateProperties(
       options,
       externalErrors,
       validationGroups: options.validationGroups,
+      processedState,
+      initialState,
     })
   );
 
-  const errors = useErrors(regle);
-
-  return { regle, errors };
+  return regle;
 }

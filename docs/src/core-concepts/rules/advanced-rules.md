@@ -127,7 +127,7 @@ import { useRegle } from '@regle/core';
 
 const condition = ref(false);
 
-const {r$, resetAll} = useRegle({name: ''}, {
+const {r$} = useRegle({name: ''}, {
   name: {required: requiredIf(condition)}
 })
 </script>
@@ -142,7 +142,7 @@ const {r$, resetAll} = useRegle({name: ''}, {
     <input 
       v-model='form.name'
       :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'/>
-    <button type="button" @click="resetAll">Reset</button>
+    <button type="button" @click="r$.$resetAll">Reset</button>
   </div>
   <ul v-if="r$.$errors.name.length">
     <li v-for="error of r$.$errors.name" :key='error'>
@@ -171,8 +171,8 @@ Async rules let you handle validations that are only possible on server, or expe
         :class="{ pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
-      <button type="button" @click="resetAll">Reset</button>
-      <button type="button" @click="validateState">Submit</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$parse">Submit</button>
     </div>
     <span v-if="r$.$fields.email.$pending"> Checking... </span>
     <ul v-if="r$.$errors.email.length">
@@ -209,7 +209,7 @@ const checkEmailExists = createRule({
 
 const form = ref({ email: '' });
 
-const { r$, resetAll, validateState } = useRegle(form, {
+const { r$ } = useRegle(form, {
   email: { email, checkEmailExists },
 });
 </script>

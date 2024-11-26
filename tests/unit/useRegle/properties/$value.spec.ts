@@ -7,6 +7,6 @@ it('should update the source value', async () => {
 
   vm.r$.$value.email = 'Hello';
   await vm.$nextTick();
-  expect(vm.state.email).toBe('Hello');
+  expect(vm.r$.$value.email).toBe('Hello');
   shouldBeErrorField(vm.r$.$fields.email);
 });

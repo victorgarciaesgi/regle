@@ -31,7 +31,7 @@
       <div>
         <button type="button" @click="submit">Submit</button>
         <button type="button" @click="r$.$clearExternalErrors">Reset Errors</button>
-        <button type="button" @click="resetAll">Reset All</button>
+        <button type="button" @click="r$.$resetAll">Reset All</button>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ const form = reactive({
 
 const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const { r$, resetAll } = useRegle(
+const { r$ } = useRegle(
   form,
   {
     email: { required },

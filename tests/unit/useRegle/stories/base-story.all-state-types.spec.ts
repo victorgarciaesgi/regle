@@ -39,7 +39,7 @@ describe.each([
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     shouldBeInvalidField(vm.r$);
 
@@ -62,7 +62,7 @@ describe.each([
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.validateState();
+    const result = await vm.r$.$parse();
 
     expect(result).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
@@ -79,7 +79,7 @@ describe.each([
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
     shouldBeValidField(vm.r$.$fields.level0);
@@ -103,7 +103,7 @@ describe.each([
     vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name.$touch();
     await nextTick();
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
     shouldBeErrorField(vm.r$.$fields.level0);
@@ -141,7 +141,7 @@ describe.each([
     expect(vm.r$.$errors.level1.child).toStrictEqual(['Custom error']);
     expect(vm.r$.$errors.level1.level2.child).toStrictEqual(['Custom error']);
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
     shouldBeErrorField(vm.r$.$fields.level1);
@@ -179,7 +179,7 @@ describe.each([
     expect(vm.r$.$errors.level1.level2.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
-    expect(vm.ready).toBe(true);
+    expect(vm.r$.$ready).toBe(true);
 
     shouldBeValidField(vm.r$);
     shouldBeValidField(vm.r$.$fields.level1);
@@ -208,7 +208,7 @@ describe.each([
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
-    const result = await vm.validateState();
+    const result = await vm.r$.$parse();
 
     expect(result).toStrictEqual({
       level0: 2,
@@ -222,8 +222,8 @@ describe.each([
     });
   });
 
-  it('should reset on initial state when calling resetAll', async () => {
-    await Promise.all([vm.resetAll(), flushPromises()]);
+  it('should reset on initial state when calling r$.$resetAll', async () => {
+    await Promise.all([vm.r$.$resetAll(), flushPromises()]);
 
     await nextTick();
 
@@ -241,7 +241,7 @@ describe.each([
       },
     });
 
-    expect(vm.ready).toBe(false);
+    expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);

@@ -1,23 +1,22 @@
 import type { EmptyObject, UnionToIntersection } from 'type-fest';
-import type { ComputedRef, MaybeRef, Ref } from 'vue';
+import type { MaybeRef } from 'vue';
+import type { DefaultValidators } from '../../core';
+import type { useRegleFn } from '../../core/useRegle';
 import type {
   AllRulesDeclarations,
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
-  RegleErrorTree,
   RegleExternalErrorTree,
   RegleFormPropertyType,
   ReglePartialValidationTree,
+  RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
-  RegleStatus,
   UnwrapRuleTree,
 } from '../rules';
-import type { ExtractFromGetter, Prettify } from '../utils';
+import type { ExtractFromGetter } from '../utils';
 import type { RegleValidationGroupEntry } from './options.types';
-import type { useRegleFn } from '../../core/useRegle';
-import type { DefaultValidators } from '../../core';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
@@ -25,11 +24,7 @@ export interface Regle<
   TExternal extends RegleExternalErrorTree<TState> = never,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
 > {
-  r$: RegleStatus<TState, TRules, TValidationGroups, TExternal>;
-  ready: ComputedRef<boolean>;
-  resetAll: () => void;
-  validateState: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
-  state: Ref<TState>;
+  r$: RegleRoot<TState, TRules, TValidationGroups, TExternal>;
 }
 
 export type isDeepExact<T, U> = {

@@ -36,7 +36,7 @@ All operators are compatible with `withMessage`, `withAsync` or `withParams`
 import { useRegle } from '@regle/core';
 import { and, startsWith, endsWith, withMessage } from '@regle/rules';
 
-const { state, r$, resetAll } = useRegle(
+const { r$ } = useRegle(
   { regex: '' },
   {
     regex: {
@@ -64,7 +64,7 @@ Result:
 import { useRegle } from '@regle/core';
 import { or, startsWith, endsWith, withMessage } from '@regle/rules';
 
-const { state, r$, resetAll } = useRegle(
+const { r$ } = useRegle(
   { regex: '' },
   {
     regex: {
@@ -93,7 +93,7 @@ import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
 const form = ref({ password: '', confirm: '' });
-const { state, r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   password: {
     required,
   },
@@ -125,7 +125,7 @@ const condition = ref(false);
 
 const form = ref({name: ''});
 
-const { state, r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   name: {
     minLength: applyIf(condition, minLength(6))
   },

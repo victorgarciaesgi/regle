@@ -87,7 +87,7 @@ describe('.$touch', () => {
     expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(undefined);
     expect(vm.r$.$fields.user.$fields.lastName?.$dirty).toBe(undefined);
 
-    vm.state.userRequired = true;
+    vm.r$.$value.userRequired = true;
 
     await vm.$nextTick();
 

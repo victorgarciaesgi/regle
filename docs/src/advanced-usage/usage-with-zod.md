@@ -95,7 +95,7 @@ const {r$} = useZodRegle(form, schema);
 
 ## Type safe output
 
-Same as the main `useRegle`, `validateState` will also return a safe output.
+Same as the main `useRegle`, `r$.$parse` will also return a safe output.
 
 
 ```ts twoslash
@@ -117,10 +117,10 @@ const schema = computed(() => z.object({
   }),
 }) satisfies toZod<Form>)
 
-const {r$, validateState} = useZodRegle(form, schema);
+const {r$} = useZodRegle(form, schema);
 
 async function submit() {
-  const result = await validateState();
+  const result = await r$.$parse();
   if (result) {
     console.log(result);
     //            ^?

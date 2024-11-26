@@ -24,7 +24,7 @@
     </ul>
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
 </template>
@@ -38,7 +38,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
   collection: [{ name: '' }],
 });
 
-const { r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     minLength: minLength(4),
     $each: {

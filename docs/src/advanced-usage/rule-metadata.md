@@ -47,11 +47,11 @@ export const strongPassword = createRule({
 <template>
   <div>
     <input
-      v-model="state.password"
+      v-model="r$.$value.password"
       :class="{ valid: r$.$fields.password.$valid }"
       placeholder="Type your password"
     />
-    <button type="button" @click="resetAll">Reset</button>
+    <button type="button" @click="r$.$resetAll">Reset</button>
   </div>
   <div
     class="password-strength"
@@ -74,7 +74,7 @@ export const strongPassword = createRule({
 // @module: esnext
 import { useRegle } from '@regle/core';
 
-const { state, r$, resetAll } = useRegle(
+const { r$ } = useRegle(
   { password: '' },
   {
     password: {

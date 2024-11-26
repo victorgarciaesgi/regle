@@ -52,7 +52,7 @@ export function useMyForm() {
 
 ```vue twoslash [Parent.vue]
 <template>
-  <input v-model="state.email" placeholder="age" />
+  <input v-model="r$.$value.email" placeholder="age" />
   <Child :regle="r$" />
 </template>
 
@@ -63,7 +63,7 @@ export function useMyForm() {
 import Child from './Child.vue';
 import { useMyForm } from './myForm';
 
-const { r$, state} = useMyForm();
+const { r$} = useMyForm();
 </script>
 ```
 
@@ -131,8 +131,8 @@ const props = defineProps<{
 ```vue twoslash [myForm.vue]
 <template>
   <form>
-    <MyInput v-model="state.name" :field="r$.$fields.name" placeholder="Type your name" />
-    <MyInput v-model="state.email" :field="r$.$fields.email" placeholder="Type your email" />
+    <MyInput v-model="r$.$value.name" :field="r$.$fields.name" placeholder="Type your name" />
+    <MyInput v-model="r$.$value.email" :field="r$.$fields.email" placeholder="Type your email" />
   </form>
 </template>
 
@@ -143,7 +143,7 @@ import { useRegle } from '@regle/core';
 import { email, required } from '@regle/rules';
 
 
-const {r$, state} = useRegle({name: '', email: ''}, {
+const {r$} = useRegle({name: '', email: ''}, {
   name: {required},
   email: {required, email},
 })

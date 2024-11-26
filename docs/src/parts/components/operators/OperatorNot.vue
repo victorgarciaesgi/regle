@@ -2,7 +2,7 @@
   <div class="demo-container">
     <div class="row">
       <div>
-        <input v-model="state.password" type="password" placeholder="Type your password" />
+        <input v-model="r$.$value.password" type="password" placeholder="Type your password" />
         <ul v-if="r$.$errors.password.length">
           <li v-for="error of r$.$errors.password" :key="error">
             {{ error }}
@@ -11,7 +11,7 @@
       </div>
       <div>
         <input
-          v-model="state.confirm"
+          v-model="r$.$value.confirm"
           type="password"
           :class="{ error: r$.$fields.confirm.$error }"
           placeholder="Confirm your password"
@@ -22,7 +22,7 @@
           </li>
         </ul>
       </div>
-      <button type="button" @click="resetAll">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
 const form = ref({ password: '', confirm: '' });
-const { state, r$, resetAll } = useRegle(form, {
+const { r$ } = useRegle(form, {
   password: {
     required,
   },

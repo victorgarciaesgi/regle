@@ -57,16 +57,16 @@ describe('withMessage helper', () => {
   });
 
   it('should return errors when submitting no values', async () => {
-    const result = await vm.validateState();
+    const result = await vm.r$.$parse();
     expect(result).toBe(false);
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$errors.firstName).toStrictEqual(['Required']);
   });
 
   it('should return errors when submitting with incorrect values', async () => {
-    vm.state.firstName = 'foo';
-    vm.state.email = 'foo';
-    vm.state.lastName = 'foo';
+    vm.r$.$value.firstName = 'foo';
+    vm.r$.$value.email = 'foo';
+    vm.r$.$value.lastName = 'foo';
 
     await flushPromises();
 
@@ -75,9 +75,9 @@ describe('withMessage helper', () => {
   });
 
   it('should return no errors when submitting with correct values', async () => {
-    vm.state.firstName = 'foobar';
-    vm.state.email = 'foo@bar.fr';
-    vm.state.lastName = '';
+    vm.r$.$value.firstName = 'foobar';
+    vm.r$.$value.email = 'foo@bar.fr';
+    vm.r$.$value.lastName = '';
 
     await nextTick();
 

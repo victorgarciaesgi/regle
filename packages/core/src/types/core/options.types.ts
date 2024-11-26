@@ -11,7 +11,7 @@ import type { DeepMaybeRef } from '../../types/utils';
 
 export interface RegleBehaviourOptions {
   /**
-   * Only display error when calling `validateState()`
+   * Only display error when calling `r$.$parse()`
    * @default false
    */
   lazy?: boolean;
@@ -21,7 +21,7 @@ export interface RegleBehaviourOptions {
    */
   autoDirty?: boolean;
   /**
-   * The fields will turn valid when they are, but not invalid unless calling `validateState()`
+   * The fields will turn valid when they are, but not invalid unless calling `r$.$parse()`
    * @default false
    *
    * @experimental report any bug

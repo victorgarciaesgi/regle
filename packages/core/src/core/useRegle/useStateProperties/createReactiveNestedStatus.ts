@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
+import type { ComputedRef, EffectScope, MaybeRef, Ref, WatchStopHandle } from 'vue';
+import { computed, effectScope, isRef, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -16,7 +16,7 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import { isEmpty, isObject, isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
@@ -32,6 +32,8 @@ interface CreateReactiveNestedStatus {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
+  processedState?: Ref<Record<string, any>>;
+  initialState?: Record<string, any>;
   validationGroups?:
     | ((rules: {
         [x: string]: $InternalRegleStatusType;
@@ -49,6 +51,8 @@ export function createReactiveNestedStatus({
   options,
   externalErrors,
   validationGroups,
+  initialState,
+  processedState,
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -59,6 +63,7 @@ export function createReactiveNestedStatus({
     $pending: ComputedRef<boolean>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
+    $ready: ComputedRef<boolean>;
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
@@ -241,6 +246,10 @@ export function createReactiveNestedStatus({
         return $dirty.value && !$pending.value && $invalid.value;
       });
 
+      const $ready = computed<boolean>(() => {
+        return !$invalid.value && !$pending.value;
+      });
+
       const $pending = computed<boolean>(() => {
         return Object.entries($fields.value).some(([key, statusOrField]) => {
           return statusOrField.$pending;
@@ -271,6 +280,7 @@ export function createReactiveNestedStatus({
         $pending,
         $errors,
         $silentErrors,
+        $ready,
       } satisfies ScopeState;
     })!;
   }
@@ -295,16 +305,82 @@ export function createReactiveNestedStatus({
     });
   }
 
+  function $resetAll() {
+    if (initialState) {
+      $unwatch();
+      resetValuesRecursively(state, initialState);
+      $reset();
+    }
+  }
+
+  function resetValuesRecursively(
+    current: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
+    initial: Record<string, MaybeRef<any>>
+  ) {
+    Object.entries(initial).forEach(([key, value]) => {
+      let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
+      let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
+      let initialRef = isRef(initial[key]) ? (initial[key] as any)._value : initial[key];
+      if (Array.isArray(initialRef) && Array.isArray(currentValue)) {
+        currentRef[key] = [];
+        initialRef.forEach((val, index) => {
+          currentRef[key][index] = {};
+          resetValuesRecursively(currentRef[key][index], initialRef[index]);
+        });
+      } else if (isObject(initialRef)) {
+        resetValuesRecursively(currentValue, initialRef);
+      } else {
+        if (isRef(currentRef[key])) {
+          currentRef[key].value = initialRef;
+        } else {
+          currentRef[key] = initialRef;
+        }
+      }
+    });
+  }
+
+  function $extractDirtyFields(filterNullishValues: boolean = true): Record<string, any> {
+    let dirtyFields = Object.entries($fields.value).map(([key, field]) => {
+      return [key, field.$extractDirtyFields(filterNullishValues)];
+    });
+    if (filterNullishValues) {
+      dirtyFields = dirtyFields.filter(([key, value]) => {
+        if (isObject(value)) {
+          return !isEmpty(value);
+        } else if (Array.isArray(value)) {
+          return value.length;
+        } else {
+          return !!value;
+        }
+      });
+    }
+    return Object.fromEntries(dirtyFields);
+  }
+
+  async function $parse(): Promise<false | Record<string, any>> {
+    $touch();
+    const result = await $validate();
+    if (result) {
+      return state.value;
+    }
+    return false;
+  }
+
   return reactive({
     ...scopeState,
     $fields,
     $value: state,
+    ...(initialState && {
+      $resetAll,
+    }),
     $reset,
     $touch,
     $validate,
     $unwatch,
     $watch,
     $clearExternalErrors,
+    $extractDirtyFields,
+    $parse,
   }) satisfies $InternalRegleStatus;
 }
 
