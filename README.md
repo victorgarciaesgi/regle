@@ -76,10 +76,10 @@ TODO
 - [x] Nuxt Module
 - [x] Documentation
 - [ ] Unit tests (in progress)
+- [x] `$extractDirtyFields`
 - [ ] E2E tests (in progress)
 - [ ] Examples
 - [ ] `withErrorType`
-- [ ] `extractDirtyFields`
 - [ ] Issue template
 - [ ] `Valibot` support
 - [ ] `Yup` support
