@@ -72,14 +72,13 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
 
     const initialState = cloneDeep(toRaw(processedState.value));
 
-    const regle = useStateProperties(
-      scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
-      processedState,
-      resolvedOptions,
-      processedState,
+    const regle = useStateProperties({
+      scopeRules: scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
+      state: processedState,
+      options: resolvedOptions,
       initialState,
-      customRules
-    );
+      customRules,
+    });
 
     return {
       r$: regle as any,

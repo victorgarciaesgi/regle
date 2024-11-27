@@ -38,7 +38,7 @@ r$.$fields.email.$rules.required.
   </ul>
 </template>
 ```
-<br/><br/><br/><br/>
+<br/>
 
 ## Computed properties for rules
 

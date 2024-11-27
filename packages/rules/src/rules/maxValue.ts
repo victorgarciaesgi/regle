@@ -14,7 +14,7 @@ export const maxValue: RegleRuleWithParamsDefinition<number, [count: number], fa
         console.warn(
           `[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`
         );
-        return false;
+        return true;
       }
       return true;
     },

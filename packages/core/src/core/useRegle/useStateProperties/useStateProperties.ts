@@ -8,14 +8,19 @@ import type {
 import { useStorage } from '../../useStorage';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 
-export function useStateProperties(
-  scopeRules: ComputedRef<$InternalReglePartialValidationTree>,
-  state: Ref<Record<string, any>>,
-  options: ResolvedRegleBehaviourOptions,
-  processedState: Ref<Record<string, any>>,
-  initialState: Record<string, any>,
-  customRules?: () => CustomRulesDeclarationTree
-) {
+export function useStateProperties({
+  initialState,
+  options,
+  scopeRules,
+  state,
+  customRules,
+}: {
+  scopeRules: ComputedRef<$InternalReglePartialValidationTree>;
+  state: Ref<Record<string, any>>;
+  options: ResolvedRegleBehaviourOptions;
+  initialState: Record<string, any>;
+  customRules?: () => CustomRulesDeclarationTree;
+}) {
   const storage = useStorage();
 
   const externalErrors = computed(() => unref(options.externalErrors));
@@ -30,7 +35,6 @@ export function useStateProperties(
       options,
       externalErrors,
       validationGroups: options.validationGroups,
-      processedState,
       initialState,
     })
   );

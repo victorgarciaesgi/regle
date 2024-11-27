@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import { isRef, unref, type MaybeRef, type Ref } from 'vue';
 import type { MaybeGetter } from '../types';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
@@ -58,4 +58,53 @@ export function unwrapGetter<T extends any>(
     return getter(value, index ?? 0);
   }
   return getter;
+}
+
+export function resetFieldValue(current: MaybeRef<any>, initial: any) {
+  if (isRef(current)) {
+    current.value = initial;
+  } else {
+    current = initial;
+  }
+}
+
+export function resetArrayValuesRecursively(current: MaybeRef<any[]>, initial: any[]) {
+  if (isRef(current)) {
+    current.value = [];
+  } else {
+    current = [];
+  }
+  initial.forEach((val, index) => {
+    let currentRef = isRef(current) ? current.value[index] : current[index];
+    currentRef = {};
+    resetValuesRecursively(currentRef, initial[index]);
+  });
+}
+
+export function resetValuesRecursively(
+  current: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
+  initial: Record<string, MaybeRef<any>>
+) {
+  Object.entries({ ...unref(current), ...initial }).forEach(([key, value]) => {
+    let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
+    let initialRef = isRef(initial[key]) ? (initial[key] as any)._value : initial[key];
+    let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
+    if (Array.isArray(currentRef[key])) {
+      currentRef[key] = [];
+      if (Array.isArray(initialRef)) {
+        initialRef.forEach((val, index) => {
+          currentRef[key][index] = {};
+          resetValuesRecursively(currentRef[key][index], initialRef[index]);
+        });
+      }
+    } else if (isObject(initialRef)) {
+      resetValuesRecursively(currentValue, initialRef);
+    } else {
+      if (isRef(currentRef[key])) {
+        currentRef[key].value = initialRef;
+      } else {
+        currentRef[key] = initialRef;
+      }
+    }
+  });
 }

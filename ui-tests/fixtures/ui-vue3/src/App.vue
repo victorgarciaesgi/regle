@@ -82,7 +82,7 @@
       />
     </div>
     <div class="button-list">
-      <button type="button" @click="dirtyFields">Reset</button>
+      <button type="button" @click="r$.$resetAll">Reset</button>
       <button type="submit">Submit</button>
     </div>
   </form>
@@ -124,8 +124,10 @@ type Form = {
 };
 
 const form = reactive<Form>({
-  user: {},
-  projects: [{}],
+  user: {
+    email: 'ezfjpzefj',
+  },
+  projects: [{ name: 'foo' }],
 });
 
 function dirtyFields() {

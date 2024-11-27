@@ -24,6 +24,7 @@ if you used **Vuelidate**, it's the same as `v$`.
 
 Regle is a reactive object containing a bunch of computed properties and methods you can use freely depending on your need.
 
+You can find all the [available properties here](/core-concepts/validation-properties)
 
 ``` ts twoslash
 // @noErrors

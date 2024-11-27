@@ -9,7 +9,7 @@ import type {
   RegleRuleDecl,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce, isEmpty, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import { debounce, isEmpty, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { extractRulesErrors } from '../useErrors';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
@@ -25,23 +25,8 @@ interface CreateReactiveFieldStatusArgs {
   externalErrors: Readonly<Ref<string[] | undefined>>;
   onUnwatch?: () => void;
   $isArray?: boolean;
+  initialState: unknown | undefined;
 }
-
-type ScopeReturnState = {
-  $error: ComputedRef<boolean>;
-  $errors: ComputedRef<string[]>;
-  $silentErrors: ComputedRef<string[]>;
-  $pending: ComputedRef<boolean>;
-  $invalid: ComputedRef<boolean>;
-  $valid: ComputedRef<boolean>;
-  $debounce: ComputedRef<number | undefined>;
-  $lazy: ComputedRef<boolean | undefined>;
-  $rewardEarly: ComputedRef<boolean | undefined>;
-  $autoDirty: ComputedRef<boolean | undefined>;
-  $anyDirty: ComputedRef<boolean>;
-  haveAnyAsyncRule: ComputedRef<boolean>;
-  $ready: ComputedRef<boolean>;
-};
 
 export function createReactiveFieldStatus({
   state,
@@ -51,10 +36,26 @@ export function createReactiveFieldStatus({
   storage,
   options,
   externalErrors,
-  index,
   onUnwatch,
   $isArray,
+  initialState,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
+  type ScopeReturnState = {
+    $error: ComputedRef<boolean>;
+    $errors: ComputedRef<string[]>;
+    $silentErrors: ComputedRef<string[]>;
+    $pending: ComputedRef<boolean>;
+    $invalid: ComputedRef<boolean>;
+    $valid: ComputedRef<boolean>;
+    $debounce: ComputedRef<number | undefined>;
+    $lazy: ComputedRef<boolean | undefined>;
+    $rewardEarly: ComputedRef<boolean | undefined>;
+    $autoDirty: ComputedRef<boolean | undefined>;
+    $anyDirty: ComputedRef<boolean>;
+    haveAnyAsyncRule: ComputedRef<boolean>;
+    $ready: ComputedRef<boolean>;
+  };
+
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
 
@@ -220,7 +221,7 @@ export function createReactiveFieldStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        return !$invalid.value && !$pending.value;
+        return !($invalid.value || $pending.value);
       });
 
       const $pending = computed<boolean>(() => {
@@ -382,6 +383,12 @@ export function createReactiveFieldStatus({
     }
   }
 
+  function $resetAll() {
+    $unwatch();
+    state.value = resetFieldValue(state, initialState);
+    $reset();
+  }
+
   function $extractDirtyFields(filterNullishValues: boolean = true): any | null {
     if ($dirty.value) {
       return state.value;
@@ -408,6 +415,7 @@ export function createReactiveFieldStatus({
     $validate,
     $unwatch,
     $watch,
+    $resetAll,
     $extractDirtyFields,
     $clearExternalErrors,
   }) satisfies $InternalRegleFieldStatus;

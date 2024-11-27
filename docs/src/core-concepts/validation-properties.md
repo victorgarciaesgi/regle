@@ -25,20 +25,11 @@ const {r$} = useRegle(form, {
   }
 })
 
-r$.$fields.email.
-//               ^|
+r$.$fields.email.$e
+//                 ^|
 </script>
-
-<template>
-  <input v-model='form.user.firstName' placeholder='Type your firstName'/>
-  <ul>
-    <li v-for="error of r$.$errors.user.firstName" :key='error'>
-      {{ error }}
-    </li>
-  </ul>
-</template>
 ```
-<br/><br/><br/><br/><br/>
+<br/>
 
 ## Computed properties for fields
 
@@ -78,6 +69,11 @@ A reference to the original validated model. It can be used to bind your form wi
 
 Indicates if any child async rule is currently pending. Always false if all rules are synchronous.
 
+### `$ready`: 
+- Type: `readonly boolean`
+
+A computed state indicating if your form is ready to submit (to compute a disabled state on a button). It's equivalent to `!$invalid && !$pending`.
+
 
 ### `$error`
 - Type: `readonly boolean`
@@ -98,11 +94,21 @@ Collection of all the error messages, collected for all child properties.
 
 ## Common methods for fields
 
+### `$parse`: 
+- Type: `() => Promise<false | SafeOutput<TState>>`
+a Promise that will turn all the fields dirty, and run all their validation rules. It will return either `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only)
+
 
 ### `$validate`
 - Type: `() => Promise<boolean>`
 
 Sets all properties as dirty, triggering all rules. Returns a Promise with a boolean, which resolves once all rules finish.
+
+### `$extractDirtyFields`
+- Type: `(filterNullishValues = true) => PartialDeep<TState>`
+
+Will return a copy of your state with only the fields that are dirty.
+By default it will filter out nullish values or objects, but you can override it with the first parameter `$extractDirtyFields(false)`.
 
 ### `$touch`
 - Type: `() => void`
@@ -113,6 +119,12 @@ Sets its property and all nested properties $dirty state to true.
 - Type: `() => void`
 
 Resets the $dirty state on all nested properties of a form.
+
+### `$resetAll`
+- Type: `() => void`
+
+Will reset both your validation state and your form state to their initial values.
+
 
 ### `$clearExternalErrors`
 - Type: `() => void`

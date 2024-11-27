@@ -27,14 +27,12 @@ import {useRegle} from '@regle/core';
 
 export const useDemoStore = defineStore('demo-store', () => {
 
-  const regleProperties = useRegle({email: ''}, {
+  const {r$} = useRegle({email: ''}, {
     email: {required, minLength: minLength(4), email}
   })
 
-  // This is a proposed way to export the properties without redundant code
-  // You can also export it one my one as each property is reactive
   return {
-    ...regleProperties
+    r$
   }
 })
 ```

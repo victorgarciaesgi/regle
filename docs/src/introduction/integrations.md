@@ -46,3 +46,37 @@ This exports will become globally available in your nuxt app
   - withParams
 - `@regle/zod` (if present)
   - useZodRegle
+
+
+
+## Zod <span data-title="zod"></span>
+
+Regle offers an adapter for [Zod](https://zod.dev/). You can use any zod object schema to validate your state. In will offers the same DX as using `@regle/rules`.
+
+Check [documentation for Zod](/advanced-usage/usage-with-zod)
+
+::: code-group
+```sh [pnpm]
+pnpm add @regle/zod
+```
+
+```sh [npm]
+npm install @regle/zod
+```
+
+```sh [yarn]
+yarn add @regle/zod
+```
+
+```sh [bun]
+bun add @regle/zod
+```
+:::
+
+## Valibot
+
+In progress
+
+## Yup
+
+In progress

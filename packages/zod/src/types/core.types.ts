@@ -13,7 +13,7 @@ export interface ZodRegle<
   TSchema extends toZod<any>,
   TExternal extends RegleExternalErrorTree<TState> = never,
 > {
-  r$: ZodRegleRoot<TState, TSchema, TExternal>;
+  r$: ZodRegleStatus<TState, TSchema, TExternal>;
 }
 
 // - Zod errors
@@ -45,17 +45,6 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
 /**
  * @public
  */
-export interface ZodRegleRoot<
-  TState extends Record<string, any> = Record<string, any>,
-  TSchema extends toZod<any> = toZod<any>,
-  TExternal extends RegleExternalErrorTree<TState> = never,
-> extends ZodRegleStatus<TState, TSchema, TExternal> {
-  $resetAll: () => void;
-}
-
-/**
- * @public
- */
 export interface ZodRegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends toZod<any> = toZod<any>,
@@ -70,6 +59,7 @@ export interface ZodRegleStatus<
     : never;
   readonly $errors: ZodToRegleErrorTree<TSchema, TExternal>;
   readonly $silentErrors: ZodToRegleErrorTree<TSchema, TExternal>;
+  $resetAll: () => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   $parse: () => Promise<false | z.output<TSchema>>;
 }

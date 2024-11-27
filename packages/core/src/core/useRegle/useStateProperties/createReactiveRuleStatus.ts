@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRaw, watch } from 'vue';
+import { computed, effectScope, reactive, ref, watch } from 'vue';
 import type {
   $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
@@ -9,8 +9,7 @@ import type {
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
 } from '../../../types';
-import { InternalRuleType } from '../../../types';
-import { cloneDeep, debounce, isEmpty } from '../../../utils';
+import { debounce, isEmpty } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';

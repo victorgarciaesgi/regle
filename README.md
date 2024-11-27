@@ -85,11 +85,11 @@ TODO
 - [ ] `Yup` support
 - [ ] TS docs
 
-## Maybe in roadmap
+## 🤔 Maybe in roadmap
 
 - [ ] Typed plugin system (like scrollToError)
 
-## Quick install
+## ⬇️ Quick install
 
 ```bash
 pnpm install @regle/core @regle/rules

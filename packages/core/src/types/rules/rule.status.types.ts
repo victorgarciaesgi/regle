@@ -32,9 +32,7 @@ export type RegleRoot<
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TExternal extends RegleExternalErrorTree<TState> = never,
-> = RegleStatus<TState, TRules, TExternal> & {
-  $resetAll: () => void;
-} & ([TValidationGroups] extends [never]
+> = RegleStatus<TState, TRules, TExternal> & {} & ([TValidationGroups] extends [never]
     ? {}
     : {
         $groups: {
@@ -70,7 +68,6 @@ export interface $InternalRegleStatus extends RegleCommonStatus {
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $parse: () => Promise<false | Record<string, any>>;
-  $resetAll?: () => void;
 }
 
 /**
@@ -115,7 +112,7 @@ export interface RegleFieldStatus<
   readonly $errors: string[];
   readonly $silentErrors: string[];
   readonly $externalErrors?: string[];
-  $extractDirtyFields: (filterNullishValues?: boolean) => TState | null;
+  $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<
       TRules,
@@ -162,6 +159,7 @@ export interface RegleCommonStatus<TValue = any> {
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
   $reset(): void;
+  $resetAll: () => void;
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;

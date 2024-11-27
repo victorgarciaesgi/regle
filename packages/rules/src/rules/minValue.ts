@@ -14,7 +14,7 @@ export const minValue: RegleRuleWithParamsDefinition<number, [count: number], fa
         console.warn(
           `[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`
         );
-        return false;
+        return true;
       }
       return true;
     },

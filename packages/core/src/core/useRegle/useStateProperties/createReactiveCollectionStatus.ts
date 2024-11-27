@@ -15,7 +15,14 @@ import type {
   RegleCollectionRuleDeclKeyProperty,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { cloneDeep, isEmpty, isObject, randomId, unwrapGetter } from '../../../utils';
+import {
+  cloneDeep,
+  isEmpty,
+  isObject,
+  randomId,
+  resetArrayValuesRecursively,
+  unwrapGetter,
+} from '../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
 import type { RegleStorage } from '../../useStorage';
 import { isExternalErrorCollection, isNestedRulesStatus, isRuleDef } from '../guards';
@@ -34,6 +41,7 @@ function createCollectionElement({
   customMessages,
   rules,
   externalErrors,
+  initialState,
 }: {
   $id: string;
   path: string;
@@ -44,6 +52,7 @@ function createCollectionElement({
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: ComputedRef<$InternalExternalRegleErrors[] | undefined>;
+  initialState: any[] | undefined;
 }): $InternalRegleStatusType | null {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
@@ -73,6 +82,7 @@ function createCollectionElement({
     storage,
     options,
     externalErrors: $externalErrors,
+    initialState: initialState?.[index],
   });
 
   if ($status) {
@@ -93,24 +103,7 @@ interface CreateReactiveCollectionStatusArgs {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
-}
-
-interface ScopeReturnState {
-  $dirty: ComputedRef<boolean>;
-  $anyDirty: ComputedRef<boolean>;
-  $invalid: ComputedRef<boolean>;
-  $valid: ComputedRef<boolean>;
-  $error: ComputedRef<boolean>;
-  $pending: ComputedRef<boolean>;
-  $errors: ComputedRef<$InternalRegleCollectionErrors>;
-  $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
-  $ready: ComputedRef<boolean>;
-}
-
-interface ImmediateScopeReturnState {
-  isPrimitiveArray: ComputedRef<boolean>;
-  $externalErrorsField: ComputedRef<string[]>;
-  $externalErrorsEach: ComputedRef<$InternalExternalRegleErrors[]>;
+  initialState: any[];
 }
 
 export function createReactiveCollectionStatus({
@@ -121,7 +114,25 @@ export function createReactiveCollectionStatus({
   storage,
   options,
   externalErrors,
+  initialState,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
+  interface ScopeReturnState {
+    $dirty: ComputedRef<boolean>;
+    $anyDirty: ComputedRef<boolean>;
+    $invalid: ComputedRef<boolean>;
+    $valid: ComputedRef<boolean>;
+    $error: ComputedRef<boolean>;
+    $pending: ComputedRef<boolean>;
+    $errors: ComputedRef<$InternalRegleCollectionErrors>;
+    $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
+    $ready: ComputedRef<boolean>;
+  }
+  interface ImmediateScopeReturnState {
+    isPrimitiveArray: ComputedRef<boolean>;
+    $externalErrorsField: ComputedRef<string[]>;
+    $externalErrorsEach: ComputedRef<$InternalExternalRegleErrors[]>;
+  }
+
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
 
@@ -219,6 +230,7 @@ export function createReactiveCollectionStatus({
               options,
               storage,
               externalErrors: immediateScopeState.$externalErrorsEach,
+              initialState: initialState[index],
             });
             if (element) {
               return element;
@@ -240,6 +252,7 @@ export function createReactiveCollectionStatus({
       options,
       externalErrors: immediateScopeState.$externalErrorsField,
       $isArray: true,
+      initialState: initialState,
     });
   }
 
@@ -269,6 +282,7 @@ export function createReactiveCollectionStatus({
                 options,
                 storage,
                 externalErrors: immediateScopeState.$externalErrorsEach,
+                initialState: initialState[index],
               });
               if (element) {
                 return element;
@@ -347,7 +361,7 @@ export function createReactiveCollectionStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        return !$invalid.value && !$pending.value;
+        return !($invalid.value || $pending.value);
       });
 
       const $pending = computed<boolean>(() => {
@@ -468,6 +482,13 @@ export function createReactiveCollectionStatus({
     return dirtyFields;
   }
 
+  function $resetAll() {
+    console.log(initialState);
+    $unwatch();
+    resetArrayValuesRecursively(state, initialState);
+    $reset();
+  }
+
   async function $parse(): Promise<false | any[]> {
     $touch();
     const result = await $validate();
@@ -487,6 +508,7 @@ export function createReactiveCollectionStatus({
     $watch,
     $touch,
     $reset,
+    $resetAll,
     $extractDirtyFields,
     $parse,
     $clearExternalErrors,

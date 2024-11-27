@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, EffectScope, MaybeRef, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, isRef, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
+import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -16,7 +16,13 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isEmpty, isObject, isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import {
+  isEmpty,
+  isObject,
+  isRefObject,
+  isVueSuperiorOrEqualTo3dotFive,
+  resetValuesRecursively,
+} from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
@@ -32,8 +38,7 @@ interface CreateReactiveNestedStatus {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
-  processedState?: Ref<Record<string, any>>;
-  initialState?: Record<string, any>;
+  initialState: Record<string, any> | undefined;
   validationGroups?:
     | ((rules: {
         [x: string]: $InternalRegleStatusType;
@@ -52,7 +57,6 @@ export function createReactiveNestedStatus({
   externalErrors,
   validationGroups,
   initialState,
-  processedState,
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -71,7 +75,7 @@ export function createReactiveNestedStatus({
   let $unwatchState: WatchStopHandle | null = null;
   let $unwatchGroups: WatchStopHandle | null = null;
 
-  function createReactiveFieldsStatus(watch = true, forceFromGetter = false) {
+  function createReactiveFieldsStatus(watch = true) {
     $fields.value = null!;
     triggerRef($fields);
 
@@ -92,6 +96,7 @@ export function createReactiveNestedStatus({
                 storage,
                 options,
                 externalErrors: $externalErrors,
+                initialState: initialState?.[statePropKey],
               }),
             ];
           }
@@ -119,6 +124,7 @@ export function createReactiveNestedStatus({
                 storage,
                 options,
                 externalErrors: $externalErrors,
+                initialState: initialState?.[key],
               }),
             ];
           }
@@ -247,7 +253,7 @@ export function createReactiveNestedStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        return !$invalid.value && !$pending.value;
+        return !($invalid.value || $pending.value);
       });
 
       const $pending = computed<boolean>(() => {
@@ -306,37 +312,9 @@ export function createReactiveNestedStatus({
   }
 
   function $resetAll() {
-    if (initialState) {
-      $unwatch();
-      resetValuesRecursively(state, initialState);
-      $reset();
-    }
-  }
-
-  function resetValuesRecursively(
-    current: Ref<Record<string, MaybeRef<any>>> | Record<string, MaybeRef<any>>,
-    initial: Record<string, MaybeRef<any>>
-  ) {
-    Object.entries(initial).forEach(([key, value]) => {
-      let currentRef = isRef<Record<string, MaybeRef<any>>>(current) ? current.value : current;
-      let currentValue = isRef(currentRef[key]) ? currentRef[key].value : currentRef[key];
-      let initialRef = isRef(initial[key]) ? (initial[key] as any)._value : initial[key];
-      if (Array.isArray(initialRef) && Array.isArray(currentValue)) {
-        currentRef[key] = [];
-        initialRef.forEach((val, index) => {
-          currentRef[key][index] = {};
-          resetValuesRecursively(currentRef[key][index], initialRef[index]);
-        });
-      } else if (isObject(initialRef)) {
-        resetValuesRecursively(currentValue, initialRef);
-      } else {
-        if (isRef(currentRef[key])) {
-          currentRef[key].value = initialRef;
-        } else {
-          currentRef[key] = initialRef;
-        }
-      }
-    });
+    $unwatch();
+    resetValuesRecursively(state, initialState ?? {});
+    $reset();
   }
 
   function $extractDirtyFields(filterNullishValues: boolean = true): Record<string, any> {
@@ -370,9 +348,7 @@ export function createReactiveNestedStatus({
     ...scopeState,
     $fields,
     $value: state,
-    ...(initialState && {
-      $resetAll,
-    }),
+    $resetAll,
     $reset,
     $touch,
     $validate,
@@ -393,6 +369,7 @@ interface CreateReactiveChildrenStatus {
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
+  initialState: any;
   onUnwatch?: () => void;
 }
 
@@ -405,6 +382,7 @@ export function createReactiveChildrenStatus({
   options,
   externalErrors,
   index,
+  initialState,
   onUnwatch,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
@@ -417,6 +395,7 @@ export function createReactiveChildrenStatus({
       options,
       index,
       externalErrors,
+      initialState,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
@@ -427,6 +406,7 @@ export function createReactiveChildrenStatus({
       storage,
       options,
       index,
+      initialState,
       externalErrors: externalErrors as Readonly<Ref<RegleExternalErrorTree | undefined>>,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
@@ -440,6 +420,7 @@ export function createReactiveChildrenStatus({
       index,
       externalErrors: externalErrors as Ref<string[] | undefined>,
       onUnwatch,
+      initialState,
     });
   }
 

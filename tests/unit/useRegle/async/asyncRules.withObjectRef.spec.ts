@@ -243,9 +243,7 @@ describe('useRegle with async rules and Object refs', async () => {
   it('should reset on initial state when calling r$.$resetAll', async () => {
     vm.r$.$resetAll();
 
-    vi.advanceTimersByTime(1000);
     await nextTick();
-    await flushPromises();
 
     expect(vm.r$.$errors).toStrictEqual({
       level0Async: [],

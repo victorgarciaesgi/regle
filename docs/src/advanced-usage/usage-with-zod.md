@@ -34,7 +34,6 @@ yarn add @regle/zod
 ```sh [bun]
 bun add @regle/zod
 ```
-
 :::
 
 

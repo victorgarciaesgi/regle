@@ -13,11 +13,11 @@ describe('minValue validator', () => {
     expect(minValue(5).exec(4)).toBe(false);
   });
 
-  it('should validate the string value', () => {
-    expect(minValue(5).exec('not string here' as any)).toBe(false);
+  it('should not validate the string value', () => {
+    expect(minValue(5).exec('not string here' as any)).toBe(true);
   });
 
-  it('should validate the object value', () => {
-    expect(minValue(5).exec({ hello: 'world' } as any)).toBe(false);
+  it('should not validate the object value', () => {
+    expect(minValue(5).exec({ hello: 'world' } as any)).toBe(true);
   });
 });
