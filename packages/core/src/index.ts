@@ -48,5 +48,8 @@ export type {
   AllRulesDeclarations,
   UnwrapRuleWithParams,
   InferRegleRules,
-  RegleRequiredRules,
+  InferRegleRoot,
+  InferRegleShortcuts,
+  RegleEnforceRequiredRules,
+  RegleEnforceCustomRequiredRules,
 } from './types';

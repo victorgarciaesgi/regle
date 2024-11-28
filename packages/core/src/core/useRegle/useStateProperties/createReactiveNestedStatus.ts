@@ -1,6 +1,16 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, EffectScope, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch } from 'vue';
+import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
+import {
+  computed,
+  effectScope,
+  reactive,
+  ref,
+  toRef,
+  triggerRef,
+  unref,
+  watch,
+  watchEffect,
+} from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -12,6 +22,7 @@ import type {
   DeepMaybeRef,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
+  RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
@@ -39,6 +50,8 @@ interface CreateReactiveNestedStatus {
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
   initialState: Record<string, any> | undefined;
+  fieldName: string;
+  shortcuts?: RegleShortcutDefinition;
   validationGroups?:
     | ((rules: {
         [x: string]: $InternalRegleStatusType;
@@ -57,6 +70,8 @@ export function createReactiveNestedStatus({
   externalErrors,
   validationGroups,
   initialState,
+  shortcuts,
+  fieldName,
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   type ScopeState = {
     $dirty: ComputedRef<boolean>;
@@ -68,6 +83,8 @@ export function createReactiveNestedStatus({
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
+    $name: ComputedRef<string>;
+    $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
@@ -97,6 +114,8 @@ export function createReactiveNestedStatus({
                 options,
                 externalErrors: $externalErrors,
                 initialState: initialState?.[statePropKey],
+                shortcuts,
+                fieldName: statePropKey,
               }),
             ];
           }
@@ -125,6 +144,7 @@ export function createReactiveNestedStatus({
                 options,
                 externalErrors: $externalErrors,
                 initialState: initialState?.[key],
+                fieldName: key,
               }),
             ];
           }
@@ -269,6 +289,7 @@ export function createReactiveNestedStatus({
           })
         );
       });
+
       const $silentErrors = computed(() => {
         return Object.fromEntries(
           Object.entries($fields.value).map(([key, statusOrField]) => {
@@ -276,6 +297,41 @@ export function createReactiveNestedStatus({
           })
         );
       });
+
+      const $name = computed(() => fieldName);
+
+      function processShortcuts() {
+        if (shortcuts?.nested) {
+          Object.entries(shortcuts.nested).forEach(([key, value]) => {
+            const scope = effectScope();
+
+            $shortcuts[key] = scope.run(() => {
+              const result = ref();
+
+              watchEffect(() => {
+                result.value = value({
+                  $dirty: $dirty.value,
+                  $value: state,
+                  $error: $error.value,
+                  $pending: $pending.value,
+                  $invalid: $invalid.value,
+                  $valid: $valid.value,
+                  $ready: $ready.value,
+                  $anyDirty: $anyDirty.value,
+                  $name: $name.value,
+                  $silentErrors: $silentErrors.value as any,
+                  $errors: $errors.value as any,
+                  $fields: $fields.value,
+                });
+              });
+              return result;
+            })!;
+          });
+        }
+      }
+
+      const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
+      processShortcuts();
 
       return {
         $dirty,
@@ -287,6 +343,8 @@ export function createReactiveNestedStatus({
         $errors,
         $silentErrors,
         $ready,
+        $name,
+        $shortcuts,
       } satisfies ScopeState;
     })!;
   }
@@ -344,8 +402,11 @@ export function createReactiveNestedStatus({
     return false;
   }
 
+  const { $shortcuts, ...restScopeState } = scopeState;
+
   return reactive({
-    ...scopeState,
+    ...restScopeState,
+    ...$shortcuts,
     $fields,
     $value: state,
     $resetAll,
@@ -370,6 +431,8 @@ interface CreateReactiveChildrenStatus {
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
   initialState: any;
+  fieldName: string;
+  shortcuts?: RegleShortcutDefinition;
   onUnwatch?: () => void;
 }
 
@@ -383,7 +446,9 @@ export function createReactiveChildrenStatus({
   externalErrors,
   index,
   initialState,
+  shortcuts,
   onUnwatch,
+  fieldName,
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
   if (isCollectionRulesDef(rulesDef)) {
     return createReactiveCollectionStatus({
@@ -396,6 +461,8 @@ export function createReactiveChildrenStatus({
       index,
       externalErrors,
       initialState,
+      fieldName,
+      shortcuts,
     });
   } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
     return createReactiveNestedStatus({
@@ -407,6 +474,8 @@ export function createReactiveChildrenStatus({
       options,
       index,
       initialState,
+      shortcuts,
+      fieldName,
       externalErrors: externalErrors as Readonly<Ref<RegleExternalErrorTree | undefined>>,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
@@ -420,7 +489,9 @@ export function createReactiveChildrenStatus({
       index,
       externalErrors: externalErrors as Ref<string[] | undefined>,
       onUnwatch,
+      shortcuts,
       initialState,
+      fieldName,
     });
   }
 

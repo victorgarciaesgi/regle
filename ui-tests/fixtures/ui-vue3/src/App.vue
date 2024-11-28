@@ -26,6 +26,11 @@
         placeholder="Type your description"
         label="Description"
       />
+      <MyCheckBox
+        v-model="form.acceptTC"
+        :field="r$.$fields.acceptTC"
+        placeholder="Accept our terms and conditions"
+      />
       <label>Your projects</label>
       <div class="projects">
         <div
@@ -62,11 +67,7 @@
           {{ error }}
         </li>
       </ul>
-      <MyCheckBox
-        v-model="form.acceptTC"
-        :field="r$.$fields.acceptTC"
-        placeholder="Accept our terms and conditions"
-      />
+
       <Password
         v-model="form.password"
         :field="r$.$fields.password"
@@ -85,6 +86,7 @@
       <button type="button" @click="r$.$resetAll">Reset</button>
       <button type="submit">Submit</button>
     </div>
+    <pre>{{ r$.$dirty }}</pre>
   </form>
 </template>
 
@@ -99,6 +101,7 @@ import {
   minValue,
   numeric,
   required,
+  requiredIf,
   sameAs,
   url,
   withMessage,
@@ -146,7 +149,7 @@ const { r$ } = useCustomRegle(form, {
       email,
     },
     pseudo: {
-      required,
+      required: requiredIf(() => !!form.acceptTC),
       checkPseudo,
     },
   },

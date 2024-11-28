@@ -19,6 +19,7 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
+  RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   SafeProperty,
@@ -32,7 +33,8 @@ export type RegleRoot<
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TExternal extends RegleExternalErrorTree<TState> = never,
-> = RegleStatus<TState, TRules, TExternal> & {} & ([TValidationGroups] extends [never]
+  TShortcuts extends RegleShortcutDefinition = never,
+> = RegleStatus<TState, TRules, TExternal, TShortcuts> & {} & ([TValidationGroups] extends [never]
     ? {}
     : {
         $groups: {
@@ -47,15 +49,25 @@ export type RegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TRules extends ReglePartialValidationTree<TState> = Record<string, any>,
   TExternal extends RegleExternalErrorTree<TState> = never,
+  TShortcuts extends RegleShortcutDefinition = never,
 > = RegleCommonStatus<TState> & {
   readonly $fields: {
-    readonly [TKey in keyof TRules]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey>;
+    readonly [TKey in keyof TRules]: InferRegleStatusType<
+      NonNullable<TRules[TKey]>,
+      TState,
+      TKey,
+      TShortcuts
+    >;
   };
   readonly $errors: RegleErrorTree<TRules, TExternal>;
   readonly $silentErrors: RegleErrorTree<TRules, TExternal>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   $parse: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
-};
+} & ([TShortcuts['nested']] extends [never]
+    ? {}
+    : {
+        [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;
+      });
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -77,20 +89,21 @@ export type InferRegleStatusType<
   TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialValidationTree<any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
+  TShortcuts extends RegleShortcutDefinition = never,
 > =
   TRule extends RegleCollectionRuleDefinition<any, any>
     ? NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
       ? ExtractFromGetter<TRule['$each']> extends RegleRuleDecl | ReglePartialValidationTree<any>
-        ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule>
+        ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
         : never
-      : RegleFieldStatus<TState[TKey], TRule>
+      : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
     : TRule extends ReglePartialValidationTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
         : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-          ? RegleStatus<TState[TKey], TRule>
-          : RegleFieldStatus<TState[TKey], TRule>
-      : RegleFieldStatus<TState[TKey], TRule>;
+          ? RegleStatus<TState[TKey], TRule, never, TShortcuts>
+          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+      : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
 
 /**
  * @internal
@@ -104,14 +117,15 @@ export type $InternalRegleStatusType =
 /**
  * @public
  */
-export interface RegleFieldStatus<
+export type RegleFieldStatus<
   TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
-> extends Omit<RegleCommonStatus<TState>, '$value'> {
+  TShortcuts extends RegleShortcutDefinition = never,
+> = Omit<RegleCommonStatus<TState>, '$value'> & {
   $value: Maybe<UnwrapNestedRefs<TState>>;
   readonly $errors: string[];
   readonly $silentErrors: string[];
-  readonly $externalErrors?: string[];
+  readonly $externalErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<
@@ -129,7 +143,11 @@ export interface RegleFieldStatus<
           : any
     >;
   };
-}
+} & ([TShortcuts['fields']] extends [never]
+    ? {}
+    : {
+        [K in keyof TShortcuts['fields']]: ReturnType<NonNullable<TShortcuts['fields']>[K]>;
+      });
 
 /**
  * @internal
@@ -155,6 +173,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $pending: boolean;
   readonly $error: boolean;
   readonly $ready: boolean;
+  readonly $name: string;
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
   $touch(): void;
@@ -230,21 +249,31 @@ export interface $InternalRegleRuleStatus {
 /**
  * @public
  */
-export interface RegleCollectionStatus<
+export type RegleCollectionStatus<
   TState extends any[] = any[],
-  TRules extends RegleRuleDecl | ReglePartialValidationTree<any> = Record<string, any>,
+  TRules extends ReglePartialValidationTree<Record<string, any>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
-> extends Omit<
-    RegleFieldStatus<TState, TRules>,
-    '$errors' | '$silentErrors' | '$extractDirtyFields'
-  > {
-  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number>>;
-  readonly $field: RegleFieldStatus<TState, TFieldRule>;
+  TShortcuts extends RegleShortcutDefinition = never,
+> = Omit<
+  RegleFieldStatus<TState, TRules, TShortcuts>,
+  '$errors' | '$silentErrors' | '$extractDirtyFields' | '$externalErrors' | '$rules' | '$value'
+> & {
+  $value: Maybe<TState>;
+  readonly $each: Array<
+    InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>
+  >;
+  readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   readonly $errors: RegleErrorTree<TRules>;
   readonly $silentErrors: RegleErrorTree<TRules>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   $parse: () => Promise<false | SafeProperty<TState, TRules>>;
-}
+} & ([TShortcuts['collections']] extends [never]
+    ? {}
+    : {
+        [K in keyof TShortcuts['collections']]: ReturnType<
+          NonNullable<TShortcuts['collections']>[K]
+        >;
+      });
 
 /**
  * @internal

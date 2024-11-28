@@ -16,15 +16,16 @@ import type {
   UnwrapRuleTree,
 } from '../rules';
 import type { ExtractFromGetter } from '../utils';
-import type { RegleValidationGroupEntry } from './options.types';
+import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './options.types';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
   TExternal extends RegleExternalErrorTree<TState> = never,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
+  TShortcuts extends RegleShortcutDefinition = never,
 > {
-  r$: RegleRoot<TState, TRules, TValidationGroups, TExternal>;
+  r$: RegleRoot<TState, TRules, TValidationGroups, TExternal, TShortcuts>;
 }
 
 export type isDeepExact<T, U> = {
@@ -96,26 +97,3 @@ export type SafeProperty<
                 : never
           : never
       : never;
-
-export type InferRegleRules<T extends useRegleFn<any>> =
-  T extends useRegleFn<infer U> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
-
-export type RegleRequiredRules<
-  T extends Partial<AllRulesDeclarations> | useRegleFn<any>,
-  TRules extends T extends useRegleFn<any> ? keyof InferRegleRules<T> : keyof T,
-> = Omit<
-  T extends useRegleFn<any>
-    ? InferRegleRules<T>
-    : T extends Partial<AllRulesDeclarations>
-      ? UnwrapRuleTree<T>
-      : {},
-  TRules
-> & {
-  [K in TRules]-?: T extends useRegleFn<any>
-    ? K extends keyof InferRegleRules<T>
-      ? NonNullable<InferRegleRules<T>[K]>
-      : never
-    : K extends keyof T
-      ? NonNullable<T[K]>
-      : never;
-};

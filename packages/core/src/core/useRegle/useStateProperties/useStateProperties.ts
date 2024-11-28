@@ -3,6 +3,7 @@ import { computed, reactive, unref } from 'vue';
 import type {
   $InternalReglePartialValidationTree,
   CustomRulesDeclarationTree,
+  RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
@@ -14,12 +15,14 @@ export function useStateProperties({
   scopeRules,
   state,
   customRules,
+  shortcuts,
 }: {
   scopeRules: ComputedRef<$InternalReglePartialValidationTree>;
   state: Ref<Record<string, any>>;
   options: ResolvedRegleBehaviourOptions;
   initialState: Record<string, any>;
   customRules?: () => CustomRulesDeclarationTree;
+  shortcuts?: RegleShortcutDefinition;
 }) {
   const storage = useStorage();
 
@@ -36,6 +39,8 @@ export function useStateProperties({
       externalErrors,
       validationGroups: options.validationGroups,
       initialState,
+      shortcuts,
+      fieldName: 'root',
     })
   );
 

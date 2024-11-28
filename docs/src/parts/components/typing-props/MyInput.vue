@@ -4,6 +4,7 @@
       v-model="modelValue"
       :class="{ valid: field.$valid, error: field.$error }"
       :placeholder="placeholder"
+      :name="field.$name"
     />
     <ul v-if="field.$errors.length">
       <li v-for="error of field.$errors" :key="error">

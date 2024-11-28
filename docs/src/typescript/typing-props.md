@@ -81,9 +81,10 @@ const { r$} = useMyForm();
 // ---cut---
 // @noErrors
 import type { useMyForm } from './myForm';
+import type { InferRegleRoot } from '@regle/core';
 
 const props = defineProps<{
-  regle: ReturnType<typeof useMyForm>['r$'];
+  regle: InferRegleRoot<typeof useMyForm>;
 }>();
 </script>
 ```
@@ -126,7 +127,7 @@ const props = defineProps<{
   placeholder: string;
 }>();
 </script>
-````
+```
 
 ```vue twoslash [myForm.vue]
 <template>
@@ -149,7 +150,52 @@ const {r$} = useRegle({name: '', email: ''}, {
 })
 </script>
 ```
-
 :::
 
 <Parent/>
+
+
+## Enforcing rules for a specific component
+
+
+On your common Input component, you can also enforce a rule to be present in the field.
+
+:::code-group
+
+
+```ts twoslash include config [config.ts]
+// @module: esnext
+// @filename config.ts
+import {withMessage} from '@regle/rules';
+// ---cut---
+import {defineRegleConfig} from '@regle/core';
+
+export const { useRegle: useCustomRegle } = defineRegleConfig({
+  rules: () => ({
+    strongPassword: withMessage(() => true, 'test')
+  })
+});
+```
+
+```vue twoslash [MyPassword.vue]
+<script setup lang="ts">
+import { computed } from 'vue';
+// @include: config
+// @noErrors
+// ---cut---
+import {
+  type RegleEnforceCustomRequiredRules,
+  type RegleFieldStatus,
+} from '@regle/core';
+import type { useCustomRegle } from './config';
+
+const props = defineProps<{
+  field: RegleFieldStatus<
+    string,
+    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+  >;
+}>();
+</script>
+```
+
+:::

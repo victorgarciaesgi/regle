@@ -11,6 +11,7 @@ import type {
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ReglePartialValidationTree,
+  RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
@@ -18,7 +19,10 @@ import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
 import { cloneDeep } from '../../utils';
 import { useStateProperties } from './useStateProperties';
 
-export type useRegleFn<TCustomRules extends Partial<AllRulesDeclarations>> = <
+export type useRegleFn<
+  TCustomRules extends Partial<AllRulesDeclarations>,
+  TShortcuts extends RegleShortcutDefinition<any> = never,
+> = <
   TState extends Record<string, any>,
   TRules extends ReglePartialValidationTree<
     Unwrap<TState>,
@@ -38,12 +42,16 @@ export type useRegleFn<TCustomRules extends Partial<AllRulesDeclarations>> = <
   rulesFactory: MaybeRefOrGetter<TRules>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TExternal, TValidationGroups>
-) => Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups>;
+) => Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups, TShortcuts>;
 
-export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDeclarations>>(
+export function createUseRegleComposable<
+  TCustomRules extends Partial<AllRulesDeclarations>,
+  TShortcuts extends RegleShortcutDefinition<any>,
+>(
   customRules?: () => TCustomRules,
-  options?: RegleBehaviourOptions
-): useRegleFn<TCustomRules> {
+  options?: RegleBehaviourOptions,
+  shortcuts?: RegleShortcutDefinition
+): useRegleFn<TCustomRules, TShortcuts> {
   const globalOptions: RequiredDeep<RegleBehaviourOptions> = {
     autoDirty: options?.autoDirty ?? true,
     lazy: options?.lazy ?? false,
@@ -78,6 +86,7 @@ export function createUseRegleComposable<TCustomRules extends Partial<AllRulesDe
       options: resolvedOptions,
       initialState,
       customRules,
+      shortcuts,
     });
 
     return {

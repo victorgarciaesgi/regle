@@ -26,6 +26,7 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Rules properties', link: '/core-concepts/rules-properties' },
+  { text: 'Extend properties', link: '/core-concepts/extend-properties' },
   { text: 'Displaying errors', link: '/core-concepts/displaying-errors' },
   { text: 'Type safe output', link: '/core-concepts/type-safe-output' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },

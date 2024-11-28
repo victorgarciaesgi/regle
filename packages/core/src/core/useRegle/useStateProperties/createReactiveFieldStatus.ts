@@ -1,5 +1,15 @@
-import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch } from 'vue';
+import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
+import {
+  computed,
+  effectScope,
+  reactive,
+  ref,
+  toRef,
+  toRefs,
+  unref,
+  watch,
+  watchEffect,
+} from 'vue';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleRuleDecl,
@@ -7,6 +17,7 @@ import type {
   CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
   RegleRuleDecl,
+  RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { debounce, isEmpty, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
@@ -19,6 +30,7 @@ interface CreateReactiveFieldStatusArgs {
   rulesDef: Ref<$InternalRegleRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
+  fieldName: string;
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
@@ -26,6 +38,7 @@ interface CreateReactiveFieldStatusArgs {
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: unknown | undefined;
+  shortcuts?: RegleShortcutDefinition;
 }
 
 export function createReactiveFieldStatus({
@@ -33,12 +46,14 @@ export function createReactiveFieldStatus({
   rulesDef,
   customMessages,
   path,
+  fieldName,
   storage,
   options,
   externalErrors,
   onUnwatch,
   $isArray,
   initialState,
+  shortcuts,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   type ScopeReturnState = {
     $error: ComputedRef<boolean>;
@@ -54,6 +69,8 @@ export function createReactiveFieldStatus({
     $anyDirty: ComputedRef<boolean>;
     haveAnyAsyncRule: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
+    $name: ComputedRef<string>;
+    $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
   };
 
   let scope = effectScope();
@@ -63,7 +80,7 @@ export function createReactiveFieldStatus({
 
   const triggerPunishment = ref(false);
 
-  const $externalErrors = ref<string[] | undefined>([]);
+  const $externalErrors = ref<string[]>([]);
 
   let $unwatchState: WatchStopHandle;
   let $unwatchValid: WatchStopHandle;
@@ -244,6 +261,8 @@ export function createReactiveFieldStatus({
         return false;
       });
 
+      const $name = computed<string>(() => fieldName);
+
       const $valid = computed<boolean>(() => {
         if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if ($externalErrors.value?.length) {
@@ -265,6 +284,40 @@ export function createReactiveFieldStatus({
         });
       });
 
+      function processShortcuts() {
+        if (shortcuts?.fields) {
+          Object.entries(shortcuts.fields).forEach(([key, value]) => {
+            const scope = effectScope();
+
+            $shortcuts[key] = scope.run(() => {
+              const result = ref();
+
+              watchEffect(() => {
+                result.value = value({
+                  $dirty: $dirty.value,
+                  $externalErrors: $externalErrors.value,
+                  $value: state,
+                  $rules: $rules.value,
+                  $error: $error.value,
+                  $pending: $pending.value,
+                  $invalid: $invalid.value,
+                  $valid: $valid.value,
+                  $errors: $errors.value,
+                  $ready: $ready.value,
+                  $silentErrors: $silentErrors.value,
+                  $anyDirty: $anyDirty.value,
+                  $name: $name.value,
+                });
+              });
+              return result;
+            })!;
+          });
+        }
+      }
+
+      const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
+      processShortcuts();
+
       watch($valid, (value) => {
         if (value) {
           triggerPunishment.value = false;
@@ -284,9 +337,11 @@ export function createReactiveFieldStatus({
         $rewardEarly,
         $autoDirty,
         $anyDirty,
+        $name,
         haveAnyAsyncRule,
+        $shortcuts,
       } satisfies ScopeReturnState;
-    }) as ScopeReturnState;
+    })!;
 
     $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
     $unwatchState = watch(
@@ -404,12 +459,34 @@ export function createReactiveFieldStatus({
     $validateHandler();
   }
 
+  const {
+    $anyDirty,
+    $error,
+    $errors,
+    $invalid,
+    $name,
+    $pending,
+    $ready,
+    $silentErrors,
+    $valid,
+    $shortcuts,
+  } = scopeState;
+
   return reactive({
     $dirty,
-    ...scopeState,
+    $error,
+    $errors,
+    $valid,
+    $invalid,
+    $pending,
+    $silentErrors,
+    $anyDirty,
+    $ready,
+    $name,
     $externalErrors,
     $value: state,
     $rules: $rules,
+    ...$shortcuts,
     $reset,
     $touch,
     $validate,

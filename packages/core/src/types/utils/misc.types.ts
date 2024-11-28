@@ -23,6 +23,10 @@ export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends 
   ? U
   : T;
 
+export type OmitByType<T extends Record<string, any>, U> = {
+  [K in keyof T as T[K] extends U ? never : K]: T[K];
+};
+
 export type DeepMaybeRef<T extends Record<string, any>> = {
   [K in keyof T]: MaybeRef<T[K]>;
 };

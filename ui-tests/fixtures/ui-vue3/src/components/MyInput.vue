@@ -1,6 +1,8 @@
 <template>
   <div class="my-input input-container">
-    <label v-if="label"> {{ label }}<span v-if="isRequired" class="required-mark">*</span> </label>
+    <label v-if="label">
+      {{ label }}<span v-if="field.$isRequired" class="required-mark">*</span>
+    </label>
     <input
       v-model="modelValue"
       :type
@@ -17,21 +19,18 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe, RegleFieldStatus } from '@regle/core';
-import { computed, type InputTypeHTMLAttribute } from 'vue';
+import type { InferRegleShortcuts, Maybe, RegleFieldStatus } from '@regle/core';
+import { type InputTypeHTMLAttribute } from 'vue';
+import type { useCustomRegle } from './regle.global.config';
 
 const modelValue = defineModel<Maybe<string | number>>();
 
+type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
+
 const { type = 'text', ...props } = defineProps<{
-  field: RegleFieldStatus<string> | RegleFieldStatus<number>;
+  field: RegleFieldStatus<string, any, MyShortcuts> | RegleFieldStatus<number, any, MyShortcuts>;
   label?: string;
   type?: InputTypeHTMLAttribute;
   placeholder: string;
 }>();
-
-type foo = unknown | null | undefined;
-
-const isRequired = computed(() => {
-  return props.field.$rules.required?.$active ?? false;
-});
 </script>

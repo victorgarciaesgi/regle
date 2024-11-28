@@ -35,6 +35,7 @@ It's heavily inspired by Vuelidate.
 - ✅ Typescript first
 - 🤖 100% type inference
 - 📖 Model based validation
+- 🪗 Extensible
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🪶 Light (~6kb gzip)
 - 🛒 Collection validation
@@ -44,7 +45,7 @@ It's heavily inspired by Vuelidate.
 TODO
 
 
-## 🔌 Compatibility:
+## Compatibility:
 
 
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.1+
@@ -75,14 +76,14 @@ TODO
 - [x] Validation groups
 - [x] Nuxt Module
 - [x] Documentation
-- [ ] Unit tests (in progress)
 - [x] `$extractDirtyFields`
+- [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
 - [ ] Examples
 - [ ] `withErrorType`
-- [ ] Issue template
 - [ ] `Valibot` support
 - [ ] `Yup` support
+- [ ] Issue template
 - [ ] TS docs
 
 ## 🤔 Maybe in roadmap

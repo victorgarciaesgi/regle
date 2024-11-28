@@ -1,13 +1,16 @@
 import type { RequiredDeep } from 'type-fest';
 import type { MaybeRef } from 'vue';
 import type {
+  AllRulesDeclarations,
   CustomRulesDeclarationTree,
+  RegleCollectionStatus,
   RegleExternalErrorTree,
   RegleFieldStatus,
   ReglePartialValidationTree,
   RegleStatus,
 } from '../../types/rules';
-import type { DeepMaybeRef } from '../../types/utils';
+import type { DeepMaybeRef, OmitByType } from '../../types/utils';
+import type { DefaultValidators } from '../../core';
 
 export interface RegleBehaviourOptions {
   /**
@@ -62,6 +65,25 @@ export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehav
     Record<string, any>,
     Record<string, any[]>
   >;
+
+export type ShortcutCommonFn<T extends Record<string, any>> = {
+  [x: string]: (element: OmitByType<T, Function>) => unknown;
+};
+
+export type RegleShortcutDefinition<
+  TCustomRules extends Record<string, any> = Partial<DefaultValidators>,
+> = {
+  fields?: ShortcutCommonFn<
+    RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>
+  >;
+  nested?: ShortcutCommonFn<
+    RegleStatus<
+      Record<string, any>,
+      ReglePartialValidationTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>
+    >
+  >;
+  collections?: ShortcutCommonFn<RegleCollectionStatus>;
+};
 
 export type AddDollarToOptions<T extends Record<string, any>> = {
   [K in keyof T as `$${string & K}`]: T[K];

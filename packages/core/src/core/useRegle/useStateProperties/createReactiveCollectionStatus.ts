@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, watch } from 'vue';
+import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
 import type {
   $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
@@ -13,6 +13,7 @@ import type {
   DeepMaybeRef,
   RegleBehaviourOptions,
   RegleCollectionRuleDeclKeyProperty,
+  RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import {
@@ -42,8 +43,11 @@ function createCollectionElement({
   rules,
   externalErrors,
   initialState,
+  shortcuts,
+  fieldName,
 }: {
   $id: string;
+  fieldName: string;
   path: string;
   index: number;
   stateValue: Ref<StateWithId>;
@@ -53,6 +57,7 @@ function createCollectionElement({
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: ComputedRef<$InternalExternalRegleErrors[] | undefined>;
   initialState: any[] | undefined;
+  shortcuts?: RegleShortcutDefinition;
 }): $InternalRegleStatusType | null {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
@@ -83,6 +88,8 @@ function createCollectionElement({
     options,
     externalErrors: $externalErrors,
     initialState: initialState?.[index],
+    shortcuts,
+    fieldName,
   });
 
   if ($status) {
@@ -99,11 +106,13 @@ interface CreateReactiveCollectionStatusArgs {
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
+  fieldName: string;
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
   initialState: any[];
+  shortcuts?: RegleShortcutDefinition;
 }
 
 export function createReactiveCollectionStatus({
@@ -115,6 +124,8 @@ export function createReactiveCollectionStatus({
   options,
   externalErrors,
   initialState,
+  shortcuts,
+  fieldName,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
   interface ScopeReturnState {
     $dirty: ComputedRef<boolean>;
@@ -126,6 +137,8 @@ export function createReactiveCollectionStatus({
     $errors: ComputedRef<$InternalRegleCollectionErrors>;
     $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
     $ready: ComputedRef<boolean>;
+    $name: ComputedRef<string>;
+    $shortcuts: ToRefs<RegleShortcutDefinition['collections']>;
   }
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
@@ -231,6 +244,8 @@ export function createReactiveCollectionStatus({
               storage,
               externalErrors: immediateScopeState.$externalErrorsEach,
               initialState: initialState[index],
+              shortcuts,
+              fieldName,
             });
             if (element) {
               return element;
@@ -253,6 +268,8 @@ export function createReactiveCollectionStatus({
       externalErrors: immediateScopeState.$externalErrorsField,
       $isArray: true,
       initialState: initialState,
+      shortcuts,
+      fieldName,
     });
   }
 
@@ -283,6 +300,7 @@ export function createReactiveCollectionStatus({
                 storage,
                 externalErrors: immediateScopeState.$externalErrorsEach,
                 initialState: initialState[index],
+                fieldName,
               });
               if (element) {
                 return element;
@@ -387,6 +405,42 @@ export function createReactiveCollectionStatus({
         };
       });
 
+      const $name = computed(() => fieldName);
+
+      function processShortcuts() {
+        if (shortcuts?.collections) {
+          Object.entries(shortcuts?.collections).forEach(([key, value]) => {
+            const scope = effectScope();
+
+            $shortcuts[key] = scope.run(() => {
+              const result = ref();
+
+              watchEffect(() => {
+                result.value = value({
+                  $dirty: $dirty.value,
+                  $error: $error.value,
+                  $pending: $pending.value,
+                  $invalid: $invalid.value,
+                  $valid: $valid.value,
+                  $errors: $errors.value as any,
+                  $ready: $ready.value,
+                  $silentErrors: $silentErrors.value as any,
+                  $anyDirty: $anyDirty.value,
+                  $name: $name.value,
+                  $each: $eachStatus.value,
+                  $field: $fieldStatus.value as any,
+                  $value: state as any,
+                });
+              });
+              return result;
+            })!;
+          });
+        }
+      }
+
+      const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
+      processShortcuts();
+
       return {
         $dirty,
         $anyDirty,
@@ -397,6 +451,8 @@ export function createReactiveCollectionStatus({
         $errors,
         $silentErrors,
         $ready,
+        $name,
+        $shortcuts,
       } satisfies ScopeReturnState;
     })!;
 
@@ -498,9 +554,12 @@ export function createReactiveCollectionStatus({
     return false;
   }
 
+  const { $shortcuts, ...restScopeState } = scopeState;
+
   return reactive({
     $field: $fieldStatus,
-    ...scopeState,
+    ...restScopeState,
+    ...$shortcuts,
     $each: $eachStatus,
     $value: state,
     $validate,

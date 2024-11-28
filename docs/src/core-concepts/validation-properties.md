@@ -91,6 +91,10 @@ Collection of all the error messages, collected for all child properties and nes
 
 Collection of all the error messages, collected for all child properties.
 
+### `$name`
+- Type: `readonly string`
+
+Return the current key name of the field.
 
 ## Common methods for fields
 

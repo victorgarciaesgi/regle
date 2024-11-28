@@ -22,14 +22,23 @@
 </template>
 
 <script setup lang="ts">
-import { type Maybe, type RegleFieldStatus, type RegleRequiredRules } from '@regle/core';
+import {
+  type InferRegleShortcuts,
+  type Maybe,
+  type RegleEnforceCustomRequiredRules,
+  type RegleFieldStatus,
+} from '@regle/core';
 import { computed } from 'vue';
 import type { useCustomRegle } from './regle.global.config';
 
 const modelValue = defineModel<Maybe<string>>();
 
 const props = defineProps<{
-  field: RegleFieldStatus<string, RegleRequiredRules<typeof useCustomRegle, 'strongPassword'>>;
+  field: RegleFieldStatus<
+    string,
+    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+    InferRegleShortcuts<typeof useCustomRegle>
+  >;
   label?: string;
   placeholder: string;
 }>();
