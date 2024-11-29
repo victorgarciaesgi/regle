@@ -22,7 +22,7 @@ export function useStateProperties({
   options: ResolvedRegleBehaviourOptions;
   initialState: Record<string, any>;
   customRules?: () => CustomRulesDeclarationTree;
-  shortcuts?: RegleShortcutDefinition;
+  shortcuts: RegleShortcutDefinition | undefined;
 }) {
   const storage = useStorage();
 

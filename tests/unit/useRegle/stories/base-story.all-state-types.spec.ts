@@ -1,13 +1,13 @@
 import { flushPromises } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import {
   nestedReactiveObjectValidation,
-  nestedRefObjectValidation,
   nestedReactiveWithRefsValidation,
+  nestedRefObjectValidation,
   nestedRefObjectValidationComputed,
   nesteObjectWithRefsValidation,
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { nextTick } from 'vue';
 import {
   shouldBeErrorField,
   shouldBeInvalidField,
@@ -182,8 +182,10 @@ describe.each([
     expect(vm.r$.$ready).toBe(true);
 
     shouldBeValidField(vm.r$);
+    shouldBeValidField(vm.r$.$fields.level0);
     shouldBeValidField(vm.r$.$fields.level1);
     shouldBeValidField(vm.r$.$fields.level1.$fields.child);
+    shouldBeValidField(vm.r$.$fields.level1.$fields.level2);
     shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);

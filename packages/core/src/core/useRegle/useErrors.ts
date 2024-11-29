@@ -1,9 +1,7 @@
 import { computed } from 'vue';
 import type {
-  $InternalRegleCollectionStatus,
   $InternalRegleErrors,
   $InternalRegleFieldStatus,
-  $InternalRegleRuleStatus,
   $InternalRegleStatus,
   $InternalRegleStatusType,
 } from '../../types';

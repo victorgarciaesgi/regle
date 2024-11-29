@@ -2,7 +2,9 @@ import type { Regle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
-export function createRegleComponent<T extends Regle<any, any>>(regleComposable: () => T) {
+export function createRegleComponent<T extends Regle<any, any, any, any>>(
+  regleComposable: () => T
+) {
   return mount(
     defineComponent({
       setup() {

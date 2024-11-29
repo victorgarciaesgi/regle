@@ -38,7 +38,7 @@ interface CreateReactiveFieldStatusArgs {
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: unknown | undefined;
-  shortcuts?: RegleShortcutDefinition;
+  shortcuts: RegleShortcutDefinition | undefined;
 }
 
 export function createReactiveFieldStatus({
@@ -264,7 +264,9 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName);
 
       const $valid = computed<boolean>(() => {
-        if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
+        if (isEmpty($rules.value)) {
+          return true;
+        } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if ($externalErrors.value?.length) {
             return false;
           } else if ($rewardEarly.value) {

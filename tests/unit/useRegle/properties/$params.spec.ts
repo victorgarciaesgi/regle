@@ -1,13 +1,13 @@
 import { createRule, useRegle, type Maybe } from '@regle/core';
-import { ruleHelpers, withAsync, withParams } from '@regle/rules';
+import { withAsync, withParams } from '@regle/rules';
 import { nextTick, ref } from 'vue';
+import { timeout } from '../../../utils';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
-import { timeout } from '../../../utils';
 
 describe('$params', () => {
   function nestedRulesWithGetterParams() {
@@ -100,6 +100,7 @@ describe('$params', () => {
 
       vm.r$.$value.email = 'azertyuio';
       vm.r$.$value.user.firstName = 'azertyuio';
+      vm.r$.$value.user.lastName = 'zad';
       vm.r$.$value.contacts[0].name = 'azertyuio';
       await nextTick();
 
@@ -285,6 +286,7 @@ describe('$params', () => {
 
       vm.r$.$value.email = 'azertyuio';
       vm.r$.$value.user.firstName = 'azertyuio';
+      vm.r$.$value.user.lastName = 'azertyuio';
       vm.r$.$value.contacts[0].name = 'azertyuio';
 
       await vi.advanceTimersByTimeAsync(200);

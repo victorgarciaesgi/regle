@@ -50,7 +50,7 @@ export function createUseRegleComposable<
 >(
   customRules?: () => TCustomRules,
   options?: RegleBehaviourOptions,
-  shortcuts?: RegleShortcutDefinition
+  shortcuts?: RegleShortcutDefinition | undefined
 ): useRegleFn<TCustomRules, TShortcuts> {
   const globalOptions: RequiredDeep<RegleBehaviourOptions> = {
     autoDirty: options?.autoDirty ?? true,

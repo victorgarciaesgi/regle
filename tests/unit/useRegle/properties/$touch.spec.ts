@@ -84,8 +84,8 @@ describe('.$touch', () => {
 
     expect(vm.r$.$fields.email.$dirty).toBe(false);
     expect(vm.r$.$fields.user.$dirty).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(undefined);
-    expect(vm.r$.$fields.user.$fields.lastName?.$dirty).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(false);
+    expect(vm.r$.$fields.user.$fields.lastName?.$dirty).toBe(false);
 
     vm.r$.$value.userRequired = true;
 

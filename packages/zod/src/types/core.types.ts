@@ -11,7 +11,7 @@ import type { PartialDeep } from 'type-fest';
 export interface ZodRegle<
   TState extends Record<string, any>,
   TSchema extends toZod<any>,
-  TExternal extends RegleExternalErrorTree<TState> = never,
+  TExternal extends RegleExternalErrorTree<TState> = {},
 > {
   r$: ZodRegleStatus<TState, TSchema, TExternal>;
 }
@@ -20,7 +20,7 @@ export interface ZodRegle<
 
 export type ZodToRegleErrorTree<
   TSchema extends toZod<any>,
-  TExternal extends RegleExternalErrorTree<Record<string, unknown>> = never,
+  TExternal extends RegleExternalErrorTree<Record<string, unknown>> = {},
 > =
   TSchema extends z.ZodObject<infer O>
     ? {
@@ -48,7 +48,7 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
 export interface ZodRegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends toZod<any> = toZod<any>,
-  TExternal extends RegleExternalErrorTree<TState> = never,
+  TExternal extends RegleExternalErrorTree<TState> = {},
 > extends RegleCommonStatus<TState> {
   readonly $fields: TSchema extends z.ZodObject<infer O extends z.ZodRawShape>
     ? {

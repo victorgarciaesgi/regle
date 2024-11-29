@@ -45,7 +45,10 @@ export function shouldBeErrorField(
 }
 
 export function shouldBeValidField(
-  field?: RegleStatus<any, any> | RegleFieldStatus<any, any> | RegleCollectionStatus<any, any, any>
+  field?:
+    | RegleStatus<any, any>
+    | RegleFieldStatus<any, any, any>
+    | RegleCollectionStatus<any, any, any, any>
 ) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);

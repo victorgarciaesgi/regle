@@ -57,7 +57,7 @@ function createCollectionElement({
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: ComputedRef<$InternalExternalRegleErrors[] | undefined>;
   initialState: any[] | undefined;
-  shortcuts?: RegleShortcutDefinition;
+  shortcuts: RegleShortcutDefinition | undefined;
 }): $InternalRegleStatusType | null {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
@@ -112,7 +112,7 @@ interface CreateReactiveCollectionStatusArgs {
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
   initialState: any[];
-  shortcuts?: RegleShortcutDefinition;
+  shortcuts: RegleShortcutDefinition | undefined;
 }
 
 export function createReactiveCollectionStatus({
@@ -152,7 +152,7 @@ export function createReactiveCollectionStatus({
   let immediateScope = effectScope();
   let immediateScopeState!: ImmediateScopeReturnState;
 
-  if (Array.isArray(state.value) && !rulesDef.value.$each) {
+  if (!Array.isArray(state.value) && !rulesDef.value.$each) {
     return null;
   }
   const $id = ref<string>() as Ref<string>;
@@ -225,7 +225,7 @@ export function createReactiveCollectionStatus({
 
     $value.value = $fieldStatus.value.$value;
 
-    if (Array.isArray(state.value) && rulesDef.value.$each) {
+    if (Array.isArray(state.value)) {
       $eachStatus.value = state.value
         .map((value, index) => {
           const unwrapped$Each = unwrapGetter(
@@ -233,25 +233,24 @@ export function createReactiveCollectionStatus({
             toRef(() => value),
             index
           );
-          if (unwrapped$Each) {
-            const element = createCollectionElement({
-              $id: $id.value,
-              path,
-              rules: unwrapped$Each,
-              stateValue: toRef(() => value),
-              index,
-              options,
-              storage,
-              externalErrors: immediateScopeState.$externalErrorsEach,
-              initialState: initialState[index],
-              shortcuts,
-              fieldName,
-            });
-            if (element) {
-              return element;
-            }
-            return null;
+          const element = createCollectionElement({
+            $id: $id.value,
+            path,
+            rules: unwrapped$Each ?? {},
+            stateValue: toRef(() => value),
+            index,
+            options,
+            storage,
+            externalErrors: immediateScopeState.$externalErrorsEach,
+            initialState: initialState[index],
+            shortcuts,
+            fieldName,
+          });
+
+          if (element) {
+            return element;
           }
+          return null;
         })
         .filter((each) => !!each);
     } else {
@@ -300,6 +299,7 @@ export function createReactiveCollectionStatus({
                 storage,
                 externalErrors: immediateScopeState.$externalErrorsEach,
                 initialState: initialState[index],
+                shortcuts,
                 fieldName,
               });
               if (element) {

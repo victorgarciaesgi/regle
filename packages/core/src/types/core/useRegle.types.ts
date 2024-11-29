@@ -1,9 +1,6 @@
 import type { EmptyObject, UnionToIntersection } from 'type-fest';
 import type { MaybeRef } from 'vue';
-import type { DefaultValidators } from '../../core';
-import type { useRegleFn } from '../../core/useRegle';
 import type {
-  AllRulesDeclarations,
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -13,7 +10,6 @@ import type {
   RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
-  UnwrapRuleTree,
 } from '../rules';
 import type { ExtractFromGetter } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './options.types';
@@ -21,9 +17,9 @@ import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './optio
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
-  TExternal extends RegleExternalErrorTree<TState> = never,
-  TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
-  TShortcuts extends RegleShortcutDefinition = never,
+  TExternal extends RegleExternalErrorTree<TState> = {},
+  TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
+  TShortcuts extends RegleShortcutDefinition = {},
 > {
   r$: RegleRoot<TState, TRules, TValidationGroups, TExternal, TShortcuts>;
 }

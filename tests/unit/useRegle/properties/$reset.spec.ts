@@ -46,8 +46,8 @@ describe('.$reset', () => {
   it('should reset even after coming back from cache', async () => {
     const { vm } = await createRegleComponent(simpleNestedStateWithComputedValidation);
 
-    expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
-    expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.firstName).toBeDefined();
+    expect(vm.r$.$fields.user.$fields.lastName).toBeDefined();
 
     vm.r$.$value.userRequired = true;
     await vm.$nextTick();
@@ -65,8 +65,8 @@ describe('.$reset', () => {
     vm.r$.$value.userRequired = false;
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$fields.firstName).toBe(undefined);
-    expect(vm.r$.$fields.user.$fields.lastName).toBe(undefined);
+    expect(vm.r$.$fields.user.$fields.firstName).toBeDefined();
+    expect(vm.r$.$fields.user.$fields.lastName).toBeDefined();
 
     vm.r$.$value.userRequired = true;
     await vm.$nextTick();

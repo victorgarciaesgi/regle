@@ -22,9 +22,10 @@ export function isNestedRulesDef(
 }
 
 export function isCollectionRulesDef(
-  rules: Ref<$InternalFormPropertyTypes, any>
+  rules: Ref<$InternalFormPropertyTypes, any>,
+  state: Ref<unknown>
 ): rules is Ref<$InternalRegleCollectionRuleDecl> {
-  return !!rules.value && '$each' in rules.value;
+  return (!!rules.value && '$each' in rules.value) || Array.isArray(state.value);
 }
 
 export function isValidatorRulesDef(
