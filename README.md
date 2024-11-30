@@ -77,6 +77,7 @@ TODO
 - [x] Nuxt Module
 - [x] Documentation
 - [x] `$extractDirtyFields`
+- [ ] External errors with zod types
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
 - [ ] Examples

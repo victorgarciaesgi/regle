@@ -101,12 +101,7 @@ r$.$fields.projects.$is
 When defining shortcuts, it can be hard to type props in common Input components.
 For this Regle provides a type helper that can ease the declaration of this props.
 
-:::code-group
-
-```ts twoslash include config [config.ts]
-// @module: esnext
-// @filename config.ts
-// ---cut---
+```twoslash include config
 import {defineRegleConfig} from '@regle/core';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   shortcuts: {
@@ -115,7 +110,12 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
     },
   },
 });
+</script>
 ```
+
+:::code-group
+
+
 
 ```vue twoslash [myInput.vue]
 <script setup lang="ts">
@@ -133,10 +133,19 @@ const props = defineProps<{
   placeholder: string;
 }>();
 
-props.field.$isRe
-//               ^|
+props.field.$isR
+//              ^|
 </script>
 ```
+
+```ts twoslash [config.ts]
+// @module: esnext
+// @filename config.ts
+// ---cut---
+// @include: config
+```
+
+
 
 
 

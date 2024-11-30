@@ -247,6 +247,10 @@ h2 + h2 {
 
 /* Two slashs */
 
+.language-twoslash {
+  display: none;
+}
+
 .twoslash-floating .twoslash-popup-code:has(.shiki) {
   padding: 0px !important;
 }

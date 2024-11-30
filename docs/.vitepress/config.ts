@@ -138,6 +138,10 @@ export default defineConfig({
     ],
     ['meta', { name: 'twitter:site', content: '@regle' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
+    [
+      'meta',
+      { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' },
+    ],
   ],
   markdown: {
     codeTransformers: [transformerTwoslash({})],

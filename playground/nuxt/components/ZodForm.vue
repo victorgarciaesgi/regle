@@ -27,13 +27,14 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ $regle }}
+{{ r$ }}
       </code>
     </pre>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { RegleExternalErrorTree } from '@regle/core';
 import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive } from 'vue';
 import { z } from 'zod';
@@ -54,6 +55,10 @@ async function submit() {
   const result = await r$.$parse();
 }
 
+const externalErrors = ref<RegleExternalErrorTree<Form>>({
+  email: [''],
+});
+
 const { r$ } = useZodRegle(
   form,
   z.object({
@@ -70,6 +75,7 @@ const { r$ } = useZodRegle(
         name: z.string().min(1, 'Required'),
       })
     ),
-  })
+  }),
+  { externalErrors }
 );
 </script>

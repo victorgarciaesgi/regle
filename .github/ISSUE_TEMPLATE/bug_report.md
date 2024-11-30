@@ -6,6 +6,11 @@ labels: ''
 assignees: ''
 
 ---
+**Environnement infos**
+
+`@regle/x` version:
+`vue` version:
+`typecript` versinon:
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -19,7 +24,3 @@ Please provide a reproduction link or repo
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Environnement infos**
-
-`@regle/x` version:
-`vue` version:
