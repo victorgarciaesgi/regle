@@ -32,7 +32,7 @@ export function extractRulesErrors({
         return acc?.concat(value);
       }
     }, [])
-    .concat(field.$externalErrors ?? []);
+    .concat(field.$dirty ? (field.$externalErrors ?? []) : []);
 }
 
 function processFieldErrors(

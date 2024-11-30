@@ -18,7 +18,11 @@ export type RegleErrorTree<
   readonly [K in keyof NonPresentKeys<
     TRules,
     NonNullable<TExternal>
-  >]?: RegleExternalValidationErrorsReport<NonNullable<TExternal>[K]>;
+  >]-?: NonNullable<TExternal> extends RegleExternalErrorTree<infer U>
+    ? K extends keyof RegleExternalErrorTreeOutput<U>
+      ? RegleExternalErrorTreeOutput<U>[K]
+      : {}
+    : {};
 };
 
 export type RegleValidationErrors<
@@ -67,6 +71,7 @@ export type $InternalRegleErrors =
 // ------- External errors
 // -
 
+// -- Errors inputs
 export type RegleExternalErrorTree<
   TState extends Record<string, any> | undefined = Record<string, any>,
 > = {
@@ -83,8 +88,8 @@ export type RegleExternalValidationErrors<TValue extends any> = [NonNullable<TVa
       ? string[]
       : NonNullable<TValue> extends File
         ? string[]
-        : TValue extends Record<string, any>
-          ? RegleExternalErrorTree<TValue>
+        : NonNullable<TValue> extends Record<string, any>
+          ? RegleExternalErrorTree<NonNullable<TValue>>
           : string[];
 
 export type RegleExternalCollectionErrors<
@@ -94,16 +99,34 @@ export type RegleExternalCollectionErrors<
   $each?: RegleExternalErrorTree<TValue>[];
 };
 
-export type RegleExternalValidationErrorsReport<
-  TExternalError extends RegleExternalValidationErrors<any> | undefined = {},
-> =
-  NonNullable<TExternalError> extends RegleExternalCollectionErrors
-    ? TExternalError
-    : NonNullable<TExternalError> extends string[]
+// -- Output status errors
+
+export type RegleExternalErrorTreeOutput<
+  TState extends Record<string, any> | undefined = Record<string, any>,
+> = {
+  [K in keyof TState]-?: RegleExternalValidationErrorsOuput<TState[K]>;
+};
+
+export type RegleExternalValidationErrorsOuput<TValue extends any> = [NonNullable<TValue>] extends [
+  never,
+]
+  ? string[]
+  : NonNullable<TValue> extends Array<infer U extends Record<string, any> | undefined>
+    ? RegleExternalCollectionErrorsOutput<U>
+    : NonNullable<TValue> extends Date
       ? string[]
-      : NonNullable<TExternalError> extends RegleExternalErrorTree<any>
-        ? RegleExternalErrorTree<TExternalError>
-        : string[];
+      : NonNullable<TValue> extends File
+        ? string[]
+        : NonNullable<TValue> extends Record<string, any>
+          ? RegleExternalErrorTreeOutput<NonNullable<TValue>>
+          : string[];
+
+export type RegleExternalCollectionErrorsOutput<
+  TValue extends Record<string, any> | undefined = Record<string, any>,
+> = {
+  $errors: string[];
+  $each: RegleExternalErrorTree<TValue>[];
+};
 
 export type $InternalExternalRegleErrors =
   | RegleExternalCollectionErrors<any>

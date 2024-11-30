@@ -162,6 +162,7 @@ export function createReactiveNestedStatus({
         .map(([key, value]) => {
           const stateRef = toRef(state.value, key);
           const statePropRulesRef = toRef(() => ({}));
+          const $externalErrors = toRef(() => externalErrors.value?.[key]);
           return [
             key,
             createReactiveChildrenStatus({
@@ -171,7 +172,7 @@ export function createReactiveNestedStatus({
               path: path ? `${path}.${key}` : key,
               storage,
               options,
-              externalErrors: ref(),
+              externalErrors: $externalErrors,
               initialState: initialState?.[key],
               shortcuts,
               fieldName: key,

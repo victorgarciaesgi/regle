@@ -62,3 +62,15 @@ export function shouldBeValidField(
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
 }
+
+export function shouldBeUnRuledField(field?: RegleFieldStatus<any, any>) {
+  expect(field?.$invalid).toBe(false);
+  expect(field?.$error).toBe(false);
+  expect(field?.$dirty).toBe(false);
+  expect(field?.$anyDirty).toBe(false);
+  expect(field?.$pending).toBe(false);
+  expect(field?.$valid).toBe(true);
+  expect(field?.$errors).toStrictEqual([]);
+  expect(field?.$touch).toBeInstanceOf(Function);
+  expect(field?.$reset).toBeInstanceOf(Function);
+}

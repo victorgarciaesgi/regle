@@ -12,11 +12,13 @@ import type {
   Maybe,
   NonPresentKeys,
   Prettify,
+  RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
   RegleExternalCollectionErrors,
   RegleExternalErrorTree,
+  RegleExternalErrorTreeOutput,
   RegleFormPropertyType,
   ReglePartialValidationTree,
   RegleRuleDecl,
@@ -61,26 +63,38 @@ export type RegleStatus<
       TState,
       TKey,
       TKey extends keyof NonNullable<TExternal>
-        ? NonNullable<TExternal>[TKey] extends RegleExternalErrorTree<any>
-          ? NonNullable<TExternal>[TKey]
-          : {}
+        ? NonNullable<TExternal> extends RegleExternalErrorTreeOutput<infer U>
+          ? TKey extends keyof RegleExternalErrorTreeOutput<U>
+            ? RegleExternalErrorTreeOutput<U>[TKey]
+            : {}
+          : NonNullable<TExternal> extends RegleExternalErrorTree<infer U>
+            ? TKey extends keyof RegleExternalErrorTreeOutput<U>
+              ? RegleExternalErrorTreeOutput<U>[TKey]
+              : {}
+            : {}
         : {},
       TShortcuts
     >;
-  } & (IsEmptyObject<TExternal> extends true
+  } & (IsEmptyObject<NonNullable<TExternal>> extends true
     ? {}
     : {
         readonly [TKey in keyof NonPresentKeys<
           TRules,
           NonNullable<TExternal>
-        >]?: InferRegleStatusType<
-          ReglePartialValidationTree<TKey extends keyof TState ? TState[TKey] : {}>,
+        >]-?: InferRegleStatusType<
+          {},
           TState,
           TKey,
           TKey extends keyof NonNullable<TExternal>
-            ? NonNullable<TExternal>[TKey] extends RegleExternalErrorTree<any>
-              ? NonNullable<TExternal>[TKey]
-              : {}
+            ? NonNullable<TExternal> extends RegleExternalErrorTreeOutput<infer U>
+              ? TKey extends keyof RegleExternalErrorTreeOutput<U>
+                ? RegleExternalErrorTreeOutput<U>[TKey]
+                : {}
+              : NonNullable<TExternal> extends RegleExternalErrorTree<infer U>
+                ? TKey extends keyof RegleExternalErrorTreeOutput<U>
+                  ? RegleExternalErrorTreeOutput<U>[TKey]
+                  : {}
+                : {}
             : {},
           TShortcuts
         >;
@@ -115,7 +129,10 @@ export type InferRegleStatusType<
   TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialValidationTree<any>,
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
-  TExternal extends RegleExternalErrorTree<any> | undefined = {},
+  TExternal extends
+    | RegleExternalErrorTree<any>
+    | RegleExternalCollectionErrors<any>
+    | undefined = {},
   TShortcuts extends RegleShortcutDefinition = {},
 > =
   NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
@@ -129,21 +146,25 @@ export type InferRegleStatusType<
             TShortcuts
           >
         : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-      : RegleCollectionStatus<
-          TState[TKey],
-          ReglePartialValidationTree<TState[TKey]>,
-          TRule,
-          TExternal,
-          TShortcuts
-        >
+      : RegleCollectionStatus<TState[TKey], {}, TRule, TExternal, TShortcuts>
     : TRule extends ReglePartialValidationTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
         : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-          ? RegleStatus<TState[TKey], TRule, TExternal, TShortcuts>
+          ? RegleStatus<
+              TState[TKey],
+              TRule,
+              TExternal extends RegleExternalErrorTree ? TExternal : {},
+              TShortcuts
+            >
           : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
       : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-        ? RegleStatus<TState[TKey], ReglePartialValidationTree<TState[TKey]>, TExternal, TShortcuts>
+        ? RegleStatus<
+            TState[TKey],
+            ReglePartialValidationTree<TState[TKey]>,
+            TExternal extends RegleExternalErrorTree ? TExternal : {},
+            TShortcuts
+          >
         : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
 
 /**
@@ -294,7 +315,7 @@ export type RegleCollectionStatus<
   TState extends any[] = any[],
   TRules extends ReglePartialValidationTree<Record<string, any>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
-  TExternal extends RegleExternalErrorTree<any> | undefined = {},
+  TExternal extends RegleExternalCollectionErrors<any> | undefined = {},
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<
   RegleFieldStatus<TState, TRules, TShortcuts>,
@@ -315,8 +336,8 @@ export type RegleCollectionStatus<
     >
   >;
   readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
-  readonly $errors: RegleErrorTree<TRules, TExternal>;
-  readonly $silentErrors: RegleErrorTree<TRules, TExternal>;
+  readonly $errors: RegleCollectionErrors<TRules, TExternal>;
+  readonly $silentErrors: RegleCollectionErrors<TRules, TExternal>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   $parse: () => Promise<false | SafeProperty<TState, TRules>>;
 } & ([TShortcuts['collections']] extends [never]

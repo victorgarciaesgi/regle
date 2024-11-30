@@ -11,7 +11,7 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type { ExtractFromGetter, Prettify } from '../utils';
+import type { ExtractFromGetter } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './options.types';
 
 export interface Regle<
@@ -21,7 +21,7 @@ export interface Regle<
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
   TShortcuts extends RegleShortcutDefinition = {},
 > {
-  r$: Prettify<RegleRoot<TState, TRules, TValidationGroups, TExternal, TShortcuts>>;
+  r$: RegleRoot<TState, TRules, TValidationGroups, TExternal, TShortcuts>;
 }
 
 export type isDeepExact<T, U> = {

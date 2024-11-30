@@ -253,6 +253,8 @@ export function createReactiveFieldStatus({
       const $invalid = computed<boolean>(() => {
         if ($externalErrors.value?.length) {
           return true;
+        } else if (isEmpty($rules.value)) {
+          return false;
         } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
           return Object.entries($rules.value).some(([key, ruleResult]) => {
             return !ruleResult.$valid;
@@ -265,7 +267,7 @@ export function createReactiveFieldStatus({
 
       const $valid = computed<boolean>(() => {
         if (isEmpty($rules.value)) {
-          return true;
+          return !$invalid.value;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if ($externalErrors.value?.length) {
             return false;
@@ -358,8 +360,8 @@ export function createReactiveFieldStatus({
           createReactiveRulesResult();
         }
         $commit();
-        if (!scopeState.$rewardEarly.value !== false) {
-          // $clearExternalErrors();
+        if (scopeState.$rewardEarly.value !== true) {
+          $clearExternalErrors();
         }
       },
       { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
@@ -405,9 +407,7 @@ export function createReactiveFieldStatus({
   function $touch(): void {
     if (!$dirty.value) {
       $dirty.value = true;
-      if (!scopeState.$rewardEarly.value !== false) {
-        // $clearExternalErrors();
-      }
+
       $commit();
     }
   }
@@ -422,6 +422,9 @@ export function createReactiveFieldStatus({
       if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
         return !scopeState.$error.value;
       } else {
+        if (scopeState.$autoDirty.value === false && !$dirty.value) {
+          $dirty.value = true;
+        }
         const promises = Object.entries($rules.value).map(([key, rule]) => {
           return rule.$validate();
         });

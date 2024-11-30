@@ -44,7 +44,7 @@ export type {
   RegleValidationErrors,
   RegleUniversalParams,
   RegleInternalRuleDefs,
-  RegleExternalValidationErrorsReport,
+  RegleExternalValidationErrorsOuput,
   AllRulesDeclarations,
   UnwrapRuleWithParams,
   InferRegleRules,
