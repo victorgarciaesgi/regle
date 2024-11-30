@@ -2,15 +2,18 @@ import type { DefaultValidators } from '../../core';
 import type { useRegleFn } from '../../core/useRegle';
 import type { Regle } from '../core';
 import type { AllRulesDeclarations, UnwrapRuleTree } from '../rules';
+import type { Prettify } from './misc.types';
 
-export type InferRegleRoot<T extends () => useRegleFn<any, any>> = T extends () => infer U
-  ? U extends Regle
-    ? U['r$']
+export type InferRegleRoot<T extends (...args: any[]) => Regle<any, any, any, any>> = T extends (
+  ...args: any[]
+) => infer U
+  ? U extends Regle<any, any, any, any>
+    ? Prettify<U['r$']>
     : never
   : never;
 
-export type InferRegleRules<T extends useRegleFn<any>> =
-  T extends useRegleFn<infer U> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
+export type InferRegleRules<T extends useRegleFn<any, any>> =
+  T extends useRegleFn<infer U, any> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
 
 export type InferRegleShortcuts<T extends useRegleFn<any, any>> =
   T extends useRegleFn<any, infer U> ? U : {};

@@ -83,6 +83,8 @@ const {r$} = useCustomRegle({name: ''}, {
 
 ## Declare modifiers
 
+Declaring modifiers in the global configuration will apply it automatically everytime you will use the returned compasable, it avoids declaring it every time.
+
 ```ts twoslash
 import {defineRegleConfig} from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';

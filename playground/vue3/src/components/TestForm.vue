@@ -4,7 +4,13 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import type { RegleExternalErrorTree, RegleFieldStatus, RegleStatus } from '@regle/core';
+import type {
+  InferRegleRoot,
+  InferRegleShortcuts,
+  RegleExternalErrorTree,
+  RegleFieldStatus,
+  RegleStatus,
+} from '@regle/core';
 import { ref } from 'vue';
 
 interface Form {

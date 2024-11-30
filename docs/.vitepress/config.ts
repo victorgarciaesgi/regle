@@ -61,6 +61,9 @@ const Examples: DefaultTheme.NavItemWithLink[] = [{ text: 'Base example', link: 
 export default defineConfig({
   title: 'Regle',
   description: 'Typescript-first model-based form validation library for Vue 3',
+  sitemap: {
+    hostname: 'https://regle.vercel.app',
+  },
   themeConfig: {
     logo: {
       dark: '/logo-reversed.png',
@@ -84,22 +87,27 @@ export default defineConfig({
           { text: 'Integrations', link: '/introduction/integrations' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
         ],
+        collapsed: false,
       },
       {
         text: 'Core concepts',
         items: CoreConcepts,
+        collapsed: false,
       },
       {
         text: 'Typescript',
         items: Typescript,
+        collapsed: false,
       },
       {
         text: 'Advanced Usage',
         items: AdvancedUsage,
+        collapsed: false,
       },
       {
         text: 'Examples',
         items: Examples,
+        collapsed: false,
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],
@@ -126,7 +134,13 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: 'Typescript-first model-based form validation library for Vue 3',
+        content: `Regle (French word for "rule") is a Typescript-first form validation library made for Vue 3.
+            I'm a lover and long-time user of Vuelidate API, so Regle's is greatly inspired by it.
+
+            Regle is about bringing type safety and great DX to simple or complex Form.
+            It's all data-based and headless, the validation matches the data structure so you can separate UI and validations.
+
+            Declare your form rules inside a component or a Pinia store and use it wherever you like.`,
       },
     ],
     [
