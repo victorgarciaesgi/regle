@@ -36,7 +36,7 @@ export function useStateProperties({
       customMessages: customRules?.(),
       storage,
       options,
-      externalErrors,
+      externalErrors: externalErrors as any,
       validationGroups: options.validationGroups,
       initialState,
       shortcuts,
