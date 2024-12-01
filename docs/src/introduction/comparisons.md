@@ -20,7 +20,7 @@ Regle builds upon these features and adds several improvements:
 - Autocomplete
 - Zod support (with more integrations planned)
 - Global config
-- Improved API in some areas, such as rules declaration, `$each`, `validationGroups`, `$parse`
+- Improved API in some areas, such as rules declaration, `$each`, `validationGroups`, `$validate`
 
 ## VeeValidate
 

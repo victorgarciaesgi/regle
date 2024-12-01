@@ -48,7 +48,7 @@ export interface ZodRegleStatus<
   readonly $silentErrors: ZodToRegleErrorTree<TSchema>;
   $resetAll: () => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $parse: () => Promise<false | z.output<TSchema>>;
+  $validate: () => Promise<false | z.output<TSchema>>;
 }
 
 /**
@@ -77,12 +77,10 @@ export interface ZodRegleFieldStatus<
 > extends RegleCommonStatus<TState> {
   $value: TState[TKey];
   readonly $externalErrors?: string[];
-  // readonly $rules: {
-  //   [`${TSchema}`]: RegleRuleStatus<TState[TKey], []> & TSchema['']
-  // };
   readonly $rules: {
     [Key in `${string & TSchema['_def']['typeName']}`]: RegleRuleStatus<TState[TKey], []>;
   };
+  $validate: () => Promise<false | z.output<TSchema>>;
 }
 
 /**
@@ -91,4 +89,5 @@ export interface ZodRegleFieldStatus<
 export interface ZodRegleCollectionStatus<TSchema extends z.ZodTypeAny, TState extends any[]>
   extends ZodRegleFieldStatus<TSchema, TState> {
   readonly $each: Array<InferZodRegleStatusType<NonNullable<TSchema>, TState, number>>;
+  $validate: () => Promise<false | z.output<TSchema>>;
 }
