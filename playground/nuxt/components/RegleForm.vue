@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.email" placeholder="email" />
-    <span v-if="r$.$fields.email.$pending" style="color: orange">Loading</span>
+    <span v-if="r$.$fields.email?.$pending" style="color: orange">Loading</span>
     <ul>
       <li v-for="error of r$.$errors.email" :key="error">{{ error }}</li>
     </ul>
@@ -10,7 +10,7 @@
 
     <input
       v-model="form.firstName"
-      :placeholder="`firstName ${r$.$fields.firstName.$rules.required?.$active ? '*' : ''}`"
+      :placeholder="`firstName ${r$.$fields?.firstName?.$rules.required?.$active ? '*' : ''}`"
     />
     <ul>
       <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
@@ -80,7 +80,7 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const result = await r$.$parse();
+  const result = await r$.$validate();
 
   if (result) {
     const test: string = result.foo.bloublou.test[0].name;

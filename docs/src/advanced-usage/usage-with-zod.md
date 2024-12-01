@@ -94,7 +94,7 @@ const {r$} = useZodRegle(form, schema);
 
 ## Type safe output
 
-Same as the main `useRegle`, `r$.$parse` will also return a safe output.
+Same as the main `useRegle`, `r$.$validate` will also return a safe output.
 
 
 ```ts twoslash
@@ -119,7 +119,7 @@ const schema = computed(() => z.object({
 const {r$} = useZodRegle(form, schema);
 
 async function submit() {
-  const result = await r$.$parse();
+  const result = await r$.$validate();
   if (result) {
     console.log(result);
     //            ^?

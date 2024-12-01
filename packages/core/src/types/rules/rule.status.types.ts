@@ -4,6 +4,7 @@ import type {
   $InternalRegleCollectionErrors,
   $InternalRegleErrors,
   AllRulesDeclarations,
+  ArrayElement,
   DeepSafeFormState,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
@@ -22,6 +23,7 @@ import type {
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
+  SafeFieldProperty,
   SafeProperty,
 } from '..';
 
@@ -57,11 +59,15 @@ export type RegleStatus<
       TKey,
       TShortcuts
     >;
+  } & {
+    readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+      ? TKey
+      : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey, TShortcuts>;
   };
   readonly $errors: RegleErrorTree<TState>;
   readonly $silentErrors: RegleErrorTree<TState>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $parse: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
+  $validate: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -78,7 +84,7 @@ export interface $InternalRegleStatus extends RegleCommonStatus {
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
-  $parse: () => Promise<false | Record<string, any>>;
+  $validate: () => Promise<false | Record<string, any>>;
 }
 
 /**
@@ -92,19 +98,23 @@ export type InferRegleStatusType<
 > =
   NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
     ? TRule extends RegleCollectionRuleDefinition<any, any>
-      ? ExtractFromGetter<TRule['$each']> extends RegleRuleDecl | ReglePartialRuleTree<any>
+      ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
         ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
         : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
       : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
     : TRule extends ReglePartialRuleTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
+        : NonNullable<TState[TKey]> extends Date | File
+          ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+          : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
+            ? RegleStatus<TState[TKey], TRule, TShortcuts>
+            : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+      : NonNullable<TState[TKey]> extends Date | File
+        ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
         : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-          ? RegleStatus<TState[TKey], TRule, TShortcuts>
-          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-      : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-        ? RegleStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
-        : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
+          ? RegleStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
 
 /**
  * @internal
@@ -128,6 +138,7 @@ export type RegleFieldStatus<
   readonly $silentErrors: string[];
   readonly $externalErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
+  $validate: () => Promise<false | SafeFieldProperty<TState, TRules>>;
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<
       TRules,
@@ -161,6 +172,7 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   readonly $errors: string[];
   readonly $silentErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
+  $validate: () => Promise<false | any>;
 }
 
 /**
@@ -177,10 +189,9 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $name: string;
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
-  $touch(): void;
+  $touch(runCommit?: boolean): void;
   $reset(): void;
   $resetAll: () => void;
-  $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
   $clearExternalErrors(): void;
@@ -252,12 +263,18 @@ export interface $InternalRegleRuleStatus {
  */
 export type RegleCollectionStatus<
   TState extends any[] = any[],
-  TRules extends ReglePartialRuleTree<Record<string, any>> = Record<string, any>,
+  TRules extends ReglePartialRuleTree<ArrayElement<TState>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<
   RegleFieldStatus<TState, TRules, TShortcuts>,
-  '$errors' | '$silentErrors' | '$extractDirtyFields' | '$externalErrors' | '$rules' | '$value'
+  | '$errors'
+  | '$silentErrors'
+  | '$extractDirtyFields'
+  | '$externalErrors'
+  | '$rules'
+  | '$value'
+  | '$validate'
 > & {
   $value: Maybe<TState>;
   readonly $each: Array<
@@ -267,7 +284,7 @@ export type RegleCollectionStatus<
   readonly $errors: RegleCollectionErrors<TState>;
   readonly $silentErrors: RegleCollectionErrors<TState>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $parse: () => Promise<false | SafeProperty<TState, TRules>>;
+  $validate: () => Promise<false | DeepSafeFormState<ArrayElement<TState>, TRules>>[];
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {
@@ -288,7 +305,7 @@ export interface $InternalRegleCollectionStatus
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
-  $parse: () => Promise<false | any[]>;
+  $validate: () => Promise<false | any[]>;
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;

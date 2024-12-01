@@ -73,7 +73,7 @@ export function createReactiveRuleStatus({
           if (typeof rule.value.active === 'function') {
             return rule.value.active(state.value, $defaultMetadata.value);
           } else {
-            return rule.value.active;
+            return !!rule.value.active;
           }
         } else {
           return true;
@@ -196,37 +196,39 @@ export function createReactiveRuleStatus({
   const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 200);
 
   async function $validate(): Promise<boolean> {
-    $validating.value = true;
+    try {
+      $validating.value = true;
 
-    let ruleResult = false;
+      let ruleResult = false;
 
-    if (isRuleDef(rule.value) && rule.value._async) {
-      ruleResult = await $computeAsyncDebounce();
-    } else {
-      const validator = scopeState.$validator.value;
-      const resultOrPromise = validator(state.value, ...scopeState.$params.value);
-      if (resultOrPromise instanceof Promise) {
-        console.warn(
-          'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
-        );
+      if (isRuleDef(rule.value) && rule.value._async) {
+        ruleResult = await $computeAsyncDebounce();
       } else {
-        if (resultOrPromise != null) {
-          if (typeof resultOrPromise === 'boolean') {
-            ruleResult = resultOrPromise;
-          } else {
-            const { $valid, ...rest } = resultOrPromise;
-            ruleResult = $valid;
-            $metadata.value = rest;
+        const validator = scopeState.$validator.value;
+        const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+        if (resultOrPromise instanceof Promise) {
+          console.warn(
+            'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
+          );
+        } else {
+          if (resultOrPromise != null) {
+            if (typeof resultOrPromise === 'boolean') {
+              ruleResult = resultOrPromise;
+            } else {
+              const { $valid, ...rest } = resultOrPromise;
+              ruleResult = $valid;
+              $metadata.value = rest;
+            }
           }
         }
       }
+      $valid.value = ruleResult;
+      return ruleResult;
+    } catch (e) {
+      return false;
+    } finally {
+      $validating.value = false;
     }
-
-    $valid.value = ruleResult;
-
-    $validating.value = false;
-
-    return ruleResult;
   }
 
   function $reset() {

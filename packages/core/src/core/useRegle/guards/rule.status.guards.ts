@@ -1,11 +1,11 @@
 import type {
-  $InternalExternalRegleErrors,
+  $InternalRegleErrors,
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   $InternalRegleStatus,
   $InternalRegleStatusType,
-  RegleExternalCollectionErrors,
+  RegleCollectionErrors,
   RegleExternalErrorTree,
 } from '../../../types';
 import { isObject } from '../../../utils';
@@ -31,13 +31,13 @@ export function isRuleStatus(rule: unknown): rule is $InternalRegleRuleStatus {
 //  -- ExternalErrors
 
 export function isNestedExternalErrorStatus(
-  rule: $InternalExternalRegleErrors
+  rule: $InternalRegleErrors
 ): rule is RegleExternalErrorTree<any> {
   return !!rule && '$each' in rule;
 }
 
 export function isCollectionExternalErrorStatus(
-  rule: $InternalExternalRegleErrors
-): rule is RegleExternalCollectionErrors<any> {
+  rule: $InternalRegleErrors
+): rule is RegleCollectionErrors<any> {
   return !!rule && '$each' in rule;
 }

@@ -7,7 +7,7 @@
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>
-      <button type="button" @click="r$.$parse">Validate</button>
+      <button type="button" @click="r$.$validate">Validate</button>
     </div>
     <span v-if="r$.$fields.email.$pending" class="pending-text"> Checking... </span>
     <ul v-if="r$.$errors.email.length">

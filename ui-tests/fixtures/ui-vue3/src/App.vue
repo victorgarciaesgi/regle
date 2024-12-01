@@ -86,7 +86,6 @@
       <button type="button" @click="r$.$resetAll">Reset</button>
       <button type="submit">Submit</button>
     </div>
-    <pre>{{ r$.$dirty }}</pre>
   </form>
 </template>
 
@@ -129,8 +128,9 @@ type Form = {
 const form = reactive<Form>({
   user: {
     email: 'ezfjpzefj',
+    pseudo: 'e',
   },
-  projects: [{ name: 'foo' }],
+  projects: [{ name: 'foo', github_url: 'fezf' }],
 });
 
 function dirtyFields() {
@@ -180,7 +180,7 @@ const { r$ } = useCustomRegle(form, {
 });
 
 async function submit() {
-  const result = await r$.$parse();
+  const result = await r$.$validate();
   if (result) {
     result.acceptTC;
     // Check autocompletion for type safe output

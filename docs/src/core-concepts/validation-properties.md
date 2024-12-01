@@ -98,15 +98,12 @@ Return the current key name of the field.
 
 ## Common methods for fields
 
-### `$parse`: 
-- Type: `() => Promise<false | SafeOutput<TState>>`
-a Promise that will turn all the fields dirty, and run all their validation rules. It will return either `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only)
-
 
 ### `$validate`
-- Type: `() => Promise<boolean>`
+- Type: `() => Promise<false | SafeOutput<TState>>`
 
-Sets all properties as dirty, triggering all rules. Returns a Promise with a boolean, which resolves once all rules finish.
+Sets all properties as dirty, triggering all rules. 
+It returns a promise that will either resolve to `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only)
 
 ### `$extractDirtyFields`
 - Type: `(filterNullishValues = true) => PartialDeep<TState>`

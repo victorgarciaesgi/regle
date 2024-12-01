@@ -10,7 +10,7 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type { ExtractFromGetter } from '../utils';
+import type { ExtractFromGetter, Maybe } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './options.types';
 
 export interface Regle<
@@ -71,8 +71,9 @@ export type DeepSafeFormState<
 export type SafeProperty<
   TState,
   TRule extends RegleFormPropertyType<any, any> | undefined = never,
-> =
-  TRule extends RegleCollectionRuleDefinition<any, any>
+> = [unknown] extends [TState]
+  ? unknown
+  : TRule extends RegleCollectionRuleDefinition<any, any>
     ? TState extends Array<any>
       ? SafeProperty<TState[number], ExtractFromGetter<TRule['$each']>>[]
       : never
@@ -91,3 +92,19 @@ export type SafeProperty<
                 : never
           : never
       : never;
+
+export type SafeFieldProperty<
+  TState,
+  TRule extends RegleFormPropertyType<any, any> | undefined = never,
+> =
+  TRule extends RegleRuleDecl<any, any>
+    ? unknown extends TRule['required']
+      ? Maybe<TState>
+      : TRule['required'] extends undefined
+        ? never
+        : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+          ? Params extends never[]
+            ? Maybe<TState>
+            : Maybe<TState>
+          : Maybe<TState>
+    : Maybe<TState>;

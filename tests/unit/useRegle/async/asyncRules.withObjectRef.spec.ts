@@ -71,10 +71,8 @@ describe('useRegle with async rules and Object refs', async () => {
   });
 
   it('should error on initial submit', async () => {
-    const [result] = await Promise.all([vm.r$.$parse(), vi.advanceTimersByTimeAsync(1200)]);
-
+    const [result] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
     await nextTick();
-    await flushPromises();
 
     expect(result).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
@@ -227,7 +225,10 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
-    const [result] = await Promise.all([vm.r$.$parse(), vi.advanceTimersByTimeAsync(1000)]);
+    const promise = vm.r$.$validate();
+    const [result] = await Promise.all([promise, vi.advanceTimersByTimeAsync(1300)]);
+
+    await nextTick();
 
     expect(result).toStrictEqual({
       level0Async: 2,

@@ -1,7 +1,7 @@
-import type { $InternalExternalRegleErrors, RegleExternalCollectionErrors } from '../../../types';
+import type { $InternalRegleErrors, RegleCollectionErrors } from '../../../types';
 
 export function isExternalErrorCollection(
-  value: $InternalExternalRegleErrors
-): value is RegleExternalCollectionErrors {
+  value: $InternalRegleErrors
+): value is RegleCollectionErrors<any> {
   return '$each' in value || '$errors' in value;
 }

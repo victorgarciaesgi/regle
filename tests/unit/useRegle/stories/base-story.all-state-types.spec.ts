@@ -63,7 +63,7 @@ describe.each([
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.r$.$parse();
+    const result = await vm.r$.$validate();
 
     expect(result).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
@@ -211,7 +211,7 @@ describe.each([
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
-    const result = await vm.r$.$parse();
+    const result = await vm.r$.$validate();
 
     expect(result).toStrictEqual({
       level0: 2,

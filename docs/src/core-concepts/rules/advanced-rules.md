@@ -172,7 +172,7 @@ Async rules let you handle validations that are only possible on server, or expe
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>
-      <button type="button" @click="r$.$parse">Submit</button>
+      <button type="button" @click="r$.$validate">Submit</button>
     </div>
     <span v-if="r$.$fields.email.$pending"> Checking... </span>
     <ul v-if="r$.$errors.email.length">

@@ -71,6 +71,7 @@ export function createReactiveFieldStatus({
     $ready: ComputedRef<boolean>;
     $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
+    $validating: Ref<boolean>;
   };
 
   let scope = effectScope();
@@ -344,6 +345,7 @@ export function createReactiveFieldStatus({
         $name,
         haveAnyAsyncRule,
         $shortcuts,
+        $validating,
       } satisfies ScopeReturnState;
     })!;
 
@@ -381,7 +383,7 @@ export function createReactiveFieldStatus({
   }
 
   function $commitHandler() {
-    Object.entries($rules.value).forEach(([key, rule]) => {
+    Object.values($rules.value).forEach((rule) => {
       rule.$validate();
     });
   }
@@ -404,40 +406,41 @@ export function createReactiveFieldStatus({
     }
   }
 
-  function $touch(): void {
+  function $touch(runCommit = true): void {
     if (!$dirty.value) {
       $dirty.value = true;
 
-      $commit();
+      if (runCommit) {
+        $commit();
+      }
     }
   }
 
-  const $validate = scopeState.$debounce.value
-    ? debounce($validateHandler, scopeState.$debounce.value ?? 0)
-    : $validateHandler;
-
-  async function $validateHandler(): Promise<boolean> {
+  async function $validate(): Promise<false | unknown> {
     try {
       triggerPunishment.value = true;
-      if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
+      if (!$dirty.value) {
+        $dirty.value = true;
+      } else if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
         return !scopeState.$error.value;
-      } else {
-        if (scopeState.$autoDirty.value === false && !$dirty.value) {
-          $dirty.value = true;
-        }
-        const promises = Object.entries($rules.value).map(([key, rule]) => {
-          return rule.$validate();
-        });
-        const results = await Promise.allSettled(promises);
-
-        return results.every((value) => {
-          if (value.status === 'fulfilled') {
-            return value.value;
-          } else {
-            return false;
-          }
-        });
       }
+      const results = await Promise.allSettled(
+        Object.entries($rules.value).map(([key, rule]) => {
+          return rule.$validate();
+        })
+      );
+
+      const validationResults = results.every((value) => {
+        if (value.status === 'fulfilled') {
+          return !!value.value;
+        } else {
+          return false;
+        }
+      });
+      if (validationResults) {
+        return state.value;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -461,7 +464,7 @@ export function createReactiveFieldStatus({
   }
 
   if (!scopeState.$lazy.value) {
-    $validateHandler();
+    $commit();
   }
 
   const {
@@ -475,6 +478,7 @@ export function createReactiveFieldStatus({
     $silentErrors,
     $valid,
     $shortcuts,
+    $validating,
   } = scopeState;
 
   return reactive({

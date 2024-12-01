@@ -14,7 +14,7 @@ import type { DefaultValidators } from '../../core';
 
 export interface RegleBehaviourOptions {
   /**
-   * Only display error when calling `r$.$parse()`
+   * Only display error when calling `r$.$validate()`
    * @default false
    */
   lazy?: boolean;
@@ -24,7 +24,7 @@ export interface RegleBehaviourOptions {
    */
   autoDirty?: boolean;
   /**
-   * The fields will turn valid when they are, but not invalid unless calling `r$.$parse()`
+   * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
    * @default false
    *
    * @experimental report any bug

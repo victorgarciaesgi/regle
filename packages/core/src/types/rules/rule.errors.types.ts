@@ -10,11 +10,13 @@ export type RegleExternalErrorTree<TState = Record<string, any> | any[]> = Parti
 >;
 
 export type RegleValidationErrors<TState extends Record<string, any> | any[] | unknown = never> =
-  TState extends Array<infer U extends Record<string, any>>
+  NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? RegleCollectionErrors<U>
-    : TState extends Record<string, any>
-      ? RegleErrorTree<TState>
-      : string[];
+    : NonNullable<TState> extends Date | File
+      ? string[]
+      : NonNullable<TState> extends Record<string, any>
+        ? RegleErrorTree<TState>
+        : string[];
 
 export type RegleCollectionErrors<TState extends Record<string, any>> = {
   readonly $errors: string[];

@@ -10,9 +10,9 @@ What would be the benefit of building a validation library without a type safe o
 Inspired by the `Zod` parse output type, `Regle` will also infer your validator types to know which properties are _**garanted**_ to be defined.
 
 
-## `r$.$parse`
+## `r$.$validate`
 
-Using `r$.$parse` will asynchronously run and wait for all your validators to finish, and return either `false`, or a type safe output of your state.
+Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and return either `false`, or a type safe output of your state.
 
 It will check if the `required` rule is present, but it will not work with `required: requiredIf(...)`, because we can't know the condition at build time.
 
@@ -34,7 +34,7 @@ const {r$} = useRegle(form, {
 });
 
 async function submit() {
-  const result = await r$.$parse();
+  const result = await r$.$validate();
   if (result) {
     console.log(result);
     //            ^?

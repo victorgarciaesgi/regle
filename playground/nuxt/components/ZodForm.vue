@@ -52,7 +52,7 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const result = await r$.$parse();
+  const result = await r$.$validate();
 }
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({

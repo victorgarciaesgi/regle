@@ -22,7 +22,6 @@ import type {
   CustomRulesDeclarationTree,
   DeepMaybeRef,
   RegleBehaviourOptions,
-  RegleExternalErrorTree,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
@@ -237,26 +236,30 @@ export function createReactiveNestedStatus({
     $watch();
   }
 
-  function $touch(): void {
-    Object.entries($fields.value).forEach(([_, statusOrField]) => {
-      statusOrField.$touch();
+  function $touch(runCommit = true): void {
+    Object.values($fields.value).forEach((statusOrField) => {
+      statusOrField.$touch(runCommit);
     });
   }
 
-  async function $validate(): Promise<boolean> {
+  async function $validate(): Promise<false | Record<string, any>> {
     try {
       const results = await Promise.allSettled(
-        Object.entries($fields.value).map(([_, statusOrField]) => {
+        Object.values($fields.value).map((statusOrField) => {
           return statusOrField.$validate();
         })
       );
-      return results.every((value) => {
+      const validationResult = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return value.value;
+          return value.value !== false;
         } else {
           return false;
         }
       });
+      if (validationResult) {
+        return state.value;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -428,15 +431,6 @@ export function createReactiveNestedStatus({
     return Object.fromEntries(dirtyFields);
   }
 
-  async function $parse(): Promise<false | Record<string, any>> {
-    $touch();
-    const result = await $validate();
-    if (result) {
-      return state.value;
-    }
-    return false;
-  }
-
   const { $shortcuts, ...restScopeState } = scopeState;
 
   return reactive({
@@ -452,7 +446,6 @@ export function createReactiveNestedStatus({
     $watch,
     $clearExternalErrors,
     $extractDirtyFields,
-    $parse,
   }) satisfies $InternalRegleStatus;
 }
 

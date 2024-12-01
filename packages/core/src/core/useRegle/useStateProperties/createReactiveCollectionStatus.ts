@@ -485,10 +485,10 @@ export function createReactiveCollectionStatus({
     immediateScope = effectScope(true);
   }
 
-  function $touch(): void {
-    $fieldStatus.value.$touch();
+  function $touch(runCommit = true): void {
+    $fieldStatus.value.$touch(runCommit);
     $eachStatus.value.forEach(($each) => {
-      $each.$touch();
+      $each.$touch(runCommit);
     });
   }
 
@@ -499,7 +499,7 @@ export function createReactiveCollectionStatus({
     });
   }
 
-  async function $validate(): Promise<boolean> {
+  async function $validate(): Promise<false | any[]> {
     try {
       const results = await Promise.all([
         $fieldStatus.value.$validate(),
@@ -507,7 +507,11 @@ export function createReactiveCollectionStatus({
           return rule.$validate();
         }),
       ]);
-      return results.every((value) => !!value);
+      const validationResults = results.every((value) => value.value !== false);
+      if (validationResults) {
+        return state.value;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -540,19 +544,9 @@ export function createReactiveCollectionStatus({
   }
 
   function $resetAll() {
-    console.log(initialState);
     $unwatch();
     resetArrayValuesRecursively(state, initialState);
     $reset();
-  }
-
-  async function $parse(): Promise<false | any[]> {
-    $touch();
-    const result = await $validate();
-    if (result) {
-      return state.value;
-    }
-    return false;
   }
 
   const { $shortcuts, ...restScopeState } = scopeState;
@@ -570,7 +564,6 @@ export function createReactiveCollectionStatus({
     $reset,
     $resetAll,
     $extractDirtyFields,
-    $parse,
     $clearExternalErrors,
   }) satisfies $InternalRegleCollectionStatus;
 }
