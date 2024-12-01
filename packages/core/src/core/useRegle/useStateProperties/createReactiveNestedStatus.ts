@@ -12,10 +12,11 @@ import {
   watchEffect,
 } from 'vue';
 import type {
-  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
+  $InternalRegleCollectionErrors,
   $InternalRegleErrors,
-  $InternalReglePartialValidationTree,
+  $InternalRegleErrorTree,
+  $InternalReglePartialRuleTree,
   $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
@@ -40,15 +41,15 @@ import { createReactiveCollectionStatus } from './createReactiveCollectionStatus
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 
 interface CreateReactiveNestedStatus {
-  rootRules?: Ref<$InternalReglePartialValidationTree>;
-  scopeRules: Ref<$InternalReglePartialValidationTree>;
+  rootRules?: Ref<$InternalReglePartialRuleTree>;
+  scopeRules: Ref<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
   customMessages?: CustomRulesDeclarationTree;
   path?: string;
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  externalErrors: Readonly<Ref<RegleExternalErrorTree | undefined>>;
+  externalErrors: Readonly<Ref<$InternalRegleErrorTree | undefined>>;
   initialState: Record<string, any> | undefined;
   fieldName: string;
   shortcuts: RegleShortcutDefinition | undefined;
@@ -463,7 +464,7 @@ interface CreateReactiveChildrenStatus {
   index?: number;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
+  externalErrors: Readonly<Ref<$InternalRegleErrors | undefined>>;
   initialState: any;
   fieldName: string;
   shortcuts: RegleShortcutDefinition | undefined;
@@ -493,7 +494,7 @@ export function createReactiveChildrenStatus({
       storage,
       options,
       index,
-      externalErrors,
+      externalErrors: externalErrors as Ref<$InternalRegleCollectionErrors>,
       initialState,
       fieldName,
       shortcuts,
@@ -510,7 +511,7 @@ export function createReactiveChildrenStatus({
       initialState,
       shortcuts,
       fieldName,
-      externalErrors: externalErrors as Readonly<Ref<RegleExternalErrorTree | undefined>>,
+      externalErrors: externalErrors as Readonly<Ref<$InternalRegleErrorTree | undefined>>,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({

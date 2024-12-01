@@ -267,7 +267,7 @@ export function createReactiveFieldStatus({
 
       const $valid = computed<boolean>(() => {
         if (isEmpty($rules.value)) {
-          return !$invalid.value;
+          return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if ($externalErrors.value?.length) {
             return false;

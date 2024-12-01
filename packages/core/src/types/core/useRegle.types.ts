@@ -4,9 +4,8 @@ import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
-  RegleExternalErrorTree,
   RegleFormPropertyType,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
@@ -16,12 +15,11 @@ import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './optio
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,
-  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree> = EmptyObject,
-  TExternal extends RegleExternalErrorTree<TState> = {},
+  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree> = EmptyObject,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
   TShortcuts extends RegleShortcutDefinition = {},
 > {
-  r$: RegleRoot<TState, TRules, TValidationGroups, TExternal, TShortcuts>;
+  r$: RegleRoot<TState, TRules, TValidationGroups, TShortcuts>;
 }
 
 export type isDeepExact<T, U> = {
@@ -40,12 +38,12 @@ type CheckDeepExact<T, U> = [U] extends [never]
       ? isDeepExact<NonNullable<T['$each']>, UnionToIntersection<NonNullable<U['$each']>>>
       : T extends RegleRuleDecl
         ? true
-        : T extends ReglePartialValidationTree<any>
+        : T extends ReglePartialRuleTree<any>
           ? isDeepExact<T, U>
           : false
     : T extends RegleRuleDecl
       ? true
-      : T extends ReglePartialValidationTree<any>
+      : T extends ReglePartialRuleTree<any>
         ? isDeepExact<T, U>
         : false;
 
@@ -55,7 +53,7 @@ export type DeepReactiveState<T extends Record<string, any>> = {
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,
-  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
+  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>,
 > = [unknown] extends [TState]
   ? {}
   : {
@@ -78,7 +76,7 @@ export type SafeProperty<
     ? TState extends Array<any>
       ? SafeProperty<TState[number], ExtractFromGetter<TRule['$each']>>[]
       : never
-    : TRule extends ReglePartialValidationTree<any, any>
+    : TRule extends ReglePartialRuleTree<any, any>
       ? TState extends Record<string, any>
         ? DeepSafeFormState<TState, TRule>
         : TRule extends RegleRuleDecl<any, any>

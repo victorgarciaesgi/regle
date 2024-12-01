@@ -1,15 +1,15 @@
-import type { RequiredDeep } from 'type-fest';
+import type { PartialDeep, RequiredDeep } from 'type-fest';
 import type { MaybeRef } from 'vue';
 import type {
-  AllRulesDeclarations,
   CustomRulesDeclarationTree,
   RegleCollectionStatus,
+  RegleErrorTree,
   RegleExternalErrorTree,
   RegleFieldStatus,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   RegleStatus,
 } from '../../types/rules';
-import type { DeepMaybeRef, OmitByType } from '../../types/utils';
+import type { DeepMaybeRef, OmitByType, Unwrap } from '../../types/utils';
 import type { DefaultValidators } from '../../core';
 
 export interface RegleBehaviourOptions {
@@ -34,11 +34,10 @@ export interface RegleBehaviourOptions {
 
 export interface LocalRegleBehaviourOptions<
   TState extends Record<string, any>,
-  TRules extends ReglePartialValidationTree<TState, CustomRulesDeclarationTree>,
-  TExternal extends RegleExternalErrorTree<TState> = {},
+  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
 > {
-  externalErrors?: MaybeRef<TExternal>;
+  externalErrors?: MaybeRef<RegleExternalErrorTree<Unwrap<TState>>>;
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
 }
 
@@ -59,12 +58,7 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
 };
 
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
-  LocalRegleBehaviourOptions<
-    Record<string, any>,
-    Record<string, any>,
-    Record<string, any>,
-    Record<string, any[]>
-  >;
+  LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>>;
 
 export type ShortcutCommonFn<T extends Record<string, any>> = {
   [x: string]: (element: OmitByType<T, Function>) => unknown;
@@ -79,7 +73,7 @@ export type RegleShortcutDefinition<
   nested?: ShortcutCommonFn<
     RegleStatus<
       Record<string, any>,
-      ReglePartialValidationTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>
+      ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>
     >
   >;
   collections?: ShortcutCommonFn<RegleCollectionStatus>;

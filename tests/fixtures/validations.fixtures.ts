@@ -2,7 +2,7 @@ import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import type {
   Regle,
   RegleComputedRules,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   RegleRuleDefinition,
 } from '@regle/core';
 import { useRegle } from '@regle/core';
@@ -230,7 +230,7 @@ export function simpleNestedStateWithComputedValidation() {
             name: { required },
           },
         },
-      }) satisfies ReglePartialValidationTree<UnwrapRef<typeof form>>
+      }) satisfies ReglePartialRuleTree<UnwrapRef<typeof form>>
   );
 
   return useRegle(form, rules);

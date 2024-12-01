@@ -2,15 +2,14 @@ import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { computed, isRef, ref, toRaw } from 'vue';
 import type {
-  $InternalReglePartialValidationTree,
+  $InternalReglePartialRuleTree,
   AllRulesDeclarations,
   DeepReactiveState,
   isDeepExact,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
-  RegleExternalErrorTree,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
@@ -24,16 +23,15 @@ export type useRegleFn<
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > = <
   TState extends Record<string, any>,
-  TRules extends ReglePartialValidationTree<
+  TRules extends ReglePartialRuleTree<
     Unwrap<TState>,
     Partial<AllRulesDeclarations> & TCustomRules
   > &
     TValid,
-  TExternal extends RegleExternalErrorTree<Unwrap<TState>>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   TValid = isDeepExact<
     NoInferLegacy<TRules>,
-    ReglePartialValidationTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+    ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
   > extends true
     ? {}
     : never,
@@ -41,8 +39,8 @@ export type useRegleFn<
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   rulesFactory: MaybeRefOrGetter<TRules>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TExternal, TValidationGroups>
-) => Regle<Unwrap<TState>, TRules, TExternal, TValidationGroups, TShortcuts>;
+    LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups>
+) => Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts>;
 
 export function createUseRegleComposable<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -65,7 +63,7 @@ export function createUseRegleComposable<
       | (() => Record<string, any>)
       | ComputedRef<Record<string, any>>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any, any>
+      LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>
   ): Regle<Record<string, any>, Record<string, any>, any, any> {
     const scopeRules = isRef(rulesFactory)
       ? rulesFactory
@@ -81,7 +79,7 @@ export function createUseRegleComposable<
     const initialState = cloneDeep(toRaw(processedState.value));
 
     const regle = useStateProperties({
-      scopeRules: scopeRules as ComputedRef<$InternalReglePartialValidationTree>,
+      scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,
       state: processedState,
       options: resolvedOptions,
       initialState,

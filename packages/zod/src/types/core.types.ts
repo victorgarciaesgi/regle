@@ -1,27 +1,15 @@
-import type {
-  RegleCommonStatus,
-  RegleExternalErrorTree,
-  RegleRoot,
-  RegleRuleStatus,
-} from '@regle/core';
+import type { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
+import type { PartialDeep } from 'type-fest';
 import type { z } from 'zod';
 import type { toZod } from './zod.types';
-import type { PartialDeep } from 'type-fest';
 
-export interface ZodRegle<
-  TState extends Record<string, any>,
-  TSchema extends toZod<any>,
-  TExternal extends RegleExternalErrorTree<TState> = {},
-> {
-  r$: ZodRegleStatus<TState, TSchema, TExternal>;
+export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
+  r$: ZodRegleStatus<TState, TSchema>;
 }
 
 // - Zod errors
 
-export type ZodToRegleErrorTree<
-  TSchema extends toZod<any>,
-  TExternal extends RegleExternalErrorTree<Record<string, unknown>> = {},
-> =
+export type ZodToRegleErrorTree<TSchema extends toZod<any>> =
   TSchema extends z.ZodObject<infer O>
     ? {
         readonly [K in keyof O]: ZodDefToRegleValidationErrors<O[K]>;
@@ -48,7 +36,6 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
 export interface ZodRegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends toZod<any> = toZod<any>,
-  TExternal extends RegleExternalErrorTree<TState> = {},
 > extends RegleCommonStatus<TState> {
   readonly $fields: TSchema extends z.ZodObject<infer O extends z.ZodRawShape>
     ? {
@@ -57,8 +44,8 @@ export interface ZodRegleStatus<
           : never;
       }
     : never;
-  readonly $errors: ZodToRegleErrorTree<TSchema, TExternal>;
-  readonly $silentErrors: ZodToRegleErrorTree<TSchema, TExternal>;
+  readonly $errors: ZodToRegleErrorTree<TSchema>;
+  readonly $silentErrors: ZodToRegleErrorTree<TSchema>;
   $resetAll: () => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   $parse: () => Promise<false | z.output<TSchema>>;

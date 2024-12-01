@@ -2,8 +2,7 @@ import type {
   DeepMaybeRef,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
-  RegleExternalErrorTree,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   Unwrap,
 } from '@regle/core';
 import { useRegle } from '@regle/core';
@@ -14,15 +13,14 @@ import { processZodTypeDef } from './parser/processZodTypeDef';
 
 export function useZodRegle<
   TState extends Record<string, any>,
-  TExternal extends RegleExternalErrorTree<Unwrap<TState>>,
   TZodSchema extends toZod<Unwrap<TState>> = toZod<Unwrap<TState>>,
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TZodSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<Unwrap<TState>, {}, TExternal, never>
-): ZodRegle<Unwrap<TState>, TZodSchema, TExternal> {
-  const rules = ref<ReglePartialValidationTree<any, any>>({});
+    LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
+): ZodRegle<Unwrap<TState>, TZodSchema> {
+  const rules = ref<ReglePartialRuleTree<any, any>>({});
 
   const computedSchema = computed(() => unref(schema));
 

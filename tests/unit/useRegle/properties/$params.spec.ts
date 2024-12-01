@@ -4,6 +4,7 @@ import { nextTick, ref } from 'vue';
 import { timeout } from '../../../utils';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
+  shouldBeCorrectNestedStatus,
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBeValidField,
@@ -104,9 +105,9 @@ describe('$params', () => {
       vm.r$.$value.contacts[0].name = 'azertyuio';
       await nextTick();
 
-      shouldBeValidField(vm.r$);
+      shouldBeCorrectNestedStatus(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
-      shouldBeValidField(vm.r$.$fields.user);
+      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
       shouldBeValidField(vm.r$.$fields.contacts);
       shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
@@ -144,7 +145,7 @@ describe('$params', () => {
 
       shouldBeInvalidField(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
-      shouldBeValidField(vm.r$.$fields.user);
+      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
       shouldBeInvalidField(vm.r$.$fields.contacts);
       shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
@@ -162,9 +163,9 @@ describe('$params', () => {
       vm.r$.$value.contacts[1].name = 'aeeyeziyr';
       await nextTick();
 
-      shouldBeValidField(vm.r$);
+      shouldBeCorrectNestedStatus(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
-      shouldBeValidField(vm.r$.$fields.user);
+      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
       shouldBeValidField(vm.r$.$fields.contacts);
       shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
@@ -301,9 +302,9 @@ describe('$params', () => {
       await vi.advanceTimersByTimeAsync(1000);
       await nextTick();
 
-      shouldBeValidField(vm.r$);
+      shouldBeCorrectNestedStatus(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
-      shouldBeValidField(vm.r$.$fields.user);
+      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
       shouldBeValidField(vm.r$.$fields.contacts);
       shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);

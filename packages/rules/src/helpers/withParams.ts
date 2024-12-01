@@ -11,9 +11,7 @@ export function withParams<
   TValue,
   TParams extends (Ref<unknown> | (() => unknown))[] = [],
   TReturn extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
-  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M>
-    ? M
-    : NoInfer<TReturn>,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,

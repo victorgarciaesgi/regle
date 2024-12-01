@@ -1,7 +1,7 @@
 import type { ComputedRef, Ref } from 'vue';
 import { computed, reactive, unref } from 'vue';
 import type {
-  $InternalReglePartialValidationTree,
+  $InternalReglePartialRuleTree,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
@@ -17,7 +17,7 @@ export function useStateProperties({
   customRules,
   shortcuts,
 }: {
-  scopeRules: ComputedRef<$InternalReglePartialValidationTree>;
+  scopeRules: ComputedRef<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
   options: ResolvedRegleBehaviourOptions;
   initialState: Record<string, any>;

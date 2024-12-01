@@ -2,11 +2,11 @@ import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
 import type {
-  $InternalExternalRegleErrors,
   $InternalFormPropertyTypes,
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
+  $InternalRegleErrors,
   $InternalRegleFieldStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
@@ -55,7 +55,7 @@ function createCollectionElement({
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
-  externalErrors: ComputedRef<$InternalExternalRegleErrors[] | undefined>;
+  externalErrors: ComputedRef<$InternalRegleErrors[] | undefined>;
   initialState: any[] | undefined;
   shortcuts: RegleShortcutDefinition | undefined;
 }): $InternalRegleStatusType | null {
@@ -110,7 +110,7 @@ interface CreateReactiveCollectionStatusArgs {
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  externalErrors: Readonly<Ref<$InternalExternalRegleErrors | undefined>>;
+  externalErrors: Readonly<Ref<$InternalRegleCollectionErrors | undefined>>;
   initialState: any[];
   shortcuts: RegleShortcutDefinition | undefined;
 }
@@ -143,7 +143,7 @@ export function createReactiveCollectionStatus({
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
     $externalErrorsField: ComputedRef<string[]>;
-    $externalErrorsEach: ComputedRef<$InternalExternalRegleErrors[]>;
+    $externalErrorsEach: ComputedRef<$InternalRegleErrors[]>;
   }
 
   let scope = effectScope();
@@ -183,7 +183,7 @@ export function createReactiveCollectionStatus({
       return [];
     });
 
-    const $externalErrorsEach = computed<$InternalExternalRegleErrors[]>(() => {
+    const $externalErrorsEach = computed<$InternalRegleErrors[]>(() => {
       if (externalErrors.value) {
         if (isExternalErrorCollection(externalErrors.value)) {
           return externalErrors.value.$each ?? [];
@@ -361,13 +361,14 @@ export function createReactiveCollectionStatus({
         );
       });
 
-      const $valid = computed<boolean>(
-        () =>
-          $fieldStatus.value.$valid &&
+      const $valid = computed<boolean>(() => {
+        return (
+          (isEmpty($fieldStatus.value.$rules) ? true : $fieldStatus.value.$valid) &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$valid;
           })
-      );
+        );
+      });
 
       const $error = computed<boolean>(() => {
         return (

@@ -9,6 +9,7 @@ import {
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
+  shouldBeCorrectNestedStatus,
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,

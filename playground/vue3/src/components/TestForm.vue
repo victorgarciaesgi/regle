@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import type { RegleExternalErrorTree } from '@regle/core';
-import { useRegle } from '@regle/core';
+import { inferRules, useRegle } from '@regle/core';
 import { ref } from 'vue';
 
 interface Form {

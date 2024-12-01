@@ -2,7 +2,7 @@ import type { Ref } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
-  $InternalReglePartialValidationTree,
+  $InternalReglePartialRuleTree,
   $InternalRegleRuleDecl,
   InlineRuleDeclaration,
   MaybeGetter,
@@ -13,7 +13,7 @@ import { isObject, unwrapGetter } from '../../../utils';
 export function isNestedRulesDef(
   state: Ref<unknown>,
   rules: Ref<$InternalFormPropertyTypes>
-): rules is Ref<$InternalReglePartialValidationTree> {
+): rules is Ref<$InternalReglePartialRuleTree> {
   return (
     isObject(state.value) &&
     isObject(rules.value) &&

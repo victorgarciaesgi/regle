@@ -23,8 +23,9 @@ It's heavily inspired by Vuelidate.
 
 
 
-> ⚠️ Project is still in development, do not use it in production
-> API or function names can still change
+> ⚠️ Project is still in development
+> 
+> API or function names can changes until release
 
 
 ## 📚 Documentation

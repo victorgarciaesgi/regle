@@ -12,7 +12,7 @@ import type { UnwrapRegleUniversalParams } from './rule.params.types';
 /**
  * @public
  */
-export type ReglePartialValidationTree<
+export type ReglePartialRuleTree<
   TForm extends Record<string, any>,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
@@ -22,7 +22,7 @@ export type ReglePartialValidationTree<
 /**
  * @public
  */
-export type RegleValidationTree<
+export type RegleRuleTree<
   TForm extends Record<string, any>,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
@@ -39,7 +39,7 @@ export type RegleComputedRules<
     | Regle<any, any> = Partial<AllRulesDeclarations>,
   TState = Unwrap<TForm>,
   TCustom = TCustomRules extends Regle<any, infer R>
-    ? R extends ReglePartialValidationTree<any, infer C>
+    ? R extends ReglePartialRuleTree<any, infer C>
       ? C
       : Partial<AllRulesDeclarations>
     : TCustomRules,
@@ -52,9 +52,9 @@ export type RegleComputedRules<
 
 /**
  * @internal
- * @reference {@link ReglePartialValidationTree}
+ * @reference {@link ReglePartialRuleTree}
  */
-export type $InternalReglePartialValidationTree = {
+export type $InternalReglePartialRuleTree = {
   [x: string]: $InternalFormPropertyTypes;
 };
 
@@ -75,7 +75,7 @@ export type RegleFormPropertyType<
         : NonNullable<TValue> extends Ref<infer V>
           ? RegleFormPropertyType<V, TCustomRules>
           : NonNullable<TValue> extends Record<string, any>
-            ? ReglePartialValidationTree<NonNullable<TValue>, TCustomRules>
+            ? ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
             : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
 
 /**
@@ -85,7 +85,7 @@ export type RegleFormPropertyType<
 export type $InternalFormPropertyTypes =
   | $InternalRegleRuleDecl
   | $InternalRegleCollectionRuleDecl
-  | $InternalReglePartialValidationTree
+  | $InternalReglePartialRuleTree
   | FieldRegleBehaviourOptions;
 
 /**

@@ -1,9 +1,9 @@
-import type { ReglePartialValidationTree } from '@regle/core';
+import type { ReglePartialRuleTree } from '@regle/core';
 import type { PossibleDefTypes } from '../../../types';
 import type { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 
-export function zodObjectToRegle(def: z.ZodObjectDef): ReglePartialValidationTree<any, any> {
+export function zodObjectToRegle(def: z.ZodObjectDef): ReglePartialRuleTree<any, any> {
   return Object.fromEntries(
     Object.entries(def.shape()).map(([key, shape]) => {
       if (typeof shape === 'object' && '_def' in shape) {

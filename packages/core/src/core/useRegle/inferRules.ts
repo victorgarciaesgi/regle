@@ -1,9 +1,9 @@
-import type { ComputedRef, MaybeRef } from 'vue';
+import { ref, type ComputedRef, type MaybeRef } from 'vue';
 import type {
   AllRulesDeclarations,
   DeepReactiveState,
   isDeepExact,
-  ReglePartialValidationTree,
+  ReglePartialRuleTree,
   RegleRuleDecl,
 } from '../../types';
 import type { NoInferLegacy, Unwrap } from '../../types/utils';
@@ -11,25 +11,25 @@ import type { NoInferLegacy, Unwrap } from '../../types/utils';
 export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>> {
   <
     TState extends Record<string, any>,
-    TRules extends ReglePartialValidationTree<
+    TRules extends ReglePartialRuleTree<
       Unwrap<TState>,
       Partial<AllRulesDeclarations> & TCustomRules
     > &
       TValid,
     TValid = isDeepExact<
       NoInferLegacy<TRules>,
-      ReglePartialValidationTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+      ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
     > extends true
       ? {}
       : never,
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     rulesFactory: TRules
-  ): typeof rulesFactory;
+  ): TRules;
   <TState extends unknown, TRules extends RegleRuleDecl>(
     state: MaybeRef<TState>,
     rulesFactory: TRules
-  ): typeof rulesFactory;
+  ): TRules;
 }
 
 export function createInferRuleHelper<
