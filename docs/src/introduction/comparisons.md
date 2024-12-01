@@ -8,32 +8,31 @@ title: Comparison with other form libraries
 
 ## Vuelidate
 
-Vuelidate is the main comparison point. I was a long time user, but the project being abandonned made me want to write Regle.
+Vuelidate is the primary point of comparison for Regle. As a long-time user of Vuelidate, I was inspired to create Regle after the project was discontinued.
 
-They share a similar API and DX like: 
-- data based validation
-- unified reactivity
-- simple declaration
+Both libraries share a similar API and developer experience (DX), including:
+- Data-based validation
+- Unified reactivity
+- Simple declaration
 
-Regle have this, but also adds:
+Regle builds upon these features and adds several improvements:
 - 100% type safety
 - Autocomplete
-- Zod support (more to come)
+- Zod support (with more integrations planned)
 - Global config
-- Improved api on some areas (rules declaration, `$each`, `validationGroups`, `$parse`)
+- Improved API in some areas, such as rules declaration, `$each`, `validationGroups`, `$parse`
 
 ## VeeValidate
 
-VeeValidate is at first centered around components. It now provides a composition api helper.
+VeeValidate is primarily focused on being component-centric. It now also offers Composition API helpers.
 
-The API is not as declarative as Regle. It makes it difficult to work with a big form, or to manage your form in a Pinia store.
+Its API is less declarative compared to Regle, making it challenging to handle large forms or manage form state within a Pinia store.
 
-The typed schemas only works with libraries like Zod, Yup or Validbot. But they also remove some features from VeeValidate. 
-By using Zod in Regle, it keeps the same features as the default `@regle/rules`
+While VeeValidate supports typed schemas using libraries like Zod, Yup, or Validbot, this comes at the cost of losing some of VeeValidate's native features. In contrast, when using Zod with Regle, you retain all the features available in the default @regle/rules, ensuring a consistent developer experience.
 
 ## Formkit
 
 Formkit is centered around DOM components.
-Regle is headless and data-based, so you can work with your state anywhere you want.
+Regle is headless and data-driven, so you can work with your state anywhere you want.
 
-Working only with a data-based model allow for stronger type safety and better DX.
+Working exclusively with a data-driven model enables stronger type safety and a better developer experience.

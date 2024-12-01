@@ -8,6 +8,7 @@
       />
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
+
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}

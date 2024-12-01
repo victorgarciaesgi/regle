@@ -7,9 +7,9 @@ title: Integrations
 
 ## Nuxt <span data-title="nuxt"></span>
 
-Adding Nuxt module will provide auto-imports for selected exports
+Adding the Nuxt module enables auto-imports for selected exports.
 
-Run this command into your nuxt app
+Run the following command in your Nuxt application:
 
 :::code-group
 ```bash [nuxt]
@@ -32,14 +32,14 @@ bun add @regle/core @regle/rules @regle/nuxt
 ```
 :::
 
-This exports will become globally available in your nuxt app
+The following exports will become globally available in your Nuxt application:
 
 - `@regle/core`
   - useRegle 
   - createRule
   - defineRegleConfig
   - inferRules
-- `@regle/rules` Built-in rules are not injected to reduce risk of name conflict
+- `@regle/rules` Note: Built-in rules are not auto-injected to minimize the risk of name conflicts.
   - ruleHelpers
   - withAsync
   - withMessage
@@ -51,7 +51,7 @@ This exports will become globally available in your nuxt app
 
 ## Zod <span data-title="zod"></span>
 
-Regle offers an adapter for [Zod](https://zod.dev/). You can use any zod object schema to validate your state. In will offers the same DX as using `@regle/rules`.
+Regle offers an adapter for [Zod](https://zod.dev/). You can use any zod object schema to validate your state. It offers the same DX as using `@regle/rules`.
 
 Check [documentation for Zod](/advanced-usage/usage-with-zod)
 
@@ -72,11 +72,3 @@ yarn add @regle/zod
 bun add @regle/zod
 ```
 :::
-
-## Valibot
-
-In progress
-
-## Yup
-
-In progress

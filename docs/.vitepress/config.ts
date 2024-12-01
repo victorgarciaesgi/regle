@@ -134,11 +134,11 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: `Regle (French word for "rule") is a Typescript-first form validation library made for Vue 3.
-            I'm a lover and long-time user of Vuelidate API, so Regle's is greatly inspired by it.
+        content: `Regle (from the French word for "rule") is a TypeScript-first form validation library made for Vue 3.
+            I'm a lover and long-time user of Vuelidate API, so Regle is greatly inspired by it.
 
-            Regle is about bringing type safety and great DX to simple or complex Form.
-            It's all data-based and headless, the validation matches the data structure so you can separate UI and validations.
+            Regle is about bringing type safety and great DX for both simple and complex forms.
+            It's entirely data-driven and headless, allowing the validation logic to mirror your data structure, enabling a clear separation between the UI and validation logic.
 
             Declare your form rules inside a component or a Pinia store and use it wherever you like.`,
       },
