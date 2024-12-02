@@ -35,7 +35,7 @@ export type ExcludeByType<T, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K] extends U ? never : T[K];
 };
 
-export type PrimitiveTypes = string | number | boolean | bigint;
+export type PrimitiveTypes = string | number | boolean | bigint | Date | File;
 
 export type NonPresentKeys<
   TSource extends Record<string, any>,

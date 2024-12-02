@@ -467,7 +467,7 @@ export function createReactiveFieldStatus({
     }
   }
 
-  if (!scopeState.$lazy.value && !$dirty.value) {
+  if (!scopeState.$lazy.value && !$dirty.value && scopeState.$autoDirty.value) {
     $commit();
   }
 
