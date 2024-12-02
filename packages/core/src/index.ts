@@ -49,4 +49,5 @@ export type {
   InferRegleShortcuts,
   RegleEnforceRequiredRules,
   RegleEnforceCustomRequiredRules,
+  RegleResult,
 } from './types';

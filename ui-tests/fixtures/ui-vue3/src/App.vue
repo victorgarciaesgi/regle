@@ -2,7 +2,7 @@
   <form @submit.prevent="submit">
     <h1>Sign up</h1>
     <div class="fields">
-      <template v-if="r$.$fields.user.$fields">
+      <!-- <template v-if="r$.$fields.user.$fields">
         <MyInput
           v-model="r$.$fields.user.$fields.name.$value"
           :field="r$.$fields.user.$fields.name"
@@ -21,8 +21,8 @@
           placeholder="Type your pseudo"
           label="Pseudo"
         />
-      </template>
-      <MyTextArea
+      </template> -->
+      <!-- <MyTextArea
         v-model="form.description"
         :field="r$.$fields.description"
         placeholder="Type your description"
@@ -32,7 +32,7 @@
         v-model="form.acceptTC"
         :field="r$.$fields.acceptTC"
         placeholder="Accept our terms and conditions"
-      />
+      /> -->
       <label>Your projects</label>
       <div class="projects">
         <div
@@ -46,7 +46,7 @@
             placeholder="Name of the project"
             label="Name"
           />
-          <MyInput
+          <!-- <MyInput
             v-model.number="project.$fields.price.$value"
             :field="project.$fields.price"
             placeholder="Price of the project"
@@ -57,7 +57,7 @@
             :field="project.$fields.github_url"
             placeholder="Url of the project"
             label="Url"
-          />
+          /> -->
           <span class="delete" @click="form.projects.splice(index, 1)">❌</span>
         </div>
         <div class="add">
@@ -70,7 +70,7 @@
         </li>
       </ul>
 
-      <Password
+      <!-- <Password
         v-model="form.password"
         :field="r$.$fields.password"
         placeholder="Type your password"
@@ -82,7 +82,7 @@
         :field="r$.$fields.confirmPassword"
         placeholder="Confirm your password"
         label="Confirm your password"
-      />
+      /> -->
     </div>
     <div class="button-list">
       <button type="button" @click="r$.$resetAll">Reset</button>
@@ -93,6 +93,7 @@
 
 <script setup lang="ts">
 import {
+  applyIf,
   checked,
   contains,
   email,
@@ -129,8 +130,10 @@ type Form = {
 };
 
 const form = reactive<Form>({
-  projects: [{ name: 'foo', github_url: 'fezf' }],
+  projects: [{ name: '', github_url: '' }],
 });
+
+const someCondition = ref(true);
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({
   acceptTC: ['Server error'],
@@ -152,45 +155,45 @@ function dirtyFields() {
 const { r$ } = useCustomRegle(
   form,
   {
-    user: {
-      name: {
-        required,
-        minLength: minLength(4),
-        maxLength: maxLength(30),
-      },
-      email: {
-        required,
-        email,
-      },
-      pseudo: {
-        required: requiredIf(() => !!form.acceptTC),
-        checkPseudo,
-      },
-    },
-    description: {
-      minLength: withMessage(
-        minLength(100),
-        (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
-      ),
-    },
+    // user: {
+    //   name: {
+    //     required,
+    //     minLength: minLength(4),
+    //     maxLength: maxLength(30),
+    //   },
+    //   email: {
+    //     required,
+    //     email,
+    //   },
+    //   pseudo: {
+    //     required: requiredIf(() => !!form.acceptTC),
+    //     checkPseudo,
+    //   },
+    // },
+    // description: {
+    //   minLength: withMessage(
+    //     minLength(100),
+    //     (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
+    //   ),
+    // },
     projects: {
-      $autoDirty: false,
+      // $autoDirty: false,
       // minLength: withMessage(
       //   minLength(4),
       //   (value, { $params: [min] }) => `You need at least ${min} projects`
       // ),
       $each: {
         name: { required },
-        price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
-        github_url: { url, contains: contains('github') },
+        // price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
+        // github_url: { url, contains: contains('github') },
       },
     },
-    acceptTC: { required, checked, $autoDirty: false },
-    password: { required, strongPassword: strongPassword() },
-    confirmPassword: {
-      required,
-      sameAs: sameAs(() => form.password, 'password'),
-    },
+    // acceptTC: { required, checked, $autoDirty: false },
+    // password: { required, strongPassword: strongPassword() },
+    // confirmPassword: {
+    //   required,
+    //   sameAs: sameAs(() => form.password, 'password'),
+    // },
   },
   {
     externalErrors: externalErrors,
@@ -198,7 +201,8 @@ const { r$ } = useCustomRegle(
 );
 
 async function submit() {
-  await r$.$validate();
+  const { result, data } = await r$.$validate();
+  console.log({ result, data });
   // if (result) {
   //   result.acceptTC;
 

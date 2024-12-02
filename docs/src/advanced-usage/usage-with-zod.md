@@ -119,9 +119,9 @@ const schema = computed(() => z.object({
 const {r$} = useZodRegle(form, schema);
 
 async function submit() {
-  const result = await r$.$validate();
+  const {result, data} = await r$.$validate();
   if (result) {
-    console.log(result);
+    console.log(data);
     //            ^?
   }
 }

@@ -75,11 +75,15 @@ describe('$pending', () => {
     expect(vm.r$.$fields.level0.$pending).toBe(false);
     expect(vm.r$.$ready).toBe(true);
 
-    const [result] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(2300)]);
+    const [{ result, data }] = await Promise.all([
+      vm.r$.$validate(),
+      vi.advanceTimersByTimeAsync(2300),
+    ]);
 
     expect(vm.r$.$fields.level0.$pending).toBe(false);
 
-    expect(result).toStrictEqual({
+    expect(result).toBe(true);
+    expect(data).toStrictEqual({
       level0: 2,
       level1: {
         child: 0,

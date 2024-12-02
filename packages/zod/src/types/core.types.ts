@@ -30,6 +30,10 @@ export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
 
 // - Zod status
 
+type ZodRegleResult<TSchema extends toZod<any>> =
+  | { result: false; data: PartialDeep<z.output<TSchema>> }
+  | { result: true; data: z.output<TSchema> };
+
 /**
  * @public
  */
@@ -48,7 +52,7 @@ export interface ZodRegleStatus<
   readonly $silentErrors: ZodToRegleErrorTree<TSchema>;
   $resetAll: () => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $validate: () => Promise<false | z.output<TSchema>>;
+  $validate: () => Promise<ZodRegleResult<TSchema>>;
 }
 
 /**

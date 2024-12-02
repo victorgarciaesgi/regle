@@ -370,6 +370,10 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
+    shouldBeErrorField(vm.r$.$fields.root);
+    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
+
     vm.r$.$reset();
 
     await vm.$nextTick();

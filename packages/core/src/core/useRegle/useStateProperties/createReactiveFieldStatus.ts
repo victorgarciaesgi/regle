@@ -4,6 +4,7 @@ import {
   effectScope,
   reactive,
   ref,
+  toRaw,
   toRef,
   toRefs,
   unref,
@@ -12,6 +13,7 @@ import {
 } from 'vue';
 import type {
   $InternalRegleFieldStatus,
+  $InternalRegleResult,
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
@@ -396,13 +398,13 @@ export function createReactiveFieldStatus({
   createReactiveRulesResult();
 
   function $reset(): void {
-    $dirty.value = false;
     $clearExternalErrors();
+    $dirty.value = false;
     Object.entries($rules.value).forEach(([key, rule]) => {
       rule.$reset();
     });
-    if (!scopeState.$lazy.value) {
-      Object.entries($rules.value).map(([key, rule]) => {
+    if (!scopeState.$lazy.value && scopeState.$autoDirty.value) {
+      Object.values($rules.value).forEach((rule) => {
         return rule.$validate();
       });
     }
@@ -418,13 +420,18 @@ export function createReactiveFieldStatus({
     }
   }
 
-  async function $validate(): Promise<false | unknown> {
+  async function $validate(): Promise<$InternalRegleResult> {
     try {
+      const data = state.value;
       triggerPunishment.value = true;
       if (!$dirty.value) {
         $dirty.value = true;
       } else if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
-        return !scopeState.$error.value;
+        return { result: !scopeState.$error.value, data };
+      }
+
+      if (isEmpty($rules.value)) {
+        return { result: true, data };
       }
       const results = await Promise.allSettled(
         Object.entries($rules.value).map(([key, rule]) => {
@@ -434,17 +441,14 @@ export function createReactiveFieldStatus({
 
       const validationResults = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return value.value != false;
+          return value.value === true;
         } else {
           return false;
         }
       });
-      if (validationResults) {
-        return state.value;
-      }
-      return false;
+      return { result: validationResults, data };
     } catch (e) {
-      return false;
+      return { result: false, data: state.value };
     }
   }
 

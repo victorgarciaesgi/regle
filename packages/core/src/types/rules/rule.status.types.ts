@@ -3,6 +3,7 @@ import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleErrors,
+  $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
   DeepSafeFormState,
@@ -17,6 +18,7 @@ import type {
   RegleErrorTree,
   RegleFormPropertyType,
   ReglePartialRuleTree,
+  RegleResult,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
@@ -24,7 +26,6 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   SafeFieldProperty,
-  SafeProperty,
 } from '..';
 
 /**
@@ -67,7 +68,7 @@ export type RegleStatus<
   readonly $errors: RegleErrorTree<TState>;
   readonly $silentErrors: RegleErrorTree<TState>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $validate: () => Promise<false | Prettify<DeepSafeFormState<TState, TRules>>>;
+  $validate: () => Promise<RegleResult<TState, TRules>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -84,7 +85,7 @@ export interface $InternalRegleStatus extends RegleCommonStatus {
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
-  $validate: () => Promise<false | Record<string, any>>;
+  $validate: () => Promise<$InternalRegleResult>;
 }
 
 /**
@@ -138,7 +139,7 @@ export type RegleFieldStatus<
   readonly $silentErrors: string[];
   readonly $externalErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
-  $validate: () => Promise<false | SafeFieldProperty<TState, TRules>>;
+  $validate: () => Promise<RegleResult<TState, TRules>>;
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<
       TRules,
@@ -172,7 +173,7 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   readonly $errors: string[];
   readonly $silentErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
-  $validate: () => Promise<false | any>;
+  $validate: () => Promise<$InternalRegleResult>;
 }
 
 /**
@@ -284,7 +285,7 @@ export type RegleCollectionStatus<
   readonly $errors: RegleCollectionErrors<TState>;
   readonly $silentErrors: RegleCollectionErrors<TState>;
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  $validate: () => Promise<false | DeepSafeFormState<ArrayElement<TState>, TRules>>[];
+  $validate: () => Promise<RegleResult<TState, TRules>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {
@@ -305,7 +306,7 @@ export interface $InternalRegleCollectionStatus
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
-  $validate: () => Promise<false | any[]>;
+  $validate: () => Promise<$InternalRegleResult>;
   /** Track each array state */
   $unwatch(): void;
   $watch(): void;

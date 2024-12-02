@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRaw, toRef, watch, watchEffect } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionErrors,
@@ -8,6 +8,7 @@ import type {
   $InternalRegleCollectionStatus,
   $InternalRegleErrors,
   $InternalRegleFieldStatus,
+  $InternalRegleResult,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
   DeepMaybeRef,
@@ -26,7 +27,7 @@ import {
 } from '../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
 import type { RegleStorage } from '../../useStorage';
-import { isExternalErrorCollection, isNestedRulesStatus, isRuleDef } from '../guards';
+import { isNestedRulesStatus, isRuleDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
 
@@ -475,21 +476,26 @@ export function createReactiveCollectionStatus({
     });
   }
 
-  async function $validate(): Promise<false | any[]> {
+  async function $validate(): Promise<$InternalRegleResult> {
+    const data = state.value;
     try {
-      const results = await Promise.all([
+      const results = await Promise.allSettled([
         $fieldStatus.value.$validate(),
         ...$eachStatus.value.map((rule) => {
           return rule.$validate();
         }),
       ]);
-      const validationResults = results.every((value) => value.value !== false);
-      if (validationResults) {
-        return state.value;
-      }
-      return false;
+
+      const validationResults = results.every((value) => {
+        if (value.status === 'fulfilled') {
+          return value.value.result === true;
+        } else {
+          return false;
+        }
+      });
+      return { result: validationResults, data };
     } catch (e) {
-      return false;
+      return { result: false, data };
     }
   }
 

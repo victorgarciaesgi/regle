@@ -23,7 +23,15 @@ describe.each([
   ['reactive with ref', nestedReactiveWithRefsValidation],
   ['object with refs state', nesteObjectWithRefsValidation],
 ])('useRegle with %s', async (title, regle) => {
-  const { vm } = await createRegleComponent(regle);
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const { vm } = createRegleComponent(regle);
 
   it('should have a initial state', () => {
     expect(vm.r$.$errors).toStrictEqual({
@@ -63,7 +71,7 @@ describe.each([
   });
 
   it('should error on initial submit', async () => {
-    const result = await vm.r$.$validate();
+    const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
     expect(result).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
@@ -211,9 +219,13 @@ describe.each([
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
-    const result = await vm.r$.$validate();
+    const [{ result, data }] = await Promise.all([
+      vm.r$.$validate(),
+      vi.advanceTimersByTimeAsync(200),
+    ]);
 
-    expect(result).toStrictEqual({
+    expect(result).toBe(true);
+    expect(data).toStrictEqual({
       level0: 2,
       level1: {
         child: 2,
@@ -226,7 +238,7 @@ describe.each([
   });
 
   it('should reset on initial state when calling r$.$resetAll', async () => {
-    await Promise.all([vm.r$.$resetAll(), flushPromises()]);
+    vm.r$.$resetAll();
 
     await nextTick();
 

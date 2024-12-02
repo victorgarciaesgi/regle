@@ -79,7 +79,7 @@ const externalErrors = ref<RegleExternalErrorTree<Form>>({});
 const { r$ } = useRegle(form, {}, { externalErrors });
 
 async function submit() {
-  const result = await r$.$validate();
+  const { result } = await r$.$validate();
   console.log(result);
   if (result) {
     externalErrors.value = {

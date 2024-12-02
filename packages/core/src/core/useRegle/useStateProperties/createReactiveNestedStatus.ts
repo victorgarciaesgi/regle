@@ -5,6 +5,7 @@ import {
   effectScope,
   reactive,
   ref,
+  toRaw,
   toRef,
   triggerRef,
   unref,
@@ -17,6 +18,7 @@ import type {
   $InternalRegleErrors,
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
+  $InternalRegleResult,
   $InternalRegleStatus,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
@@ -82,7 +84,8 @@ export function createReactiveNestedStatus({
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
-  let $unwatchFields: WatchStopHandle | null = null;
+  let $unwatchRules: WatchStopHandle | null = null;
+  let $unwatchExternalErrors: WatchStopHandle | null = null;
   let $unwatchState: WatchStopHandle | null = null;
   let $unwatchGroups: WatchStopHandle | null = null;
 
@@ -223,9 +226,11 @@ export function createReactiveNestedStatus({
   createReactiveFieldsStatus();
 
   function $reset(): void {
-    Object.entries($fields.value).forEach(([_, statusOrField]) => {
+    $unwatchExternalErrors?.();
+    Object.values($fields.value).forEach((statusOrField) => {
       statusOrField.$reset();
     });
+    define$WatchExternalErrors();
   }
 
   function $touch(runCommit = true): void {
@@ -234,33 +239,46 @@ export function createReactiveNestedStatus({
     });
   }
 
-  async function $validate(): Promise<false | Record<string, any>> {
+  async function $validate(): Promise<$InternalRegleResult> {
     try {
+      const data = state.value;
+
       const results = await Promise.allSettled(
         Object.values($fields.value).map((statusOrField) => {
           return statusOrField.$validate();
         })
       );
-      const validationResult = results.every((value) => {
+
+      const validationResults = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return value.value !== false;
+          return value.value.result === true;
         } else {
           return false;
         }
       });
-      if (validationResult) {
-        return state.value;
-      }
-      return false;
+      return { result: validationResults, data };
     } catch (e) {
-      return false;
+      return { result: false, data: state.value };
+    }
+  }
+
+  function define$WatchExternalErrors() {
+    if (externalErrors?.value) {
+      $unwatchExternalErrors = watch(
+        externalErrors,
+        () => {
+          $unwatch();
+          createReactiveFieldsStatus();
+        },
+        { deep: true }
+      );
     }
   }
 
   function $watch() {
     if (rootRules) {
-      $unwatchFields = watch(
-        [rootRules, externalErrors],
+      $unwatchRules = watch(
+        rootRules,
         () => {
           $unwatch();
           createReactiveFieldsStatus();
@@ -268,6 +286,7 @@ export function createReactiveNestedStatus({
         { deep: true, flush: 'post' }
       );
     }
+    define$WatchExternalErrors();
 
     scope = effectScope();
     scopeState = scope.run(() => {
@@ -389,7 +408,8 @@ export function createReactiveNestedStatus({
       });
     }
 
-    $unwatchFields?.();
+    $unwatchRules?.();
+    $unwatchExternalErrors?.();
     $unwatchState?.();
     $unwatchGroups?.();
     scope.stop();

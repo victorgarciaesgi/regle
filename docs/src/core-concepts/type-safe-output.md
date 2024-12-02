@@ -34,9 +34,9 @@ const {r$} = useRegle(form, {
 });
 
 async function submit() {
-  const result = await r$.$validate();
+  const {result, data} = await r$.$validate();
   if (result) {
-    console.log(result);
+    console.log(data);
     //            ^?
   }
 }

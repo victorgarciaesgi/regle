@@ -31,7 +31,7 @@ describe('withAsync helper', () => {
             },
           }));
         },
-        template: '<div>{{regle}}</div>',
+        template: '<div></div>',
       })
     );
   };
