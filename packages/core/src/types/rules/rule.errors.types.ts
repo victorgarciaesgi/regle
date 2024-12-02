@@ -1,7 +1,10 @@
 import type { PartialDeep } from 'type-fest';
+import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 
-export type RegleErrorTree<TState = Record<string, any> | any[]> = {
-  readonly [K in keyof TState]: RegleValidationErrors<TState[K]>;
+export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+  readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<
+    UnwrapNestedRefs<TState>[K]
+  >;
 };
 
 export type RegleExternalErrorTree<TState = Record<string, any> | any[]> = PartialDeep<

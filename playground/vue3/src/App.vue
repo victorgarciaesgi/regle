@@ -5,12 +5,19 @@
 <script setup lang="ts">
 import TestForm from './components/TestForm.vue';
 
-import { inferRules, useRegle } from '@regle/core';
+import { useRegle, type RegleComputedRules } from '@regle/core';
 import { computed, ref } from 'vue';
 
 const form = ref({ name: '' });
 
-const rules = computed(() => inferRules(form, {}));
+const rules = computed(
+  () =>
+    ({
+      name: {
+        required: () => true,
+      },
+    }) satisfies RegleComputedRules<typeof form>
+);
 
 const { r$ } = useRegle(form, rules);
 </script>

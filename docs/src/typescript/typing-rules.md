@@ -13,12 +13,13 @@ For this the recommended way is to use `inferRules`.
 
 It's recommended because `inferRules` garantees that the rules schema will match the state with no extra properties allowed.
 
-This will require to have your state declared independently than inside `useRegle`
+This will require to have your state declared independently than inside `useRegle`.
 
 ```ts twoslash
 // @noErrors
-import { inferRules, useRegle } from '@regle/core';
 import { computed, ref } from 'vue';
+// ---cut---
+import { inferRules, useRegle } from '@regle/core';
 
 const form = ref({ name: '' });
 
@@ -28,6 +29,27 @@ const rules = computed(() =>
 //   ^|
   })
 );
+
+const { r$ } = useRegle(form, rules);
+```
+<br/>
+
+An other way without using a utility function is to type cast your rules using `RegleComputedRules`.
+
+It's better to use with `satisfies` operator from Typescript, which will typechecka and keep inference at the same time.
+```ts twoslash
+// @noErrors
+import { computed, ref } from 'vue';
+// ---cut---
+import { useRegle, type RegleComputedRules } from '@regle/core';
+
+const form = ref({ name: '' });
+
+const rules = computed(() => ({
+  name: {
+    required: () => true
+  }
+} satisfies RegleComputedRules<typeof form>))
 
 const { r$ } = useRegle(form, rules);
 ```
