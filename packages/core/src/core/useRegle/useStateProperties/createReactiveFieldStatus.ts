@@ -66,6 +66,7 @@ export function createReactiveFieldStatus({
     $lazy: ComputedRef<boolean | undefined>;
     $rewardEarly: ComputedRef<boolean | undefined>;
     $autoDirty: ComputedRef<boolean | undefined>;
+    $clearExternalErrorsOnChange: ComputedRef<boolean | undefined>;
     $anyDirty: ComputedRef<boolean>;
     haveAnyAsyncRule: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
@@ -195,6 +196,13 @@ export function createReactiveFieldStatus({
           return $localOptions.value.$rewardEarly;
         }
         return unref(options.rewardEarly);
+      });
+
+      const $clearExternalErrorsOnChange = computed<boolean | undefined>(() => {
+        if ($localOptions.value.$clearExternalErrorsOnChange != null) {
+          return $localOptions.value.$clearExternalErrorsOnChange;
+        }
+        return unref(options.clearExternalErrorsOnChange);
       });
 
       const $autoDirty = computed<boolean | undefined>(() => {
@@ -341,6 +349,7 @@ export function createReactiveFieldStatus({
         $silentErrors,
         $rewardEarly,
         $autoDirty,
+        $clearExternalErrorsOnChange,
         $anyDirty,
         $name,
         haveAnyAsyncRule,
@@ -362,7 +371,10 @@ export function createReactiveFieldStatus({
           createReactiveRulesResult();
         }
         $commit();
-        if (scopeState.$rewardEarly.value !== true) {
+        if (
+          scopeState.$rewardEarly.value !== true &&
+          scopeState.$clearExternalErrorsOnChange.value
+        ) {
           $clearExternalErrors();
         }
       },

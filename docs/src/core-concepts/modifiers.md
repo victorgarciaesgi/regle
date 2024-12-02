@@ -86,8 +86,19 @@ Result:
 
 Type: `boolean`
 
+Default: `false`
+
 Turn on the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method
 
+
+### `clearExternalErrorsOnChange`
+
+Type: `boolean`
+
+Default: `true`
+
+This mode is similar to `rewardEarly`, but only applies to external errors.
+Setting it to `false` will keep the server errors until `$clearExternalErrors` is called.
 
 ### `validationGroups`
 

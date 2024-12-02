@@ -27,9 +27,14 @@ export interface RegleBehaviourOptions {
    * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
    * @default false
    *
-   * @experimental report any bug
    */
   rewardEarly?: boolean;
+  /**
+   * Define wether or not the external errors should be cleared when updating a field
+   * @default true
+   *
+   */
+  clearExternalErrorsOnChange?: boolean;
 }
 
 export interface LocalRegleBehaviourOptions<

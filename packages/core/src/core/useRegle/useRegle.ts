@@ -54,6 +54,7 @@ export function createUseRegleComposable<
     autoDirty: options?.autoDirty ?? true,
     lazy: options?.lazy ?? false,
     rewardEarly: options?.rewardEarly ?? false,
+    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange ?? true,
   };
 
   function useRegle(

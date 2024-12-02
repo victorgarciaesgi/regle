@@ -137,47 +137,58 @@ function dirtyFields() {
   console.log(r$.$extractDirtyFields(false));
 }
 
-const { r$ } = useCustomRegle(form, {
-  user: {
-    name: {
+const { r$ } = useCustomRegle(
+  form,
+  {
+    user: {
+      name: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
+      },
+      email: {
+        required,
+        email,
+      },
+      pseudo: {
+        required: requiredIf(() => !!form.acceptTC),
+        checkPseudo,
+      },
+    },
+    description: {
+      minLength: withMessage(
+        minLength(100),
+        (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
+      ),
+    },
+    projects: {
+      $autoDirty: false,
+      minLength: withMessage(
+        minLength(4),
+        (value, { $params: [min] }) => `You need at least ${min} projects`
+      ),
+      $each: {
+        name: { required },
+        price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
+        github_url: { url, contains: contains('github') },
+      },
+    },
+    acceptTC: { required, checked, $autoDirty: false },
+    password: { required, strongPassword: strongPassword() },
+    confirmPassword: {
       required,
-      minLength: minLength(4),
-      maxLength: maxLength(30),
-    },
-    email: {
-      required,
-      email,
-    },
-    pseudo: {
-      required: requiredIf(() => !!form.acceptTC),
-      checkPseudo,
+      sameAs: sameAs(() => form.password, 'password'),
     },
   },
-  description: {
-    minLength: withMessage(
-      minLength(100),
-      (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
-    ),
-  },
-  projects: {
-    $autoDirty: false,
-    minLength: withMessage(
-      minLength(4),
-      (value, { $params: [min] }) => `You need at least ${min} projects`
-    ),
-    $each: {
-      name: { required },
-      price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
-      github_url: { url, contains: contains('github') },
+  {
+    externalErrors: {
+      user: {
+        email: ['Server Error'],
+      },
     },
-  },
-  acceptTC: { required, checked, $autoDirty: false },
-  password: { required, strongPassword: strongPassword() },
-  confirmPassword: {
-    required,
-    sameAs: sameAs(() => form.password, 'password'),
-  },
-});
+    clearExternalErrorsOnChange: false,
+  }
+);
 
 async function submit() {
   const result = await r$.$validate();
