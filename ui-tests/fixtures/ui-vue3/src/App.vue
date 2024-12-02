@@ -2,24 +2,26 @@
   <form @submit.prevent="submit">
     <h1>Sign up</h1>
     <div class="fields">
-      <MyInput
-        v-model="form.user.name"
-        :field="r$.$fields.user.$fields.name"
-        placeholder="Type your name"
-        label="Name"
-      />
-      <MyInput
-        v-model="form.user.email"
-        :field="r$.$fields.user.$fields.email"
-        placeholder="Type your email"
-        label="Email"
-      />
-      <MyInput
-        v-model="form.user.pseudo"
-        :field="r$.$fields.user.$fields.pseudo"
-        placeholder="Type your pseudo"
-        label="Pseudo"
-      />
+      <template v-if="r$.$fields.user.$fields">
+        <MyInput
+          v-model="r$.$fields.user.$fields.name.$value"
+          :field="r$.$fields.user.$fields.name"
+          placeholder="Type your name"
+          label="Name"
+        />
+        <MyInput
+          v-model="r$.$fields.user.$fields.email.$value"
+          :field="r$.$fields.user.$fields.email"
+          placeholder="Type your email"
+          label="Email"
+        />
+        <MyInput
+          v-model="r$.$fields.user.$fields.pseudo.$value"
+          :field="r$.$fields.user.$fields.pseudo"
+          placeholder="Type your pseudo"
+          label="Pseudo"
+        />
+      </template>
       <MyTextArea
         v-model="form.description"
         :field="r$.$fields.description"
@@ -105,15 +107,16 @@ import {
   url,
   withMessage,
 } from '@regle/rules';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import MyCheckBox from './components/MyCheckBox.vue';
 import MyInput from './components/MyInput.vue';
 import MyTextArea from './components/MyTextArea.vue';
 import Password from './components/Password.vue';
 import { checkPseudo, strongPassword, useCustomRegle } from './components/regle.global.config';
+import type { RegleExternalErrorTree } from '@regle/core';
 
 type Form = {
-  user: {
+  user?: {
     name?: string;
     email?: string;
     pseudo?: string;
@@ -126,11 +129,20 @@ type Form = {
 };
 
 const form = reactive<Form>({
-  user: {
-    email: 'ezfjpzefj',
-    pseudo: 'e',
-  },
   projects: [{ name: 'foo', github_url: 'fezf' }],
+});
+
+const externalErrors = ref<RegleExternalErrorTree<Form>>({
+  acceptTC: ['Server error'],
+  confirmPassword: ['Server error'],
+  password: ['Server error'],
+  projects: {
+    $each: [{ name: ['Server error'] }],
+  },
+  user: {
+    name: ['Server error'],
+    email: ['Server error'],
+  },
 });
 
 function dirtyFields() {
@@ -163,10 +175,10 @@ const { r$ } = useCustomRegle(
     },
     projects: {
       $autoDirty: false,
-      minLength: withMessage(
-        minLength(4),
-        (value, { $params: [min] }) => `You need at least ${min} projects`
-      ),
+      // minLength: withMessage(
+      //   minLength(4),
+      //   (value, { $params: [min] }) => `You need at least ${min} projects`
+      // ),
       $each: {
         name: { required },
         price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
@@ -181,21 +193,19 @@ const { r$ } = useCustomRegle(
     },
   },
   {
-    externalErrors: {
-      user: {
-        email: ['Server Error'],
-      },
-    },
-    clearExternalErrorsOnChange: false,
+    externalErrors: externalErrors,
   }
 );
 
 async function submit() {
-  const result = await r$.$validate();
-  if (result) {
-    result.acceptTC;
-    // Check autocompletion for type safe output
-  }
+  form.user = { email: 'zefkmjef' };
+  externalErrors.value = { description: ['Server errors'] };
+  r$.$touch();
+  // if (result) {
+  //   result.acceptTC;
+
+  //   // Check autocompletion for type safe output
+  // }
 }
 </script>
 

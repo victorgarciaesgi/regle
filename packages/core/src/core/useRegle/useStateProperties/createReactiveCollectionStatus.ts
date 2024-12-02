@@ -55,7 +55,7 @@ function createCollectionElement({
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
-  externalErrors: ComputedRef<$InternalRegleErrors[] | undefined>;
+  externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
   initialState: any[] | undefined;
   shortcuts: RegleShortcutDefinition | undefined;
 }): $InternalRegleStatusType | null {
@@ -77,8 +77,6 @@ function createCollectionElement({
     }
   }
 
-  const $externalErrors = toRef(() => externalErrors.value?.[index]);
-
   const $status = createReactiveChildrenStatus({
     state: stateValue,
     rulesDef: toRef(() => rules),
@@ -86,7 +84,7 @@ function createCollectionElement({
     path: $path,
     storage,
     options,
-    externalErrors: $externalErrors,
+    externalErrors: toRef(externalErrors?.value ?? [], index),
     initialState: initialState?.[index],
     shortcuts,
     fieldName,
@@ -110,7 +108,7 @@ interface CreateReactiveCollectionStatusArgs {
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  externalErrors: Readonly<Ref<$InternalRegleCollectionErrors | undefined>>;
+  externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
   initialState: any[];
   shortcuts: RegleShortcutDefinition | undefined;
 }
@@ -142,8 +140,6 @@ export function createReactiveCollectionStatus({
   }
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
-    $externalErrorsField: ComputedRef<string[]>;
-    $externalErrorsEach: ComputedRef<$InternalRegleErrors[]>;
   }
 
   let scope = effectScope();
@@ -173,29 +169,8 @@ export function createReactiveCollectionStatus({
       return false;
     });
 
-    const $externalErrorsField = computed<string[]>(() => {
-      if (externalErrors.value) {
-        if (isExternalErrorCollection(externalErrors.value)) {
-          return externalErrors.value.$errors ?? [];
-        }
-        return [];
-      }
-      return [];
-    });
-
-    const $externalErrorsEach = computed<$InternalRegleErrors[]>(() => {
-      if (externalErrors.value) {
-        if (isExternalErrorCollection(externalErrors.value)) {
-          return externalErrors.value.$each ?? [];
-        }
-        return [];
-      }
-      return [];
-    });
     return {
       isPrimitiveArray,
-      $externalErrorsField,
-      $externalErrorsEach,
     } satisfies ImmediateScopeReturnState;
   })!;
 
@@ -233,6 +208,7 @@ export function createReactiveCollectionStatus({
             toRef(() => value),
             index
           );
+
           const element = createCollectionElement({
             $id: $id.value,
             path,
@@ -241,7 +217,7 @@ export function createReactiveCollectionStatus({
             index,
             options,
             storage,
-            externalErrors: immediateScopeState.$externalErrorsEach,
+            externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
             initialState: initialState[index],
             shortcuts,
             fieldName,
@@ -264,7 +240,7 @@ export function createReactiveCollectionStatus({
       path,
       storage,
       options,
-      externalErrors: immediateScopeState.$externalErrorsField,
+      externalErrors: toRef(externalErrors?.value ?? {}, `$errors`),
       $isArray: true,
       initialState: initialState,
       shortcuts,
@@ -297,7 +273,7 @@ export function createReactiveCollectionStatus({
                 index,
                 options,
                 storage,
-                externalErrors: immediateScopeState.$externalErrorsEach,
+                externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
                 initialState: initialState[index],
                 shortcuts,
                 fieldName,

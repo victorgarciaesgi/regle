@@ -1,16 +1,15 @@
-import type { PartialDeep, RequiredDeep } from 'type-fest';
-import type { MaybeRef } from 'vue';
+import type { RequiredDeep } from 'type-fest';
+import type { Ref } from 'vue';
+import type { DefaultValidators } from '../../core';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionStatus,
-  RegleErrorTree,
   RegleExternalErrorTree,
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleStatus,
 } from '../../types/rules';
 import type { DeepMaybeRef, OmitByType, Unwrap } from '../../types/utils';
-import type { DefaultValidators } from '../../core';
 
 export interface RegleBehaviourOptions {
   /**
@@ -42,7 +41,7 @@ export interface LocalRegleBehaviourOptions<
   TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
 > {
-  externalErrors?: MaybeRef<RegleExternalErrorTree<Unwrap<TState>>>;
+  externalErrors?: Ref<RegleExternalErrorTree<Unwrap<TState>>>;
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
 }
 

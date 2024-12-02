@@ -48,7 +48,7 @@ interface CreateReactiveNestedStatus {
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  externalErrors: Readonly<Ref<$InternalRegleErrorTree | undefined>>;
+  externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
   initialState: Record<string, any> | undefined;
   fieldName: string;
   shortcuts: RegleShortcutDefinition | undefined;
@@ -102,7 +102,9 @@ export function createReactiveNestedStatus({
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
-            const $externalErrors = toRef(() => externalErrors.value?.[statePropKey]);
+
+            const $externalErrors = toRef(externalErrors?.value!, statePropKey);
+
             return [
               statePropKey,
               createReactiveChildrenStatus({
@@ -133,7 +135,6 @@ export function createReactiveNestedStatus({
           if (errors) {
             const stateRef = toRef(state.value, key);
             const statePropRulesRef = toRef(() => ({}));
-            const $externalErrors = toRef(() => errors);
             return [
               key,
               createReactiveChildrenStatus({
@@ -143,7 +144,7 @@ export function createReactiveNestedStatus({
                 path: path ? `${path}.${key}` : key,
                 storage,
                 options,
-                externalErrors: $externalErrors,
+                externalErrors: toRef(externalErrors?.value ?? {}, key),
                 initialState: initialState?.[key],
                 shortcuts,
                 fieldName: key,
@@ -162,7 +163,6 @@ export function createReactiveNestedStatus({
         .map(([key, value]) => {
           const stateRef = toRef(state.value, key);
           const statePropRulesRef = toRef(() => ({}));
-          const $externalErrors = toRef(() => externalErrors.value?.[key]);
           return [
             key,
             createReactiveChildrenStatus({
@@ -172,7 +172,7 @@ export function createReactiveNestedStatus({
               path: path ? `${path}.${key}` : key,
               storage,
               options,
-              externalErrors: $externalErrors,
+              externalErrors: toRef(externalErrors?.value ?? {}, key),
               initialState: initialState?.[key],
               shortcuts,
               fieldName: key,
@@ -268,12 +268,12 @@ export function createReactiveNestedStatus({
   function $watch() {
     if (rootRules) {
       $unwatchFields = watch(
-        rootRules,
+        [rootRules, externalErrors],
         () => {
           $unwatch();
           createReactiveFieldsStatus();
         },
-        { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'post' }
+        { deep: true, flush: 'post' }
       );
     }
 
@@ -457,7 +457,7 @@ interface CreateReactiveChildrenStatus {
   index?: number;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  externalErrors: Readonly<Ref<$InternalRegleErrors | undefined>>;
+  externalErrors: Ref<$InternalRegleErrors | undefined> | undefined;
   initialState: any;
   fieldName: string;
   shortcuts: RegleShortcutDefinition | undefined;

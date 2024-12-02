@@ -1,7 +1,7 @@
 import type { $InternalRegleErrors, RegleCollectionErrors } from '../../../types';
 
 export function isExternalErrorCollection(
-  value: $InternalRegleErrors
+  value: $InternalRegleErrors | undefined
 ): value is RegleCollectionErrors<any> {
-  return '$each' in value || '$errors' in value;
+  return !!value && ('$each' in value || '$errors' in value);
 }

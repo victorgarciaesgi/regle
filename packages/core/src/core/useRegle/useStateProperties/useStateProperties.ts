@@ -26,8 +26,6 @@ export function useStateProperties({
 }) {
   const storage = useStorage();
 
-  const externalErrors = computed(() => unref(options.externalErrors));
-
   const regle = reactive(
     createReactiveNestedStatus({
       rootRules: scopeRules,
@@ -36,7 +34,7 @@ export function useStateProperties({
       customMessages: customRules?.(),
       storage,
       options,
-      externalErrors: externalErrors as any,
+      externalErrors: options.externalErrors as any,
       validationGroups: options.validationGroups,
       initialState,
       shortcuts,

@@ -34,7 +34,7 @@ interface CreateReactiveFieldStatusArgs {
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  externalErrors: Readonly<Ref<string[] | undefined>>;
+  externalErrors: Ref<string[] | undefined> | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: unknown | undefined;
@@ -82,20 +82,12 @@ export function createReactiveFieldStatus({
 
   const triggerPunishment = ref(false);
 
-  const $externalErrors = ref<string[]>([]);
-
   let $unwatchState: WatchStopHandle;
   let $unwatchValid: WatchStopHandle;
-  let $unwatchExternalErrors: WatchStopHandle;
   let $unwatchDirty: WatchStopHandle;
   let $unwatchAsync: WatchStopHandle;
 
   let $commit = () => {};
-
-  function collectExternalErrors() {
-    $externalErrors.value = externalErrors.value ?? [];
-  }
-  collectExternalErrors();
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
@@ -163,9 +155,8 @@ export function createReactiveFieldStatus({
     if ($dirty.value) {
       storage.setDirtyEntry(path, $dirty.value);
     }
-    $unwatchState();
-    $unwatchValid();
-    $unwatchExternalErrors();
+    $unwatchState?.();
+    $unwatchValid?.();
     scope.stop();
     scope = effectScope();
     onUnwatch?.();
@@ -227,7 +218,7 @@ export function createReactiveFieldStatus({
           return extractRulesErrors({
             field: {
               $dirty: $dirty.value,
-              $externalErrors: $externalErrors.value,
+              $externalErrors: externalErrors?.value,
               $rules: $rules.value,
             },
           });
@@ -239,7 +230,7 @@ export function createReactiveFieldStatus({
         return extractRulesErrors({
           field: {
             $dirty: $dirty.value,
-            $externalErrors: $externalErrors.value,
+            $externalErrors: externalErrors?.value,
             $rules: $rules.value,
           },
           silent: true,
@@ -260,7 +251,7 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if ($externalErrors.value?.length) {
+        if (externalErrors?.value?.length) {
           return true;
         } else if (isEmpty($rules.value)) {
           return false;
@@ -278,7 +269,7 @@ export function createReactiveFieldStatus({
         if (isEmpty($rules.value)) {
           return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
-          if ($externalErrors.value?.length) {
+          if (externalErrors?.value?.length) {
             return false;
           } else if ($rewardEarly.value) {
             return Object.entries($rules.value).every(([key, ruleResult]) => {
@@ -308,7 +299,7 @@ export function createReactiveFieldStatus({
               watchEffect(() => {
                 result.value = value({
                   $dirty: $dirty.value,
-                  $externalErrors: $externalErrors.value,
+                  $externalErrors: externalErrors?.value ?? [],
                   $value: state,
                   $rules: $rules.value,
                   $error: $error.value,
@@ -358,7 +349,6 @@ export function createReactiveFieldStatus({
       } satisfies ScopeReturnState;
     })!;
 
-    $unwatchExternalErrors = watch(externalErrors, collectExternalErrors);
     $unwatchState = watch(
       state,
       () => {
@@ -407,7 +397,7 @@ export function createReactiveFieldStatus({
 
   function $reset(): void {
     $dirty.value = false;
-    $externalErrors.value = [];
+    $clearExternalErrors();
     Object.entries($rules.value).forEach(([key, rule]) => {
       rule.$reset();
     });
@@ -472,10 +462,12 @@ export function createReactiveFieldStatus({
   }
 
   function $clearExternalErrors() {
-    $externalErrors.value = [];
+    if (externalErrors?.value?.length) {
+      externalErrors.value = [];
+    }
   }
 
-  if (!scopeState.$lazy.value) {
+  if (!scopeState.$lazy.value && !$dirty.value) {
     $commit();
   }
 
@@ -504,7 +496,7 @@ export function createReactiveFieldStatus({
     $anyDirty,
     $ready,
     $name,
-    $externalErrors,
+    $externalErrors: externalErrors,
     $value: state,
     $rules: $rules,
     ...$shortcuts,
