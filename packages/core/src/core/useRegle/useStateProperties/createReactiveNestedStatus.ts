@@ -27,13 +27,7 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import {
-  isEmpty,
-  isObject,
-  isRefObject,
-  isVueSuperiorOrEqualTo3dotFive,
-  resetValuesRecursively,
-} from '../../../utils';
+import { isEmpty, isObject, isRefObject, resetValuesRecursively } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
@@ -229,11 +223,9 @@ export function createReactiveNestedStatus({
   createReactiveFieldsStatus();
 
   function $reset(): void {
-    createReactiveFieldsStatus(false);
     Object.entries($fields.value).forEach(([_, statusOrField]) => {
       statusOrField.$reset();
     });
-    $watch();
   }
 
   function $touch(runCommit = true): void {
@@ -311,7 +303,10 @@ export function createReactiveNestedStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        return !($invalid.value || $pending.value);
+        if (!unref(options.autoDirty)) {
+          return !($invalid.value || $pending.value);
+        }
+        return $anyDirty.value && !($invalid.value || $pending.value);
       });
 
       const $pending = computed<boolean>(() => {
@@ -410,7 +405,9 @@ export function createReactiveNestedStatus({
   function $resetAll() {
     $unwatch();
     resetValuesRecursively(state, initialState ?? {});
+    createReactiveFieldsStatus(false);
     $reset();
+    $watch();
   }
 
   function $extractDirtyFields(filterNullishValues: boolean = true): Record<string, any> {

@@ -198,9 +198,7 @@ const { r$ } = useCustomRegle(
 );
 
 async function submit() {
-  form.user = { email: 'zefkmjef' };
-  externalErrors.value = { description: ['Server errors'] };
-  r$.$touch();
+  await r$.$validate();
   // if (result) {
   //   result.acceptTC;
 

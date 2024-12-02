@@ -8,13 +8,15 @@ import TestForm from './components/TestForm.vue';
 import { useRegle, type RegleComputedRules } from '@regle/core';
 import { computed, ref } from 'vue';
 
-const form = ref({ name: '' });
+const form = ref({ name: [{ foo: '' }] });
 
 const rules = computed(
   () =>
     ({
       name: {
-        required: () => true,
+        $each: (value, index) => ({
+          foo: {},
+        }),
       },
     }) satisfies RegleComputedRules<typeof form>
 );

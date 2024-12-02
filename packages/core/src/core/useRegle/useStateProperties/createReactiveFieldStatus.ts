@@ -434,7 +434,7 @@ export function createReactiveFieldStatus({
 
       const validationResults = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return !!value.value;
+          return value.value != false;
         } else {
           return false;
         }
