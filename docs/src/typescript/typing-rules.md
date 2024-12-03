@@ -36,7 +36,7 @@ const { r$ } = useRegle(form, rules);
 
 An other way without using a utility function is to type cast your rules using `RegleComputedRules`.
 
-It's better to use with `satisfies` operator from Typescript, which will typechecka and keep inference at the same time.
+It's better to use with `satisfies` operator from Typescript, which will typecheck and keep inference at the same time.
 ```ts twoslash
 // @noErrors
 import { computed, ref } from 'vue';

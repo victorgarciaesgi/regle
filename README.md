@@ -25,7 +25,7 @@ It's heavily inspired by Vuelidate.
 
 > ⚠️ Project is still in development
 > 
-> API or function names can changes until release
+> API can still change before stable release
 
 
 ## 📚 Documentation
@@ -56,36 +56,17 @@ TODO
 
 ## ☑️ Roadmap
 
-- [x] Async rules
-- [x] resetAll
-- [x] parse typesafe
-- [x] Deep nested rules
-- [x] Collection validation
-- [x] `applyIf` helper (like requiredIf for any rule)
-- [x] Async with params (need deps array) (withAsync)
-- [x] Options (lazy, rewardEarly, autoDirty)
-- [x] Regex helper
-- [x] Additional rules and "and" helper
-- [x] "or" and "not" helper
-- [x] externalErrors
-- [x] Dates built-in rule
-- [x] Usable Metadata
-- [x] Zod support
-- [x] Per field validation option (lazy, debounce, etc...)
-- [x] Logo
-- [x] $silentErrors
 - [x] Validation groups
+- [x] Shortcuts 
 - [x] Nuxt Module
 - [x] Documentation
 - [x] `$extractDirtyFields`
-- [ ] External errors with zod types
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
 - [ ] Examples
 - [ ] `withErrorType`
 - [ ] `Valibot` support
 - [ ] `Yup` support
-- [ ] Issue template
 - [ ] TS docs
 
 ## 🤔 Maybe in roadmap

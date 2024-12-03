@@ -9,7 +9,7 @@ import { flushPromises } from '@vue/test-utils';
 
 describe('.$reset', () => {
   it('should update the $dirty state to false', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     shouldBeInvalidField(vm.r$.$fields.email);
 
@@ -24,7 +24,7 @@ describe('.$reset', () => {
   });
 
   it('should update the $dirty state to false, only on the current property', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
     shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
@@ -44,7 +44,7 @@ describe('.$reset', () => {
   });
 
   it('should reset even after coming back from cache', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithComputedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithComputedValidation);
 
     expect(vm.r$.$fields.user.$fields.firstName).toBeDefined();
     expect(vm.r$.$fields.user.$fields.lastName).toBeDefined();
