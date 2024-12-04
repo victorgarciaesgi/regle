@@ -27,7 +27,7 @@ export function withParams<
     message: '',
   });
 
-  newRule._params = depsArray as any;
+  newRule._params = newRule._params?.concat(depsArray);
 
   return newRule as any;
 }

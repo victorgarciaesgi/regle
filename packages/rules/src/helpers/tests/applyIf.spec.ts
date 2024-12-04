@@ -2,9 +2,9 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
-import { timeout } from '../../../../../tests/utils';
 import { required } from '../../rules';
 import { applyIf } from '../applyIf';
+import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 
 describe('applyIf helper', () => {
   const testComponent = defineComponent({
@@ -43,11 +43,36 @@ describe('applyIf helper', () => {
     expect(vm.r$.$error).toBe(true);
   });
 
+  it('should not add too much params other validators using it', async () => {
+    const { vm } = createRegleComponent(() => {
+      const form = ref({
+        email: '',
+        name: '',
+        count: 0,
+      });
+
+      return useRegle(form, () => ({
+        email: {
+          error: applyIf(form.value.count === 1, required),
+        },
+        name: {
+          error: applyIf(form.value.count === 1, required),
+        },
+      }));
+    });
+
+    expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([false]);
+    expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([false]);
+
+    vm.r$.$value.count = 1;
+
+    await vm.$nextTick();
+
+    expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([true]);
+    expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([true]);
+  });
+
   it('should have correct types', () => {
-    const test = applyIf(
-      () => true,
-      () => ({ $valid: true, foo: 'bar' })
-    );
     expectTypeOf(applyIf(() => true, required)).toEqualTypeOf<
       RegleRuleDefinition<unknown, [condition: boolean], false, boolean, unknown>
     >();

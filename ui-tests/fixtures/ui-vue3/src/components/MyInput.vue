@@ -28,7 +28,9 @@ const modelValue = defineModel<Maybe<string | number>>();
 type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
 const { type = 'text', ...props } = defineProps<{
-  field: RegleFieldStatus<string, any, MyShortcuts> | RegleFieldStatus<number, any, MyShortcuts>;
+  field:
+    | RegleFieldStatus<string | undefined, any, MyShortcuts>
+    | RegleFieldStatus<number | undefined, any, MyShortcuts>;
   label?: string;
   type?: InputTypeHTMLAttribute;
   placeholder: string;

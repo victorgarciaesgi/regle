@@ -46,6 +46,7 @@
             placeholder="Name of the project"
             label="Name"
           />
+          <pre>{{ project.$fields.name.$rules.required.$params }}</pre>
           <!-- <MyInput
             v-model.number="project.$fields.price.$value"
             :field="project.$fields.price"
@@ -86,6 +87,7 @@
     </div>
     <div class="button-list">
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="someCondition = !someCondition">Reset</button>
       <button type="submit">Submit</button>
     </div>
   </form>
@@ -183,7 +185,7 @@ const { r$ } = useCustomRegle(
       //   (value, { $params: [min] }) => `You need at least ${min} projects`
       // ),
       $each: {
-        name: { required },
+        name: { required: applyIf(someCondition, required) },
         // price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
         // github_url: { url, contains: contains('github') },
       },

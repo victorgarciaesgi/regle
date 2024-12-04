@@ -131,6 +131,7 @@ export function createReactiveRuleStatus({
         if (typeof rule.value === 'function') {
           return [];
         }
+
         return unwrapRuleParameters(rule.value._params ?? []);
       });
 

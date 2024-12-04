@@ -25,7 +25,7 @@ export function applyIf<
 ): RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
-  let _params: any[] | undefined;
+  let _params: any[] | undefined = [];
   let _message: RegleRuleDefinitionWithMetadataProcessor<
     any,
     RegleRuleMetadataConsumer<any, any>,
@@ -36,8 +36,8 @@ export function applyIf<
     _type = InternalRuleType.Inline;
     validator = rule;
   } else {
-    ({ _type, validator, _params, _message } = rule);
-    _params?.push(_condition);
+    ({ _type, validator, _message } = rule);
+    _params = rule._params?.concat([_condition] as any);
   }
 
   function newValidator(value: any, ...args: any[]) {
@@ -60,6 +60,7 @@ export function applyIf<
     message: _message,
   });
 
+  console.log(_params);
   newRule._params = _params as any;
 
   return newRule as any;
