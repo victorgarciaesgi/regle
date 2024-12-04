@@ -52,7 +52,6 @@ describe('.$resetAll', () => {
       contacts: [{ name: 'modified' }, { name: 'modified' }],
     };
 
-    vm.r$.$touch();
     await nextTick();
 
     shouldBeErrorField(vm.r$.$fields.email);

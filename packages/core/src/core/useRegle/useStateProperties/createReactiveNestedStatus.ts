@@ -84,6 +84,9 @@ export function createReactiveNestedStatus({
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
+
+  let nestedScopes: EffectScope[] = [];
+
   let $unwatchRules: WatchStopHandle | null = null;
   let $unwatchExternalErrors: WatchStopHandle | null = null;
   let $unwatchState: WatchStopHandle | null = null;
@@ -285,8 +288,16 @@ export function createReactiveNestedStatus({
         },
         { deep: true, flush: 'post' }
       );
+
+      define$WatchExternalErrors();
     }
-    define$WatchExternalErrors();
+
+    $unwatchState = watch(state, () => {
+      // Do not watch deep to only track mutation on the object itself on not its children
+      $unwatch();
+      createReactiveFieldsStatus();
+      $touch();
+    });
 
     scope = effectScope();
     scopeState = scope.run(() => {
@@ -378,6 +389,8 @@ export function createReactiveNestedStatus({
               });
               return result;
             })!;
+
+            nestedScopes.push(scope);
           });
         }
       }
@@ -412,8 +425,11 @@ export function createReactiveNestedStatus({
     $unwatchExternalErrors?.();
     $unwatchState?.();
     $unwatchGroups?.();
+
     scope.stop();
     scope = effectScope();
+    nestedScopes.forEach((s) => s.stop());
+    nestedScopes = [];
   }
 
   function $clearExternalErrors() {

@@ -1,5 +1,5 @@
 import type { RequiredDeep } from 'type-fest';
-import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
+import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRaw, toRef, watch, watchEffect } from 'vue';
 import type {
   $InternalFormPropertyTypes,
@@ -148,6 +148,8 @@ export function createReactiveCollectionStatus({
 
   let immediateScope = effectScope();
   let immediateScopeState!: ImmediateScopeReturnState;
+
+  let collectionScopes: EffectScope[] = [];
 
   if (!Array.isArray(state.value) && !rulesDef.value.$each) {
     return null;
@@ -412,6 +414,8 @@ export function createReactiveCollectionStatus({
               });
               return result;
             })!;
+
+            collectionScopes.push(scope);
           });
         }
       }
@@ -460,6 +464,8 @@ export function createReactiveCollectionStatus({
     scope = effectScope();
     immediateScope.stop();
     immediateScope = effectScope(true);
+    collectionScopes.forEach((s) => s.stop());
+    collectionScopes = [];
   }
 
   function $touch(runCommit = true): void {

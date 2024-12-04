@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref, ToRefs, WatchStopHandle } from 'vue';
+import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import {
   computed,
   effectScope,
@@ -79,6 +79,8 @@ export function createReactiveFieldStatus({
 
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
+
+  let fieldScopes: EffectScope[] = [];
 
   const $dirty = ref(false);
 
@@ -161,6 +163,8 @@ export function createReactiveFieldStatus({
     $unwatchValid?.();
     scope.stop();
     scope = effectScope();
+    fieldScopes.forEach((s) => s.stop());
+    fieldScopes = [];
     onUnwatch?.();
     $unwatchAsync?.();
   }
@@ -317,6 +321,8 @@ export function createReactiveFieldStatus({
               });
               return result;
             })!;
+
+            fieldScopes.push(scope);
           });
         }
       }
