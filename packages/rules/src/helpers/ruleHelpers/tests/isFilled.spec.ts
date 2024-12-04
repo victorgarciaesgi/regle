@@ -2,7 +2,7 @@ import { isFilled } from '../isFilled';
 
 describe('test the isFilled helper for "required"', () => {
   it.each([
-    [[], false],
+    [[], true],
     [[1], true],
     [undefined, false],
     [null, false],

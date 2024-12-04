@@ -219,7 +219,7 @@ export function createReactiveCollectionStatus({
             options,
             storage,
             externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-            initialState: initialState[index],
+            initialState: initialState?.[index],
             shortcuts,
             fieldName,
           });
@@ -275,7 +275,7 @@ export function createReactiveCollectionStatus({
                 options,
                 storage,
                 externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-                initialState: initialState[index],
+                initialState: initialState?.[index],
                 shortcuts,
                 fieldName,
               });

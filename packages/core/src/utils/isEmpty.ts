@@ -12,7 +12,7 @@ export function isEmpty(value: unknown): value is null | undefined {
     return isNaN(value.getTime());
   }
   if (Array.isArray(value)) {
-    return value.length === 0;
+    return false;
   }
   if (typeof value === 'object' && value != null) {
     return Object.keys(value).length === 0;

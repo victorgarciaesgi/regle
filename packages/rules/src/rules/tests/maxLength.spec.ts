@@ -34,7 +34,7 @@ describe('maxLength validator', () => {
   });
 
   it('should validate empty arrays', () => {
-    expect(maxLength(-2).exec([])).toBe(true);
+    expect(maxLength(-2).exec([])).toBe(false);
   });
 
   it('should validate short arrays', () => {

@@ -1,4 +1,3 @@
-import { flushPromises } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import {
   nestedReactiveObjectValidation,
@@ -9,7 +8,6 @@ import {
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
-  shouldBeCorrectNestedStatus,
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,

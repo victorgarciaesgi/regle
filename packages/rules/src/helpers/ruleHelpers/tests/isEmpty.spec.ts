@@ -2,7 +2,7 @@ import { isEmpty } from '../isEmpty';
 
 describe('test the isEmpty helper', () => {
   it.each([
-    [[], true],
+    [[], false],
     [[1], false],
     [undefined, true],
     [null, true],
