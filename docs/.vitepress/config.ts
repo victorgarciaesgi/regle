@@ -78,6 +78,9 @@ export default defineConfig({
         apiKey: '5f6ac82c6d47d8a3d7fdd93dcf430d05',
       },
     },
+    editLink: {
+      pattern: 'https://github.com/victorgarciaesgi/regle/edit/main/docs/src/:path',
+    },
     outline: 'deep',
     sidebar: [
       {
