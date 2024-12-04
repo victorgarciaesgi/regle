@@ -60,7 +60,6 @@ export function applyIf<
     message: _message,
   });
 
-  console.log(_params);
   newRule._params = _params as any;
 
   return newRule as any;
