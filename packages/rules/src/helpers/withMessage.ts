@@ -82,8 +82,16 @@ export function withMessage(
     message: newMessage,
   });
 
-  newRule._params = _params as any;
+  const newParams = [...(_params ?? [])];
+
+  newRule._params = newParams as any;
   newRule._patched = true;
 
-  return newRule;
+  if (typeof newRule === 'function') {
+    const executedRule = newRule(...newParams);
+    executedRule._patched = true;
+    return executedRule;
+  } else {
+    return newRule;
+  }
 }

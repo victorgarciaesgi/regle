@@ -29,5 +29,5 @@ export function withParams<
 
   newRule._params = newRule._params?.concat(depsArray);
 
-  return newRule as any;
+  return newRule(...depsArray) as any;
 }

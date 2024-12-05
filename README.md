@@ -22,12 +22,6 @@ Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript-first model-based form
 It's heavily inspired by Vuelidate.
 
 
-
-> ⚠️ Project is still in development
-> 
-> API can still change before stable release
-
-
 ## 📚 Documentation
 
 [![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
@@ -49,27 +43,30 @@ TODO
 ## Compatibility:
 
 
-- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.1+
+- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.3+
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia
 
 
 ## ☑️ Roadmap
 
-- [x] Validation groups
-- [x] Shortcuts 
-- [x] Nuxt Module
-- [x] Documentation
-- [x] `$extractDirtyFields`
+### For v1.0
+
 - [ ] Unit tests (in progress)
 - [ ] E2E tests (in progress)
-- [ ] Examples
-- [ ] `withErrorType`
+- [ ] Type tests
+- [ ] Improve coverage
+- [ ] Simplify/reduce core code
+- [ ] Example repo, Reproduction repl
+
+### Next iterations
+
 - [ ] `Valibot` support
 - [ ] `Yup` support
 - [ ] TS docs
+- [ ] `withErrorType`
 
-## 🤔 Maybe in roadmap
+### 🤔 Maybe in roadmap
 
 - [ ] Typed plugin system (like scrollToError)
 

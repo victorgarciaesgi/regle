@@ -35,15 +35,16 @@ export function applyIf<
   if (typeof rule === 'function') {
     _type = InternalRuleType.Inline;
     validator = rule;
+    _params = [_condition];
   } else {
     ({ _type, validator, _message } = rule);
     _params = rule._params?.concat([_condition] as any);
   }
 
-  function newValidator(value: any, ...args: any[]) {
+  function newValidator(value: any) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
     if (condition) {
-      return validator(value, ...args);
+      return validator(value, condition);
     }
     return true;
   }

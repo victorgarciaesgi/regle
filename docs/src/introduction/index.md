@@ -21,7 +21,7 @@ Declare your form rules inside a component or a Pinia store and use it wherever 
 
 ### Prerequisites
 
-- [Vue](https://vuejs.org/) <span data-title="vue"></span> version `3.1` or higher.
+- [Vue](https://vuejs.org/) <span data-title="vue"></span> version `3.3` or higher.
 - [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span> version `4.8` or higher
 - Text Editor with Vue syntax support.
   -  [VSCode](https://code.visualstudio.com/) <span data-title=".vscode"></span> is recommended, along with the [official Vue extension](https://marketplace.visualstudio.com/items?itemName=Vue.volar).

@@ -68,9 +68,7 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
   [x: string]: (element: OmitByType<T, Function>) => unknown;
 };
 
-export type RegleShortcutDefinition<
-  TCustomRules extends Record<string, any> = Partial<DefaultValidators>,
-> = {
+export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
   fields?: ShortcutCommonFn<
     RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>
   >;
@@ -80,7 +78,9 @@ export type RegleShortcutDefinition<
       ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>
     >
   >;
-  collections?: ShortcutCommonFn<RegleCollectionStatus>;
+  collections?: ShortcutCommonFn<
+    RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>
+  >;
 };
 
 export type AddDollarToOptions<T extends Record<string, any>> = {

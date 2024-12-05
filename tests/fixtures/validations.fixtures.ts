@@ -5,7 +5,7 @@ import type {
   ReglePartialRuleTree,
   RegleRuleDefinition,
 } from '@regle/core';
-import { useRegle } from '@regle/core';
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { ruleMockIsEven } from './rules.fixtures';
 import { email, required, requiredIf } from '@regle/rules';
 // eslint-disable-next-line
@@ -177,7 +177,7 @@ export function computedValidationsObjectWithRefs(): any {
   return { form: { conditional, number }, ...useRegle({ number, conditional }, validations) };
 }
 
-export function simpleNestedStateWithMixedValidation() {
+export function simpleNestedStateWithMixedValidation(autoDirty = true) {
   const form = ref({
     email: '',
     user: {
@@ -187,7 +187,40 @@ export function simpleNestedStateWithMixedValidation() {
     contacts: [{ name: '' }],
   });
 
-  return useRegle(form, {
+  return useRegle(
+    form,
+    {
+      email: { required: required, email: email },
+      user: {
+        firstName: { required },
+        lastName: { required },
+      },
+      contacts: {
+        $each: {
+          name: { required },
+        },
+      },
+    },
+    { autoDirty }
+  );
+}
+
+export function simpleNestedStateWithMixedValidationAndGlobalConfig(autoDirty = true) {
+  const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
+    modifiers: {
+      autoDirty,
+    },
+  });
+  const form = ref({
+    email: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    contacts: [{ name: '' }],
+  });
+
+  return useCustomRegle(form, {
     email: { required: required, email: email },
     user: {
       firstName: { required },

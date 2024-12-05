@@ -277,12 +277,10 @@ export function createReactiveFieldStatus({
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           if (externalErrors?.value?.length) {
             return false;
-          } else if ($rewardEarly.value) {
-            return Object.entries($rules.value).every(([key, ruleResult]) => {
-              return ruleResult.$valid;
-            });
           } else {
-            return !$invalid.value;
+            return Object.values($rules.value).every((ruleResult) => {
+              return ruleResult.$valid && ruleResult.$active;
+            });
           }
         }
         return false;

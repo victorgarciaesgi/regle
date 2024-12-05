@@ -1,9 +1,11 @@
 <template>
-  <TestForm />
+  <!-- <TestForm /> -->
+  <TestF12 />
 </template>
 
 <script setup lang="ts">
 import TestForm from './components/TestForm.vue';
+import TestF12 from './components/Test12.vue';
 
 import { useRegle, type RegleComputedRules } from '@regle/core';
 import { computed, ref } from 'vue';

@@ -416,6 +416,9 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.6.3)
     devDependencies:
+      '@andypf/json-viewer':
+        specifier: 2.1.7
+        version: 2.1.7
       '@tsconfig/node20':
         specifier: ^20.1.4
         version: 20.1.4
@@ -611,6 +614,9 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@andypf/json-viewer@2.1.7':
+    resolution: {integrity: sha512-lzlDkpKBq78P1mQ7kWoGsTbfFmtCLzJN/lQLgHFfPsn7fSqZrQ/mYU1rS6zHZKOHEwN/A6xW4B6GOggWHB3xOQ==}
 
   '@antfu/install-pkg@0.4.1':
     resolution: {integrity: sha512-T7yB5QNG29afhWVkVq7XeIMBa5U/vs9mX69YqayXypPRmYzUmzwnYltplHmPtZ4HPCn+sQKeXW8I47wCbuBOjw==}
@@ -6175,6 +6181,8 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@andypf/json-viewer@2.1.7': {}
 
   '@antfu/install-pkg@0.4.1':
     dependencies:

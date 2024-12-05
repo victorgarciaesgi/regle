@@ -56,7 +56,7 @@ describe('applyIf helper', () => {
           error: applyIf(form.value.count === 1, required),
         },
         name: {
-          error: applyIf(form.value.count === 1, required),
+          error: applyIf(form.value.count === 1, (value) => required.exec(value)),
         },
       }));
     });

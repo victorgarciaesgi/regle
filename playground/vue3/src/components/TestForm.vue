@@ -1,39 +1,152 @@
 <template>
   <main>
-    <button @click="() => r$.$validate()">validate</button>
-    <br />
-    <br />
-    <input type="text" v-model="data.name" />
-    <br />
-    invalid: {{ r$.$invalid }}
-    <br />
-    <br />
-    <button @click="assign">assign new value</button>
     <br />
     <br />
     <br />
-    {{ r$.$errors }}
+    <br />
+    <button @click="r$.$validate">validate</button>
+
+    <button @click="isOpen = !isOpen">Assing new value</button>
+    <button @click="r$.$reset()">Reset</button>
+    <button
+      @click="
+        form.levels.push({
+          id: 3030,
+          localizations: [],
+        })
+      "
+      >Add entry</button
+    >
+    <br />
+    <br />
+    <br />
+    <JSONViewer :data="r$.$errors.levels" />
+    <JSONViewer :data="form" />
+    <JSONViewer :data="r$" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
 import { useRegle } from '@regle/core';
-import { maxLength, minLength, required } from '@regle/rules';
+import { maxLength, minLength } from '@regle/rules';
+import { ref, watch } from 'vue';
+import JSONViewer from './JSONViewer.vue';
 
-const data = ref<{ name: string }>({
-  name: '',
+type Form = {
+  id: number;
+  localizations: any[];
+  levels: {
+    id: number;
+    localizations: {
+      id: number;
+    }[];
+  }[];
+};
+const isOpen = ref(true);
+const form = ref<Form>({
+  id: 0,
+  levels: [
+    {
+      id: -1,
+      localizations: [
+        {
+          id: 0,
+        },
+        {
+          id: 0,
+        },
+      ],
+    },
+    {
+      id: -2,
+
+      localizations: [
+        {
+          id: 0,
+        },
+        {
+          id: 0,
+        },
+      ],
+    },
+    {
+      id: -3,
+
+      localizations: [
+        {
+          id: 0,
+        },
+        {
+          id: 0,
+        },
+      ],
+    },
+  ],
+  localizations: [],
 });
 
-const { r$ } = useRegle(data, {
-  name: {
-    required,
-  },
-});
+watch(
+  () => isOpen.value,
+  async () => {
+    if (isOpen.value) form.value = defaultModel();
+    else {
+      form.value = {
+        id: 0,
+        levels: [
+          {
+            id: -1,
+            localizations: [
+              {
+                id: 0,
+              },
+              {
+                id: 0,
+              },
+            ],
+          },
+          {
+            id: -2,
 
-const assign = () => {
-  data.value = {
-    name: '',
+            localizations: [
+              {
+                id: 0,
+              },
+              {
+                id: 0,
+              },
+            ],
+          },
+          {
+            id: -3,
+
+            localizations: [
+              {
+                id: 0,
+              },
+              {
+                id: 0,
+              },
+            ],
+          },
+        ],
+        localizations: [],
+      };
+    }
+  }
+);
+
+const defaultModel = () => {
+  return {
+    id: 0,
+    localizations: [],
+    levels: [],
   };
 };
+
+const { r$ } = useRegle(form, () => ({
+  levels: {
+    minLength: minLength(3),
+    maxLength: maxLength(10),
+  },
+}));
 </script>

@@ -4,14 +4,14 @@ import { ruleHelpers } from '../helpers';
 
 export const regex: RegleRuleWithParamsDefinition<
   string | number,
-  [regexp: RegExp],
+  [...regexp: RegExp[]],
   false,
   boolean
 > = createRule({
   type: 'regex',
-  validator(value: Maybe<string | number>, regexp: RegExp) {
+  validator(value: Maybe<string | number>, ...regexp: RegExp[]) {
     if (ruleHelpers.isFilled(value)) {
-      return ruleHelpers.regex(value, regexp);
+      return ruleHelpers.regex(value, ...regexp);
     }
     return true;
   },
