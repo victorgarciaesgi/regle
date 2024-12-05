@@ -22,6 +22,7 @@
     "dev:build": "nuxi build playground",
     "typecheck": "nuxi typecheck",
     "build": "nuxt-module-build prepare && nuxt-module-build build",
+    "build:sourcemaps": "nuxt-module-build prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "pnpm publish --report-summary",
     "lint": "eslint .",
