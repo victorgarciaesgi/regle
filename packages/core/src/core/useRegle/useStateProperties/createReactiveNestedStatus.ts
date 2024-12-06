@@ -26,6 +26,7 @@ import type {
   RegleBehaviourOptions,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
+  RegleValidationGroupOutput,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
@@ -81,6 +82,7 @@ export function createReactiveNestedStatus({
     $ready: ComputedRef<boolean>;
     $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
+    $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
   };
   let scope: EffectScope;
   let scopeState!: ScopeState;
@@ -181,44 +183,10 @@ export function createReactiveNestedStatus({
         })
     );
 
-    const groups = Object.fromEntries(
-      Object.entries(validationGroups?.(scopedRulesStatus) ?? {}).map(([key, entries]) => {
-        if (entries.length) {
-          return [
-            key,
-            {
-              ...Object.fromEntries(
-                (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map(
-                  (property) => [
-                    property,
-                    mergeBooleanGroupProperties(
-                      toRef(() => entries),
-                      property
-                    ),
-                  ]
-                )
-              ),
-              ...Object.fromEntries(
-                (['$errors', '$silentErrors'] as const).map((property) => [
-                  property,
-                  mergeArrayGroupProperties(
-                    toRef(() => entries),
-                    property
-                  ),
-                ])
-              ),
-            },
-          ];
-        }
-        return [];
-      })
-    );
-
     $fields.value = {
       ...scopedRulesStatus,
       ...externalRulesStatus,
       ...statesWithNoRules,
-      ...groups,
     };
     if (watch) {
       $watch();
@@ -395,6 +363,35 @@ export function createReactiveNestedStatus({
         }
       }
 
+      const $groups = computed<Record<string, RegleValidationGroupOutput>>(() => {
+        if (validationGroups) {
+          return Object.fromEntries(
+            Object.entries(validationGroups?.($fields.value) ?? {}).map(([key, entries]) => {
+              if (entries.length) {
+                return [
+                  key,
+                  {
+                    ...Object.fromEntries(
+                      (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map(
+                        (property) => [property, mergeBooleanGroupProperties(entries, property)]
+                      )
+                    ),
+                    ...Object.fromEntries(
+                      (['$errors', '$silentErrors'] as const).map((property) => [
+                        property,
+                        mergeArrayGroupProperties(entries, property),
+                      ])
+                    ),
+                  },
+                ];
+              }
+              return [];
+            })
+          );
+        }
+        return {};
+      });
+
       const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
       processShortcuts();
 
@@ -410,6 +407,7 @@ export function createReactiveNestedStatus({
         $ready,
         $name,
         $shortcuts,
+        $groups,
       } satisfies ScopeState;
     })!;
   }
