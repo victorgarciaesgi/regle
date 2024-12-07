@@ -82,6 +82,5 @@
     "type": "git",
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
-  "license": "MIT",
-  "packageManager": "pnpm@9.7.0"
+  "license": "MIT"
 }
