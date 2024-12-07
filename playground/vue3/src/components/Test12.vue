@@ -189,7 +189,7 @@ const minWeightRule = createRule({
 const extraWeightRule = (myArg: string, index: number) => {
   return withMessage(
     withParams(
-      (value) => {
+      (value: Maybe<string | number>) => {
         return Number(value) > 1 && someCondition.value === false;
       },
       [someCondition]

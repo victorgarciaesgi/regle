@@ -49,16 +49,18 @@
     "@types/node": "^22.9.3",
     "c12": "2.0.1",
     "changelogen": "^0.5.7",
-    "eslint": "9.15.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-vue": "9.31.0",
     "nuxt": "^3.14.1592",
-    "prettier": "3.3.3",
-    "tsup": "8.3.5",
     "type-fest": "4.28.0",
-    "typescript": "5.6.3",
     "vitest": "2.1.5",
-    "vue-tsc": "2.1.10"
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vue": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:"
   },
   "publishConfig": {
     "access": "public"

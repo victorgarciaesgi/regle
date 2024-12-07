@@ -3,6 +3,7 @@ import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue
 import {
   computed,
   effectScope,
+  nextTick,
   reactive,
   ref,
   toRaw,
@@ -84,7 +85,7 @@ export function createReactiveNestedStatus({
     $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
   };
-  let scope: EffectScope;
+  let scope = effectScope();
   let scopeState!: ScopeState;
 
   let nestedScopes: EffectScope[] = [];
@@ -94,15 +95,13 @@ export function createReactiveNestedStatus({
   let $unwatchState: WatchStopHandle | null = null;
   let $unwatchGroups: WatchStopHandle | null = null;
 
-  function createReactiveFieldsStatus(watch = true) {
-    $fields.value = null!;
-    triggerRef($fields);
-
+  async function createReactiveFieldsStatus(watch = true) {
     const scopedRulesStatus = Object.fromEntries(
       Object.entries(scopeRules.value)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
+            triggerRef(stateRef);
             const statePropRulesRef = toRef(() => statePropRules);
 
             const $externalErrors = toRef(externalErrors?.value!, statePropKey);
@@ -136,12 +135,11 @@ export function createReactiveNestedStatus({
         .map(([key, errors]) => {
           if (errors) {
             const stateRef = toRef(state.value, key);
-            const statePropRulesRef = toRef(() => ({}));
             return [
               key,
               createReactiveChildrenStatus({
                 state: stateRef,
-                rulesDef: statePropRulesRef,
+                rulesDef: computed(() => ({})),
                 customMessages,
                 path: path ? `${path}.${key}` : key,
                 storage,
@@ -164,12 +162,11 @@ export function createReactiveNestedStatus({
         )
         .map(([key, value]) => {
           const stateRef = toRef(state.value, key);
-          const statePropRulesRef = toRef(() => ({}));
           return [
             key,
             createReactiveChildrenStatus({
               state: stateRef,
-              rulesDef: statePropRulesRef,
+              rulesDef: computed(() => ({})),
               customMessages,
               path: path ? `${path}.${key}` : key,
               storage,
@@ -193,7 +190,7 @@ export function createReactiveNestedStatus({
     }
   }
 
-  let $fields: Ref<Record<string, $InternalRegleStatusType>> = storage.getFieldsEntry(path);
+  const $fields: Ref<Record<string, $InternalRegleStatusType>> = storage.getFieldsEntry(path);
   createReactiveFieldsStatus();
 
   function $reset(): void {
@@ -260,14 +257,17 @@ export function createReactiveNestedStatus({
       define$WatchExternalErrors();
     }
 
-    $unwatchState = watch(state, () => {
-      // Do not watch deep to only track mutation on the object itself on not its children
-      $unwatch();
-      createReactiveFieldsStatus();
-      $touch();
-    });
+    $unwatchState = watch(
+      state,
+      () => {
+        // Do not watch deep to only track mutation on the object itself on not its children
+        $unwatch();
+        createReactiveFieldsStatus();
+        $touch();
+      },
+      { flush: 'sync' }
+    );
 
-    scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
         return (
@@ -413,21 +413,19 @@ export function createReactiveNestedStatus({
   }
 
   function $unwatch() {
-    if ($fields.value) {
-      Object.entries($fields.value).forEach(([_, field]) => {
-        field.$unwatch();
-      });
-    }
-
     $unwatchRules?.();
     $unwatchExternalErrors?.();
     $unwatchState?.();
     $unwatchGroups?.();
 
-    scope.stop();
-    scope = effectScope();
     nestedScopes.forEach((s) => s.stop());
     nestedScopes = [];
+
+    if ($fields.value) {
+      Object.entries($fields.value).forEach(([_, field]) => {
+        field.$unwatch();
+      });
+    }
   }
 
   function $clearExternalErrors() {
@@ -482,7 +480,7 @@ export function createReactiveNestedStatus({
 
 interface CreateReactiveChildrenStatus {
   state: Ref<unknown>;
-  rulesDef: Ref<$InternalFormPropertyTypes, any>;
+  rulesDef: Ref<$InternalFormPropertyTypes>;
   customMessages?: CustomRulesDeclarationTree;
   path: string;
   index?: number;

@@ -1,16 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import {
-  computed,
-  effectScope,
-  reactive,
-  ref,
-  toRaw,
-  toRef,
-  toRefs,
-  unref,
-  watch,
-  watchEffect,
-} from 'vue';
+import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -272,16 +261,14 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName);
 
       const $valid = computed<boolean>(() => {
-        if (isEmpty($rules.value)) {
+        if (externalErrors?.value?.length) {
+          return false;
+        } else if (isEmpty($rules.value)) {
           return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
-          if (externalErrors?.value?.length) {
-            return false;
-          } else {
-            return Object.values($rules.value).every((ruleResult) => {
-              return ruleResult.$valid && ruleResult.$active;
-            });
-          }
+          return Object.values($rules.value).every((ruleResult) => {
+            return ruleResult.$valid && ruleResult.$active;
+          });
         }
         return false;
       });
@@ -479,31 +466,11 @@ export function createReactiveFieldStatus({
     $commit();
   }
 
-  const {
-    $anyDirty,
-    $error,
-    $errors,
-    $invalid,
-    $name,
-    $pending,
-    $ready,
-    $silentErrors,
-    $valid,
-    $shortcuts,
-    $validating,
-  } = scopeState;
+  const { $shortcuts, $validating, ...restScope } = scopeState;
 
   return reactive({
     $dirty,
-    $error,
-    $errors,
-    $valid,
-    $invalid,
-    $pending,
-    $silentErrors,
-    $anyDirty,
-    $ready,
-    $name,
+    ...restScope,
     $externalErrors: externalErrors,
     $value: state,
     $rules: $rules,

@@ -6,3 +6,16 @@ packages:
   - playground/vue3
   - playground/nuxt
   - ui-tests/fixtures/ui-vue3
+
+catalog:
+  vue: 3.5.11
+  pinia: 2.2.6
+  eslint: 9.15.0
+  eslint-plugin-vue: 9.31.0
+  eslint-config-prettier: 9.1.0
+  vue-eslint-parser: 9.4.3
+  type-fest: 4.28.0
+  prettier: 3.3.3
+  typescript: 5.6.3
+  vue-tsc: 2.1.10
+  tsup: 8.3.5

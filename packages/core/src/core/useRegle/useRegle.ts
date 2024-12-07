@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, ref, toRaw } from 'vue';
+import { computed, isRef, ref, toRaw, watch } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,

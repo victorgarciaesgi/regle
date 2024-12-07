@@ -15,7 +15,7 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
-    "vue": "^3.5.13"
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
@@ -25,12 +25,15 @@
     "@vue/eslint-config-typescript": "^14.0.1",
     "@andypf/json-viewer": "2.1.7",
     "@vue/tsconfig": "^0.6.0",
-    "eslint": "^9.15.0",
-    "eslint-plugin-vue": "^9.31.0",
     "npm-run-all2": "^7.0.1",
-    "prettier": "^3.3.3",
-    "typescript": "~5.6.3",
     "vite": "^5.4.8",
-    "vue-tsc": "^2.1.6"
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:"
   }
 }
