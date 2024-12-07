@@ -1,8 +1,9 @@
 import type { Regle } from '@regle/core';
+import type { ZodRegle } from '@regle/zod';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
-export function createRegleComponent<T extends Regle<any, any, any, any>>(
+export function createRegleComponent<T extends Regle<any, any, any, any> | ZodRegle<any, any>>(
   regleComposable: () => T
 ) {
   return mount(

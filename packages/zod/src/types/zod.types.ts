@@ -1,23 +1,22 @@
+import type { Maybe } from '@regle/core';
 import type { z } from 'zod';
 
 export type ZodObj<T extends Record<PropertyKey, any>> = {
-  [K in keyof T]: ZodChild<T[K]> | z.ZodOptional<ZodChild<T[K]>> | z.ZodEffects<T[K]>;
+  [K in keyof T]: ZodChild<T[K]>;
 };
 
 export type ZodChild<T extends any> = NonNullable<
   T extends Array<infer A>
     ? z.ZodArray<ZodChild<A>>
-    : T extends Record<string, any>
-      ? z.ZodObject<ZodObj<T>>
-      : z.ZodType<NonNullable<T>>
+    : T extends Date | File
+      ? z.ZodType<Maybe<T>, z.ZodTypeDef, Maybe<T>>
+      : T extends Record<string, any>
+        ? z.ZodObject<ZodObj<T>>
+        : z.ZodType<Maybe<T>, z.ZodTypeDef, Maybe<T>>
 >;
 
 export type toZod<T extends Record<PropertyKey, any>> = z.ZodObject<ZodObj<T>>;
 
-export type NonPresentKeys<
-  TSource extends Record<string, any>,
-  Target extends Record<string, any>,
-> = Omit<Target, keyof TSource>;
 // Types
 
 export type PossibleDefTypes =

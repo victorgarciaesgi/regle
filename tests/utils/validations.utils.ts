@@ -1,9 +1,16 @@
 import type { RegleCollectionStatus, RegleFieldStatus, RegleStatus } from '@regle/core';
 import { isEmpty } from '../../packages/core/src/utils';
+import type { ZodRegleCollectionStatus, ZodRegleFieldStatus, ZodRegleStatus } from '@regle/zod';
 
-export function shouldBePristineField(
-  field?: RegleStatus<any, any> | RegleFieldStatus<any, any> | RegleCollectionStatus<any, any, any>
-) {
+type PossibleFields =
+  | RegleStatus<any, any>
+  | RegleFieldStatus<any, any>
+  | RegleCollectionStatus<any, any, any>
+  | ZodRegleStatus<any, any>
+  | ZodRegleFieldStatus<any, any>
+  | ZodRegleCollectionStatus<any, any>;
+
+export function shouldBePristineField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
@@ -17,9 +24,7 @@ export function shouldBePristineField(
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeInvalidField(
-  field?: RegleStatus<any, any> | RegleFieldStatus<any, any> | RegleCollectionStatus<any, any, any>
-) {
+export function shouldBeInvalidField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(true);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
@@ -32,9 +37,7 @@ export function shouldBeInvalidField(
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeErrorField(
-  field?: RegleStatus<any, any> | RegleFieldStatus<any, any> | RegleCollectionStatus<any, any, any>
-) {
+export function shouldBeErrorField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(true);
   expect(field?.$error).toBe(true);
   expect(field?.$dirty).toBe(true);
@@ -45,12 +48,7 @@ export function shouldBeErrorField(
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeValidField(
-  field?:
-    | RegleStatus<any, any>
-    | RegleFieldStatus<any, any, any>
-    | RegleCollectionStatus<any, any, any, any>
-) {
+export function shouldBeValidField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);
@@ -64,7 +62,7 @@ export function shouldBeValidField(
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any>) {
+export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | ZodRegleStatus) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);

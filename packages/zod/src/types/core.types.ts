@@ -81,6 +81,8 @@ export interface ZodRegleFieldStatus<
 > extends RegleCommonStatus<TState> {
   $value: TState[TKey];
   readonly $externalErrors?: string[];
+  readonly $errors: string[];
+  readonly $silentErrors: string[];
   readonly $rules: {
     [Key in `${string & TSchema['_def']['typeName']}`]: RegleRuleStatus<TState[TKey], []>;
   };
@@ -91,7 +93,9 @@ export interface ZodRegleFieldStatus<
  * @public
  */
 export interface ZodRegleCollectionStatus<TSchema extends z.ZodTypeAny, TState extends any[]>
-  extends ZodRegleFieldStatus<TSchema, TState> {
+  extends Omit<ZodRegleFieldStatus<TSchema, TState>, '$errors' | '$silentErrors'> {
   readonly $each: Array<InferZodRegleStatusType<NonNullable<TSchema>, TState, number>>;
+  readonly $errors: ZodToRegleCollectionErrors<TSchema>;
+  readonly $silentErrors: ZodToRegleCollectionErrors<TSchema>;
   $validate: () => Promise<false | z.output<TSchema>>;
 }

@@ -1,13 +1,8 @@
-import { computed, reactive, ref, type UnwrapRef } from 'vue';
-import type {
-  Regle,
-  RegleComputedRules,
-  ReglePartialRuleTree,
-  RegleRuleDefinition,
-} from '@regle/core';
+import type { RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
 import { defineRegleConfig, useRegle } from '@regle/core';
+import { email, required } from '@regle/rules';
+import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import { ruleMockIsEven } from './rules.fixtures';
-import { email, required, requiredIf } from '@regle/rules';
 // eslint-disable-next-line
 export type { RefSymbol } from '@vue/reactivity';
 

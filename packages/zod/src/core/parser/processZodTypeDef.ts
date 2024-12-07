@@ -21,7 +21,7 @@ export function processZodTypeDef(
     } else {
       return {
         [schema.constructor.name]: withMessage(
-          transformZodValidatorAdapter(schema),
+          transformZodValidatorAdapter(schema) as any,
           extractIssuesMessages() as any
         ),
       };
