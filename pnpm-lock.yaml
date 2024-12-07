@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@vue/reactivity':
+      specifier: 3.5.11
+      version: 3.5.11
     eslint:
       specifier: 9.15.0
       version: 9.15.0
@@ -74,6 +77,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 2.1.5
         version: 2.1.5(vitest@2.1.5(@types/node@22.9.3)(happy-dom@15.11.6)(sass@1.81.0)(terser@5.36.0))
+      '@vue/reactivity':
+        specifier: 'catalog:'
+        version: 3.5.11
       '@vue/test-utils':
         specifier: 2.4.6
         version: 2.4.6
@@ -293,6 +299,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.15.0
         version: 8.15.0(eslint@9.15.0(jiti@2.4.0))(typescript@5.6.3)
+      '@vue/reactivity':
+        specifier: 'catalog:'
+        version: 3.5.11
       '@vue/test-utils':
         specifier: 2.4.6
         version: 2.4.6
