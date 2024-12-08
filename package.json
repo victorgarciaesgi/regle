@@ -10,7 +10,7 @@
     "build": "pnpm run -r --filter='@regle/*' build",
     "build:sourcemaps": "pnpm run -r --filter='@regle/*' build:sourcemaps",
     "dev": "pnpm run -r --parallel --filter='@regle/*' dev",
-    "test": "pnpm run build:sourcemaps && vitest run && pnpm run ui-tests:run",
+    "test": "pnpm run build:sourcemaps && pnpm run typecheck && vitest run && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
     "release": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",

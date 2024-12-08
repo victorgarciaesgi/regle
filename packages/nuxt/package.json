@@ -20,7 +20,7 @@
     "prepack": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "typecheck": "nuxi typecheck",
+    "typecheck": "nuxi typecheck playground",
     "build": "pnpm run dev:prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
