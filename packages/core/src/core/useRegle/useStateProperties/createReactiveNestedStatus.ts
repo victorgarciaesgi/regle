@@ -3,10 +3,8 @@ import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue
 import {
   computed,
   effectScope,
-  nextTick,
   reactive,
   ref,
-  toRaw,
   toRef,
   triggerRef,
   unref,
@@ -201,9 +199,9 @@ export function createReactiveNestedStatus({
     define$WatchExternalErrors();
   }
 
-  function $touch(runCommit = true): void {
+  function $touch(runCommit = true, withConditions = false): void {
     Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$touch(runCommit);
+      statusOrField.$touch(runCommit, withConditions);
     });
   }
 
@@ -263,7 +261,7 @@ export function createReactiveNestedStatus({
         // Do not watch deep to only track mutation on the object itself on not its children
         $unwatch();
         createReactiveFieldsStatus();
-        $touch();
+        $touch(true, true);
       },
       { flush: 'sync' }
     );

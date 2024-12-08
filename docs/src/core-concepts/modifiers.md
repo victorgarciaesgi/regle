@@ -88,8 +88,9 @@ Type: `boolean`
 
 Default: `false`
 
-Turn on the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method
+Turn on the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method.
 
+This will have effects only if you use `autoDirty: false`.
 
 ### `clearExternalErrorsOnChange`
 

@@ -4,13 +4,15 @@ about: Create a report to help me improve
 title: ''
 labels: ''
 assignees: ''
-
 ---
+
 **Environnement infos**
 
-`@regle/x` version:
-`vue` version:
-`typecript` versinon:
+- `@regle/x` version:
+- `vue` version:
+- `typescript` version:
+- `Nuxt` version (if you use Nuxt): 
+- `Zod` version (if you use zod): 
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -22,5 +24,5 @@ A clear and concise description of what you expected to happen.
 Please provide a reproduction link or repo
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+If applicable, add screenshots or recordings to help explain your problem.
 

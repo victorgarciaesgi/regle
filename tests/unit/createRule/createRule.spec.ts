@@ -71,4 +71,30 @@ describe('createRule', () => {
 
     expect(await rule.exec('fooo')).toBe(false);
   });
+
+  it('should recognize mutliple parameters with default', async () => {
+    const rule = createRule({
+      validator(value, param = false, param2 = true) {
+        return true;
+      },
+      message: '',
+    });
+
+    expect(rule().exec('fooo')).toBe(true);
+    expect(rule(true).exec('fooo')).toBe(true);
+    expect(rule(true, true).exec('fooo')).toBe(true);
+  });
+
+  it('should recognize mutliple parameters with spread', async () => {
+    const rule = createRule({
+      validator(value, ...params: any[]) {
+        return true;
+      },
+      message: '',
+    });
+
+    expect(rule().exec('fooo')).toBe(true);
+    expect(rule(true).exec('fooo')).toBe(true);
+    expect(rule(true, true).exec('fooo')).toBe(true);
+  });
 });

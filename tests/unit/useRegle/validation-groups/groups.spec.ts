@@ -3,7 +3,7 @@ import { email, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 
-export function nestedRefObjectValidation() {
+function nestedRefObjectValidation() {
   const form = ref({
     email: '',
     name: '',

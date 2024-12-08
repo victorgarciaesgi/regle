@@ -50,7 +50,7 @@ describe.each([
 describe.each([
   ['local modifier', () => simpleNestedStateWithMixedValidation(false)],
   ['global modifier', () => simpleNestedStateWithMixedValidationAndGlobalConfig(false)],
-])('$autoDirty -> false', (name, rules) => {
+])('$autoDirty -> false - %s', (name, rules) => {
   beforeAll(() => {
     vi.useFakeTimers();
   });
@@ -67,7 +67,7 @@ describe.each([
 
     vm.r$.$value.email = 'foo';
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.email);
 
     await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200), vm.$nextTick]);
 
@@ -86,7 +86,7 @@ describe.each([
 
     vm.r$.$value.email = 'foo';
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.email);
 
     vm.r$.$touch();
     await nextTick();
@@ -106,7 +106,7 @@ describe.each([
 
     vm.r$.$value.email = 'foo';
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.email);
 
     vm.r$.$touch();
     await nextTick();

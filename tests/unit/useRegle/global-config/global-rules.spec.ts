@@ -4,7 +4,7 @@ import { ruleMockIsEven } from '../../../fixtures';
 import { minValue, required, withMessage } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
 
-export function nestedRefObjectValidation() {
+function nestedRefObjectValidation() {
   const { useRegle } = defineRegleConfig({
     rules: () => ({
       minValue: withMessage(minValue, (_, { $params: [min] }) => `Patched min:${min}`),

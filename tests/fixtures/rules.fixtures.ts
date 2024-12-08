@@ -3,10 +3,15 @@ import { createRule } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
 import { timeout } from '../utils';
 
+export const mockedValidations = {
+  isFoo: vi.fn((value) => value === 'foo'),
+  isEven: vi.fn((value) => value % 2 === 0),
+};
+
 export const ruleMockIsFoo = createRule({
   validator(value: Maybe<string>) {
     if (ruleHelpers.isFilled(value)) {
-      return value === 'foo';
+      return mockedValidations.isFoo(value);
     }
     return true;
   },
@@ -16,7 +21,7 @@ export const ruleMockIsFoo = createRule({
 export const ruleMockIsEven = createRule({
   validator(value: Maybe<number>) {
     if (ruleHelpers.isFilled(value)) {
-      return value % 2 === 0;
+      return mockedValidations.isEven(value);
     }
     return true;
   },
@@ -28,7 +33,7 @@ export function ruleMockIsEvenAsync(time = 1000) {
     async validator(value: Maybe<number>) {
       if (ruleHelpers.isFilled(value)) {
         await timeout(time);
-        return value % 2 === 0;
+        return mockedValidations.isEven(value);
       }
       return true;
     },
@@ -41,7 +46,7 @@ export function ruleMockIsFooAsync() {
     async validator(value: Maybe<string>) {
       if (ruleHelpers.isFilled(value)) {
         await timeout(1000);
-        return value === 'foo';
+        return mockedValidations.isFoo(value);
       }
       return true;
     },
@@ -76,7 +81,7 @@ export const ruleMockIsEqualParamAsync = createRule({
 
 export const inlineRuleMockIsFoo = (value: any) => {
   if (ruleHelpers.isFilled(value)) {
-    return value === 'foo';
+    return mockedValidations.isFoo(value);
   }
   return true;
 };
@@ -84,7 +89,7 @@ export const inlineRuleMockIsFoo = (value: any) => {
 export const inlineRuleAsyncMockIsFoo = async (value: any) => {
   if (ruleHelpers.isFilled(value)) {
     await timeout(1000);
-    return value === 'foo';
+    return mockedValidations.isFoo(value);
   }
   return true;
 };

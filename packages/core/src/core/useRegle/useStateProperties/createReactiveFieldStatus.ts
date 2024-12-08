@@ -178,6 +178,9 @@ export function createReactiveFieldStatus({
       });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
+        if ($autoDirty.value === true) {
+          return false;
+        }
         if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
         }
@@ -344,7 +347,7 @@ export function createReactiveFieldStatus({
 
     $unwatchState = watch(
       state,
-      () => {
+      (newValue, oldValue) => {
         if (scopeState.$autoDirty.value) {
           if (!$dirty.value) {
             $dirty.value = true;
@@ -353,7 +356,12 @@ export function createReactiveFieldStatus({
         if (rulesDef.value instanceof Function) {
           createReactiveRulesResult();
         }
-        $commit();
+        if (
+          scopeState.$autoDirty.value ||
+          (scopeState.$rewardEarly.value && scopeState.$error.value)
+        ) {
+          $commit();
+        }
         if (
           scopeState.$rewardEarly.value !== true &&
           scopeState.$clearExternalErrorsOnChange.value
@@ -401,13 +409,20 @@ export function createReactiveFieldStatus({
     }
   }
 
-  function $touch(runCommit = true): void {
+  function $touch(runCommit = true, withConditions = false): void {
     if (!$dirty.value) {
       $dirty.value = true;
+    }
 
-      if (runCommit) {
+    if (withConditions && runCommit) {
+      if (
+        scopeState.$autoDirty.value ||
+        (scopeState.$rewardEarly.value && scopeState.$error.value)
+      ) {
         $commit();
       }
+    } else if (runCommit) {
+      $commit();
     }
   }
 

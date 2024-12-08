@@ -190,7 +190,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $name: string;
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
-  $touch(runCommit?: boolean): void;
+  $touch(runCommit?: boolean, withConditions?: boolean): void;
   $reset(): void;
   $resetAll: () => void;
   $unwatch(): void;

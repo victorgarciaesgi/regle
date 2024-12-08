@@ -468,10 +468,10 @@ export function createReactiveCollectionStatus({
     collectionScopes = [];
   }
 
-  function $touch(runCommit = true): void {
-    $fieldStatus.value.$touch(runCommit);
+  function $touch(runCommit = true, withConditions = false): void {
+    $fieldStatus.value.$touch(runCommit, withConditions);
     $eachStatus.value.forEach(($each) => {
-      $each.$touch(runCommit);
+      $each.$touch(runCommit, withConditions);
     });
   }
 
