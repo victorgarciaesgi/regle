@@ -21,7 +21,7 @@ jobs:
       - run: pnpm i
       - run: npx playwright install --with-deps
       - run: pnpm build
-      - run: pnpm run typecheck
       - run: pnpm run test
+      - run: pnpm run typecheck
         env:
           CI: true
