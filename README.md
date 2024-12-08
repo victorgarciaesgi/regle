@@ -53,10 +53,9 @@ TODO
 
 ### For v1.0
 
-- [ ] Unit tests (in progress)
+- [x] Unit tests
 - [ ] E2E tests (in progress)
 - [ ] Type tests
-- [ ] Improve coverage
 - [ ] Simplify/reduce core code
 - [ ] Example repo, Reproduction repl
 

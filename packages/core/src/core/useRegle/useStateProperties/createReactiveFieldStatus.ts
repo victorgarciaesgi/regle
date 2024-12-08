@@ -347,7 +347,7 @@ export function createReactiveFieldStatus({
 
     $unwatchState = watch(
       state,
-      (newValue, oldValue) => {
+      () => {
         if (scopeState.$autoDirty.value) {
           if (!$dirty.value) {
             $dirty.value = true;

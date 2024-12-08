@@ -8,6 +8,6 @@
   "exclude": [
     "dist",
     "node_modules",
-    "playground",
+    "playground"
   ]
 }

@@ -9,11 +9,19 @@ export default defineWorkspace([
       testTimeout: 10000,
       environment: 'happy-dom',
       include: ['./packages/**/*.spec.ts', './tests/**/*.spec.ts'],
+      exclude: ['./packages/nuxt/**'],
       typecheck: {
         enabled: true,
         include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
         ignoreSourceErrors: true,
       },
+    },
+  },
+  {
+    test: {
+      name: '@regle/nuxt',
+      root: './packages/nuxt',
+      include: ['test/**/*.{spec,test}.ts'],
     },
   },
 ]);
