@@ -3,10 +3,6 @@ export function isEmpty(value: unknown): value is null | undefined {
     return true;
   }
 
-  if (value === false) {
-    return false;
-  }
-
   if (value instanceof Date) {
     // invalid date won't pass
     return isNaN(value.getTime());

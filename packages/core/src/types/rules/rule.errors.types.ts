@@ -2,7 +2,7 @@ import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { ReglePartialRuleTree } from './rule.declaration.types';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type { Prettify } from '../utils';
+import type { Maybe, Prettify } from '../utils';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<
@@ -53,7 +53,16 @@ export type RegleResult<
   Data extends Record<string, any> | any[] | unknown,
   TRules extends ReglePartialRuleTree<any>,
 > =
-  | { result: false; data: Data }
+  | {
+      result: false;
+      data: Data extends Date | File
+        ? Maybe<Data>
+        : Data extends Array<any>
+          ? PartialDeep<Data>
+          : Data extends Record<string, any>
+            ? PartialDeep<Data>
+            : Maybe<Data>;
+    }
   | {
       result: true;
       data: Data extends Array<infer U extends Record<string, any>>
@@ -62,7 +71,7 @@ export type RegleResult<
           ? SafeFieldProperty<Data, TRules>
           : Data extends Record<string, any>
             ? Prettify<DeepSafeFormState<Data, TRules>>
-            : Data;
+            : SafeFieldProperty<Data, TRules>;
     };
 
 export type $InternalRegleResult = { result: boolean; data: any };

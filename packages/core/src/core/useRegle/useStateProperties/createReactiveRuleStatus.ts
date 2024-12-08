@@ -19,7 +19,7 @@ interface CreateReactiveRuleStatusOptions {
   ruleKey: string;
   rule: Ref<InlineRuleDeclaration<any, any[], any> | RegleRuleDefinition<any, any, any>>;
   $dirty: Ref<boolean>;
-  customMessages?: Partial<CustomRulesDeclarationTree>;
+  customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   storage: RegleStorage;
   $debounce?: number;

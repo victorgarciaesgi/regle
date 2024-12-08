@@ -19,7 +19,7 @@ import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
-  customMessages?: CustomRulesDeclarationTree;
+  customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   fieldName: string;
   index?: number;

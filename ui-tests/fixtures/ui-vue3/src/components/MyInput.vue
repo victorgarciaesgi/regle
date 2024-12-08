@@ -10,7 +10,7 @@
       :placeholder
     />
     <span v-if="field.$pending" class="pending-text"> Checking... </span>
-    <ul v-if="field.$errors.length">
+    <ul v-if="field.$errors.length" class="errors">
       <li v-for="error of field.$errors" :key="error">
         {{ error }}
       </li>

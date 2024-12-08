@@ -1,14 +1,14 @@
 <template>
-  <div class="my-input input-container">
-    <div style="width: 100%">
+  <div class="">
+    <div>
       <input
         v-model="modelValue"
         type="checkbox"
         :class="{ valid: field.$valid, error: field.$error, $pending: field.$pending }"
       />
-      <label>{{ placeholder }}<span v-if="isRequired" class="required-mark">*</span></label>
+      <label>{{ placeholder }}<span v-if="isRequired">*</span></label>
     </div>
-    <ul v-if="field.$errors.length">
+    <ul v-if="field.$errors.length" class="errors">
       <li v-for="error of field.$errors" :key="error">
         {{ error }}
       </li>

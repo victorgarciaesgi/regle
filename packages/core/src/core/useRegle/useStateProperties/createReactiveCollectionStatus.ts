@@ -52,7 +52,7 @@ function createCollectionElement({
   path: string;
   index: number;
   stateValue: Ref<StateWithId>;
-  customMessages?: CustomRulesDeclarationTree;
+  customMessages: CustomRulesDeclarationTree | undefined;
   storage: RegleStorage;
   options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
@@ -103,7 +103,7 @@ function createCollectionElement({
 interface CreateReactiveCollectionStatusArgs {
   state: Ref<StateWithId[] & StateWithId>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
-  customMessages?: CustomRulesDeclarationTree;
+  customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   fieldName: string;
   index?: number;
@@ -215,6 +215,7 @@ export function createReactiveCollectionStatus({
           const element = createCollectionElement({
             $id: $id.value,
             path,
+            customMessages,
             rules: unwrapped$Each ?? {},
             stateValue: toRef(() => value),
             index,
@@ -271,6 +272,7 @@ export function createReactiveCollectionStatus({
               const element = createCollectionElement({
                 $id: $id.value,
                 path,
+                customMessages,
                 rules: unwrapped$Each,
                 stateValue: currentValue,
                 index,

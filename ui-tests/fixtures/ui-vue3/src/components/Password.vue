@@ -12,7 +12,7 @@
       class="password-strength"
       :class="[`level-${field.$rules.strongPassword.$metadata.result?.id}`]"
     ></div>
-    <ul v-if="field.$errors.length">
+    <ul v-if="field.$errors.length" class="errors">
       <li v-for="error of field.$errors" :key="error">
         {{ error }}
       </li>

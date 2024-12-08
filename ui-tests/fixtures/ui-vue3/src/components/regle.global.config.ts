@@ -40,7 +40,7 @@ export const strongPassword = createRule({
 
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
-    // required: withMessage(required, 'You need to provide a value'),
+    required: withMessage(required, 'You need to provide a value'),
     checkPseudo,
     strongPassword,
   }),

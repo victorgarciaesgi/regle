@@ -7,4 +7,7 @@ export default defineNuxtConfig({
   experimental: {
     externalVue: false,
   },
+  imports: {
+    autoImport: true,
+  },
 });

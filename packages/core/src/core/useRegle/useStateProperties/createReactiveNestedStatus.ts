@@ -39,7 +39,7 @@ interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   scopeRules: Ref<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
-  customMessages?: CustomRulesDeclarationTree;
+  customMessages: CustomRulesDeclarationTree | undefined;
   path?: string;
   index?: number;
   storage: RegleStorage;
@@ -479,7 +479,7 @@ export function createReactiveNestedStatus({
 interface CreateReactiveChildrenStatus {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
-  customMessages?: CustomRulesDeclarationTree;
+  customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   index?: number;
   storage: RegleStorage;
