@@ -214,20 +214,20 @@ importers:
     dependencies:
       '@regle/core':
         specifier: latest
-        version: 0.2.13(vue@3.5.13(typescript@5.6.3))
+        version: 0.2.13(vue@3.5.11(typescript@5.6.3))
       '@regle/rules':
         specifier: latest
-        version: 0.2.13(vue@3.5.13(typescript@5.6.3))
+        version: 0.2.13(vue@3.5.11(typescript@5.6.3))
       vue:
-        specifier: 'catalog:'
-        version: 3.5.13(typescript@5.6.3)
+        specifier: 3.5.11
+        version: 3.5.11(typescript@5.6.3)
     devDependencies:
       '@tailwindcss/forms':
         specifier: 0.5.9
         version: 0.5.9(tailwindcss@3.4.16)
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.6.3))
+        version: 5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.11(typescript@5.6.3))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
@@ -7632,13 +7632,13 @@ snapshots:
       - encoding
       - supports-color
 
-  '@regle/core@0.2.13(vue@3.5.13(typescript@5.6.3))':
+  '@regle/core@0.2.13(vue@3.5.11(typescript@5.6.3))':
     dependencies:
-      vue: 3.5.13(typescript@5.6.3)
+      vue: 3.5.11(typescript@5.6.3)
 
-  '@regle/rules@0.2.13(vue@3.5.13(typescript@5.6.3))':
+  '@regle/rules@0.2.13(vue@3.5.11(typescript@5.6.3))':
     dependencies:
-      '@regle/core': 0.2.13(vue@3.5.13(typescript@5.6.3))
+      '@regle/core': 0.2.13(vue@3.5.11(typescript@5.6.3))
     transitivePeerDependencies:
       - vue
 
@@ -8321,10 +8321,10 @@ snapshots:
       vite: 5.4.11(@types/node@22.9.3)(sass@1.81.0)(terser@5.36.0)
       vue: 3.5.13(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.6.3))':
+  '@vitejs/plugin-vue@5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.11(typescript@5.6.3))':
     dependencies:
       vite: 6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1)
-      vue: 3.5.13(typescript@5.6.3)
+      vue: 3.5.11(typescript@5.6.3)
 
   '@vitest/coverage-istanbul@2.1.5(vitest@2.1.5(@types/node@22.9.3)(happy-dom@15.11.6)(sass@1.81.0)(terser@5.36.0))':
     dependencies:
