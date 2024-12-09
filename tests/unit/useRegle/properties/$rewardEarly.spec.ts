@@ -1,20 +1,17 @@
+import { useRegle } from '@regle/core';
+import { flushPromises } from '@vue/test-utils';
 import { ref } from 'vue';
 import {
   mockedValidations,
   nestedReactiveObjectValidation,
-  nestedRefObjectValidation,
   ruleMockIsEvenAsync,
-  simpleNestedStateWithMixedValidation,
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
-  shouldBeInvalidField,
   shouldBePristineField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
-import { useRegle } from '@regle/core';
-import { flushPromises } from '@vue/test-utils';
 
 describe('$rewardEarly', () => {
   beforeEach(() => {
@@ -38,6 +35,7 @@ describe('$rewardEarly', () => {
 
       vm.r$.$value = {
         level0: 2,
+        level0Boolean: true,
         level1: {
           child: 2,
           level2: {

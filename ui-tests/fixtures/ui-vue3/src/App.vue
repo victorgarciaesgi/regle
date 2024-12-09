@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import {
+  and,
   checked,
   contains,
   email,
@@ -179,8 +180,7 @@ const { r$ } = useCustomRegle(form, {
     },
   },
   acceptTC: {
-    required: withMessage(required, 'You need to accept T&C'),
-    checked: withMessage(checked, 'You need to accept T&C'),
+    required: withMessage(and(required, checked), 'You need to accept T&C'),
   },
   password: { required, strongPassword: strongPassword() },
   confirmPassword: {

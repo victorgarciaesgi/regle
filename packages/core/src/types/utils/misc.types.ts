@@ -1,3 +1,4 @@
+import type { IsAny } from 'type-fest';
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 
 export type Prettify<T> = T extends infer R
@@ -5,6 +6,7 @@ export type Prettify<T> = T extends infer R
       [K in keyof R]: R[K];
     } & {}
   : never;
+
 export type Maybe<T = any> = T | null | undefined;
 export type MaybeNull<T> = T | null;
 
@@ -22,6 +24,13 @@ export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends 
 ) => infer U extends Record<string, any>)
   ? U
   : T;
+
+export type ExtendOnlyRealRecord<T extends unknown> =
+  NonNullable<T> extends File | Date
+    ? false
+    : NonNullable<T> extends Record<string, any>
+      ? true
+      : false;
 
 export type OmitByType<T extends Record<string, any>, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K];

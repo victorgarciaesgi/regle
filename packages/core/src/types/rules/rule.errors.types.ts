@@ -2,7 +2,7 @@ import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { ReglePartialRuleTree } from './rule.declaration.types';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type { Maybe, Prettify } from '../utils';
+import type { ExtendOnlyRealRecord, Maybe, Prettify } from '../utils';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<
@@ -49,18 +49,38 @@ export type $InternalRegleErrors =
 
 // - Misc
 
+export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
+  ? {}
+  : Prettify<
+      {
+        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
+          ? never
+          : TState[K] extends Array<any>
+            ? never
+            : K]?: Maybe<TState[K]>;
+      } & {
+        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
+          ? K
+          : TState[K] extends Array<any>
+            ? K
+            : never]: NonNullable<TState[K]> extends Array<infer U extends Record<string, any>>
+          ? PartialFormState<U>[]
+          : PartialFormState<TState[K]>;
+      }
+    >;
+
 export type RegleResult<
   Data extends Record<string, any> | any[] | unknown,
   TRules extends ReglePartialRuleTree<any>,
 > =
   | {
       result: false;
-      data: Data extends Date | File
+      data: NonNullable<Data> extends Date | File
         ? Maybe<Data>
-        : Data extends Array<any>
-          ? PartialDeep<Data>
-          : Data extends Record<string, any>
-            ? PartialDeep<Data>
+        : NonNullable<Data> extends Array<infer U extends Record<string, any>>
+          ? PartialFormState<U>[]
+          : NonNullable<Data> extends Record<string, any>
+            ? PartialFormState<NonNullable<Data>>
             : Maybe<Data>;
     }
   | {
@@ -70,7 +90,7 @@ export type RegleResult<
         : Data extends Date | File
           ? SafeFieldProperty<Data, TRules>
           : Data extends Record<string, any>
-            ? Prettify<DeepSafeFormState<Data, TRules>>
+            ? DeepSafeFormState<Data, TRules>
             : SafeFieldProperty<Data, TRules>;
     };
 

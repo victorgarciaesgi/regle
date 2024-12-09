@@ -34,6 +34,7 @@ describe.each([
   it('should have a initial state', () => {
     expect(vm.r$.$errors).toStrictEqual({
       level0: [],
+      level0Boolean: [],
       level1: {
         child: [],
         level2: {
@@ -52,6 +53,7 @@ describe.each([
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 0,
+      level0Boolean: null,
       level1: {
         child: 1,
         level2: {
@@ -62,6 +64,7 @@ describe.each([
     });
 
     shouldBePristineField(vm.r$.$fields.level0);
+    shouldBeInvalidField(vm.r$.$fields.level0Boolean);
     shouldBeInvalidField(vm.r$.$fields.level1);
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.child);
     shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
@@ -74,6 +77,7 @@ describe.each([
     expect(result).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
       level0: [],
+      level0Boolean: ['This field is required'],
       level1: {
         child: ['Custom error'],
         level2: {
@@ -90,6 +94,7 @@ describe.each([
 
     shouldBeErrorField(vm.r$);
     shouldBeValidField(vm.r$.$fields.level0);
+    shouldBeErrorField(vm.r$.$fields.level0Boolean);
     shouldBeErrorField(vm.r$.$fields.level1);
     shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
     shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
@@ -98,11 +103,13 @@ describe.each([
 
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
+    vm.r$.$value.level0Boolean = false;
     vm.r$.$value.level1.collection.push({ name: null });
 
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual(['Custom error']);
+    expect(vm.r$.$errors.level0Boolean).toStrictEqual(['This field must be checked']);
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
@@ -123,6 +130,7 @@ describe.each([
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 1,
+      level0Boolean: false,
       level1: {
         child: 1,
         level2: {
@@ -158,6 +166,7 @@ describe.each([
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 1,
+      level0Boolean: false,
       level1: {
         child: 3,
         level2: {
@@ -175,6 +184,7 @@ describe.each([
 
   it('should remove errors when all values are valid', async () => {
     vm.r$.$value.level0 = 2;
+    vm.r$.$value.level0Boolean = true;
     vm.r$.$value.level1.child = 2;
     vm.r$.$value.level1.level2.child = 2;
     vm.r$.$value.level1.collection[1].name = 2;
@@ -182,6 +192,7 @@ describe.each([
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual([]);
+    expect(vm.r$.$errors.level0Boolean).toStrictEqual([]);
     expect(vm.r$.$errors.level1.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.level2.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
@@ -190,6 +201,7 @@ describe.each([
 
     shouldBeValidField(vm.r$);
     shouldBeValidField(vm.r$.$fields.level0);
+    shouldBeValidField(vm.r$.$fields.level0Boolean);
     shouldBeValidField(vm.r$.$fields.level1);
     shouldBeValidField(vm.r$.$fields.level1.$fields.child);
     shouldBeValidField(vm.r$.$fields.level1.$fields.level2);
@@ -199,6 +211,7 @@ describe.each([
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 2,
+      level0Boolean: true,
       level1: {
         child: 2,
         level2: {
@@ -225,6 +238,7 @@ describe.each([
     expect(result).toBe(true);
     expect(data).toStrictEqual({
       level0: 2,
+      level0Boolean: true,
       level1: {
         child: 2,
         level2: {
@@ -242,6 +256,7 @@ describe.each([
 
     expect(vm.r$.$errors).toStrictEqual({
       level0: [],
+      level0Boolean: [],
       level1: {
         child: [],
         level2: {
@@ -262,6 +277,7 @@ describe.each([
     expect(vm.r$.$pending).toBe(false);
     expect(vm.r$.$value).toStrictEqual({
       level0: 0,
+      level0Boolean: null,
       level1: {
         child: 1,
         level2: {
@@ -272,6 +288,7 @@ describe.each([
     });
 
     expect(vm.r$.$fields.level0.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Boolean.$valid).toBe(false);
     expect(vm.r$.$fields.level1.$valid).toBe(false);
     expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$valid).toBe(false);

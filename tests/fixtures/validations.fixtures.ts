@@ -1,6 +1,6 @@
 import type { RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
 import { defineRegleConfig, useRegle } from '@regle/core';
-import { email, required } from '@regle/rules';
+import { checked, email, required } from '@regle/rules';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import { ruleMockIsEven } from './rules.fixtures';
 // eslint-disable-next-line
@@ -11,6 +11,7 @@ type ReturnRegleType = ReturnType<typeof nestedReactiveObjectValidation>;
 export function nestedReactiveObjectValidation(autoDirty = true, rewardEarly = false) {
   const form = reactive({
     level0: 0,
+    level0Boolean: null as boolean | null,
     level1: {
       child: 1,
       level2: {
@@ -23,6 +24,7 @@ export function nestedReactiveObjectValidation(autoDirty = true, rewardEarly = f
     form,
     {
       level0: { rule: ruleMockIsEven },
+      level0Boolean: { required, checked },
       level1: {
         child: { rule: ruleMockIsEven },
         level2: {
@@ -45,6 +47,7 @@ export function nestedReactiveObjectValidation(autoDirty = true, rewardEarly = f
 export function nestedRefObjectValidation(): ReturnRegleType {
   const form = ref({
     level0: 0,
+    level0Boolean: null as boolean | null,
     level1: {
       child: 1,
       level2: {
@@ -58,6 +61,8 @@ export function nestedRefObjectValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
+        level0Boolean: { required, checked },
+
         level1: {
           child: { rule: ruleMockIsEven },
           level2: {
@@ -76,6 +81,7 @@ export function nestedRefObjectValidation(): ReturnRegleType {
 export function nestedRefObjectValidationComputed(): ReturnRegleType {
   const form = ref({
     level0: 0,
+    level0Boolean: null as boolean | null,
     level1: {
       child: 1,
       level2: {
@@ -89,6 +95,8 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
+        level0Boolean: { required, checked },
+
         level1: {
           child: { rule: ruleMockIsEven },
           level2: {
@@ -109,6 +117,7 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
 export function nestedReactiveWithRefsValidation(): ReturnRegleType {
   const form = reactive({
     level0: ref(0),
+    level0Boolean: null as boolean | null,
     level1: {
       child: ref(1),
       level2: {
@@ -123,6 +132,8 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
+        level0Boolean: { required, checked },
+
         level1: {
           child: { rule: ruleMockIsEven },
           level2: {
@@ -141,6 +152,7 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
 export function nesteObjectWithRefsValidation(): ReturnRegleType {
   const form = {
     level0: ref(0),
+    level0Boolean: null as boolean | null,
     level1: {
       child: ref(1),
       level2: {
@@ -155,6 +167,8 @@ export function nesteObjectWithRefsValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
+        level0Boolean: { required, checked },
+
         level1: {
           child: { rule: ruleMockIsEven },
           level2: {
