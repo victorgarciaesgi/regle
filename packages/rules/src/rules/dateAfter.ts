@@ -1,6 +1,7 @@
 import { ruleHelpers } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
+import { formatLocaleDate } from '../utils/getLocale.util';
 
 export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,
@@ -30,10 +31,10 @@ export const dateAfter: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, { $params: [after] }) => {
-    // if (error === 'value-or-paramater-not-a-date') {
-    //   return 'The inputs must be Dates';
-    // }
-    return `The date must be after ${after}`;
+  message: (_, { $params: [after], error }) => {
+    if (error === 'value-or-paramater-not-a-date') {
+      return 'The inputs must be Dates';
+    }
+    return `The date must be after ${formatLocaleDate(after)}`;
   },
 });

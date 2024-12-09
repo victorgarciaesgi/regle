@@ -40,10 +40,11 @@
                 v-model="r$.$value.eventType"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               >
-                <option>Corporate event</option>
-                <option>Wedding</option>
-                <option>Birthday</option>
-                <option>Other</option>
+                <option disabled value="undefined" selected>Select an event</option>
+                <option value="Corporate">Corporate event</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Borthday">Birthday</option>
+                <option value="Other">Other</option>
               </select>
               <FieldError :errors="r$.$fields.eventType.$errors" />
             </label>
@@ -61,9 +62,9 @@
                 <div>
                   <label class="inline-flex items-center">
                     <input
+                      v-model="r$.$value.acceptTC"
                       type="checkbox"
                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
-                      checked
                     />
                     <span class="ml-2">I accept terms and conditions</span>
                   </label>
@@ -74,6 +75,7 @@
             <div class="flex justify-end">
               <button
                 class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                @click="submit"
               >
                 Submit
               </button>
@@ -87,16 +89,7 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import {
-  and,
-  checked,
-  dateAfter,
-  dateBefore,
-  email,
-  minLength,
-  required,
-  withMessage,
-} from '@regle/rules';
+import { and, checked, dateBefore, email, minLength, required, withMessage } from '@regle/rules';
 import FieldError from './components/FieldError.vue';
 
 interface Form {
@@ -122,7 +115,9 @@ const { r$ } = useRegle({} as Form, {
 async function submit() {
   const { result, data } = await r$.$validate();
   if (result) {
-    alert(data);
+    alert('Your form is valid!');
+    console.log(data);
+    //           ^ Hover type here to see type safe result
   }
 }
 </script>

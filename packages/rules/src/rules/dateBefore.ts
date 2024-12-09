@@ -1,6 +1,7 @@
 import { ruleHelpers } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
+import { formatLocaleDate } from '../utils/getLocale.util';
 
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,
@@ -34,6 +35,7 @@ export const dateBefore: RegleRuleWithParamsDefinition<
     if (error === 'value-or-paramater-not-a-date') {
       return 'The fields must be Dates';
     }
-    return `The date must be before ${before}`;
+
+    return `The date must be before ${formatLocaleDate(before)}`;
   },
 });

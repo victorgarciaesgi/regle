@@ -1,6 +1,7 @@
 import { ruleHelpers } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
+import { formatLocaleDate } from '../utils/getLocale.util';
 
 export const dateBetween: RegleRuleWithParamsDefinition<
   string | Date,
@@ -23,6 +24,6 @@ export const dateBetween: RegleRuleWithParamsDefinition<
     return true;
   },
   message: (_, { $params: [before, after] }) => {
-    return `The date must be between ${before} and ${after}`;
+    return `The date must be between ${formatLocaleDate(before)} and ${formatLocaleDate(after)}`;
   },
 });

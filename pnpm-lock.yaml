@@ -213,11 +213,11 @@ importers:
   packages/examples/simple:
     dependencies:
       '@regle/core':
-        specifier: workspace:*
-        version: link:../../core
+        specifier: latest
+        version: 0.2.13(vue@3.5.13(typescript@5.6.3))
       '@regle/rules':
-        specifier: workspace:*
-        version: link:../../rules
+        specifier: latest
+        version: 0.2.13(vue@3.5.13(typescript@5.6.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.6.3)
@@ -1711,6 +1711,14 @@ packages:
   '@redocly/openapi-core@1.25.13':
     resolution: {integrity: sha512-8O2IdHCHU1EaGc74/Z5nTItfPrakvPEwZ6sf16c/u5ZJJBo3SKbqM2vOLk4spY4Tn0eaAwUxw2b0kXueemp+iw==}
     engines: {node: '>=14.19.0', npm: '>=7.0.0'}
+
+  '@regle/core@0.2.13':
+    resolution: {integrity: sha512-LAhCPOZ7TxjE/6nDeQ/5KuceVJ3pQaFSLpYURP90UXqGfrRh6H/BMiyGOBG0/sud0U9NavFOfFQ/ki8w3fTXNA==}
+    peerDependencies:
+      vue: ^3.1.0
+
+  '@regle/rules@0.2.13':
+    resolution: {integrity: sha512-xMKqqe8QfgjS1WyAH9UxyHIeoJAION/6arXBLHQw9mZfWqdcOL53G2QTGNYBkvDH6NLOc38KGWWf/IKuq8rsNA==}
 
   '@rollup/plugin-alias@5.1.1':
     resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
@@ -7623,6 +7631,16 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@regle/core@0.2.13(vue@3.5.13(typescript@5.6.3))':
+    dependencies:
+      vue: 3.5.13(typescript@5.6.3)
+
+  '@regle/rules@0.2.13(vue@3.5.13(typescript@5.6.3))':
+    dependencies:
+      '@regle/core': 0.2.13(vue@3.5.13(typescript@5.6.3))
+    transitivePeerDependencies:
+      - vue
 
   '@rollup/plugin-alias@5.1.1(rollup@3.29.5)':
     optionalDependencies:
