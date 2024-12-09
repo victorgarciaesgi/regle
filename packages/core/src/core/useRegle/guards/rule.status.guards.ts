@@ -14,9 +14,7 @@ export function isNestedRulesStatus(rule: $InternalRegleStatusType): rule is $In
   return isObject(rule) && '$fields' in rule;
 }
 
-export function isCollectionRulesStatus(
-  rule: $InternalRegleStatusType
-): rule is $InternalRegleCollectionStatus {
+export function isCollectionRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleCollectionStatus {
   return !!rule && '$each' in rule;
 }
 
@@ -30,14 +28,10 @@ export function isRuleStatus(rule: unknown): rule is $InternalRegleRuleStatus {
 
 //  -- ExternalErrors
 
-export function isNestedExternalErrorStatus(
-  rule: $InternalRegleErrors
-): rule is RegleExternalErrorTree<any> {
+export function isNestedExternalErrorStatus(rule: $InternalRegleErrors): rule is RegleExternalErrorTree<any> {
   return !!rule && '$each' in rule;
 }
 
-export function isCollectionExternalErrorStatus(
-  rule: $InternalRegleErrors
-): rule is RegleCollectionErrors<any> {
+export function isCollectionExternalErrorStatus(rule: $InternalRegleErrors): rule is RegleCollectionErrors<any> {
   return !!rule && '$each' in rule;
 }

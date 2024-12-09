@@ -54,9 +54,10 @@ TODO
 ### For v1.0
 
 - [x] Unit tests
-- [ ] E2E tests (in progress)
+- [x] E2E tests
 - [ ] Type tests
 - [ ] Simplify/reduce core code
+- [ ] `tip` on createRule
 - [ ] Example repo, Reproduction repl
 
 ### Next iterations

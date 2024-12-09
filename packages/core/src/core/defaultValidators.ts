@@ -51,35 +51,15 @@ export type DefaultValidators = {
   >;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
-  macAddress: RegleRuleWithParamsDefinition<
-    string,
-    [separator?: string | undefined],
-    false,
-    boolean
-  >;
-  maxLength: RegleRuleWithParamsDefinition<
-    string | any[] | Record<PropertyKey, any>,
-    [count: number],
-    false,
-    boolean
-  >;
+  macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
+  maxLength: RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>;
   maxValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
-  minLength: RegleRuleWithParamsDefinition<
-    string | any[] | Record<PropertyKey, any>,
-    [count: number],
-    false,
-    boolean
-  >;
+  minLength: RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>;
   minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
   required: RegleRuleDefinition<unknown, []>;
-  sameAs: RegleRuleWithParamsDefinition<
-    unknown,
-    [target: unknown, otherName?: string],
-    false,
-    boolean
-  >;
+  sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

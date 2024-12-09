@@ -69,18 +69,11 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
 };
 
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
-  fields?: ShortcutCommonFn<
-    RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>
-  >;
+  fields?: ShortcutCommonFn<RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>>;
   nested?: ShortcutCommonFn<
-    RegleStatus<
-      Record<string, any>,
-      ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>
-    >
+    RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>>
   >;
-  collections?: ShortcutCommonFn<
-    RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>
-  >;
+  collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
 };
 
 export type AddDollarToOptions<T extends Record<string, any>> = {

@@ -22,9 +22,7 @@ export type RegleUniversalParams<T extends any[] = [], F = CreateFn<T>> = [T] ex
         : never
     >;
 
-export type UnwrapRegleUniversalParams<T extends ParamDecl[] = [], F = CreateFn<T>> = [T] extends [
-  [],
-]
+export type UnwrapRegleUniversalParams<T extends ParamDecl[] = [], F = CreateFn<T>> = [T] extends [[]]
   ? []
   : Parameters<
       F extends (...args: infer Args) => any

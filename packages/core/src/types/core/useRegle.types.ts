@@ -23,10 +23,7 @@ export interface Regle<
 }
 
 export type isDeepExact<T, U> = {
-  [K in keyof T]-?: CheckDeepExact<
-    NonNullable<T[K]>,
-    K extends keyof U ? NonNullable<U[K]> : never
-  >;
+  [K in keyof T]-?: CheckDeepExact<NonNullable<T[K]>, K extends keyof U ? NonNullable<U[K]> : never>;
 }[keyof T] extends true
   ? true
   : false;
@@ -58,13 +55,14 @@ export type DeepSafeFormState<
   ? {}
   : Prettify<
       {
-        [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-          ? K
-          : never]?: SafeProperty<TState[K], TRules[K]>;
+        [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false ? K : never]?: SafeProperty<
+          TState[K],
+          TRules[K]
+        >;
       } & {
-        [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-          ? never
-          : K]-?: NonNullable<SafeProperty<TState[K], TRules[K]>>;
+        [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false ? never : K]-?: NonNullable<
+          SafeProperty<TState[K], TRules[K]>
+        >;
       }
     >;
 
@@ -81,29 +79,20 @@ type FieldHaveRequiredRule<TRule extends RegleRuleDecl> = unknown extends TRule[
 type ObjectHaveAtLeastOneRequiredField<TState, TRule extends ReglePartialRuleTree<any, any>> =
   TState extends Maybe<TState>
     ? {
-        [K in keyof TRule]: TRule[K] extends RegleRuleDecl
-          ? FieldHaveRequiredRule<TRule[K]>
-          : false;
+        [K in keyof TRule]: TRule[K] extends RegleRuleDecl ? FieldHaveRequiredRule<TRule[K]> : false;
       }[keyof TRule]
     : true;
 
-type ArrayHaveAtLeastOneRequiredField<
-  TState,
-  TRule extends RegleCollectionRuleDefinition<any, any>,
-> =
+type ArrayHaveAtLeastOneRequiredField<TState, TRule extends RegleCollectionRuleDefinition<any, any>> =
   TState extends Maybe<TState>
     ? {
-        [K in keyof ExtractFromGetter<TRule['$each']>]: ExtractFromGetter<
-          TRule['$each']
-        >[K] extends RegleRuleDecl
+        [K in keyof ExtractFromGetter<TRule['$each']>]: ExtractFromGetter<TRule['$each']>[K] extends RegleRuleDecl
           ? FieldHaveRequiredRule<ExtractFromGetter<TRule['$each']>[K]>
           : false;
       }[keyof ExtractFromGetter<TRule['$each']>]
     : true;
 
-export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = [
-  unknown,
-] extends [TState]
+export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = [unknown] extends [TState]
   ? unknown
   : TRule extends RegleCollectionRuleDefinition<any, any>
     ? TState extends Array<infer U extends Record<string, any>>
@@ -111,10 +100,7 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
       : TState
     : TRule extends ReglePartialRuleTree<any, any>
       ? ExtendOnlyRealRecord<TState> extends true
-        ? DeepSafeFormState<
-            NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-            TRule
-          >
+        ? DeepSafeFormState<NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {}, TRule>
         : TRule extends RegleRuleDecl<any, any>
           ? FieldHaveRequiredRule<TRule> extends true
             ? TState
@@ -122,10 +108,9 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
           : TState
       : TState;
 
-export type IsPropertyOutputRequired<
-  TState,
-  TRule extends RegleFormPropertyType<any, any> | undefined,
-> = [unknown] extends [TState]
+export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = [
+  unknown,
+] extends [TState]
   ? unknown
   : TRule extends RegleCollectionRuleDefinition<any, any>
     ? TState extends Array<any>
@@ -145,10 +130,7 @@ export type IsPropertyOutputRequired<
           : false
       : false;
 
-export type SafeFieldProperty<
-  TState,
-  TRule extends RegleFormPropertyType<any, any> | undefined = never,
-> =
+export type SafeFieldProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends RegleRuleDecl<any, any>
     ? unknown extends TRule['required']
       ? Maybe<TState>

@@ -23,11 +23,7 @@ export type useRegleFn<
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > = <
   TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<
-    Unwrap<TState>,
-    Partial<AllRulesDeclarations> & TCustomRules
-  > &
-    TValid,
+  TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   TValid = isDeepExact<
     NoInferLegacy<TRules>,
@@ -59,10 +55,7 @@ export function createUseRegleComposable<
 
   function useRegle(
     state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
-    rulesFactory:
-      | Record<string, any>
-      | (() => Record<string, any>)
-      | ComputedRef<Record<string, any>>,
+    rulesFactory: Record<string, any> | (() => Record<string, any>) | ComputedRef<Record<string, any>>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>
   ): Regle<Record<string, any>, Record<string, any>, any, any> {

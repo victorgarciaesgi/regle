@@ -21,13 +21,8 @@ export interface RegleRuleInit<
   message:
     | string
     | string[]
-    | ((
-        value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
-      ) => string | string[]);
-  active?:
-    | boolean
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string | string[]);
+  active?: boolean | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
 }
 
 /**
@@ -40,19 +35,11 @@ export interface RegleRuleCore<
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > {
-  validator: (
-    value: Maybe<TValue>,
-    ...args: TParams
-  ) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+  validator: (value: Maybe<TValue>, ...args: TParams) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   message:
     | string
-    | ((
-        value: Maybe<TValue>,
-        metadata: RegleRuleMetadataConsumer<TParams, TMetadata>
-      ) => string | string[]);
-  active?:
-    | boolean
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string | string[]);
+  active?: boolean | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
   type?: string;
 }
 
@@ -61,13 +48,8 @@ export interface RegleRuleCore<
  * createRule arguments options
  */
 export interface $InternalRegleRuleInit {
-  validator: (
-    value: any,
-    ...args: any[]
-  ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
-  message:
-    | string
-    | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
+  validator: (value: any, ...args: any[]) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
+  message: string | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   active?: boolean | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => boolean);
   type?: string;
 }

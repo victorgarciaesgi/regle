@@ -1,89 +1,55 @@
-import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import {
-  computed,
-  effectScope,
-  reactive,
-  ref,
-  toRef,
-  triggerRef,
-  unref,
-  watch,
-  watchEffect,
-} from 'vue';
+import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch, watchEffect } from 'vue';
+import { isEmpty } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
-  $InternalRegleCollectionErrors,
   $InternalRegleErrors,
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
   $InternalRegleStatus,
   $InternalRegleStatusType,
-  CustomRulesDeclarationTree,
-  DeepMaybeRef,
-  RegleBehaviourOptions,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
-  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isObject, isRefObject, resetValuesRecursively } from '../../../utils';
-import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
-import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
+import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
-import { isEmpty } from '../../../../../shared';
+import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 
-interface CreateReactiveNestedStatus {
-  rootRules?: Ref<$InternalReglePartialRuleTree>;
-  scopeRules: Ref<$InternalReglePartialRuleTree>;
+interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any>>;
-  customMessages: CustomRulesDeclarationTree | undefined;
-  path?: string;
-  index?: number;
-  storage: RegleStorage;
-  options: ResolvedRegleBehaviourOptions;
-  externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
+  rootRules?: Ref<$InternalReglePartialRuleTree>;
+  rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Record<string, any> | undefined;
-  fieldName: string;
-  shortcuts: RegleShortcutDefinition | undefined;
+  externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
   validationGroups?:
-    | ((rules: {
-        [x: string]: $InternalRegleStatusType;
-      }) => Record<string, RegleValidationGroupEntry[]>)
+    | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
     | undefined;
 }
 
 export function createReactiveNestedStatus({
-  scopeRules,
+  rulesDef,
   state,
-  customMessages,
   path = '',
   rootRules,
-  storage,
-  options,
   externalErrors,
   validationGroups,
   initialState,
-  shortcuts,
   fieldName,
+  ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
-  type ScopeState = {
+  interface ScopeState extends CommonResolverScopedState {
     $dirty: ComputedRef<boolean>;
-    $anyDirty: ComputedRef<boolean>;
-    $invalid: ComputedRef<boolean>;
-    $valid: ComputedRef<boolean>;
-    $error: ComputedRef<boolean>;
-    $pending: ComputedRef<boolean>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
-    $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
-  };
+  }
   let scope = effectScope();
   let scopeState!: ScopeState;
 
@@ -95,85 +61,68 @@ export function createReactiveNestedStatus({
   let $unwatchGroups: WatchStopHandle | null = null;
 
   async function createReactiveFieldsStatus(watch = true) {
+    const mapOfRulesDef = Object.entries(rulesDef.value);
     const scopedRulesStatus = Object.fromEntries(
-      Object.entries(scopeRules.value)
+      mapOfRulesDef
+        .filter(([_, rule]) => !!rule)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
             const stateRef = toRef(state.value, statePropKey);
-            triggerRef(stateRef);
             const statePropRulesRef = toRef(() => statePropRules);
-
-            const $externalErrors = toRef(externalErrors?.value!, statePropKey);
+            const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
 
             return [
               statePropKey,
               createReactiveChildrenStatus({
                 state: stateRef,
                 rulesDef: statePropRulesRef,
-                customMessages,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
-                storage,
-                options,
                 externalErrors: $externalErrors,
                 initialState: initialState?.[statePropKey],
-                shortcuts,
                 fieldName: statePropKey,
+                ...commonArgs,
               }),
             ];
           }
           return [];
         })
-        .filter(
-          (rule): rule is [string, $InternalRegleStatusType] => !!rule.length && rule[1] != null
-        )
     );
 
     const externalRulesStatus = Object.fromEntries(
       Object.entries(unref(externalErrors) ?? {})
-        .filter(([key]) => !(key in scopeRules.value))
-        .map(([key, errors]) => {
-          if (errors) {
-            const stateRef = toRef(state.value, key);
-            return [
-              key,
-              createReactiveChildrenStatus({
-                state: stateRef,
-                rulesDef: computed(() => ({})),
-                customMessages,
-                path: path ? `${path}.${key}` : key,
-                storage,
-                options,
-                externalErrors: toRef(externalErrors?.value ?? {}, key),
-                initialState: initialState?.[key],
-                shortcuts,
-                fieldName: key,
-              }),
-            ];
-          }
-          return [];
-        })
-    );
-
-    const statesWithNoRules = Object.fromEntries(
-      Object.entries(state.value)
-        .filter(
-          ([key]) => !(key in scopeRules.value) && !(key in (externalRulesStatus.value ?? {}))
-        )
-        .map(([key, value]) => {
+        .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
+        .map(([key]) => {
           const stateRef = toRef(state.value, key);
           return [
             key,
             createReactiveChildrenStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
-              customMessages,
               path: path ? `${path}.${key}` : key,
-              storage,
-              options,
               externalErrors: toRef(externalErrors?.value ?? {}, key),
               initialState: initialState?.[key],
-              shortcuts,
               fieldName: key,
+              ...commonArgs,
+            }),
+          ];
+        })
+    );
+
+    const statesWithNoRules = Object.fromEntries(
+      Object.entries(state.value)
+        .filter(([key]) => !(key in rulesDef.value) && !(key in (externalRulesStatus.value ?? {})))
+        .map(([key]) => {
+          const stateRef = toRef(state.value, key);
+          return [
+            key,
+            createReactiveChildrenStatus({
+              state: stateRef,
+              rulesDef: computed(() => ({})),
+              path: path ? `${path}.${key}` : key,
+              externalErrors: toRef(externalErrors?.value ?? {}, key),
+              initialState: initialState?.[key],
+              fieldName: key,
+              ...commonArgs,
             }),
           ];
         })
@@ -189,7 +138,9 @@ export function createReactiveNestedStatus({
     }
   }
 
-  const $fields: Ref<Record<string, $InternalRegleStatusType>> = storage.getFieldsEntry(path);
+  const $fields: Ref<Record<string, $InternalRegleStatusType>> = commonArgs.storage.getFieldsEntry(path);
+
+  // Create reactive nested fields
   createReactiveFieldsStatus();
 
   function $reset(): void {
@@ -204,29 +155,6 @@ export function createReactiveNestedStatus({
     Object.values($fields.value).forEach((statusOrField) => {
       statusOrField.$touch(runCommit, withConditions);
     });
-  }
-
-  async function $validate(): Promise<$InternalRegleResult> {
-    try {
-      const data = state.value;
-
-      const results = await Promise.allSettled(
-        Object.values($fields.value).map((statusOrField) => {
-          return statusOrField.$validate();
-        })
-      );
-
-      const validationResults = results.every((value) => {
-        if (value.status === 'fulfilled') {
-          return value.value.result === true;
-        } else {
-          return false;
-        }
-      });
-      return { result: validationResults, data };
-    } catch (e) {
-      return { result: false, data: state.value };
-    }
   }
 
   function define$WatchExternalErrors() {
@@ -300,7 +228,7 @@ export function createReactiveNestedStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        if (!unref(options.autoDirty)) {
+        if (!unref(commonArgs.options.autoDirty)) {
           return !($invalid.value || $pending.value);
         }
         return $anyDirty.value && !($invalid.value || $pending.value);
@@ -312,7 +240,7 @@ export function createReactiveNestedStatus({
         });
       });
 
-      const $errors = computed(() => {
+      const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
         return Object.fromEntries(
           Object.entries($fields.value).map(([key, statusOrField]) => {
             return [key, statusOrField?.$errors];
@@ -320,7 +248,7 @@ export function createReactiveNestedStatus({
         );
       });
 
-      const $silentErrors = computed(() => {
+      const $silentErrors = computed<Record<string, $InternalRegleErrors>>(() => {
         return Object.fromEntries(
           Object.entries($fields.value).map(([key, statusOrField]) => {
             return [key, statusOrField?.$silentErrors];
@@ -331,28 +259,30 @@ export function createReactiveNestedStatus({
       const $name = computed(() => fieldName);
 
       function processShortcuts() {
-        if (shortcuts?.nested) {
-          Object.entries(shortcuts.nested).forEach(([key, value]) => {
+        if (commonArgs.shortcuts?.nested) {
+          Object.entries(commonArgs.shortcuts.nested).forEach(([key, value]) => {
             const scope = effectScope();
 
             $shortcuts[key] = scope.run(() => {
               const result = ref();
 
               watchEffect(() => {
-                result.value = value({
-                  $dirty: $dirty.value,
-                  $value: state,
-                  $error: $error.value,
-                  $pending: $pending.value,
-                  $invalid: $invalid.value,
-                  $valid: $valid.value,
-                  $ready: $ready.value,
-                  $anyDirty: $anyDirty.value,
-                  $name: $name.value,
-                  $silentErrors: $silentErrors.value as any,
-                  $errors: $errors.value as any,
-                  $fields: $fields.value,
-                });
+                result.value = value(
+                  reactive({
+                    $dirty,
+                    $value: state,
+                    $error,
+                    $pending,
+                    $invalid,
+                    $valid,
+                    $ready,
+                    $anyDirty,
+                    $name,
+                    $silentErrors: $silentErrors as any,
+                    $errors: $errors as any,
+                    $fields,
+                  })
+                );
               });
               return result;
             })!;
@@ -371,9 +301,10 @@ export function createReactiveNestedStatus({
                   key,
                   {
                     ...Object.fromEntries(
-                      (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map(
-                        (property) => [property, mergeBooleanGroupProperties(entries, property)]
-                      )
+                      (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map((property) => [
+                        property,
+                        mergeBooleanGroupProperties(entries, property),
+                      ])
                     ),
                     ...Object.fromEntries(
                       (['$errors', '$silentErrors'] as const).map((property) => [
@@ -459,6 +390,29 @@ export function createReactiveNestedStatus({
     return Object.fromEntries(dirtyFields);
   }
 
+  async function $validate(): Promise<$InternalRegleResult> {
+    try {
+      const data = state.value;
+
+      const results = await Promise.allSettled(
+        Object.values($fields.value).map((statusOrField) => {
+          return statusOrField.$validate();
+        })
+      );
+
+      const validationResults = results.every((value) => {
+        if (value.status === 'fulfilled') {
+          return value.value.result === true;
+        } else {
+          return false;
+        }
+      });
+      return { result: validationResults, data };
+    } catch (e) {
+      return { result: false, data: state.value };
+    }
+  }
+
   const { $shortcuts, ...restScopeState } = scopeState;
 
   return reactive({
@@ -477,77 +431,38 @@ export function createReactiveNestedStatus({
   }) satisfies $InternalRegleStatus;
 }
 
-interface CreateReactiveChildrenStatus {
-  state: Ref<unknown>;
+interface CreateReactiveChildrenStatus extends CommonResolverOptions {
+  state: Ref<any>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
-  customMessages: CustomRulesDeclarationTree | undefined;
-  path: string;
-  index?: number;
-  storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
   externalErrors: Ref<$InternalRegleErrors | undefined> | undefined;
   initialState: any;
-  fieldName: string;
-  shortcuts: RegleShortcutDefinition | undefined;
-  onUnwatch?: () => void;
 }
 
+/**
+ * Main resolver divider, will distribute the logic depending on the type of the current value (primitive, object, array)
+ */
 export function createReactiveChildrenStatus({
-  state,
   rulesDef,
-  customMessages,
-  path,
-  storage,
-  options,
   externalErrors,
-  index,
-  initialState,
-  shortcuts,
-  onUnwatch,
-  fieldName,
+  ...properties
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
-  if (isCollectionRulesDef(rulesDef, state)) {
+  if (isCollectionRulesDef(rulesDef, properties.state)) {
     return createReactiveCollectionStatus({
-      state: state as Ref<unknown & { $id?: string }[]>,
       rulesDef,
-      customMessages,
-      path,
-      storage,
-      options,
-      index,
-      externalErrors: externalErrors as Ref<$InternalRegleCollectionErrors>,
-      initialState,
-      fieldName,
-      shortcuts,
+      externalErrors: externalErrors as any,
+      ...properties,
     });
-  } else if (isNestedRulesDef(state, rulesDef) && isRefObject(state)) {
+  } else if (isNestedRulesDef(properties.state, rulesDef) && isRefObject(properties.state)) {
     return createReactiveNestedStatus({
-      scopeRules: rulesDef,
-      state,
-      customMessages,
-      path,
-      storage,
-      options,
-      index,
-      initialState,
-      shortcuts,
-      fieldName,
-      externalErrors: externalErrors as Readonly<Ref<$InternalRegleErrorTree | undefined>>,
+      rulesDef,
+      externalErrors: externalErrors as any,
+      ...properties,
     });
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
-      state,
       rulesDef,
-      customMessages,
-      path,
-      storage,
-      options,
-      index,
-      externalErrors: externalErrors as Ref<string[] | undefined>,
-      onUnwatch,
-      shortcuts,
-      initialState,
-      fieldName,
+      externalErrors: externalErrors as any,
+      ...properties,
     });
   }
 

@@ -54,12 +54,7 @@ export type RegleStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState> & {
   readonly $fields: {
-    readonly [TKey in keyof TState]: InferRegleStatusType<
-      NonNullable<TRules[TKey]>,
-      TState,
-      TKey,
-      TShortcuts
-    >;
+    readonly [TKey in keyof TState]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey, TShortcuts>;
   } & {
     readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
       ? TKey
@@ -141,10 +136,7 @@ export type RegleFieldStatus<
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
   $validate: () => Promise<RegleResult<TState, TRules>>;
   readonly $rules: {
-    readonly [TRuleKey in keyof Omit<
-      TRules,
-      '$each' | keyof FieldRegleBehaviourOptions
-    >]: RegleRuleStatus<
+    readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
       TState,
       TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
       TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
@@ -249,10 +241,7 @@ export interface $InternalRegleRuleStatus {
   $metadata: any;
   _haveAsync: boolean;
   $validating: boolean;
-  $validator(
-    value: any,
-    ...args: any[]
-  ): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
+  $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
   $unwatch(): void;
   $watch(): void;
@@ -269,18 +258,10 @@ export type RegleCollectionStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<
   RegleFieldStatus<TState, TRules, TShortcuts>,
-  | '$errors'
-  | '$silentErrors'
-  | '$extractDirtyFields'
-  | '$externalErrors'
-  | '$rules'
-  | '$value'
-  | '$validate'
+  '$errors' | '$silentErrors' | '$extractDirtyFields' | '$externalErrors' | '$rules' | '$value' | '$validate'
 > & {
   $value: Maybe<TState>;
-  readonly $each: Array<
-    InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>
-  >;
+  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
   readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   readonly $errors: RegleCollectionErrors<TState>;
   readonly $silentErrors: RegleCollectionErrors<TState>;
@@ -289,9 +270,7 @@ export type RegleCollectionStatus<
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {
-        [K in keyof TShortcuts['collections']]: ReturnType<
-          NonNullable<TShortcuts['collections']>[K]
-        >;
+        [K in keyof TShortcuts['collections']]: ReturnType<NonNullable<TShortcuts['collections']>[K]>;
       });
 
 /**

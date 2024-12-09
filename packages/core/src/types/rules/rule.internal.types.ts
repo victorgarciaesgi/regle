@@ -1,8 +1,5 @@
 import type { Maybe } from '../utils';
-import type {
-  PossibleRegleRuleMetadataConsumer,
-  RegleRuleMetadataDefinition,
-} from './rule.definition.type';
+import type { PossibleRegleRuleMetadataConsumer, RegleRuleMetadataDefinition } from './rule.definition.type';
 import type { RegleUniversalParams } from './rule.params.types';
 
 /**
@@ -14,17 +11,12 @@ export interface RegleInternalRuleDefs<
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > {
-  _validator: (
-    value: Maybe<TValue>,
-    ...args: TParams
-  ) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+  _validator: (value: Maybe<TValue>, ...args: TParams) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   _message:
     | string
     | string[]
     | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
-  _active?:
-    | boolean
-    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean);
+  _active?: boolean | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean);
   _type?: string;
   _patched: boolean;
   _params?: RegleUniversalParams<TParams>;

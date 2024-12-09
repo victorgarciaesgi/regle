@@ -14,9 +14,7 @@ export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}> =
   | T
   | ((value: Ref<V>, index: number) => T & TAdd);
 
-export type Unwrap<T extends MaybeRef<Record<string, any>>> = T extends Ref
-  ? UnwrapRef<T>
-  : UnwrapNestedRefs<T>;
+export type Unwrap<T extends MaybeRef<Record<string, any>>> = T extends Ref ? UnwrapRef<T> : UnwrapNestedRefs<T>;
 
 export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends ((
   value: Ref<any>,
@@ -26,11 +24,7 @@ export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends 
   : T;
 
 export type ExtendOnlyRealRecord<T extends unknown> =
-  NonNullable<T> extends File | Date
-    ? false
-    : NonNullable<T> extends Record<string, any>
-      ? true
-      : false;
+  NonNullable<T> extends File | Date ? false : NonNullable<T> extends Record<string, any> ? true : false;
 
 export type OmitByType<T extends Record<string, any>, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K];
@@ -46,9 +40,9 @@ export type ExcludeByType<T, U> = {
 
 export type PrimitiveTypes = string | number | boolean | bigint | Date | File;
 
-export type NonPresentKeys<
-  TSource extends Record<string, any>,
-  Target extends Record<string, any>,
-> = Omit<Target, keyof TSource>;
+export type NonPresentKeys<TSource extends Record<string, any>, Target extends Record<string, any>> = Omit<
+  Target,
+  keyof TSource
+>;
 
 export type NoInferLegacy<A extends any> = [A][A extends any ? 0 : never];

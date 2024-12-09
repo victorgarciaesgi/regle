@@ -16,89 +16,15 @@ import type {
   RegleCollectionRuleDeclKeyProperty,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
-} from '../../../types';
-import {
-  cloneDeep,
-  isObject,
-  randomId,
-  resetArrayValuesRecursively,
-  unwrapGetter,
-} from '../../../utils';
-import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils/version-compare';
-import type { RegleStorage } from '../../useStorage';
-import { isNestedRulesStatus, isRuleDef } from '../guards';
-import { createReactiveFieldStatus } from './createReactiveFieldStatus';
-import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
-import { isEmpty } from '../../../../../shared';
-
-type StateWithId = unknown & { $id?: string };
-
-function createCollectionElement({
-  $id,
-  path,
-  index,
-  options,
-  storage,
-  stateValue,
-  customMessages,
-  rules,
-  externalErrors,
-  initialState,
-  shortcuts,
-  fieldName,
-}: {
-  $id: string;
-  fieldName: string;
-  path: string;
-  index: number;
-  stateValue: Ref<StateWithId>;
-  customMessages: CustomRulesDeclarationTree | undefined;
-  storage: RegleStorage;
-  options: DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>>;
-  rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
-  externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
-  initialState: any[] | undefined;
-  shortcuts: RegleShortcutDefinition | undefined;
-}): $InternalRegleStatusType | null {
-  const $fieldId = rules.$key ? rules.$key : randomId();
-  let $path = `${path}.${String($fieldId)}`;
-
-  if (typeof stateValue.value === 'object' && stateValue.value != null) {
-    if (!stateValue.value.$id) {
-      Object.defineProperties(stateValue.value, {
-        $id: {
-          value: $fieldId,
-          enumerable: false,
-          configurable: false,
-          writable: false,
-        },
-      });
-    } else {
-      $path = `${path}.${stateValue.value.$id}`;
-    }
-  }
-
-  const $status = createReactiveChildrenStatus({
-    state: stateValue,
-    rulesDef: toRef(() => rules),
-    customMessages,
-    path: $path,
-    storage,
-    options,
-    externalErrors: toRef(externalErrors?.value ?? [], index),
-    initialState: initialState?.[index],
-    shortcuts,
-    fieldName,
-  });
-
-  if ($status) {
-    const valueId = stateValue.value?.$id;
-    $status.$id = valueId ?? String($fieldId);
-    storage.addArrayStatus($id, $status.$id, $status);
-  }
-
-  return $status;
-}
+} from '../../../../types';
+import { cloneDeep, isObject, randomId, resetArrayValuesRecursively, unwrapGetter } from '../../../../utils';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
+import type { RegleStorage } from '../../../useStorage';
+import { isNestedRulesStatus, isRuleDef } from '../../guards';
+import { createReactiveFieldStatus } from './../createReactiveFieldStatus';
+import { isEmpty } from '../../../../../../shared';
+import type { StateWithId } from '../common/common-types';
+import { createCollectionElement } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs {
   state: Ref<StateWithId[] & StateWithId>;
@@ -398,21 +324,23 @@ export function createReactiveCollectionStatus({
               const result = ref();
 
               watchEffect(() => {
-                result.value = value({
-                  $dirty: $dirty.value,
-                  $error: $error.value,
-                  $pending: $pending.value,
-                  $invalid: $invalid.value,
-                  $valid: $valid.value,
-                  $errors: $errors.value as any,
-                  $ready: $ready.value,
-                  $silentErrors: $silentErrors.value as any,
-                  $anyDirty: $anyDirty.value,
-                  $name: $name.value,
-                  $each: $eachStatus.value,
-                  $field: $fieldStatus.value as any,
-                  $value: state as any,
-                });
+                result.value = value(
+                  reactive({
+                    $dirty,
+                    $error,
+                    $pending,
+                    $invalid,
+                    $valid,
+                    $errors: $errors as any,
+                    $ready,
+                    $silentErrors: $silentErrors as any,
+                    $anyDirty,
+                    $name: $name,
+                    $each: $eachStatus,
+                    $field: $fieldStatus as any,
+                    $value: state,
+                  })
+                );
               });
               return result;
             })!;

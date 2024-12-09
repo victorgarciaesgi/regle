@@ -34,9 +34,7 @@ export type RegleRuleTree<
  */
 export type RegleComputedRules<
   TForm extends MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
-  TCustomRules extends
-    | Partial<AllRulesDeclarations>
-    | Regle<any, any> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<AllRulesDeclarations> | Regle<any, any> = Partial<AllRulesDeclarations>,
   TState = Unwrap<TForm>,
   TCustom = TCustomRules extends Regle<any, infer R>
     ? R extends ReglePartialRuleTree<any, infer C>
@@ -96,15 +94,14 @@ export type RegleRuleDecl<
   TValue extends any = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = FieldRegleBehaviourOptions & {
-  [TKey in keyof TCustomRules]?: NonNullable<
-    TCustomRules[TKey]
-  > extends RegleRuleWithParamsDefinition<any, infer TParams>
+  [TKey in keyof TCustomRules]?: NonNullable<TCustomRules[TKey]> extends RegleRuleWithParamsDefinition<
+    any,
+    infer TParams
+  >
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
     : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
       ? FormRuleDeclaration<TValue, any>
-      :
-          | FormRuleDeclaration<TValue, any>
-          | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+      : FormRuleDeclaration<TValue, any> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
 };
 
 /**
@@ -173,6 +170,4 @@ export type FormRuleDeclaration<
     | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
-> =
-  | InlineRuleDeclaration<TValue, TParams, TReturn>
-  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+> = InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;

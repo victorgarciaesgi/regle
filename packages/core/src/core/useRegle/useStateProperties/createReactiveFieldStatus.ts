@@ -1,36 +1,27 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { isEmpty } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
-  CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
   RegleRuleDecl,
   RegleShortcutDefinition,
-  ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { debounce, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
-import type { RegleStorage } from '../../useStorage';
 import { extractRulesErrors } from '../useErrors';
+import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
-import { isEmpty } from '../../../../../shared';
 
-interface CreateReactiveFieldStatusArgs {
+interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
-  customMessages: CustomRulesDeclarationTree | undefined;
-  path: string;
-  fieldName: string;
-  index?: number;
-  storage: RegleStorage;
-  options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<string[] | undefined> | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: unknown | undefined;
-  shortcuts: RegleShortcutDefinition | undefined;
 }
 
 export function createReactiveFieldStatus({
@@ -47,25 +38,19 @@ export function createReactiveFieldStatus({
   initialState,
   shortcuts,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
-  type ScopeReturnState = {
-    $error: ComputedRef<boolean>;
-    $errors: ComputedRef<string[]>;
-    $silentErrors: ComputedRef<string[]>;
-    $pending: ComputedRef<boolean>;
-    $invalid: ComputedRef<boolean>;
-    $valid: ComputedRef<boolean>;
+  interface ScopeReturnState extends CommonResolverScopedState {
     $debounce: ComputedRef<number | undefined>;
     $lazy: ComputedRef<boolean | undefined>;
     $rewardEarly: ComputedRef<boolean | undefined>;
     $autoDirty: ComputedRef<boolean | undefined>;
     $clearExternalErrorsOnChange: ComputedRef<boolean | undefined>;
-    $anyDirty: ComputedRef<boolean>;
-    haveAnyAsyncRule: ComputedRef<boolean>;
+    $errors: ComputedRef<string[]>;
+    $silentErrors: ComputedRef<string[]>;
+    $haveAnyAsyncRule: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
-    $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
     $validating: Ref<boolean>;
-  };
+  }
 
   let scope = effectScope();
   let scopeState!: ScopeReturnState;
@@ -132,10 +117,7 @@ export function createReactiveFieldStatus({
 
   function define$commit() {
     $commit = scopeState.$debounce.value
-      ? debounce(
-          $commitHandler,
-          (scopeState.$debounce.value ?? scopeState.haveAnyAsyncRule) ? 100 : 0
-        )
+      ? debounce($commitHandler, (scopeState.$debounce.value ?? scopeState.$haveAnyAsyncRule) ? 100 : 0)
       : $commitHandler;
   }
 
@@ -277,7 +259,7 @@ export function createReactiveFieldStatus({
         return false;
       });
 
-      const haveAnyAsyncRule = computed(() => {
+      const $haveAnyAsyncRule = computed(() => {
         return Object.entries($rules.value).some(([key, ruleResult]) => {
           return ruleResult._haveAsync;
         });
@@ -292,21 +274,23 @@ export function createReactiveFieldStatus({
               const result = ref();
 
               watchEffect(() => {
-                result.value = value({
-                  $dirty: $dirty.value,
-                  $externalErrors: externalErrors?.value ?? [],
-                  $value: state,
-                  $rules: $rules.value,
-                  $error: $error.value,
-                  $pending: $pending.value,
-                  $invalid: $invalid.value,
-                  $valid: $valid.value,
-                  $errors: $errors.value,
-                  $ready: $ready.value,
-                  $silentErrors: $silentErrors.value,
-                  $anyDirty: $anyDirty.value,
-                  $name: $name.value,
-                });
+                result.value = value(
+                  reactive({
+                    $dirty,
+                    $externalErrors: externalErrors?.value ?? [],
+                    $value: state,
+                    $rules,
+                    $error,
+                    $pending,
+                    $invalid,
+                    $valid,
+                    $errors,
+                    $ready,
+                    $silentErrors,
+                    $anyDirty,
+                    $name,
+                  })
+                );
               });
               return result;
             })!;
@@ -340,7 +324,7 @@ export function createReactiveFieldStatus({
         $clearExternalErrorsOnChange,
         $anyDirty,
         $name,
-        haveAnyAsyncRule,
+        $haveAnyAsyncRule,
         $shortcuts,
         $validating,
       } satisfies ScopeReturnState;
@@ -357,16 +341,10 @@ export function createReactiveFieldStatus({
         if (rulesDef.value instanceof Function) {
           createReactiveRulesResult();
         }
-        if (
-          scopeState.$autoDirty.value ||
-          (scopeState.$rewardEarly.value && scopeState.$error.value)
-        ) {
+        if (scopeState.$autoDirty.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
           $commit();
         }
-        if (
-          scopeState.$rewardEarly.value !== true &&
-          scopeState.$clearExternalErrorsOnChange.value
-        ) {
+        if (scopeState.$rewardEarly.value !== true && scopeState.$clearExternalErrorsOnChange.value) {
           $clearExternalErrors();
         }
       },
@@ -383,7 +361,7 @@ export function createReactiveFieldStatus({
       }
     });
 
-    $unwatchAsync = watch(scopeState.haveAnyAsyncRule, define$commit);
+    $unwatchAsync = watch(scopeState.$haveAnyAsyncRule, define$commit);
   }
 
   function $commitHandler() {
@@ -416,10 +394,7 @@ export function createReactiveFieldStatus({
     }
 
     if (withConditions && runCommit) {
-      if (
-        scopeState.$autoDirty.value ||
-        (scopeState.$rewardEarly.value && scopeState.$error.value)
-      ) {
+      if (scopeState.$autoDirty.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
         $commit();
       }
     } else if (runCommit) {
@@ -453,6 +428,7 @@ export function createReactiveFieldStatus({
           return false;
         }
       });
+
       return { result: validationResults, data };
     } catch (e) {
       return { result: false, data: state.value };

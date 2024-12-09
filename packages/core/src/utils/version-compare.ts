@@ -27,5 +27,4 @@ function versionCompare(current: Version, other: Version): VersionIs {
   return VersionIs.EqualTo;
 }
 
-export const isVueSuperiorOrEqualTo3dotFive =
-  versionCompare(version, '3.5.0') === -1 ? false : true;
+export const isVueSuperiorOrEqualTo3dotFive = versionCompare(version, '3.5.0') === -1 ? false : true;

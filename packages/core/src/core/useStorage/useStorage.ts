@@ -17,9 +17,7 @@ export type RegleStorage = ReturnType<typeof useStorage>;
  */
 export function useStorage() {
   const ruleDeclStorage = shallowRef(new Map<string, RegleRuleDecl<any, any>>());
-  const fieldsStorage = shallowRef(
-    new Map<string, Ref<Record<string, $InternalRegleStatusType>>>()
-  );
+  const fieldsStorage = shallowRef(new Map<string, Ref<Record<string, $InternalRegleStatusType>>>());
   const collectionsStorage = shallowRef(new Map<string, Ref<Array<$InternalRegleStatusType>>>());
   const dirtyStorage = shallowRef(new Map<string, boolean>());
   const ruleStatusStorage = shallowRef(new Map<string, StoredRuleStatus>());
@@ -76,10 +74,7 @@ export function useStorage() {
     ruleDeclStorage.value.set($path, options);
   }
 
-  function checkRuleDeclEntry(
-    $path: string,
-    newRules: RegleRuleDecl
-  ): { valid: boolean } | undefined {
+  function checkRuleDeclEntry($path: string, newRules: RegleRuleDecl): { valid: boolean } | undefined {
     const storedRulesDefs = ruleDeclStorage.value.get($path);
 
     if (!storedRulesDefs) return undefined;

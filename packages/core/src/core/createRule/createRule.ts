@@ -2,7 +2,6 @@ import type {
   InferRegleRule,
   RegleRuleInit,
   RegleRuleMetadataDefinition,
-  RegleRuleTypeReturn,
   RegleUniversalParams,
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';

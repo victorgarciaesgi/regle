@@ -41,11 +41,7 @@ export function createReactiveRuleStatus({
     $message: ComputedRef<string | string[]>;
     $type: ComputedRef<string>;
     $validator: ComputedRef<
-      RegleRuleDefinitionProcessor<
-        any,
-        any,
-        RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>
-      >
+      RegleRuleDefinitionProcessor<any, any, RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>>
     >;
     $params: ComputedRef<any[]>;
     $path: ComputedRef<string>;
@@ -57,9 +53,7 @@ export function createReactiveRuleStatus({
 
   const _haveAsync = ref(false);
 
-  const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(
-    `${path}.${ruleKey}`
-  );
+  const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
   function $watch() {
     scopeState = scope.run(() => {
@@ -118,9 +112,7 @@ export function createReactiveRuleStatus({
         }
       });
 
-      const $validator = computed<
-        RegleRuleDefinitionProcessor<any, any, boolean | Promise<boolean>>
-      >(() => {
+      const $validator = computed<RegleRuleDefinitionProcessor<any, any, boolean | Promise<boolean>>>(() => {
         if (isFormRuleDefinition(rule)) {
           return rule.value.validator;
         } else {

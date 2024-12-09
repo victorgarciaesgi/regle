@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "prepack": "nuxt-module-build build",
-    "dev": "nuxi dev playground",
+    "dev": "echo 'no dev build'",
+    "dev:playground": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "typecheck": "nuxi typecheck playground",
     "build": "pnpm run dev:prepare && nuxt-module-build build",

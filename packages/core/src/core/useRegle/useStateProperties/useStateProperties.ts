@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
-import { computed, reactive, unref } from 'vue';
+import { reactive } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   CustomRulesDeclarationTree,
@@ -29,7 +29,7 @@ export function useStateProperties({
   const regle = reactive(
     createReactiveNestedStatus({
       rootRules: scopeRules,
-      scopeRules,
+      rulesDef: scopeRules,
       state,
       customMessages: customRules?.(),
       storage,
@@ -39,6 +39,7 @@ export function useStateProperties({
       initialState,
       shortcuts,
       fieldName: 'root',
+      path: '',
     })
   );
 

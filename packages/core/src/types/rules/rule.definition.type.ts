@@ -1,12 +1,7 @@
 import type { RegleRuleCore } from './rule.init.types';
 import type { RegleUniversalParams } from './rule.params.types';
 import type { RegleInternalRuleDefs } from './rule.internal.types';
-import type {
-  AllRulesDeclarations,
-  RegleCommonStatus,
-  RegleFormPropertyType,
-  RegleRuleDecl,
-} from '.';
+import type { AllRulesDeclarations, RegleCommonStatus, RegleFormPropertyType, RegleRuleDecl } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { FieldRegleBehaviourOptions } from '../core';
 
@@ -30,11 +25,7 @@ export interface RegleRuleDefinition<
     PossibleRegleRuleMetadataConsumer,
     string | string[]
   >;
-  active: RegleRuleDefinitionWithMetadataProcessor<
-    TFilteredValue,
-    PossibleRegleRuleMetadataConsumer,
-    boolean
-  >;
+  active: RegleRuleDefinitionWithMetadataProcessor<TFilteredValue, PossibleRegleRuleMetadataConsumer, boolean>;
   type?: string;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
@@ -60,9 +51,7 @@ export interface RegleRuleWithParamsDefinition<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > extends RegleRuleCore<TValue, TParams, TAsync, TMetadata>,
     RegleInternalRuleDefs<TValue, TParams, TAsync, TMetadata> {
-  (
-    ...params: RegleUniversalParams<TParams>
-  ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+  (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 }
 
 export type RegleRuleMetadataExtended = {
@@ -75,12 +64,7 @@ export type UnwrapRuleTree<T extends { [x: string]: RegleRuleRaw<any> | undefine
 };
 
 export type UnwrapRuleWithParams<T extends RegleRuleRaw<any> | undefined> =
-  T extends RegleRuleWithParamsDefinition<
-    infer TValue,
-    infer TParams,
-    infer TAsync,
-    infer TMetadata
-  >
+  T extends RegleRuleWithParamsDefinition<infer TValue, infer TParams, infer TAsync, infer TMetadata>
     ? RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
     : T;
 
@@ -150,11 +134,10 @@ export type InferRegleRule<
   ? RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>
   : RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetaData>;
 
-export type RegleRuleDefinitionProcessor<
-  TValue extends any = any,
-  TParams extends any[] = [],
-  TReturn = any,
-> = (value: Maybe<TValue>, ...params: TParams) => TReturn;
+export type RegleRuleDefinitionProcessor<TValue extends any = any, TParams extends any[] = [], TReturn = any> = (
+  value: Maybe<TValue>,
+  ...params: TParams
+) => TReturn;
 
 export type RegleRuleDefinitionWithMetadataProcessor<
   TValue extends any,
@@ -167,14 +150,8 @@ export type RegleCollectionRuleDefinition<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
-      $each: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>
-      >;
+      $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
     })
   | ({
-      $each: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>
-      >;
+      $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
     } & FieldRegleBehaviourOptions);
