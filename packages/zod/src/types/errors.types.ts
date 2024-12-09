@@ -16,6 +16,6 @@ export type ZodDefToRegleValidationErrors<TRule extends z.ZodTypeAny> =
       : string[];
 
 export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
-  readonly $errors: string[];
+  readonly $self: string[];
   readonly $each: ZodDefToRegleValidationErrors<TRule>[];
 };

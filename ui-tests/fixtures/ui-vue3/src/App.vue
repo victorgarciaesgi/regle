@@ -35,11 +35,7 @@
 
       <label>Your projects</label>
       <div class="projects">
-        <div
-          v-for="(project, index) of r$.$fields.projects.$each"
-          :key="project.$id"
-          class="project"
-        >
+        <div v-for="(project, index) of r$.$fields.projects.$each" :key="project.$id" class="project">
           <h3>Project {{ index + 1 }}</h3>
           <MyInput
             v-model="project.$fields.name.$value"
@@ -68,8 +64,8 @@
           <button type="button" @click="form.projects.push({})">⊕ Add project</button>
         </div>
       </div>
-      <ul v-if="r$.$errors.projects.$errors.length">
-        <li v-for="error of r$.$errors.projects.$errors" :key="error">
+      <ul v-if="r$.$errors.projects.$self.length">
+        <li v-for="error of r$.$errors.projects.$self" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -169,10 +165,7 @@ const { r$ } = useCustomRegle(form, {
   },
   projects: {
     $autoDirty: false,
-    minLength: withMessage(
-      minLength(1),
-      (value, { $params: [min] }) => `You need at least ${min} project`
-    ),
+    minLength: withMessage(minLength(1), (value, { $params: [min] }) => `You need at least ${min} project`),
     $each: {
       name: { required },
       price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },

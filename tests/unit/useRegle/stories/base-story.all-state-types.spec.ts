@@ -41,7 +41,7 @@ describe.each([
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: [],
           $each: [{ name: [] }],
         },
       },
@@ -84,7 +84,7 @@ describe.each([
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: [],
           $each: [{ name: [] }],
         },
       },
@@ -123,10 +123,7 @@ describe.each([
     shouldBeErrorField(vm.r$.$fields.level0);
     shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
 
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
-      { name: [] },
-      { name: ['This field is required'] },
-    ]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: ['This field is required'] }]);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 1,
@@ -230,10 +227,7 @@ describe.each([
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
-    const [{ result, data }] = await Promise.all([
-      vm.r$.$validate(),
-      vi.advanceTimersByTimeAsync(200),
-    ]);
+    const [{ result, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
     expect(result).toBe(true);
     expect(data).toStrictEqual({
@@ -263,7 +257,7 @@ describe.each([
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: [],
           $each: [{ name: [] }],
         },
       },

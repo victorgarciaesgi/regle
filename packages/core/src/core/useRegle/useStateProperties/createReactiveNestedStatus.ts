@@ -224,7 +224,7 @@ export function createReactiveNestedStatus({
       });
 
       const $error = computed<boolean>(() => {
-        return $dirty.value && !$pending.value && $invalid.value;
+        return $anyDirty.value && !$pending.value && $invalid.value;
       });
 
       const $ready = computed<boolean>(() => {

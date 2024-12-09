@@ -34,10 +34,7 @@ describe('$params', () => {
         contacts: {
           $each: {
             name: {
-              testParams: withParams(
-                (value: Maybe<string>, min) => (value?.length ?? 0) > min,
-                [min]
-              ),
+              testParams: withParams((value: Maybe<string>, min) => (value?.length ?? 0) > min, [min]),
             },
           },
         },
@@ -114,9 +111,7 @@ describe('$params', () => {
 
       expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([6]);
       expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([
-        6,
-      ]);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([6]);
 
       vm.r$.$value.contacts.push({ name: '' });
       await nextTick();
@@ -124,7 +119,7 @@ describe('$params', () => {
       vm.min = 10;
       await nextTick();
 
-      shouldBeInvalidField(vm.r$);
+      shouldBeErrorField(vm.r$);
       shouldBeErrorField(vm.r$.$fields.email);
       shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
       shouldBeErrorField(vm.r$.$fields.contacts.$each[0].$fields.name);
@@ -132,18 +127,14 @@ describe('$params', () => {
 
       expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([10]);
       expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([10]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([
-        10,
-      ]);
-      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([
-        10,
-      ]);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([10]);
+      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([10]);
 
       vm.min = 5;
 
       await nextTick();
 
-      shouldBeInvalidField(vm.r$);
+      shouldBeErrorField(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
       shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
@@ -153,12 +144,8 @@ describe('$params', () => {
 
       expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([5]);
       expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([5]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([
-        5,
-      ]);
-      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([
-        5,
-      ]);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([5]);
+      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([5]);
 
       vm.r$.$value.contacts[1].name = 'aeeyeziyr';
       await nextTick();
@@ -311,9 +298,7 @@ describe('$params', () => {
 
       expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([6]);
       expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([
-        6,
-      ]);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([6]);
 
       vm.min = 20;
 
@@ -338,9 +323,7 @@ describe('$params', () => {
 
       expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([20]);
       expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([20]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([
-        20,
-      ]);
+      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([20]);
     });
   });
 });

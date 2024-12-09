@@ -23,13 +23,13 @@ export type RegleValidationErrors<TState extends Record<string, any> | any[] | u
         : string[];
 
 export type RegleCollectionErrors<TState extends Record<string, any>> = {
-  readonly $errors: string[];
+  readonly $self: string[];
   readonly $each: RegleValidationErrors<TState>[];
 };
 
 /** @internal */
 export type $InternalRegleCollectionErrors = {
-  readonly $errors?: string[];
+  readonly $self?: string[];
   readonly $each?: $InternalRegleErrors[];
 };
 

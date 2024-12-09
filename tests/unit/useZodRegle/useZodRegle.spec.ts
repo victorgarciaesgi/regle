@@ -46,7 +46,7 @@ function nestedReactiveObjectValidation() {
         level2: z.object({
           child: zodIsEven.optional(),
         }),
-        collection: z.array(z.object({ name: zodIsEven })),
+        collection: z.array(z.object({ name: zodIsEven })).min(3),
       }),
     })
   );
@@ -72,7 +72,7 @@ describe('useZodRegle ', async () => {
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: [],
           $each: [{ name: [] }],
         },
       },
@@ -97,6 +97,7 @@ describe('useZodRegle ', async () => {
     shouldBeInvalidField(vm.r$.$fields.level1);
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.child);
     shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
+    shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$field);
     shouldBePristineField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
   });
 
@@ -112,7 +113,7 @@ describe('useZodRegle ', async () => {
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: ['This list should have at least 3 items'],
           $each: [{ name: [] }],
         },
       },
@@ -130,16 +131,17 @@ describe('useZodRegle ', async () => {
 
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
-    vm.r$.$value.level1.collection.push({ name: null });
+    vm.r$.$value.level1.collection.push({ name: null }, { name: null });
 
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual(['Custom error']);
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }, { name: [] }]);
 
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[2].$fields.name);
 
-    vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name.$touch();
+    vm.r$.$fields.level1.$fields.collection.$touch();
     await nextTick();
 
     expect(vm.r$.$ready).toBe(false);
@@ -147,9 +149,11 @@ describe('useZodRegle ', async () => {
     shouldBeErrorField(vm.r$);
     shouldBeErrorField(vm.r$.$fields.level0);
     shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[2].$fields.name);
 
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
       { name: [] },
+      { name: ['This field is required'] },
       { name: ['This field is required'] },
     ]);
 
@@ -160,7 +164,7 @@ describe('useZodRegle ', async () => {
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: null }],
+        collection: [{ name: 0 }, { name: null }, { name: null }],
       },
     });
 
@@ -174,6 +178,7 @@ describe('useZodRegle ', async () => {
     vm.r$.$value.level1.child = 3;
     vm.r$.$value.level1.level2.child = 3;
     vm.r$.$value.level1.collection[1].name = 3;
+    vm.r$.$value.level1.collection[2].name = 3;
 
     await nextTick();
 
@@ -195,7 +200,7 @@ describe('useZodRegle ', async () => {
         level2: {
           child: 3,
         },
-        collection: [{ name: 0 }, { name: 3 }],
+        collection: [{ name: 0 }, { name: 3 }, { name: 3 }],
       },
     });
 
@@ -210,13 +215,14 @@ describe('useZodRegle ', async () => {
     vm.r$.$value.level1.child = 2;
     vm.r$.$value.level1.level2.child = 2;
     vm.r$.$value.level1.collection[1].name = 2;
+    vm.r$.$value.level1.collection[2].name = 2;
 
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual([]);
     expect(vm.r$.$errors.level1.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.level2.child).toStrictEqual([]);
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }, { name: [] }]);
 
     expect(vm.r$.$ready).toBe(true);
 
@@ -228,6 +234,7 @@ describe('useZodRegle ', async () => {
     shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[2].$fields.name);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 2,
@@ -236,7 +243,7 @@ describe('useZodRegle ', async () => {
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: 2 }],
+        collection: [{ name: 0 }, { name: 2 }, { name: 2 }],
       },
     });
 
@@ -245,14 +252,15 @@ describe('useZodRegle ', async () => {
 
     await nextTick();
 
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
     shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
 
-    const [{ result, data }] = await Promise.all([
-      vm.r$.$validate(),
-      vi.advanceTimersByTimeAsync(200),
-    ]);
+    vm.r$.$value.level1.collection.push({ name: 2 });
+    await nextTick();
+    vm.r$.$fields.level1.$fields.collection.$each[2].$fields.name.$touch();
+
+    const [{ result, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
     expect(result).toBe(true);
     expect(data).toStrictEqual({
@@ -262,7 +270,7 @@ describe('useZodRegle ', async () => {
         level2: {
           child: 2,
         },
-        collection: [{ name: 2 }],
+        collection: [{ name: 2 }, { name: 2 }, { name: 2 }],
       },
     });
   });
@@ -280,7 +288,7 @@ describe('useZodRegle ', async () => {
           child: [],
         },
         collection: {
-          $errors: [],
+          $self: [],
           $each: [{ name: [] }],
         },
       },

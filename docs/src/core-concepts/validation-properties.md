@@ -146,14 +146,19 @@ To know more about the rule properties check the [rules properties section](/cor
 ## Specific properties for nested objects
 
 ### `$fields`
-- Type: `Record<string, RegleStatu | RegleFieldStatus | RegleCollectionStatus>`
+- Type: `Record<string, RegleStatus | RegleFieldStatus | RegleCollectionStatus>`
 
 This represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form.
 
 
 ## Specific properties for collections
+- Type: `Array<string, RegleStatus>`
 
 
 ### `$each`
 
+This will store the status of every item in your collection. Each item will be a classic field you can access, or map on it to display your elements.
+
 ### `$field`
+
+Represent the status of the collection itself. You can have validations on the array like `minLength`, this field represent the isolated status of the collection.

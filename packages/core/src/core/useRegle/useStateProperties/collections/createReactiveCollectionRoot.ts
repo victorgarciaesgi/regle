@@ -1,19 +1,13 @@
-import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRaw, toRef, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
+import { isEmpty } from '../../../../../../shared';
 import type {
-  $InternalFormPropertyTypes,
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
-  $InternalRegleErrors,
   $InternalRegleFieldStatus,
   $InternalRegleResult,
-  $InternalRegleStatusType,
   CustomRulesDeclarationTree,
-  DeepMaybeRef,
-  RegleBehaviourOptions,
-  RegleCollectionRuleDeclKeyProperty,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
@@ -21,9 +15,8 @@ import { cloneDeep, isObject, randomId, resetArrayValuesRecursively, unwrapGette
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
 import type { RegleStorage } from '../../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
-import { createReactiveFieldStatus } from './../createReactiveFieldStatus';
-import { isEmpty } from '../../../../../../shared';
 import type { StateWithId } from '../common/common-types';
+import { createReactiveFieldStatus } from './../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs {
@@ -170,7 +163,7 @@ export function createReactiveCollectionStatus({
       path,
       storage,
       options,
-      externalErrors: toRef(externalErrors?.value ?? {}, `$errors`),
+      externalErrors: toRef(externalErrors?.value ?? {}, `$self`),
       $isArray: true,
       initialState: initialState,
       shortcuts,
@@ -299,18 +292,18 @@ export function createReactiveCollectionStatus({
         );
       });
 
-      const $errors = computed<$InternalRegleCollectionErrors>(() => {
+      const $errors = computed(() => {
         return {
-          $errors: $fieldStatus.value.$errors,
+          $self: $fieldStatus.value.$errors,
           $each: $eachStatus.value.map(($each) => $each.$errors),
-        };
+        } satisfies $InternalRegleCollectionErrors;
       });
 
-      const $silentErrors = computed<$InternalRegleCollectionErrors>(() => {
+      const $silentErrors = computed(() => {
         return {
-          $errors: $fieldStatus.value.$silentErrors,
+          $self: $fieldStatus.value.$silentErrors,
           $each: $eachStatus.value.map(($each) => $each.$silentErrors),
-        };
+        } satisfies $InternalRegleCollectionErrors;
       });
 
       const $name = computed(() => fieldName);
