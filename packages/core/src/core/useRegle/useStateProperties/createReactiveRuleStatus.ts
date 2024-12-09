@@ -39,6 +39,7 @@ export function createReactiveRuleStatus({
   type ScopeState = {
     $active: ComputedRef<boolean>;
     $message: ComputedRef<string | string[]>;
+    $tooltip: ComputedRef<string | string[]>;
     $type: ComputedRef<string>;
     $validator: ComputedRef<
       RegleRuleDefinitionProcessor<any, any, RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>>
@@ -51,7 +52,7 @@ export function createReactiveRuleStatus({
 
   let $unwatchState: WatchStopHandle;
 
-  const _haveAsync = ref(false);
+  const $haveAsync = ref(false);
 
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
@@ -75,26 +76,31 @@ export function createReactiveRuleStatus({
         }
       });
 
-      const $message = computed<string | string[]>(() => {
-        let message: string | string[] = '';
-        const customMessageRule = customMessages ? customMessages[ruleKey]?.message : undefined;
+      function computeRuleProcessor(key: 'message' | 'tooltip'): string | string[] {
+        let result: string | string[] = '';
+        const customMessageRule = customMessages ? customMessages[ruleKey]?.[key] : undefined;
 
         if (customMessageRule) {
           if (typeof customMessageRule === 'function') {
-            message = customMessageRule(state.value, $defaultMetadata.value);
+            result = customMessageRule(state.value, $defaultMetadata.value);
           } else {
-            message = customMessageRule;
+            result = customMessageRule;
           }
         }
         if (isFormRuleDefinition(rule)) {
           if (!(customMessageRule && !rule.value._patched)) {
-            if (typeof rule.value.message === 'function') {
-              message = rule.value.message(state.value, $defaultMetadata.value);
+            if (typeof rule.value[key] === 'function') {
+              result = rule.value[key](state.value, $defaultMetadata.value);
             } else {
-              message = rule.value.message;
+              result = rule.value[key] ?? '';
             }
           }
         }
+        return result;
+      }
+
+      const $message = computed<string | string[]>(() => {
+        let message = computeRuleProcessor('message');
 
         if (isEmpty(message)) {
           message = 'Error';
@@ -102,6 +108,10 @@ export function createReactiveRuleStatus({
         }
 
         return message;
+      });
+
+      const $tooltip = computed<string | string[]>(() => {
+        return computeRuleProcessor('tooltip');
       });
 
       const $type = computed(() => {
@@ -137,6 +147,7 @@ export function createReactiveRuleStatus({
         $validator,
         $params,
         $path,
+        $tooltip,
       } satisfies ScopeState;
     })!;
 
@@ -245,7 +256,7 @@ export function createReactiveRuleStatus({
     $pending,
     $valid,
     $metadata,
-    _haveAsync,
+    $haveAsync,
     $validating,
     $validate,
     $unwatch,

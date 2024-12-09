@@ -5,6 +5,13 @@ import type {
   RegleRuleMetadataDefinition,
 } from './rule.definition.type';
 
+export type RegleInitPropertyGetter<
+  TValue,
+  TReturn,
+  TParams extends [...any[]],
+  TMetadata extends RegleRuleMetadataDefinition,
+> = TReturn | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => TReturn);
+
 /**
  * @argument
  * createRule arguments options
@@ -16,13 +23,11 @@ export interface RegleRuleInit<
   TMetadata extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 > {
-  type?: string;
   validator: (value: Maybe<TValue>, ...args: TParams) => TReturn;
-  message:
-    | string
-    | string[]
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string | string[]);
-  active?: boolean | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+  message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
+  active?: RegleInitPropertyGetter<TValue, boolean, TParams, TMetadata>;
+  tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
+  type?: string;
 }
 
 /**
@@ -36,10 +41,9 @@ export interface RegleRuleCore<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > {
   validator: (value: Maybe<TValue>, ...args: TParams) => TAsync extends false ? TMetadata : Promise<TMetadata>;
-  message:
-    | string
-    | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => string | string[]);
-  active?: boolean | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => boolean);
+  message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
+  active?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
+  tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   type?: string;
 }
 
@@ -49,8 +53,9 @@ export interface RegleRuleCore<
  */
 export interface $InternalRegleRuleInit {
   validator: (value: any, ...args: any[]) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
-  message: string | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
+  message: string | string[] | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   active?: boolean | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => boolean);
+  tooltip?: string | string[] | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   type?: string;
 }
 

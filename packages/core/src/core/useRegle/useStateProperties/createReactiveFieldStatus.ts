@@ -11,7 +11,7 @@ import type {
   RegleShortcutDefinition,
 } from '../../../types';
 import { debounce, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
-import { extractRulesErrors } from '../useErrors';
+import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
@@ -46,6 +46,7 @@ export function createReactiveFieldStatus({
     $clearExternalErrorsOnChange: ComputedRef<boolean | undefined>;
     $errors: ComputedRef<string[]>;
     $silentErrors: ComputedRef<string[]>;
+    $tooltips: ComputedRef<string[]>;
     $haveAnyAsyncRule: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
@@ -207,6 +208,17 @@ export function createReactiveFieldStatus({
         return [];
       });
 
+      const $tooltips = computed<string[]>(() => {
+        if ($error.value) {
+          return extractRulesTooltips({
+            field: {
+              $rules: $rules.value,
+            },
+          });
+        }
+        return [];
+      });
+
       const $silentErrors = computed<string[]>(() => {
         return extractRulesErrors({
           field: {
@@ -261,7 +273,7 @@ export function createReactiveFieldStatus({
 
       const $haveAnyAsyncRule = computed(() => {
         return Object.entries($rules.value).some(([key, ruleResult]) => {
-          return ruleResult._haveAsync;
+          return ruleResult.$haveAsync;
         });
       });
 
@@ -288,6 +300,7 @@ export function createReactiveFieldStatus({
                     $ready,
                     $silentErrors,
                     $anyDirty,
+                    $tooltips,
                     $name,
                   })
                 );
@@ -327,6 +340,7 @@ export function createReactiveFieldStatus({
         $haveAnyAsyncRule,
         $shortcuts,
         $validating,
+        $tooltips,
       } satisfies ScopeReturnState;
     })!;
 

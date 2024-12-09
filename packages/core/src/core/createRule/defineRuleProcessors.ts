@@ -11,7 +11,7 @@ export function defineRuleProcessors(
   definition: $InternalRegleRuleInit,
   ...params: any[]
 ): $InternalRegleRuleDefinition {
-  const { message, validator, active, type, ...properties } = definition;
+  const { validator, type } = definition;
 
   const isAsync = type === InternalRuleType.Async || validator.constructor.name === 'AsyncFunction';
 
@@ -29,7 +29,6 @@ export function defineRuleProcessors(
         return definition.message;
       }
     },
-
     active(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.active === 'function') {
         return definition.active(value, {
@@ -38,6 +37,16 @@ export function defineRuleProcessors(
         });
       } else {
         return definition.active ?? true;
+      }
+    },
+    tooltip(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
+      if (typeof definition.tooltip === 'function') {
+        return definition.tooltip(value, {
+          ...metadata,
+          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+        });
+      } else {
+        return definition.tooltip ?? [];
       }
     },
     exec(value: any) {
@@ -68,16 +77,14 @@ export function defineRuleProcessors(
 
   const processors = {
     ...defaultProcessors,
-    ...properties,
-    ...{
-      _validator: definition.validator as any,
-      _message: definition.message,
-      _active: definition.active,
-      _type: definition.type,
-      _patched: false,
-      _async: isAsync,
-      _params: createReactiveParams<never>(params),
-    },
+    _validator: definition.validator as any,
+    _message: definition.message,
+    _active: definition.active,
+    _tooltip: definition.tooltip,
+    _type: definition.type,
+    _patched: false,
+    _async: isAsync,
+    _params: createReactiveParams<never>(params),
   };
 
   return processors;

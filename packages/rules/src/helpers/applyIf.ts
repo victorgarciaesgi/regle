@@ -12,16 +12,12 @@ import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core'
 export function applyIf<
   TValue extends any,
   TParams extends any[],
-  TReturn extends
-    | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   _condition: ParamDecl<boolean>,
-  rule:
-    | InlineRuleDeclaration<TValue, TParams, TReturn>
-    | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
 ): RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;

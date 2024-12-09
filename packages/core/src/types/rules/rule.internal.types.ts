@@ -17,6 +17,10 @@ export interface RegleInternalRuleDefs<
     | string[]
     | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
   _active?: boolean | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean);
+  _tooltip?:
+    | string
+    | string[]
+    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
   _type?: string;
   _patched: boolean;
   _params?: RegleUniversalParams<TParams>;

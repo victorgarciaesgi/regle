@@ -2,7 +2,15 @@ import { createTimeout } from '@/utils/timeout';
 import type { Maybe } from '@regle/core';
 import { createRule, defineRegleConfig } from '@regle/core';
 import { required, ruleHelpers, withMessage } from '@regle/rules';
-import { passwordStrength, type Options } from 'check-password-strength';
+import { passwordStrength, type DiversityType, type Options } from 'check-password-strength';
+
+const diversityTypes: DiversityType[] = ['lowercase', 'uppercase', 'symbol', 'number'];
+const diversityMessages: Record<DiversityType, string> = {
+  lowercase: 'At least one owercase letter (a-z)',
+  uppercase: 'At least one uppercase letter (A-Z)',
+  number: 'At least one number (0-9)',
+  symbol: 'At least one symbol ($€@&..)',
+};
 
 function randomBoolean(): boolean {
   return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
@@ -35,6 +43,15 @@ export const strongPassword = createRule({
   },
   message(_, { result }) {
     return `Your password is ${result?.value.toLocaleLowerCase()}`;
+  },
+  tooltip(_, { result }) {
+    let diversity = diversityTypes
+      .filter((f) => !result?.contains.includes(f))
+      .map((value) => diversityMessages[value]);
+    if ((result?.length ?? 0) < 10) {
+      diversity.push('At least 10 characters');
+    }
+    return diversity;
   },
 });
 

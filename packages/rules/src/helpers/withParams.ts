@@ -1,4 +1,3 @@
-import { ref, type Ref } from 'vue';
 import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
@@ -6,6 +5,7 @@ import type {
   UnwrapRegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
+import { type Ref } from 'vue';
 
 export function withParams<
   TValue,

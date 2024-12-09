@@ -12,9 +12,9 @@
       class="password-strength"
       :class="[`level-${field.$rules.strongPassword.$metadata.result?.id}`]"
     ></div>
-    <ul v-if="field.$errors.length" class="errors">
-      <li v-for="error of field.$errors" :key="error">
-        {{ error }}
+    <ul v-if="field.$tooltips.length" class="tooltips">
+      <li v-for="tooltip of field.$tooltips" :key="tooltip">
+        {{ tooltip }}
       </li>
     </ul>
     <div v-else-if="field.$valid" class="success">Your password is strong enough</div>

@@ -22,7 +22,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsSources({
       from: '@regle/rules',
-      imports: ['ruleHelpers', 'withAsync', 'withMessage', 'withParams'] as Array<
+      imports: ['ruleHelpers', 'withAsync', 'withMessage', 'withParams', 'withTooltip'] as Array<
         keyof typeof import('@regle/rules')
       >,
     });

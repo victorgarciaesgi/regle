@@ -6,12 +6,10 @@ import type {
   $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
-  DeepSafeFormState,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
   Maybe,
-  Prettify,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -25,7 +23,6 @@ import type {
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
-  SafeFieldProperty,
 } from '..';
 
 /**
@@ -133,6 +130,7 @@ export type RegleFieldStatus<
   readonly $errors: string[];
   readonly $silentErrors: string[];
   readonly $externalErrors: string[];
+  readonly $tooltips: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
   $validate: () => Promise<RegleResult<TState, TRules>>;
   readonly $rules: {
@@ -200,6 +198,7 @@ export type RegleRuleStatus<
 > = {
   readonly $type: string;
   readonly $message: string | string[];
+  readonly $tooltip: string | string[];
   readonly $active: boolean;
   readonly $valid: boolean;
   readonly $pending: boolean;
@@ -232,6 +231,7 @@ export type RegleRuleStatus<
 export interface $InternalRegleRuleStatus {
   $type: string;
   $message: string | string[];
+  $tooltip: string | string[];
   $active: boolean;
   $valid: boolean;
   $pending: boolean;
@@ -239,7 +239,7 @@ export interface $InternalRegleRuleStatus {
   $externalErrors?: string[];
   $params?: any[];
   $metadata: any;
-  _haveAsync: boolean;
+  $haveAsync: boolean;
   $validating: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
@@ -256,10 +256,7 @@ export type RegleCollectionStatus<
   TRules extends ReglePartialRuleTree<ArrayElement<TState>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<
-  RegleFieldStatus<TState, TRules, TShortcuts>,
-  '$errors' | '$silentErrors' | '$extractDirtyFields' | '$externalErrors' | '$rules' | '$value' | '$validate'
-> & {
+> = Omit<RegleCommonStatus<TState>, '$value'> & {
   $value: Maybe<TState>;
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
   readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;

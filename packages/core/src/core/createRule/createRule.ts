@@ -1,9 +1,4 @@
-import type {
-  InferRegleRule,
-  RegleRuleInit,
-  RegleRuleMetadataDefinition,
-  RegleUniversalParams,
-} from '../../types';
+import type { InferRegleRule, RegleRuleInit, RegleRuleMetadataDefinition, RegleUniversalParams } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
 
@@ -63,12 +58,14 @@ export function createRule<
       ruleFactory.validator = staticProcessors.validator;
       ruleFactory.message = staticProcessors.message;
       ruleFactory.active = staticProcessors.active;
+      ruleFactory.tooltip = staticProcessors.tooltip;
       ruleFactory.type = staticProcessors.type;
       ruleFactory.exec = staticProcessors.exec;
 
       ruleFactory._validator = staticProcessors.validator;
       ruleFactory._message = staticProcessors.message;
       ruleFactory._active = staticProcessors.active;
+      ruleFactory._tooltip = staticProcessors.tooltip;
       ruleFactory._type = definition.type;
       ruleFactory._patched = false;
       ruleFactory._async = isAsync as TAsync;

@@ -20,12 +20,9 @@ export interface RegleRuleDefinition<
     TParams,
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
-  message: RegleRuleDefinitionWithMetadataProcessor<
-    TFilteredValue,
-    PossibleRegleRuleMetadataConsumer,
-    string | string[]
-  >;
-  active: RegleRuleDefinitionWithMetadataProcessor<TFilteredValue, PossibleRegleRuleMetadataConsumer, boolean>;
+  message: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[];
+  active: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean;
+  tooltip: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[];
   type?: string;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
@@ -37,6 +34,7 @@ export interface $InternalRegleRuleDefinition extends RegleInternalRuleDefs<any,
   validator: RegleRuleDefinitionProcessor;
   message: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
   active: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
+  tooltip: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
   type?: string;
   exec: (value: any) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
 }

@@ -132,3 +132,28 @@ Will reset both your validation state and your form state to their initial value
 
 Clears the $externalResults state back to an empty object.
 
+
+
+## Specific properties for fields
+
+### `$rules`
+- Type: `Record<string, RegleRuleStatus>`
+
+This is reactive tree containing all the declared rules of your field.
+To know more about the rule properties check the [rules properties section](/core-concepts/rules-properties)
+
+
+## Specific properties for nested objects
+
+### `$fields`
+- Type: `Record<string, RegleStatu | RegleFieldStatus | RegleCollectionStatus>`
+
+This represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form.
+
+
+## Specific properties for collections
+
+
+### `$each`
+
+### `$field`

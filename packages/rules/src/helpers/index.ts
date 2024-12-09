@@ -1,4 +1,5 @@
 export { withMessage } from './withMessage';
+export { withTooltip } from './withTooltip';
 export { withAsync } from './withAsync';
 export { withParams } from './withParams';
 export { applyIf } from './applyIf';

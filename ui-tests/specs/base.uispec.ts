@@ -27,32 +27,24 @@ test('it should render the page correctly', async ({ index }) => {
 
   await index.page.isVisible('[data-testid=name] .errors');
 
-  await expect(index.page.locator('[data-testid=name] .errors')).toContainText(
-    'You need to provide a value'
-  );
-  await expect(index.page.locator('[data-testid=email] .errors')).toContainText(
-    'You need to provide a value'
-  );
+  await expect(index.page.locator('[data-testid=name] .errors')).toContainText('You need to provide a value');
+  await expect(index.page.locator('[data-testid=email] .errors')).toContainText('You need to provide a value');
   expect(await index.page.$('[data-testid=pseudo] .errors')).toBeNull();
   expect(await index.page.$('[data-testid=description] .errors')).toBeNull();
 
-  await expect(index.page.locator('[data-testid=project-0-name] .errors')).toContainText(
-    'You need to provide a value'
-  );
+  await expect(index.page.locator('[data-testid=project-0-name] .errors')).toContainText('You need to provide a value');
   await expect(index.page.locator('[data-testid=project-0-price] .errors')).toContainText(
     'You need to provide a value'
   );
   expect(await index.page.$('[data-testid=project-0-url] .errors')).toBeNull();
 
-  await expect(index.page.locator('[data-testid=password] .errors')).toContainText(
-    'You need to provide a value'
+  await expect(index.page.locator('[data-testid=password] .tooltips')).toContainText(
+    `At least one owercase letter (a-z)At least one uppercase letter (A-Z)At least one symbol ($€@&..)At least one number (0-9)At least 10 characters`
   );
   await expect(index.page.locator('[data-testid=confirmPassword] .errors')).toContainText(
     'You need to provide a value'
   );
-  await expect(index.page.locator('[data-testid=acceptTC] .errors')).toContainText(
-    'You need to accept T&C'
-  );
+  await expect(index.page.locator('[data-testid=acceptTC] .errors')).toContainText('You need to accept T&C');
 
   // Fill form
 
@@ -69,7 +61,7 @@ test('it should render the page correctly', async ({ index }) => {
   expect(await index.page.$('[data-testid=project-0-price] .errors')).toBeNull();
 
   await index.page.locator('[data-testid=password] input').fill('abcABC$$1');
-  expect(await index.page.$('[data-testid=password] .errors')).toBeNull();
+  expect(await index.page.$('[data-testid=password] .tooltips')).toBeNull();
 
   await index.page.locator('[data-testid=confirmPassword] input').fill('abcABC$$1');
   expect(await index.page.$('[data-testid=confirmPassword] .errors')).toBeNull();
