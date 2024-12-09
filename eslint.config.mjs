@@ -6,7 +6,7 @@ export default [
   ts.configs.base,
   ...eslintPluginVue.configs['flat/recommended'],
   {
-    files: ['**/*.ts', '*.vue', '**/*.vue', '**/*.spec.ts'],
+    files: ['**/*.ts', '*.vue', '**/*.vue', '**/*.spec.ts', 'packages/**'],
     languageOptions: {
       parserOptions: {
         parser: '@typescript-eslint/parser',
@@ -28,6 +28,9 @@ export default [
       '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
       '@typescript-eslint/no-explicit-any': 'off',
     },
+  },
+  {
+    ignores: ['**/.output/'],
   },
   prettierPlugin,
 ];
