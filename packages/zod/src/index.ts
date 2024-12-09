@@ -10,4 +10,5 @@ export type {
   ZodChild,
   toZod,
   PossibleDefTypes,
+  ZodRegleResult,
 } from './types';

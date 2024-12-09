@@ -119,5 +119,27 @@ describe('collections validations', () => {
     shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
   });
 
-  // TODO nested with filled arrays and reset
+  it('should behave correctly when changing order or deleting elements', async () => {
+    const { vm } = createRegleComponent(nestedCollectionRules);
+
+    vm.r$.$value.level0.push({ name: '', level1: [{ name: '' }] });
+    await nextTick();
+    vm.r$.$value.level0[0].level1[0].name = 'foo';
+    await nextTick();
+
+    shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+
+    vm.r$.$value.level0[0].level1.push({ name: '' });
+    await nextTick();
+    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
+
+    // Swap arrays
+    const cache = vm.r$.$value.level0[0].level1[0];
+    vm.r$.$value.level0[0].level1[0] = vm.r$.$value.level0[0].level1[1];
+    vm.r$.$value.level0[0].level1[1] = cache;
+    await nextTick();
+
+    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
+  });
 });

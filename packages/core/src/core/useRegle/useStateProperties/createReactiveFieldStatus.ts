@@ -11,10 +11,11 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
-import { debounce, isEmpty, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
+import { debounce, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { extractRulesErrors } from '../useErrors';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { isEmpty } from '../../../../../shared';
 
 interface CreateReactiveFieldStatusArgs {
   state: Ref<unknown>;

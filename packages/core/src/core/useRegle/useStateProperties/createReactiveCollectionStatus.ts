@@ -19,7 +19,6 @@ import type {
 } from '../../../types';
 import {
   cloneDeep,
-  isEmpty,
   isObject,
   randomId,
   resetArrayValuesRecursively,
@@ -30,6 +29,7 @@ import type { RegleStorage } from '../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveChildrenStatus } from './createReactiveNestedStatus';
+import { isEmpty } from '../../../../../shared';
 
 type StateWithId = unknown & { $id?: string };
 

@@ -1,4 +1,4 @@
-import { isEmpty } from './isEmpty';
+import { isEmpty } from '../../../../shared';
 
 export function isDate(value: unknown): value is Date {
   if (isEmpty(value)) {

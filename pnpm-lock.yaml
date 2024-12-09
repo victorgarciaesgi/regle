@@ -210,37 +210,6 @@ importers:
         specifier: 'catalog:'
         version: 2.1.10(typescript@5.6.3)
 
-  packages/examples/simple:
-    dependencies:
-      '@regle/core':
-        specifier: latest
-        version: 0.2.13(vue@3.5.11(typescript@5.6.3))
-      '@regle/rules':
-        specifier: latest
-        version: 0.2.13(vue@3.5.11(typescript@5.6.3))
-      vue:
-        specifier: 3.5.11
-        version: 3.5.11(typescript@5.6.3)
-    devDependencies:
-      '@tailwindcss/forms':
-        specifier: 0.5.9
-        version: 0.5.9(tailwindcss@3.4.16)
-      '@vitejs/plugin-vue':
-        specifier: ^5.2.1
-        version: 5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.11(typescript@5.6.3))
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.4.20(postcss@8.4.49)
-      postcss:
-        specifier: ^8.4.49
-        version: 8.4.49
-      tailwindcss:
-        specifier: ^3.4.16
-        version: 3.4.16
-      vite:
-        specifier: ^6.0.1
-        version: 6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1)
-
   packages/nuxt:
     dependencies:
       '@nuxt/kit':
@@ -378,6 +347,12 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 2.1.10(typescript@5.6.3)
+
+  packages/shared:
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 4.28.0
 
   packages/zod:
     dependencies:
@@ -1712,14 +1687,6 @@ packages:
     resolution: {integrity: sha512-8O2IdHCHU1EaGc74/Z5nTItfPrakvPEwZ6sf16c/u5ZJJBo3SKbqM2vOLk4spY4Tn0eaAwUxw2b0kXueemp+iw==}
     engines: {node: '>=14.19.0', npm: '>=7.0.0'}
 
-  '@regle/core@0.2.13':
-    resolution: {integrity: sha512-LAhCPOZ7TxjE/6nDeQ/5KuceVJ3pQaFSLpYURP90UXqGfrRh6H/BMiyGOBG0/sud0U9NavFOfFQ/ki8w3fTXNA==}
-    peerDependencies:
-      vue: ^3.1.0
-
-  '@regle/rules@0.2.13':
-    resolution: {integrity: sha512-xMKqqe8QfgjS1WyAH9UxyHIeoJAION/6arXBLHQw9mZfWqdcOL53G2QTGNYBkvDH6NLOc38KGWWf/IKuq8rsNA==}
-
   '@rollup/plugin-alias@5.1.1':
     resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
     engines: {node: '>=14.0.0'}
@@ -2068,11 +2035,6 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
-
-  '@tailwindcss/forms@0.5.9':
-    resolution: {integrity: sha512-tM4XVr2+UVTxXJzey9Twx48c1gcxFStqn1pQz0tRsX8o3DvxhN5oY5pvyAbUx7VTaZxpej4Zzvc6h+1RJBzpIg==}
-    peerDependencies:
-      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20'
 
   '@total-typescript/ts-reset@0.6.1':
     resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
@@ -4375,10 +4337,6 @@ packages:
   min-indent@1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
-
-  mini-svg-data-uri@1.4.4:
-    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
-    hasBin: true
 
   minimatch@3.0.8:
     resolution: {integrity: sha512-6FsRAQsxQ61mw+qP1ZzbL9Bc78x2p5OqNgNpnoAFLTrX8n5Kxph0CsnhmKKNXTWjXqU5L0pGPR7hYk+XWZr60Q==}
@@ -7632,16 +7590,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@regle/core@0.2.13(vue@3.5.11(typescript@5.6.3))':
-    dependencies:
-      vue: 3.5.11(typescript@5.6.3)
-
-  '@regle/rules@0.2.13(vue@3.5.11(typescript@5.6.3))':
-    dependencies:
-      '@regle/core': 0.2.13(vue@3.5.11(typescript@5.6.3))
-    transitivePeerDependencies:
-      - vue
-
   '@rollup/plugin-alias@5.1.1(rollup@3.29.5)':
     optionalDependencies:
       rollup: 3.29.5
@@ -8001,11 +7949,6 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tailwindcss/forms@0.5.9(tailwindcss@3.4.16)':
-    dependencies:
-      mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.4.16
-
   '@total-typescript/ts-reset@0.6.1': {}
 
   '@trysound/sax@0.2.0': {}
@@ -8320,11 +8263,6 @@ snapshots:
     dependencies:
       vite: 5.4.11(@types/node@22.9.3)(sass@1.81.0)(terser@5.36.0)
       vue: 3.5.13(typescript@5.6.3)
-
-  '@vitejs/plugin-vue@5.2.1(vite@6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.11(typescript@5.6.3))':
-    dependencies:
-      vite: 6.0.3(@types/node@22.9.3)(jiti@2.4.0)(sass@1.81.0)(terser@5.36.0)(yaml@2.6.1)
-      vue: 3.5.11(typescript@5.6.3)
 
   '@vitest/coverage-istanbul@2.1.5(vitest@2.1.5(@types/node@22.9.3)(happy-dom@15.11.6)(sass@1.81.0)(terser@5.36.0))':
     dependencies:
@@ -10826,8 +10764,6 @@ snapshots:
   mimic-fn@4.0.0: {}
 
   min-indent@1.0.1: {}
-
-  mini-svg-data-uri@1.4.4: {}
 
   minimatch@3.0.8:
     dependencies:

@@ -1,5 +1,4 @@
 import type { RegleCollectionStatus, RegleFieldStatus, RegleStatus } from '@regle/core';
-import { isEmpty } from '../../packages/core/src/utils';
 import type { ZodRegleCollectionStatus, ZodRegleFieldStatus, ZodRegleStatus } from '@regle/zod';
 
 type PossibleFields =

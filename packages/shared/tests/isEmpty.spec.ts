@@ -1,4 +1,4 @@
-import { isEmpty } from '../../../../../shared';
+import { isEmpty } from '../utils';
 
 describe('test the isEmpty helper', () => {
   it.each([

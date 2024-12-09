@@ -2,35 +2,13 @@ import type { RegleCommonStatus, RegleRuleStatus } from '@regle/core';
 import type { PartialDeep } from 'type-fest';
 import type { z } from 'zod';
 import type { toZod } from './zod.types';
+import type { ZodToRegleCollectionErrors, ZodToRegleErrorTree } from './errors.types';
 
 export interface ZodRegle<TState extends Record<string, any>, TSchema extends toZod<any>> {
   r$: ZodRegleStatus<TState, TSchema>;
 }
 
-// - Zod errors
-
-export type ZodToRegleErrorTree<TSchema extends toZod<any>> =
-  TSchema extends z.ZodObject<infer O>
-    ? {
-        readonly [K in keyof O]: ZodDefToRegleValidationErrors<O[K]>;
-      }
-    : never;
-
-export type ZodDefToRegleValidationErrors<TRule extends z.ZodTypeAny> =
-  TRule extends z.ZodArray<infer A>
-    ? ZodToRegleCollectionErrors<A>
-    : TRule extends z.ZodObject<any>
-      ? ZodToRegleErrorTree<TRule>
-      : string[];
-
-export type ZodToRegleCollectionErrors<TRule extends z.ZodTypeAny> = {
-  readonly $errors: string[];
-  readonly $each: ZodDefToRegleValidationErrors<TRule>[];
-};
-
-// - Zod status
-
-type ZodRegleResult<TSchema extends toZod<any>> =
+export type ZodRegleResult<TSchema extends toZod<any>> =
   | { result: false; data: PartialDeep<z.output<TSchema>> }
   | { result: true; data: z.output<TSchema> };
 

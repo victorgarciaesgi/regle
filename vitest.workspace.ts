@@ -9,7 +9,7 @@ export default defineWorkspace([
       testTimeout: 10000,
       environment: 'happy-dom',
       include: ['./packages/**/*.spec.ts', './tests/**/*.spec.ts'],
-      exclude: ['./packages/nuxt/**'],
+      exclude: ['./packages/nuxt/**', 'packages/**/node_modules/**'],
       typecheck: {
         enabled: true,
         include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],

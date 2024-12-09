@@ -9,10 +9,11 @@ import type {
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
 } from '../../../types';
-import { debounce, isEmpty } from '../../../utils';
+import { debounce } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';
+import { isEmpty } from '../../../../../shared';
 
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;

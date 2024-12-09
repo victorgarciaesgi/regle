@@ -1,0 +1,8 @@
+{
+  "name": "regle-shared",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "type-fest": "catalog:"
+  }
+}

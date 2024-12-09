@@ -3,7 +3,7 @@ packages:
   - packages/rules
   - packages/zod
   - packages/nuxt
-  - packages/examples/*
+  - packages/shared
   - playground/vue3
   - playground/nuxt
   - ui-tests/fixtures/ui-vue3

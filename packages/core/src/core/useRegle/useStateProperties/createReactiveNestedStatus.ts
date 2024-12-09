@@ -29,11 +29,12 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isEmpty, isObject, isRefObject, resetValuesRecursively } from '../../../utils';
+import { isObject, isRefObject, resetValuesRecursively } from '../../../utils';
 import type { RegleStorage } from '../../useStorage';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './createReactiveCollectionStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+import { isEmpty } from '../../../../../shared';
 
 interface CreateReactiveNestedStatus {
   rootRules?: Ref<$InternalReglePartialRuleTree>;
