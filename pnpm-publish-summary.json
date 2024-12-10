@@ -1,0 +1,20 @@
+{
+	"publishedPackages": [
+		{
+			"name": "@regle/core",
+			"version": "0.3.1-beta.2"
+		},
+		{
+			"name": "@regle/rules",
+			"version": "0.3.1-beta.2"
+		},
+		{
+			"name": "@regle/zod",
+			"version": "0.3.1-beta.2"
+		},
+		{
+			"name": "@regle/nuxt",
+			"version": "0.3.1-beta.2"
+		}
+	]
+}
