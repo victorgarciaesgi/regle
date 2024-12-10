@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.3.0",
+  "version": "0.3.1-beta.1",
   "private": true,
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
@@ -13,7 +13,8 @@
     "test": "pnpm run build:sourcemaps && pnpm run typecheck && vitest run && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
-    "release": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build && bumpp -r && pnpm run -r --filter='@regle/*' release && git push --follow-tags",
+    "release": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build && bumpp -r && git push --follow-tags",
+    "npm:publish": "tsx ./scripts/publish",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev",
     "ui-tests:server": "pnpm run -r --filter='ui-vue3' dev",
@@ -36,6 +37,7 @@
     "@vitest/coverage-v8": "2.1.8",
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "2.4.6",
+    "@types/semver": "7.5.8",
     "bumpp": "9.9.0",
     "changelogithub": "0.13.11",
     "check-password-strength": "2.0.10",
@@ -48,6 +50,7 @@
     "playwright": "1.49.0",
     "playwright-core": "1.49.0",
     "prettier": "catalog:",
+    "semver": "7.6.3",
     "sass": "1.82.0",
     "tsup": "catalog:",
     "typescript": "catalog:",
@@ -57,7 +60,9 @@
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:",
-    "zod": "3.23.8"
+    "zod": "3.23.8",
+    "zx": "8.2.4",
+    "tsx": "4.19.2"
   },
   "type": "module",
   "main": "./dist/module.cjs",
