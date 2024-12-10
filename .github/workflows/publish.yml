@@ -21,6 +21,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - uses: pnpm/action-setup@v4
       - run: pnpm i
+      - run: npx playwright install --with-deps
       - run: pnpm run test
       - run: pnpm run typecheck
       - run: pnpm run build
