@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.2.13",
+  "version": "0.3.0",
   "private": true,
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
