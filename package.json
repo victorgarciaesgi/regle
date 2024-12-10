@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.3.1-beta.1",
+  "version": "0.3.1-beta.2",
   "private": true,
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
@@ -14,7 +14,7 @@
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
     "release": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build && bumpp -r && git push --follow-tags",
-    "npm:publish": "tsx ./scripts/publish",
+    "npm:publish": "zx ./scripts/publish.mjs",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev",
     "ui-tests:server": "pnpm run -r --filter='ui-vue3' dev",

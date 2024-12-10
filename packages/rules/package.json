@@ -1,11 +1,10 @@
 {
   "name": "@regle/rules",
-  "version": "0.3.0",
+  "version": "0.3.1-beta.2",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
-    "release": "pnpm publish --report-summary",
     "build": "tsup --minify",
     "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",

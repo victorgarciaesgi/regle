@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "0.3.0",
+  "version": "0.3.1-beta.2",
   "description": "Regle nuxt module",
   "license": "MIT",
   "type": "module",
@@ -25,7 +25,6 @@
     "build": "pnpm run dev:prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
-    "release": "pnpm publish --report-summary",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch"
