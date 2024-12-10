@@ -18,21 +18,21 @@
     "vue": "catalog:"
   },
   "devDependencies": {
+    "@andypf/json-viewer": "2.1.7",
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^22.9.3",
-    "@vitejs/plugin-vue": "^5.2.0",
+    "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.0.0",
-    "@vue/eslint-config-typescript": "^14.0.1",
-    "@andypf/json-viewer": "2.1.7",
+    "@vue/eslint-config-typescript": "^14.1.4",
     "@vue/tsconfig": "^0.6.0",
-    "npm-run-all2": "^7.0.1",
-    "vite": "^5.4.8",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
+    "npm-run-all2": "^7.0.1",
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
+    "vite": "^5.4.8",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }

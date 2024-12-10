@@ -10,28 +10,28 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "pinia": "catalog:",
-    "vue": "catalog:",
-    "vue-router": "^4.4.5",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
-    "sass": "1.81.0",
-    "check-password-strength": "2.0.10"
+    "check-password-strength": "2.0.10",
+    "pinia": "catalog:",
+    "sass": "1.82.0",
+    "vue": "catalog:",
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/node": "^22.9.0",
-    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.5.1",
-    "npm-run-all2": "^7.0.1",
-    "typescript": "catalog:",
-    "prettier": "3.3.3",
-    "vite": "^5.4.10",
-    "vite-plugin-vue-devtools": "^7.5.4",
-    "vue-tsc": "catalog:",
-    "tailwindcss": "latest",
     "autoprefixer": "latest",
-    "postcss": "latest"
+    "npm-run-all2": "^7.0.1",
+    "postcss": "latest",
+    "prettier": "3.4.2",
+    "tailwindcss": "latest",
+    "typescript": "catalog:",
+    "vite": "^5.4.10",
+    "vite-plugin-vue-devtools": "^7.6.7",
+    "vue-tsc": "catalog:"
   }
 }

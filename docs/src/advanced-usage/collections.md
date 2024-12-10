@@ -101,7 +101,7 @@ Sometimes you not only want to validate each field in every element of the array
 
 You can do this exactly like a normal field.
 
-The errors can be displayed either by `r$.$errors.[field].$errors` or `r$.$fields.[field].$field.$errors`
+The errors can be displayed either by `r$.$errors.[field].$self` or `r$.$fields.[field].$field.$errors`
 
 
 ```ts twoslash

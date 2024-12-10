@@ -17,8 +17,8 @@
         </ul>
       </div>
     </div>
-    <ul v-if="r$.$errors.collection.$errors.length">
-      <li v-for="error of r$.$errors.collection.$errors" :key="error">
+    <ul v-if="r$.$errors.collection.$self.length">
+      <li v-for="error of r$.$errors.collection.$self" :key="error">
         {{ error }}
       </li>
     </ul>
