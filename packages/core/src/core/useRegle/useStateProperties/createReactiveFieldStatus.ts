@@ -209,14 +209,11 @@ export function createReactiveFieldStatus({
       });
 
       const $tooltips = computed<string[]>(() => {
-        if ($error.value) {
-          return extractRulesTooltips({
-            field: {
-              $rules: $rules.value,
-            },
-          });
-        }
-        return [];
+        return extractRulesTooltips({
+          field: {
+            $rules: $rules.value,
+          },
+        });
       });
 
       const $silentErrors = computed<string[]>(() => {

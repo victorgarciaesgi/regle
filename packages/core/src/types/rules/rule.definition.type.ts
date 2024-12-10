@@ -71,7 +71,7 @@ export type UnwrapRuleWithParams<T extends RegleRuleRaw<any> | undefined> =
  */
 export type RegleRuleMetadataDefinition = RegleRuleMetadataExtended | boolean;
 
-type DefaultMetadataProperties = Pick<ExcludeByType<RegleCommonStatus, Function>, '$invalid'>;
+type DefaultMetadataProperties = Pick<ExcludeByType<RegleCommonStatus, Function>, '$invalid' | '$dirty' | '$pending'>;
 
 /**
  * Will be used to consumme metadata on related helpers and rule status

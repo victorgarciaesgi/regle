@@ -61,6 +61,8 @@ export function createReactiveRuleStatus({
     scopeState = scope.run(() => {
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
         $invalid: !$valid.value,
+        $pending: $pending.value,
+        $dirty: $dirty.value,
         $params: $params.value,
         ...$metadata.value,
       }));
@@ -79,18 +81,18 @@ export function createReactiveRuleStatus({
 
       function computeRuleProcessor(key: 'message' | 'tooltip'): string | string[] {
         let result: string | string[] = '';
-        const customMessageRule = customMessages ? customMessages[ruleKey]?.[key] : undefined;
+        const customProcessor = customMessages ? customMessages[ruleKey]?.[key] : undefined;
 
-        if (customMessageRule) {
-          if (typeof customMessageRule === 'function') {
-            result = customMessageRule(state.value, $defaultMetadata.value);
+        if (customProcessor) {
+          if (typeof customProcessor === 'function') {
+            result = customProcessor(state.value, $defaultMetadata.value);
           } else {
-            result = customMessageRule;
+            result = customProcessor;
           }
         }
         if (isFormRuleDefinition(rule)) {
           const patchedKey = `_${key}_patched` as const;
-          if (!(customMessageRule && !rule.value[patchedKey])) {
+          if (!(customProcessor && !rule.value[patchedKey])) {
             if (typeof rule.value[key] === 'function') {
               result = rule.value[key](state.value, $defaultMetadata.value);
             } else {
@@ -106,7 +108,7 @@ export function createReactiveRuleStatus({
 
         if (isEmpty(message)) {
           message = 'Error';
-          if (typeof window !== 'undefined') {
+          if (typeof window !== 'undefined' && typeof process === 'undefined') {
             console.warn(`No error message defined for ${path}.${ruleKey}`);
           }
         }

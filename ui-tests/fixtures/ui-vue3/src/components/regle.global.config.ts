@@ -44,14 +44,17 @@ export const strongPassword = createRule({
   message(_, { result }) {
     return `Your password is ${result?.value.toLocaleLowerCase()}`;
   },
-  tooltip(_, { result }) {
-    let diversity = diversityTypes
-      .filter((f) => !result?.contains.includes(f))
-      .map((value) => diversityMessages[value]);
-    if ((result?.length ?? 0) < 10) {
-      diversity.push('At least 10 characters');
+  tooltip(_, { result, $dirty }) {
+    if ($dirty) {
+      let diversity = diversityTypes
+        .filter((f) => !result?.contains.includes(f))
+        .map((value) => diversityMessages[value]);
+      if ((result?.length ?? 0) < 8) {
+        diversity.push('At least 8 characters');
+      }
+      return diversity;
     }
-    return diversity;
+    return [];
   },
 });
 
