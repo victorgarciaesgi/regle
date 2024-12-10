@@ -54,11 +54,7 @@ export function withMessage<
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withMessage(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
-  newMessage: RegleRuleDefinitionWithMetadataProcessor<
-    any,
-    RegleRuleMetadataConsumer<any[], any>,
-    string | string[]
-  >
+  newMessage: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any[], any>, string | string[]>
 ): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any | Promise<any>>;
@@ -85,11 +81,11 @@ export function withMessage(
   const newParams = [...(_params ?? [])];
 
   newRule._params = newParams as any;
-  newRule._patched = true;
+  newRule._message_patched = true;
 
   if (typeof newRule === 'function') {
     const executedRule = newRule(...newParams);
-    executedRule._patched = true;
+    executedRule._message_patched = true;
     return executedRule;
   } else {
     return newRule;

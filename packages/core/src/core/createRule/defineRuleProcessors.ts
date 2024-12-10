@@ -82,7 +82,8 @@ export function defineRuleProcessors(
     _active: definition.active,
     _tooltip: definition.tooltip,
     _type: definition.type,
-    _patched: false,
+    _message_patched: false,
+    _tooltip_patched: false,
     _async: isAsync,
     _params: createReactiveParams<never>(params),
   };

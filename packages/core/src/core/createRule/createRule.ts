@@ -67,7 +67,8 @@ export function createRule<
       ruleFactory._active = staticProcessors.active;
       ruleFactory._tooltip = staticProcessors.tooltip;
       ruleFactory._type = definition.type;
-      ruleFactory._patched = false;
+      ruleFactory._message_pacthed = false;
+      ruleFactory._tooltip_pacthed = false;
       ruleFactory._async = isAsync as TAsync;
       return ruleFactory as any;
     } else {

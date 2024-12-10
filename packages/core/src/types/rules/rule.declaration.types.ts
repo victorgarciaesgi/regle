@@ -159,6 +159,11 @@ export type InlineRuleDeclaration<
 > = (value: Maybe<TValue>, ...args: UnwrapRegleUniversalParams<TParams>) => TReturn;
 
 /**
+ * @internal
+ */
+export type $InternalInlineRuleDeclaration = (value: Maybe<any>, ...args: any[]) => any;
+
+/**
  * @public
  * Regroup inline and registered rules
  * */

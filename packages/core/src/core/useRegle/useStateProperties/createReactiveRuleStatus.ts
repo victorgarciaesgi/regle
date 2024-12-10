@@ -1,11 +1,13 @@
 import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, watch } from 'vue';
+import { isEmpty } from '../../../../../shared';
 import type {
+  $InternalInlineRuleDeclaration,
+  $InternalRegleRuleDefinition,
   $InternalRegleRuleMetadataConsumer,
   $InternalRegleRuleStatus,
   CustomRulesDeclarationTree,
   InlineRuleDeclaration,
-  RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
 } from '../../../types';
@@ -13,12 +15,11 @@ import { debounce } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';
-import { isEmpty } from '../../../../../shared';
 
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
-  rule: Ref<InlineRuleDeclaration<any, any[], any> | RegleRuleDefinition<any, any, any>>;
+  rule: Ref<$InternalInlineRuleDeclaration | $InternalRegleRuleDefinition>;
   $dirty: Ref<boolean>;
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
@@ -88,7 +89,8 @@ export function createReactiveRuleStatus({
           }
         }
         if (isFormRuleDefinition(rule)) {
-          if (!(customMessageRule && !rule.value._patched)) {
+          const patchedKey = `_${key}_patched` as const;
+          if (!(customMessageRule && !rule.value[patchedKey])) {
             if (typeof rule.value[key] === 'function') {
               result = rule.value[key](state.value, $defaultMetadata.value);
             } else {
@@ -104,7 +106,9 @@ export function createReactiveRuleStatus({
 
         if (isEmpty(message)) {
           message = 'Error';
-          console.warn(`No error message defined for ${path}.${ruleKey}`);
+          if (typeof window !== 'undefined') {
+            console.warn(`No error message defined for ${path}.${ruleKey}`);
+          }
         }
 
         return message;

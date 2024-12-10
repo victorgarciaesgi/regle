@@ -83,9 +83,11 @@ export function withTooltip(
   const newParams = [...(_params ?? [])];
 
   newRule._params = newParams as any;
+  newRule._tooltip_patched = true;
 
   if (typeof newRule === 'function') {
     const executedRule = newRule(...newParams);
+    newRule._tooltip_patched = true;
     return executedRule;
   } else {
     return newRule;
