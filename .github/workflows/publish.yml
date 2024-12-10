@@ -1,6 +1,12 @@
 name: npm-publish
+
+permissions:
+  contents: write
+
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +21,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - uses: pnpm/action-setup@v4
       - run: pnpm i
-      - run: pnpm run publish
       - run: pnpm run test
       - run: pnpm run typecheck
       - run: pnpm run build
