@@ -23,14 +23,14 @@ import { createRule } from '@regle/core';
 import { ruleHelpers } from '@regle/rules';
 
 export const required = createRule({
-  type: 'required',
   validator: (value: unknown) => {
     return ruleHelpers.isFilled(value);
   },
   message: 'This field is required',
 });
 ```
-Let's break down the options 
+
+Let's break down the possible options
 
 ### `validator`
 _**Type**_: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
@@ -40,7 +40,7 @@ _**Type**_: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any
 The `validator` function is what should define if the field is valid or not. You can write it exactly like a Inline rule.
 
 ### `message`
-_**Type**_: `string | (value, ...metadata) => (string | string[])`
+_**Type**_: `string | string[] | (metadata) => (string | string[])`
 
 *required*
 
@@ -55,41 +55,110 @@ This property define a type of validator, because multiple rules can share the s
 
 
 ### `active`
-_**Type**_: `boolean | (value, ...metadata) => boolean`
+_**Type**_: `boolean | (metadata) => boolean`
 
 *optional*
 
 This will define the `$active` state of the rule. This will compute wether or not the rule is currently validating or not (More informations on the [Parameters and active mode](#parameters-and-active-mode))
 
 
+### `tooltip`
+_**Type**_: `string | string[] | (metadata) => (string | string[])`
+
+*optional*
+
+When you want to display messages for your field without necessarely being an error you can use the `tooltip` option.
+The aggregated tooltips will be available though `$field.xxx.$tooltips`.
+
 
 ## Parameters and active mode
 
 With `createRule` you can easily define a rule that will depends on external parameters, and having an `$active` state
 
-Regle will detect that your validator requires parameters and transform your rule to a function accepting the params you declared as either a raw value, a Ref, or a getter function.
+When declaring your validator, **regle** will detect that you rule needs parameters and make it a function declaration.
+```ts twoslash
+// @noErrors
+import { createRule } from '@regle/core';
+// ---cut---
+export const myValidator = createRule({
+  validator: (value: Maybe<string>, arg: number) => {
+    // any logic
+  },
+  message: '--',
+});
+```
 
-```ts
-myValidator(5);
+What makes using `createRule` easier, is that it automaticaly register the parameters as reactive dependencies.
+
+You rule is now usable with either a **plain value**, a **ref** or a **getter value**.
+
+```ts twoslash
+import {ref} from 'vue';
+import { createRule, useRegle, type Maybe } from '@regle/core';
+// ---cut---
+export const myValidator = createRule({
+  validator: (value: Maybe<string>, arg: number) => {
+    return true;
+  },
+  message: '--',
+});
+//---cut---
 const max = ref(5);
-myValidator(max)
-myValidator(() => max.value)
+
+useRegle({name: ''},{
+  name: {
+    // Plain value
+    rule1: myValidator(5),
+    // Ref
+    rule2: myValidator(max),
+    // Getter value
+    rule3: myValidator(() => max.value)
+  }
+})
 ```
 
 :::warning
 If you pass a raw value as a parameter, it will only be reactive if all your rules are declared as a computed or a getter function
 
 ```ts
-// Getter rule function
-useRegle({}, () => ({}))
+const state = ref({name: ''})
+const max = ref(5);
 
-const rules = computed(() => ({}))
-useRegle({}, rules);
+// ⚠️ Not reactive
+useRegle(state, {
+  name: {
+    maxLength: maxLength(max.value),
+    ...(max.value === 3 && {
+      required,
+    })
+  }
+})
+
+// ✅ Reactive
+useRegle(state, () => ({
+  name: {
+    maxLength: maxLength(max.value),
+    ...(max.value === 3 && {
+      required,
+    })
+  }
+}))
+
+// ✅ Reactive
+const rules = computed(() => ({
+  name: {
+    maxLength: maxLength(max.value),
+    ...(max.value === 3 && {
+      required,
+    })
+  }
+}))
+useRegle(state, rules);
 
 ```
 :::
 
-Exemple: Recreating `requiredIf` rules
+### Example: Recreating `requiredIf` rules
 
 
 ::: code-group
@@ -100,7 +169,6 @@ import { ruleHelpers } from '@regle/rules';
 import { ref } from 'vue';
 
 export const requiredIf = createRule({
-  type: 'required',
   validator(value: unknown, condition: boolean) {
     // Params like `condition` will always be unwrapped here
     // no need to check if it's a value, a ref or a getter function
@@ -224,7 +292,7 @@ Like in inline rules, you can return any data from your validator function as lo
 
 It can be useful for returning computed data from the validator, or in async function to process api result, or api errors.
 
-```ts twoslash {9}
+```ts twoslash {8}
 import { createRule } from '@regle/core';
 
 export const example = createRule({

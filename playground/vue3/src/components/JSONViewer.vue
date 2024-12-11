@@ -8,7 +8,7 @@ import { useTemplateRef, watch } from 'vue';
 const json = useTemplateRef('json');
 
 const props = defineProps<{
-  data: any;
+  data: unknown;
 }>();
 
 watch(

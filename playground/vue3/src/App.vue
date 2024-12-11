@@ -1,17 +1,10 @@
 <template>
   <!-- <TestForm /> -->
-  <Test13 />
+  <Test14 />
 </template>
 
 <script setup lang="ts">
-import TestForm from './components/TestForm.vue';
-import TestF12 from './components/Test12.vue';
-import Test13 from './components/Test13.vue';
-
-import { useRegle, type RegleComputedRules } from '@regle/core';
-import { computed, ref, version } from 'vue';
-
-console.log(version);
+import Test14 from './components/Test14.vue';
 
 // const form = ref({ name: [{ foo: '' }] });
 

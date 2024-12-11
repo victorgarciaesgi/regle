@@ -20,7 +20,7 @@ interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
   rule: Ref<$InternalInlineRuleDeclaration | $InternalRegleRuleDefinition>;
-  $dirty: Ref<boolean>;
+  $dirty: Readonly<Ref<boolean>>;
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   storage: RegleStorage;
@@ -108,10 +108,10 @@ export function createReactiveRuleStatus({
         let message = computeRuleProcessor('message');
 
         if (isEmpty(message)) {
-          message = 'Error';
-          if (typeof window !== 'undefined' && typeof process === 'undefined') {
-            console.warn(`No error message defined for ${path}.${ruleKey}`);
-          }
+          message = 'This field is not valid';
+          // if (typeof window !== 'undefined' && typeof process === 'undefined') {
+          //   console.warn(`No error message defined for ${path}.${ruleKey}`);
+          // }
         }
 
         return message;

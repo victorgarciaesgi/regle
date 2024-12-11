@@ -3,7 +3,6 @@
   "version": "0.3.3",
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
-    "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
     "build": "tsup --minify",
     "build:sourcemaps": "tsup --clean false --sourcemap inline",
@@ -59,5 +58,18 @@
     "name": "Victor Garcia",
     "url": "https://github.com/victorgarciaesgi"
   },
+  "keywords": [
+    "vue forms",
+    "vue validation library",
+    "vue forms typescript",
+    "vue model validation",
+    "vue zod",
+    "vue typescript forms",
+    "regle",
+    "reglejs",
+    "regle vue",
+    "regle vue forms",
+    "regle vue form"
+  ],
   "license": "MIT"
 }

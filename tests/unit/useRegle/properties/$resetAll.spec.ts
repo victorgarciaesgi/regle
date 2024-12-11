@@ -1,15 +1,17 @@
 import { useRegle } from '@regle/core';
-import { email, required } from '@regle/rules';
+import { email, required, requiredIf } from '@regle/rules';
 import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,
+  shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 
 export function simpleNestedStateInitialState() {
+  const condition = ref(false);
   const form = ref({
     email: 'hello',
     user: {
@@ -19,18 +21,21 @@ export function simpleNestedStateInitialState() {
     contacts: [{ name: 'contact1' }],
   });
 
-  return useRegle(form, {
-    email: { required: required, email },
-    user: {
-      firstName: { required },
-      lastName: { required },
-    },
-    contacts: {
-      $each: {
-        name: { required },
+  return {
+    condition,
+    ...useRegle(form, {
+      email: { required: requiredIf(condition), email },
+      user: {
+        firstName: { required },
+        lastName: { required },
       },
-    },
-  });
+      contacts: {
+        $each: {
+          name: { required },
+        },
+      },
+    }),
+  };
 }
 
 describe('.$resetAll', () => {
@@ -59,6 +64,14 @@ describe('.$resetAll', () => {
     shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
     shouldBeValidField(vm.r$.$fields.user.$fields.lastName);
     shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+
+    vm.r$.$value.email = '';
+    await nextTick();
+    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+
+    vm.condition = true;
+    await nextTick();
+    shouldBeErrorField(vm.r$.$fields.email);
 
     vm.r$.$resetAll();
 

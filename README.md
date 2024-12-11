@@ -55,17 +55,14 @@ TODO
 
 - [x] Unit tests
 - [x] E2E tests
-- [ ] Type tests
-- [ ] Simplify/reduce core code
-- [ ] `tip` on createRule
 - [ ] Example repo, Reproduction repl
+- [ ] Type tests
 
 ### Next iterations
 
 - [ ] `Valibot` support
 - [ ] `Yup` support
 - [ ] TS docs
-- [ ] `withErrorType`
 
 ### 🤔 Maybe in roadmap
 

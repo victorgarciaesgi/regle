@@ -4,40 +4,24 @@ title: useRegle
 
 # `useRegle`
 
-`useRegle` is the core of all your forms. This composable takes a state and a set of rules as inputs and provides everything you need as output.
+`useRegle` is the core of the validation logic.
 
-Let’s look at a simple example to understand how it works:
+It takes as input:
 
-``` ts twoslash [useRegle.ts]
+- Your **state** (either plain object, `ref`, `reactive`, or nested `refs`)
+- Your **rules** that will match de structure of your state
+- (Optional) Your modifiers
+
+<br/>
+
+```vue [App.vue]
+<script setup lang='ts'>
 import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle({ name: '' }, {
-  name: {
-    // rules
-  }
-})
+const { r$ } = useRegle(/* state */, /* rules */, /* modifiers */);
+</script>
 ```
 
-## `r$`
-
-If you’ve used Vuelidate before, useRegle functions similarly to `v$`.
-
-Regle is a reactive object containing various computed properties and methods that you can freely use based on your requirements.
-
-You can find all the [available properties here](/core-concepts/validation-properties)
-
-``` ts twoslash
-// @noErrors
-import { useRegle } from '@regle/core';
-import { required } from '@regle/rules';
-
-const { r$ } = useRegle({ name: '' }, {
-  name: { required }
-})
-
-r$.$fields.
-//         ^|
-```
 
 ## State
 
@@ -54,24 +38,59 @@ If you pass a reactive state, you have the flexibility to bind your model either
 
 ## Rules
 
-The second parameter of `useRegle` is the rules declaration, you can declare a tree matching your input state. Each property can then declare a record of validation rules to define its `$invalid` state.
+The second parameter of `useRegle` is the rules declaration, you can declare a tree matching your input state. 
+
+Each property can then declare a record of validation rules to define its `$invalid` state.
+
 Regle provide a list of default rules that you can use from `@regle/rules`.
 
 You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
-``` ts twoslash 
-// @noErrors
-import { useRegle } from '@regle/core';
-import { required, num } from '@regle/rules';
-//                    ^|
+<br/>
 
-const { r$ } = useRegle({ title: '', user: { firstName: '', lastName: '' }}, {
+``` ts twoslash 
+import {ref} from 'vue';
+// @noErrors
+// ---cut---
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+
+const state = ref({ 
+  user: { 
+    firstName: '', 
+    lastName: '' 
+  }
+  title: '', 
+})
+
+const { r$ } = useRegle(state, {
   user: {
     firstName: { required },
     lastName: { required },
   },
-  title: { "" }
+  title: { m }
   //        ^|
 })
+```
+
+## `r$`
+
+If you’ve used Vuelidate before, useRegle behave similarly to `v$`.
+
+Regle is a reactive object containing various computed properties and methods that you can freely use based on your requirements.
+
+You can find all the [available properties here](/core-concepts/validation-properties)
+
+``` ts twoslash
+// @noErrors
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+
+const { r$ } = useRegle({ email: '' }, {
+  email: { required }
+})
+
+r$.$fields.
+//         ^|
 ```
 

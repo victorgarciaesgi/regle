@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
 import { useRegle } from '@regle/core';
-import { maxLength, minLength, required } from '@regle/rules';
+import { minLength, required } from '@regle/rules';
+import { ref } from 'vue';
 
 const data = ref<{ name: string }>({
   name: '',

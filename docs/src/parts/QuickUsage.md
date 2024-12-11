@@ -1,9 +1,10 @@
 ``` vue twoslash [App.vue]
 <template>
-  <input v-model='r$.$value.email' placeholder='Type your email'/>
+  <input v-model='r$.$fields.email.$value' 
+    :class="{error: r$.$fields.email.$error}" 
+    placeholder='Type your email'/>
   <ul>
-    <li v-for="error of r$.$errors.email" :key='error'>
-      //                            ^?
+    <li v-for="error of r$.$fields.email.$errors" :key='error'>
       {{ error }}
     </li>
   </ul>

@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, triggerRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, toRef, triggerRef, unref, watch, watchEffect } from 'vue';
 import { isEmpty } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -364,12 +364,11 @@ export function createReactiveNestedStatus({
     });
   }
 
-  function $resetAll() {
+  async function $resetAll() {
     $unwatch();
     resetValuesRecursively(state, initialState ?? {});
-    createReactiveFieldsStatus(false);
     $reset();
-    $watch();
+    createReactiveFieldsStatus();
   }
 
   function $extractDirtyFields(filterNullishValues: boolean = true): Record<string, any> {

@@ -389,6 +389,7 @@ export function createReactiveFieldStatus({
   function $reset(): void {
     $clearExternalErrors();
     $dirty.value = false;
+    storage.setDirtyEntry(path, false);
     Object.entries($rules.value).forEach(([key, rule]) => {
       rule.$reset();
     });

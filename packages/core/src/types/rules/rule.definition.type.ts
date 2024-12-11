@@ -32,9 +32,9 @@ export interface RegleRuleDefinition<
  * */
 export interface $InternalRegleRuleDefinition extends RegleInternalRuleDefs<any, any, any> {
   validator: RegleRuleDefinitionProcessor;
-  message: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
-  active: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
-  tooltip: RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
+  message: RegleRuleDefinitionWithMetadataProcessor<any, any, unknown>;
+  active: RegleRuleDefinitionWithMetadataProcessor<any, any, unknown>;
+  tooltip: RegleRuleDefinitionWithMetadataProcessor<any, any, unknown>;
   type?: string;
   exec: (value: any) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
 }
