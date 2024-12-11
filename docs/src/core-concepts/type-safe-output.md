@@ -12,18 +12,22 @@ Inspired by the `Zod` parse output type, `Regle` will also infer your validator 
 
 ## `r$.$validate`
 
-Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and a object containing the `result` and the `data` of your form.
+Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return a object containing the status of your form.
 
-If your `result` is `true`, the `data` will be type safe.
+```ts
+const {result, data} = await r$.$validate();
+```
 
-It will check if the `required` rule is present, but it will not work with `required: requiredIf(...)`, because we can't know the condition at build time.
+If your *_result_* is `true`, the **data** will be type safe.
+
+It will check if the `required` rule is present, but it will not work with `requiredIf` or `requiredUnless`, because we can't know the condition at build time.
 
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
 import {ref, type Ref, computed} from 'vue';
 import {required} from '@regle/rules';
-
+// ---cut---
 type Form = {
   firstName?: string;
   lastName?: string;

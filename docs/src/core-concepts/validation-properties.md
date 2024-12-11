@@ -69,7 +69,7 @@ A reference to the original validated model. It can be used to bind your form wi
 
 Indicates if any child async rule is currently pending. Always false if all rules are synchronous.
 
-### `$ready`: 
+### `$ready`
 - Type: `readonly boolean`
 
 A computed state indicating if your form is ready to submit (to compute a disabled state on a button). It's equivalent to `!$invalid && !$pending`.

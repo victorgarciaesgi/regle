@@ -48,7 +48,9 @@ You can find the [list of built-in rules here](/core-concepts/rules/built-in-rul
 
 <br/>
 
-``` ts twoslash 
+``` vue twoslash [App.vue]
+<script setup lang='ts'>
+
 import {ref} from 'vue';
 // @noErrors
 // ---cut---
@@ -71,6 +73,8 @@ const { r$ } = useRegle(state, {
   title: { m }
   //        ^|
 })
+</script>
+
 ```
 
 ## `r$`
@@ -81,7 +85,8 @@ Regle is a reactive object containing various computed properties and methods th
 
 You can find all the [available properties here](/core-concepts/validation-properties)
 
-``` ts twoslash
+``` vue twoslash [App.vue]
+<script setup lang='ts'>
 // @noErrors
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
@@ -92,5 +97,7 @@ const { r$ } = useRegle({ email: '' }, {
 
 r$.$fields.
 //         ^|
+</script>
+
 ```
 

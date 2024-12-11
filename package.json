@@ -62,7 +62,11 @@
     "vue-tsc": "catalog:",
     "zod": "3.23.8",
     "zx": "8.2.4",
-    "tsx": "4.19.2"
+    "tsx": "4.19.2",
+    "tailwindcss": "3.4.16",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "@tailwindcss/forms": "0.5.9"
   },
   "type": "module",
   "main": "./dist/module.cjs",

@@ -27,6 +27,12 @@ It's heavily inspired by Vuelidate.
 
 [![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
 
+## 🎮 Play with it
+
+| Simple demo  | Advanced Demo |
+| ------------- | ------------- |
+| [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-simple-demo)  | TODO  |
+
 ## 🧰 Features
 - ✅ Typescript first
 - 🤖 100% type inference
@@ -36,9 +42,7 @@ It's heavily inspired by Vuelidate.
 - 🪶 Light (~6kb gzip)
 - 🛒 Collection validation
 
-## 🎮 Play with it
 
-TODO
 
 
 ## Compatibility:

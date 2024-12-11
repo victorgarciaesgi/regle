@@ -1,5 +1,5 @@
-import { h } from 'vue';
-import type { Theme } from 'vitepress';
+import { h, nextTick, onMounted, watch } from 'vue';
+import { useRoute, type Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import './style.css';
 import './custom.scss';
@@ -8,15 +8,35 @@ import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client';
 import type { EnhanceAppContext } from 'vitepress';
 import 'virtual:group-icons.css';
 import { createPinia } from 'pinia';
+import './tailwind.postcss';
 
 export default {
   extends: DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {});
   },
-  enhanceApp({ app }: EnhanceAppContext) {
+  enhanceApp({ app, router }: EnhanceAppContext) {
     app.use(TwoslashFloatingVue as any);
     const pinia = createPinia();
     app.use(pinia);
+
+    onMounted(async () => {
+      await nextTick(() => scrollToActiveSidebarItem());
+    });
+
+    watch(
+      () => router.route.path,
+      () =>
+        nextTick(() => {
+          scrollToActiveSidebarItem();
+        })
+    );
   },
 } satisfies Theme;
+
+function scrollToActiveSidebarItem() {
+  const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
+  if (activeLink) {
+    activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
