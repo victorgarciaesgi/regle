@@ -108,7 +108,7 @@ export type RegleRuleDecl<
  * @internal
  * @reference {@link RegleRuleDecl}
  */
-export type $InternalRegleRuleDecl = Record<string, FormRuleDeclaration<any, any>>;
+export type $InternalRegleRuleDecl = FieldRegleBehaviourOptions & Record<string, FormRuleDeclaration<any, any>>;
 
 /**
  * @public

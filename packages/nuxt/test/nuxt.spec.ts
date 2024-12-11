@@ -10,6 +10,6 @@ describe('ssr', async () => {
 
   it('renders the index page', async () => {
     const html = await $fetch('/');
-    expect(html).toContain('<div>hello</div>');
+    expect(html).toContain('<div>Hello</div>');
   });
 });

@@ -11,6 +11,7 @@ function simpleNestedStateWithMixedValidation() {
       lastName?: string;
     };
     contacts?: [{ name: string }];
+    collection?: [{ name: string }];
   }
 
   return useRegle({} as Form, {
@@ -22,6 +23,9 @@ function simpleNestedStateWithMixedValidation() {
       $each: {
         name: { required },
       },
+    },
+    collection: {
+      required,
     },
   });
 }
@@ -44,6 +48,9 @@ describe('$validate', () => {
         contacts: {
           name: string;
         }[];
+        collection: {
+          name: string;
+        }[];
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
@@ -54,6 +61,9 @@ describe('$validate', () => {
           lastName?: Maybe<string | undefined>;
         };
         contacts?: {
+          name?: Maybe<string>;
+        }[];
+        collection?: {
           name?: Maybe<string>;
         }[];
       }>();

@@ -1,4 +1,4 @@
-import { createRule, type RegleRuleDefinition } from '@regle/core';
+import { createRule, type RegleRuleDefinition, type RegleRuleWithParamsDefinition } from '@regle/core';
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
@@ -69,7 +69,7 @@ describe('createRule', () => {
       message: '',
     });
 
-    expect(await rule.exec('fooo')).toBe(false);
+    expect(rule.exec('fooo')).toBe(false);
   });
 
   it('should recognize mutliple parameters with default', async () => {
@@ -83,11 +83,15 @@ describe('createRule', () => {
     expect(rule().exec('fooo')).toBe(true);
     expect(rule(true).exec('fooo')).toBe(true);
     expect(rule(true, true).exec('fooo')).toBe(true);
+
+    expectTypeOf(rule).toEqualTypeOf<
+      RegleRuleWithParamsDefinition<unknown, [param?: any, param2?: any], false, true>
+    >();
   });
 
   it('should recognize mutliple parameters with spread', async () => {
     const rule = createRule({
-      validator(value, ...params: any[]) {
+      validator(value, ...params: boolean[]) {
         return true;
       },
       message: '',
@@ -96,5 +100,7 @@ describe('createRule', () => {
     expect(rule().exec('fooo')).toBe(true);
     expect(rule(true).exec('fooo')).toBe(true);
     expect(rule(true, true).exec('fooo')).toBe(true);
+
+    expectTypeOf(rule).toEqualTypeOf<RegleRuleWithParamsDefinition<unknown, boolean[], false, true>>();
   });
 });
