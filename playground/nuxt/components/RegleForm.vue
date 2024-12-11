@@ -98,8 +98,7 @@ const { r$ } = useRegle(
       required,
       foo: withMessage(
         and(asyncEmail(2), maxLength(6)),
-        (_, { $params: [limit, max], foo }) =>
-          `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
+        ({ $params: [limit, max], foo }) => `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
       ),
       $debounce: 300,
     },
@@ -107,7 +106,7 @@ const { r$ } = useRegle(
       ...(limit.value === 2 && { required }),
       not: not(
         sameAs(() => form.email),
-        (_, { $params: [target] }) => `Should not be same as email (${target})`
+        ({ $params: [target] }) => `Should not be same as email (${target})`
       ),
     },
     birthDate: {

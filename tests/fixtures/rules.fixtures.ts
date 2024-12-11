@@ -61,7 +61,7 @@ export const ruleMockIsEqualParam = createRule({
     }
     return true;
   },
-  message(value, { $params: [foo] }) {
+  message({ $params: [foo] }) {
     return `Error, received: ${foo}`;
   },
 });
@@ -74,7 +74,7 @@ export const ruleMockIsEqualParamAsync = createRule({
     }
     return true;
   },
-  message(value, { $params: [foo] }) {
+  message({ $params: [foo] }) {
     return `Error, received: ${foo}`;
   },
 });

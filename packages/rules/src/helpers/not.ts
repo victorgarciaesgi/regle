@@ -12,18 +12,14 @@ import { ruleHelpers } from './ruleHelpers';
 export function not<
   TValue,
   TParams extends any[] = [],
-  TReturn extends
-    | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule:
-    | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-    | InlineRuleDeclaration<TValue, TParams, TReturn>,
+  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> | InlineRuleDeclaration<TValue, TParams, TReturn>,
   message?: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetadata>,
+    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
@@ -61,7 +57,7 @@ export function not<
 
   const newRule = createRule({
     type: 'not',
-    validator: newValidator as any,
+    validator: newValidator,
     message: (message as any) ?? 'Error',
   });
 

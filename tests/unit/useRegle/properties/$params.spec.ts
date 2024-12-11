@@ -57,7 +57,7 @@ describe('$params', () => {
       validator(value: Maybe<string>, min: number) {
         return (value?.length ?? 0) >= min;
       },
-      message(value, { $params: [min] }) {
+      message({ $params: [min] }) {
         return `Error: ${min}`;
       },
     });
@@ -212,7 +212,7 @@ describe('$params', () => {
         await timeout(1000);
         return (value?.length ?? 0) >= min;
       },
-      message(value, { $params: [min] }) {
+      message({ $params: [min] }) {
         return `Error: ${min}`;
       },
     });

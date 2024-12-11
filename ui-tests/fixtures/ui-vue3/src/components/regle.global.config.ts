@@ -41,10 +41,10 @@ export const strongPassword = createRule({
     }
     return { $valid: true };
   },
-  message(_, { result }) {
+  message({ result }) {
     return `Your password is ${result?.value.toLocaleLowerCase()}`;
   },
-  tooltip(_, { result, $dirty }) {
+  tooltip({ result, $dirty }) {
     if ($dirty) {
       let diversity = diversityTypes
         .filter((f) => !result?.contains.includes(f))

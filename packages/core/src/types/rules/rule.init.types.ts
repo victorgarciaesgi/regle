@@ -10,7 +10,7 @@ export type RegleInitPropertyGetter<
   TReturn,
   TParams extends [...any[]],
   TMetadata extends RegleRuleMetadataDefinition,
-> = TReturn | ((value: Maybe<TValue>, metadata: RegleRuleMetadataConsumer<TParams, TMetadata>) => TReturn);
+> = TReturn | ((metadata: RegleRuleMetadataConsumer<TValue, TParams, TMetadata>) => TReturn);
 
 /**
  * @argument
@@ -53,9 +53,9 @@ export interface RegleRuleCore<
  */
 export interface $InternalRegleRuleInit {
   validator: (value: any, ...args: any[]) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
-  message: string | string[] | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
-  active?: boolean | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => boolean);
-  tooltip?: string | string[] | ((value: any, metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
+  message: string | string[] | ((metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
+  active?: boolean | ((metadata: $InternalRegleRuleMetadataConsumer) => boolean);
+  tooltip?: string | string[] | ((metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   type?: string;
 }
 

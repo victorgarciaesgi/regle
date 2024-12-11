@@ -26,7 +26,7 @@ import { withMessage, minLength, required } from '@regle/rules';
 const {useRegle: useCustomRegle} = defineRegleConfig({
   rules: () => ({
     required: withMessage(required, 'You need to provide a value'),
-    minLength: withMessage(minLength, (value, { $params: [count] }) => {
+    minLength: withMessage(minLength, ({ $params: [count] }) => {
       return `Minimum length is ${count}. Current length: ${value?.length}`;
     })
   })

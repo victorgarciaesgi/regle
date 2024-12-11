@@ -20,9 +20,9 @@ export interface RegleRuleDefinition<
     TParams,
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
-  message: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[];
-  active: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean;
-  tooltip: (value: Maybe<TFilteredValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[];
+  message: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
+  active: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean;
+  tooltip: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
   type?: string;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
@@ -77,9 +77,10 @@ type DefaultMetadataProperties = Pick<ExcludeByType<RegleCommonStatus, Function>
  * Will be used to consumme metadata on related helpers and rule status
  */
 export type RegleRuleMetadataConsumer<
+  TValue extends any,
   TParams extends any[] = never,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
-> = DefaultMetadataProperties &
+> = { $value: Maybe<TValue> } & DefaultMetadataProperties &
   (TParams extends never
     ? {}
     : {
@@ -94,14 +95,15 @@ export type RegleRuleMetadataConsumer<
 /**
  * Will be used to consumme metadata on related helpers and rule status
  */
-export type PossibleRegleRuleMetadataConsumer = DefaultMetadataProperties & {
-  $params?: any[];
-};
+export type PossibleRegleRuleMetadataConsumer<TValue> = { $value: Maybe<TValue> } & DefaultMetadataProperties & {
+    $params?: any[];
+  };
 
 /**
  * @internal
  */
 export type $InternalRegleRuleMetadataConsumer = DefaultMetadataProperties & {
+  $value: Maybe<unknown>;
   $params?: any[];
   [x: string]: any;
 };
@@ -139,9 +141,9 @@ export type RegleRuleDefinitionProcessor<TValue extends any = any, TParams exten
 
 export type RegleRuleDefinitionWithMetadataProcessor<
   TValue extends any,
-  TMetadata extends RegleRuleMetadataConsumer<any, any>,
+  TMetadata extends RegleRuleMetadataConsumer<TValue, any>,
   TReturn = any,
-> = ((value: Maybe<TValue>, metadata: TMetadata) => TReturn) | TReturn;
+> = ((metadata: TMetadata) => TReturn) | TReturn;
 
 export type RegleCollectionRuleDefinition<
   TValue = any[],

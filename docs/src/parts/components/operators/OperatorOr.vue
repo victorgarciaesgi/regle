@@ -1,11 +1,7 @@
 <template>
   <div class="demo-container">
     <div>
-      <input
-        v-model="r$.$value.regex"
-        :class="{ valid: r$.$fields.regex.$valid }"
-        placeholder="Type your regex"
-      />
+      <input v-model="r$.$value.regex" :class="{ valid: r$.$fields.regex.$valid }" placeholder="Type your regex" />
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
     <ul v-if="r$.$errors.regex.length">
@@ -26,8 +22,7 @@ const { r$ } = useRegle(
     regex: {
       myError: withMessage(
         or(startsWith('^'), endsWith('$')),
-        (value, { $params: [start, end] }) =>
-          `Field should start with "${start}" or end with "${end}"`
+        ({ $params: [start, end] }) => `Field should start with "${start}" or end with "${end}"`
       ),
     },
   }

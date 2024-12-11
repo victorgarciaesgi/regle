@@ -31,7 +31,7 @@ export const dateAfter: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, { $params: [after], error }) => {
+  message: ({ $params: [after], error }) => {
     if (error === 'value-or-paramater-not-a-date') {
       return 'The inputs must be Dates';
     }

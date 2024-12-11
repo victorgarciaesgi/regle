@@ -31,7 +31,7 @@ export const dateBefore: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, { $params: [before], error }) => {
+  message: ({ $params: [before], error }) => {
     if (error === 'value-or-paramater-not-a-date') {
       return 'The fields must be Dates';
     }

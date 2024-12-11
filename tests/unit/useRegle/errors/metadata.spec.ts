@@ -11,15 +11,15 @@ function metadateRules() {
         (value: Maybe<string | any[]>, external) => ({ $valid: false, metaExternal: external, value }),
         [externalDep]
       ),
-      (_, { metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`
+      ({ metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`
     ),
-    (_, { metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`
+    ({ metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`
   );
   const createRuleMetadataRule = createRule({
     validator: (value: Maybe<string | any[]>, external) => ({ $valid: false, metaExternal: external, value }),
-    message: (_, { metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`,
-    tooltip: (_, { metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`,
-    active: (_, { $params: [external] }) => external === 'external',
+    message: ({ metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`,
+    tooltip: ({ metaExternal, value, $params: [external] }) => `${metaExternal}-${external}-${value?.length}`,
+    active: ({ $params: [external] }) => external === 'external',
   });
 
   const form = ref({

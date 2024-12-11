@@ -10,11 +10,7 @@ export const dateBetween: RegleRuleWithParamsDefinition<
   boolean
 > = createRule({
   type: 'dateBetween',
-  validator: (
-    value: Maybe<Date | string>,
-    before: Maybe<Date | string>,
-    after: Maybe<Date | string>
-  ) => {
+  validator: (value: Maybe<Date | string>, before: Maybe<Date | string>, after: Maybe<Date | string>) => {
     if (ruleHelpers.isDate(value) && ruleHelpers.isDate(before) && ruleHelpers.isDate(after)) {
       return (
         ruleHelpers.toDate(value).getTime() > ruleHelpers.toDate(before).getTime() &&
@@ -23,7 +19,7 @@ export const dateBetween: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: (_, { $params: [before, after] }) => {
+  message: ({ $params: [before, after] }) => {
     return `The date must be between ${formatLocaleDate(before)} and ${formatLocaleDate(after)}`;
   },
 });

@@ -8,12 +8,8 @@
       <!-- Shipment Reference Number -->
       <div class="mt-4 flex flex-col gap-2">
         <div class="flex gap-2">
-          <label class="font-medium uppercase text-xs text-gray-400"
-            >Shipment Reference Number</label
-          >
-          <span class="text-red-600 relative -top-1" v-if="r$.$fields.referenceNumber.$isRequired"
-            >*</span
-          >
+          <label class="font-medium uppercase text-xs text-gray-400">Shipment Reference Number</label>
+          <span class="text-red-600 relative -top-1" v-if="r$.$fields.referenceNumber.$isRequired">*</span>
         </div>
 
         <input
@@ -182,7 +178,7 @@ const minWeightRule = createRule({
   validator(value: Maybe<number | string>, min: number, condition: boolean) {
     return Number(value) >= min && condition === false;
   },
-  message: (_, { $params: [min, condition] }) => `No good: ${min} ${condition}`,
+  message: ({ $params: [min, condition] }) => `No good: ${min} ${condition}`,
 });
 
 // Test index & argument

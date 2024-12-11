@@ -45,7 +45,7 @@ export function applyIf<
     return true;
   }
 
-  function newActive(value: any, metadata: RegleRuleMetadataConsumer<any[], any>) {
+  function newActive(metadata: RegleRuleMetadataConsumer<any[], any>) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
     return condition;
   }

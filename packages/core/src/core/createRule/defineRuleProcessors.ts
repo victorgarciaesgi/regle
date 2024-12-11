@@ -19,19 +19,19 @@ export function defineRuleProcessors(
     validator(value: any, ...args: any[]) {
       return definition.validator(value, ...unwrapRuleParameters(args.length ? args : params));
     },
-    message(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
+    message(metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.message === 'function') {
-        return definition.message(value, {
+        return definition.message({
           ...metadata,
-          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
         });
       } else {
         return definition.message;
       }
     },
-    active(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
+    active(metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.active === 'function') {
-        return definition.active(value, {
+        return definition.active({
           ...metadata,
           $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
         });
@@ -39,9 +39,9 @@ export function defineRuleProcessors(
         return definition.active ?? true;
       }
     },
-    tooltip(value: any, metadata: $InternalRegleRuleMetadataConsumer) {
+    tooltip(metadata: $InternalRegleRuleMetadataConsumer) {
       if (typeof definition.tooltip === 'function') {
-        return definition.tooltip(value, {
+        return definition.tooltip({
           ...metadata,
           $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
         });

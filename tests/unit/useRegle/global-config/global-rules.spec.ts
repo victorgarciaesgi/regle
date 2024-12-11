@@ -7,7 +7,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 function nestedRefObjectValidation() {
   const { useRegle } = defineRegleConfig({
     rules: () => ({
-      minValue: withMessage(minValue, (_, { $params: [min] }) => `Patched min:${min}`),
+      minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
       rule: withMessage(ruleMockIsEven, 'Patched rule'),
     }),
   });

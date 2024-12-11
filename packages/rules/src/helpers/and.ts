@@ -1,8 +1,4 @@
-import type {
-  FormRuleDeclaration,
-  RegleRuleDefinition,
-  RegleRuleDefinitionProcessor,
-} from '@regle/core';
+import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleDefinitionProcessor } from '@regle/core';
 import { createRule } from '@regle/core';
 import type {
   ExtractValueFromRules,
@@ -67,7 +63,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
   function computeMetadata(
     results: (boolean | { $valid: boolean; [x: string]: any })[]
   ): boolean | { $valid: boolean; [x: string]: any } {
-    const isAnyResultMetaData = results.some((s) => typeof s !== 'boolean');
+    const isAnyResultMetaData = results?.some((s) => typeof s !== 'boolean');
     if (isAnyResultMetaData) {
       return {
         $valid: results.every((result) => {
@@ -109,7 +105,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
 
   const newRule = createRule({
     type: 'and',
-    validator: validator as any,
+    validator: validator,
     message: 'The value does not match all of the provided validators',
   });
 

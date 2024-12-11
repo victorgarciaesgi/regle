@@ -20,7 +20,7 @@ export function withMessage<
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TReturn extends Promise<infer M> ? M : TReturn>,
+    RegleRuleMetadataConsumer<TValue, TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
 ): InferRegleRule<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
@@ -34,7 +34,7 @@ export function withMessage<
   rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetadata>,
+    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
 ): RegleRuleWithParamsDefinition<TValue, TParams, TAsync>;
@@ -48,7 +48,7 @@ export function withMessage<
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TParams, TMetadata>,
+    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
@@ -72,13 +72,13 @@ export function withMessage(
   }
 
   const newRule = createRule({
-    type: _type as any,
-    validator: validator as any,
-    active: _active as any,
+    type: _type,
+    validator: validator,
+    active: _active,
     message: newMessage,
-  });
+  }) as RegleRuleRaw;
 
-  const newParams = [...(_params ?? [])];
+  const newParams = [...(_params ?? [])] as [];
 
   newRule._params = newParams as any;
   newRule._message_patched = true;

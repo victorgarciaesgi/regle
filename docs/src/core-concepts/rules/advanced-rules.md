@@ -109,10 +109,10 @@ export const requiredIf = createRule({
     }
     return true;
   },
-  message(value, {$params: [condition]}) {
+  message({ $params: [condition] }) {
     return `This field is required`,
   }
-  active(value, { $params: [condition] }) {
+  active({ $params: [condition] }) {
     return condition;
   },
 });
@@ -237,8 +237,8 @@ export const example = createRule({
     }
     return true;
   },
-  message(value, {foo}) {
-//                 ^?
+  message({foo}) {
+//           ^?
     return 'Error example';
   },
 });

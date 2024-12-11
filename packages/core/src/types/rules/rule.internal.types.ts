@@ -12,15 +12,9 @@ export interface RegleInternalRuleDefs<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > {
   _validator: (value: Maybe<TValue>, ...args: TParams) => TAsync extends false ? TMetadata : Promise<TMetadata>;
-  _message:
-    | string
-    | string[]
-    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
-  _active?: boolean | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => boolean);
-  _tooltip?:
-    | string
-    | string[]
-    | ((value: Maybe<TValue>, metadata: PossibleRegleRuleMetadataConsumer) => string | string[]);
+  _message: string | string[] | ((metadata: PossibleRegleRuleMetadataConsumer<TValue>) => string | string[]);
+  _active?: boolean | ((metadata: PossibleRegleRuleMetadataConsumer<TValue>) => boolean);
+  _tooltip?: string | string[] | ((metadata: PossibleRegleRuleMetadataConsumer<TValue>) => string | string[]);
   _type?: string;
   _message_patched: boolean;
   _tooltip_patched: boolean;

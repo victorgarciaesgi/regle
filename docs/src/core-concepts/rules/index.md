@@ -63,8 +63,8 @@ const {r$} = useRegle({name: ''}, {
     // You can also access current value and metadata with a getter function
     customRule3: withMessage(
       customRuleInlineWithMetaData, 
-      (value, {foo}) => `Custom Error: ${value} ${foo}`
-//              ^?
+      ({ $value, foo }) => `Custom Error: ${$value} ${foo}`
+//                 ^?
     ), 
   }
 })
@@ -156,8 +156,8 @@ const { r$ } = useRegle(
           async (value, param) => await someAsyncCall(param),
           [base]
         ),
-        (value, { $params: [param] }) => `Custom error: ${value} != ${param}`
-        //                   ^?
+        ({ $params: [param] }) => `Custom error: ${value} != ${param}`
+        //              ^?
       ),
     },
   }

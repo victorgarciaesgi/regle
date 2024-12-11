@@ -160,12 +160,12 @@ const { r$ } = useCustomRegle(form, {
   description: {
     minLength: withMessage(
       minLength(100),
-      (_, { $params: [min] }) => `Your description must be at least ${min} characters long`
+      ({ $params: [min] }) => `Your description must be at least ${min} characters long`
     ),
   },
   projects: {
     $autoDirty: false,
-    minLength: withMessage(minLength(1), (value, { $params: [min] }) => `You need at least ${min} project`),
+    minLength: withMessage(minLength(1), ({ $params: [min] }) => `You need at least ${min} project`),
     $each: {
       name: { required },
       price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },

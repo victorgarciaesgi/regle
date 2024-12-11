@@ -23,7 +23,7 @@ export const asyncEmail = createRule({
 
 export const { useRegle, inferRules } = defineRegleConfig({
   rules: () => ({
-    maxLength: withMessage(maxLength, (value, { $params: [count] }) => {
+    maxLength: withMessage(maxLength, ({ $params: [count] }) => {
       return `ehooo ${count} is max`;
     }),
     asyncEmail: withMessage(asyncEmail, () => ''),

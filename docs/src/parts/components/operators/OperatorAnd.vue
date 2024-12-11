@@ -26,8 +26,7 @@ const { r$ } = useRegle(
     regex: {
       myError: withMessage(
         and(startsWith('^'), endsWith('$')),
-        (value, { $params: [start, end] }) =>
-          `Field should start with "${start}" and end with "${end}"`
+        ({ $params: [start, end] }) => `Field should start with "${start}" and end with "${end}"`
       ),
     },
   }

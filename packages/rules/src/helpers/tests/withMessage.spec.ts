@@ -19,14 +19,14 @@ describe('withMessage helper', () => {
 
       return useRegle(form, () => ({
         email: {
-          email: withMessage(and(minLength(4), email), (value, { $params: [count] }) => {
+          email: withMessage(and(minLength(4), email), ({ $params: [count] }) => {
             return ['Must be email', `Must be min: ${count}`];
           }),
         },
         firstName: {
           required: withMessage(required, 'Required'),
-          minLength: withMessage(minLength(4), (value, { $params: [count] }) => {
-            return `Value: ${value} Min: ${count}`;
+          minLength: withMessage(minLength(4), ({ $value, $params: [count] }) => {
+            return `Value: ${$value} Min: ${count}`;
           }),
         },
         lastName: {
@@ -109,9 +109,7 @@ describe('withMessage helper', () => {
       >
     >();
 
-    expectTypeOf(
-      withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')
-    ).toEqualTypeOf<
+    expectTypeOf(withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
         [],
@@ -125,7 +123,7 @@ describe('withMessage helper', () => {
     >();
 
     expectTypeOf(
-      withMessage(and(minLength(4), email), (value, { $params: [count] }) => {
+      withMessage(and(minLength(4), email), ({ $params: [count] }) => {
         return ['Must be email', `Must be min: ${count}`];
       })
     ).toEqualTypeOf<
@@ -139,8 +137,8 @@ describe('withMessage helper', () => {
     >();
 
     expectTypeOf(
-      withMessage(minLength(4), (value, { $params: [count] }) => {
-        return `Value: ${value} Min: ${count}`;
+      withMessage(minLength(4), ({ $value, $params: [count] }) => {
+        return `Value: ${$value} Min: ${count}`;
       })
     ).toEqualTypeOf<
       RegleRuleDefinition<

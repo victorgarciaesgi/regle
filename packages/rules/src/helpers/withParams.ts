@@ -23,7 +23,7 @@ export function withParams<
 
   const newRule = createRule({
     type: InternalRuleType.Inline,
-    validator: validator as any,
+    validator: validator,
     message: '',
   });
 

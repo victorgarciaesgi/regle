@@ -37,7 +37,7 @@ const strongPassword = createRule({
     }
     return { $valid: true };
   },
-  message(value, { result }) {
+  message({ result }) {
     return `Your password is ${result?.value.toLocaleLowerCase()}`;
   },
 });

@@ -60,6 +60,7 @@ export function createReactiveRuleStatus({
   function $watch() {
     scopeState = scope.run(() => {
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
+        $value: state.value,
         $invalid: !$valid.value,
         $pending: $pending.value,
         $dirty: $dirty.value,
@@ -70,7 +71,7 @@ export function createReactiveRuleStatus({
       const $active = computed<boolean>(() => {
         if (isFormRuleDefinition(rule)) {
           if (typeof rule.value.active === 'function') {
-            return rule.value.active(state.value, $defaultMetadata.value);
+            return rule.value.active($defaultMetadata.value);
           } else {
             return !!rule.value.active;
           }
@@ -85,7 +86,7 @@ export function createReactiveRuleStatus({
 
         if (customProcessor) {
           if (typeof customProcessor === 'function') {
-            result = customProcessor(state.value, $defaultMetadata.value);
+            result = customProcessor($defaultMetadata.value);
           } else {
             result = customProcessor;
           }
@@ -94,7 +95,7 @@ export function createReactiveRuleStatus({
           const patchedKey = `_${key}_patched` as const;
           if (!(customProcessor && !rule.value[patchedKey])) {
             if (typeof rule.value[key] === 'function') {
-              result = rule.value[key](state.value, $defaultMetadata.value);
+              result = rule.value[key]($defaultMetadata.value);
             } else {
               result = rule.value[key] ?? '';
             }

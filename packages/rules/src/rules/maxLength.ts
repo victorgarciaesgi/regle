@@ -14,15 +14,13 @@ export const maxLength: RegleRuleWithParamsDefinition<
       if (ruleHelpers.isNumber(count)) {
         return ruleHelpers.size(value) <= count;
       }
-      console.warn(
-        `[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`
-      );
+      console.warn(`[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
       return false;
     }
     return true;
   },
-  message: (value, { $params: [count] }) => {
-    if (Array.isArray(value)) {
+  message: ({ $value, $params: [count] }) => {
+    if (Array.isArray($value)) {
       return `This list should have maximum ${count} items`;
     }
     return `The maximum length allowed is ${count}`;
