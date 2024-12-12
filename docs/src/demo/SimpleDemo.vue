@@ -31,7 +31,7 @@ const { r$ } = useRegle({} as Form, {
     ),
   },
   acceptTC: {
-    $autoDirty: false,
+    $autoDirty: true,
     required: withMessage(and(required, checked), 'You must accept the terms and conditions'),
   },
 });
@@ -59,18 +59,23 @@ async function submit() {
               class="mt-1 block w-full text-gray-200 rounded-md bg-zinc-800 border-gray-300 shadow-sm focus:border-gray-500 focus:ring focus:ring-gray-400 focus:ring-opacity-50"
               placeholder="John Dupond"
             />
+            
             <FieldError :errors="r$.$fields.fullName.$errors" />
           </label>
+
           <label class="block">
             <span class="text-gray-400">Email address</span>
+
             <input
               v-model="r$.$value.email"
               type="email"
               class="mt-1 block w-full text-gray-200 rounded-md bg-zinc-800 border-gray-300 shadow-sm focus:border-gray-500 focus:ring focus:ring-gray-400 focus:ring-opacity-50"
               placeholder="john@example.com"
             />
+
             <FieldError :errors="r$.$fields.email.$errors" />
           </label>
+
           <label class="block">
             <span class="text-gray-400">When is your event?</span>
             <input
@@ -78,11 +83,14 @@ async function submit() {
               type="date"
               class="mt-1 block w-full text-gray-200 rounded-md bg-zinc-800 border-gray-300 shadow-sm focus:border-gray-500 focus:ring focus:ring-gray-400 focus:ring-opacity-50"
             />
+
             <FieldError :errors="r$.$fields.eventDate.$errors" />
+
             <ul v-if="r$.$fields.eventDate.$tooltips.length" class="text-sm text-gray-400 mt-1">
               <li v-for="tooltip of r$.$fields.eventDate.$tooltips" :key="tooltip">{{ tooltip }}</li>
             </ul>
           </label>
+
           <label class="block">
             <span class="text-gray-400">What type of event is it?</span>
             <select
@@ -97,6 +105,7 @@ async function submit() {
             </select>
             <FieldError :errors="r$.$fields.eventType.$errors" />
           </label>
+
           <label class="block">
             <span class="text-gray-400">Additional details</span>
             <textarea
@@ -106,6 +115,7 @@ async function submit() {
             ></textarea>
             <FieldError :errors="r$.$fields.details.$errors" />
           </label>
+
           <div class="block">
             <div class="mt-2">
               <div>
@@ -121,17 +131,17 @@ async function submit() {
               </div>
             </div>
           </div>
+
           <div class="flex justify-between">
             <button
               class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-              @click="r$.$resetAll"
-            >
+              @click="r$.$resetAll">
               Reset
             </button>
+
             <button
               class="bg-[#027d56] text-white hover:bg-[#048d62] font-semibold py-2 px-4 rounded shadow"
-              @click="submit"
-            >
+              @click="submit">
               Submit
             </button>
           </div>

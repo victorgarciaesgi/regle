@@ -9,8 +9,7 @@ import DisplayingErrors from '../parts/components/DisplayingErrors.vue';
 
 # Displaying errors
 
-Regle is a headless library, so you can display your errors message however you want.
-You can also trigger classes or beahviour depending of the internal `regle` state.
+Regle is a headless library, allowing you to display error messages in any way you choose. You can also use its internal state to apply classes or trigger behaviors dynamically.
 
 
 ## Showing errors messages
@@ -23,7 +22,7 @@ You can also access `r$.$fields.xxx.$errors` or `r$.$fields.xxx.$silentErrors`.
 
 Result:
 
-<QuickUsage/>
+<QuickUsage />
 
 
 ## Applying an error and valid class
@@ -32,4 +31,4 @@ Result:
 
 Result:
 
-<DisplayingErrors/>
+<DisplayingErrors />

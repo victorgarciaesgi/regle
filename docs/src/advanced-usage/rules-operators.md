@@ -12,15 +12,14 @@ import OperatorApplyIf from '../parts/components/operators/OperatorApplyIf.vue';
 
 # Rules operators
 
-Regle provides a way to make operations between different rules.
-Regle has 4 built-in operators for you to work with, available in `@regle/rules`.
+Regle provides tools to combine and operate on different rules. It includes four built-in operators, available in `@regle/rules`:
 
 - `and`
 - `or`
 - `not`
 - `applyIf`
 
-They work with any rule you provide, in the limit of what the rule can do, mixing different rules that does not have the same input type can break.
+These operators work with any rules you provide, but combining rules with incompatible input types may lead to errors.
 
 :::tip
 All operators are compatible with `withMessage`, `withAsync` or `withParams`
@@ -29,7 +28,7 @@ All operators are compatible with `withMessage`, `withAsync` or `withParams`
 
 ## `and`
 
-`and` will merge the validators of multiple rules you give as params. It will only be valid if all the rules are valid
+The `and` operator combines multiple rules and validates successfully only if all provided rules are valid.
 
 
 ```ts twoslash
@@ -52,12 +51,12 @@ const { r$ } = useRegle(
 
 Result: 
 
-<OperatorAnd/>
+<OperatorAnd />
 
 
 ## `or`
 
-`or` takes multiple rules when at least one of the provided rules is valid.
+The `or` operator validates successfully if at least one of the provided rules is valid.
 
 
 ```ts twoslash
@@ -80,12 +79,12 @@ const { r$ } = useRegle(
 
 Result: 
 
-<OperatorOr/>
+<OperatorOr />
 
 
 ## `not`
 
-Passes when provided rule would not pass, fails otherwise. Can be chained with other rules.
+The `not` operator passes when the provided rule fails and fails when the rule passes. It can be combined with other rules.
 
 ```ts twoslash
 import { useRegle } from '@regle/core';
@@ -108,13 +107,12 @@ const { r$ } = useRegle(form, {
 
 Result: 
 
-<OperatorNot/>
+<OperatorNot />
 
 
 ## `applyIf`
 
-`applyIf` is like `requiredIf`, but usable for any rule. It's easier that to do spread conditions in the rules declaration.
-
+The `applyIf` operator is similar to `requiredIf`, but it can be used with any rule. It simplifies conditional rule declarations.
 
 ```ts twoslash
 import { useRegle } from '@regle/core';
@@ -123,7 +121,7 @@ import { ref } from 'vue';
 
 const condition = ref(false);
 
-const form = ref({name: ''});
+const form = ref({ name: '' });
 
 const { r$ } = useRegle(form, {
   name: {
@@ -132,4 +130,4 @@ const { r$ } = useRegle(form, {
 });
 ```
 
-<OperatorApplyIf/>
+<OperatorApplyIf />

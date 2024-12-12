@@ -5,6 +5,7 @@
         {{ error }}
       </li>
     </ul>
+    
     <span v-else>No errors</span>
   </div>
 </template>

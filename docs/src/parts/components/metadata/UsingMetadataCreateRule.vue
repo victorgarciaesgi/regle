@@ -6,18 +6,24 @@
         :class="{ valid: r$.$fields.password.$valid }"
         placeholder="Type your password"
       />
+
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
+
     <div
       class="password-strength"
-      :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]"
-    ></div>
+      :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">
+    </div>
+
     <ul v-if="r$.$errors.password.length">
       <li v-for="error of r$.$errors.password" :key="error">
         {{ error }}
       </li>
     </ul>
-    <div v-else-if="r$.$fields.password.$valid" class="success">Your password is strong enough</div>
+
+    <div v-else-if="r$.$fields.password.$valid" class="success">
+      Your password is strong enough
+    </div>
   </div>
 </template>
 
@@ -35,6 +41,7 @@ const strongPassword = createRule({
         result,
       };
     }
+    
     return { $valid: true };
   },
   message({ result }) {

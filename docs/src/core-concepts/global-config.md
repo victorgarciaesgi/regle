@@ -8,22 +8,20 @@ import CustomMessages from '../parts/components/global-config/CustomMessages.vue
 
 # Global configuration
 
-If you have multiple forms in your app, you may want to have a global config containing your custom validators, custom error messages and your modifiers without the need to declare it every time with every `useRegle` call.
-
-This will allow you to reduce code accross your app, and help the developer experience as there will be autocompletion and typecheck for everywhere you use it.
+If your app includes multiple forms, it can be helpful to define a global configuration that centralizes your custom validators, error messages, and modifiers. This eliminates the need to declare these settings repeatedly for every `useRegle` call, improving both code consistency and developer experience with features like autocompletion and type checking.
 
 
-## Replace build-in rules messages
+## Replace built-in rules messages
 
-Each `@regle/rules` rule provide a default error message. You may don't want to call `withMessage` every time you need to use one with a custom error message.
+Each `@regle/rules` rule provides a default error message. You may may not want to call `withMessage` every time you need to use one with a custom error message.
 
-`defineRegleConfig` allows you to redefine rules default error messages
+`defineRegleConfig` allows you to redefine the default messages of built-in rules.
 
 ```ts twoslash
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-const {useRegle: useCustomRegle} = defineRegleConfig({
+const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     required: withMessage(required, 'You need to provide a value'),
     minLength: withMessage(minLength, ({ $value, $params: [count] }) => {
@@ -32,9 +30,10 @@ const {useRegle: useCustomRegle} = defineRegleConfig({
   })
 })
 
-const {r$} = useCustomRegle({name: ''}, {
+const { r$ } = useCustomRegle({ name: '' }, {
   name: {
-    required, minLength: minLength(6)
+    required,
+    minLength: minLength(6)
   }
 })
 ```
@@ -46,7 +45,7 @@ Result:
 
 ## Declare new rules
 
-in `useRegle`, you can already use any rule key you want. But if you want autocomplete and typecheck for your custom rules, you can also use `defineRegleConfig`.
+While `useRegle` allows you to use any rule key, adding custom rules to the global configuration provides autocompletion and type checking. This improves maintainability and consistency across your application.
 
 ```ts twoslash
 const someAsyncCall = async () => await Promise.resolve(true);
@@ -60,19 +59,20 @@ const asyncEmail = createRule({
     if (!ruleHelpers.isFilled(value)) {
       return true;
     }
+
     const result = await someAsyncCall();
     return result;
   },
   message: 'Email already exists',
 });
 
-const {useRegle: useCustomRegle} = defineRegleConfig({
+const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     asyncEmail
   })
 })
 
-const {r$} = useCustomRegle({name: ''}, {
+const { r$ } = useCustomRegle({ name: '' }, {
   name: {
     asy
 //     ^|
@@ -83,13 +83,13 @@ const {r$} = useCustomRegle({name: ''}, {
 
 ## Declare modifiers
 
-Declaring modifiers in the global configuration will apply it automatically everytime you will use the returned compasable, it avoids declaring it every time.
+You can include global modifiers in your configuration to automatically apply them wherever you use the `useRegle` composable. This avoids repetitive declarations and keeps your code clean.
 
 ```ts twoslash
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-export const {useRegle: useCustomRegle} = defineRegleConfig({
+export const { useRegle: useCustomRegle } = defineRegleConfig({
   modifiers: {
     autoDirty: false,
     lazy: true,
@@ -101,13 +101,13 @@ export const {useRegle: useCustomRegle} = defineRegleConfig({
 
 ## Export scoped `inferRules` helper
 
-`defineRegleConfig` also return a scoped `inferRules` helper, similar to the one exported from `@regle/core`, but that will autocomplete and checks your custom rules.
+`defineRegleConfig` also returns a scoped `inferRules` helper, similar to the one exported from `@regle/core`, but that will autocomplete and check your custom rules.
 
-For informations about `inferRules`, check [Typing rules docs](/typescript/typing-rules)
+For information about `inferRules`, check [Typing rules docs](/typescript/typing-rules)
 
 ```ts twoslash
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-export const {useRegle, inferRules} = defineRegleConfig({/* */})
+export const { useRegle, inferRules } = defineRegleConfig({/* */})
 ```

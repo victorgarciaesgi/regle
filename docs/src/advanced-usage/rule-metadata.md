@@ -7,14 +7,11 @@ import UsingMetadataCreateRule from '../parts/components/metadata/UsingMetadataC
 
 # Using metadata from rules
 
-Rules validators function can return more data than just a boolean. This data can be used by your `message` handler or `active` handler, or in any other place having access to `regle`.
+Rule validator functions can return more than just a boolean. This additional data can be utilized by your `message` handler, `active` handler, or any other part of your application that has access to regle.
 
+## Using metadata in `createRule`
 
-## Using metadata into `createRule`
-
-Using `createRule` to create your custom rule.
-We'll take a real-world example with a password strength case example.
-
+You can use `createRule` to define your custom rules. Let's explore a real-world example by creating a password strength validator.
 
 :::code-group
 
@@ -35,7 +32,8 @@ export const strongPassword = createRule({
         result,
       };
     }
-    return {$valid: true};
+
+    return { $valid: true };
   },
   message({ result }) {
     return `Your password is ${result?.value}`;
@@ -51,20 +49,24 @@ export const strongPassword = createRule({
       :class="{ valid: r$.$fields.password.$valid }"
       placeholder="Type your password"
     />
+
     <button type="button" @click="r$.$resetAll">Reset</button>
   </div>
+
   <div
     class="password-strength"
-    :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]"
-  ></div>
+    :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">
+  </div>
+
   <ul v-if="r$.$errors.password.length">
     <li v-for="error of r$.$errors.password" :key="error">
       {{ error }}
     </li>
   </ul>
-  <div v-else-if="r$.$fields.password.$valid" class="success"
-    >Your password is strong enough</div
-  >
+
+  <div v-else-if="r$.$fields.password.$valid" class="success">
+    Your password is strong enough
+  </div>
 </template>
 
 <script setup lang="ts">

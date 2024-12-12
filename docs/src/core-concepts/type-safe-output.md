@@ -7,15 +7,15 @@ title: Type safe output
 
 What would be the benefit of building a validation library without a type safe output?
 
-Inspired by the `Zod` parse output type, `Regle` will also infer your validator types to know which properties are _**garanted**_ to be defined.
+Inspired by the `Zod` parse output type, `Regle` will also infer your validator types to know which properties are _**guaranteed**_ to be defined.
 
 
 ## `r$.$validate`
 
-Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return a object containing the status of your form.
+Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return an object containing the status of your form.
 
 ```ts
-const {result, data} = await r$.$validate();
+const { result, data } = await r$.$validate();
 ```
 
 If your *_result_* is `true`, the **data** will be type safe.
@@ -24,23 +24,24 @@ It will check if the `required` rule is present, but it will not work with `requ
 
 
 ```ts twoslash
-import {useRegle} from '@regle/core';
-import {ref, type Ref, computed} from 'vue';
-import {required} from '@regle/rules';
+import { useRegle } from '@regle/core';
+import { ref, type Ref, computed } from 'vue';
+import { required } from '@regle/rules';
 // ---cut---
 type Form = {
   firstName?: string;
   lastName?: string;
 }
 
-const form: Ref<Form> = ref({firstName: '', lastName: ''})
+const form: Ref<Form> = ref({ firstName: '', lastName: '' })
 
-const {r$} = useRegle(form, {
-  lastName: {required},
+const { r$ } = useRegle(form, {
+  lastName: { required },
 });
 
 async function submit() {
-  const {result, data} = await r$.$validate();
+  const { result, data } = await r$.$validate();
+
   if (result) {
     console.log(data);
     //            ^?

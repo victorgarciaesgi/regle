@@ -6,8 +6,10 @@
         :class="{ valid: r$.$fields.regex.$valid, error: r$.$fields.regex.$error }"
         placeholder="Type your regex"
       />
+
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
+    
     <ul v-if="r$.$errors.regex.length">
       <li v-for="error of r$.$errors.regex" :key="error">
         {{ error }}

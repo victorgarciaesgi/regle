@@ -40,26 +40,25 @@ bun add @regle/zod
 ## Usage
 
 
-You will need only one composable from the package: `useZodRegle`.
+To use `@regle/zod`, you only need one composable: `useZodRegle`.
 
-`useZodRegle` have the same type definitions as `useRegle` for state and options.
-The difference is instead of passing rules in the 2nd parameter, you pass your Zod schema.
+The `useZodRegle` composable has the same type definitions as `useRegle` for state and options. However, instead of passing rules as the second parameter, you provide a Zod schema.
 
-You will still have the benefits of having a `dirty` tracking a custom errors.
+You still benefit from features like dirty tracking and custom error handling.
 
-All your schemas will be parsed using `safeParse` and `safeParseAsync` (if there is an async transform or refinement). It will retrieve the errors messages defined in the schema directly.
+All schemas are parsed using `safeParse` and `safeParseAsync` (if your schema includes asynchronous transformations or refinements). Error messages defined in the schema will automatically be retrieved.
 
 ```ts twoslash
-import {useZodRegle} from '@regle/zod';
-import {z} from 'zod';
+import { useZodRegle } from '@regle/zod';
+import { z } from 'zod';
 
-const {r$} = useZodRegle({name: ''}, z.object({
+const { r$ } = useZodRegle({ name: '' }, z.object({
   name: z.string().min(1)
 }))
 
 ```
 
-<QuickUsage/>
+<QuickUsage />
 
 
 ## Computed schema
@@ -67,16 +66,16 @@ const {r$} = useZodRegle({name: ''}, z.object({
 You can also have a computed schema that can be based on other state values.
 
 ```ts twoslash
-import {useZodRegle, type toZod} from '@regle/zod';
-import {z} from 'zod';
-import {ref, computed} from 'vue';
+import { useZodRegle, type toZod } from '@regle/zod';
+import { z } from 'zod';
+import { ref, computed } from 'vue';
 
 type Form = {
   firstName?: string;
   lastName?: string
 }
 
-const form = ref<Form>({firstName: '', lastName: ''})
+const form = ref<Form>({ firstName: '', lastName: '' })
 
 const schema = computed(() => z.object({
   firstName: z.string(),
@@ -85,29 +84,28 @@ const schema = computed(() => z.object({
   }),
 }) satisfies toZod<Form>)
 
-const {r$} = useZodRegle(form, schema);
+const { r$ } = useZodRegle(form, schema);
 
 ```
 
-<ComputedSchema/>
+<ComputedSchema />
 
 
 ## Type safe output
 
-Same as the main `useRegle`, `r$.$validate` will also return a safe output.
-
+Similar to the main `useRegle` composable, `r$.$validate` in useZodRegle also returns a type-safe output.
 
 ```ts twoslash
-import {useZodRegle, toZod} from '@regle/zod';
-import {z} from 'zod';
-import {ref, computed} from 'vue';
+import { useZodRegle, toZod } from '@regle/zod';
+import { z } from 'zod';
+import { ref, computed } from 'vue';
 
 type Form = {
   firstName?: string;
   lastName?: string
 }
 
-const form = ref<Form>({firstName: '', lastName: ''})
+const form = ref<Form>({ firstName: '', lastName: '' })
 
 const schema = computed(() => z.object({
   firstName: z.string().optional(),
@@ -116,10 +114,10 @@ const schema = computed(() => z.object({
   }),
 }) satisfies toZod<Form>)
 
-const {r$} = useZodRegle(form, schema);
+const { r$ } = useZodRegle(form, schema);
 
 async function submit() {
-  const {result, data} = await r$.$validate();
+  const { result, data } = await r$.$validate();
   if (result) {
     console.log(data);
     //            ^?

@@ -4,13 +4,13 @@ title: useRegle
 
 # `useRegle`
 
-`useRegle` is the core of the validation logic.
+`useRegle` serves as the foundation for validation logic.
 
-It takes as input:
+It accepts the following inputs:
 
-- Your **state** (either plain object, `ref`, `reactive`, or nested `refs`)
-- Your **rules** that will match de structure of your state
-- (Optional) Your modifiers
+- **State:** This can be a plain object, a `ref`, a `reactive` object, or a structure containing nested refs.
+- **Rules:** These should align with the structure of your state.
+- **Modifiers:** (optional)
 
 <br/>
 
@@ -79,7 +79,7 @@ const { r$ } = useRegle(state, {
 
 ## `r$`
 
-If you’ve used Vuelidate before, useRegle behave similarly to `v$`.
+If you’ve used Vuelidate before, useRegle behaves similarly to `v$`.
 
 Regle is a reactive object containing various computed properties and methods that you can freely use based on your requirements.
 

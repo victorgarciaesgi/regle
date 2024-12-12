@@ -7,13 +7,13 @@ title: Typing rules
 
 ## Computed rules
 
-When writing your rules schema in a separated computed property, you will loose the type autocompletes and typecheck (typecheck will still be done by `useRegle` but it will be less informative).
+When defining your rules schema in a separate computed property, you may lose autocompletion and detailed type checking for your rules. While useRegle will still perform type checks, the feedback will be less informative.
 
-For this the recommended way is to use `inferRules`.
+To avoid this, it is recommended to use the `inferRules` utility. This ensures that the rules schema aligns perfectly with the state, preventing extra or mismatched properties.
 
-It's recommended because `inferRules` garantees that the rules schema will match the state with no extra properties allowed.
+### Example: Using inferRules
 
-This will require to have your state declared independently than inside `useRegle`.
+The inferRules utility requires that your state be declared independently of useRegle.
 
 ```ts twoslash
 // @noErrors
@@ -34,9 +34,10 @@ const { r$ } = useRegle(form, rules);
 ```
 <br/>
 
-An other way without using a utility function is to type cast your rules using `RegleComputedRules`.
+### Example: Typing Without inferRules
 
-It's better to use with `satisfies` operator from Typescript, which will typecheck and keep inference at the same time.
+If you prefer not to use inferRules, you can type your rules explicitly using RegleComputedRules. To ensure type safety while retaining type inference, use the satisfies operator.
+
 ```ts twoslash
 // @noErrors
 import { computed, ref } from 'vue';
@@ -55,12 +56,12 @@ const { r$ } = useRegle(form, rules);
 ```
 
 :::tip
-If you don't want to write your rules in a separate computed, you can still write inline computed one.
+If you don’t want to write your rules in a separate computed property, you can still define them inline.
 
 ```ts
 const min = ref(1);
-useRegle({name: ''}, () => ({
-  name: {minLength: minLength(min.value)}
+useRegle({ name: '' }, () => ({
+  name: { minLength: minLength(min.value) }
 }))
 ```
 :::

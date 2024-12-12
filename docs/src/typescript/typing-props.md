@@ -8,12 +8,11 @@ import Parent from '../parts/components/typing-props/Parent.vue';
 
 # Typing props
 
-You form don't necessary stays in one component. It's common sense to split your logic into multiple ones.
+Forms often span multiple components, and splitting your logic across components is a common practice. Regle offers tools to help type your props correctly, ensuring type safety and improving developer experience.
 
-For this I recommend as a first solution a `Pinia` store, so types are infered automatically.
-You can find it [explained here](/advanced-usage/usage-with-pinia).
+The best way to manage a centralized form state with inferred types is by using a Pinia store. Learn more in the Usage with Pinia guide [explained here](/advanced-usage/usage-with-pinia).
 
-But if you can't use Pinia, we'll go though the options.
+If you cannot use Pinia, here are the alternative approaches.
 
 ## Typing component props
 
@@ -22,7 +21,7 @@ As Regle's types are complex and based on both your state and your rules, it's h
 `@regle/core` exports all its utility types, it can be long to explain each one of them, so we'll show the simplest way to type your props.
 
 
-To avoid jungling with complex generic types, you can declare your form in a composable inside a file outside your component, and use this composable to type your props.
+To avoid juggling with complex generic types, you can declare your form in a composable inside a file outside your component, and use this composable to type your props.
 
 
 :::code-group
@@ -63,7 +62,7 @@ export function useMyForm() {
 import Child from './Child.vue';
 import { useMyForm } from './myForm';
 
-const { r$} = useMyForm();
+const { r$ } = useMyForm();
 </script>
 ```
 
@@ -94,7 +93,7 @@ const props = defineProps<{
 
 ## Typing a field prop
 
-It's possible that you have an `MyInput` like component that contains your business logic.
+It's possible that you have a `MyInput` like component that contains your business logic.
 You may want to pass regle computed properties to this component to display useful information to the user.
 
 Here's how you can do it:
@@ -109,6 +108,7 @@ Here's how you can do it:
       :class="{ valid: field.$valid, error: field.$error }"
       :placeholder="placeholder"
     />
+
     <ul v-if="field.$errors.length">
       <li v-for="error of field.$errors" :key="error">
         {{ error }}
@@ -143,10 +143,9 @@ import MyInput from './MyInput.vue';
 import { useRegle } from '@regle/core';
 import { email, required } from '@regle/rules';
 
-
-const {r$} = useRegle({name: '', email: ''}, {
-  name: {required},
-  email: {required, email},
+const { r$ } = useRegle({ name: '', email: '' }, {
+  name: { required },
+  email: { required, email },
 })
 </script>
 ```
@@ -166,9 +165,9 @@ On your common Input component, you can also enforce a rule to be present in the
 ```ts twoslash include config [config.ts]
 // @module: esnext
 // @filename config.ts
-import {withMessage} from '@regle/rules';
+import { withMessage } from '@regle/rules';
 // ---cut---
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({

@@ -4,9 +4,9 @@ title: Built-in rules
 
 # Built-in rules
 
-All built-in rules are available though `@regle/rules`.
+All built-in rules are available through the `@regle/rules` package.
 
-Don't forget to install it if you haven't
+Don't forget to install it if you haven't:
 
 ::: code-group
 
@@ -45,16 +45,16 @@ const {r$} = useRegle({name: ''}, {
 _**Params**_
   - `condition: Ref<unknown> | unknown | () => unknown` - the property to base the `required` validator on.
 
-Requires non-empty data, only if provided data property, ref, or a function resolve to `true`.
+Requires non-empty data, only if provided data property, ref, or a function resolves to `true`.
 
 ```ts
-import {requiredIf} from '@regle/rules';
+import { requiredIf } from '@regle/rules';
 
-const form = ref({name: '', condition: false});
+const form = ref({ name: '', condition: false });
 
 const conditionRef = ref(false);
 
-const {r$} = useRegle(form, {
+const { r$ } = useRegle(form, {
   name: {
     required: requiredIf(() => form.value.condition),
     required: requiredIf(conditionRef),
@@ -68,16 +68,16 @@ _**Params**_
   - `condition: Ref<unknown> | unknown | () => unknown` - the property to base the `required` validator on.
 
 
-Requires non-empty data, only if provided data property, ref, or a function resolve to `false`.
+Requires non-empty data, only if provided data property, ref, or a function resolves to `false`.
 
 ```ts
-import {requiredUnless} from '@regle/rules';
+import { requiredUnless } from '@regle/rules';
 
-const form = ref({name: '', condition: false});
+const form = ref({ name: '', condition: false });
 
 const conditionRef = ref(false);
 
-const {r$} = useRegle(form, {
+const { r$ } = useRegle(form, {
   name: {
     required: requiredUnless(() => form.value.condition),
     required: requiredUnless(conditionRef)
@@ -100,11 +100,11 @@ _**Works with**_
 Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
 
 ```ts
-import {minLength} from '@regle/rules';
+import { minLength } from '@regle/rules';
 
 const minValue = ref(6);
 
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     minLength: minLength(6),
     minLength: minLength(minValue),
@@ -125,11 +125,11 @@ _**Works with**_
 Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
 
 ```ts
-import {maxLength} from '@regle/rules';
+import { maxLength } from '@regle/rules';
 
 const maxValue = ref(6);
 
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     maxLength: maxLength(6),
     maxLength: maxLength(maxValue),
@@ -146,14 +146,14 @@ _**Params**_
 _**Works with**_
   - `number`
 
-Requires entry to have a specified minimum numeric value.
+Requires a field to have a specified minimum numeric value.
 
 ```ts
-import {minValue} from '@regle/rules';
+import { minValue } from '@regle/rules';
 
 const minCount = ref(6);
 
-const {r$} = useRegle({count: 0}, {
+const { r$ } = useRegle({ count: 0 }, {
   count: {
     minValue: minValue(6),
     minValue: minValue(minCount),
@@ -168,14 +168,14 @@ _**Params**_
   - `min: Ref<number> | number | () => number`
 
 
-  Requires entry to have a specified maximum numeric value.
+  Requires a field to have a specified maximum numeric value.
 
 ```ts
-import {maxValue} from '@regle/rules';
+import { maxValue } from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {r$} = useRegle({count: 0}, {
+const { r$ } = useRegle({ count: 0 }, {
   count: {
     maxValue: maxValue(6),
     maxValue: maxValue(maxCount),
@@ -195,11 +195,11 @@ Checks if a number is in specified bounds. `min` and `max` are both inclusive.
 
 ```js
 
-import {between} from '@regle/rules';
+import { between } from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {r$} = useRegle({count: 0}, {
+const { r$ } = useRegle({ count: 0 }, {
   count: {
     between: between(1, 6),
     between: between(1, maxCount),
@@ -213,21 +213,21 @@ const {r$} = useRegle({count: 0}, {
 _**Params**_
 - `contain: Ref<string> | string | () => string`
 
-Checks is an string contains the corresponding string parameter.
+Checks if the string contains the specified substring.
 
 ## `startsWith`
 
 _**Params**_
 - `start: Ref<string> | string | () => string`
 
-Checks is an string starts with the corresponding string parameter.
+Checks if the string starts with the specified substring.
 
 ## `endsWith`
 
 _**Params**_
 - `end: Ref<string> | string | () => string`
 
-Checks is an string ends with the corresponding string parameter.
+Checks if the string ends with the specified substring.
 
 
 ## `regex`
@@ -235,7 +235,7 @@ Checks is an string ends with the corresponding string parameter.
 _**Params**_
 - `...regexps: [...Ref<RegExp> | RegExp | () => RegExp]`
 
-Checks is the string or number match one or multiple `RegExp` patterns.
+Checks if the value matches one or more regular expressions.
 
 
 ## `dateBefore`
@@ -243,7 +243,7 @@ _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
 
 
-Checks if the input date is before the given Date param.
+Checks if the date is before the given parameter.
 
 _**Metadata**_
 ```ts
@@ -263,7 +263,7 @@ _**Params**_
  - `after: Ref<string | Date> | string | Date | () => string | Date`
 
 
-Checks if the input date is after the given Date param.
+Checks if the date is after the given parameter.
 
 _**Metadata**_
 ```ts
@@ -285,55 +285,53 @@ _**Params**_
  - `after: Ref<string | Date> | string | Date | () => string | Date`
 
 
-Checks if the input date is in the range of the two given Date params.
+Checks if the date falls between the specified bounds.
 
 
 ## `alpha`
 
-Accepts only alphabet characters.
+Allows only alphabetic characters.
 
 ## `alphaNum`
 
-Accepts only alphanumerics.
+Allows only alphanumeric characters.
 
 ## `numeric`
 
-Accepts only numerics. String numbers are also numeric.
+Allows only numeric values (including numeric strings).
 
 ## `integer`
 
-
-Accepts positive and negative integers.
+Allows only integers (positive and negative).
 
 ## `decimal`
 
-Accepts positive and negative decimal numbers.
+Allows positive and negative decimal numbers.
 
 ## `email`
 
-Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server, as it is impossible to tell if the address is real without sending verification email.
+Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
 
 ## `ipAddress`
 
-Accepts valid IPv4 addresses in dotted decimal notation like *127.0.0.1*.
+Validates IPv4 addresses in dotted decimal notation *127.0.0.1*.
 
 ## `macAddress`
 
 _**Params**_
   - `separator?: string | Ref<string> | () => string`
 
-Accepts valid MAC addresses like **00:ff:11:22:33:44:55**. Don't forget to call it as a function `macAddress()`, as it has an optional parameter.
-You can specify your own separator instead of `':'`. Provide empty separator `macAddress('')` to validate MAC addresses like **00ff1122334455**.
+Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
 ```ts
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
 // ---cut---
-import {macAddress} from '@regle/rules';
+import { macAddress } from '@regle/rules';
 
 const maxCount = ref(6);
 
-const {r$} = useRegle({address: ''}, {
+const { r$ } = useRegle({ address: '' }, {
   address: {
     macAddress: macAddress(),
   },
@@ -346,20 +344,20 @@ _**Params**_
   * `target: unknown`
 
 
-Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value to compare to it directly.
+Checks if the value matches the specified property or ref.
 
 ```ts
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
 // ---cut---
-import {sameAs} from '@regle/rules';
+import { sameAs } from '@regle/rules';
 
 const form = ref({
   password: '',
   confirmPassword: '',
 });
 
-const {r$} = useRegle(form, {
+const { r$ } = useRegle(form, {
   confirmPassword: {
     sameAs: sameAs(() => form.value.password),
   }
@@ -368,5 +366,5 @@ const {r$} = useRegle(form, {
 
 ## url
 
-Accepts only URLs.
+Validates URLs.
 

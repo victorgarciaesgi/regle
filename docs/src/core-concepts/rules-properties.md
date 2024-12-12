@@ -1,27 +1,27 @@
 ---
-title: Rules properties
+title: Rule properties
 ---
 
-# Validation properties
+# Rule properties
 
-Validation properties are computed values or methods available in every nested rule status (including `regle`)
+Rule properties are computed values or methods available in every nested rule status (including `regle`)
 
 
-Let's make a simple exemple to explain the different properties
+Let's take a look at a simple example to explain the different properties.
 
 ``` vue twoslash
 <script setup lang='ts'>
 // @noErrors
-import {useRegle} from '@regle/core';
-import {required} from '@regle/rules';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+import { ref } from 'vue';
 
-const form = ref({email: '', user: {firstName: '', lastName: ''}});
+const form = ref({ email: '', user: { firstName: '', lastName: '' } });
 
-const {r$} = useRegle(form, {
-  email: {required},
+const { r$ } = useRegle(form, {
+  email: { required },
   user: {
-    firstName: {required},
+    firstName: { required },
   }
 })
 
@@ -31,6 +31,7 @@ r$.$fields.email.$rules.required.
 
 <template>
   <input v-model='form.user.firstName' placeholder='Type your firstName'/>
+
   <ul>
     <li v-for="error of r$.$errors.user.firstName" :key='error'>
       {{ error }}
@@ -46,38 +47,38 @@ r$.$fields.email.$rules.required.
 ### `$valid`
 - Type: `readonly boolean`
   
-Indicates the state of validation for this validator
+Indicates the state of validation for this validator.
 
 
 ### `$pending`
 - Type: `readonly boolean`
   
 
-If the rule is async, indicates if it's currently pending. Always false if it's synchronous.
+If the rule is async, indicates if it's currently pending. Always `false` if it's synchronous.
 
 
 ### `$message`
 - Type: `readonly string | string[]`
 
-Returns the current rule computed error message or messages
+Returns the computed error message or messages for the current rule.
 
 
 ### `$active`
 - Type: `readonly boolean`
   
-Indicated whether or not the rule is enabled (for rules like `requiredIf`)
+Indicates whether or not the rule is enabled (for rules like `requiredIf`)
 
 
 
 ### `$type`
 - Type: `readonly string`
 
-The rule type name
+The name of the rule type.
 
 ### `$validator`
 - Type: `readonly (value, ...metadata) => boolean | {$valid: true, [x:string]: any}`
 
-Returns the original rule validator function
+Returns the original rule validator function.
 
 ### `$path`
 - Type: `readonly string[]`

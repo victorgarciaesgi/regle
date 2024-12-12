@@ -5,21 +5,21 @@ title: Extend properties
 
 # Extend properties
 
-Regle offer you a way yo extend the default validation properties via `defineRegleConfig`
+Regle offers a way to extend the default validation properties via `defineRegleConfig`
 
-To have more informations about global config [check here](/core-concepts/global-config)
+For more information about global config [check here](/core-concepts/global-config)
 
 
 ## Extending field properties
 
 
 ```ts twoslash
-import {required} from '@regle/rules';
+import { required } from '@regle/rules';
 // @noErrors
 // ---cut---
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 
-const {useRegle} = defineRegleConfig({
+const { useRegle } = defineRegleConfig({
   shortcuts: {
     fields: {
       $isRequired: (field) => field.$rules.required?.$active ?? true;
@@ -27,7 +27,7 @@ const {useRegle} = defineRegleConfig({
   }
 });
 
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     required
   }
@@ -42,12 +42,12 @@ r$.$fields.name.$isRe
 
 
 ```ts twoslash
-import {required} from '@regle/rules';
+import { required } from '@regle/rules';
 // @noErrors
 // ---cut---
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 
-const {useRegle} = defineRegleConfig({
+const { useRegle } = defineRegleConfig({
   shortcuts: {
     nested: {
       $isEmpty: (nest) => Object.keys(nest.$fields).length === 0;
@@ -55,7 +55,7 @@ const {useRegle} = defineRegleConfig({
   }
 });
 
-const {r$} = useRegle({user: {}} as {user: {firstName?: string, lastName?: string}}, {
+const { r$ } = useRegle({ user: {} } as { user: { firstName?: string, lastName?: string } }, {
   user: {
     firstName: {required}
   }
@@ -71,23 +71,23 @@ r$.$fields.user.$is
 
 
 ```ts twoslash
-import {required} from '@regle/rules';
+import { required } from '@regle/rules';
 // @noErrors
 // ---cut---
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 
-const {useRegle} = defineRegleConfig({
+const { useRegle } = defineRegleConfig({
   shortcuts: {
     collections: {
-      $isArrayEmpty: (collec) => collec.$each.length === 0;
+      $isArrayEmpty: (collection) => collection.$each.length === 0;
     }
   }
 });
 
-const {r$} = useRegle({projects: [{name: ''}]}, {
+const { r$ } = useRegle({ projects: [{ name: '' }] }, {
   projects: {
     $each: {
-      name: {required}
+      name: { required }
     }
   }
 })
@@ -101,14 +101,14 @@ r$.$fields.projects.$is
 ## Typing shortcuts in component props <span data-title='*.ts'></span>
 
 When defining shortcuts, it can be hard to type props in common Input components.
-For this Regle provides a type helper that can ease the declaration of this props.
+For this Regle provides a type helper that can ease the declaration of these props.
 
 
 :::code-group
 
 ```vue twoslash [myInput.vue]
 <script lang='ts' setup>
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   shortcuts: {
     fields: {
@@ -120,7 +120,7 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
 // ---cut---
 // @module: esnext
 import type { RegleFieldStatus, InferRegleShortcuts } from '@regle/core';
-import {useCustomRegle} from './config';
+import { useCustomRegle } from './config';
 
 type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
@@ -138,7 +138,7 @@ props.field.$isR
 // @module: esnext
 // @filename config.ts
 // ---cut---
-import {defineRegleConfig} from '@regle/core';
+import { defineRegleConfig } from '@regle/core';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   shortcuts: {
     fields: {

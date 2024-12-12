@@ -8,12 +8,12 @@ title: Rule wrappers
 
 ### `withMessage`
 
-This tool take your rule as a first argument and your error message as a second. It will define what error to set
+The withMessage wrapper lets you associate an error message with a rule. Pass your rule as the first argument and the error message as the second.
 
 ``` ts twoslash {3-11}
 // @noErrors
-import {useRegle, type InlineRuleDeclaration, type Maybe} from '@regle/core';
-import {withMessage} from '@regle/rules';
+import { useRegle, type InlineRuleDeclaration, type Maybe } from '@regle/core';
+import { withMessage } from '@regle/rules';
 
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   $valid: value === 'regle',
@@ -22,13 +22,13 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
 
 
 // ---cut---
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     // Inline functions can be also written... inline
     customRule1: withMessage((value) => !!value, "Custom Error"),
     customRule2: withMessage(customRuleInlineWithMetaData, "Custom Error"),
 
-    // You can also access current value and metadata with a getter function
+    // You can also access the current value and metadata with a getter function
     customRule3: withMessage(
       customRuleInlineWithMetaData, 
       ({ $value, foo }) => `Custom Error: ${$value} ${foo}`
@@ -40,8 +40,8 @@ const {r$} = useRegle({name: ''}, {
 
 ### `withParams`
 
-You rule result can sometimes depends on an other part of your component or store. 
-For this, `useRegle` can already observe the changes by changing the rule object to a getter function or a computed.
+The withParams wrapper allows your rule to depend on external parameters, such as a reactive property in your component or store.
+By default, useRegle observes changes automatically when rules are defined using getter functions or computed properties.
 
 
 ```ts
@@ -57,18 +57,18 @@ const rules = computed(() => ({/* rules */ }))
 useRegle({}, rules)
 ```
 
-But sometimes, values cannot be tracked properly, so you can use this tool to force dependencies on a rule
+However, sometimes dependencies cannot be tracked automatically, use `withParams` to manually define them:
 
 ``` ts twoslash {7-9}
 // @noErrors
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
 // ---cut---
-import {withParams} from '@regle/rules';
+import { withParams } from '@regle/rules';
 
 const base = ref('foo');
 
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     customRule: withParams((value, param) => value === param, [base]),
     // or
@@ -80,20 +80,20 @@ const {r$} = useRegle({name: ''}, {
 
 ### `withAsync`
 
-withAsync works the same as `withParams`, but for async rules depending on external values
+`withAsync` works like `withParams`, but is specifically designed for async rules that depend on external values.
 
 ``` ts twoslash {7}
 // @noErrors
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
 const someAsyncCall = async (param: string) => await Promise.resolve(true);
 
 // ---cut---
-import {withAsync} from '@regle/rules';
+import { withAsync } from '@regle/rules';
 
 const base = ref('foo');
 
-const {r$} = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     customRule: withAsync(async (value, param) => {
       await someAsyncCall(param)
@@ -104,25 +104,23 @@ const {r$} = useRegle({name: ''}, {
 
 ### `withTooltip`
 
-When you want to display messages for your field without necessarely being an error you can use the `tooltip` option.
-The aggregated tooltips will be available though `$field.xxx.$tooltips`.
+The `withTooltip` wrapper allows you to display additional messages for your field that aren’t necessarily errors. Tooltips are aggregated and accessible via `$field.xxx.$tooltips`.
 
 ## Chaining wrappers
 
-Rule tools can work with each other and still keeps thing typed
+You can combine multiple wrappers to create more powerful and flexible rules while keeping everything typed correctly.
 
 ``` ts twoslash {9-14}
 // @noErrors
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
 const someAsyncCall = async (param: string) => await Promise.resolve(true);
 // ---cut---
-import {withAsync, withMessage} from '@regle/rules';
+import { withAsync, withMessage } from '@regle/rules';
 
 const base = ref(1);
 
-const { r$ } = useRegle(
-  { name: 0 },
+const { r$ } = useRegle({ name: '' },
   {
     name: {
       customRule: withMessage(

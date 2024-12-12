@@ -4,8 +4,7 @@ title: Advanced rules
 
 <script setup>
   import ParametersAndActiveMode from '../../parts/components/rules/ParametersAndActiveMode.vue';
-    import AsyncRule from '../../parts/components/rules/AsyncRule.vue';
-
+  import AsyncRule from '../../parts/components/rules/AsyncRule.vue';
 </script>
 
 # Advanced rules
@@ -13,9 +12,9 @@ title: Advanced rules
 
 ## `createRule`
 
-If you want to create a reusable rule, it's advised to create using `createRule`. It will help you define the type, the params, the active state etc...
+To create reusable rules, it’s recommended to use `createRule`. This utility simplifies defining the rule’s type, parameters, active state as well as track reactive dependencies automatically.
 
-Exemple: Recreating a simple `required` rule
+Example: Recreating a simple `required` rule
 
 ```ts twoslash
 // @noErrors
@@ -30,28 +29,28 @@ export const required = createRule({
 });
 ```
 
-Let's break down the possible options
+## Available options:
 
 ### `validator`
 _**Type**_: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
 
 *required*
 
-The `validator` function is what should define if the field is valid or not. You can write it exactly like a Inline rule.
+The `validator` function determines whether the field is valid. You can write it in the same way as an inline rule.
 
 ### `message`
 _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
 *required*
 
-This will define what error message you assign to your rule. It can be a string or a function receiving the value, params and metadata as parameters
+This will define what error message you assign to your rule. It can be a string or a function receiving the value, params and metadata as parameters.
 
 ### `type` 
 _**Type**_: `string`
 
 *optional*
 
-This property define a type of validator, because multiple rules can share the same target as a result (like `required` & `requiredIf`)
+Specifies the type of validator. This is useful when multiple rules share the same target, such as `required` and `requiredIf`.
 
 
 ### `active`
@@ -59,7 +58,8 @@ _**Type**_: `boolean | (metadata) => boolean`
 
 *optional*
 
-This will define the `$active` state of the rule. This will compute wether or not the rule is currently validating or not (More informations on the [Parameters and active mode](#parameters-and-active-mode))
+Defines the `$active` state of the rule, indicating whether the rule is currently being validated. This can be computed dynamically.
+For more details, see [Parameters and active mode](#parameters-and-active-mode).
 
 
 ### `tooltip`
@@ -67,15 +67,15 @@ _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
 *optional*
 
-When you want to display messages for your field without necessarely being an error you can use the `tooltip` option.
-The aggregated tooltips will be available though `$field.xxx.$tooltips`.
+Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `$field.xxx.$tooltips`. This is useful for providing additional information or guidance.
 
 
-## Parameters and active mode
+## Parameters and Active Mode
 
-With `createRule` you can easily define a rule that will depends on external parameters, and having an `$active` state
+With `createRule` you can easily define a rule that will depend on external parameters, and have an `$active` state.
 
-When declaring your validator, **regle** will detect that you rule needs parameters and make it a function declaration.
+When declaring your validator, **Regle** will detect that your rule requires parameters and transform it into a function declaration:
+
 ```ts twoslash
 // @noErrors
 import { createRule } from '@regle/core';
@@ -84,13 +84,13 @@ export const myValidator = createRule({
   validator: (value: Maybe<string>, arg: number) => {
     // any logic
   },
-  message: '--',
+  message: ({ $params: [arg] }) => {
+    return 'This field is invalid';
+  }
 });
 ```
 
-What makes using `createRule` easier, is that it automaticaly register the parameters as reactive dependencies.
-
-You rule is now usable with either a **plain value**, a **ref** or a **getter value**.
+The real advantage of using `createRule` is that it automatically registers parameters as reactive dependencies. This means your rule works seamlessly with plain values, refs, or getter functions.
 
 ```ts twoslash
 import {ref} from 'vue';
@@ -124,7 +124,7 @@ If you pass a raw value as a parameter, it will only be reactive if all your rul
 const state = ref({name: ''})
 const max = ref(5);
 
-// ⚠️ Not reactive
+// ❌ Not reactive
 useRegle(state, {
   name: {
     maxLength: maxLength(max.value),
@@ -186,7 +186,7 @@ export const requiredIf = createRule({
 });
 ```
 
-```vue twoslash {20} [Form.vue]
+```vue twoslash {21} [Form.vue]
 <script setup lang='ts'>
 // @include: requiredIf
 import { ref } from 'vue';
@@ -195,8 +195,8 @@ import { useRegle } from '@regle/core';
 
 const condition = ref(false);
 
-const {r$} = useRegle({name: ''}, {
-  name: {required: requiredIf(condition)}
+const { r$ } = useRegle({name: ''}, {
+  name: { required: requiredIf(condition) }
 })
 </script>
 
@@ -205,13 +205,17 @@ const {r$} = useRegle({name: ''}, {
     <input v-model="condition" type='checkbox'/>
     <label>The field is required</label>
   </div>
+
   <div>
     <!-- Here we can use $active to know if the rule is enabled -->
     <input 
       v-model='form.name'
-      :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'/>
+      :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'
+    />
+
     <button type="button" @click="r$.$resetAll">Reset</button>
   </div>
+
   <ul v-if="r$.$errors.name.length">
     <li v-for="error of r$.$errors.name" :key='error'>
       {{ error }}
@@ -228,7 +232,7 @@ Result:
 ## Async rules
 
 
-Async rules let you handle validations that are only possible on server, or expensive local ones. It will update the `$pending` status each time it's called.
+Async rules are useful for server-side validations or computationally expensive local checks. They update the `$pending` state whenever invoked.
 
 ```vue twoslash [App.vue]
 <template>
@@ -239,10 +243,13 @@ Async rules let you handle validations that are only possible on server, or expe
         :class="{ pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
+
       <button type="button" @click="r$.$resetAll">Reset</button>
       <button type="button" @click="r$.$validate">Submit</button>
     </div>
+
     <span v-if="r$.$fields.email.$pending"> Checking... </span>
+    
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
@@ -269,9 +276,11 @@ const checkEmailExists = createRule({
     if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
       return true;
     }
+
     await timeout(1000);
     return randomBoolean();
   },
+  
   message: 'This email already exists',
 });
 

@@ -4,14 +4,17 @@
       <input v-model="condition" type="checkbox" />
       <label>Require min length of 6</label>
     </div>
+
     <div>
       <input
         v-model="form.name"
         :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
         placeholder="Type your name"
       />
+
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
+    
     <ul v-if="r$.$errors.name.length">
       <li v-for="error of r$.$errors.name" :key="error">
         {{ error }}
