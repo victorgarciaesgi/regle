@@ -28,6 +28,12 @@ bun add @regle/rules
 
 :::
 
+:::tip
+Every built-in rule will check if the value of the field is set before checking if it's valid.
+
+This allow to have rules even if the field is not required.
+:::
+
 ## `required`
 
 Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.

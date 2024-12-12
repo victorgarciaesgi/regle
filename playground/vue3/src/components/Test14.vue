@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import { requiredIf } from '@regle/rules';
+import { applyIf, minLength, required } from '@regle/rules';
 import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
 
@@ -31,6 +31,9 @@ const form = ref({ name: '' });
 const condition = ref(false);
 
 const { r$ } = useRegle(form, {
-  name: { required: requiredIf(condition) },
+  name: {
+    required: applyIf(condition, required),
+    minLength: applyIf(condition, minLength(3)),
+  },
 });
 </script>
