@@ -2,11 +2,7 @@ import { createRule, useRegle } from '@regle/core';
 import { minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
 import { nextTick, ref, type Ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
-import {
-  shouldBeInvalidField,
-  shouldBePristineField,
-  shouldBeValidField,
-} from '../../../utils/validations.utils';
+import { shouldBeInvalidField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
 
 describe('collections validations', () => {
   function nestedCollectionRules() {
@@ -63,6 +59,17 @@ describe('collections validations', () => {
     return true;
   });
 
+  const deepNestedParamSpy = vi.fn((params: Object) => {
+    return true;
+  });
+
+  const deepNestedParamRule = createRule({
+    validator(value: unknown, params: Object) {
+      return deepNestedParamSpy(params);
+    },
+    message: 'This field is required',
+  });
+
   const requiredIfMock = createRule({
     validator(value: unknown, condition: boolean) {
       return requiredIfSpy(value, condition);
@@ -90,7 +97,10 @@ describe('collections validations', () => {
           name: { required },
           level1: {
             $each: (value, index) => ({
-              name: { required: requiredIfMock(() => parent.value.name === 'required') },
+              name: {
+                required: requiredIfMock(() => parent.value.name === 'required'),
+                nested: deepNestedParamRule(value),
+              },
             }),
           },
         }),
@@ -102,19 +112,23 @@ describe('collections validations', () => {
 
     shouldBePristineField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
     expect(requiredIfSpy).toHaveBeenCalledTimes(1);
+    expect(deepNestedParamSpy).toHaveBeenCalledTimes(1);
 
     vm.r$.$value.level0.push({ name: '', level1: [{ name: '' }] });
     await nextTick();
     shouldBeInvalidField(vm.r$.$fields.level0.$each[1].$fields.name);
     expect(requiredIfSpy).toHaveBeenCalledTimes(2);
+    expect(deepNestedParamSpy).toHaveBeenCalledTimes(2);
 
     vm.r$.$value.level0[0].level1.push({ name: '' });
     await nextTick();
     expect(requiredIfSpy).toHaveBeenCalledTimes(3);
+    expect(deepNestedParamSpy).toHaveBeenCalledTimes(3);
 
     vm.r$.$value.level0[0].name = 'required';
     await nextTick();
     expect(requiredIfSpy).toHaveBeenCalledTimes(7);
+    expect(deepNestedParamSpy).toHaveBeenCalledTimes(3);
 
     shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
   });
@@ -137,7 +151,7 @@ describe('collections validations', () => {
     const cache = vm.r$.$value.level0[0].level1[0];
     vm.r$.$value.level0[0].level1[0] = vm.r$.$value.level0[0].level1[1];
     vm.r$.$value.level0[0].level1[1] = cache;
-    await nextTick();
+    await vm.$nextTick();
 
     shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
     shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
