@@ -41,8 +41,8 @@ In the above example, the `weight` rule depends on the `condition` ref, which is
 ```ts twoslash
 // @noErrors
 import { ref } from 'vue';
-import { withParams } from '@regle/rules';
-import { createRule, withMessage } from '@regle/core';
+import { withParams, withMessage } from '@regle/rules';
+import { createRule } from '@regle/core';
 
 const condition = ref(false)
 
