@@ -15,12 +15,17 @@ html.dark {
 
 .VPHero {
   @media (min-width: 960px) {
-    .name[data-v-b84435b6],
-    .text[data-v-b84435b6] {
+    .name,
+    .text {
       line-height: 64px;
       font-size: 54px;
     }
   }
+}
+
+iframe {
+  border: none;
+  margin-top: 40px;
 }
 
 .VPHomeFeatures {
