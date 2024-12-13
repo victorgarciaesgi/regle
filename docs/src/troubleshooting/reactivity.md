@@ -13,7 +13,7 @@ To illustrate the issue, consider the following example:
 ```ts twoslash
 // @noErrors
 import { ref, computed } from 'vue';
-import { withMessage } from '@regle/core';
+import { withMessage } from '@regle/rules';
 
 const condition = ref(false)
 
