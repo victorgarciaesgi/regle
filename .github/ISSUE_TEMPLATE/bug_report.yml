@@ -1,0 +1,55 @@
+name: Bug report 🐞
+description: Report an issue with Regle
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: 'If possible, provide reproduction of your bug using [this template on stackblitz](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-reproduction?file=src/views/Home.vue). You can also [clone the repository here](https://github.com/victorgarciaesgi/regle-reproduction)'
+      placeholder: Reproduction
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce the bug
+      description: |
+        1. Click on ...
+        2. Check log
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: 'A clear and concise description of what actually happens.'
+    validations:
+      required: true
+  - type: textarea
+    id: other-info
+    attributes:
+      label: Environnement informations
+      description: Versions of your packages
+      value: |
+        - `@regle/x` version:
+        - `vue` version:
+        - `typescript` version:
+        - `Nuxt` version (if you use Nuxt): 
+        - `Zod` version (if you use zod): "
+  - type: markdown
+    attributes:
+      value: |
+        ## Before creating an issue make sure that:
+        - This hasn't been [reported before](https://github.com/vuejs/pinia/issues).
+        - The provided reproduction is a [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example) of the bug **with no external dependencies (e.g. vuetify)**
