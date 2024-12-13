@@ -47,9 +47,3 @@ body:
         - `typescript` version:
         - `Nuxt` version (if you use Nuxt): 
         - `Zod` version (if you use zod): "
-  - type: markdown
-    attributes:
-      value: |
-        ## Before creating an issue make sure that:
-        - This hasn't been [reported before](https://github.com/vuejs/pinia/issues).
-        - The provided reproduction is a [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example) of the bug **with no external dependencies (e.g. vuetify)**
