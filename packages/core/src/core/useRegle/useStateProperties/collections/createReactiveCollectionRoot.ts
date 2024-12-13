@@ -443,13 +443,13 @@ export function createReactiveCollectionStatus({
     });
 
     if (filterNullishValues) {
-      dirtyFields = dirtyFields.filter((value) => {
-        if (isObject(value)) {
-          return !isEmpty(value);
-        } else {
-          return !!value;
-        }
-      });
+      if (
+        dirtyFields.every((value) => {
+          return isEmpty(value);
+        })
+      ) {
+        dirtyFields = [];
+      }
     }
     return dirtyFields;
   }

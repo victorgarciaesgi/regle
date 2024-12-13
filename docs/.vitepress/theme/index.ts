@@ -8,7 +8,6 @@ import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client';
 import type { EnhanceAppContext } from 'vitepress';
 import 'virtual:group-icons.css';
 import { createPinia } from 'pinia';
-import './tailwind.postcss';
 
 export default {
   extends: DefaultTheme,

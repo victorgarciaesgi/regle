@@ -2,10 +2,6 @@
 title: Simple demo
 ---
 
-<script setup>
-import SimpleDemo from '../demo/SimpleDemo.vue';
-</script>
-
 # Simple demo
 
 You can play with the code of this example in the stackblitz sandbox.
@@ -20,8 +16,5 @@ Don't forgot to install the `Vue` extension in the online IDE.
 </a>
 
 
-## Rendered demo
-
-<SimpleDemo/>
 
 

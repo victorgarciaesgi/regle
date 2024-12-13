@@ -158,9 +158,7 @@ export function createReactiveRuleStatus({
       } satisfies ScopeState;
     })!;
 
-    $unwatchState = watch(scopeState.$params, $validate, {
-      deep: true,
-    });
+    $unwatchState = watch(scopeState.$params, $validate);
   }
 
   $watch();

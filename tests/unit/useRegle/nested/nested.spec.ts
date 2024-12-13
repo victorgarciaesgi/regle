@@ -1,12 +1,8 @@
 import { useRegle } from '@regle/core';
-import { minLength, required } from '@regle/rules';
-import { nextTick, ref } from 'vue';
+import { required } from '@regle/rules';
+import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
-import {
-  shouldBeInvalidField,
-  shouldBePristineField,
-  shouldBeValidField,
-} from '../../../utils/validations.utils';
+import { shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';
 
 describe('nested validations', () => {
   function nestedCollectionRules() {

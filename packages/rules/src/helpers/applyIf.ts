@@ -6,6 +6,7 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleMetadataConsumer,
   RegleRuleDefinitionWithMetadataProcessor,
+  RegleRuleRaw,
 } from '@regle/core';
 import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
 
@@ -37,10 +38,10 @@ export function applyIf<
     _params = rule._params?.concat([_condition] as any);
   }
 
-  function newValidator(value: any) {
+  function newValidator(value: any, ...args: any[]) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
     if (condition) {
-      return validator(value, condition);
+      return validator(value, ...args);
     }
     return true;
   }
@@ -52,12 +53,19 @@ export function applyIf<
 
   const newRule = createRule({
     type: _type as any,
-    validator: newValidator as any,
+    validator: newValidator,
     active: newActive,
     message: _message,
-  });
+  }) as RegleRuleRaw;
 
-  newRule._params = _params as any;
+  const newParams = [...(_params ?? [])] as [];
+  newRule._params = newParams as any;
 
-  return newRule as any;
+  if (typeof newRule === 'function') {
+    const executedRule = newRule(...newParams);
+    executedRule._message_patched = true;
+    return executedRule as any;
+  } else {
+    return newRule as any;
+  }
 }

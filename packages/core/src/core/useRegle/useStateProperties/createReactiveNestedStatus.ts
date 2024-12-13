@@ -371,20 +371,24 @@ export function createReactiveNestedStatus({
     createReactiveFieldsStatus();
   }
 
+  function filterNullishFields(fields: [string, unknown][]) {
+    return fields.filter(([key, value]) => {
+      if (isObject(value)) {
+        return !(value && typeof value === 'object' && '_null' in value) && !isEmpty(value);
+      } else if (Array.isArray(value)) {
+        return value.length;
+      } else {
+        return true;
+      }
+    });
+  }
+
   function $extractDirtyFields(filterNullishValues: boolean = true): Record<string, any> {
-    let dirtyFields = Object.entries($fields.value).map(([key, field]) => {
+    let dirtyFields: [string, unknown][] = Object.entries($fields.value).map(([key, field]) => {
       return [key, field.$extractDirtyFields(filterNullishValues)];
     });
     if (filterNullishValues) {
-      dirtyFields = dirtyFields.filter(([key, value]) => {
-        if (isObject(value)) {
-          return !isEmpty(value);
-        } else if (Array.isArray(value)) {
-          return value.length;
-        } else {
-          return !!value;
-        }
-      });
+      dirtyFields = filterNullishFields(dirtyFields);
     }
     return Object.fromEntries(dirtyFields);
   }

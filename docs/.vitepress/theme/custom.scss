@@ -117,7 +117,7 @@ html.dark {
     align-items: flex-start;
   }
 
-  ul {
+  ul:not(.text-red-400) {
     margin-bottom: 0;
     color: var(--vp-c-form-error);
     font-size: 14px;

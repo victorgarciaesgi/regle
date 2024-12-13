@@ -2,7 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
-import { required } from '../../rules';
+import { minLength, required } from '../../rules';
 import { applyIf } from '../applyIf';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 
@@ -49,6 +49,7 @@ describe('applyIf helper', () => {
         email: '',
         name: '',
         count: 0,
+        field: '',
       });
 
       return useRegle(form, () => ({
@@ -58,11 +59,15 @@ describe('applyIf helper', () => {
         name: {
           error: applyIf(form.value.count === 1, (value) => required.exec(value)),
         },
+        field: {
+          error: applyIf(form.value.count === 1, minLength(3)),
+        },
       }));
     });
 
     expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([false]);
     expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([false]);
+    expect(vm.r$.$fields.field.$rules.error.$params).toStrictEqual([3, false]);
 
     vm.r$.$value.count = 1;
 
@@ -70,6 +75,7 @@ describe('applyIf helper', () => {
 
     expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([true]);
     expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([true]);
+    expect(vm.r$.$fields.field.$rules.error.$params).toStrictEqual([3, true]);
   });
 
   it('should have correct types', () => {

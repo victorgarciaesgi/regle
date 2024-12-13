@@ -21,7 +21,11 @@ A clear and concise description of what the bug is.
 A clear and concise description of what you expected to happen.
 
 **Reproduction**
-Please provide a reproduction link or repo
+Please provide a reproduction.
+
+Use this template to help me identity the problem:
+
+<a href='https://stackblitz.com/~/github.com/victorgarciaesgi/regle-reproduction?file=src/views/Home.vue' target='_blank'><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg"/></a>
 
 **Screenshots**
 If applicable, add screenshots or recordings to help explain your problem.

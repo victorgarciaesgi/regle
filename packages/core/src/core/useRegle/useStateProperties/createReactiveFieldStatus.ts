@@ -453,9 +453,13 @@ export function createReactiveFieldStatus({
     $reset();
   }
 
-  function $extractDirtyFields(filterNullishValues: boolean = true): any | null {
+  function $extractDirtyFields(filterNullishValues: boolean = true): unknown | null | { _null: true } {
     if ($dirty.value) {
       return state.value;
+    }
+    if (filterNullishValues) {
+      // Differenciate untouched empty values from dirty empty ones
+      return { _null: true };
     }
     return null;
   }
