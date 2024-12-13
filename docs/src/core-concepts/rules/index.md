@@ -11,22 +11,22 @@ A rule is created using either:
 - An inline function
 - `createRule`
 
-The rule take the value (and parameters if there is) as input, and will return the result as output.
+A rule takes the value (and optional parameters) as input and returns a result as output.
 
 The **result** can either be:
 
 - `boolean`
-- An object containing at least the `{$valid: boolean}` property.
+- An object containing at least the `{ $valid: boolean }` property.
 
-The boolean represent the result of the validation.
+The boolean represents the result of the validation.
 
 :::tip
-You can jump directly into the [createRule section](/core-concepts/rules/reusable-rules) to see more advanced features
+You can jump directly to the [createRule section](/core-concepts/rules/reusable-rules) to see more advanced features.
 :::
 
 ## Inline rules
 
-You can write inline rules like simple function receiving the value you're evaluating as a parameter. Help yourself with the `InlineRuleDeclaration` type helper
+You can write inline rules as simple functions that receive the value being evaluated as a parameter. Use the `InlineRuleDeclaration` type helper for enhanced type safety.
 
 ``` ts twoslash
 // @noErrors
@@ -47,4 +47,3 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   foo: 'bar'
 })) satisfies InlineRuleDeclaration;
 ```
-

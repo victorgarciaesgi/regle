@@ -9,10 +9,9 @@ import ComponentB from '../parts/components/pinia/ComponentB.vue';
 
 # Usage with Pinia
 
-As Regle is headless, you can use it in any place of your app, a composable, and also a store.
+Since Regle is headless, you can use it anywhere in your app — whether in a composable or a store.
 
-Using a Pinia store is great for avoiding to do prop drilling with all the properties, and easily keep type inference in your components.
-
+Using a Pinia store is an excellent way to avoid prop drilling with multiple properties while maintaining type inference seamlessly across your components.
 
 ## Using regle in a Pinia store
 
@@ -21,14 +20,13 @@ Using a Pinia store is great for avoiding to do prop drilling with all the prope
 // @module: esnext
 // @filename: demo.store.ts
 // ---cut---
-import {required, minLength, email} from '@regle/rules';
-import {defineStore} from 'pinia';
-import {useRegle} from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
+import { defineStore } from 'pinia';
+import { useRegle } from '@regle/core';
 
 export const useDemoStore = defineStore('demo-store', () => {
-
-  const {r$} = useRegle({email: ''}, {
-    email: {required, minLength: minLength(4), email}
+  const { r$ } = useRegle({ email: '' }, {
+    email: { required, minLength: minLength(4), email }
   })
 
   return {
@@ -48,11 +46,11 @@ export const useDemoStore = defineStore('demo-store', () => {
 // @noErrors
 // ---cut---
 // @module: esnext
-import {useDemoStore} from './demo.store';
-import {storeToRefs} from 'pinia';
+import { useDemoStore } from './demo.store';
+import { storeToRefs } from 'pinia';
 
 const demoStore = useDemoStore();
-const {r$} = storeToRefs(demoStore);
+const { r$ } = storeToRefs(demoStore);
 
 </script>
 ```
@@ -71,12 +69,11 @@ const {r$} = storeToRefs(demoStore);
 // @noErrors
 // ---cut---
 // @module: esnext
-import {useDemoStore} from './demo.store';
-import {storeToRefs} from 'pinia';
+import { useDemoStore } from './demo.store';
+import { storeToRefs } from 'pinia';
 
 const demoStore = useDemoStore();
-const {r$} = storeToRefs(demoStore);
-
+const { r$ } = storeToRefs(demoStore);
 </script>
 ```
 
@@ -84,8 +81,8 @@ const {r$} = storeToRefs(demoStore);
 
 Component A:
 
-<ComponentA/>
+<ComponentA />
 
 Component B:
 
-<ComponentB/>
+<ComponentB />

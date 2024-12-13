@@ -8,8 +8,10 @@
             :class="{ valid: item.$fields.name.$valid, error: item.$fields.name.$error }"
             placeholder="Type an item value"
           />
+
           <div v-if="form.collection.length > 1" @click="form.collection.splice(index, 1)">❌</div>
         </div>
+
         <ul v-if="item.$fields.name.$errors.length">
           <li v-for="error of item.$fields.name.$errors" :key="error">
             {{ error }}
@@ -17,11 +19,13 @@
         </ul>
       </div>
     </div>
+
     <ul v-if="r$.$errors.collection.$self.length">
       <li v-for="error of r$.$errors.collection.$self" :key="error">
         {{ error }}
       </li>
     </ul>
+    
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
       <button type="button" @click="r$.$resetAll">Reset</button>

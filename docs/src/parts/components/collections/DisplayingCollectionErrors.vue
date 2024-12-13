@@ -8,8 +8,10 @@
             :class="{ valid: item.$fields.name.$valid, error: item.$fields.name.$error }"
             placeholder="Type an item value"
           />
+
           <div v-if="form.collection.length > 1" @click="form.collection.splice(index, 1)">❌</div>
         </div>
+
         <ul v-if="item.$fields.name.$errors.length">
           <li v-for="error of item.$fields.name.$errors" :key="error">
             {{ error }}
@@ -17,11 +19,12 @@
         </ul>
       </div>
     </div>
+
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
-      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem"
-        >Remove random item</button
-      >
+      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem">
+        Remove random item
+      </button>
       <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
@@ -31,30 +34,34 @@
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
 import { ref } from 'vue';
-import { minLength, required } from '@regle/rules';
+import { required } from '@regle/rules';
 
 function shuffle(arr: any[], options?: any) {
   if (!Array.isArray(arr)) {
     throw new Error('expected an array');
   }
+
   if (arr.length < 2) {
     return arr;
   }
+
   var shuffleAll = options && options.shuffleAll;
   var result = arr.slice();
-  var i = arr.length,
-    rand,
-    temp;
+
+  var i = arr.length, rand, temp;
+
   while (--i > 0) {
     do {
       rand = Math.floor(Math.random() * (i + 1));
     } while (shuffleAll && rand == i);
+
     if (!shuffleAll || rand != i) {
       temp = result[i];
       result[i] = result[rand];
       result[rand] = temp;
     }
   }
+  
   return result;
 }
 

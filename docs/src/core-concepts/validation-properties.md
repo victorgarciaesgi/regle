@@ -4,24 +4,23 @@ title: Validation properties
 
 # Validation properties
 
-Validation properties are computed values or methods available in every nested rule status (including `r$` and `regle`)
+Validation properties are computed values or methods available for every nested rule status, including `r$` and `regle`.
 
-
-Let's make a simple exemple to explain the different properties
+Let's take a look at a simple example to explain the different properties.
 
 ``` vue twoslash
 <script setup lang='ts'>
 // @noErrors
-import {useRegle} from '@regle/core';
-import {required} from '@regle/rules';
-import {ref} from 'vue';
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+import { ref } from 'vue';
 
-const form = ref({email: '', user: {firstName: '', lastName: ''}});
+const form = ref({ email: '', user: { firstName: '', lastName: '' } });
 
-const {r$} = useRegle(form, {
-  email: {required},
+const { r$ } = useRegle(form, {
+  email: { required },
   user: {
-    firstName: {required},
+    firstName: { required },
   }
 })
 
@@ -36,60 +35,60 @@ r$.$fields.email.$e
 ### `$invalid` 
 - Type: `readonly boolean`
 
-Indicates the state of validation for given model becomes true when any of its children rules specified in options returns a falsy value.
+Indicates whether the field is invalid. It becomes `true` if any associated rules return `false`.
 
 
 ### `$valid`
 - Type: `readonly boolean`
   
-This will be true only if the field is `$dirty` and the value is not empty. It's useful to display UI indicators that the field is correct.
+True only when the field is dirty and passes validation. Useful for showing UI indicators that the field is valid.
 
 
 ### `$dirty`
 - Type: `readonly boolean`
   
 
-A flag indicating whether the field being validated has been interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can control this flag manually using the `$touch` and `$reset` methods. The `$dirty` flag is considered true if the current model has been touched or if all its child models are `$dirty`. 
+Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the `$touch` and `$reset` methods. The `$dirty` flag is considered true if the current model has been touched or if all its children are dirty. 
 
 
 ### `$anyDirty`
 - Type: `readonly boolean`
 
-A flag very similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true if given model was $touched or any of its children are `$anyDirty` which means at least one descendant is `$dirty`.
+Similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true if given model was touched or any of its children are `$anyDirty` which means at least one descendant is `$dirty`.
 
 
 ### `$value`
 - Type: `TValue` (The current property value type)
   
-A reference to the original validated model. It can be used to bind your form with `v-model` too
+A reference to the original validated model. It can be used to bind your form with `v-model`.
 
 
 ### `$pending`
 - Type: `readonly boolean`
 
-Indicates if any child async rule is currently pending. Always false if all rules are synchronous.
+Indicates if any async rule for the field is currently running. Always `false` for synchronous rules.
 
 ### `$ready`
 - Type: `readonly boolean`
 
-A computed state indicating if your form is ready to submit (to compute a disabled state on a button). It's equivalent to `!$invalid && !$pending`.
+Indicates whether the field is ready for submission. Equivalent to `!$invalid && !$pending`.
 
 
 ### `$error`
 - Type: `readonly boolean`
 
-Convenience flag to easily decide if a message should be displayed. Equivalent to `$dirty && !$pending && $invalid`
+Convenience flag to easily decide if a message should be displayed. Equivalent to `$dirty && !$pending && $invalid`.
 
 
 ### `$errors`
 - Type: `readonly string[]`
 
-Collection of all the error messages, collected for all child properties and nested forms. Only contains errors from properties where $dirty equals true.
+Collection of all the error messages, collected for all children properties and nested forms. Only contains errors from properties where $dirty equals `true`.
 
 ### `$silentErrors`
 - Type: `readonly string[]`
 
-Collection of all the error messages, collected for all child properties.
+Collection of all the error messages, collected for all children properties.
 
 ### `$name`
 - Type: `readonly string`
@@ -103,7 +102,7 @@ Return the current key name of the field.
 - Type: `() => Promise<false | SafeOutput<TState>>`
 
 Sets all properties as dirty, triggering all rules. 
-It returns a promise that will either resolve to `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only)
+It returns a promise that will either resolve to `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
 
 ### `$extractDirtyFields`
 - Type: `(filterNullishValues = true) => PartialDeep<TState>`
@@ -114,12 +113,12 @@ By default it will filter out nullish values or objects, but you can override it
 ### `$touch`
 - Type: `() => void`
 
-Sets its property and all nested properties $dirty state to true.
+Marks the field and all nested properties as `$dirty`.
 
 ### `$reset`
 - Type: `() => void`
 
-Resets the $dirty state on all nested properties of a form.
+Resets the `$dirty` state on all nested properties of a form.
 
 ### `$resetAll`
 - Type: `() => void`
@@ -157,8 +156,8 @@ This represents all the children of your object. You can access any nested child
 
 ### `$each`
 
-This will store the status of every item in your collection. Each item will be a classic field you can access, or map on it to display your elements.
+This will store the status of every item in your collection. Each item will be a field you can access, or map on it to display your elements.
 
 ### `$field`
 
-Represent the status of the collection itself. You can have validations on the array like `minLength`, this field represent the isolated status of the collection.
+Represents the status of the collection itself. You can have validation rules on the array like `minLength`, this field represents the isolated status of the collection.

@@ -10,42 +10,42 @@ import ValidatingArray from '../parts/components/collections/ValidatingArray.vue
 
 # Collections
 
-## Declaring rules for collection
+## Declaring rules for collections
 
-Your forms can often contain collections validations. Where you need to validate multiple items sharing nested shape. It can easily be done with `$each` in the rules declaration.
+Your forms may often include validations for collections where you need to validate multiple items sharing a nested structure. This can be easily achieved using `$each` in the rules declaration.
 
-You can also add validation for the field containing the array.
+You can also add validations for the field containing the array itself.
 
 :::warning
-Due to Javascript limitations with [Primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive), it's recommanded to use only arrays of objects.
+Due to a JavaScript limitation with [Primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive), it's recommended to use only arrays of objects.
 
-Primitives (Strings, Numbers etc...) are immutable, so they can't be modified to add a track id (the way Regle works for collections).
+Primitives (Strings, Numbers etc...) are immutable, so they can't be modified to add a tracking ID (which is how Regle works for collections).
 :::
 
 ```ts twoslash
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
-import {required} from '@regle/rules';
+import { useRegle } from '@regle/core';
+import { ref } from 'vue';
+import { required } from '@regle/rules';
 // ---cut---
-const form = ref<{collection: Array<{name: string}>}>({
+const form = ref<{ collection: Array<{ name: string }> }>({
   collection: []
 })
 
-const {r$} = useRegle(form, {
+const { r$ } = useRegle(form, {
   collection: {
     $each: {
-      name: {required},
+      name: { required },
     }
   }
 })
 ```
 
 
-## Displaying collections errors
+## Displaying collection errors
 
-For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this exemple `r$.$fields.collection.$each`.
+For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this example, `r$.$fields.collection.$each`.
 
-But you can also map your errors to the `r$.$errors.collection.$each`.
+Alternatively, you can map your errors using `r$.$errors.collection.$each`.
 
 ```vue twoslash
 <template>
@@ -58,6 +58,7 @@ But you can also map your errors to the `r$.$errors.collection.$each`.
         :class="{ valid: item.$fields.name.$valid }"
         placeholder="Type an item value"
       />
+
       <ul>
         <li v-for="error of item.$fields.name.$errors" :key="error">
           {{ error }}
@@ -65,6 +66,7 @@ But you can also map your errors to the `r$.$errors.collection.$each`.
       </ul>
     </div>
   </div>
+
   <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
   <button type="button" @click="r$.$resetAll">Reset</button>
 </template>
@@ -97,11 +99,11 @@ Result:
 
 ## Validating the array independently
 
-Sometimes you not only want to validate each field in every element of the array, but validating the array it self, like its size.
+Sometimes, you may want to validate not only each field in every element of the array but also the array itself, such as its size.
 
-You can do this exactly like a normal field.
+You can do this just like you would with a normal field.
 
-The errors can be displayed either by `r$.$errors.[field].$self` or `r$.$fields.[field].$field.$errors`
+Errors can be displayed either using `r$.$errors.[field].$self` or `r$.$fields.[field].$field.$errors`.
 
 
 ```ts twoslash
@@ -127,13 +129,13 @@ const { r$ } = useRegle(form, {
 
 Result:
 
-<ValidatingArray/>
+<ValidatingArray />
 
 
 ## Accessing the current item state
 
 In each item of your collection, you may have a validation that depends on another property of the item.
-You can access the current item state and index by providing a function callback to `$each`.
+You can access the current item's state and index by providing a function callback to `$each`.
 
 ```ts twoslash
 //---cut---
@@ -157,13 +159,13 @@ const { r$ } = useRegle(form, {
 
 Result:
 
-<AccessingCurrentItemState/>
+<AccessingCurrentItemState />
 
-## Providing custom key to track item
+## Providing a custom key to track items
 
-By default, Regle will generate a random ID to track your items and keep its state through mutations. This ID is stored in `$id` and can be used in Vue as a `key` for rendering.
+By default, Regle generates a random ID to track your items and maintain their state through mutations. This ID is stored in `$id` and can be used in Vue as a `key` for rendering.
 
-You can also provide your own key to the rule for custom tracking
+You can also provide your own key to the rule for custom tracking:
 
 
 ```ts twoslash

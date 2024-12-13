@@ -4,12 +4,15 @@ title: Validations helpers
 
 # Validations helpers
 
-When writing custom rules, some checks or guards can be annoying to do. Values aren't always set, can be `null` or `undefined`.
-It's also recommended to check if your field is "filled" before validating it.
+When writing custom rules, some checks or validations can become tedious, especially when handling values that might be null, undefined, or unset. It's also a best practice to verify whether a field is "filled" before proceeding with validation.
 
-For this Regle provides a set of utilities to help you write your custom rules.
+To simplify this process, Regle provides a set of utility functions to assist in creating custom rules.
 
-Accessible with `import {ruleHelpers} from @regle/rules`
+These utilities can be accessed via:
+
+```ts
+import { ruleHelpers } from '@regle/rules';
+```
 
 ## Runtime and Type guards
 
@@ -18,13 +21,13 @@ Accessible with `import {ruleHelpers} from @regle/rules`
 This is almost a must have for optional fields. It checks if any value you provided is defined (including arrays and objects).
 You can base your validator result on this.
 
-`isFilled` also acts as a type-guard.
+`isFilled` also acts as a type guard.
 
 ```ts twoslash
 const check = (value: any) => false;
 //---cut---
-import {createRule} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: unknown) {
@@ -39,15 +42,15 @@ const rule = createRule({
 
 ### `isEmpty`
 
-This is the inverse of `isFilled`. It will check if the value is on any way empty (including arrays and objects)
+This is the inverse of `isFilled`. It will check if the value is in any way empty (including arrays and objects)
 
-`isEmpty` also acts as a type-guard.
+`isEmpty` also acts as a type guard.
 
 ```ts twoslash
 const check = (value: any) => false;
 //---cut---
-import {createRule, type Maybe} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule, type Maybe } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string>) {
@@ -65,13 +68,13 @@ const rule = createRule({
 ### `isNumber`
 
 This is a type guard that will check if the passed value is a real `Number`.
-This also return false for `NaN`, so this is better than `typeof value === "number"`.
+This also returns false for `NaN`, so this is better than `typeof value === "number"`.
 
 ```ts twoslash
 const checkNumber = (value: number) => false;
 //---cut---
-import {createRule, type Maybe} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule, type Maybe } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<number | string>) {
@@ -94,8 +97,8 @@ This can also check strings.
 ```ts twoslash
 const checkDate = (value: Date) => false;
 //---cut---
-import {createRule, type Maybe} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule, type Maybe } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string | Date>) {
@@ -117,8 +120,8 @@ This helper will return the length of any data type you pass.
 It works with strings, arrays, objects and numbers.
 
 ```ts twoslash
-import {createRule, type Maybe} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule, type Maybe } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string | Array<number>>) {
@@ -133,11 +136,11 @@ const rule = createRule({
 
 ### `regex`
 
-This helper can take multiple regex as arguments, will check the validity of the input, and test it against the value.
+This utility can take multiple regular expressions as arguments. It checks the input's validity and tests it against the provided regex patterns.
 
 ```ts twoslash
-import {createRule, type Maybe} from '@regle/core';
-import {ruleHelpers} from '@regle/rules';
+import { createRule, type Maybe } from '@regle/core';
+import { ruleHelpers } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string>, ...regexps: RegExp[]) {
@@ -154,10 +157,10 @@ const rule = createRule({
 
 ### `toNumber`
 
-This util will coerce any string (or number) into a number using the `Number` constructor.
+This utility converts any string (or number) into a number using the `Number` constructor.
 
 :::warning
-This helper return `NaN` is the input can not be coerced, which is technicaly still a number.
+This helper returns `NaN` if the input cannot be coerced, which is technically still a number.
 
 It can be safe to also check for `isNaN` additionally.
 :::
@@ -165,4 +168,4 @@ It can be safe to also check for `isNaN` additionally.
 
 ### `toDate`
 
-This util will coerce any string, number or Date value into a Date using the `Date` constructor.
+This utility will coerce any string, number or Date value into a Date using the `Date` constructor.

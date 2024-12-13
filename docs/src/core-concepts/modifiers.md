@@ -8,18 +8,18 @@ import ExternalErrors from '../parts/components/modifiers/ExternalErrors.vue';
 
 # Modifiers
 
-Modifiers are behaviours or settings letting you control how the rules will behave.
+Modifiers allow you to control the behavior and settings of validation rules in your application. They can be applied globally to all fields or customized per field.
 
 ## Deep modifiers
 
-Deep modifiers can be defined as 3rd argument of the `useRegle` composable. They will apply recursevely for all the fields in your state.
+Deep modifiers are specified as the third argument of the `useRegle` composable. They apply recursively to all fields within your state.
 
 ```ts twoslash
 // @noErrors
-import {useRegle} from '@regle/core';
+import { useRegle } from '@regle/core';
 // ---cut---
-const {r$} = useRegle({}, {}, {""})
-//                              ^|
+const { r$ } = useRegle({}, {}, {""})
+//                                ^|
 ```
 
 ### `autoDirty`
@@ -27,8 +27,7 @@ Type: `boolean`
 
 Default: `true`
 
-Allow all the nested rules to track changes on the state automatically.
-If set to `false`, you need to call `$touch` to manually trigger the change
+Automatically tracks changes in the state for all nested rules. If set to `false`, you must manually call `$touch` to mark fields as dirty.
 
 ### `lazy`
 Type: `boolean`
@@ -47,7 +46,7 @@ Pass an object, matching your error state, that holds external validation errors
 
 ```ts twoslash
 import { required } from '@regle/rules';
-import {ref, reactive} from 'vue';
+import { ref, reactive } from 'vue';
 // ---cut---
 import { type RegleExternalErrorTree, useRegle } from '@regle/core'
 
@@ -60,12 +59,12 @@ const form = reactive({
 
 const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const {r$} = useRegle(form, {
-  email: {required},
-  name: {pseudo: {required}}
-}, {
-  externalErrors
-})
+const { r$ } = useRegle(form, {
+  email: { required },
+  name: {
+    pseudo: { required }
+  }
+}, { externalErrors })
 
 function submit() {
   externalErrors.value = {
@@ -88,9 +87,9 @@ Type: `boolean`
 
 Default: `false`
 
-Turn on the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method.
+Enables the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method.
 
-This will have effects only if you use `autoDirty: false`.
+This will have an effect only if you use `autoDirty: false`.
 
 ### `clearExternalErrorsOnChange`
 
@@ -105,21 +104,21 @@ Setting it to `false` will keep the server errors until `$clearExternalErrors` i
 
 Type: `(fields) => Record<string, (RegleFieldStatus |RegleCollectionStatus)[]>`
 
-Validation groups let you merge fields properties under one, to better handle validation status.
+Validation groups let you merge field properties under one, to better handle validation status.
 
-You will have access to your declared groups in the `r$.$groups` object
+You will have access to your declared groups in the `r$.$groups` object.
 
 ```ts twoslash
 // @noErrors
-import {ref} from 'vue';
+import { ref } from 'vue';
 // ---cut---
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 
-const {r$} = useRegle({email: '', user: {firstName: ''}}, {
-  email: {required},
+const { r$ } = useRegle({ email: '', user: { firstName: '' } }, {
+  email: { required },
   user: {
-    firstName: {required},
+    firstName: { required },
   }
 }, {
   validationGroups: (fields) => ({
@@ -134,27 +133,27 @@ r$.$groups.group1.
 
 ## Per-field modifiers
 
-Per-field modifiers allow to customize more precisely which behaviour you want for each field
+Per-field modifiers allow to customize more precisely which behavior you want for each field.
 
 ```ts twoslash
 // @noErrors
-import {useRegle} from '@regle/core';
+import { useRegle } from '@regle/core';
 // ---cut---
-const {r$} = useRegle({name: ''}, {
-  name: {$}
-//        ^|    
+const { r$ } = useRegle({ name: '' }, {
+  name: { $ }
+//         ^|    
 })
 ```
 
 <br><br>
 
 
-`$autoDirty` `$lazy` and `$rewardEarly` work the same as the deep modifiers
+`$autoDirty` `$lazy` and `$rewardEarly` work the same as the deep modifiers.
 
 ### `$debounce`
 Type: `number` (ms)
 
-This let you declare the number of milliseconds the rule need to wait before executing. Useful for async or heavy computations.
+This let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
 
 :::tip
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
