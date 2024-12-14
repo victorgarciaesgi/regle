@@ -96,6 +96,10 @@ export function createReactiveFieldStatus({
                   $pending: scopeState.$pending,
                   $valid: scopeState.$valid,
                 },
+                modifiers: {
+                  $autoDirty: scopeState.$autoDirty,
+                  $rewardEarly: scopeState.$rewardEarly,
+                },
                 customMessages,
                 rule: ruleRef as any,
                 ruleKey,
