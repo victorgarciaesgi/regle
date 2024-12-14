@@ -20,7 +20,8 @@ export default {
     app.use(pinia);
 
     onMounted(async () => {
-      await nextTick(() => scrollToActiveSidebarItem());
+      await nextTick();
+      scrollToActiveSidebarItem();
     });
 
     watch(
@@ -28,7 +29,10 @@ export default {
       () =>
         nextTick(() => {
           scrollToActiveSidebarItem();
-        })
+        }),
+      {
+        immediate: true,
+      }
     );
   },
 } satisfies Theme;

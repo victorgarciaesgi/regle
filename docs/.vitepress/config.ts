@@ -71,7 +71,10 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   },
 ];
 
-const Examples: DefaultTheme.NavItemWithLink[] = [{ text: 'Simple form example', link: '/examples/simple' }];
+const Examples: DefaultTheme.NavItemWithLink[] = [
+  { text: 'Simple form example', link: '/examples/simple' },
+  { text: 'Advanced form example', link: '/examples/advanced' },
+];
 
 const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
   { text: 'Reactivity caveats', link: '/troubleshooting/reactivity' },
