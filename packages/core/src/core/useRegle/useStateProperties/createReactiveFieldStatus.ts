@@ -10,7 +10,7 @@ import type {
   RegleRuleDecl,
   RegleShortcutDefinition,
 } from '../../../types';
-import { debounce, isVueSuperiorOrEqualTo3dotFive, resetFieldValue } from '../../../utils';
+import { cloneDeep, debounce, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
@@ -458,7 +458,7 @@ export function createReactiveFieldStatus({
 
   function $resetAll() {
     $unwatch();
-    state.value = resetFieldValue(state, initialState);
+    state.value = cloneDeep(initialState);
     $reset();
   }
 

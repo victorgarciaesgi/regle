@@ -31,7 +31,7 @@ It's heavily inspired by Vuelidate.
 
 | Simple demo  | Advanced Demo |
 | ------------- | ------------- |
-| [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-simple-demo)  | TODO  |
+| [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
 ## 🧰 Features
 - ✅ Typescript first
@@ -42,7 +42,9 @@ It's heavily inspired by Vuelidate.
 - 🪶 Light (~6kb gzip)
 - 🛒 Collection validation
 
+## 🫶 Thanks
 
+Special thank you for [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
 
 
 ## Compatibility:
