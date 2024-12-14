@@ -20,7 +20,8 @@ export default {
     app.use(pinia);
 
     onMounted(async () => {
-      await nextTick(() => scrollToActiveSidebarItem());
+      await nextTick();
+      scrollToActiveSidebarItem();
     });
 
     watch(
@@ -34,8 +35,12 @@ export default {
 } satisfies Theme;
 
 function scrollToActiveSidebarItem() {
-  const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
-  if (activeLink) {
-    activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
+      if (activeLink) {
+        activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 1000);
   }
 }

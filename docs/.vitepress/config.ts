@@ -78,6 +78,7 @@ const Examples: DefaultTheme.NavItemWithLink[] = [
     { text: 'Collections', link: '/examples/collections' },
     { text: 'Server validation', link: '/examples/server-validation' },
     { text: 'Required indicators', link: '/examples/required-indicators' },
+    { text: 'Advanced form example', link: '/examples/advanced' },
 ];
 
 const Troubleshooting: DefaultTheme.NavItemWithLink[] = [

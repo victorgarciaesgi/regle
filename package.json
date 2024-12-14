@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
@@ -13,7 +13,7 @@
     "test": "pnpm run build:sourcemaps && pnpm run typecheck && vitest run && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
-    "release": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build && bumpp -r && git push --follow-tags",
+    "release": "pnpm run lint && pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev",
@@ -91,6 +91,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "engines": {
+    "node": ">=18.18.0",
+    "pnpm": ">=9.1.0"
   },
   "license": "MIT",
   "packageManager": "pnpm@9.7.1+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
