@@ -51,6 +51,7 @@ export function createReactiveFieldStatus({
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
     $validating: Ref<boolean>;
+    processShortcuts: () => void;
   }
 
   let scope = effectScope();
@@ -77,6 +78,8 @@ export function createReactiveFieldStatus({
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
     );
 
+    $watch();
+
     $rules.value = Object.fromEntries(
       Object.entries(rulesDef.value)
         .filter(([ruleKey]) => !ruleKey.startsWith('$'))
@@ -86,7 +89,13 @@ export function createReactiveFieldStatus({
             return [
               ruleKey,
               createReactiveRuleStatus({
-                $dirty,
+                fieldProperties: {
+                  $dirty,
+                  $error: scopeState.$error,
+                  $invalid: scopeState.$invalid,
+                  $pending: scopeState.$pending,
+                  $valid: scopeState.$valid,
+                },
                 customMessages,
                 rule: ruleRef as any,
                 ruleKey,
@@ -102,7 +111,7 @@ export function createReactiveFieldStatus({
         .filter((ruleDef): ruleDef is [string, $InternalRegleRuleStatus] => !!ruleDef.length)
     );
 
-    $watch();
+    scopeState.processShortcuts();
 
     define$commit();
 
@@ -311,7 +320,6 @@ export function createReactiveFieldStatus({
       }
 
       const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
-      processShortcuts();
 
       watch($valid, (value) => {
         if (value) {
@@ -338,6 +346,7 @@ export function createReactiveFieldStatus({
         $shortcuts,
         $validating,
         $tooltips,
+        processShortcuts,
       } satisfies ScopeReturnState;
     })!;
 
@@ -381,8 +390,8 @@ export function createReactiveFieldStatus({
     });
   }
 
-  const $rules = ref() as Ref<Record<string, $InternalRegleRuleStatus>>;
-  const $localOptions = ref() as Ref<FieldRegleBehaviourOptions>;
+  const $rules = ref({}) as Ref<Record<string, $InternalRegleRuleStatus>>;
+  const $localOptions = ref({}) as Ref<FieldRegleBehaviourOptions>;
 
   createReactiveRulesResult();
 
@@ -474,7 +483,17 @@ export function createReactiveFieldStatus({
     $commit();
   }
 
-  const { $shortcuts, $validating, ...restScope } = scopeState;
+  const {
+    $shortcuts,
+    $validating,
+    $autoDirty,
+    $rewardEarly,
+    $clearExternalErrorsOnChange,
+    $haveAnyAsyncRule,
+    $debounce,
+    $lazy,
+    ...restScope
+  } = scopeState;
 
   return reactive({
     $dirty,
