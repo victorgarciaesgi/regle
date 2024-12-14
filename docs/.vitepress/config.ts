@@ -46,7 +46,7 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
   { text: 'Using metadata from rules', link: '/advanced-usage/rule-metadata' },
   { text: 'Rules operators', link: '/advanced-usage/rules-operators' },
   { text: 'Validation helpers', link: '/advanced-usage/validations-helpers' },
-  { text: 'Usage with Zod', link: '/advanced-usage/usage-with-zod' },
+  { text: 'Async validation', link: '/advanced-usage/async-validation' },
 ];
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -57,6 +57,17 @@ const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[
   {
     text: 'Typing rules',
     link: '/typescript/typing-rules',
+  },
+];
+
+const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+  {
+    text: 'Nuxt',
+    link: '/integrations/nuxt',
+  },
+  {
+    text: 'Zod',
+    link: '/integrations/zod',
   },
 ];
 
@@ -102,7 +113,6 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'Getting Started', link: '/introduction/' },
-          { text: 'Integrations', link: '/introduction/integrations' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
         ],
         collapsed: false,
@@ -120,17 +130,22 @@ export default defineConfig({
       {
         text: 'Advanced Usage',
         items: AdvancedUsage,
-        collapsed: false,
+        collapsed: true,
+      },
+      {
+        text: 'Integrations',
+        items: Integrations,
+        collapsed: true,
       },
       {
         text: 'Examples',
         items: Examples,
-        collapsed: false,
+        collapsed: true,
       },
       {
         text: 'Troubleshooting',
         items: Troubleshooting,
-        collapsed: false,
+        collapsed: true,
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],

@@ -6,15 +6,16 @@
 <script setup lang="ts">
 import Test15 from './components/Test15.vue';
 
-// const form = ref({ name: [{ foo: '' }] });
+// const form = ref({ name: [''] });
 
 // const rules = computed(
 //   () =>
 //     ({
 //       name: {
-//         $each: (value, index) => ({
-//           foo: {},
-//         }),
+//         required: required,
+//         $each: {
+
+//         }
 //       },
 //     }) satisfies RegleComputedRules<typeof form>
 // );
