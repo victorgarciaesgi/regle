@@ -112,6 +112,10 @@ iframe {
         flex-flow: row wrap;
         align-items: center;
         gap: 8px;
+
+        .delete {
+          cursor: pointer;
+        }
       }
     }
   }
@@ -182,7 +186,7 @@ iframe {
 
   .password-strength {
     margin: 8px 8px 0 8px;
-    width: 150px;
+    width: 170px;
     height: 4px;
     border-radius: 4px;
     border: 1px solid var(--vp-c-border);

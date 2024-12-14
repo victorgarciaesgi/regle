@@ -9,7 +9,7 @@
             placeholder="Type an item value"
           />
 
-          <div v-if="form.collection.length > 1" @click="form.collection.splice(index, 1)">❌</div>
+          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
         </div>
 
         <ul v-if="item.$fields.name.$errors.length">
@@ -48,7 +48,9 @@ function shuffle(arr: any[], options?: any) {
   var shuffleAll = options && options.shuffleAll;
   var result = arr.slice();
 
-  var i = arr.length, rand, temp;
+  var i = arr.length,
+    rand,
+    temp;
 
   while (--i > 0) {
     do {
@@ -61,7 +63,7 @@ function shuffle(arr: any[], options?: any) {
       result[rand] = temp;
     }
   }
-  
+
   return result;
 }
 

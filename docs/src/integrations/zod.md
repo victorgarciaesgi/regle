@@ -5,20 +5,17 @@ title: Zod
 <script setup>
 import QuickUsage from '../parts/components/zod/QuickUsage.vue';
 import ComputedSchema from '../parts/components/zod/ComputedSchema.vue';
-
 </script>
 
-# Usage with Zod
+# Zod <span data-title="zod"></span>
+
+Regle offers an adapter for [Zod](https://zod.dev/). You can use any zod object schema to validate your state. It offers the same DX as using `@regle/rules`.
 
 ## Prerequisites
 
-- `zod` version `3` or higher.
-
-
-## Installation
+- `zod` version `3.x`
 
 ::: code-group
-
 ```sh [pnpm]
 pnpm add @regle/zod
 ```
@@ -35,6 +32,7 @@ yarn add @regle/zod
 bun add @regle/zod
 ```
 :::
+
 
 
 ## Usage
@@ -125,3 +123,4 @@ async function submit() {
 }
 
 ```
+

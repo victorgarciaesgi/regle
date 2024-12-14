@@ -248,7 +248,7 @@
 </template>
 
 <script setup lang="ts">
-import { required, minLength, minValue, applyIf } from '@regle/rules';
+import { required, minLength, minValue, applyIf, withMessage, withParams } from '@regle/rules';
 import {
   defineRegleConfig,
   createRule,
@@ -317,7 +317,7 @@ const minWeightRule = createRule({
     return Number(value) >= min && condition === false;
   },
 
-  message: ({ $params: [min, condition] }) => {
+  message: ({}) => {
     return 'min_weight_message';
   },
 });

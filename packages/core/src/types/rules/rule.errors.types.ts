@@ -3,28 +3,40 @@ import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { ReglePartialRuleTree } from './rule.declaration.types';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
 import type { ExtendOnlyRealRecord, Maybe, Prettify } from '../utils';
+import type { PartialObjectDeep } from 'type-fest/source/partial-deep';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<UnwrapNestedRefs<TState>[K]>;
 };
 
-export type RegleExternalErrorTree<TState = Record<string, any> | any[]> = PartialDeep<
-  RegleErrorTree<TState>,
-  { recurseIntoArrays: true }
->;
+export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+  readonly [K in keyof UnwrapNestedRefs<TState>]?: RegleValidationErrors<UnwrapNestedRefs<TState>[K], true>;
+};
 
-export type RegleValidationErrors<TState extends Record<string, any> | any[] | unknown = never> =
+export type RegleValidationErrors<
+  TState extends Record<string, any> | any[] | unknown = never,
+  TExternal extends boolean = false,
+> =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
-    ? RegleCollectionErrors<U>
+    ? TExternal extends false
+      ? RegleCollectionErrors<U>
+      : RegleExternalCollectionErrors<U>
     : NonNullable<TState> extends Date | File
       ? string[]
       : NonNullable<TState> extends Record<string, any>
-        ? RegleErrorTree<TState>
+        ? TExternal extends false
+          ? RegleErrorTree<TState>
+          : RegleExternalErrorTree<TState>
         : string[];
 
 export type RegleCollectionErrors<TState extends Record<string, any>> = {
   readonly $self: string[];
   readonly $each: RegleValidationErrors<TState>[];
+};
+
+export type RegleExternalCollectionErrors<TState extends Record<string, any>> = {
+  readonly $self?: string[];
+  readonly $each?: RegleValidationErrors<TState, true>[];
 };
 
 /** @internal */
