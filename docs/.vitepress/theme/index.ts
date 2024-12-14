@@ -38,8 +38,10 @@ export default {
 } satisfies Theme;
 
 function scrollToActiveSidebarItem() {
-  const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
-  if (activeLink) {
-    activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  setTimeout(() => {
+    const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
+    if (activeLink) {
+      activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 1000);
 }
