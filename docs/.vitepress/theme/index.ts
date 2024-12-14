@@ -29,19 +29,18 @@ export default {
       () =>
         nextTick(() => {
           scrollToActiveSidebarItem();
-        }),
-      {
-        immediate: true,
-      }
+        })
     );
   },
 } satisfies Theme;
 
 function scrollToActiveSidebarItem() {
-  setTimeout(() => {
-    const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
-    if (activeLink) {
-      activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, 1000);
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      const activeLink = document.querySelector('#VPSidebarNav div.is-link.is-active.has-active');
+      if (activeLink) {
+        activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 1000);
+  }
 }
