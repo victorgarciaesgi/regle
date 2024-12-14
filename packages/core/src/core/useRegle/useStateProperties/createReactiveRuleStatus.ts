@@ -20,7 +20,14 @@ interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
   rule: Ref<$InternalInlineRuleDeclaration | $InternalRegleRuleDefinition>;
-  $dirty: Readonly<Ref<boolean>>;
+  fieldProperties: {
+    $dirty: Readonly<Ref<boolean>>;
+    $invalid: Readonly<Ref<boolean>>;
+    $pending: Readonly<Ref<boolean>>;
+    $valid: Readonly<Ref<boolean>>;
+    $error: Readonly<Ref<boolean>>;
+  };
+
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   storage: RegleStorage;
@@ -28,7 +35,7 @@ interface CreateReactiveRuleStatusOptions {
 }
 
 export function createReactiveRuleStatus({
-  $dirty,
+  fieldProperties,
   customMessages,
   rule,
   ruleKey,
@@ -61,9 +68,16 @@ export function createReactiveRuleStatus({
     scopeState = scope.run(() => {
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
         $value: state.value,
-        $invalid: !$valid.value,
-        $pending: $pending.value,
-        $dirty: $dirty.value,
+        $error: fieldProperties.$error.value,
+        $dirty: fieldProperties.$dirty.value,
+        $pending: fieldProperties.$pending.value,
+        $valid: fieldProperties.$valid.value,
+        $invalid: fieldProperties.$invalid.value,
+        $rule: {
+          $valid: $valid.value,
+          $invalid: !$valid.value,
+          $pending: $pending.value,
+        },
         $params: $params.value,
         ...$metadata.value,
       }));
@@ -165,7 +179,7 @@ export function createReactiveRuleStatus({
 
   function updatePendingState() {
     $valid.value = true;
-    if ($dirty.value) {
+    if (fieldProperties.$dirty.value) {
       $pending.value = true;
     }
   }

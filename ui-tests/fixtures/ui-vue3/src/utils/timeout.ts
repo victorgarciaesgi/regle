@@ -14,7 +14,7 @@ export function createTimeout() {
 
     return new Promise((resolve) => {
       timeout = null;
-      setTimeout(resolve, count);
+      timeout = setTimeout(resolve, count);
     });
   }
 

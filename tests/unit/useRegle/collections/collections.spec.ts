@@ -127,7 +127,7 @@ describe('collections validations', () => {
 
     vm.r$.$value.level0[0].name = 'required';
     await nextTick();
-    expect(requiredIfSpy).toHaveBeenCalledTimes(7);
+    expect(requiredIfSpy).toHaveBeenCalledTimes(5);
     expect(deepNestedParamSpy).toHaveBeenCalledTimes(3);
 
     shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
