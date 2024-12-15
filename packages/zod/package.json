@@ -1,6 +1,6 @@
 {
   "name": "@regle/zod",
-  "version": "0.4.2",
+  "version": "0.4.4",
   "description": "Zod adapter for Regle",
   "scripts": {
     "lint": "eslint --ext .ts --ext .vue .",

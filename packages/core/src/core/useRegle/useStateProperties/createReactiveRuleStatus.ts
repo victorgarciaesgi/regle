@@ -27,7 +27,10 @@ interface CreateReactiveRuleStatusOptions {
     $valid: Readonly<Ref<boolean>>;
     $error: Readonly<Ref<boolean>>;
   };
-
+  modifiers: {
+    $rewardEarly: ComputedRef<boolean | undefined>;
+    $autoDirty: ComputedRef<boolean | undefined>;
+  };
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
   storage: RegleStorage;
@@ -43,6 +46,7 @@ export function createReactiveRuleStatus({
   path,
   storage,
   $debounce,
+  modifiers,
 }: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
     $active: ComputedRef<boolean>;
@@ -172,7 +176,11 @@ export function createReactiveRuleStatus({
       } satisfies ScopeState;
     })!;
 
-    $unwatchState = watch(scopeState.$params, $validate);
+    $unwatchState = watch(scopeState.$params, () => {
+      if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && fieldProperties.$error.value)) {
+        $validate();
+      }
+    });
   }
 
   $watch();

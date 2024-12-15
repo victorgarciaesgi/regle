@@ -14,7 +14,7 @@ import type {
   RegleValidationGroupOutput,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isObject, isRefObject, resetValuesRecursively } from '../../../utils';
+import { cloneDeep, isObject, isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
@@ -24,7 +24,7 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any>>;
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
-  initialState: Record<string, any> | undefined;
+  initialState: Readonly<Record<string, any> | undefined>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
   validationGroups?:
     | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
@@ -366,7 +366,7 @@ export function createReactiveNestedStatus({
 
   async function $resetAll() {
     $unwatch();
-    resetValuesRecursively(state, initialState ?? {});
+    state.value = cloneDeep({ ...(initialState ?? {}) });
     $reset();
     createReactiveFieldsStatus();
   }

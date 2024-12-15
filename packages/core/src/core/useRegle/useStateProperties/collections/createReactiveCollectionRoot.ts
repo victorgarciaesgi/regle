@@ -11,7 +11,7 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
-import { cloneDeep, isObject, randomId, resetArrayValuesRecursively, unwrapGetter } from '../../../../utils';
+import { cloneDeep, randomId, unwrapGetter } from '../../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
 import type { RegleStorage } from '../../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
@@ -456,7 +456,7 @@ export function createReactiveCollectionStatus({
 
   function $resetAll() {
     $unwatch();
-    resetArrayValuesRecursively(state, initialState);
+    state.value = cloneDeep(initialState);
     $reset();
   }
 

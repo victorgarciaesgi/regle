@@ -70,7 +70,7 @@ export function createUseRegleComposable<
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
 
-    const initialState = cloneDeep(toRaw(processedState.value));
+    const initialState = { ...cloneDeep(processedState.value) };
 
     const regle = useStateProperties({
       scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,

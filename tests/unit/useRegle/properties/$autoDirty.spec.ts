@@ -11,6 +11,8 @@ import {
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 
+// TODO add test case for dependency change
+
 describe.each([
   ['local modifier', simpleNestedStateWithMixedValidation],
   ['global modifier', simpleNestedStateWithMixedValidationAndGlobalConfig],

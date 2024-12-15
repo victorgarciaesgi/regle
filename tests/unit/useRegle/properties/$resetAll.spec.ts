@@ -19,6 +19,7 @@ export function simpleNestedStateInitialState() {
       lastName: 'bar',
     },
     contacts: [{ name: 'contact1' }],
+    nestedArrays: [] as Array<{ otherArray: { name: string }[] }>,
   });
 
   return {
@@ -48,6 +49,8 @@ describe('.$resetAll', () => {
     shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
     shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
 
+    await nextTick();
+
     vm.r$.$value = {
       email: 'modified',
       user: {
@@ -55,7 +58,12 @@ describe('.$resetAll', () => {
         lastName: 'modified',
       },
       contacts: [{ name: 'modified' }, { name: 'modified' }],
+      nestedArrays: [{ otherArray: [] }],
     };
+
+    await nextTick();
+
+    vm.r$.$value.nestedArrays[0].otherArray.push({ name: '' });
 
     await nextTick();
 
@@ -90,6 +98,7 @@ describe('.$resetAll', () => {
         lastName: 'bar',
       },
       contacts: [{ name: 'contact1' }],
+      nestedArrays: [],
     });
   });
 });
