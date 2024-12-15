@@ -72,8 +72,13 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 ];
 
 const Examples: DefaultTheme.NavItemWithLink[] = [
-  { text: 'Simple form example', link: '/examples/simple' },
-  { text: 'Advanced form example', link: '/examples/advanced' },
+    { text: 'Simple form example', link: '/examples/simple' },
+    { text: 'Custom rules', link: '/examples/custom-rules' },
+    { text: 'Conditional rules', link: '/examples/conditional-rules' },
+    { text: 'Collections', link: '/examples/collections' },
+    { text: 'Server validation', link: '/examples/server-validation' },
+    { text: 'Required indicators', link: '/examples/required-indicators' },
+    { text: 'Advanced form example', link: '/examples/advanced' },
 ];
 
 const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
