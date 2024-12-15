@@ -47,6 +47,34 @@ It's heavily inspired by Vuelidate.
 Special thank you for [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
 
 
+## Example
+
+```vue
+<template>
+  <input 
+    v-model='r$.$value.email' 
+    :class="{ error: r$.$fields.email.$error }" 
+    placeholder='Type your email'
+  />
+
+  <ul>
+    <li v-for="error of r$.$fields.email.$errors" :key='error'>
+      {{ error }}
+    </li>
+  </ul>
+</template>
+
+<script setup lang='ts'>
+import { useRegle } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
+
+const { r$ } = useRegle({ email: '' }, {
+  email: { required, minLength: minLength(4), email }
+})
+</script>
+```
+
+
 ## Compatibility:
 
 
