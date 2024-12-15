@@ -61,8 +61,8 @@ Special thank you for [Martins Zeltins](https://github.com/martinszeltins) who h
 
 - [x] Unit tests
 - [x] E2E tests
-- [ ] Example repo, Reproduction repl
-- [ ] Type tests
+- [x] Example repo, Reproduction repl
+- [x] Type tests
 
 ### Next iterations
 

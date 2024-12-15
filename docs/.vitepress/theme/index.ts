@@ -41,6 +41,6 @@ function scrollToActiveSidebarItem() {
       if (activeLink) {
         activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-    }, 1000);
+    }, 400);
   }
 }
