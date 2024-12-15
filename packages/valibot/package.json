@@ -1,0 +1,68 @@
+{
+  "name": "@regle/valibot",
+  "version": "0.4.4",
+  "description": "Valibot adapter for Regle",
+  "scripts": {
+    "lint": "eslint --ext .ts --ext .vue .",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup --minify",
+    "build:sourcemaps": "tsup --clean false --sourcemap inline",
+    "dev": "tsup --config=tsup.dev.ts --watch",
+    "test": "echo 'no tests'"
+  },
+  "peerDependencies": {
+    "valibot": "^1"
+  },
+  "dependencies": {
+    "@regle/core": "workspace:*",
+    "@regle/rules": "workspace:*"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "0.6.1",
+    "@types/node": "22.9.3",
+    "@typescript-eslint/eslint-plugin": "8.18.0",
+    "@typescript-eslint/parser": "8.18.0",
+    "@vue/test-utils": "2.4.6",
+    "bumpp": "9.9.0",
+    "changelogithub": "0.13.11",
+    "cross-env": "7.0.3",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "type-fest": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "2.1.8",
+    "vue": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:",
+    "valibot": "1.0.0-beta.9"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "homepage": "https://regle.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "license": "MIT"
+}
