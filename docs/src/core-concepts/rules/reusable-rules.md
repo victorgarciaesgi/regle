@@ -1,5 +1,5 @@
 ---
-title: Advanced rules
+title: Reusable rules
 ---
 
 <script setup>
@@ -7,7 +7,7 @@ title: Advanced rules
   import AsyncRule from '../../parts/components/rules/AsyncRule.vue';
 </script>
 
-# Advanced rules
+# Reusable rules
 
 
 ## `createRule`
