@@ -21,15 +21,19 @@ Declare your form rules inside a component or a Pinia store and use it wherever 
 
 ### Prerequisites
 
+Required
 - [Vue](https://vuejs.org/) <span data-title="vue"></span> version `3.3` or higher.
 - [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span> version `4.8` or higher
 - Text Editor with Vue syntax support.
   -  [VSCode](https://code.visualstudio.com/) <span data-title=".vscode"></span> is recommended, along with the [official Vue extension](https://marketplace.visualstudio.com/items?itemName=Vue.volar).
 
-- If you're using [Nuxt](https://nuxt.com/) <span data-title="nuxt"></span> 
+Optional
+- [Nuxt](https://nuxt.com/) <span data-title="nuxt"></span> 
   - Nuxt version `3.0` or higher, and check docs for [Nuxt module](/integrations/nuxt)
-- If you're using [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
+- [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
   - Pinia version `2.1` or higher
+- [Zod](https://zod.dev/) <span data-title="zod"></span> 
+  - Zod version `3` or higher. Check [Zod usage](/integrations/zod)
 
 <br/>
 
