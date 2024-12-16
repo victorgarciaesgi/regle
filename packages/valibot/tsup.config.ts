@@ -3,5 +3,5 @@ import { defaultOptions } from '../../tsup.common.build';
 
 export default defineConfig({
   ...defaultOptions,
-  external: ['vue', 'zod'],
+  external: ['vue', 'valibot'],
 });

@@ -1,1 +1,2 @@
-export const useValidbotRegle = {};
+export { useValibotRegle } from './core';
+export type {} from './types';
