@@ -1,10 +1,10 @@
 <template>
   <!-- <TestForm /> -->
-  <Test14 />
+  <ValibotForm />
 </template>
 
 <script setup lang="ts">
-import Test14 from './components/Test14.vue';
+import ValibotForm from './components/ValibotForm.vue';
 
 // const form = ref({ name: [''] });
 

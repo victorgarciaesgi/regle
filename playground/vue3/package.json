@@ -16,7 +16,9 @@
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
     "vue": "catalog:",
-    "pinia": "2.3.0"
+    "pinia": "2.3.0",
+    "@regle/valibot": "workspace:*",
+    "valibot": "1.0.0-beta.9"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.1.7",

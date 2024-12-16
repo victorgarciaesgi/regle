@@ -566,12 +566,18 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:../../packages/rules
+      '@regle/valibot':
+        specifier: workspace:*
+        version: link:../../packages/valibot
       '@regle/zod':
         specifier: workspace:*
         version: link:../../packages/zod
       pinia:
         specifier: 2.3.0
         version: 2.3.0(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
+      valibot:
+        specifier: 1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.6.3)
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.6.3)

@@ -1,18 +1,10 @@
 import type { RegleFormPropertyType } from '@regle/core';
 import { withMessage } from '@regle/rules';
 import z from 'zod';
-import {
-  extractIssuesMessages,
-  transformZodValidatorAdapter,
-  zodArrayToRegle,
-  zodObjectToRegle,
-} from './validators';
+import { extractIssuesMessages, transformZodValidatorAdapter, zodArrayToRegle, zodObjectToRegle } from './validators';
 import type { PossibleDefTypes } from '../../types';
 
-export function processZodTypeDef(
-  def: PossibleDefTypes,
-  schema: z.ZodSchema<any>
-): RegleFormPropertyType {
+export function processZodTypeDef(def: PossibleDefTypes, schema: z.ZodSchema<any>): RegleFormPropertyType {
   if (def && typeof def === 'object' && 'typeName' in def) {
     if (def.typeName === z.ZodFirstPartyTypeKind.ZodArray) {
       return zodArrayToRegle(def, schema);
