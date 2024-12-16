@@ -194,69 +194,103 @@ export function createReactiveNestedStatus({
       },
       { flush: 'sync' }
     );
-
+    scope = effectScope();
     scopeState = scope.run(() => {
-      const $dirty = computed<boolean>(() => {
-        return (
-          !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).every(([key, statusOrField]) => {
+      // Important
+      // All the get/set options are to avoid Pinia trying to serialize the computed values
+      // This is also useful for SSR
+
+      const $dirty = computed<boolean>({
+        get: () => {
+          return (
+            !!Object.entries($fields.value).length &&
+            Object.entries($fields.value).every(([key, statusOrField]) => {
+              return statusOrField?.$dirty;
+            })
+          );
+        },
+        set() {},
+      });
+
+      const $anyDirty = computed<boolean>({
+        get: () => {
+          return Object.entries($fields.value).some(([key, statusOrField]) => {
             return statusOrField?.$dirty;
-          })
-        );
+          });
+        },
+        set() {},
       });
 
-      const $anyDirty = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$dirty;
-        });
+      const $invalid = computed<boolean>({
+        get: () => {
+          return Object.entries($fields.value).some(([key, statusOrField]) => {
+            return statusOrField?.$invalid;
+          });
+        },
+        set() {},
       });
 
-      const $invalid = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$invalid;
-        });
+      const $valid = computed<boolean>({
+        get: () => {
+          return Object.entries($fields.value).every(([key, statusOrField]) => {
+            return statusOrField?.$valid;
+          });
+        },
+        set() {},
       });
 
-      const $valid = computed<boolean>(() => {
-        return Object.entries($fields.value).every(([key, statusOrField]) => {
-          return statusOrField?.$valid;
-        });
+      const $error = computed<boolean>({
+        get: () => {
+          return $anyDirty.value && !$pending.value && $invalid.value;
+        },
+        set() {},
       });
 
-      const $error = computed<boolean>(() => {
-        return $anyDirty.value && !$pending.value && $invalid.value;
+      const $ready = computed<boolean>({
+        get: () => {
+          if (!unref(commonArgs.options.autoDirty)) {
+            return !($invalid.value || $pending.value);
+          }
+          return $anyDirty.value && !($invalid.value || $pending.value);
+        },
+        set() {},
       });
 
-      const $ready = computed<boolean>(() => {
-        if (!unref(commonArgs.options.autoDirty)) {
-          return !($invalid.value || $pending.value);
-        }
-        return $anyDirty.value && !($invalid.value || $pending.value);
+      const $pending = computed<boolean>({
+        get: () => {
+          return Object.entries($fields.value).some(([key, statusOrField]) => {
+            return statusOrField?.$pending;
+          });
+        },
+        set() {},
       });
 
-      const $pending = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$pending;
-        });
+      const $errors = computed<Record<string, $InternalRegleErrors>>({
+        get: () => {
+          return Object.fromEntries(
+            Object.entries($fields.value).map(([key, statusOrField]) => {
+              return [key, statusOrField?.$errors];
+            })
+          );
+        },
+        set() {},
       });
 
-      const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
-        return Object.fromEntries(
-          Object.entries($fields.value).map(([key, statusOrField]) => {
-            return [key, statusOrField?.$errors];
-          })
-        );
+      const $silentErrors = computed<Record<string, $InternalRegleErrors>>({
+        get: () => {
+          return Object.fromEntries(
+            Object.entries($fields.value).map(([key, statusOrField]) => {
+              return [key, statusOrField?.$silentErrors];
+            })
+          );
+        },
+        set() {},
       });
 
-      const $silentErrors = computed<Record<string, $InternalRegleErrors>>(() => {
-        return Object.fromEntries(
-          Object.entries($fields.value).map(([key, statusOrField]) => {
-            return [key, statusOrField?.$silentErrors];
-          })
-        );
+      const $name = computed({
+        get: () => fieldName,
+        set() {},
       });
-
-      const $name = computed(() => fieldName);
 
       function processShortcuts() {
         if (commonArgs.shortcuts?.nested) {
@@ -292,34 +326,37 @@ export function createReactiveNestedStatus({
         }
       }
 
-      const $groups = computed<Record<string, RegleValidationGroupOutput>>(() => {
-        if (validationGroups) {
-          return Object.fromEntries(
-            Object.entries(validationGroups?.($fields.value) ?? {}).map(([key, entries]) => {
-              if (entries.length) {
-                return [
-                  key,
-                  {
-                    ...Object.fromEntries(
-                      (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map((property) => [
-                        property,
-                        mergeBooleanGroupProperties(entries, property),
-                      ])
-                    ),
-                    ...Object.fromEntries(
-                      (['$errors', '$silentErrors'] as const).map((property) => [
-                        property,
-                        mergeArrayGroupProperties(entries, property),
-                      ])
-                    ),
-                  },
-                ];
-              }
-              return [];
-            })
-          );
-        }
-        return {};
+      const $groups = computed<Record<string, RegleValidationGroupOutput>>({
+        get: () => {
+          if (validationGroups) {
+            return Object.fromEntries(
+              Object.entries(validationGroups?.($fields.value) ?? {}).map(([key, entries]) => {
+                if (entries.length) {
+                  return [
+                    key,
+                    {
+                      ...Object.fromEntries(
+                        (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map((property) => [
+                          property,
+                          mergeBooleanGroupProperties(entries, property),
+                        ])
+                      ),
+                      ...Object.fromEntries(
+                        (['$errors', '$silentErrors'] as const).map((property) => [
+                          property,
+                          mergeArrayGroupProperties(entries, property),
+                        ])
+                      ),
+                    },
+                  ];
+                }
+                return [];
+              })
+            );
+          }
+          return {};
+        },
+        set() {},
       });
 
       const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
@@ -350,6 +387,8 @@ export function createReactiveNestedStatus({
 
     nestedScopes.forEach((s) => s.stop());
     nestedScopes = [];
+
+    scope.stop();
 
     if ($fields.value) {
       Object.entries($fields.value).forEach(([_, field]) => {

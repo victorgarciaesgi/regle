@@ -51,6 +51,8 @@ export function createReactiveFieldStatus({
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
     $validating: Ref<boolean>;
+    $dirty: Ref<boolean>;
+    triggerPunishment: Ref<boolean>;
     processShortcuts: () => void;
   }
 
@@ -58,10 +60,6 @@ export function createReactiveFieldStatus({
   let scopeState!: ScopeReturnState;
 
   let fieldScopes: EffectScope[] = [];
-
-  const $dirty = ref(false);
-
-  const triggerPunishment = ref(false);
 
   let $unwatchState: WatchStopHandle;
   let $unwatchValid: WatchStopHandle;
@@ -90,7 +88,7 @@ export function createReactiveFieldStatus({
               ruleKey,
               createReactiveRuleStatus({
                 fieldProperties: {
-                  $dirty,
+                  $dirty: scopeState.$dirty,
                   $error: scopeState.$error,
                   $invalid: scopeState.$invalid,
                   $pending: scopeState.$pending,
@@ -120,8 +118,8 @@ export function createReactiveFieldStatus({
     define$commit();
 
     if (storeResult?.valid != null) {
-      $dirty.value = storage.getDirtyState(path);
-      if ($dirty.value) {
+      scopeState.$dirty.value = storage.getDirtyState(path);
+      if (scopeState.$dirty.value) {
         $commit();
       }
     }
@@ -142,8 +140,8 @@ export function createReactiveFieldStatus({
       });
     }
     $unwatchDirty();
-    if ($dirty.value) {
-      storage.setDirtyEntry(path, $dirty.value);
+    if (scopeState.$dirty.value) {
+      storage.setDirtyEntry(path, scopeState.$dirty.value);
     }
     $unwatchState?.();
     $unwatchValid?.();
@@ -162,6 +160,8 @@ export function createReactiveFieldStatus({
       });
     }
     scopeState = scope.run(() => {
+      const $dirty = ref(false);
+      const triggerPunishment = ref(false);
       const $anyDirty = computed<boolean>(() => $dirty.value);
       const $debounce = computed<number | undefined>(() => {
         return $localOptions.value.$debounce;
@@ -350,6 +350,8 @@ export function createReactiveFieldStatus({
         $shortcuts,
         $validating,
         $tooltips,
+        $dirty,
+        triggerPunishment,
         processShortcuts,
       } satisfies ScopeReturnState;
     })!;
@@ -358,8 +360,8 @@ export function createReactiveFieldStatus({
       state,
       () => {
         if (scopeState.$autoDirty.value) {
-          if (!$dirty.value) {
-            $dirty.value = true;
+          if (!scopeState.$dirty.value) {
+            scopeState.$dirty.value = true;
           }
         }
         if (rulesDef.value instanceof Function) {
@@ -375,13 +377,13 @@ export function createReactiveFieldStatus({
       { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
 
-    $unwatchDirty = watch($dirty, () => {
-      storage.setDirtyEntry(path, $dirty.value);
+    $unwatchDirty = watch(scopeState.$dirty, () => {
+      storage.setDirtyEntry(path, scopeState.$dirty.value);
     });
 
     $unwatchValid = watch(scopeState.$valid, (valid) => {
       if (scopeState.$rewardEarly.value && valid) {
-        triggerPunishment.value = false;
+        scopeState.triggerPunishment.value = false;
       }
     });
 
@@ -401,7 +403,7 @@ export function createReactiveFieldStatus({
 
   function $reset(): void {
     $clearExternalErrors();
-    $dirty.value = false;
+    scopeState.$dirty.value = false;
     storage.setDirtyEntry(path, false);
     Object.entries($rules.value).forEach(([key, rule]) => {
       rule.$reset();
@@ -414,8 +416,8 @@ export function createReactiveFieldStatus({
   }
 
   function $touch(runCommit = true, withConditions = false): void {
-    if (!$dirty.value) {
-      $dirty.value = true;
+    if (!scopeState.$dirty.value) {
+      scopeState.$dirty.value = true;
     }
 
     if (withConditions && runCommit) {
@@ -430,10 +432,10 @@ export function createReactiveFieldStatus({
   async function $validate(): Promise<$InternalRegleResult> {
     try {
       const data = state.value;
-      triggerPunishment.value = true;
-      if (!$dirty.value) {
-        $dirty.value = true;
-      } else if (scopeState.$autoDirty.value && $dirty.value && !scopeState.$pending.value) {
+      scopeState.triggerPunishment.value = true;
+      if (!scopeState.$dirty.value) {
+        scopeState.$dirty.value = true;
+      } else if (scopeState.$autoDirty.value && scopeState.$dirty.value && !scopeState.$pending.value) {
         return { result: !scopeState.$error.value, data };
       }
 
@@ -467,7 +469,7 @@ export function createReactiveFieldStatus({
   }
 
   function $extractDirtyFields(filterNullishValues: boolean = true): unknown | null | { _null: true } {
-    if ($dirty.value) {
+    if (scopeState.$dirty.value) {
       return state.value;
     }
     if (filterNullishValues) {
@@ -483,7 +485,7 @@ export function createReactiveFieldStatus({
     }
   }
 
-  if (!scopeState.$lazy.value && !$dirty.value && scopeState.$autoDirty.value) {
+  if (!scopeState.$lazy.value && !scopeState.$dirty.value && scopeState.$autoDirty.value) {
     $commit();
   }
 
@@ -500,7 +502,6 @@ export function createReactiveFieldStatus({
   } = scopeState;
 
   return reactive({
-    $dirty,
     ...restScope,
     $externalErrors: externalErrors,
     $value: state,

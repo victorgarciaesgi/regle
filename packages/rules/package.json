@@ -3,9 +3,8 @@
   "version": "0.4.5",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
-    "lint": "eslint --ext .ts --ext .vue .",
     "typecheck": "tsc --noEmit",
-    "build": "tsup --minify",
+    "build": "tsup",
     "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "vitest run"
@@ -36,15 +35,33 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "types": "./dist/regle-rules.d.ts",
+      "node": {
+        "import": {
+          "production": "./dist/regle-rules.min.mjs",
+          "development": "./dist/regle-rules.mjs",
+          "default": "./dist/regle-rules.mjs"
+        },
+        "require": {
+          "production": "./dist/regle-rules.min.cjs",
+          "development": "./dist/regle-rules.cjs",
+          "default": "./index.js"
+        }
+      },
+      "import": "./dist/regle-rules.mjs",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
   },
-  "main": "./dist/index.cjs",
-  "types": "./dist/index.d.ts",
+  "main": "index.js",
+  "types": "./dist/regle-rules.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "index.js",
+    "index.cjs",
+    "LICENSE",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"

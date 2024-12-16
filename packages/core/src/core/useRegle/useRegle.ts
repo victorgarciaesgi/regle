@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, ref, toRaw, watch } from 'vue';
+import { computed, isRef, onScopeDispose, reactive, ref, toRaw, triggerRef, watch } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
@@ -10,6 +10,7 @@ import type {
   Regle,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
+  RegleRoot,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
@@ -17,6 +18,7 @@ import type {
 import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
 import { cloneDeep } from '../../utils';
 import { useStateProperties } from './useStateProperties';
+import { getActivePinia } from 'pinia';
 
 export type useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -82,7 +84,7 @@ export function createUseRegleComposable<
     });
 
     return {
-      r$: regle as any,
+      r$: regle.regle as any,
     };
   }
 

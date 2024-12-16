@@ -39,7 +39,7 @@ It's heavily inspired by Vuelidate.
 - 📖 Model based validation
 - 🪗 Extensible
 - 🦸‍♂️ [Zod](https://zod.dev/) support
-- 🪶 Light (~6kb gzip)
+- 🪶 Light(~7kb gzip) and 0 dependencies
 - 🛒 Collection validation
 
 ## 🫶 Thanks

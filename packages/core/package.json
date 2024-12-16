@@ -4,13 +4,13 @@
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsup --minify",
+    "build": "tsup",
     "build:sourcemaps": "tsup --clean false --sourcemap inline",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "vue": "^3.1.0"
+    "vue": "^3.3.0"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
@@ -36,15 +36,33 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "types": "./dist/regle-core.d.ts",
+      "node": {
+        "import": {
+          "production": "./dist/regle-core.min.mjs",
+          "development": "./dist/regle-core.mjs",
+          "default": "./dist/regle-core.mjs"
+        },
+        "require": {
+          "production": "./dist/regle-core.min.cjs",
+          "development": "./dist/regle-core.cjs",
+          "default": "./index.js"
+        }
+      },
+      "import": "./dist/regle-core.mjs",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
   },
-  "main": "./dist/index.cjs",
-  "types": "./dist/index.d.ts",
+  "main": "index.js",
+  "types": "./dist/regle-core.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "index.js",
+    "index.cjs",
+    "LICENSE",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,6 +77,7 @@
     "url": "https://github.com/victorgarciaesgi"
   },
   "keywords": [
+    "regle",
     "vue forms",
     "vue validation library",
     "vue forms typescript",

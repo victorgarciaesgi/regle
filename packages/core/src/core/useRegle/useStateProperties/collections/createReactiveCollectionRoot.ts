@@ -233,6 +233,7 @@ export function createReactiveCollectionStatus({
       },
       { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'pre' }
     );
+    scope = effectScope();
     scopeState = scope.run(() => {
       const $dirty = computed<boolean>(() => {
         return (

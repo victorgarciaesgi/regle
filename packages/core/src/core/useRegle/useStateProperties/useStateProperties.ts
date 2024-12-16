@@ -1,13 +1,15 @@
 import type { ComputedRef, Ref } from 'vue';
-import { reactive } from 'vue';
+import { getCurrentInstance, getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
+  $InternalRegleStatus,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
+import { getActivePinia } from 'pinia';
 
 export function useStateProperties({
   initialState,
@@ -26,22 +28,26 @@ export function useStateProperties({
 }) {
   const storage = useStorage();
 
-  const regle = reactive(
-    createReactiveNestedStatus({
-      rootRules: scopeRules,
-      rulesDef: scopeRules,
-      state,
-      customMessages: customRules?.(),
-      storage,
-      options,
-      externalErrors: options.externalErrors as any,
-      validationGroups: options.validationGroups,
-      initialState,
-      shortcuts,
-      fieldName: 'root',
-      path: '',
-    })
-  );
+  const regle = ref<$InternalRegleStatus>();
 
-  return regle;
+  regle.value = createReactiveNestedStatus({
+    rootRules: scopeRules,
+    rulesDef: scopeRules,
+    state,
+    customMessages: customRules?.(),
+    storage,
+    options,
+    externalErrors: options.externalErrors as any,
+    validationGroups: options.validationGroups,
+    initialState,
+    shortcuts,
+    fieldName: 'root',
+    path: '',
+  });
+
+  onScopeDispose(() => {
+    regle.value?.$unwatch();
+  });
+
+  return reactive({ regle });
 }

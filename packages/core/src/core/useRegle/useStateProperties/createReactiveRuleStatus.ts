@@ -60,7 +60,7 @@ export function createReactiveRuleStatus({
     $path: ComputedRef<string>;
   };
   let scope = effectScope();
-  let scopeState!: ScopeState;
+  let scopeState: ScopeState = {} as any;
 
   let $unwatchState: WatchStopHandle;
 
@@ -69,6 +69,7 @@ export function createReactiveRuleStatus({
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
   function $watch() {
+    scope = effectScope();
     scopeState = scope.run(() => {
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
         $value: state.value,
@@ -176,7 +177,7 @@ export function createReactiveRuleStatus({
       } satisfies ScopeState;
     })!;
 
-    $unwatchState = watch(scopeState.$params, () => {
+    $unwatchState = watch(scopeState?.$params, () => {
       if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && fieldProperties.$error.value)) {
         $validate();
       }
