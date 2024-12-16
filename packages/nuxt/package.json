@@ -58,7 +58,8 @@
     "vitest": "2.1.8",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "unbuild": "3.0.1"
   },
   "publishConfig": {
     "access": "public"
