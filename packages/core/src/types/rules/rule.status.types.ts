@@ -46,16 +46,21 @@ export type RegleRoot<
  * @public
  */
 export type RegleStatus<
-  TState extends Record<string, any> = Record<string, any>,
-  TRules extends ReglePartialRuleTree<TState> = Record<string, any>,
+  TState extends Record<string, any> | undefined = Record<string, any>,
+  TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState> & {
   readonly $fields: {
-    readonly [TKey in keyof TState]: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey, TShortcuts>;
+    readonly [TKey in keyof TState]: InferRegleStatusType<
+      NonNullable<TRules[TKey]>,
+      NonNullable<TState>,
+      TKey,
+      TShortcuts
+    >;
   } & {
     readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
       ? TKey
-      : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, TState, TKey, TShortcuts>;
+      : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
   readonly $errors: RegleErrorTree<TState>;
   readonly $silentErrors: RegleErrorTree<TState>;

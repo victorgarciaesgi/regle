@@ -33,7 +33,7 @@ export function defineRuleProcessors(
       if (typeof definition.active === 'function') {
         return definition.active({
           ...metadata,
-          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
         });
       } else {
         return definition.active ?? true;
@@ -43,7 +43,7 @@ export function defineRuleProcessors(
       if (typeof definition.tooltip === 'function') {
         return definition.tooltip({
           ...metadata,
-          $params: unwrapRuleParameters(metadata.$params?.length ? metadata.$params : params),
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
         });
       } else {
         return definition.tooltip ?? [];

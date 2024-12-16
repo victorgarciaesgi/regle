@@ -19,7 +19,7 @@ export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>
       ? {}
       : never,
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState>,
+    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
     rulesFactory: TRules
   ): TRules;
   <TState extends PrimitiveTypes, TRules extends RegleRuleDecl>(state: MaybeRef<TState>, rulesFactory: TRules): TRules;
