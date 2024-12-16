@@ -1,6 +1,7 @@
 // Fix bug with exported types on CI
 import type {} from 'nuxt/app';
-import { defineNuxtModule, createResolver, addImportsSources } from '@nuxt/kit';
+import { defineNuxtModule, addImportsSources } from '@nuxt/kit';
+import { createRequire } from 'module';
 
 export interface ModuleOptions {}
 
@@ -11,8 +12,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {},
   async setup(_options, _nuxt) {
-    const resolver = createResolver(import.meta.url);
-
+    const require = createRequire(import.meta.url);
     addImportsSources({
       from: '@regle/core',
       imports: ['useRegle', 'createRule', 'defineRegleConfig', 'inferRules'] as Array<
@@ -28,7 +28,7 @@ export default defineNuxtModule<ModuleOptions>({
     });
 
     try {
-      const regleZod = require('@regle/zod');
+      const regleZod = await import('@regle/zod');
       if (regleZod) {
         addImportsSources({
           from: '@regle/zod',

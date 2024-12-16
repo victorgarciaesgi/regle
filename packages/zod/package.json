@@ -61,6 +61,7 @@
     "./dist/*": "./dist/*"
   },
   "main": "index.js",
+  "module": "./dist/regle-zod.mjs",
   "types": "./dist/regle-zod.d.ts",
   "files": [
     "dist",

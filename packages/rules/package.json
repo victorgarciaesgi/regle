@@ -55,6 +55,7 @@
     "./dist/*": "./dist/*"
   },
   "main": "index.js",
+  "module": "./dist/regle-rules.mjs",
   "types": "./dist/regle-rules.d.ts",
   "files": [
     "dist",
