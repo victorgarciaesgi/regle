@@ -85,16 +85,6 @@ describe('.$reset', () => {
   it('should reset correctly all values inside a nested tree', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithComputedValidation);
 
-    // vm.r$.$value = {
-    //   nested: {
-    //     collection: [{ name: '' }],
-    //   },
-    //   contacts: [{ name: '' }],
-    //   email: '',
-    //   user: { firstName: '', lastName: '' },
-    //   userRequired: false,
-    // };
-
     await nextTick();
 
     vm.r$.$value = {
