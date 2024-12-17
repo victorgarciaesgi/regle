@@ -6,12 +6,21 @@ import type { ParamDecl } from '../../types';
  * Removing Ref and executing function to return the unwraped value
  */
 export function unwrapRuleParameters<TParams extends any[]>(params: ParamDecl[]): TParams {
-  return params.map((param) => {
-    if (param instanceof Function) {
-      return param();
-    }
-    return unref(param);
-  }) as TParams;
+  try {
+    return params.map((param) => {
+      if (param instanceof Function) {
+        try {
+          const result = param();
+          return result;
+        } catch (e) {
+          return null;
+        }
+      }
+      return unref(param);
+    }) as TParams;
+  } catch (e) {
+    return [] as any;
+  }
 }
 
 /**
@@ -43,8 +52,7 @@ export function getFunctionParametersLength(func: Function): number {
 
   if (!paramsMatch) return 0;
 
-  const paramsSection =
-    paramsMatch[0] || paramsMatch[1] || paramsMatch[2] || paramsMatch[3] || paramsMatch[4] || '';
+  const paramsSection = paramsMatch[0] || paramsMatch[1] || paramsMatch[2] || paramsMatch[3] || paramsMatch[4] || '';
 
   const paramList = paramsSection
     .split(',')

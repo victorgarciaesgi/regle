@@ -88,14 +88,18 @@ export function createReactiveRuleStatus({
       }));
 
       const $active = computed<boolean>(() => {
-        if (isFormRuleDefinition(rule)) {
-          if (typeof rule.value.active === 'function') {
-            return rule.value.active($defaultMetadata.value);
+        try {
+          if (isFormRuleDefinition(rule)) {
+            if (typeof rule.value.active === 'function') {
+              return rule.value.active($defaultMetadata.value);
+            } else {
+              return !!rule.value.active;
+            }
           } else {
-            return !!rule.value.active;
+            return true;
           }
-        } else {
-          return true;
+        } catch (e) {
+          return false;
         }
       });
 
@@ -103,22 +107,26 @@ export function createReactiveRuleStatus({
         let result: string | string[] = '';
         const customProcessor = customMessages ? customMessages[ruleKey]?.[key] : undefined;
 
-        if (customProcessor) {
-          if (typeof customProcessor === 'function') {
-            result = customProcessor($defaultMetadata.value);
-          } else {
-            result = customProcessor;
-          }
-        }
-        if (isFormRuleDefinition(rule)) {
-          const patchedKey = `_${key}_patched` as const;
-          if (!(customProcessor && !rule.value[patchedKey])) {
-            if (typeof rule.value[key] === 'function') {
-              result = rule.value[key]($defaultMetadata.value);
+        try {
+          if (customProcessor) {
+            if (typeof customProcessor === 'function') {
+              result = customProcessor($defaultMetadata.value);
             } else {
-              result = rule.value[key] ?? '';
+              result = customProcessor;
             }
           }
+          if (isFormRuleDefinition(rule)) {
+            const patchedKey = `_${key}_patched` as const;
+            if (!(customProcessor && !rule.value[patchedKey])) {
+              if (typeof rule.value[key] === 'function') {
+                result = rule.value[key]($defaultMetadata.value);
+              } else {
+                result = rule.value[key] ?? '';
+              }
+            }
+          }
+        } catch (e) {
+          result = 'Could not validate the field';
         }
         return result;
       }
@@ -157,11 +165,14 @@ export function createReactiveRuleStatus({
       });
 
       const $params = computed<any[]>(() => {
-        if (typeof rule.value === 'function') {
+        try {
+          if (typeof rule.value === 'function') {
+            return [];
+          }
+          return unwrapRuleParameters(rule.value._params ?? []);
+        } catch (e) {
           return [];
         }
-
-        return unwrapRuleParameters(rule.value._params ?? []);
       });
 
       const $path = computed<string>(() => `${path}.${$type.value}`);
@@ -194,11 +205,11 @@ export function createReactiveRuleStatus({
   }
 
   async function computeAsyncResult() {
-    const validator = scopeState.$validator.value;
-    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
     let ruleResult = false;
-    let cachedValue = state.value;
     try {
+      const validator = scopeState.$validator.value;
+      const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+      let cachedValue = state.value;
       updatePendingState();
       let validatorResult;
       if (resultOrPromise instanceof Promise) {
