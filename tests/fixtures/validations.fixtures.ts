@@ -258,7 +258,10 @@ export function simpleNestedStateWithComputedValidation() {
       firstName: '',
       lastName: '',
     },
-    contacts: [] as { name: '' }[],
+    contacts: [] as { name: string }[],
+    nested: {
+      collection: [{ name: '' }],
+    },
   });
 
   // TODO inferRules function util
@@ -277,6 +280,13 @@ export function simpleNestedStateWithComputedValidation() {
         contacts: {
           $each: {
             name: { required },
+          },
+        },
+        nested: {
+          collection: {
+            $each: {
+              name: { required },
+            },
           },
         },
       }) satisfies ReglePartialRuleTree<UnwrapRef<typeof form>>

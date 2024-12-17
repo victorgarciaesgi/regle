@@ -17,52 +17,36 @@ export function defineRuleProcessors(
 
   const defaultProcessors = {
     validator(value: any, ...args: any[]) {
-      try {
-        const v = definition.validator(value, ...unwrapRuleParameters(args.length ? args : params));
-      } catch (e) {
-        return false;
-      }
+      return definition.validator(value, ...unwrapRuleParameters(args.length ? args : params));
     },
     message(metadata: $InternalRegleRuleMetadataConsumer) {
-      try {
-        if (typeof definition.message === 'function') {
-          return definition.message({
-            ...metadata,
-            $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
-          });
-        } else {
-          return definition.message;
-        }
-      } catch (e) {
-        return '';
+      if (typeof definition.message === 'function') {
+        return definition.message({
+          ...metadata,
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
+        });
+      } else {
+        return definition.message;
       }
     },
     active(metadata: $InternalRegleRuleMetadataConsumer) {
-      try {
-        if (typeof definition.active === 'function') {
-          return definition.active({
-            ...metadata,
-            $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
-          });
-        } else {
-          return definition.active ?? true;
-        }
-      } catch (e) {
-        return false;
+      if (typeof definition.active === 'function') {
+        return definition.active({
+          ...metadata,
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
+        });
+      } else {
+        return definition.active ?? true;
       }
     },
     tooltip(metadata: $InternalRegleRuleMetadataConsumer) {
-      try {
-        if (typeof definition.tooltip === 'function') {
-          return definition.tooltip({
-            ...metadata,
-            $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
-          });
-        } else {
-          return definition.tooltip ?? [];
-        }
-      } catch (e) {
-        return '';
+      if (typeof definition.tooltip === 'function') {
+        return definition.tooltip({
+          ...metadata,
+          $params: unwrapRuleParameters(metadata?.$params?.length ? metadata.$params : params),
+        });
+      } else {
+        return definition.tooltip ?? [];
       }
     },
     exec(value: any) {

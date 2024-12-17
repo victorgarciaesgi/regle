@@ -1,10 +1,12 @@
 import { nextTick } from 'vue';
-import {
-  simpleNestedStateWithComputedValidation,
-  simpleNestedStateWithMixedValidation,
-} from '../../../fixtures';
+import { simpleNestedStateWithComputedValidation, simpleNestedStateWithMixedValidation } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { shouldBeErrorField, shouldBeInvalidField } from '../../../utils/validations.utils';
+import {
+  shouldBeErrorField,
+  shouldBeInvalidField,
+  shouldBePristineField,
+  shouldBeValidField,
+} from '../../../utils/validations.utils';
 import { flushPromises } from '@vue/test-utils';
 
 describe('.$reset', () => {
@@ -78,5 +80,40 @@ describe('.$reset', () => {
 
     shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
     shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
+  });
+
+  it('should reset correctly all values inside a nested tree', async () => {
+    const { vm } = createRegleComponent(simpleNestedStateWithComputedValidation);
+
+    // vm.r$.$value = {
+    //   nested: {
+    //     collection: [{ name: '' }],
+    //   },
+    //   contacts: [{ name: '' }],
+    //   email: '',
+    //   user: { firstName: '', lastName: '' },
+    //   userRequired: false,
+    // };
+
+    await nextTick();
+
+    vm.r$.$value = {
+      nested: {
+        collection: [{ name: 'eee' }],
+      },
+      contacts: [{ name: 'eee' }],
+      email: 'eee@free.fr',
+      user: { firstName: 'eee', lastName: 'eee' },
+      userRequired: true,
+    };
+
+    await nextTick();
+
+    shouldBeValidField(vm.r$.$fields.contacts);
+
+    vm.r$.$reset();
+    await nextTick();
+
+    shouldBePristineField(vm.r$);
   });
 });

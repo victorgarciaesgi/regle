@@ -1,9 +1,17 @@
-import { defineConfig } from 'tsup';
+import { defineConfig, type Options } from 'tsup';
+import { defaultOptions, outExtension } from '../../tsup.common.build';
 
-export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm'],
-  dts: false,
+const sharedOptions: Options = {
+  ...defaultOptions,
+  entry: { 'regle-zod': 'src/index.ts' },
+  dts: true,
   clean: false,
-  external: ['vue', 'zod', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
-});
+  external: ['vue', 'zod'],
+};
+
+export default defineConfig([
+  {
+    ...sharedOptions,
+    outExtension: outExtension(),
+  },
+]);
