@@ -42,6 +42,7 @@
     "changelogithub": "0.13.11",
     "check-password-strength": "2.0.10",
     "cross-env": "7.0.3",
+    "@pinia/testing": "0.1.7",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",

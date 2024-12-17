@@ -23,6 +23,7 @@ export default [
       'no-use-before-define': 'off',
       'import/named': 'off',
       'vue/multi-word-component-names': 'off',
+      'vue/one-component-per-file': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
