@@ -334,7 +334,6 @@ const extraWeightRule = createRule({
 
 const customCityName = createRule({
   validator(value: Maybe<string>, item: any) {
-    console.log('item: ', item);
     return value === 'LA';
   },
 
@@ -351,18 +350,19 @@ function returnRules(
   }>,
   index: number
 ) {
-  const requiredOnlyIfFullSave = requiredIf(() => {
-    console.log('verify');
-    return Object.entries(item.value).some(([key, value]) => !!value);
-  });
+  const requiredOnlyIfFullSave = (key: string) =>
+    requiredIf(() => {
+      console.log('verify');
+      return Object.entries(item.value).some(([key, value]) => !!value);
+    });
   return {
     cityName: {
-      required: requiredOnlyIfFullSave,
+      required: requiredOnlyIfFullSave('hello'),
       minLength: minLength(index),
       customCityName: customCityName(item),
     },
     population: {
-      required: requiredOnlyIfFullSave,
+      required: requiredOnlyIfFullSave('hello2'),
       minValue: minValue(index),
     },
   };
