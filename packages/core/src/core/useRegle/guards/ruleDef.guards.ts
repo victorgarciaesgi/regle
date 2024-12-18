@@ -8,7 +8,7 @@ import type {
   MaybeGetter,
   RegleRuleDefinition,
 } from '../../../types';
-import { isObject, unwrapGetter } from '../../../utils';
+import { isObject } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,

@@ -125,17 +125,20 @@ export function createReactiveCollectionStatus({
     if (Array.isArray(state.value)) {
       $eachStatus.value = state.value
         .map((value, index) => {
-          const unwrapped$Each = unwrapGetter(
+          const { scope, unwrapped } = unwrapGetter(
             rulesDef.value.$each,
             toRef(() => value),
             index
           );
+          if (scope) {
+            collectionScopes.push(scope);
+          }
 
           const element = createCollectionElement({
             $id: $id.value,
             path,
             customMessages,
-            rules: unwrapped$Each ?? {},
+            rules: unwrapped ?? {},
             stateValue: toRef(() => value),
             index,
             options,
@@ -186,13 +189,16 @@ export function createReactiveCollectionStatus({
             }
             return null;
           } else {
-            const unwrapped$Each = unwrapGetter(rulesDef.value.$each, currentValue, index);
-            if (unwrapped$Each) {
+            const { scope, unwrapped } = unwrapGetter(rulesDef.value.$each, currentValue, index);
+            if (scope) {
+              collectionScopes.push(scope);
+            }
+            if (unwrapped) {
               const element = createCollectionElement({
                 $id: $id.value,
                 path,
                 customMessages,
-                rules: unwrapped$Each,
+                rules: unwrapped,
                 stateValue: currentValue,
                 index,
                 options,

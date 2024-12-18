@@ -1,4 +1,5 @@
-import { isRef, unref, type MaybeRef, type Ref } from 'vue';
+import type { EffectScope } from 'vue';
+import { effectScope, isRef, unref, type MaybeRef, type Ref } from 'vue';
 import type { MaybeGetter } from '../types';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
@@ -49,9 +50,18 @@ function getRegExpFlags(regExp: any) {
   }
 }
 
-export function unwrapGetter<T extends any>(getter: MaybeGetter<T, any>, value: Ref<any>, index?: number): T {
+export function unwrapGetter<T extends any>(
+  getter: MaybeGetter<T, any>,
+  value: Ref<any>,
+  index?: number
+): { scope: EffectScope; unwrapped: T } {
+  const scope = effectScope();
+  let unwrapped: T;
   if (getter instanceof Function) {
-    return getter(value, index ?? 0);
+    unwrapped = scope.run(() => getter(value, index ?? 0))!;
+  } else {
+    unwrapped = getter;
   }
-  return getter;
+
+  return { scope, unwrapped };
 }
