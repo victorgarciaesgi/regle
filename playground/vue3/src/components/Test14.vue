@@ -6,34 +6,38 @@
     </div>
     <div>
       <input
-        v-model="form.name"
-        :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
-        :placeholder="`Type your name${r$.$fields.name.$rules.required.$active ? '*' : ''}`"
+        type="date"
+        v-model="form.foo"
+        :class="{ valid: r$.$fields.foo.$valid, error: r$.$fields.foo.$error }"
+        :placeholder="`Type your foo${r$.$fields.foo.$rules.required.$active ? '*' : ''}`"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
-    <ul v-if="r$.$errors.name.length">
-      <li v-for="error of r$.$errors.name" :key="error">
+    <ul v-if="r$.$errors.foo.length">
+      <li v-for="error of r$.$errors.foo" :key="error">
         {{ error }}
       </li>
     </ul>
   </div>
-  <JSONViewer :data="r$.$fields.name"></JSONViewer>
+  <JSONViewer :data="r$"></JSONViewer>
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
+import { inferRules, useRegle } from '@regle/core';
 import { applyIf, minLength, required } from '@regle/rules';
 import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
 
-const form = ref({ name: '' });
+type Form = {
+  foo: Date;
+};
+
+const form = ref<Form>({ foo: new Date() });
 const condition = ref(false);
 
 const { r$ } = useRegle(form, {
-  name: {
-    required: applyIf(condition, required),
-    minLength: applyIf(condition, minLength(3)),
+  foo: {
+    required,
   },
 });
 </script>

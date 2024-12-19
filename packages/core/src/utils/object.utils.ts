@@ -3,10 +3,16 @@ import { effectScope, isRef, unref, type MaybeRef, type Ref } from 'vue';
 import type { MaybeGetter } from '../types';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
+  if (obj instanceof Date || obj instanceof File) {
+    return false;
+  }
   return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 }
 
 export function isRefObject(obj: Ref<unknown>): obj is Ref<Record<string, any>> {
+  if (obj.value instanceof Date || obj.value instanceof File) {
+    return false;
+  }
   return isObject(obj.value);
 }
 
