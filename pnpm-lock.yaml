@@ -255,6 +255,9 @@ importers:
         specifier: workspace:*
         version: link:../rules
     optionalDependencies:
+      '@regle/valibot':
+        specifier: workspace:*
+        version: link:../valibot
       '@regle/zod':
         specifier: workspace:*
         version: link:../zod

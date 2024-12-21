@@ -41,26 +41,42 @@ import * as v from 'valibot';
 type Form = {
   email: string;
   firstName?: number;
+  nested: {
+    name?: string;
+  };
   collections: [{ name: string }];
 };
 
 const form = reactive<Form>({
   email: '',
   firstName: 0,
+  nested: {
+    name: '',
+  },
   collections: [{ name: '' }],
 });
 
 async function submit() {
   const { result, data } = await r$.$validate();
+  if (result) {
+  }
 }
-const schema = v.object({
-  email: v.pipe(v.string(), v.nonEmpty('Please enter your email.')),
-  firstName: v.pipe(v.number(), v.minValue(10)),
-  collections: v.pipe(
-    v.array(v.object({ name: v.pipe(v.string(), v.nonEmpty('Please enter your email.')) })),
-    v.minLength(3)
-  ),
-});
 
-const { r$ } = useValibotRegle(form, schema);
+const { r$ } = useValibotRegle(
+  form,
+  v.object({
+    email: v.pipe(v.string(), v.nonEmpty('Please enter your email.')),
+    // firstName: v.optional(v.pipe(v.number(), v.minValue(10))),
+    nested: v.object({
+      // name: v.optional(v.string()),
+    }),
+    collections: v.pipe(
+      v.array(v.object({ name: v.pipe(v.string(), v.nonEmpty('Please enter your email.')) })),
+      v.minLength(3)
+    ),
+  })
+);
+
+r$.$fields.email.$value = 'e';
+console.log(r$.$fields.firstName?.$value);
 </script>

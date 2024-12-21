@@ -36,7 +36,8 @@
     "@regle/rules": "workspace:*"
   },
   "optionalDependencies": {
-    "@regle/zod": "workspace:*"
+    "@regle/zod": "workspace:*",
+    "@regle/valibot": "workspace:*"
   },
   "devDependencies": {
     "@nuxt/devtools": "1.6.3",

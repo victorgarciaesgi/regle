@@ -1,9 +1,7 @@
-import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
-import type { ReglePartialRuleTree } from './rule.declaration.types';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
 import type { ExtendOnlyRealRecord, Maybe, Prettify } from '../utils';
-import type { PartialObjectDeep } from 'type-fest/source/partial-deep';
+import type { ReglePartialRuleTree } from './rule.declaration.types';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<UnwrapNestedRefs<TState>[K]>;

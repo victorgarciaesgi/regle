@@ -8,7 +8,7 @@ import type {
 import { useRegle } from '@regle/core';
 import type { MaybeRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
-import type { DeepReactiveState, toValibot } from '../types';
+import type { DeepReactiveState, toValibot, ValibotRegle } from '../types';
 import type * as v from 'valibot';
 import { processValibotTypeDef } from './parser/processValibotTypeDef';
 
@@ -19,13 +19,12 @@ export function useValibotRegle<
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TValibotSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
-): any {
+): ValibotRegle<TState, TValibotSchema> {
   const rules = ref<ReglePartialRuleTree<any, any>>({});
 
   const computedSchema = computed(() => unref(schema));
 
   function valibotShapeToRegleRules() {
-    console.log(computedSchema.value);
     rules.value = Object.fromEntries(
       Object.entries(computedSchema.value.entries).map(
         ([key, schema]: [string, v.BaseSchema<unknown, unknown, any>]) => {

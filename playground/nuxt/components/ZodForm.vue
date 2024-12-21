@@ -67,9 +67,7 @@ const { r$ } = useZodRegle(
       .min(1)
       .email({ message: 'This must be an email' })
       .refine((val) => val === 'foo@free.fr', 'Bite'),
-    firstName: z.coerce
-      .number({ invalid_type_error: 'Not a number', required_error: 'Bite' })
-      .optional(),
+    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
     nested: z.array(
       z.object({
         name: z.string().min(1, 'Required'),
