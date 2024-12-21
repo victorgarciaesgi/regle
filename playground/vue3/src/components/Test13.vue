@@ -5,9 +5,8 @@
     <br />
     <input type="text" v-model="data.name" />
     <br />
-    invalid: {{ r$.$invalid }} {{ r$.$fields.name.$invalid }}
-    valid:
-    {{ r$.$valid }} {{ r$.$fields.name.$valid }}
+    dirty:
+    {{ r$.$anyDirty }} {{ r$.$fields.name.$dirty }}
     <br />
     <br />
     <button @click="assign">assign new value</button>
@@ -35,7 +34,7 @@ const { r$ } = useRegle(data, {
 });
 
 const assign = () => {
-  data.value = {
+  r$.$silentValue = {
     name: 'e',
   };
 };

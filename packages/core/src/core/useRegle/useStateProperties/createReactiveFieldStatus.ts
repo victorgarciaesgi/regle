@@ -53,6 +53,7 @@ export function createReactiveFieldStatus({
     $validating: Ref<boolean>;
     $dirty: Ref<boolean>;
     triggerPunishment: Ref<boolean>;
+    $silentValue: ComputedRef<any>;
     processShortcuts: () => void;
   }
 
@@ -204,6 +205,15 @@ export function createReactiveFieldStatus({
         });
       });
 
+      const $silentValue = computed({
+        get: () => state.value,
+        set(value) {
+          $unwatchState();
+          state.value = value;
+          define$watchState();
+        },
+      });
+
       const $error = computed<boolean>(() => {
         return $invalid.value && !$pending.value && $dirty.value;
       });
@@ -301,6 +311,7 @@ export function createReactiveFieldStatus({
                     $dirty,
                     $externalErrors: externalErrors?.value ?? [],
                     $value: state,
+                    $silentValue,
                     $rules,
                     $error,
                     $pending,
@@ -353,9 +364,26 @@ export function createReactiveFieldStatus({
         $dirty,
         triggerPunishment,
         processShortcuts,
+        $silentValue,
       } satisfies ScopeReturnState;
     })!;
 
+    define$watchState();
+
+    $unwatchDirty = watch(scopeState.$dirty, () => {
+      storage.setDirtyEntry(path, scopeState.$dirty.value);
+    });
+
+    $unwatchValid = watch(scopeState.$valid, (valid) => {
+      if (scopeState.$rewardEarly.value && valid) {
+        scopeState.triggerPunishment.value = false;
+      }
+    });
+
+    $unwatchAsync = watch(scopeState.$haveAnyAsyncRule, define$commit);
+  }
+
+  function define$watchState() {
     $unwatchState = watch(
       state,
       () => {
@@ -376,18 +404,6 @@ export function createReactiveFieldStatus({
       },
       { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
-
-    $unwatchDirty = watch(scopeState.$dirty, () => {
-      storage.setDirtyEntry(path, scopeState.$dirty.value);
-    });
-
-    $unwatchValid = watch(scopeState.$valid, (valid) => {
-      if (scopeState.$rewardEarly.value && valid) {
-        scopeState.triggerPunishment.value = false;
-      }
-    });
-
-    $unwatchAsync = watch(scopeState.$haveAnyAsyncRule, define$commit);
   }
 
   function $commitHandler() {
