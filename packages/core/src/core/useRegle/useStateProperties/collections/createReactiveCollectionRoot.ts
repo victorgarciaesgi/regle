@@ -243,7 +243,7 @@ export function createReactiveCollectionStatus({
   }
 
   function $watch() {
-    define$watchState;
+    define$watchState();
     scope = effectScope();
     scopeState = scope.run(() => {
       const $silentValue = computed({
