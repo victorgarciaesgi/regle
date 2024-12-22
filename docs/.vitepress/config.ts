@@ -1,6 +1,6 @@
-import type { DefaultTheme } from 'vitepress';
-import { defineConfig } from 'vitepress';
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash';
+import type { DefaultTheme, HeadConfig } from 'vitepress';
+import { defineConfig } from 'vitepress';
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
 
 const Nav: DefaultTheme.NavItemWithLink[] = [
@@ -101,6 +101,8 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://regle.vercel.app',
   },
+  lastUpdated: true,
+  cleanUrls: true,
   themeConfig: {
     logo: {
       dark: '/logo-reversed.png',
@@ -165,6 +167,13 @@ export default defineConfig({
       copyright: 'Copyright © 2023-present Victor Garcia',
     },
   },
+  transformHead: ({ pageData }) => {
+    const head: HeadConfig[] = [];
+
+    head.push(['meta', { property: 'og:title', content: pageData.frontmatter.title ?? 'Regle' }]);
+
+    return head;
+  },
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }],
@@ -177,20 +186,24 @@ export default defineConfig({
           'vue forms, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
       },
     ],
-    ['meta', { property: 'og:url', content: 'https://regle.vercel.app/' }],
+    ['meta', { property: 'og:url', content: 'https://regle.vercel.app' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Regle' }],
+    ['meta', { property: 'og:site_name', content: 'Regle - Vue form validation' }],
+    [
+      'meta',
+      {
+        property: 'description',
+        content: `Regle (from the French word for "rule") is a TypeScript-first form validation library made for Vue 3.
+            Regle is about bringing type safety and great DX for both simple and complex forms.
+            It's entirely data-driven and headless, allowing the validation logic to mirror your data structure, enabling a clear separation between the UI and validation logic.`,
+      },
+    ],
     [
       'meta',
       {
         property: 'og:description',
-        content: `Regle (from the French word for "rule") is a TypeScript-first form validation library made for Vue 3.
-            I'm a lover and long-time user of Vuelidate API, so Regle is greatly inspired by it.
-
-            Regle is about bringing type safety and great DX for both simple and complex forms.
-            It's entirely data-driven and headless, allowing the validation logic to mirror your data structure, enabling a clear separation between the UI and validation logic.
-
-            Declare your form rules inside a component or a Pinia store and use it wherever you like.`,
+        content: `Regle is a TypeScript-first form validation library made for Vue 3.`,
       },
     ],
     [
@@ -201,11 +214,17 @@ export default defineConfig({
       },
     ],
     ['meta', { name: 'twitter:site', content: '@regle' }],
+    ['meta', { name: 'twitter:domain', content: 'regle.vercel.app' }],
+    [
+      'meta',
+      { name: 'twitter:description', content: 'Regle is a TypeScript-first form validation library made for Vue 3.' },
+    ],
+    ['meta', { name: 'twitter:url', content: 'https://regle.vercel.app' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
     ['meta', { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' }],
   ],
   markdown: {
-    codeTransformers: [transformerTwoslash({})],
+    codeTransformers: [transformerTwoslash({}) as any],
     theme: 'vitesse-dark',
     config(md) {
       md.use(groupIconMdPlugin);

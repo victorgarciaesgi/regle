@@ -36,16 +36,16 @@
     "@regle/rules": "workspace:*"
   },
   "optionalDependencies": {
-    "@regle/zod": "workspace:*",
-    "@regle/valibot": "workspace:*"
+    "@regle/valibot": "workspace:*",
+    "@regle/zod": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/devtools": "1.6.3",
-    "@nuxt/eslint-config": "0.7.2",
+    "@nuxt/devtools": "1.6.4",
+    "@nuxt/eslint-config": "0.7.4",
     "@nuxt/module-builder": "0.8.4",
     "@nuxt/schema": "3.14.1592",
     "@nuxt/test-utils": "3.15.1",
-    "@types/node": "22.9.3",
+    "@types/node": "22.10.2",
     "c12": "2.0.1",
     "changelogen": "0.5.7",
     "eslint": "catalog:",
@@ -54,13 +54,13 @@
     "nuxt": "3.14.1592",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.30.0",
+    "type-fest": "4.30.2",
     "typescript": "catalog:",
+    "unbuild": "3.0.1",
     "vitest": "2.1.8",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:",
-    "unbuild": "3.0.1"
+    "vue-tsc": "catalog:"
   },
   "publishConfig": {
     "access": "public"
