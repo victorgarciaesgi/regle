@@ -33,10 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import type { RegleExternalErrorTree } from '@regle/core';
 import { useValibotRegle } from '@regle/valibot';
-import { nextTick, reactive, ref } from 'vue';
 import * as v from 'valibot';
+import { reactive } from 'vue';
 
 type Form = {
   email: string;
@@ -44,7 +43,7 @@ type Form = {
   nested: {
     name?: string;
   };
-  collections: [{ name: string }];
+  collections: { name: string }[];
 };
 
 const form = reactive<Form>({
@@ -78,5 +77,5 @@ const { r$ } = useValibotRegle(
 );
 
 r$.$fields.email.$value = 'e';
-console.log(r$.$fields.firstName?.$value);
+console.log(r$.$fields.collections.$each);
 </script>

@@ -59,6 +59,9 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:packages/rules
+      '@regle/valibot':
+        specifier: workspace:*
+        version: link:packages/valibot
       '@regle/zod':
         specifier: workspace:*
         version: link:packages/zod
@@ -158,6 +161,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
+      valibot:
+        specifier: 1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.6.3)
       vitepress:
         specifier: 1.5.0
         version: 1.5.0(@algolia/client-search@5.18.0)(@types/node@22.10.2)(change-case@5.4.4)(postcss@8.4.49)(sass@1.83.0)(search-insights@2.17.3)(terser@5.37.0)(typescript@5.6.3)

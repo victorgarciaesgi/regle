@@ -1,9 +1,13 @@
 import type { Regle } from '@regle/core';
+import type { ValibotRegle } from '@regle/valibot';
 import type { ZodRegle } from '@regle/zod';
+import type { VueWrapper } from '@vue/test-utils';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
+import type * as v from 'valibot';
+import type { MaybeObjectAsync } from '../../packages/valibot/src/types';
 
-export function createRegleComponent<T extends Regle<any, any, any, any> | ZodRegle<any, any>>(
+export function createRegleComponent<T extends Regle<any, any, any, any> | ZodRegle<any, any> | ValibotRegle<any, any>>(
   regleComposable: () => T
 ) {
   return mount(

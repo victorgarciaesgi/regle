@@ -7,7 +7,7 @@ export function transformValibotAdapter(
 ): FormRuleDeclaration<unknown, [], v.MaybePromise<{ $valid: boolean; $issues: v.BaseIssue<unknown>[] }>> {
   const isAsync = schema.async;
   const validatorFn = (value: unknown) => {
-    const result = trySafeTransform(schema, value);
+    const result = trySafeTransform(schema, value, isAsync);
 
     if (result instanceof Promise) {
       return result;
@@ -31,15 +31,13 @@ export function transformValibotAdapter(
 
 function trySafeTransform(
   schema: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>,
-  value: unknown
+  value: unknown,
+  isAsync: boolean
 ):
   | v.SafeParseResult<v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>
   | Promise<{ $valid: boolean; $issues: v.BaseIssue<unknown>[] }> {
   try {
-    const result = v.safeParse(schema, value);
-    return result;
-  } catch (e) {
-    try {
+    if (isAsync) {
       return new Promise<{ $valid: boolean; $issues: any[] }>(async (resolve) => {
         const result = await v.safeParseAsync(schema, value);
         if (result.success) {
@@ -54,8 +52,11 @@ function trySafeTransform(
           });
         }
       });
-    } catch (e) {
-      return {} as any;
+    } else {
+      const result = v.safeParse(schema, value);
+      return result;
     }
+  } catch (e) {
+    return {} as any;
   }
 }
