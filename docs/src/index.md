@@ -28,11 +28,12 @@ features:
   - icon: <svg width="800px" height="800px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4C14 4 11 5 11 9C11 13 11 15 11 18C11 21 6 23 6 23C6 23 11 25 11 28C11 31 11 35 11 39C11 43 14 44 16 44" stroke="#048d62" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 4C34 4 37 5 37 9C37 13 37 15 37 18C37 21 42 23 42 23C42 23 37 25 37 28C37 31 37 35 37 39C37 43 34 44 32 44" stroke="#048d62" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     title:  Model based
     details: You can focus on your validations, not on your DOM.
-  - icon: 🪗
-    title: Extensible
+  - title: Extensible
+    icon: 🪗
     details: Extend validation schema with your own properties.
-  - icon: <svg xmlns="http://www.w3.org/2000/svg" width="1.27em" height="1em" viewBox="0 0 256 203"><defs><filter id="logosZod0" width="105.2%" height="106.5%" x="-2.2%" y="-2.8%" filterUnits="objectBoundingBox"><feOffset dx="1" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/><feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.36 0"/></filter><path id="logosZod1" fill="#000" d="M200.42 0H53.63L0 53.355l121.76 146.624l9.714-10.9L252 53.857zm-5.362 12.562l39.84 41.6l-112.8 126.558L17 54.162l41.815-41.6z"/></defs><g transform="translate(2 1.51)"><path fill="#18253f" d="M58.816 12.522h136.278l39.933 41.691l-112.989 126.553L16.957 54.213z"/><path fill="#274d82" d="M149.427 150.875H96.013l-24.124-29.534l68.364-.002l.002-4.19h39.078z"/><path fill="#274d82" d="M223.56 42.323L76.178 127.414l-19.226-24.052l114.099-65.877l-2.096-3.631l30.391-17.546zm-78.964-29.759L33.93 76.457L16.719 54.972l74.095-42.779z"/><use filter="url(#logosZod0)" href="#logosZod1"/><use fill="#3068b7" href="#logosZod1"/></g></svg>
-    title: Zod support
-    details: Use Zod schemas to control your validations.
+  - title: Zod & Valibot support
+    icon: 
+      src: /zod-valibot.png
+    details: Use Zod or Valibot to control your validations.
 ---
 

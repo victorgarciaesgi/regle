@@ -23,6 +23,44 @@ html.dark {
   }
 }
 
+.VPFeature .VPImage {
+  border-radius: 6px;
+  background-color: var(--vp-c-default-soft);
+}
+
+.item .VPFeature {
+  position: relative;
+  padding: 2px;
+  background-clip: content-box;
+  border: none;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: 0;
+    bottom: 0;
+    left: -50%;
+    z-index: -1;
+    width: 200%;
+    height: 200%;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at top, #048d62, #191a19);
+    animation: rotate 3s infinite linear;
+    animation-delay: 500ms;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 iframe {
   border: none;
   margin-top: 40px;
