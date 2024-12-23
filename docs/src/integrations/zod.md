@@ -63,8 +63,14 @@ const { r$ } = useZodRegle({ name: '' }, z.object({
 
 You can also have a computed schema that can be based on other state values.
 
+:::warning
+When doing refinements or transform, Vue can't track what the schema depends on because you're in a function callback. 
+
+Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper to force dependencies on any schema
+:::
+
 ```ts twoslash
-import { useZodRegle, type toZod } from '@regle/zod';
+import { useZodRegle, type toZod, withDeps } from '@regle/zod';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -75,12 +81,21 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => z.object({
-  firstName: z.string(),
-  lastName: z.string().refine(v => v !== form.value.firstName, {
-    message: "Last name can't be equal to first name"
-  }),
-}) satisfies toZod<Form>)
+const schema = computed(() =>
+  z.object({
+    firstName: z.string(),
+    /** 
+     * Important to keep track of the depency change
+     * Without it, the validator wouldn't run if `firstName` changed
+    */
+    lastName: withDeps(
+      z.string().refine((v) => v !== form.value.firstName, {
+        message: "Last name can't be equal to first name",
+      }),
+      [() => form.value.firstName]
+    ),
+  }) satisfies toZod<Form>
+);
 
 const { r$ } = useZodRegle(form, schema);
 

@@ -20,6 +20,7 @@ export interface RegleInternalRuleDefs<
   _tooltip_patched: boolean;
   _params?: RegleUniversalParams<TParams>;
   _async: TAsync;
+  readonly _brand: symbol;
 }
 
 export enum InternalRuleType {

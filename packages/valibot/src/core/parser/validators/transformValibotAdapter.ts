@@ -1,5 +1,5 @@
 import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleMetadataDefinition, RegleRuleRaw } from '@regle/core';
-import { withAsync } from '@regle/rules';
+import { withAsync, withParams } from '@regle/rules';
 import * as v from 'valibot';
 
 export function transformValibotAdapter(
@@ -26,6 +26,9 @@ export function transformValibotAdapter(
     }
   };
 
+  if ('__depsArray' in schema && Array.isArray(schema.__depsArray) && schema.__depsArray.length) {
+    return isAsync ? withAsync(validatorFn, schema.__depsArray) : withParams(validatorFn as any, schema.__depsArray);
+  }
   return isAsync ? withAsync(validatorFn) : validatorFn;
 }
 

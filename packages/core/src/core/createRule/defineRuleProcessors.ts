@@ -1,3 +1,4 @@
+import { RegleRuleSymbol } from '../../../../shared';
 import {
   InternalRuleType,
   type $InternalRegleRuleDefinition,
@@ -86,6 +87,7 @@ export function defineRuleProcessors(
     _tooltip_patched: false,
     _async: isAsync,
     _params: createReactiveParams<never>(params),
+    _brand: RegleRuleSymbol,
   };
 
   return processors;

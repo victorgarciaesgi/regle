@@ -28,14 +28,14 @@
           </li>
         </ul>
       </div>
-      
+
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useZodRegle, type toZod } from '@regle/zod';
+import { useZodRegle, withDeps, type toZod } from '@regle/zod';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -44,9 +44,12 @@ const form = ref({ firstName: '', lastName: '' });
 const schema = computed(() =>
   z.object({
     firstName: z.string(),
-    lastName: z.string().refine((v) => v !== form.value.firstName, {
-      message: "Last name can't be equal to first name",
-    }),
+    lastName: withDeps(
+      z.string().refine((v) => v !== form.value.firstName, {
+        message: "Last name can't be equal to first name",
+      }),
+      [() => form.value.firstName]
+    ),
   })
 );
 

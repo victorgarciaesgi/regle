@@ -1,3 +1,4 @@
+import { RegleRuleSymbol } from '../../../../shared';
 import type { InferRegleRule, RegleRuleInit, RegleRuleMetadataDefinition, RegleUniversalParams } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';

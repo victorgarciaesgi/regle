@@ -33,13 +33,13 @@
 </template>
 
 <script setup lang="ts">
-import { useValibotRegle } from '@regle/valibot';
+import { useValibotRegle, withDeps } from '@regle/valibot';
 import * as v from 'valibot';
 import { reactive } from 'vue';
 
 type Form = {
   email: string;
-  firstName?: number;
+  firstName?: string;
   nested: {
     name?: string;
   };
@@ -48,7 +48,7 @@ type Form = {
 
 const form = reactive<Form>({
   email: '',
-  firstName: 0,
+  firstName: '',
   nested: {
     name: '',
   },
@@ -64,7 +64,13 @@ async function submit() {
 const { r$ } = useValibotRegle(
   form,
   v.object({
-    email: v.pipe(v.string(), v.nonEmpty('Please enter your email.')),
+    email: withDeps(
+      v.pipe(
+        v.string(),
+        v.check((v) => v !== form.firstName)
+      ),
+      [() => form.firstName]
+    ),
     // firstName: v.optional(v.pipe(v.number(), v.minValue(10))),
     nested: v.object({
       // name: v.optional(v.string()),

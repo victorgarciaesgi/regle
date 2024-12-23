@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { useValibotRegle } from '@regle/valibot';
+import { useValibotRegle, withDeps } from '@regle/valibot';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -44,9 +44,12 @@ const form = ref({ firstName: '', lastName: '' });
 const schema = computed(() =>
   v.object({
     firstName: v.string(),
-    lastName: v.pipe(
-      v.string(),
-      v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+    lastName: withDeps(
+      v.pipe(
+        v.string(),
+        v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+      ),
+      [() => form.value.firstName]
     ),
   })
 );

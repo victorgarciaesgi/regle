@@ -63,8 +63,14 @@ const { r$ } = useValibotRegle({ name: '' }, v.object({
 
 You can also have a computed schema that can be based on other state values.
 
+:::warning
+When doing refinements or transform, Vue can't track what the schema depends on because you're in a function callback. 
+
+Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper to force dependencies on any schema
+:::
+
 ```ts twoslash
-import { useValibotRegle, type toValibot } from '@regle/valibot';
+import { useValibotRegle, type toValibot, withDeps} from '@regle/valibot';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -75,13 +81,22 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => v.object({
-  firstName: v.string(),
-  lastName: v.pipe(
-      v.string(),
-      v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
-    ),
-}) satisfies toValibot<Form>)
+const schema = computed(() => 
+  v.object({
+    firstName: v.string(),
+    /** 
+     * Important to keep track of the depency change
+     * Without it, the validator wouldn't run if `firstName` changed
+    */
+    lastName: withDeps(
+        v.pipe(
+          v.string(),
+          v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+        ),
+        [() => form.value.firstName]
+      ),
+  }) satisfies toValibot<Form>
+)
 
 const { r$ } = useValibotRegle(form, schema);
 

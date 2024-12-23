@@ -1,4 +1,4 @@
-export { useZodRegle } from './core';
+export { useZodRegle, withDeps } from './core';
 export type {
   InferZodRegleStatusType,
   ZodRegle,
