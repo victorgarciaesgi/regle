@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "Typescript-first model-based form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
