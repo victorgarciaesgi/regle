@@ -59,8 +59,14 @@ Similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true
 
 ### `$value`
 - Type: `TValue` (The current property value type)
-  
+
 A reference to the original validated model. It can be used to bind your form with `v-model`.
+
+### `$silentValue`
+- Type: `TValue` (The current property value type)
+  
+
+`$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
 
 
 ### `$pending`
@@ -124,7 +130,6 @@ Resets the `$dirty` state on all nested properties of a form.
 - Type: `() => void`
 
 Will reset both your validation state and your form state to their initial values.
-
 
 ### `$clearExternalErrors`
 - Type: `() => void`

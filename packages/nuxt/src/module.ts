@@ -36,7 +36,19 @@ export default defineNuxtModule<ModuleOptions>({
         });
       }
     } catch (e) {
-      //
+      // do nothing
+    }
+
+    try {
+      const regleZod = await import('@regle/valibot');
+      if (regleZod) {
+        addImportsSources({
+          from: '@regle/valibot',
+          imports: ['useValibotRegle'] as Array<keyof typeof import('@regle/valibot')>,
+        });
+      }
+    } catch (e) {
+      // do nothing
     }
   },
 });

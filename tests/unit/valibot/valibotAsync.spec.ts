@@ -1,12 +1,11 @@
-import { flushPromises } from '@vue/test-utils';
-import { useRegle } from '@regle/core';
-import { ruleMockIsEvenAsync, ruleMockIsEven, ruleMockIsFooAsync } from '../../fixtures';
-import { createRegleComponent } from '../../utils/test.utils';
-import { nextTick, ref } from 'vue';
-import { useZodRegle } from '@regle/zod';
-import { z } from 'zod';
 import { ruleHelpers } from '@regle/rules';
+import { useValibotRegle } from '@regle/valibot';
+import { flushPromises } from '@vue/test-utils';
+import * as v from 'valibot';
+import { nextTick, ref } from 'vue';
+import type { MaybeObjectAsync, MaybeSchemaAsync } from '../../../packages/valibot/src/types';
 import { timeout } from '../../utils';
+import { createRegleComponent } from '../../utils/test.utils';
 
 function nesteAsyncObjectWithRefsValidation() {
   const form = {
@@ -19,50 +18,45 @@ function nesteAsyncObjectWithRefsValidation() {
     },
   };
 
-  const ruleMockIsEvenAsync = z.number().refine(
-    async (value) => {
+  const ruleMockIsEvenAsync = v.pipeAsync(
+    v.number(),
+    v.checkAsync(async (value) => {
       if (ruleHelpers.isFilled(value)) {
         await timeout(1000);
         return value % 2 === 0;
       }
       return true;
-    },
-    { message: 'Custom error' }
+    }, 'Custom error')
   );
 
-  const ruleMockIsFooAsync = z.string().refine(
-    async (value) => {
+  const ruleMockIsFooAsync = v.pipeAsync(
+    v.string(),
+    v.checkAsync(async (value) => {
       if (ruleHelpers.isFilled(value)) {
         await timeout(1000);
         return value === 'foo';
       }
       return true;
-    },
-    { message: 'Custom error' }
+    }, 'Custom error')
   );
 
-  const zodIsEven = z
-    .number({
-      required_error: 'This field is required',
-      invalid_type_error: 'This field is required',
-    })
-    .refine(
-      (value) => {
-        if (ruleHelpers.isFilled(value)) {
-          return value % 2 === 0;
-        }
-        return true;
-      },
-      { message: 'Custom error' }
-    );
+  const valibotIsEven = v.pipe(
+    v.number('This field is required'),
+    v.check((value) => {
+      if (ruleHelpers.isFilled(value)) {
+        return value % 2 === 0;
+      }
+      return true;
+    }, 'Custom error')
+  );
 
-  return useZodRegle(
+  return useValibotRegle(
     form,
-    z.object({
+    v.objectAsync({
       level0Async: ruleMockIsEvenAsync,
-      level1: z.object({
-        child: zodIsEven,
-        level2: z.object({
+      level1: v.objectAsync({
+        child: valibotIsEven,
+        level2: v.objectAsync({
           childAsync: ruleMockIsFooAsync,
         }),
       }),
@@ -145,8 +139,8 @@ describe('useRegle with async rules and Object refs', async () => {
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0Async = 1;
 
-    await vi.advanceTimersByTimeAsync(200);
     await nextTick();
+    await vi.advanceTimersByTimeAsync(200);
     expect(vm.r$.$fields.level0Async.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
@@ -269,10 +263,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
-    const [{ result, data }] = await Promise.all([
-      vm.r$.$validate(),
-      vi.advanceTimersByTimeAsync(1300),
-    ]);
+    const [{ result, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
 
     await nextTick();
 

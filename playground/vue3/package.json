@@ -14,26 +14,28 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
+    "@regle/valibot": "workspace:*",
     "@regle/zod": "workspace:*",
-    "vue": "catalog:",
-    "pinia": "2.3.0"
+    "pinia": "2.3.0",
+    "valibot": "1.0.0-beta.9",
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.1.7",
     "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^22.9.3",
+    "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.0.0",
     "@vue/eslint-config-typescript": "^14.1.4",
-    "@vue/tsconfig": "^0.6.0",
+    "@vue/tsconfig": "^0.7.0",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
-    "npm-run-all2": "^7.0.1",
+    "npm-run-all2": "^7.0.2",
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "vite": "^5.4.8",
+    "vite": "^6.0.5",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }

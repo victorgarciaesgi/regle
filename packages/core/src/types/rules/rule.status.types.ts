@@ -132,6 +132,7 @@ export type RegleFieldStatus<
   TShortcuts extends RegleShortcutDefinition = never,
 > = Omit<RegleCommonStatus<TState>, '$value'> & {
   $value: Maybe<UnwrapNestedRefs<TState>>;
+  $silentValue: Maybe<UnwrapNestedRefs<TState>>;
   readonly $errors: string[];
   readonly $silentErrors: string[];
   readonly $externalErrors: string[];
@@ -163,6 +164,7 @@ export type RegleFieldStatus<
  */
 export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   $value: any;
+  $silentValue: any;
   readonly $rules: Record<string, $InternalRegleRuleStatus>;
   readonly $externalErrors?: string[];
   readonly $errors: string[];
@@ -185,6 +187,7 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $name: string;
   $id?: string;
   $value: UnwrapNestedRefs<TValue>;
+  $silentValue: UnwrapNestedRefs<TValue>;
   $touch(runCommit?: boolean, withConditions?: boolean): void;
   $reset(): void;
   $resetAll: () => void;
@@ -263,6 +266,7 @@ export type RegleCollectionStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState>, '$value'> & {
   $value: Maybe<TState>;
+  $silentValue: Maybe<TState>;
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
   readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   readonly $errors: RegleCollectionErrors<TState>;

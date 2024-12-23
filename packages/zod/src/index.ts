@@ -5,8 +5,6 @@ export type {
   ZodRegleStatus,
   ZodRegleFieldStatus,
   ZodRegleCollectionStatus,
-  ZodToRegleCollectionErrors,
-  ZodToRegleErrorTree,
   ZodChild,
   toZod,
   PossibleDefTypes,

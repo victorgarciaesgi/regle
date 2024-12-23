@@ -15,12 +15,12 @@
     "@regle/zod": "workspace:*",
     "pinia": "^2.2.6",
     "typescript": "5.6.3",
-    "zod": "3.23.8"
+    "zod": "3.24.1"
   },
   "devDependencies": {
     "nuxt": "^3.14.1592",
     "vue": "^3.5.13",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.5.0"
   },
   "version": "0.4.9"
 }

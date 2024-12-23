@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, nextTick, reactive, ref, toRef, triggerRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import { isEmpty } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -16,9 +16,9 @@ import type {
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { cloneDeep, isObject, isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
-import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 
 interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any>>;
@@ -43,6 +43,7 @@ export function createReactiveNestedStatus({
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   interface ScopeState extends CommonResolverScopedState {
+    $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
@@ -170,8 +171,22 @@ export function createReactiveNestedStatus({
     }
   }
 
+  function define$watchState() {
+    $unwatchState = watch(
+      state,
+      () => {
+        // Do not watch deep to only track mutation on the object itself on not its children
+        $unwatch();
+        createReactiveFieldsStatus();
+        $touch(true, true);
+      },
+      { flush: 'sync' }
+    );
+  }
+
   function $watch() {
     if (rootRules) {
+      $unwatchRules?.();
       $unwatchRules = watch(
         rootRules,
         () => {
@@ -184,21 +199,22 @@ export function createReactiveNestedStatus({
       define$WatchExternalErrors();
     }
 
-    $unwatchState = watch(
-      state,
-      () => {
-        // Do not watch deep to only track mutation on the object itself on not its children
-        $unwatch();
-        createReactiveFieldsStatus();
-        $touch(true, true);
-      },
-      { flush: 'sync' }
-    );
+    define$watchState();
+
     scope = effectScope();
     scopeState = scope.run(() => {
       // Important
       // All the get/set options are to avoid Pinia trying to serialize the computed values
       // This is also useful for SSR
+
+      const $silentValue = computed({
+        get: () => state.value,
+        set(value) {
+          $unwatch();
+          state.value = value;
+          createReactiveFieldsStatus();
+        },
+      });
 
       const $dirty = computed<boolean>({
         get: () => {
@@ -305,6 +321,7 @@ export function createReactiveNestedStatus({
                   reactive({
                     $dirty,
                     $value: state,
+                    $silentValue,
                     $error,
                     $pending,
                     $invalid,
@@ -375,6 +392,7 @@ export function createReactiveNestedStatus({
         $name,
         $shortcuts,
         $groups,
+        $silentValue,
       } satisfies ScopeState;
     })!;
   }

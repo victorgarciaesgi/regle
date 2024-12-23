@@ -18,11 +18,11 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "22.9.3",
-    "@typescript-eslint/eslint-plugin": "8.18.0",
-    "@typescript-eslint/parser": "8.18.0",
+    "@types/node": "22.10.2",
+    "@typescript-eslint/eslint-plugin": "8.18.1",
+    "@typescript-eslint/parser": "8.18.1",
     "@vue/test-utils": "2.4.6",
-    "bumpp": "9.9.0",
+    "bumpp": "9.9.2",
     "changelogithub": "0.13.11",
     "cross-env": "7.0.3",
     "eslint": "catalog:",
@@ -36,7 +36,7 @@
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:",
-    "zod": "3.23.8"
+    "zod": "3.24.1"
   },
   "type": "module",
   "exports": {

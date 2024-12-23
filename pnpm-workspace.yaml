@@ -2,6 +2,7 @@ packages:
   - packages/core
   - packages/rules
   - packages/zod
+  - packages/valibot
   - packages/nuxt
   - packages/shared
   - playground/vue3

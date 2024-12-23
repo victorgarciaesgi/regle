@@ -57,6 +57,7 @@ export function createReactiveCollectionStatus({
     $ready: ComputedRef<boolean>;
     $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['collections']>;
+    $silentValue: ComputedRef<any>;
   }
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
@@ -227,7 +228,7 @@ export function createReactiveCollectionStatus({
     }
   }
 
-  function $watch() {
+  function define$watchState() {
     $unwatchState = watch(
       state,
       () => {
@@ -239,8 +240,21 @@ export function createReactiveCollectionStatus({
       },
       { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'pre' }
     );
+  }
+
+  function $watch() {
+    define$watchState();
     scope = effectScope();
     scopeState = scope.run(() => {
+      const $silentValue = computed({
+        get: () => state.value,
+        set(value) {
+          $unwatchState();
+          state.value = value;
+          define$watchState();
+        },
+      });
+
       const $dirty = computed<boolean>(() => {
         return (
           $fieldStatus.value.$dirty &&
@@ -328,6 +342,7 @@ export function createReactiveCollectionStatus({
                   reactive({
                     $dirty,
                     $error,
+                    $silentValue,
                     $pending,
                     $invalid,
                     $valid,
@@ -365,6 +380,7 @@ export function createReactiveCollectionStatus({
         $ready,
         $name,
         $shortcuts,
+        $silentValue,
       } satisfies ScopeReturnState;
     })!;
 
