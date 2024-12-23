@@ -36,7 +36,7 @@ Optional
 - [Zod](https://zod.dev/) <span data-title="zod"></span> 
   - Zod version `3` or higher. Check [Zod usage](/integrations/zod)
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 
-  - Valibot version `1` or higher. Check [Zod usage](/integrations/valibot)
+  - Valibot version `1` or higher. Check [Valibot usage](/integrations/valibot)
 
 <br/>
 
