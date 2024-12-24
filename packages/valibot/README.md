@@ -8,11 +8,6 @@
 Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript-first model-based validation library for Vue 3.
 It's heavily inspired by Vuelidate.
 
-
-# 📚 Documentation
-
-[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/) 
-
 ## 📚 Documentation
 
 [![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
