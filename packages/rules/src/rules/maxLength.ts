@@ -1,4 +1,4 @@
-import { ruleHelpers } from '../helpers';
+import { isFilled, isNumber, getSize } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 
@@ -10,9 +10,9 @@ export const maxLength: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'maxLength',
   validator: (value: Maybe<string | Record<PropertyKey, any> | any[]>, count: number) => {
-    if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(count)) {
-      if (ruleHelpers.isNumber(count)) {
-        return ruleHelpers.size(value) <= count;
+    if (isFilled(value) && isFilled(count)) {
+      if (isNumber(count)) {
+        return getSize(value) <= count;
       }
       console.warn(`[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
       return false;

@@ -1,6 +1,6 @@
 import type { RegleRuleDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '../helpers';
+import { isEmpty } from '../helpers';
 
 function nibbleValid(nibble: string) {
   if (nibble.length > 3 || nibble.length === 0) {
@@ -22,7 +22,7 @@ function nibbleValid(nibble: string) {
 export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: 'ipAddress',
   validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value)) {
+    if (isEmpty(value)) {
       return true;
     }
 

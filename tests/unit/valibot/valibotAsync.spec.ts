@@ -1,4 +1,4 @@
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import { useValibotRegle } from '@regle/valibot';
 import { flushPromises } from '@vue/test-utils';
 import * as v from 'valibot';
@@ -21,7 +21,7 @@ function nesteAsyncObjectWithRefsValidation() {
   const ruleMockIsEvenAsync = v.pipeAsync(
     v.number(),
     v.checkAsync(async (value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(1000);
         return value % 2 === 0;
       }
@@ -32,7 +32,7 @@ function nesteAsyncObjectWithRefsValidation() {
   const ruleMockIsFooAsync = v.pipeAsync(
     v.string(),
     v.checkAsync(async (value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(1000);
         return value === 'foo';
       }
@@ -43,7 +43,7 @@ function nesteAsyncObjectWithRefsValidation() {
   const valibotIsEven = v.pipe(
     v.number('This field is required'),
     v.check((value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         return value % 2 === 0;
       }
       return true;

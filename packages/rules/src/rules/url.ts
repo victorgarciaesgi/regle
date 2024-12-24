@@ -1,6 +1,6 @@
 import type { RegleRuleDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '../helpers';
+import { isEmpty, matchRegex } from '../helpers';
 
 /**
  * Regex taken from {@link https://gist.github.com/dperini/729294}
@@ -11,10 +11,10 @@ const urlRegex =
 export const url: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: 'url',
   validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value)) {
+    if (isEmpty(value)) {
       return true;
     }
-    return ruleHelpers.regex(value, urlRegex);
+    return matchRegex(value, urlRegex);
   },
   message: 'The value is not a valid URL address',
 });

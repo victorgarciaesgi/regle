@@ -21,11 +21,11 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * ```ts
  * // Create a simple rule with no params
- * import {ruleHelpers} from '@regle/rules';
+ * import {isFilled} from '@regle/rules';
  *
  * export const isFoo = createRule({
  *   validator(value: string) {
- *       if (ruleHelpers.isFilled(value)) {
+ *       if (isFilled(value)) {
  *           return value === 'foo';
  *       }
  *       return true

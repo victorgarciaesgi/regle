@@ -20,12 +20,12 @@ You can use `createRule` to define your custom rules. Let's explore a real-world
 // @filename strongPassword.ts
 // ---cut---
 import { createRule, Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import { passwordStrength, type Options } from 'check-password-strength';
 
 export const strongPassword = createRule({
   validator(value: Maybe<string>, options?: Options<string>) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       const result = passwordStrength(value, options);
       return {
         $valid: result.id > 1,

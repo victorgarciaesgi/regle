@@ -1,7 +1,7 @@
 import { createTimeout } from '@/utils/timeout';
 import type { Maybe } from '@regle/core';
 import { createRule, defineRegleConfig } from '@regle/core';
-import { required, ruleHelpers, withMessage } from '@regle/rules';
+import { required, isFilled, withMessage } from '@regle/rules';
 import { passwordStrength, type DiversityType, type Options } from 'check-password-strength';
 
 const diversityTypes: DiversityType[] = ['lowercase', 'uppercase', 'symbol', 'number'];
@@ -20,7 +20,7 @@ const timeout = createTimeout();
 
 export const checkPseudo = createRule({
   async validator(value: Maybe<string>) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       // Check the timeout function to see how cancellation can be handled
       await timeout(2000);
       return randomBoolean();
@@ -32,7 +32,7 @@ export const checkPseudo = createRule({
 
 export const strongPassword = createRule({
   validator: (value: Maybe<string>, options?: Options<string>) => {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       const result = passwordStrength(value, options);
       return {
         $valid: result.id > 1,

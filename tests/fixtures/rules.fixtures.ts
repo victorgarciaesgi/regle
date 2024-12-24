@@ -1,6 +1,6 @@
 import type { Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import { timeout } from '../utils';
 
 export const mockedValidations = {
@@ -10,7 +10,7 @@ export const mockedValidations = {
 
 export const ruleMockIsFoo = createRule({
   validator(value: Maybe<string>) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       return mockedValidations.isFoo(value);
     }
     return true;
@@ -20,7 +20,7 @@ export const ruleMockIsFoo = createRule({
 
 export const ruleMockIsEven = createRule({
   validator(value: Maybe<number>) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       return mockedValidations.isEven(value);
     }
     return true;
@@ -31,7 +31,7 @@ export const ruleMockIsEven = createRule({
 export function ruleMockIsEvenAsync(time = 1000) {
   return createRule({
     async validator(value: Maybe<number>) {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(time);
         return mockedValidations.isEven(value);
       }
@@ -44,7 +44,7 @@ export function ruleMockIsEvenAsync(time = 1000) {
 export function ruleMockIsFooAsync() {
   return createRule({
     async validator(value: Maybe<string>) {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(1000);
         return mockedValidations.isFoo(value);
       }
@@ -56,7 +56,7 @@ export function ruleMockIsFooAsync() {
 
 export const ruleMockIsEqualParam = createRule({
   validator(value: Maybe<string>, foo: string) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       return value === foo;
     }
     return true;
@@ -68,7 +68,7 @@ export const ruleMockIsEqualParam = createRule({
 
 export const ruleMockIsEqualParamAsync = createRule({
   async validator(value: Maybe<string>, foo: string) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       await timeout(1000);
       return value === foo;
     }
@@ -80,14 +80,14 @@ export const ruleMockIsEqualParamAsync = createRule({
 });
 
 export const inlineRuleMockIsFoo = (value: any) => {
-  if (ruleHelpers.isFilled(value)) {
+  if (isFilled(value)) {
     return mockedValidations.isFoo(value);
   }
   return true;
 };
 
 export const inlineRuleAsyncMockIsFoo = async (value: any) => {
-  if (ruleHelpers.isFilled(value)) {
+  if (isFilled(value)) {
     await timeout(1000);
     return mockedValidations.isFoo(value);
   }

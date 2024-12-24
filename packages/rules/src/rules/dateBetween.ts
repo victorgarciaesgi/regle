@@ -1,4 +1,4 @@
-import { ruleHelpers } from '../helpers';
+import { isDate, toDate } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
@@ -11,11 +11,8 @@ export const dateBetween: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'dateBetween',
   validator: (value: Maybe<Date | string>, before: Maybe<Date | string>, after: Maybe<Date | string>) => {
-    if (ruleHelpers.isDate(value) && ruleHelpers.isDate(before) && ruleHelpers.isDate(after)) {
-      return (
-        ruleHelpers.toDate(value).getTime() > ruleHelpers.toDate(before).getTime() &&
-        ruleHelpers.toDate(value).getTime() < ruleHelpers.toDate(after).getTime()
-      );
+    if (isDate(value) && isDate(before) && isDate(after)) {
+      return toDate(value).getTime() > toDate(before).getTime() && toDate(value).getTime() < toDate(after).getTime();
     }
     return true;
   },

@@ -1,4 +1,4 @@
-import { ruleHelpers } from '../helpers';
+import { isFilled, toDate, isDate } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
@@ -19,9 +19,9 @@ export const dateBefore: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'dateBefore',
   validator: (value: Maybe<Date | string>, before: Maybe<Date | string>) => {
-    if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(before)) {
-      if (ruleHelpers.isDate(value) && ruleHelpers.isDate(before)) {
-        const result = ruleHelpers.toDate(value).getTime() < ruleHelpers.toDate(before).getTime();
+    if (isFilled(value) && isFilled(before)) {
+      if (isDate(value) && isDate(before)) {
+        const result = toDate(value).getTime() < toDate(before).getTime();
         if (result) {
           return true;
         }

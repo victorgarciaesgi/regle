@@ -1,4 +1,4 @@
-import { ruleHelpers } from '../helpers';
+import { isFilled, isDate, toDate } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
@@ -19,9 +19,9 @@ export const dateAfter: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'dateAfter',
   validator: (value: Maybe<Date | string>, after: Maybe<Date | string>) => {
-    if (ruleHelpers.isFilled(value) && ruleHelpers.isFilled(after)) {
-      if (ruleHelpers.isDate(value) && ruleHelpers.isDate(after)) {
-        const result = ruleHelpers.toDate(value).getTime() > ruleHelpers.toDate(after).getTime();
+    if (isFilled(value) && isFilled(after)) {
+      if (isDate(value) && isDate(after)) {
+        const result = toDate(value).getTime() > toDate(after).getTime();
         if (result) {
           return true;
         }

@@ -1,5 +1,5 @@
 import { createRule, useRegle } from '@regle/core';
-import { minLength, required, requiredIf, ruleHelpers } from '@regle/rules';
+import { isFilled, minLength, required } from '@regle/rules';
 import { nextTick, ref, type Ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeInvalidField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
@@ -54,7 +54,7 @@ describe('collections validations', () => {
 
   const requiredIfSpy = vi.fn((value: unknown, condition: boolean) => {
     if (condition) {
-      return ruleHelpers.isFilled(value);
+      return isFilled(value);
     }
     return true;
   });

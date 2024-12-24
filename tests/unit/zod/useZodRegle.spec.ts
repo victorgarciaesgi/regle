@@ -8,7 +8,7 @@ import {
   shouldBeValidField,
 } from '../../utils/validations.utils';
 import { z } from 'zod';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 
 function nestedReactiveObjectValidation() {
   const form = reactive({
@@ -29,7 +29,7 @@ function nestedReactiveObjectValidation() {
     })
     .refine(
       (value) => {
-        if (ruleHelpers.isFilled(value)) {
+        if (isFilled(value)) {
           return value % 2 === 0;
         }
         return true;

@@ -8,7 +8,7 @@ import {
   shouldBeValidField,
 } from '../../utils/validations.utils';
 import * as v from 'valibot';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import type { Maybe } from '@regle/core';
 
 function nestedReactiveObjectValidation() {
@@ -26,7 +26,7 @@ function nestedReactiveObjectValidation() {
   const valibotIsEven = v.pipe(
     v.number('This field is required'),
     v.check((value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         return value % 2 === 0;
       }
       return true;

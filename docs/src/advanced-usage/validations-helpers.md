@@ -11,7 +11,7 @@ To simplify this process, Regle provides a set of utility functions to assist in
 These utilities can be accessed via:
 
 ```ts
-import { ruleHelpers } from '@regle/rules';
+import { isFilled, isEmpty, getSize, ... } from '@regle/rules';
 ```
 
 ## Runtime and Type guards
@@ -27,16 +27,16 @@ You can base your validator result on this.
 const check = (value: any) => false;
 //---cut---
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 
 const rule = createRule({
   validator(value: unknown) {
-    if (ruleHelpers.isFilled(value)) {
+    if (isFilled(value)) {
       return check(value);
     }
     return true;
   },
-  message: ''
+  message: 'Error'
 })
 ```
 
@@ -50,17 +50,17 @@ This is the inverse of `isFilled`. It will check if the value is in any way empt
 const check = (value: any) => false;
 //---cut---
 import { createRule, type Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isEmpty } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value)) {
+    if (isEmpty(value)) {
       return true;
     }
     return check(value);
     //           ^?
   },
-  message: ''
+  message: 'Error'
 })
 ```
 
@@ -74,17 +74,17 @@ This also returns false for `NaN`, so this is better than `typeof value === "num
 const checkNumber = (value: number) => false;
 //---cut---
 import { createRule, type Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled, isNumber } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<number | string>) {
-    if (ruleHelpers.isFilled(value) && ruleHelpers.isNumber(value)) {
+    if (isFilled(value) && isNumber(value)) {
       return checkNumber(value);
 //                        ^?
     }
     return true;
   },
-  message: ''
+  message: 'Error'
 })
 ```
 
@@ -98,58 +98,58 @@ This can also check strings.
 const checkDate = (value: Date) => false;
 //---cut---
 import { createRule, type Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled, isDate } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string | Date>) {
-    if (ruleHelpers.isFilled(value) && ruleHelpers.isDate(value)) {
+    if (isFilled(value) && isDate(value)) {
       return checkDate(value);
 //                        ^?
     }
     return true;
   },
-  message: ''
+  message: 'Error'
 })
 ```
 
 ## Operations utils
 
-### `size`
+### `getSize`
 
 This helper will return the length of any data type you pass.
 It works with strings, arrays, objects and numbers.
 
 ```ts twoslash
 import { createRule, type Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled, getSize } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string | Array<number>>) {
-    if (ruleHelpers.isFilled(value)) {
-      return ruleHelpers.size(value) > 6;
+    if (isFilled(value)) {
+      return getSize(value) > 6;
     }
     return true;
   },
-  message: ''
+  message: 'Error'
 })
 ```
 
-### `regex`
+### `matchRegex`
 
 This utility can take multiple regular expressions as arguments. It checks the input's validity and tests it against the provided regex patterns.
 
 ```ts twoslash
 import { createRule, type Maybe } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled, matchRegex } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string>, ...regexps: RegExp[]) {
-    if (ruleHelpers.isFilled(value)) {
-      return ruleHelpers.regex(value, ...regexps);
+    if (isFilled(value)) {
+      return matchRegex(value, ...regexps);
     }
     return true;
   },
-  message: ''
+  message: 'Error'
 })
 ```
 

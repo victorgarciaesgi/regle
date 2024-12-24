@@ -52,11 +52,11 @@ const someAsyncCall = async () => await Promise.resolve(true);
 // ---cut---
 // @noErrors
 import { defineRegleConfig, createRule, Maybe } from '@regle/core';
-import { withMessage, ruleHelpers } from '@regle/rules';
+import { withMessage, isFilled } from '@regle/rules';
 
 const asyncEmail = createRule({
   async validator(value: Maybe<string>) {
-    if (!ruleHelpers.isFilled(value)) {
+    if (!isFilled(value)) {
       return true;
     }
 

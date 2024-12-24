@@ -1,17 +1,12 @@
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '../helpers';
+import { isFilled, matchRegex } from '../helpers';
 
-export const regex: RegleRuleWithParamsDefinition<
-  string | number,
-  [...regexp: RegExp[]],
-  false,
-  boolean
-> = createRule({
+export const regex: RegleRuleWithParamsDefinition<string | number, [...regexp: RegExp[]], false, boolean> = createRule({
   type: 'regex',
   validator(value: Maybe<string | number>, ...regexp: RegExp[]) {
-    if (ruleHelpers.isFilled(value)) {
-      return ruleHelpers.regex(value, ...regexp);
+    if (isFilled(value)) {
+      return matchRegex(value, ...regexp);
     }
     return true;
   },

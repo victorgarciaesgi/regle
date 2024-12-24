@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, ruleHelpers } from '@regle/rules';
+import { email, isEmpty } from '@regle/rules';
 import { ref } from 'vue';
 
 function randomBoolean(): boolean {
@@ -33,7 +33,7 @@ function timeout(count: number) {
 
 const checkEmailExists = createRule({
   async validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
+    if (isEmpty(value) || !email.exec(value)) {
       return true;
     }
     await timeout(1000);

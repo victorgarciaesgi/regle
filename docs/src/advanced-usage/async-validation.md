@@ -23,7 +23,7 @@ To declare an async rule, you simply have to use the `async await` syntax.
 
 ```ts
 const myAsyncRule = async (value: Maybe<number>) => {
-  if (ruleHelpers.isFilled(value)) {
+  if (isFilled(value)) {
     return await someStuff();
   }
   return true;
@@ -40,7 +40,7 @@ In the same way of an inline rule, your validator function must be using `async 
 ```ts
 const myAsyncRule = createRule({
   validator(value: Maybe<string>) {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
       return await someStuff();
     }
     return true;
@@ -92,12 +92,12 @@ function timeout(count: number) {
 }
 // ---cut---
 import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, ruleHelpers } from '@regle/rules';
+import { email, isEmpty } from '@regle/rules';
 import { ref } from 'vue';
 
 const checkEmailExists = createRule({
   async validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
+    if (isEmpty(value) || !email.exec(value)) {
       return true;
     }
 

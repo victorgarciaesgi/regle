@@ -6,7 +6,7 @@ import { and } from '../and';
 import { email, minLength, required } from '../../rules';
 import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
-import { ruleHelpers } from '../ruleHelpers';
+import { isFilled } from '../ruleHelpers';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({
@@ -32,7 +32,7 @@ describe('withMessage helper', () => {
         lastName: {
           foo: withMessage(
             withAsync(async (value) => {
-              return await new Promise<boolean>((resolve) => resolve(ruleHelpers.isFilled(value)));
+              return await new Promise<boolean>((resolve) => resolve(isFilled(value)));
             }),
             'Required async'
           ),
@@ -153,7 +153,7 @@ describe('withMessage helper', () => {
     expectTypeOf(
       withMessage(
         withAsync(async (value) => {
-          return await new Promise<boolean>((resolve) => resolve(ruleHelpers.isFilled(value)));
+          return await new Promise<boolean>((resolve) => resolve(isFilled(value)));
         }),
         'Required async'
       )

@@ -19,11 +19,11 @@ Example: Recreating a simple `required` rule
 ```ts twoslash
 // @noErrors
 import { createRule } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 
 export const required = createRule({
   validator: (value: unknown) => {
-    return ruleHelpers.isFilled(value);
+    return isFilled(value);
   },
   message: 'This field is required',
 });
@@ -165,7 +165,7 @@ useRegle(state, rules);
 ```ts twoslash include requiredIf [requiredIf.ts]
 // @noErrors
 import { createRule, useRegle } from '@regle/core';
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import { ref } from 'vue';
 
 export const requiredIf = createRule({
@@ -173,7 +173,7 @@ export const requiredIf = createRule({
     // Params like `condition` will always be unwrapped here
     // no need to check if it's a value, a ref or a getter function
     if (condition) {
-      return ruleHelpers.isFilled(value);
+      return isFilled(value);
     }
     return true;
   },
@@ -268,12 +268,12 @@ function timeout(count: number) {
 }
 // ---cut---
 import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, ruleHelpers } from '@regle/rules';
+import { email, isEmpty } from '@regle/rules';
 import { ref } from 'vue';
 
 const checkEmailExists = createRule({
   async validator(value: Maybe<string>) {
-    if (ruleHelpers.isEmpty(value) || !email.exec(value)) {
+    if (isEmpty(value) || !email.exec(value)) {
       return true;
     }
 

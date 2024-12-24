@@ -1,4 +1,4 @@
-import { ruleHelpers } from '@regle/rules';
+import { isFilled } from '@regle/rules';
 import { useZodRegle } from '@regle/zod';
 import { flushPromises } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
@@ -19,7 +19,7 @@ function nesteAsyncObjectWithRefsValidation() {
 
   const ruleMockIsEvenAsync = z.number().refine(
     async (value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(1000);
         return value % 2 === 0;
       }
@@ -30,7 +30,7 @@ function nesteAsyncObjectWithRefsValidation() {
 
   const ruleMockIsFooAsync = z.string().refine(
     async (value) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         await timeout(1000);
         return value === 'foo';
       }
@@ -46,7 +46,7 @@ function nesteAsyncObjectWithRefsValidation() {
     })
     .refine(
       (value) => {
-        if (ruleHelpers.isFilled(value)) {
+        if (isFilled(value)) {
           return value % 2 === 0;
         }
         return true;

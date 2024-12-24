@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { size } from '../size';
+import { getSize } from '../getSize';
 
 describe('get the size of a value', () => {
   it.each([
@@ -13,6 +13,6 @@ describe('get the size of a value', () => {
     [ref([]), 0],
     [ref([1]), 1],
   ])('size(%s) should be %s', (a, expected) => {
-    expect(size(a)).toBe(expected);
+    expect(getSize(a)).toBe(expected);
   });
 });

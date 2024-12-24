@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue';
 import { unref } from 'vue';
 
-export function size(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
+export function getSize(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
   const _value = unref(value);
   if (Array.isArray(_value)) return _value.length;
   if (typeof _value === 'object') {

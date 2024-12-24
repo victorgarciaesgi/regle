@@ -48,11 +48,11 @@ The following exports will become globally available in your Nuxt application:
   - defineRegleConfig
   - inferRules
 - `@regle/rules` Note: Built-in rules are not auto-injected to minimize the risk of name conflicts.
-  - ruleHelpers
   - withAsync
   - withMessage
   - withParams
   - withTooltip
 - `@regle/zod` (if present)
   - useZodRegle
-
+- `@regle/valibot` (if present)
+  - useValibotRegle

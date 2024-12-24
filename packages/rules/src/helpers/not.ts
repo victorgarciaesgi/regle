@@ -7,7 +7,7 @@ import type {
   RegleRuleMetadataDefinition,
 } from '@regle/core';
 import { createRule } from '@regle/core';
-import { ruleHelpers } from './ruleHelpers';
+import { isFilled } from './ruleHelpers';
 
 export function not<
   TValue,
@@ -40,7 +40,7 @@ export function not<
 
   if (_async) {
     newValidator = async (value: any, ...params: any[]) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         const result = await validator(value, ...(params as any));
         return !result;
       }
@@ -48,7 +48,7 @@ export function not<
     };
   } else {
     newValidator = (value: any, ...params: any[]) => {
-      if (ruleHelpers.isFilled(value)) {
+      if (isFilled(value)) {
         return !validator(value, ...(params as any));
       }
       return true;
