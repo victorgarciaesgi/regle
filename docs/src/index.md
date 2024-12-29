@@ -1,7 +1,8 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
-title: Regle - Vue form validation
+title: Regle - Form validation for Vue.js
+titleTemplate: :title
 
 hero:
   name: "Regle"
