@@ -1,11 +1,11 @@
 import { ref } from 'vue';
-import * as v from 'valibot';
-import { defineValibotRegleConfig } from '@regle/valibot';
+import z from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../utils/validations.utils';
+import { defineZodRegleConfig } from '@regle/zod';
 
 function nestedRefObjectValidation() {
-  const { useValibotRegle } = defineValibotRegleConfig({});
+  const { useZodRegle } = defineZodRegleConfig({});
 
   const condition = ref(true);
   const form = ref({
@@ -20,18 +20,18 @@ function nestedRefObjectValidation() {
 
   return {
     condition,
-    ...useValibotRegle(
+    ...useZodRegle(
       form,
-      v.object({
-        level0: v.pipe(v.string(), v.nonEmpty()),
-        level1: v.object({
-          level2: v.object({
-            child: v.pipe(v.string(), v.nonEmpty()),
+      z.object({
+        level0: z.string().nonempty(),
+        level1: z.object({
+          level2: z.object({
+            child: z.string().nonempty(),
           }),
         }),
-        collection: v.array(
-          v.object({
-            name: v.pipe(v.string(), v.nonEmpty()),
+        collection: z.array(
+          z.object({
+            name: z.string().nonempty(),
           })
         ),
       })

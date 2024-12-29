@@ -18,12 +18,12 @@ import { processValibotTypeDef } from './parser/processValibotTypeDef';
 
 export type useValibotRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
-  TValibotSchema extends toValibot<Unwrap<TState>> = toValibot<Unwrap<TState>>,
+  TSchema extends toValibot<Unwrap<TState>> = toValibot<Unwrap<TState>>,
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
-  schema: MaybeRef<TValibotSchema>,
+  schema: MaybeRef<TSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
-) => ValibotRegle<TState, TValibotSchema, TShortcuts>;
+) => ValibotRegle<TState, TSchema, TShortcuts>;
 
 export function createUseValibotRegleComposable<TShortcuts extends RegleShortcutDefinition<any>>(
   options?: RegleBehaviourOptions,
