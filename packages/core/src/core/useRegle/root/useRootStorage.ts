@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
-import { getCurrentInstance, getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
+import { onScopeDispose, reactive, ref } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   $InternalRegleStatus,
@@ -9,9 +9,8 @@ import type {
 } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
-import { getActivePinia } from 'pinia';
 
-export function useStateProperties({
+export function useRootStorage({
   initialState,
   options,
   scopeRules,

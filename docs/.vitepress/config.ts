@@ -179,7 +179,7 @@ export default defineConfig({
     return head;
   },
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/favicon.svg' }],
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }],
     ['meta', { name: 'theme-color', content: '#00bb7f' }],
     [

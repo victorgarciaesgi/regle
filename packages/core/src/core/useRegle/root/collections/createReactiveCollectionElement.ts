@@ -8,7 +8,7 @@ import type {
 } from '../../../../types';
 import { randomId } from '../../../../utils';
 import type { CommonResolverOptions, StateWithId } from '../common/common-types';
-import { createReactiveChildrenStatus } from './../createReactiveNestedStatus';
+import { createReactiveChildrenStatus } from '../createReactiveNestedStatus';
 
 interface CreateCollectionElementArgs extends CommonResolverOptions {
   $id: string;

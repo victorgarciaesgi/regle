@@ -1,13 +1,13 @@
 import { h, nextTick, onMounted, watch } from 'vue';
-import { useRoute, type Theme } from 'vitepress';
-import DefaultTheme from 'vitepress/theme';
-import './style.css';
-import './custom.scss';
+import { type Theme } from 'vitepress';
 import '@shikijs/vitepress-twoslash/style.css';
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client';
 import type { EnhanceAppContext } from 'vitepress';
 import 'virtual:group-icons.css';
 import { createPinia } from 'pinia';
+import DefaultTheme from 'vitepress/theme';
+import './style.css';
+import './custom.scss';
 
 export default {
   extends: DefaultTheme,

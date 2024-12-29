@@ -1,6 +1,6 @@
 import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, onScopeDispose, reactive, ref, toRaw, triggerRef, watch } from 'vue';
+import { computed, isRef, ref } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
@@ -10,15 +10,13 @@ import type {
   Regle,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
-  RegleRoot,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import type { DeepMaybeRef, NoInferLegacy, Unwrap } from '../../types/utils';
-import { cloneDeep } from '../../utils';
-import { useStateProperties } from './useStateProperties';
-import { getActivePinia } from 'pinia';
+import type { DeepMaybeRef, MismatchInfo, NoInferLegacy, Unwrap } from '../../types/utils';
+import { cloneDeep } from '../../../../shared';
+import { useRootStorage } from './root';
 
 export type useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -32,7 +30,10 @@ export type useRegleFn<
     ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
   > extends true
     ? {}
-    : never,
+    : MismatchInfo<
+        NoInferLegacy<TRules>,
+        ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+      >,
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   rulesFactory: MaybeRefOrGetter<TRules>,
@@ -74,7 +75,7 @@ export function createUseRegleComposable<
 
     const initialState = { ...cloneDeep(processedState.value) };
 
-    const regle = useStateProperties({
+    const regle = useRootStorage({
       scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,
       state: processedState,
       options: resolvedOptions,

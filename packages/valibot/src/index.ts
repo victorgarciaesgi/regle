@@ -1,4 +1,4 @@
-export { useValibotRegle, withDeps } from './core';
+export { useValibotRegle, withDeps, defineValibotRegleConfig, inferSchema } from './core';
 export type {
   InferValibotRegleStatusType,
   ValibotRegle,

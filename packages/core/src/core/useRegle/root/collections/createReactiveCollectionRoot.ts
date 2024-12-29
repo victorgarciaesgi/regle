@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
-import { isEmpty } from '../../../../../../shared';
+import { cloneDeep, isEmpty } from '../../../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionRuleDecl,
@@ -11,12 +11,12 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
-import { cloneDeep, randomId, unwrapGetter } from '../../../../utils';
+import { randomId, unwrapGetter } from '../../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
 import type { RegleStorage } from '../../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
 import type { StateWithId } from '../common/common-types';
-import { createReactiveFieldStatus } from './../createReactiveFieldStatus';
+import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs {

@@ -21,11 +21,11 @@ export type ValibotChild<TValue extends unknown> =
 
 export type ValibotChildWithoutAsync<TValue extends unknown> =
   TValue extends Array<infer A extends unknown>
-    ? v.ArraySchema<ValibotChildWithoutAsync<A>, v.ErrorMessage<v.ArrayIssue> | undefined>
+    ? v.ArraySchema<ValibotChildWithoutAsync<A>, any>
     : TValue extends Date | File
       ? v.BaseSchema<Maybe<Date | File>, Maybe<Date | File>, v.BaseIssue<unknown>>
       : TValue extends Record<PropertyKey, any>
-        ? v.ObjectSchema<ValibotObjWithoutAsync<TValue>, v.ErrorMessage<v.ObjectIssue> | undefined>
+        ? v.ObjectSchema<ValibotObjWithoutAsync<TValue>, any>
         : v.BaseSchema<Maybe<TValue>, Maybe<TValue>, v.BaseIssue<unknown>>;
 
 export type MaybeSchemaAsync<T> =
@@ -43,4 +43,5 @@ export type MaybeArrayAsync<A extends MaybeSchemaAsync<unknown>> =
     >
   | v.ArraySchemaAsync<A, v.ErrorMessage<v.ArrayIssue> | undefined>;
 
+//
 export type toValibot<T extends Record<string, unknown>> = MaybeObjectAsync<T>;

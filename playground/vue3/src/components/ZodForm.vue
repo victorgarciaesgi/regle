@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import type { RegleExternalErrorTree } from '@regle/core';
 import { useZodRegle } from '@regle/zod';
-import { nextTick, reactive } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { z } from 'zod';
 
 type Form = {

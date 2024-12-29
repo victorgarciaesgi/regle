@@ -1,4 +1,4 @@
-import { ref, type ComputedRef, type MaybeRef } from 'vue';
+import { type ComputedRef, type MaybeRef } from 'vue';
 import type {
   AllRulesDeclarations,
   DeepReactiveState,

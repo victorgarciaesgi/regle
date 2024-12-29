@@ -1,4 +1,4 @@
-export { createRule, defineRegleConfig, inferRules, unwrapRuleParameters, useRegle } from './core';
+export { createRule, defineRegleConfig, inferRules, unwrapRuleParameters, useRegle, useRootStorage } from './core';
 export { InternalRuleType } from './types';
 export type {
   Regle,
@@ -49,5 +49,14 @@ export type {
   InferRegleShortcuts,
   RegleEnforceRequiredRules,
   RegleEnforceCustomRequiredRules,
+  RegleShortcutDefinition,
+  RegleExternalCollectionErrors,
+  RegleRuleTypeReturn,
+  InferRegleStatusType,
+  RegleRuleMetadataExtended,
   RegleResult,
+  ResolvedRegleBehaviourOptions,
+  NoInferLegacy,
+  PrimitiveTypes,
+  $InternalRegleStatus,
 } from './types';

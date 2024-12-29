@@ -67,13 +67,14 @@ const { r$ } = useValibotRegle(
     email: withDeps(
       v.pipe(
         v.string(),
+        v.nonEmpty(),
         v.check((v) => v !== form.firstName)
       ),
       [() => form.firstName]
     ),
     // firstName: v.optional(v.pipe(v.number(), v.minValue(10))),
     nested: v.object({
-      // name: v.optional(v.string()),
+      name: v.optional(v.string()),
     }),
     collections: v.pipe(
       v.array(v.object({ name: v.pipe(v.string(), v.nonEmpty('Please enter your email.')) })),
@@ -83,5 +84,5 @@ const { r$ } = useValibotRegle(
 );
 
 r$.$fields.email.$value = 'e';
-console.log(r$.$fields.collections.$each);
+console.log(r$);
 </script>
