@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { onScopeDispose, ref, shallowRef } from 'vue';
+import { getCurrentScope, onScopeDispose, ref, shallowRef } from 'vue';
 import type { $InternalRegleStatusType, RegleRuleDecl } from '../../types';
 import { unwrapRuleParameters } from '../createRule/unwrapRuleParameters';
 
@@ -141,14 +141,16 @@ export function useStorage() {
     }
   }
 
-  onScopeDispose(() => {
-    ruleDeclStorage.value.clear();
-    fieldsStorage.value.clear();
-    collectionsStorage.value.clear();
-    dirtyStorage.value.clear();
-    ruleStatusStorage.value.clear();
-    arrayStatusStorage.value.clear();
-  });
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      ruleDeclStorage.value.clear();
+      fieldsStorage.value.clear();
+      collectionsStorage.value.clear();
+      dirtyStorage.value.clear();
+      ruleStatusStorage.value.clear();
+      arrayStatusStorage.value.clear();
+    });
+  }
 
   return {
     addRuleDeclEntry,

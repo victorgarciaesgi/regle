@@ -31,7 +31,7 @@ export default [
     },
   },
   {
-    ignores: ['**/.output/'],
+    ignores: ['**/.output/', '**/dist/**/*.js'],
   },
   prettierPlugin,
 ];

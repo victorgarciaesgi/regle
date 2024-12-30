@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
-import { onScopeDispose, reactive, ref } from 'vue';
+import { getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
 import type {
   $InternalReglePartialRuleTree,
   $InternalRegleStatus,
@@ -44,9 +44,11 @@ export function useRootStorage({
     path: '',
   });
 
-  onScopeDispose(() => {
-    regle.value?.$unwatch();
-  });
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      regle.value?.$unwatch();
+    });
+  }
 
   return reactive({ regle });
 }

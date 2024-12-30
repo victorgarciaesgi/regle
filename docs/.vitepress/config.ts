@@ -6,6 +6,7 @@ import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-i
 const Nav: DefaultTheme.NavItemWithLink[] = [
   { text: 'Getting Started', link: '/introduction/' },
   { text: 'Core concepts', link: '/core-concepts/' },
+  { text: 'Playground', link: '/examples/playground' },
 ];
 
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -76,6 +77,10 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 ];
 
 const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+  {
+    text: 'Playground',
+    link: '/examples/playground',
+  },
   {
     text: 'Complete',
     items: [

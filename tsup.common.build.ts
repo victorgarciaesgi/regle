@@ -18,7 +18,7 @@ export function outExtension(isMin = false): Options['outExtension'] | undefined
 }
 
 export const defaultOptions: Options = {
-  format: ['esm', 'cjs', 'iife'],
+  format: ['esm', 'cjs'],
   dts: {
     resolve: true,
   },
