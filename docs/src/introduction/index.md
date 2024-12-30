@@ -34,9 +34,9 @@ Optional
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
   - Pinia version `2.1` or higher
 - [Zod](https://zod.dev/) <span data-title="zod"></span> 
-  - Zod version `3` or higher. Check [Zod usage](/integrations/zod)
+  - Zod version `3.0` or higher. Check [Zod usage](/integrations/zod)
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 
-  - Valibot version `1` or higher. Check [Valibot usage](/integrations/valibot)
+  - Valibot version `1.0.0-beta.9` or higher. Check [Valibot usage](/integrations/valibot)
 
 <br/>
 
