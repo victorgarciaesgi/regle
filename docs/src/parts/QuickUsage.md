@@ -1,6 +1,7 @@
 ``` vue twoslash [App.vue]
 <template>
-  <input v-model='r$.$fields.email.$value' 
+  <input 
+     v-model='r$.$fields.email.$value' 
     :class="{ error: r$.$fields.email.$error }" 
     placeholder='Type your email'
   />

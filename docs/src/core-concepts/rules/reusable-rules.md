@@ -61,6 +61,12 @@ _**Type**_: `boolean | (metadata) => boolean`
 Defines the `$active` state of the rule, indicating whether the rule is currently being validated. This can be computed dynamically.
 For more details, see [Parameters and active mode](#parameters-and-active-mode).
 
+### `async`
+_**Type**_: `boolean`
+
+*optional*
+
+If your validator function is not written with `async await` syntax, you can enforce the rule to be async with this parameter.
 
 ### `tooltip`
 _**Type**_: `string | string[] | (metadata) => (string | string[])`

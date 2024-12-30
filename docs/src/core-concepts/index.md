@@ -18,7 +18,7 @@ It accepts the following inputs:
 <script setup lang='ts'>
 import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle(/* state */, /* rules */, /* modifiers */);
+const { r$ } = useRegle(/* state */ , /* rules */ , /* modifiers */);
 </script>
 ```
 
@@ -35,6 +35,25 @@ The state can be:
 - A raw object containing nested Refs
 
 If you pass a reactive state, you have the flexibility to bind your model either to the original state or to the state proxy returned by useRegle.
+
+```ts
+const {r$} = useRegle({name: ''}, /* rules */)
+```
+
+```ts
+const state = ref({name: ''});
+const {r$} = useRegle(state, /* rules */)
+```
+
+```ts
+const state = reactive({name: ''});
+const {r$} = useRegle(state, /* rules */)
+```
+
+```ts
+const state = {name: ref('')}
+const {r$} = useRegle(state, /* rules */)
+```
 
 ## Rules
 

@@ -28,6 +28,7 @@ export interface RegleRuleInit<
   active?: RegleInitPropertyGetter<TValue, boolean, TParams, TMetadata>;
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   type?: string;
+  async?: TAsync;
 }
 
 /**

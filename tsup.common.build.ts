@@ -2,16 +2,23 @@ import type { Options } from 'tsup';
 
 export function outExtension(isMin = false): Options['outExtension'] | undefined {
   return ({ format }) => {
-    const prefix = format === 'cjs' ? 'c' : 'm';
-    const min = isMin ? 'min.' : '';
+    let output;
+    const min = isMin ? '.min' : '';
+    if (format === 'cjs') {
+      output = `${min}.cjs`;
+    } else if (format === 'esm') {
+      output = `${min}.mjs`;
+    } else {
+      output = `.browser${min}.js`;
+    }
     return {
-      js: `.${min}${prefix}js`,
+      js: output,
     };
   };
 }
 
 export const defaultOptions: Options = {
-  format: ['esm', 'cjs'],
+  format: ['esm', 'cjs', 'iife'],
   dts: {
     resolve: true,
   },

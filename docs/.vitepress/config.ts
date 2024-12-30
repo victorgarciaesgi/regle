@@ -131,6 +131,7 @@ export default defineConfig({
         items: [
           { text: 'Getting Started', link: '/introduction/' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
+          { text: 'Migrate from Vuelidate', link: '/introduction/migrate-from-vuelidate' },
         ],
         collapsed: false,
       },
@@ -179,8 +180,12 @@ export default defineConfig({
     return head;
   },
   head: [
-    ['link', { rel: 'icon', href: '/favicon.svg' }],
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
+    ['link', { rel: 'icon', href: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }],
+    ['link', { rel: 'mask-icon', href: '/logo-reglejs-favicon.svg', color: '#ffffff' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' }],
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }],
+    ['meta', { name: 'author', content: 'Victor Garcia' }],
     ['meta', { name: 'theme-color', content: '#00bb7f' }],
     [
       'meta',
@@ -193,7 +198,7 @@ export default defineConfig({
     ['meta', { property: 'og:url', content: 'https://regle.vercel.app' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Regle' }],
-    ['meta', { property: 'og:site_name', content: 'Regle - Vue form validation' }],
+    ['meta', { property: 'og:site_name', content: 'Regle' }],
     [
       'meta',
       {
@@ -214,9 +219,10 @@ export default defineConfig({
       'meta',
       {
         property: 'og:image',
-        content: 'https://regle.vercel.app/regle-github-banner.png',
+        content: 'https://regle.vercel.app/banner-og.png',
       },
     ],
+
     ['meta', { name: 'twitter:site', content: '@regle' }],
     ['meta', { name: 'twitter:domain', content: 'regle.vercel.app' }],
     [
@@ -224,7 +230,7 @@ export default defineConfig({
       { name: 'twitter:description', content: 'Regle is a TypeScript-first form validation library made for Vue 3.' },
     ],
     ['meta', { name: 'twitter:url', content: 'https://regle.vercel.app' }],
-    ['meta', { name: 'twitter:card', content: 'summary' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' }],
   ],
   markdown: {

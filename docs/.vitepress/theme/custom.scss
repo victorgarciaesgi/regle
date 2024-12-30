@@ -31,6 +31,10 @@ html.dark {
   background-color: var(--vp-c-default-soft);
 }
 
+.vp-doc h3 > code {
+  color: var(--vp-badge-warning-text);
+}
+
 .item .VPFeature {
   position: relative;
   padding: 2px;
