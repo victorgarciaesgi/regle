@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RegleExternalErrorTree } from '@regle/core';
+import type { Maybe, RegleExternalErrorTree } from '@regle/core';
 import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive, ref } from 'vue';
 import { z } from 'zod';
@@ -59,6 +59,18 @@ const externalErrors = ref<RegleExternalErrorTree<Form>>({
   email: [''],
 });
 
+const schema = z
+  .array(
+    z.object({
+      name: z.string().min(1, 'Required'),
+    })
+  )
+  .catch([{ name: '' }]);
+
+const foo: z.ZodType<z.objectOutputType<{ name: z.ZodType<string | unknown> }, any>> = z.object({
+  name: z.string().min(1, 'Required').catch('foo'),
+});
+
 const { r$ } = useZodRegle(
   form,
   z.object({
@@ -68,11 +80,14 @@ const { r$ } = useZodRegle(
       .email({ message: 'This must be an email' })
       .refine((val) => val === 'foo@free.fr', 'Bite'),
     firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
-    nested: z.array(
-      z.object({
-        name: z.string().min(1, 'Required'),
-      })
-    ),
+    nested: z
+      .array(
+        z.object({
+          name: z.string().min(1, 'Required'),
+        })
+      )
+      .default([])
+      .catch([]),
   }),
   { externalErrors }
 );

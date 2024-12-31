@@ -54,6 +54,7 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
     } as any;
 
     function zodShapeToRegleRules() {
+      console.log(scopeRules.value.shape);
       rules.value = Object.fromEntries(
         Object.entries(scopeRules.value.shape).map(([key, shape]) => {
           if (typeof shape === 'object' && '_def' in shape) {

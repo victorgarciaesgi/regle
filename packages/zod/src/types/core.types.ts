@@ -8,6 +8,7 @@ import type {
 import type { PartialDeep } from 'type-fest';
 import type { z } from 'zod';
 import type { toZod } from './zod.types';
+import type { GetNestedZodSchema } from './utils.types';
 
 export interface ZodRegle<
   TState extends Record<string, any>,
@@ -62,13 +63,13 @@ export type InferZodRegleStatusType<
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
 > =
-  TSchema extends z.ZodArray<infer A>
+  GetNestedZodSchema<TSchema> extends z.ZodArray<infer A>
     ? ZodRegleCollectionStatus<A, TState[TKey], TShortcuts>
-    : TSchema extends z.ZodObject<any>
+    : GetNestedZodSchema<TSchema> extends z.ZodObject<any>
       ? TState[TKey] extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
-        : ZodRegleStatus<TState[TKey], TSchema, TShortcuts>
-      : ZodRegleFieldStatus<TSchema, TState[TKey], TKey, TShortcuts>;
+        : ZodRegleStatus<TState[TKey], GetNestedZodSchema<TSchema>, TShortcuts>
+      : ZodRegleFieldStatus<GetNestedZodSchema<TSchema>, TState[TKey], TKey, TShortcuts>;
 
 /**
  * @public

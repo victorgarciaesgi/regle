@@ -1,20 +1,31 @@
 import type { Maybe } from '@regle/core';
-import type { z } from 'zod';
+import type { z, ZodType, ZodTypeAny } from 'zod';
+
+type CatchableMaybe<T> = Maybe<T> | unknown;
 
 export type ZodObj<T extends Record<PropertyKey, any>> = {
-  [K in keyof T]: ZodChild<T[K]>;
+  [K in keyof Partial<T>]: ZodChild<T[K]>;
 };
 
 export type ZodChild<T extends any> = NonNullable<
   T extends Array<infer A>
-    ? z.ZodArray<ZodChild<A>>
+    ? z.ZodType<CatchableMaybe<z.arrayOutputType<ZodArrayChild<A>>>, any>
     : T extends Date | File
-      ? z.ZodType<Maybe<T>, z.ZodTypeDef, Maybe<T>>
+      ? z.ZodType<CatchableMaybe<T>, z.ZodTypeDef, CatchableMaybe<T>>
       : T extends Record<string, any>
-        ? z.ZodObject<ZodObj<T>>
-        : z.ZodType<Maybe<T>, z.ZodTypeDef, Maybe<T>>
+        ? z.ZodType<CatchableMaybe<z.objectOutputType<ZodObj<T>, any>>>
+        : z.ZodType<CatchableMaybe<T>, z.ZodTypeDef, CatchableMaybe<T>>
 >;
 
+/** Duplicate to avoid circular references */
+type ZodArrayChild<T> =
+  T extends Array<infer A>
+    ? z.ZodType<CatchableMaybe<z.arrayOutputType<z.ZodType<A>>>, any>
+    : T extends Date | File
+      ? z.ZodType<CatchableMaybe<T>, z.ZodTypeDef, CatchableMaybe<T>>
+      : T extends Record<string, any>
+        ? z.ZodType<CatchableMaybe<z.objectOutputType<ZodObj<T>, any>>>
+        : z.ZodType<CatchableMaybe<T>, z.ZodTypeDef, CatchableMaybe<T>>;
 export type toZod<T extends Record<PropertyKey, any>> = z.ZodObject<ZodObj<T>>;
 
 // Types

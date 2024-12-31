@@ -35,7 +35,8 @@ function nestedReactiveObjectValidation() {
         return true;
       },
       { message: 'Custom error' }
-    );
+    )
+    .default(0);
 
   return useZodRegle(
     form,
@@ -46,7 +47,10 @@ function nestedReactiveObjectValidation() {
         level2: z.object({
           child: zodIsEven.optional(),
         }),
-        collection: z.array(z.object({ name: zodIsEven })).min(3),
+        collection: z
+          .array(z.object({ name: zodIsEven }))
+          .min(3)
+          .default([]),
       }),
     })
   );

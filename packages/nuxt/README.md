@@ -22,9 +22,6 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add regle
 ```
 
-## 📚 Documentation
-
-[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
 
 ## 🎮 Play with it
 
@@ -36,9 +33,9 @@ npx nuxi module add regle
 - ✅ Typescript first
 - 🤖 100% type inference
 - 📖 Model based validation
+- 🛒 Collection validation
 - 🪗 Extensible
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🤖 [Valibot](https://valibot.dev/) support
 - 🪶 Light(~7kb gzip) and 0 dependencies
-- 🛒 Collection validation
 
