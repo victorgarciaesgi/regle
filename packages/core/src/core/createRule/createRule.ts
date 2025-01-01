@@ -4,7 +4,6 @@ import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
 
 /**
- * @description
  * Create a typed custom rule that can be used like default rules.
  * It can also be declared in the global options
  *
@@ -24,7 +23,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  * import {isFilled} from '@regle/rules';
  *
  * export const isFoo = createRule({
- *   validator(value: string) {
+ *   validator(value: Maybe<string>) {
  *       if (isFilled(value)) {
  *           return value === 'foo';
  *       }

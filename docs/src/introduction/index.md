@@ -68,3 +68,8 @@ bun add @regle/core @regle/rules
 Result:
 
 <QuickUsage/>
+
+
+:::tip
+You can jump directly to [core concepts](/core-concepts) to learn usage.
+:::

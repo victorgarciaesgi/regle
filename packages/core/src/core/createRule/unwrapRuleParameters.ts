@@ -1,11 +1,10 @@
-import { computed, isRef, toRef, toValue, unref } from 'vue';
-import type { ParamDecl } from '../../types';
+import { computed, isRef, toRef, toValue, unref, type MaybeRefOrGetter } from 'vue';
 
 /**
  * Returns a clean list of parameters
  * Removing Ref and executing function to return the unwraped value
  */
-export function unwrapRuleParameters<TParams extends any[]>(params: ParamDecl[]): TParams {
+export function unwrapRuleParameters<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   try {
     return params.map((param) => toValue(param)) as TParams;
   } catch (e) {
@@ -17,7 +16,7 @@ export function unwrapRuleParameters<TParams extends any[]>(params: ParamDecl[])
  * Returns a clean list of parameters
  * Removing Ref and executing function to return the unwraped value
  */
-export function createReactiveParams<TParams extends any[]>(params: ParamDecl[]): TParams {
+export function createReactiveParams<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   return params.map((param) => {
     if (param instanceof Function) {
       return computed(param);

@@ -10,10 +10,10 @@
     "build": "pnpm run -r --filter='@regle/*' build",
     "build:sourcemaps": "pnpm run -r --filter='@regle/*' build:sourcemaps",
     "dev": "pnpm run -r --parallel --filter='@regle/*' dev",
-    "test": "pnpm run build && pnpm run typecheck && vitest run && pnpm run ui-tests:run",
+    "test": "pnpm run lint && pnpm run build && pnpm run typecheck && vitest run && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "vitest",
-    "release": "pnpm run lint && pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
+    "release": "pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
     "play:nuxt": "cd playground/nuxt && pnpm run dev",
@@ -85,6 +85,14 @@
   "files": [
     "dist"
   ],
+  "lint-staged": {
+    "*.{js,mjs,json,cjs}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
   "publishConfig": {
     "access": "public"
   },

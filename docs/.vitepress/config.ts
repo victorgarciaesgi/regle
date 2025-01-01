@@ -3,12 +3,6 @@ import type { DefaultTheme, HeadConfig } from 'vitepress';
 import { defineConfig } from 'vitepress';
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
 
-const Nav: DefaultTheme.NavItemWithLink[] = [
-  { text: 'Getting Started', link: '/introduction/' },
-  { text: 'Core concepts', link: '/core-concepts/' },
-  { text: 'Playground', link: '/examples/playground' },
-];
-
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
   {
@@ -36,6 +30,12 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   { text: 'Type safe output', link: '/core-concepts/type-safe-output' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
   { text: 'Global configuration', link: '/core-concepts/global-config' },
+];
+
+const Nav: DefaultTheme.NavItem[] = [
+  { text: 'Getting Started', link: '/introduction/' },
+  { text: 'Core concepts', items: CoreConcepts },
+  { text: 'Playground', link: '/examples/playground' },
 ];
 
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [

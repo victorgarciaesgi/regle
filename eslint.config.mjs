@@ -12,11 +12,11 @@ export default [
         parser: '@typescript-eslint/parser',
       },
     },
-    ignores: ['**/*.js', '**/*.d.ts', 'dist', 'node_modules'],
+    ignores: ['**/*.js', '**/*.d.ts', '**/dist/**', 'node_modules'],
     rules: {
       semi: 'off',
       'prefer-const': 'off',
-      'no-console': 'off',
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       'import/default': 'off',
       'import/no-named-as-default-member': 'off',
       'promise/param-names': 'off',

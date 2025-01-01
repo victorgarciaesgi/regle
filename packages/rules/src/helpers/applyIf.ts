@@ -2,13 +2,14 @@ import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  ParamDecl,
   RegleRuleMetadataDefinition,
   RegleRuleMetadataConsumer,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleRaw,
+  Maybe,
 } from '@regle/core';
 import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
+import type { MaybeRefOrGetter } from 'vue';
 
 export function applyIf<
   TValue extends any,
@@ -17,7 +18,7 @@ export function applyIf<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  _condition: ParamDecl<boolean>,
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
   rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
 ): RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata> {
   let _type: string | undefined;
