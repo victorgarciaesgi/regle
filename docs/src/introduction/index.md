@@ -71,5 +71,5 @@ Result:
 
 
 :::tip
-You can jump directly to [core concepts](/core-concepts) to learn usage.
+You can jump directly to [core concepts](/core-concepts/) to learn usage.
 :::
