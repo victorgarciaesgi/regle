@@ -1,4 +1,3 @@
-import { RegleRuleSymbol } from '../../../../shared';
 import type { InferRegleRule, RegleRuleInit, RegleRuleMetadataDefinition, RegleUniversalParams } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
@@ -11,6 +10,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * @typeParam TValue - The input value the rule should receive
  * @typeParam TParams - Tuple declaration of the rule parameters (if any)
+ *
  *
  * @param definition - The rule processors object
  *
@@ -31,6 +31,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *   },
  *   message: "The value should be 'foo'"
  * })
+ *
  * ```
  */
 export function createRule<

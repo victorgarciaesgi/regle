@@ -40,4 +40,11 @@ export function createInferRuleHelper<
   return inferRules as any;
 }
 
+/**
+ * Rule type helper to provide autocomplete and typecheck to your form rules or part of your form rules
+ * It will just return the rules without any processing.
+ *
+ * @param state - The state reference
+ * @param rules - Your rule tree
+ */
 export const inferRules = createInferRuleHelper();
