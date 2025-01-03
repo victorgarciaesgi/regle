@@ -1,5 +1,5 @@
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash';
-import type { DefaultTheme, HeadConfig } from 'vitepress';
+import type { DefaultTheme, HeadConfig, PageData } from 'vitepress';
 import { defineConfig } from 'vitepress';
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
 
@@ -109,7 +109,7 @@ const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
 
 export default defineConfig({
   title: 'Regle',
-  description: 'Typescript-first model-based form validation library for Vue 3',
+  description: 'Type safe model-based form validation library for Vue.js',
   sitemap: {
     hostname: 'https://reglejs.dev',
   },
@@ -187,6 +187,40 @@ export default defineConfig({
 
     return head;
   },
+  transformPageData(pageData) {
+    const canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`.replace(/index\.md$/, '').replace(/\.md$/, '/');
+
+    pageData.frontmatter.head ??= [];
+    pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }]);
+
+    function getJSONLD(pageData: PageData) {
+      if (pageData.relativePath === 'index.md') {
+        return `{
+          "@context":"http://schema.org",
+          "@type":"WebSite",
+          "url":"https:\/\/reglejs.dev\/",
+          "inLanguage":"en",
+          "description":"Type safe model-based form validation library for Vue.js",
+          "name":"${pageData.title}"
+        }`;
+      } else {
+        return `{
+            "@context":"http://schema.org",
+            "@type":"TechArticle",
+            "headline":"${pageData.title}",
+            "inLanguage":"en",
+            "mainEntityOfPage":{
+              "@type":"WebPage",
+              "@id":"${canonicalUrl}"
+            },
+            "keywords":"regle, vue, forms, typescript",
+            "url":"${canonicalUrl}"
+          }`;
+      }
+    }
+
+    pageData.frontmatter.head.push([['script', { type: 'application/ld+json' }, getJSONLD(pageData)]]);
+  },
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
     ['link', { rel: 'icon', href: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }],
@@ -211,16 +245,14 @@ export default defineConfig({
       'meta',
       {
         property: 'description',
-        content: `Regle (from the French word for "rule") is a TypeScript-first form validation library made for Vue 3.
-            Regle is about bringing type safety and great DX for both simple and complex forms.
-            It's entirely data-driven and headless, allowing the validation logic to mirror your data structure, enabling a clear separation between the UI and validation logic.`,
+        content: `Regle is a TypeScript-first form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms`,
       },
     ],
     [
       'meta',
       {
         property: 'og:description',
-        content: `Regle is a TypeScript-first form validation library made for Vue 3.`,
+        content: `Regle is a type safe form validation library for Vue.js`,
       },
     ],
     [
@@ -233,10 +265,7 @@ export default defineConfig({
 
     ['meta', { name: 'twitter:site', content: '@regle' }],
     ['meta', { name: 'twitter:domain', content: 'reglejs.dev' }],
-    [
-      'meta',
-      { name: 'twitter:description', content: 'Regle is a TypeScript-first form validation library made for Vue 3.' },
-    ],
+    ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],
     ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' }],

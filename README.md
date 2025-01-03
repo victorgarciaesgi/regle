@@ -85,25 +85,6 @@ const { r$ } = useRegle({ email: '' }, {
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia
 
 
-## ☑️ Roadmap
-
-### For v1.0
-
-- [x] Unit tests
-- [x] E2E tests
-- [x] Example repo, Reproduction repl
-- [x] Type tests
-
-### Next iterations
-
-- [ ] `Valibot` support
-- [ ] `Yup` support
-- [ ] TS docs
-
-### 🤔 Maybe in roadmap
-
-- [ ] Typed plugin system (like scrollToError)
-
 ## ⬇️ Quick install
 
 ```bash
