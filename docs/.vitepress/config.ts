@@ -119,6 +119,7 @@ export default defineConfig({
     logo: {
       dark: '/logo-reversed.png',
       light: '/logo.png',
+      alt: 'Regle logo',
     },
     nav: Nav,
     search: {
@@ -219,7 +220,7 @@ export default defineConfig({
       }
     }
 
-    pageData.frontmatter.head.push([['script', { type: 'application/ld+json' }, getJSONLD(pageData)]]);
+    pageData.frontmatter.head.push(['script', { type: 'application/ld+json' }, getJSONLD(pageData)]);
   },
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
