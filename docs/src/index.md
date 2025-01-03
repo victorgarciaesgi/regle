@@ -6,10 +6,8 @@ titleTemplate: :title
 
 hero:
   name: "Regle"
-  text: "Type safe form validation library for Vue.js"
-  tagline: "Typescript first, intuitive API and Zod/Valibot compatible.
-
-  The best way to handle your forms in Vue"
+  text: "Type safe form validation for Vue.js"
+  tagline: "Typescript first, model-based and intuitive API"
   image:
     dark: /logo-reglejs-favicon-reversed.svg
     light: /logo-reglejs-favicon.svg
