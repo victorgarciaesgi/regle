@@ -34,7 +34,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * ```
  *
- * Docs: {@link https://regle.vercel.app/core-concepts/rules/reusable-rules}
+ * Docs: {@link https://reglejs.dev/core-concepts/rules/reusable-rules}
  */
 export function createRule<
   TValue extends any,

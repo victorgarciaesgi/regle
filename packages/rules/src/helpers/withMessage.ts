@@ -26,7 +26,7 @@ import { createRule, InternalRuleType } from '@regle/core';
     }
   })
  * ```
- * Docs: {@link https://regle.vercel.app/core-concepts/rules/rule-wrappers#withmessage}
+ * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withmessage}
  */
 export function withMessage<
   TValue extends any,

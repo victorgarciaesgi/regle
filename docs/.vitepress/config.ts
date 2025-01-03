@@ -111,7 +111,7 @@ export default defineConfig({
   title: 'Regle',
   description: 'Typescript-first model-based form validation library for Vue 3',
   sitemap: {
-    hostname: 'https://regle.vercel.app',
+    hostname: 'https://reglejs.dev',
   },
   lastUpdated: true,
   cleanUrls: true,
@@ -203,7 +203,7 @@ export default defineConfig({
           'vue forms, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
       },
     ],
-    ['meta', { property: 'og:url', content: 'https://regle.vercel.app' }],
+    ['meta', { property: 'og:url', content: 'https://reglejs.dev' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Regle' }],
     ['meta', { property: 'og:site_name', content: 'Regle' }],
@@ -227,17 +227,17 @@ export default defineConfig({
       'meta',
       {
         property: 'og:image',
-        content: 'https://regle.vercel.app/banner-og.png',
+        content: 'https://reglejs.dev/banner-og.png',
       },
     ],
 
     ['meta', { name: 'twitter:site', content: '@regle' }],
-    ['meta', { name: 'twitter:domain', content: 'regle.vercel.app' }],
+    ['meta', { name: 'twitter:domain', content: 'reglejs.dev' }],
     [
       'meta',
       { name: 'twitter:description', content: 'Regle is a TypeScript-first form validation library made for Vue 3.' },
     ],
-    ['meta', { name: 'twitter:url', content: 'https://regle.vercel.app' }],
+    ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' }],
   ],

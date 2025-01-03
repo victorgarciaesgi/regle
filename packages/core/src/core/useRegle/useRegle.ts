@@ -109,6 +109,6 @@ export function createUseRegleComposable<
      email: { required }
    })
  * ```
- * Docs: {@link https://regle.vercel.app/core-concepts/}  
+ * Docs: {@link https://reglejs.dev/core-concepts/}  
  */
 export const useRegle = createUseRegleComposable();

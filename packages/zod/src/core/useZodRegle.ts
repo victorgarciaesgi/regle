@@ -111,6 +111,6 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
     name: z.string().min(3)
   }))
  * ```
- * Docs: {@link https://regle.vercel.app/integrations/zod#usage}  
+ * Docs: {@link https://reglejs.dev/integrations/zod#usage}  
  */
 export const useZodRegle = createUseZodRegleComposable();

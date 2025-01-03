@@ -23,7 +23,7 @@ import { createRule, InternalRuleType } from '@regle/core';
     }
   })
  * ```
- * Docs: {@link https://regle.vercel.app/core-concepts/rules/rule-wrappers#withasync}
+ * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withasync}
  */
 export function withAsync<
   TValue,

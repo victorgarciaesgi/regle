@@ -25,7 +25,7 @@ import { type Ref } from 'vue';
       }
     })
  * ```
- * Docs: {@link https://regle.vercel.app/core-concepts/rules/rule-wrappers#withparams}
+ * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withparams}
  */
 export function withParams<
   TValue,

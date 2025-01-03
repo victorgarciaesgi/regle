@@ -110,6 +110,6 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
     name: v.pipe(v.string(), v.minLength(3))
   }))
  * ```
- * Docs: {@link https://regle.vercel.app/integrations/valibot#usage}  
+ * Docs: {@link https://reglejs.dev/integrations/valibot#usage}  
  */
 export const useValibotRegle = createUseValibotRegleComposable();

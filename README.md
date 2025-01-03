@@ -25,7 +25,7 @@ It's heavily inspired by Vuelidate.
 
 ## 📚 Documentation
 
-[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://regle.vercel.app/)
+[![Documentation](https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/redirectDoc.svg)](https://reglejs.dev/)
 
 ## 🎮 Play with it
 
