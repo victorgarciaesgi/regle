@@ -4,6 +4,9 @@ import { isEmpty, matchRegex } from '../helpers';
 
 const numericRegex = /^\d*(\.\d+)?$/;
 
+/**
+ * Allows only numeric values (including numeric strings).
+ */
 export const numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number> = createRule({
   type: 'numeric',
   validator(value: Maybe<string | number>) {

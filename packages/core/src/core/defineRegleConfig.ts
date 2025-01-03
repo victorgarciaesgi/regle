@@ -3,6 +3,18 @@ import type { AllRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefiniti
 import { createUseRegleComposable, type useRegleFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
 
+/**
+ * Define a global regle configuration, where you can:
+ * - Customize buil-in rules messages
+ * - Add your custom rules
+ * - Define global modifiers
+ * - Define shortcuts
+ *
+ * It will return:
+ *
+ * - a `useRegle` composable that can typecheck your custom rules
+ * - an `inferRules` helper that can typecheck your custom rules
+ */
 export function defineRegleConfig<
   TShortcuts extends RegleShortcutDefinition<TCustomRules>,
   TCustomRules extends Partial<AllRulesDeclarations> = EmptyObject,

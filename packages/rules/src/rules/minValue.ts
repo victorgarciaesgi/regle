@@ -2,6 +2,11 @@ import { isFilled, isNumber, toNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 
+/**
+ * Requires a field to have a specified minimum numeric value.
+ *
+ * @param count - the minimum count
+ */
 export const minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> = createRule({
   type: 'minValue',
   validator: (value: Maybe<number>, count: number) => {

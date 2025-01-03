@@ -1,4 +1,6 @@
 /**
+ * This utility converts any string (or number) into a number using the Number constructor.
+ *
  * @returns ⚠️ Warning, returned value can be NaN
  */
 export function toNumber<T extends number | string | undefined>(argument: T): number {

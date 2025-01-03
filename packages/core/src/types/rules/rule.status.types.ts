@@ -37,6 +37,9 @@ export type RegleRoot<
   ([TValidationGroups] extends [never]
     ? {}
     : {
+        /**
+         * Collection of validation groups used declared with the `validationGroups` modifier
+         */
         $groups: {
           readonly [TKey in keyof TValidationGroups]: RegleValidationGroupOutput;
         };
@@ -50,6 +53,7 @@ export type RegleStatus<
   TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState> & {
+  /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: {
     readonly [TKey in keyof TState]: InferRegleStatusType<
       NonNullable<TRules[TKey]>,
@@ -62,9 +66,15 @@ export type RegleStatus<
       ? TKey
       : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
+  /** Collection of all the error messages, collected for all children properties and nested forms.
+   *
+   * Only contains errors from properties where $dirty equals true. */
   readonly $errors: RegleErrorTree<TState>;
+  /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState>;
+  /* Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  /* Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}
@@ -131,14 +141,23 @@ export type RegleFieldStatus<
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
 > = Omit<RegleCommonStatus<TState>, '$value'> & {
+  /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: Maybe<UnwrapNestedRefs<TState>>;
+  /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: Maybe<UnwrapNestedRefs<TState>>;
+  /** Collection of all the error messages, collected for all children properties and nested forms.
+   *
+   * Only contains errors from properties where $dirty equals true. */
   readonly $errors: string[];
+  /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
   readonly $externalErrors: string[];
   readonly $tooltips: string[];
+  /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
+  /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
+  /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: {
     readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
       TState,
@@ -177,23 +196,40 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
  * @public
  */
 export interface RegleCommonStatus<TValue = any> {
+  /* True only when the field is dirty and passes validation. Useful for showing UI indicators that the field is valid. */
   readonly $valid: boolean;
+  /* Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
+  /* Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the $touch and $reset methods. The $dirty flag is considered true if the current model has been touched or if all its children are dirty.*/
   readonly $dirty: boolean;
+  /* Similar to $dirty, with one exception. The $anyDirty flag is considered true if given model was touched or any of its children are $anyDirty which means at least one descendant is $dirty. */
   readonly $anyDirty: boolean;
+  /** Indicates if any async rule for the field is currently running. Always false for synchronous rules. */
   readonly $pending: boolean;
+  /** Convenience flag to easily decide if a message should be displayed. Equivalent to $dirty && !$pending && $invalid. */
   readonly $error: boolean;
+  /** Indicates whether the field is ready for submission. Equivalent to !$invalid && !$pending. */
   readonly $ready: boolean;
+  /** Return the current key name of the field. */
   readonly $name: string;
+  /** Id used to track collections items */
   $id?: string;
+  /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: UnwrapNestedRefs<TValue>;
+  /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: UnwrapNestedRefs<TValue>;
+  /** Marks the field and all nested properties as $dirty. */
   $touch(runCommit?: boolean, withConditions?: boolean): void;
+  /** Resets the $dirty state on all nested properties of a form. */
   $reset(): void;
+  /** Will reset both your validation state and your form state to their initial values. */
   $resetAll: () => void;
-  $unwatch(): void;
-  $watch(): void;
+  /** Clears the $externalResults state back to an empty object. */
   $clearExternalErrors(): void;
+  /** @interal */
+  $unwatch(): void;
+  /** @interal */
+  $watch(): void;
 }
 
 /**
@@ -204,14 +240,26 @@ export type RegleRuleStatus<
   TParams extends any[] = any[],
   TMetadata extends RegleRuleMetadataDefinition = any,
 > = {
+  /** The name of the rule type. */
   readonly $type: string;
+  /** Returns the computed error message or messages for the current rule. */
   readonly $message: string | string[];
   readonly $tooltip: string | string[];
+  /** Indicates whether or not the rule is enabled (for rules like requiredIf) */
   readonly $active: boolean;
+  /** Indicates the state of validation for this validator. */
   readonly $valid: boolean;
+  /** If the rule is async, indicates if it's currently pending. Always false if it's synchronous. */
   readonly $pending: boolean;
+  /** Returns the current path of the rule (used internally for tracking) */
   readonly $path: string;
+  /** Contains the metadata returned by the validator function. */
   readonly $metadata: TMetadata;
+  /** Run the rule validator and compute its properties like $message and $active */
+  $validate(): Promise<boolean>;
+  /** Reset the $valid, $metadata and $pending states */
+  $reset(): void;
+  /** Returns the original rule validator function. */
   $validator: ((
     value: Maybe<TValue>,
     ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
@@ -220,8 +268,6 @@ export type RegleRuleStatus<
       value: TValue,
       ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
     ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>);
-  $validate(): Promise<boolean>;
-  $reset(): void;
 } & ([TParams] extends [never[]]
   ? {}
   : [unknown[]] extends [TParams]
@@ -265,13 +311,23 @@ export type RegleCollectionStatus<
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState>, '$value'> & {
+  /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: Maybe<TState>;
+  /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: Maybe<TState>;
+  /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
+  /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
+  /** Collection of all the error messages, collected for all children properties and nested forms.
+   *
+   * Only contains errors from properties where $dirty equals true. */
   readonly $errors: RegleCollectionErrors<TState>;
+  /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: RegleCollectionErrors<TState>;
+  /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}

@@ -19,6 +19,9 @@ function nibbleValid(nibble: string) {
   return numeric >= 0 && numeric <= 255;
 }
 
+/**
+ * Validates IPv4 addresses in dotted decimal notation 127.0.0.1.
+ */
 export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: 'ipAddress',
   validator(value: Maybe<string>) {

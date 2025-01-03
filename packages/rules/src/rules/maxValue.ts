@@ -2,6 +2,11 @@ import { isFilled, isNumber, toNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 
+/**
+ * Requires a field to have a specified maximum numeric value.
+ *
+ * @param max - the maximum value
+ */
 export const maxValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> = createRule({
   type: 'maxValue',
   validator: (value: Maybe<number>, count: number) => {

@@ -4,6 +4,9 @@ import { isEmpty, matchRegex } from '../helpers';
 
 const alphaRegex = /^[a-zA-Z]*$/;
 
+/**
+ * Allows only alphabetic characters.
+ * */
 export const alpha: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
   type: 'alpha',
   validator(value: Maybe<string>) {

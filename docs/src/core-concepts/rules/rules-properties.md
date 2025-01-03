@@ -68,6 +68,10 @@ Returns the computed error message or messages for the current rule.
   
 Indicates whether or not the rule is enabled (for rules like `requiredIf`)
 
+### `$metadata`
+- Type `RegleRuleMetadataDefinition`
+
+Contains the metadata returned by the validator function.
 
 
 ### `$type`

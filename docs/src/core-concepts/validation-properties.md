@@ -144,7 +144,7 @@ Clears the $externalResults state back to an empty object.
 - Type: `Record<string, RegleRuleStatus>`
 
 This is reactive tree containing all the declared rules of your field.
-To know more about the rule properties check the [rules properties section](/core-concepts/rules-properties)
+To know more about the rule properties check the [rules properties section](/core-concepts/rules/rules-properties)
 
 
 ## Specific properties for nested objects

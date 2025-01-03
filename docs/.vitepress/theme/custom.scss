@@ -54,17 +54,17 @@ iframe {
   &:before {
     content: '';
     position: absolute;
-    top: -50%;
+    top: -75%;
     right: 0;
     bottom: 0;
-    left: -50%;
+    left: -75%;
     z-index: -1;
-    width: 200%;
-    height: 200%;
+    width: 250%;
+    height: 250%;
     border-radius: inherit;
     background: var(--border-gradient);
     animation: rotate 3s infinite linear;
-    animation-delay: 500ms;
+    animation-delay: 1s;
   }
 }
 

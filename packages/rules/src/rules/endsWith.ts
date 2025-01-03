@@ -2,6 +2,11 @@ import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
+/**
+ * Checks if the string ends with the specified substring.
+ *
+ * @param part - the value the field must end with
+ */
 export const endsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
   type: 'endsWith',
   validator(value: Maybe<string>, part: Maybe<string>) {

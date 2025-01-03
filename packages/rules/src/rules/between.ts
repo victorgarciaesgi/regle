@@ -2,6 +2,12 @@ import { isFilled, toNumber, isNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 
+/**
+ * Checks if a number is in specified bounds. min and max are both inclusive.
+ *
+ * @param min - the minimum limit
+ * @param max - the maximum limit
+ */
 export const between: RegleRuleWithParamsDefinition<number, [min: number, max: number], false, boolean> = createRule({
   type: 'between',
   validator: (value: Maybe<number>, min: number, max: number) => {

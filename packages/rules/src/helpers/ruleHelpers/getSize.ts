@@ -1,6 +1,9 @@
 import type { MaybeRef } from 'vue';
 import { unref } from 'vue';
 
+/**
+ * This helper will return the length of any data type you pass. It works with strings, arrays, objects and numbers.
+ */
 export function getSize(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
   const _value = unref(value);
   if (Array.isArray(_value)) return _value.length;

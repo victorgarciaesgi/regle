@@ -7,6 +7,24 @@ import type {
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
+/**
+ * withAsync works like withParams, but is specifically designed for async rules that depend on external values.
+ * 
+ * ```ts
+ *import { withAsync } from '@regle/rules';
+
+  const base = ref('foo');
+
+  const { r$ } = useRegle({ name: '' }, {
+    name: {
+      customRule: withAsync(async (value, param) => {
+        await someAsyncCall(param)
+      }, [base])
+    }
+  })
+ * ```
+ * Docs: {@link https://regle.vercel.app/core-concepts/rules/rule-wrappers#withasync}
+ */
 export function withAsync<
   TValue,
   TParams extends (Ref<unknown> | (() => unknown))[] = [],

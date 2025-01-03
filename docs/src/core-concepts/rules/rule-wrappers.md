@@ -4,16 +4,17 @@ title: Rule wrappers
 
 # Rule wrappers
 
-## List of wrappers
+Rule wrappers let you customize or upgrade your rules by injecting or replacing some properties.
+
+## Built-in wrappers
 
 ### `withMessage`
 
 The withMessage wrapper lets you associate an error message with a rule. Pass your rule as the first argument and the error message as the second.
 
-``` ts twoslash {3-11}
+``` ts twoslash {5-13}
 // @noErrors
 import { useRegle, type InlineRuleDeclaration, type Maybe } from '@regle/core';
-import { withMessage } from '@regle/rules';
 
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   $valid: value === 'regle',
@@ -22,6 +23,8 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
 
 
 // ---cut---
+import { withMessage } from '@regle/rules';
+
 const { r$ } = useRegle({ name: '' }, {
   name: {
     // Inline functions can be also written... inline
@@ -41,10 +44,12 @@ const { r$ } = useRegle({ name: '' }, {
 ### `withParams`
 
 The withParams wrapper allows your rule to depend on external parameters, such as a reactive property in your component or store.
+
 By default, useRegle observes changes automatically when rules are defined using getter functions or computed properties.
 
 
 ```ts
+/** Non reactive rules */
 useRegle({}, { /* rules */})
 ```
 
@@ -54,6 +59,7 @@ useRegle({}, { /* rules */})
 useRegle({}, () => ({ /* rules */ }))
 // or
 const rules = computed(() => ({/* rules */ }))
+
 useRegle({}, rules)
 ```
 

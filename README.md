@@ -43,9 +43,10 @@ It's heavily inspired by Vuelidate.
 - 🤖 [Valibot](https://valibot.dev/) support
 - 🪶 Light(~7kb gzip) and 0 dependencies
 
-## 🫶 Thanks
+## 🫶 Credits
 
-Special thank you for [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
+- [Johannes Lacourly](https://www.behance.net/johanneslaf7dc) for designing logo and banners 🪄
+- [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
 
 
 ## Example

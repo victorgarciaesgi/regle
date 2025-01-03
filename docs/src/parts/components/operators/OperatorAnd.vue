@@ -9,7 +9,7 @@
 
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
-    
+
     <ul v-if="r$.$errors.regex.length">
       <li v-for="error of r$.$errors.regex" :key="error">
         {{ error }}
@@ -28,7 +28,7 @@ const { r$ } = useRegle(
     regex: {
       myError: withMessage(
         and(startsWith('^'), endsWith('$')),
-        ({ $params: [start, end] }) => `Field should start with "${start}" and end with "${end}"`
+        ({ $params: [start, end] }) => `Regex should start with "${start}" and end with "${end}"`
       ),
     },
   }

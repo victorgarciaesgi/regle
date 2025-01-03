@@ -11,6 +11,7 @@ export * from './maxLength';
 export * from './maxValue';
 export * from './minLength';
 export * from './minValue';
+export * from './exactValue';
 export * from './exactLength';
 export * from './numeric';
 export * from './required';

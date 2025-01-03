@@ -92,4 +92,23 @@ export function createUseRegleComposable<
   return useRegle as any;
 }
 
+/**
+ * useRegle serves as the foundation for validation logic.
+ *
+ * It accepts the following inputs:
+ *
+ * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
+ * @param rules - These should align with the structure of your state.
+ * @param modifiers - Customize computed beahviour
+ * 
+ * ```ts
+ * import { useRegle } from '@regle/core';
+   import { required } from '@regle/rules';
+
+   const { r$ } = useRegle({ email: '' }, {
+     email: { required }
+   })
+ * ```
+ * Docs: {@link https://regle.vercel.app/core-concepts/}  
+ */
 export const useRegle = createUseRegleComposable();

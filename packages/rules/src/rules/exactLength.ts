@@ -2,6 +2,11 @@ import { isFilled, isNumber, getSize } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 
+/**
+ * Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
+ *
+ * @param count - the required length
+ */
 export const exactLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
   [count: number],

@@ -11,6 +11,9 @@ import type {
 import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
 
+/**
+ * The applyIf operator is similar to requiredIf, but it can be used with any rule. It simplifies conditional rule declarations.
+ */
 export function applyIf<
   TValue extends any,
   TParams extends any[],

@@ -119,7 +119,7 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
-## maxLength
+## `maxLength`
 
 _**Params**_
   - `max: Ref<number> | number | () => number`
@@ -140,6 +140,27 @@ const { r$ } = useRegle({ name: '' }, {
     maxLength: maxLength(6),
     maxLength: maxLength(maxValue),
     maxLength: maxLength(() => maxValue.value)
+  },
+})
+```
+
+## `exactLength`
+
+_**Params**_
+  - `count: Ref<number> | number | () => number`
+
+Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
+
+```ts
+import { exactLength } from '@regle/rules';
+
+const exactValue = ref(6);
+
+const { r$ } = useRegle({ name: '' }, {
+  name: {
+    exactLength: exactLength(6),
+    exactLength: exactLength(exactValue),
+    exactLength: exactLength(() => exactValue.value)
   },
 })
 ```
@@ -190,6 +211,27 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+## `exactValue`
+
+_**Params**_
+  - `count: Ref<number> | number | () => number`
+
+Requires a field to have a strict numeric value.
+
+```ts
+import { exactValue } from '@regle/rules';
+
+const exactCount = ref(6);
+
+const { r$ } = useRegle({ count: 0 }, {
+  count: {
+    exactValue: exactValue(6),
+    exactValue: exactValue(exactCount),
+    exactValue: exactValue(() => exactCount.value)
+  },
+})
+```
+
 ## `between`
 
 _**Params**_
@@ -199,8 +241,7 @@ _**Params**_
 
 Checks if a number is in specified bounds. `min` and `max` are both inclusive.
 
-```js
-
+```ts
 import { between } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -330,9 +371,6 @@ _**Params**_
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
 ```ts
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-// ---cut---
 import { macAddress } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -344,7 +382,7 @@ const { r$ } = useRegle({ address: '' }, {
 })
 ```
 
-## sameAs
+## `sameAs`
 
 _**Params**_
   * `target: unknown`
@@ -353,9 +391,6 @@ _**Params**_
 Checks if the value matches the specified property or ref.
 
 ```ts
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-// ---cut---
 import { sameAs } from '@regle/rules';
 
 const form = ref({
@@ -370,7 +405,7 @@ const { r$ } = useRegle(form, {
 })
 ```
 
-## url
+## `url`
 
 Validates URLs.
 

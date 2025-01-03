@@ -94,4 +94,23 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
   return useZodRegle as any;
 }
 
+/**
+ * useRegle serves as the foundation for validation logic.
+ *
+ * It accepts the following inputs:
+ *
+ * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
+ * @param schema - These should align with the structure of your state.
+ * @param modifiers - customize regle behaviour
+ * 
+ * ```ts
+ * import { useZodRegle } from '@regle/zod';
+  import { z } from 'zod';
+
+  const { r$ } = useZodRegle({ name: '' }, z.object({
+    name: z.string().min(3)
+  }))
+ * ```
+ * Docs: {@link https://regle.vercel.app/integrations/zod#usage}  
+ */
 export const useZodRegle = createUseZodRegleComposable();

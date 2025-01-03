@@ -3,6 +3,11 @@ import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
 
+/**
+ * Checks if the date is before the given parameter.
+ *
+ * @param before - the date to compare to
+ */
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,
   [before: Maybe<string | Date>],

@@ -23,4 +23,11 @@ export function createInferValibotSchemaHelper(): inferValibotSchemaFn {
   return inferRules as any;
 }
 
+/**
+ * Rule type helper to provide autocomplete and typecheck to your form rules or part of your form rules
+ * It will just return the rules without any processing.
+ *
+ * @param state - The state reference
+ * @param schema - Your valibot schema
+ */
 export const inferSchema = createInferValibotSchemaHelper();

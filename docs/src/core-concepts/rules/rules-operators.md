@@ -3,10 +3,10 @@ title: Rules operators
 ---
 
 <script setup>
-import OperatorAnd from '../parts/components/operators/OperatorAnd.vue';
-import OperatorOr from '../parts/components/operators/OperatorOr.vue';
-import OperatorNot from '../parts/components/operators/OperatorNot.vue';
-import OperatorApplyIf from '../parts/components/operators/OperatorApplyIf.vue';
+import OperatorAnd from '../../parts/components/operators/OperatorAnd.vue';
+import OperatorOr from '../../parts/components/operators/OperatorOr.vue';
+import OperatorNot from '../../parts/components/operators/OperatorNot.vue';
+import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vue';
 </script>
 
 
@@ -22,7 +22,7 @@ Regle provides tools to combine and operate on different rules. It includes four
 These operators work with any rules you provide, but combining rules with incompatible input types may lead to errors.
 
 :::tip
-All operators are compatible with `withMessage`, `withAsync` or `withParams`
+All operators are compatible with wrappers
 :::
 
 
@@ -42,7 +42,7 @@ const { r$ } = useRegle(
       myError: withMessage(
         and(startsWith('^'), endsWith('$')),
         ({ $params: [start, end] }) =>
-          `Field should start with "${start}" and end with "${end}"`
+          `Regex should start with "${start}" and end with "${end}"`
       ),
     },
   }
@@ -91,15 +91,15 @@ import { useRegle } from '@regle/core';
 import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
-const form = ref({ password: '', confirm: '' });
+const form = ref({ oldPassword: '', newPassword: '' });
 const { r$ } = useRegle(form, {
-  password: {
+  oldPassword: {
     required,
   },
-  confirm: {
+  newPassword: {
     notEqual: withMessage(
-      not(sameAs(() => form.value.password)),
-      'Your confirm password must not be the same as your password'
+      not(sameAs(() => form.value.oldPassword)),
+      'Your confirm new password must not be the same as your old password'
     ),
   },
 });

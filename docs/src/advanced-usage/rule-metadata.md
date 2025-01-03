@@ -1,11 +1,11 @@
 ---
-title: Using metadata from rules
+title: Rules metadata
 ---
 <script setup>
 import UsingMetadataCreateRule from '../parts/components/metadata/UsingMetadataCreateRule.vue';
 </script>
 
-# Using metadata from rules
+# Rules metadata
 
 Rule validator functions can return more than just a boolean. This additional data can be utilized by your `message` handler, `active` handler, or any other part of your application that has access to regle.
 

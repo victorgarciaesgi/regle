@@ -4,6 +4,9 @@ import { isEmpty, matchRegex } from '../helpers';
 
 const alphaNumRegex = /^[a-zA-Z0-9]*$/;
 
+/**
+ * Allows only alphanumeric characters.
+ */
 export const alphaNum: RegleRuleDefinition<string | number, [], false, boolean, string | number> = createRule({
   type: 'alpha',
   validator(value: Maybe<string | number>) {

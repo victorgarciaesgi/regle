@@ -3,6 +3,12 @@ import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
 
+/**
+ * Checks if the date falls between the specified bounds.
+ *
+ * @param before - the minimum limit
+ * @param after - the maximum limit
+ */
 export const dateBetween: RegleRuleWithParamsDefinition<
   string | Date,
   [before: Maybe<string | Date>, after: Maybe<string | Date>],

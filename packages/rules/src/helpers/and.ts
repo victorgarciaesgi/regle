@@ -8,6 +8,9 @@ import type {
   GuessMetadataFromRules,
 } from '../types';
 
+/**
+ * The and operator combines multiple rules and validates successfully only if all provided rules are valid.
+ */
 export function and<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<

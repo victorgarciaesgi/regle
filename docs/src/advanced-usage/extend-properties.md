@@ -7,7 +7,7 @@ title: Extend properties
 
 Regle offers a way to extend the default validation properties via `defineRegleConfig`
 
-For more information about global config [check here](/core-concepts/global-config)
+For more information about global config [check here](/advanced-usage/global-config)
 
 
 ## Extending field properties

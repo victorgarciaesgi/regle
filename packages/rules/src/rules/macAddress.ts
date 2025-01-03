@@ -2,6 +2,11 @@ import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 
+/**
+ * Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
+ *
+ * @param separator - the custom separator
+ */
 export const macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean> =
   createRule({
     type: 'macAddress',

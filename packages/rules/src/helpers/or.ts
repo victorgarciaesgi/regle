@@ -8,6 +8,9 @@ import type {
   UnwrapTuples,
 } from '../types';
 
+/**
+ * The or operator validates successfully if at least one of the provided rules is valid.
+ */
 export function or<TRules extends FormRuleDeclaration<any, any>[]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<

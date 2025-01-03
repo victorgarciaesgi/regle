@@ -9,6 +9,9 @@ import type {
 import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
 
+/**
+ * The not operator passes when the provided rule fails and fails when the rule passes. It can be combined with other rules.
+ */
 export function not<
   TValue,
   TParams extends any[] = [],

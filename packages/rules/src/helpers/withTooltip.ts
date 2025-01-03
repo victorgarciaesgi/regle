@@ -11,6 +11,9 @@ import type {
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
+/**
+ * The withTooltip wrapper allows you to display additional messages for your field that aren’t necessarily errors. Tooltips are aggregated and accessible via $field.xxx.$tooltips .
+ */
 export function withTooltip<
   TValue extends any,
   TParams extends any[],

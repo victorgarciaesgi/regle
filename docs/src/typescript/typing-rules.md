@@ -95,6 +95,10 @@ const rules = computed(() =>
 const { r$ } = useRegle(form, rules);
 ```
 
+:::tip
+`Zod` and `Valibot` also have their own `inferSchema` exported.
+:::
+
 
 ## Typing external nested field
 

@@ -14,22 +14,25 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
         link: '/core-concepts/rules/reusable-rules',
       },
       {
-        text: 'Rule wrappers',
-        link: '/core-concepts/rules/rule-wrappers',
-      },
-      {
         text: 'Built-in rules',
         link: '/core-concepts/rules/built-in-rules',
       },
+      {
+        text: 'Properties',
+        link: '/core-concepts/rules/rules-properties',
+      },
+      {
+        text: 'Wrappers',
+        link: '/core-concepts/rules/rule-wrappers',
+      },
+      { text: 'Operators', link: '/core-concepts/rules/rules-operators' },
+      { text: 'Helpers', link: '/core-concepts/rules/validations-helpers' },
     ],
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
-  { text: 'Rules properties', link: '/core-concepts/rules-properties' },
-  { text: 'Extend properties', link: '/core-concepts/extend-properties' },
   { text: 'Displaying errors', link: '/core-concepts/displaying-errors' },
   { text: 'Type safe output', link: '/core-concepts/type-safe-output' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
-  { text: 'Global configuration', link: '/core-concepts/global-config' },
 ];
 
 const Nav: DefaultTheme.NavItem[] = [
@@ -44,10 +47,10 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
     link: '/advanced-usage/collections',
   },
   { text: 'Usage with Pinia', link: '/advanced-usage/usage-with-pinia' },
-  { text: 'Using metadata from rules', link: '/advanced-usage/rule-metadata' },
-  { text: 'Rules operators', link: '/advanced-usage/rules-operators' },
-  { text: 'Validation helpers', link: '/advanced-usage/validations-helpers' },
+  { text: 'Rules metadata', link: '/advanced-usage/rule-metadata' },
   { text: 'Async validation', link: '/advanced-usage/async-validation' },
+  { text: 'Global configuration', link: '/advanced-usage/global-config' },
+  { text: 'Add your own properties', link: '/advanced-usage/extend-properties' },
 ];
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -240,7 +243,10 @@ export default defineConfig({
   ],
   markdown: {
     codeTransformers: [transformerTwoslash({}) as any],
-    theme: 'vitesse-dark',
+    theme: {
+      dark: 'vitesse-dark',
+      light: 'everforest-light',
+    },
     config(md) {
       md.use(groupIconMdPlugin);
     },

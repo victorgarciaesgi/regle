@@ -11,6 +11,23 @@ import type {
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
+/**
+ * The withMessage wrapper lets you associate an error message with a rule. Pass your rule as the first argument and the error message as the second.
+ * 
+ * ```ts
+ * const { r$ } = useRegle({ name: '' }, {
+    name: {
+      customRule1: withMessage((value) => !!value, "Custom Error"),
+      customRule2: withMessage(customRuleInlineWithMetaData, "Custom Error"),
+      customRule3: withMessage(
+        customRuleInlineWithMetaData, 
+        ({ $value, foo }) => `Custom Error: ${$value} ${foo}`
+      ), 
+    }
+  })
+ * ```
+ * Docs: {@link https://regle.vercel.app/core-concepts/rules/rule-wrappers#withmessage}
+ */
 export function withMessage<
   TValue extends any,
   TParams extends any[],

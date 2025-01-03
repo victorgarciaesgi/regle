@@ -2,10 +2,10 @@
   <div class="demo-container">
     <div class="row">
       <div>
-        <input v-model="r$.$value.password" type="password" placeholder="Type your password" />
+        <input v-model="r$.$value.oldPassword" type="password" placeholder="Type your old password" />
 
-        <ul v-if="r$.$errors.password.length">
-          <li v-for="error of r$.$errors.password" :key="error">
+        <ul v-if="r$.$errors.oldPassword.length">
+          <li v-for="error of r$.$errors.oldPassword" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -13,19 +13,19 @@
 
       <div>
         <input
-          v-model="r$.$value.confirm"
+          v-model="r$.$value.newPassword"
           type="password"
-          :class="{ error: r$.$fields.confirm.$error }"
-          placeholder="Confirm your password"
+          :class="{ error: r$.$fields.newPassword.$error }"
+          placeholder="Type your new password"
         />
 
-        <ul v-if="r$.$errors.confirm.length">
-          <li v-for="error of r$.$errors.confirm" :key="error">
+        <ul v-if="r$.$errors.newPassword.length">
+          <li v-for="error of r$.$errors.newPassword" :key="error">
             {{ error }}
           </li>
         </ul>
       </div>
-      
+
       <button type="button" @click="r$.$resetAll">Reset</button>
     </div>
   </div>
@@ -36,15 +36,15 @@ import { useRegle } from '@regle/core';
 import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
-const form = ref({ password: '', confirm: '' });
+const form = ref({ oldPassword: '', newPassword: '' });
 const { r$ } = useRegle(form, {
-  password: {
+  oldPassword: {
     required,
   },
-  confirm: {
+  newPassword: {
     notEqual: withMessage(
-      not(sameAs(() => form.value.password)),
-      'Your confirm password must not be the same as your password'
+      not(sameAs(() => form.value.oldPassword)),
+      'Your new password password must not be the same as your old password'
     ),
   },
 });
