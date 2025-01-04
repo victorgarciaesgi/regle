@@ -26,7 +26,7 @@
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.0.0",
-    "@vue/eslint-config-typescript": "^14.1.4",
+    "@vue/eslint-config-typescript": "^14.2.0",
     "@vue/tsconfig": "^0.7.0",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
@@ -35,7 +35,7 @@
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "vite": "^6.0.5",
+    "vite": "^6.0.7",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }

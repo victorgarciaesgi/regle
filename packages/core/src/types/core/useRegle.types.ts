@@ -18,6 +18,11 @@ export interface Regle<
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
   TShortcuts extends RegleShortcutDefinition = {},
 > {
+  /**
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   *
+   * To see the list of properties: {@link https://www.reglejs.dev/core-concepts/validation-properties}
+   */
   r$: RegleRoot<TState, TRules, TValidationGroups, TShortcuts>;
 }
 

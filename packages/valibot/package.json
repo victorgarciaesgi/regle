@@ -19,8 +19,8 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "22.10.2",
-    "@typescript-eslint/eslint-plugin": "8.18.1",
-    "@typescript-eslint/parser": "8.18.1",
+    "@typescript-eslint/eslint-plugin": "8.19.0",
+    "@typescript-eslint/parser": "8.19.0",
     "@vue/test-utils": "2.4.6",
     "bumpp": "9.9.2",
     "changelogithub": "0.13.11",

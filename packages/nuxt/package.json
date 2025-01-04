@@ -30,8 +30,8 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@nuxt/kit": "3.14.1592",
-    "@nuxt/schema": "3.14.1592",
+    "@nuxt/kit": "3.15.0",
+    "@nuxt/schema": "3.15.0",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*"
   },
@@ -40,7 +40,7 @@
     "@regle/zod": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/devtools": "1.6.4",
+    "@nuxt/devtools": "1.7.0",
     "@nuxt/eslint-config": "0.7.4",
     "@nuxt/module-builder": "0.8.4",
     "@nuxt/schema": "3.14.1592",
@@ -51,12 +51,12 @@
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
-    "nuxt": "3.14.1592",
+    "nuxt": "3.15.0",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.30.2",
+    "type-fest": "4.31.0",
     "typescript": "catalog:",
-    "unbuild": "3.0.1",
+    "unbuild": "3.2.0",
     "vitest": "2.1.8",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",

@@ -99,7 +99,7 @@ export function createUseRegleComposable<
  *
  * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
  * @param rules - These should align with the structure of your state.
- * @param modifiers - Customize computed beahviour
+ * @param modifiers - Customize regle behaviour
  * 
  * ```ts
  * import { useRegle } from '@regle/core';

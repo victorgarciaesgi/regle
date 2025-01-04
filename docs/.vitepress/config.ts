@@ -268,8 +268,9 @@ export default defineConfig({
     ['meta', { name: 'twitter:domain', content: 'reglejs.dev' }],
     ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],
     ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
+    ['meta', { name: 'twitter:title', content: 'Regle' }],
+    ['meta', { name: 'twitter:image', content: 'https://reglejs.dev/banner-og.png' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'google-site-verification', content: 'mYJKnciAjHTdI7nsB2xame8QO61IeKoXCZeGyWGjs-4' }],
   ],
   markdown: {
     codeTransformers: [transformerTwoslash({}) as any],

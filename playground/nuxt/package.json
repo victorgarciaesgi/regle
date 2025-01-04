@@ -13,12 +13,12 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/zod": "workspace:*",
-    "pinia": "^2.2.6",
+    "pinia": "^2.3.0",
     "typescript": "5.6.3",
     "zod": "3.24.1"
   },
   "devDependencies": {
-    "nuxt": "^3.14.1592",
+    "nuxt": "^3.15.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
