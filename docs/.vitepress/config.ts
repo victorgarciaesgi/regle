@@ -271,6 +271,10 @@ export default defineConfig({
     ['meta', { name: 'twitter:title', content: 'Regle' }],
     ['meta', { name: 'twitter:image', content: 'https://reglejs.dev/banner-og.png' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    [
+      'script',
+      { defer: '', src: 'https://cloud.umami.is/script.js', 'data-website-id': 'b891ca9d-441a-44e0-ba1b-a35bea61fb35' },
+    ],
   ],
   markdown: {
     codeTransformers: [transformerTwoslash({}) as any],
