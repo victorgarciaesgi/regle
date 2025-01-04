@@ -10,7 +10,7 @@ It accepts the following inputs:
 
 - **State:** This can be a plain object, a `ref`, a `reactive` object, or a structure containing nested refs.
 - **Rules:** These should align with the structure of your state.
-- **Modifiers:** (optional) Customize computed beahviour. [Modifiers guide](/core-concepts/modifiers)
+- **Modifiers:** (optional) Customize computed behaviour. [Modifiers guide](/core-concepts/modifiers)
 
 <br/>
 
