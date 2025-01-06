@@ -1,8 +1,9 @@
 <template>
   <!-- <TestForm /> -->
   <!-- <ValibotForm /> -->
-  <ZodForm />
+  <!-- <ZodForm /> -->
   <!-- <Test13 /> -->
+  <Parent />
 </template>
 
 <script setup lang="ts">
@@ -12,23 +13,5 @@ import ValibotForm from './components/ValibotForm.vue';
 import ZodForm from './components/ZodForm.vue';
 import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';
-
-const state = ref({ name: '', email: '' });
-
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: { email },
-});
-
-async function submit() {
-  const { result, data } = await r$.$validate();
-  if (result) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
-}
+import Parent from './components/tests-pinia/Parent.vue';
 </script>

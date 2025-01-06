@@ -1,6 +1,6 @@
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
-import { defineStore } from 'pinia';
+import { defineStore, skipHydrate } from 'pinia';
 
 function useForm() {
   const { r$ } = useRegle({ name: '' }, { name: { required: required } });
@@ -9,5 +9,5 @@ function useForm() {
 
 export const useTestStore = defineStore('test-store', () => {
   const r$ = useForm();
-  return { r$ };
+  return { r$: skipHydrate(r$) };
 });

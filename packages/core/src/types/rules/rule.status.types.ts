@@ -72,9 +72,9 @@ export type RegleStatus<
   readonly $errors: RegleErrorTree<TState>;
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState>;
-  /* Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
+  /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-  /* Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
+  /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}

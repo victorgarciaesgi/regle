@@ -7,7 +7,7 @@ import ComponentA from '../parts/components/pinia/ComponentA.vue';
 import ComponentB from '../parts/components/pinia/ComponentB.vue';
 </script>
 
-# Usage with Pinia
+# Usage with Pinia <span data-title='pinia'></span>
 
 Since Regle is headless, you can use it anywhere in your app — whether in a composable or a store.
 
@@ -86,3 +86,25 @@ Component A:
 Component B:
 
 <ComponentB />
+
+
+## Avoid hydration issues
+
+If you use `store.$dispose()` or Nuxt in SSR mode, you may encounter this error:
+
+```
+Uncaught TypeError: 'set' on proxy: trap returned falsish for property 'xxx'
+```
+
+This is because Pinia tries to hydrate the stateful property `r$`.
+To avoid this, you can use [skipHydrate](https://pinia.vuejs.org/api/pinia/functions/skipHydrate.html#skipHydrate-)
+
+```ts [pinia.store.ts]
+import { skipHydrate } from 'pinia';
+
+export const usePiniaStore = defineStore('pinia-store', () => {
+  const {r$} = useRegle(/** */)
+
+  return { r$: skipHydrate(r$) };
+});
+```

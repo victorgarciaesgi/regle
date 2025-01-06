@@ -1,8 +1,9 @@
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { mount } from '@vue/test-utils';
-import { createPinia, defineStore, setActivePinia } from 'pinia';
+import { createPinia, defineStore, setActivePinia, skipHydrate } from 'pinia';
 import { defineComponent, nextTick, ref } from 'vue';
+import { shouldBeErrorField } from '../../utils/validations.utils';
 
 describe('$dispose', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('$dispose', () => {
     );
 
     return {
-      r$,
+      r$: skipHydrate(r$),
     };
   });
 
@@ -46,6 +47,7 @@ describe('$dispose', () => {
       return {
         condition,
         handleToggle,
+        store,
       };
     },
     template: `
@@ -67,5 +69,9 @@ describe('$dispose', () => {
     await nextTick();
 
     expect(element.find('.compoA').text()).toBe('Hello');
+
+    element.vm.store.r$.$value.name = '';
+    await nextTick();
+    shouldBeErrorField(element.vm.store.r$.$fields.name);
   });
 });
