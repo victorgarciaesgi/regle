@@ -1,4 +1,4 @@
-import type { FormRuleDeclaration, RegleRuleDefinition } from '@regle/core';
+import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleRaw } from '@regle/core';
 import { createRule } from '@regle/core';
 import type {
   ExtractParamsFromRules,
@@ -27,7 +27,7 @@ export function or<TRules extends FormRuleDeclaration<any, any>[]>(
     }
   });
 
-  const params = rules
+  const _params = rules
     .map((rule) => {
       if (typeof rule === 'function') {
         return null;
@@ -97,9 +97,16 @@ export function or<TRules extends FormRuleDeclaration<any, any>[]>(
     type: 'or',
     validator: validator as any,
     message: 'The value does not match any of the provided validators',
-  });
+  }) as RegleRuleRaw;
 
-  newRule._params = params as any;
+  const newParams = [...(_params ?? [])] as [];
+  newRule._params = newParams as any;
 
-  return newRule as any;
+  if (typeof newRule === 'function') {
+    const executedRule = newRule(...newParams);
+    executedRule._message_patched = true;
+    return executedRule as any;
+  } else {
+    return newRule as any;
+  }
 }

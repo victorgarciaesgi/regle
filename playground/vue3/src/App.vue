@@ -2,8 +2,8 @@
   <!-- <TestForm /> -->
   <!-- <ValibotForm /> -->
   <!-- <ZodForm /> -->
-  <!-- <Test13 /> -->
-  <Parent />
+  <Test13 />
+  <!-- <Parent /> -->
 </template>
 
 <script setup lang="ts">

@@ -5,6 +5,7 @@ import type {
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
+  RegleRuleRaw,
 } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
@@ -62,9 +63,16 @@ export function not<
     type: 'not',
     validator: newValidator,
     message: (message as any) ?? 'Error',
-  });
+  }) as RegleRuleRaw;
 
-  newRule._params = _params as any;
+  const newParams = [...(_params ?? [])] as [];
+  newRule._params = newParams as any;
 
-  return newRule as any;
+  if (typeof newRule === 'function') {
+    const executedRule = newRule(...newParams);
+    executedRule._message_patched = true;
+    return executedRule as any;
+  } else {
+    return newRule as any;
+  }
 }

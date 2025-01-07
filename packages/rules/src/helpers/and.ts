@@ -1,4 +1,4 @@
-import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleDefinitionProcessor } from '@regle/core';
+import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleDefinitionProcessor, RegleRuleRaw } from '@regle/core';
 import { createRule } from '@regle/core';
 import type {
   ExtractValueFromRules,
@@ -34,7 +34,7 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
       } else {
         const $params = rule._params;
         if (!$params?.length) {
-          return [null];
+          return [];
         } else {
           return $params;
         }
@@ -110,9 +110,16 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
     type: 'and',
     validator: validator,
     message: 'The value does not match all of the provided validators',
-  });
+  }) as RegleRuleRaw;
 
-  newRule._params = _params as any;
+  const newParams = [...(_params ?? [])] as [];
+  newRule._params = newParams as any;
 
-  return newRule as any;
+  if (typeof newRule === 'function') {
+    const executedRule = newRule(...newParams);
+    executedRule._message_patched = true;
+    return executedRule as any;
+  } else {
+    return newRule as any;
+  }
 }

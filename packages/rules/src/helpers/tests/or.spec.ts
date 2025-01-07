@@ -18,6 +18,7 @@ describe('or validator', () => {
 
   it('should validate 2 validators', () => {
     const result = or(required, email);
+    expect(result).not.toBe(Function);
     expect(result.exec(undefined)).toBe(true);
     expect(result.exec('foo@free.fr')).toBe(true);
   });
@@ -57,9 +58,7 @@ describe('or validator', () => {
 
   it('should have correct return types', () => {
     expectTypeOf(or()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
-    expectTypeOf(or(required)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], false, boolean, unknown>
-    >();
+    expectTypeOf(or(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
     expectTypeOf(or(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<unknown, [number], false, boolean, unknown>
     >();

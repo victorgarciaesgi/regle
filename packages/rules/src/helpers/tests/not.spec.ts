@@ -12,6 +12,9 @@ describe('not validator', () => {
   it('should validate with true function on empty input', () => {
     expect(not(required).exec('')).toBe(true);
   });
+  it('should be a executed rule', () => {
+    expect(not(minLength(6)).exec('')).not.toBe(Function);
+  });
   it('should validate with async true function', async () => {
     expect(await not(async () => true).exec('')).toBe(true);
   });
@@ -26,12 +29,8 @@ describe('not validator', () => {
   });
 
   it('should have correct return types', () => {
-    expectTypeOf(not(() => true)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], false, true, unknown>
-    >();
-    expectTypeOf(not(async () => true)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], true, boolean, unknown>
-    >();
+    expectTypeOf(not(() => true)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, true, unknown>>();
+    expectTypeOf(not(async () => true)).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
 
     expectTypeOf(not(minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<

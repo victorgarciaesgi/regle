@@ -18,6 +18,7 @@ describe('and validator', () => {
 
   it('should validate 2 validators', () => {
     const result = and(required, email);
+    expect(result).not.toBe(Function);
     expect(result.exec(undefined)).toBe(false);
     expect(result.exec('foo@free.fr')).toBe(true);
   });
@@ -57,9 +58,7 @@ describe('and validator', () => {
 
   it('should have correct return types', () => {
     expectTypeOf(and()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
-    expectTypeOf(and(required)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], false, boolean, unknown>
-    >();
+    expectTypeOf(and(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
     expectTypeOf(and(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<unknown, [number], false, boolean, unknown>
     >();
