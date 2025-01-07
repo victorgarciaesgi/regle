@@ -32,7 +32,7 @@ export function createCollectionElement({
   initialState,
   shortcuts,
   fieldName,
-}: CreateCollectionElementArgs): $InternalRegleStatusType | null {
+}: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
 

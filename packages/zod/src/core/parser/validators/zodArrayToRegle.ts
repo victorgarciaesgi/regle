@@ -5,7 +5,8 @@ import { processZodTypeDef } from '../processZodTypeDef';
 
 export function zodArrayToRegle(
   def: z.ZodArrayDef | z.ZodTupleDef,
-  schema: z.ZodSchema<any>
+  schema: z.ZodSchema<any>,
+  state: unknown
 ): RegleCollectionRuleDecl {
   const arrayValidators =
     def.typeName === z.ZodFirstPartyTypeKind.ZodArray
@@ -18,7 +19,7 @@ export function zodArrayToRegle(
 
   const items = def.typeName === z.ZodFirstPartyTypeKind.ZodArray ? def.type._def : def.items;
   return {
-    $each: processZodTypeDef(items, schema),
+    $each: processZodTypeDef(items, schema, state),
     ...arrayValidators,
   };
 }

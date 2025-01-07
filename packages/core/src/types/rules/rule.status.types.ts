@@ -10,6 +10,7 @@ import type {
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
   Maybe,
+  PrimitiveTypes,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -63,7 +64,9 @@ export type RegleStatus<
     >;
   } & {
     readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-      ? TKey
+      ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+        ? TKey
+        : never
       : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
   /** Collection of all the error messages, collected for all children properties and nested forms.

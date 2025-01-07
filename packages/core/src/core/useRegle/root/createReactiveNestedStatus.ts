@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, isEmpty } from '../../../../../shared';
+import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
@@ -14,7 +14,7 @@ import type {
   RegleValidationGroupOutput,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isObject, isRefObject } from '../../../utils';
+import { isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
@@ -473,19 +473,32 @@ export function createReactiveChildrenStatus({
   rulesDef,
   externalErrors,
   ...properties
-}: CreateReactiveChildrenStatus): $InternalRegleStatusType | null {
+}: CreateReactiveChildrenStatus): $InternalRegleStatusType | undefined {
   if (isCollectionRulesDef(rulesDef, properties.state)) {
     return createReactiveCollectionStatus({
       rulesDef,
       externalErrors: externalErrors as any,
       ...properties,
     });
-  } else if (isNestedRulesDef(properties.state, rulesDef) && isRefObject(properties.state)) {
-    return createReactiveNestedStatus({
-      rulesDef,
-      externalErrors: externalErrors as any,
-      ...properties,
-    });
+  } else if (isNestedRulesDef(properties.state, rulesDef)) {
+    if (isRefObject(properties.state)) {
+      return createReactiveNestedStatus({
+        rulesDef,
+        externalErrors: externalErrors as any,
+        ...properties,
+      });
+    } else {
+      // Handle undefined objects
+      const { state, ...restProperties } = properties;
+      const fakeState = ref(Object.fromEntries(Object.keys(rulesDef.value).map((key) => [key, undefined])));
+
+      return createReactiveNestedStatus({
+        rulesDef,
+        externalErrors: externalErrors as any,
+        ...restProperties,
+        state: fakeState,
+      });
+    }
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
       rulesDef,
@@ -494,5 +507,5 @@ export function createReactiveChildrenStatus({
     });
   }
 
-  return null;
+  return undefined;
 }

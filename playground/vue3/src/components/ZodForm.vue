@@ -11,6 +11,11 @@
       <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
+    <select v-if="r$.$fields.gift" v-model="r$.$fields.gift.$fields.type">
+      <option value="Cash">Cash</option>
+      <option value="Shares">Shares</option>
+    </select>
+
     <template v-for="(input, index) of form.nested" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
@@ -40,13 +45,17 @@ import { nextTick, reactive, ref } from 'vue';
 import { z } from 'zod';
 
 type Form = {
-  email: string;
+  enum: 'Salmon' | 'Tuna' | 'Trout';
+  email: string | number;
   firstName?: number;
+  discri?: { status: 'success'; data: string } | { status: 'failed'; error: Error };
   nested: [{ name: string }];
+  gift?: z.infer<typeof Gift>;
 };
 
 const form = reactive<Form>({
   email: '',
+  enum: 'Salmon',
   firstName: 0,
   nested: [{ name: '' }],
 });
@@ -59,26 +68,44 @@ const externalErrors = ref<RegleExternalErrorTree<Form>>({
   email: [''],
 });
 
-const schema = z
-  .array(
-    z.object({
-      name: z.string().min(1, 'Required'),
-    })
-  )
-  .catch([{ name: '' }]);
-
-const foo: z.ZodType<z.objectOutputType<{ name: z.ZodType<string | unknown> }, any>> = z.object({
-  name: z.string().min(1, 'Required').catch('foo'),
+const GiftType = z.enum(['Cash', 'Shares'], {
+  required_error: 'Please select an option',
 });
+
+const CashGift = z.object({
+  type: z.literal(GiftType.Values.Cash),
+  amount: z.number().nonnegative().finite(),
+});
+
+const SharesGift = z.object({
+  type: z.literal(GiftType.Values.Shares),
+  shares: z
+    .number({
+      invalid_type_error: 'Shares must be a number',
+    })
+    .int()
+    .nonnegative('Must be a positive number')
+    .finite(),
+  company: z
+    .string({
+      required_error: "Company can't be empty",
+    })
+    .nonempty("Company can't be empty"),
+});
+const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
+
+type foo = typeof Gift extends z.ZodDiscriminatedUnion<any, infer U> ? U[number] : never;
 
 const { r$ } = useZodRegle(
   form,
   z.object({
-    email: z
-      .string({ required_error: 'foobar' })
-      .min(1)
-      .email({ message: 'This must be an email' })
-      .refine((val) => val === 'foo@free.fr', 'Bite'),
+    enum: z.enum(['Salmon', 'Tuna', 'Trout']),
+    email: z.union([z.string(), z.number()]),
+    discri: z.discriminatedUnion('status', [
+      z.object({ status: z.literal('success'), data: z.string() }),
+      z.object({ status: z.literal('failed'), error: z.instanceof(Error) }),
+    ]),
+    gift: Gift,
     firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
     nested: z
       .array(
@@ -86,7 +113,6 @@ const { r$ } = useZodRegle(
           name: z.string().min(1, 'Required'),
         })
       )
-      .default([])
       .catch([]),
   }),
   { externalErrors }
