@@ -9,7 +9,6 @@ export function zodDiscriminatedUnionToRegle(
   def: z.ZodDiscriminatedUnionDef<any>,
   state: unknown
 ): ReglePartialRuleTree<any, any> {
-  console.log(def, state);
   if (isObject(state) && state[def.discriminator]) {
     const selectedDiscriminant = def.optionsMap.get(state[def.discriminator]);
     if (selectedDiscriminant) {

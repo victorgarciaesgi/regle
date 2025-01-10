@@ -11,15 +11,35 @@
       <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
-    <select v-if="r$.$fields.gift" v-model="r$.$fields.gift.$fields.type">
+    <select v-if="r$.$fields.gift" v-model="r$.$fields.gift.$fields.type.$value">
+      <option disabled value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
     </select>
+    <ul>
+      <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
+    </ul>
+
+    <template v-if="r$.$value.gift?.type === 'Cash'">
+      <input v-model.number="r$.$value.gift.amount" placeholder="amount" />
+      <ul>
+        <li v-for="error of r$.$errors.gift?.amount" :key="error">{{ error }}</li>
+      </ul>
+    </template>
+    <template v-else-if="r$.$value.gift?.type === 'Shares'">
+      <input v-model="r$.$value.gift.company" placeholder="company" />
+      <ul>
+        <li v-for="error of r$.$errors.gift?.company" :key="error">{{ error }}</li>
+      </ul>
+      <input v-model.number="r$.$value.gift.shares" placeholder="shares" />
+      <ul>
+        <li v-for="error of r$.$errors.gift?.shares" :key="error">{{ error }}</li>
+      </ul>
+    </template>
 
     <template v-for="(input, index) of form.nested" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
-        <!-- TODO types for collections errors -->
         <li v-for="error of r$.$errors.nested.$each[index].name" :key="error">
           {{ error }}
         </li>
@@ -32,7 +52,7 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ r$ }}
+{{ r$.$fields.gift }}
       </code>
     </pre>
   </div>
@@ -42,7 +62,17 @@
 import type { Maybe, RegleExternalErrorTree } from '@regle/core';
 import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive, ref } from 'vue';
-import { z } from 'zod';
+import { nativeEnum, z } from 'zod';
+
+enum MyEnum {
+  Foo = 'Foo',
+  Bar = 'Bar',
+}
+
+enum MyEnum2 {
+  Foo2 = 'Foo',
+  Bar2 = 'Bar',
+}
 
 type Form = {
   enum: 'Salmon' | 'Tuna' | 'Trout';
@@ -51,6 +81,7 @@ type Form = {
   discri?: { status: 'success'; data: string } | { status: 'failed'; error: Error };
   nested: [{ name: string }];
   gift?: z.infer<typeof Gift>;
+  nativeEnum?: MyEnum;
 };
 
 const form = reactive<Form>({
@@ -94,13 +125,12 @@ const SharesGift = z.object({
 });
 const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
 
-type foo = typeof Gift extends z.ZodDiscriminatedUnion<any, infer U> ? U[number] : never;
-
 const { r$ } = useZodRegle(
   form,
   z.object({
     enum: z.enum(['Salmon', 'Tuna', 'Trout']),
-    email: z.union([z.string(), z.number()]),
+    nativeEnum: z.nativeEnum(MyEnum),
+    email: z.union([z.number(), z.string()]),
     discri: z.discriminatedUnion('status', [
       z.object({ status: z.literal('success'), data: z.string() }),
       z.object({ status: z.literal('failed'), error: z.instanceof(Error) }),

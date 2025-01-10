@@ -63,7 +63,6 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
           return [key, {}];
         })
       );
-      console.log(rules.value);
     }
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;

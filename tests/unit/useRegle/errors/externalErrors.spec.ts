@@ -12,7 +12,7 @@ import {
 } from '../../../utils/validations.utils';
 
 describe('external errors', () => {
-  it.only('should behave correctly when no client rule are present', async () => {
+  it('should behave correctly when no client rule are present', async () => {
     function nestedExternalErrorsOnly() {
       interface Form {
         root: string;
@@ -39,9 +39,9 @@ describe('external errors', () => {
 
     await nextTick();
 
-    // shouldBeUnRuledPristineField(vm.r$.$fields.root);
-    // shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    // shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeUnRuledPristineField(vm.r$.$fields.root);
+    shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
 
     expect(vm.r$.$ready).toBe(false);
 

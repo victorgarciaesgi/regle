@@ -40,6 +40,9 @@ export type ExcludeByType<T, U> = {
 
 export type PrimitiveTypes = string | number | boolean | bigint | Date | File;
 
+export type isRecordLiteral<T extends unknown> =
+  NonNullable<T> extends Date | File ? false : NonNullable<T> extends Record<string, any> ? true : false;
+
 export type NonPresentKeys<TSource extends Record<string, any>, Target extends Record<string, any>> = Omit<
   Target,
   keyof TSource
