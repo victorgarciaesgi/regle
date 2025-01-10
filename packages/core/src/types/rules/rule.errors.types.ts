@@ -1,14 +1,19 @@
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type { ExtendOnlyRealRecord, Maybe, Prettify } from '../utils';
+import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, Maybe, Prettify } from '../utils';
 import type { ReglePartialRuleTree } from './rule.declaration.types';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
-  readonly [K in keyof UnwrapNestedRefs<TState>]: RegleValidationErrors<UnwrapNestedRefs<TState>[K]>;
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>]: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K]
+  >;
 };
 
 export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
-  readonly [K in keyof UnwrapNestedRefs<TState>]?: RegleValidationErrors<UnwrapNestedRefs<TState>[K], true>;
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>]?: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K],
+    true
+  >;
 };
 
 export type RegleValidationErrors<

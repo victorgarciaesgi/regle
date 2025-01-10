@@ -1,3 +1,4 @@
+import { isObject } from '../../../../../shared';
 import type {
   $InternalRegleErrors,
   $InternalRegleCollectionStatus,
@@ -8,7 +9,6 @@ import type {
   RegleCollectionErrors,
   RegleExternalErrorTree,
 } from '../../../types';
-import { isObject } from '../../../utils';
 
 export function isNestedRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleStatus {
   return isObject(rule) && '$fields' in rule;

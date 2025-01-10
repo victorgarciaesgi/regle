@@ -58,4 +58,5 @@ export type {
   NoInferLegacy,
   PrimitiveTypes,
   $InternalRegleStatus,
+  JoinDiscriminatedUnions,
 } from './types';

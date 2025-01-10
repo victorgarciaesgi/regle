@@ -282,7 +282,7 @@ export function createReactiveFieldStatus({
         if (externalErrors?.value?.length) {
           return false;
         } else if (isEmpty($rules.value)) {
-          return false;
+          return true;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           return Object.values($rules.value).every((ruleResult) => {
             return ruleResult.$valid && ruleResult.$active;

@@ -5,16 +5,21 @@ import type {
   $InternalReglePartialRuleTree,
   $InternalRegleRuleDecl,
   InlineRuleDeclaration,
-  MaybeGetter,
   RegleRuleDefinition,
 } from '../../../types';
-import { isObject } from '../../../utils';
+import { isEmpty, isObject } from '../../../../../shared';
+import { isRefObject } from '../../../utils';
 
 export function isNestedRulesDef(
   state: Ref<unknown>,
   rules: Ref<$InternalFormPropertyTypes>
 ): rules is Ref<$InternalReglePartialRuleTree> {
-  return isObject(state.value) && isObject(rules.value) && !Object.entries(rules.value).some((rule) => isRuleDef(rule));
+  return (
+    isRefObject(state) ||
+    (isObject(rules.value) &&
+      !isEmpty(rules.value) &&
+      !Object.entries(rules.value).some(([key, rule]) => isRuleDef(rule) || typeof rule === 'function'))
+  );
 }
 
 export function isCollectionRulesDef(

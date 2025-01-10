@@ -1,14 +1,16 @@
 import type {
+  JoinDiscriminatedUnions,
+  PrimitiveTypes,
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
-import type { PartialDeep } from 'type-fest';
-import type { z } from 'zod';
+import type { KeysOfUnion, PartialDeep, UnionToIntersection, UnionToTuple } from 'type-fest';
+import type { z, ZodType, ZodTypeAny } from 'zod';
 import type { toZod } from './zod.types';
-import type { GetNestedZodSchema } from './utils.types';
+import type { GetNestedZodSchema, Prettify } from './utils.types';
 
 export interface ZodRegle<
   TState extends Record<string, any>,
@@ -31,17 +33,32 @@ export type ZodRegleStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState> & {
   readonly $fields: TSchema extends z.ZodObject<infer O extends z.ZodRawShape>
-    ? keyof TState extends keyof O
-      ? {
-          readonly [TKey in keyof TState]: O[TKey] extends z.ZodTypeAny
-            ? InferZodRegleStatusType<O[TKey], TState, TKey, TShortcuts>
-            : never;
-        } & {
-          readonly [TKey in keyof TState as O[TKey] extends NonNullable<O[TKey]>
-            ? TKey
-            : never]-?: InferZodRegleStatusType<NonNullable<O[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
-        }
-      : {}
+    ? {
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<O>
+          ? JoinDiscriminatedUnions<O>[TKey] extends z.ZodTypeAny
+            ? InferZodRegleStatusType<JoinDiscriminatedUnions<O>[TKey], TState, TKey, TShortcuts>
+            : never
+          : never;
+      } & {
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<O>
+          ? JoinDiscriminatedUnions<O>[TKey] extends NonNullable<JoinDiscriminatedUnions<O>[TKey]>
+            ? JoinDiscriminatedUnions<O>[TKey] extends z.ZodType<infer Z extends PrimitiveTypes>
+              ? TKey
+              : never
+            : never
+          : never]-?: TKey extends keyof JoinDiscriminatedUnions<O>
+          ? InferZodRegleStatusType<
+              NonNullable<
+                JoinDiscriminatedUnions<O>[TKey] extends ZodTypeAny
+                  ? NonNullable<JoinDiscriminatedUnions<O>[TKey]>
+                  : never
+              >,
+              NonNullable<TState>,
+              TKey,
+              TShortcuts
+            >
+          : never;
+      }
     : {};
   readonly $errors: RegleErrorTree<TState>;
   readonly $silentErrors: RegleErrorTree<TState>;
@@ -54,6 +71,18 @@ export type ZodRegleStatus<
         [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;
       });
 
+type test = JoinDiscriminatedUnions<
+  | {
+      type: z.ZodLiteral<'Cash'>;
+      amount: z.ZodNumber;
+    }
+  | {
+      type: z.ZodLiteral<'Shares'>;
+      shares: z.ZodNumber;
+      company: z.ZodString;
+    }
+>;
+type foo = 'type' | 'amount' | 'shares' | 'company' extends keyof test ? true : false;
 /**
  * @public
  */
@@ -69,7 +98,9 @@ export type InferZodRegleStatusType<
       ? TState[TKey] extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
         : ZodRegleStatus<TState[TKey], GetNestedZodSchema<TSchema>, TShortcuts>
-      : ZodRegleFieldStatus<GetNestedZodSchema<TSchema>, TState[TKey], TKey, TShortcuts>;
+      : GetNestedZodSchema<TSchema> extends z.ZodDiscriminatedUnion<any, infer U>
+        ? ZodRegleStatus<TState[TKey], U[number], TShortcuts>
+        : ZodRegleFieldStatus<GetNestedZodSchema<TSchema>, TState[TKey], TKey, TShortcuts>;
 
 /**
  * @public

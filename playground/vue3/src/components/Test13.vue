@@ -3,9 +3,11 @@
     <button @click="() => r$.$validate()">validate</button>
     <br />
     <br />
-    <input type="checkbox" v-model="data.name" />
+    <input type="text" v-model="data.a.one.two.three" />
 
-    {{ r$.$errors }}
+    <pre>
+      {{ r$ }}
+    </pre>
   </main>
 </template>
 
@@ -14,23 +16,23 @@ import { useRegle } from '@regle/core';
 import { and, applyIf, checked, minLength, required, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 
-const condition = ref(true);
-
-const data = ref<{ name?: boolean }>({
-  name: undefined,
+const data = ref({
+  a: {
+    one: {
+      two: { three: '' },
+    },
+    two: { three: { four: {} } },
+    three: { four: '' },
+  },
+  b: {},
+  c: {},
 });
 
 const { r$ } = useRegle(data, {
-  name: {
-    checked: withMessage(
-      applyIf(
-        () => {
-          return condition.value;
-        },
-        and(required, checked)
-      ),
-      'The terms and conditions must be accepted'
-    ),
+  a: {
+    one: { two: { three: { required } } },
   },
 });
+
+r$.$reset();
 </script>

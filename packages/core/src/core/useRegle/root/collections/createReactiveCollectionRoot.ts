@@ -44,7 +44,7 @@ export function createReactiveCollectionStatus({
   initialState,
   shortcuts,
   fieldName,
-}: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | null {
+}: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | undefined {
   interface ScopeReturnState {
     $dirty: ComputedRef<boolean>;
     $anyDirty: ComputedRef<boolean>;
@@ -72,7 +72,7 @@ export function createReactiveCollectionStatus({
   let collectionScopes: EffectScope[] = [];
 
   if (!Array.isArray(state.value) && !rulesDef.value.$each) {
-    return null;
+    return undefined;
   }
   const $id = ref<string>() as Ref<string>;
   const $value = ref(state.value);

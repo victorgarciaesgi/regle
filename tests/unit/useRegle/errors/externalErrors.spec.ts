@@ -37,6 +37,8 @@ describe('external errors', () => {
     }
     const { vm } = createRegleComponent(nestedExternalErrorsOnly);
 
+    await nextTick();
+
     shouldBeUnRuledPristineField(vm.r$.$fields.root);
     shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
     shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
@@ -69,9 +71,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
 
@@ -165,9 +165,7 @@ describe('external errors', () => {
       'This field is required',
       'Server Error',
     ]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([
-      'This field is required',
-    ]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
       'This field is required',
       'Server Error',
@@ -211,9 +209,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
   });
@@ -298,9 +294,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
 
@@ -319,9 +313,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
 
@@ -344,9 +336,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
 
@@ -422,9 +412,7 @@ describe('external errors', () => {
     expect(vm.r$.$valid).toBe(false);
 
     expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'Server Error',
-    ]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
 
