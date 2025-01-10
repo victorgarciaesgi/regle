@@ -9,6 +9,7 @@ import type {
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
+  JoinDiscriminatedUnions,
   Maybe,
   PrimitiveTypes,
   RegleCollectionErrors,
@@ -218,9 +219,9 @@ export interface RegleCommonStatus<TValue = any> {
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
-  $value: UnwrapNestedRefs<TValue>;
+  $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
-  $silentValue: UnwrapNestedRefs<TValue>;
+  $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** Marks the field and all nested properties as $dirty. */
   $touch(runCommit?: boolean, withConditions?: boolean): void;
   /** Resets the $dirty state on all nested properties of a form. */

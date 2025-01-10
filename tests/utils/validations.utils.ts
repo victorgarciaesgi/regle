@@ -69,7 +69,7 @@ export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | ZodR
   expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$pending).toBe(false);
-  expect(field?.$valid).toBe(false);
+  expect(field?.$valid).toBe(true);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
 }
@@ -80,19 +80,23 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$dirty).toBe(false);
   expect(field?.$anyDirty).toBe(false);
   expect(field?.$pending).toBe(false);
-  expect(field?.$valid).toBe(false);
+  expect(field?.$valid).toBe(true);
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any>) {
+export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> | ZodRegleFieldStatus<any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
-  expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$pending).toBe(false);
-  expect(field?.$valid).toBe(false);
+  expect(field?.$dirty).toBe(true);
+  if (field?.$rules && Object.keys(field?.$rules).length) {
+    expect(field?.$valid).toBe(false);
+  } else {
+    expect(field?.$valid).toBe(true);
+  }
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);

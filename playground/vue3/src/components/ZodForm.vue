@@ -52,7 +52,8 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ r$.$fields.gift }}
+{{ r$.$fields.gift?.$valid }}
+{{ r$.$fields.gift?.$fields }}
       </code>
     </pre>
   </div>
@@ -93,6 +94,8 @@ const form = reactive<Form>({
 
 async function submit() {
   const { result, data } = await r$.$validate();
+  console.log(result);
+  console.log(r$.$errors);
 }
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({
