@@ -227,7 +227,7 @@ export function createReactiveNestedStatus({
 
       const $anyDirty = computed<boolean>(() => {
         return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$dirty;
+          return statusOrField?.$anyDirty;
         });
       });
 

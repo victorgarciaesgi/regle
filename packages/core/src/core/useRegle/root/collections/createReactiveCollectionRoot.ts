@@ -268,7 +268,7 @@ export function createReactiveCollectionStatus({
         return (
           $fieldStatus.value.$anyDirty ||
           $eachStatus.value.some((statusOrField) => {
-            return statusOrField.$dirty;
+            return statusOrField.$anyDirty;
           })
         );
       });
