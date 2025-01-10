@@ -18,7 +18,7 @@
     "zod": "3.24.1"
   },
   "devDependencies": {
-    "nuxt": "^3.15.0",
+    "nuxt": "^3.15.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

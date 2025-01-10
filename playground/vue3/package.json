@@ -17,13 +17,13 @@
     "@regle/valibot": "workspace:*",
     "@regle/zod": "workspace:*",
     "pinia": "2.3.0",
-    "valibot": "1.0.0-beta.9",
+    "valibot": "1.0.0-beta.11",
     "vue": "catalog:"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.1.7",
     "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.10.5",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.0.0",
     "@vue/eslint-config-typescript": "^14.2.0",
