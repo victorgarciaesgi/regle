@@ -11,7 +11,6 @@ import type {
   InlineRuleDeclaration,
   JoinDiscriminatedUnions,
   Maybe,
-  PrimitiveTypes,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,

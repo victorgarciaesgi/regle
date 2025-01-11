@@ -11,7 +11,7 @@
       <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
     </ul>
 
-    <select v-if="r$.$fields.gift" v-model="r$.$fields.gift.$fields.type.$value">
+    <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
       <option disabled value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
@@ -26,7 +26,7 @@
         <li v-for="error of r$.$errors.gift?.amount" :key="error">{{ error }}</li>
       </ul>
     </template>
-    <template v-else-if="r$.$fields.gift?.$fields.type.$value === 'Shares'">
+    <template v-else-if="r$.$value.gift?.type === 'Shares'">
       <input v-model="r$.$value.gift.company" placeholder="company" />
       <ul>
         <li v-for="error of r$.$errors.gift?.company" :key="error">{{ error }}</li>
@@ -53,7 +53,7 @@
     <pre style="max-width: 100%">
       <code>
 {{ r$.$fields.gift?.$valid }}
-{{ r$.$fields.gift?.$fields }}
+{{ r$.$fields.gift }}
       </code>
     </pre>
   </div>
@@ -81,7 +81,7 @@ type Form = {
   firstName?: number;
   discri?: { status: 'success'; data: string } | { status: 'failed'; error: Error };
   nested: [{ name: string }];
-  gift?: z.infer<typeof Gift>;
+  gift: z.infer<typeof Gift>;
   nativeEnum?: MyEnum;
 };
 
@@ -90,6 +90,7 @@ const form = reactive<Form>({
   enum: 'Salmon',
   firstName: 0,
   nested: [{ name: '' }],
+  gift: {} as any,
 });
 
 async function submit() {
