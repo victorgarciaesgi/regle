@@ -80,7 +80,7 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$dirty).toBe(false);
   expect(field?.$anyDirty).toBe(false);
   expect(field?.$pending).toBe(false);
-  expect(field?.$valid).toBe(true);
+  expect(field?.$valid).toBe(false);
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
@@ -92,11 +92,7 @@ export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> |
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$dirty).toBe(true);
-  if (field?.$rules && Object.keys(field?.$rules).length) {
-    expect(field?.$valid).toBe(false);
-  } else {
-    expect(field?.$valid).toBe(true);
-  }
+  expect(field?.$valid).toBe(false);
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);

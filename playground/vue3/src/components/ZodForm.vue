@@ -26,7 +26,7 @@
         <li v-for="error of r$.$errors.gift?.amount" :key="error">{{ error }}</li>
       </ul>
     </template>
-    <template v-else-if="r$.$value.gift?.type === 'Shares'">
+    <template v-else-if="r$.$fields.gift?.$fields.type.$value === 'Shares'">
       <input v-model="r$.$value.gift.company" placeholder="company" />
       <ul>
         <li v-for="error of r$.$errors.gift?.company" :key="error">{{ error }}</li>

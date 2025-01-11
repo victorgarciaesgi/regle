@@ -116,6 +116,7 @@ export type ZodRegleFieldStatus<
   readonly $externalErrors?: string[];
   readonly $errors: string[];
   readonly $silentErrors: string[];
+  readonly $inactive: boolean;
   readonly $rules: {
     [Key in `${string & TSchema['_def']['typeName']}`]: RegleRuleStatus<TState[TKey], []>;
   };

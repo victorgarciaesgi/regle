@@ -5,6 +5,8 @@ import type { EnumLike, z, ZodTypeAny } from 'zod';
 
 // -- Utils
 
+type MaybeZodType<T> = z.ZodType<Maybe<T>, any, CatchableMaybe<T>>;
+
 type CatchableMaybe<T> = Maybe<T> | unknown;
 type TupleToZodTuple<T extends readonly any[]> = T extends [infer F, ...infer R]
   ? [ZodChild<F>, ...TupleToZodTuple<R>]
@@ -22,24 +24,25 @@ type TupleToAnyOrderTuple<T extends readonly any[], V extends readonly any[] = T
   ? [V[number], ...TupleToAnyOrderTuple<R, T>]
   : [];
 
-type UnionToZodEnum<T> = z.ZodEnum<
-  TupleToEnum<UnionToTuple<T>> extends [string, ...string[]] ? TupleToEnum<UnionToTuple<T>> : [string, ...string[]]
+type UnionToZodEnum<T> = MaybeZodType<
+  (TupleToEnum<UnionToTuple<T>> extends [string, ...string[]]
+    ? TupleToEnum<UnionToTuple<T>>
+    : [string, ...string[]])[number]
 >;
 
 type MaybeUnion<TUnion extends EnumLike | unknown, TFix = UnionToTuple<TUnion>[number]> =
-  | z.ZodDiscriminatedUnion<
-      any,
-      TupleToZodDiscrimatedTuple<UnionToTuple<TFix>> extends [z.ZodObject<any>, ...z.ZodObject<any>[]]
+  | MaybeZodType<
+      (TupleToZodDiscrimatedTuple<UnionToTuple<TFix>> extends [z.ZodObject<any>, ...z.ZodObject<any>[]]
         ? TupleToAnyOrderTuple<TupleToZodDiscrimatedTuple<UnionToTuple<TFix>>>
-        : [z.ZodDiscriminatedUnionOption<any>, ...z.ZodDiscriminatedUnionOption<any>[]]
+        : [z.ZodDiscriminatedUnionOption<any>, ...z.ZodDiscriminatedUnionOption<any>[]])[number]
     >
-  | z.ZodUnion<
-      TupleToZodTuple<UnionToTuple<TFix>> extends [ZodTypeAny, ...ZodTypeAny[]]
+  | MaybeZodType<
+      (TupleToZodTuple<UnionToTuple<TFix>> extends [ZodTypeAny, ...ZodTypeAny[]]
         ? TupleToAnyOrderTuple<TupleToZodTuple<UnionToTuple<TFix>>>
-        : [ZodTypeAny, ...ZodTypeAny[]]
+        : [ZodTypeAny, ...ZodTypeAny[]])[number]
     >
   | UnionToZodEnum<TFix>
-  | z.ZodNativeEnum<Record<TFix extends string ? TFix : any, any>>;
+  | MaybeZodType<TUnion>;
 
 // Exports
 export type ZodObj<T extends Record<PropertyKey, any>> = {
@@ -50,12 +53,12 @@ export type ZodChild<T extends any, TFix = UnionToTuple<T>[number]> = NonNullabl
   IsUnion<NonNullable<TFix>> extends true
     ? MaybeUnion<NonNullable<TFix>>
     : T extends Array<infer A>
-      ? z.ZodType<Maybe<z.arrayOutputType<ZodArrayChild<A>>>, any, CatchableMaybe<T>>
+      ? MaybeZodType<z.arrayOutputType<ZodArrayChild<A>>>
       : T extends Date | File
-        ? z.ZodType<Maybe<T>, z.ZodTypeDef, CatchableMaybe<T>>
+        ? MaybeZodType<T>
         : T extends Record<string, any>
-          ? z.ZodType<Maybe<z.objectOutputType<ZodObj<T>, any>>, any, CatchableMaybe<T>> | z.ZodNativeEnum<T>
-          : z.ZodType<Maybe<T>, z.ZodTypeDef, CatchableMaybe<T>>
+          ? MaybeZodType<z.objectOutputType<ZodObj<T>, any>> | /** Enum */ MaybeZodType<T[keyof T]>
+          : MaybeZodType<T>
 >;
 
 /** Duplicate to avoid circular references */

@@ -155,8 +155,12 @@ export type RegleFieldStatus<
   readonly $errors: string[];
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
+  /** Stores external errors of the current field */
   readonly $externalErrors: string[];
+  /** Stores active tooltips messages of the current field */
   readonly $tooltips: string[];
+  /** Represents the inactive status. Is true when this state have empty rules */
+  readonly $inactive: boolean;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => Maybe<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -191,6 +195,7 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
   readonly $rules: Record<string, $InternalRegleRuleStatus>;
   readonly $externalErrors?: string[];
   readonly $errors: string[];
+  readonly $inactive: boolean;
   readonly $silentErrors: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: () => Promise<$InternalRegleResult>;

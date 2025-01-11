@@ -54,6 +54,7 @@ export function createReactiveFieldStatus({
     $dirty: Ref<boolean>;
     triggerPunishment: Ref<boolean>;
     $silentValue: ComputedRef<any>;
+    $inactive: ComputedRef<boolean>;
     processShortcuts: () => void;
   }
 
@@ -278,11 +279,18 @@ export function createReactiveFieldStatus({
 
       const $name = computed<string>(() => fieldName);
 
+      const $inactive = computed<boolean>(() => {
+        if (isEmpty($rules.value)) {
+          return true;
+        }
+        return false;
+      });
+
       const $valid = computed<boolean>(() => {
         if (externalErrors?.value?.length) {
           return false;
-        } else if (isEmpty($rules.value)) {
-          return true;
+        } else if ($inactive.value) {
+          return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
           return Object.values($rules.value).every((ruleResult) => {
             return ruleResult.$valid && ruleResult.$active;
@@ -323,6 +331,7 @@ export function createReactiveFieldStatus({
                     $anyDirty,
                     $tooltips,
                     $name,
+                    $inactive,
                   })
                 );
               });
@@ -336,8 +345,8 @@ export function createReactiveFieldStatus({
 
       const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
 
-      watch($valid, (value) => {
-        if (value) {
+      watch($invalid, (value) => {
+        if (!value) {
           triggerPunishment.value = false;
         }
       });
@@ -365,6 +374,7 @@ export function createReactiveFieldStatus({
         triggerPunishment,
         processShortcuts,
         $silentValue,
+        $inactive,
       } satisfies ScopeReturnState;
     })!;
 

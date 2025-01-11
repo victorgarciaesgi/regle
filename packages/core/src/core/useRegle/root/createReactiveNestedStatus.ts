@@ -15,7 +15,7 @@ import type {
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
-import { isCollectionRulesDef, isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
@@ -216,28 +216,37 @@ export function createReactiveNestedStatus({
       const $dirty = computed<boolean>(() => {
         return (
           !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).every(([key, statusOrField]) => {
+          Object.entries($fields.value).every(([_, statusOrField]) => {
             return statusOrField?.$dirty;
           })
         );
       });
 
       const $anyDirty = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
+        return Object.entries($fields.value).some(([_, statusOrField]) => {
           return statusOrField?.$anyDirty;
         });
       });
 
       const $invalid = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
+        return Object.entries($fields.value).some(([_, statusOrField]) => {
           return statusOrField?.$invalid;
         });
       });
 
       const $valid = computed<boolean>(() => {
-        return Object.entries($fields.value).every(([key, statusOrField]) => {
-          return statusOrField?.$valid;
+        const fields = Object.entries($fields.value).filter(([_, statusOrField]) => {
+          if (isFieldStatus(statusOrField)) {
+            return !statusOrField.$inactive;
+          }
+          return true;
         });
+        if (fields.length) {
+          return fields.every(([_, statusOrField]) => {
+            return statusOrField?.$valid;
+          });
+        }
+        return false;
       });
 
       const $error = computed<boolean>(() => $anyDirty.value && !$pending.value && $invalid.value);

@@ -101,6 +101,7 @@ export type ValibotRegleFieldStatus<
   readonly $externalErrors?: string[];
   readonly $errors: string[];
   readonly $silentErrors: string[];
+  readonly $inactive: boolean;
   readonly $rules: TSchema extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>
     ? {
         [Key in `${string & TSchema['type']}`]: RegleRuleStatus<TState, []>;
