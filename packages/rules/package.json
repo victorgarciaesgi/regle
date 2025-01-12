@@ -1,6 +1,6 @@
 {
   "name": "@regle/rules",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
