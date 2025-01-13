@@ -19,7 +19,7 @@
 # Regle
 
 
-Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript-first model-based form validation library for Vue 3.
+Regle \ʁɛɡl\ (French word for 'rule' ) is a type-safe model-based form validation library for Vue 3.
 
 It's heavily inspired by Vuelidate.
 
@@ -51,6 +51,7 @@ It's heavily inspired by Vuelidate.
 
 - [Johannes Lacourly](https://www.behance.net/johanneslaf7dc) for designing logo and banners 🪄
 - [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
+- [Vuelidate](https://vuelidate-next.netlify.app) Which I loved and used for 8 years, and is my main inspiration for creating Regle
 
 
 ## Example

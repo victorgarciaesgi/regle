@@ -246,7 +246,7 @@ export default defineConfig({
       'meta',
       {
         property: 'description',
-        content: `Regle is a TypeScript-first form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms`,
+        content: `Regle is a type safe form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms`,
       },
     ],
     [

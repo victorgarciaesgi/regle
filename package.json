@@ -2,7 +2,7 @@
   "name": "regle",
   "version": "0.5.10",
   "private": true,
-  "description": "Typescript-first model-based form validation library for Vue 3",
+  "description": "Type safe model-based form validation library for Vue.js",
   "scripts": {
     "lint": "eslint packages/**",
     "lint:fix": "eslint packages/** --fix",
