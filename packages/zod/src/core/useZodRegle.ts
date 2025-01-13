@@ -7,13 +7,12 @@ import type {
   ResolvedRegleBehaviourOptions,
   Unwrap,
 } from '@regle/core';
-import { useRegle, useRootStorage } from '@regle/core';
+import { useRootStorage } from '@regle/core';
 import type { MaybeRef, Ref } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
+import { cloneDeep } from '../../../shared';
 import type { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
 import { processZodTypeDef } from './parser/processZodTypeDef';
-import type { RequiredDeep } from 'type-fest';
-import { cloneDeep } from '../../../shared';
 
 export type useZodRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
@@ -28,11 +27,11 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
   options?: RegleBehaviourOptions,
   shortcuts?: RegleShortcutDefinition | undefined
 ): useZodRegleFn<TShortcuts> {
-  const globalOptions: RequiredDeep<RegleBehaviourOptions> = {
-    autoDirty: options?.autoDirty ?? true,
-    lazy: options?.lazy ?? false,
-    rewardEarly: options?.rewardEarly ?? false,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange ?? true,
+  const globalOptions: RegleBehaviourOptions = {
+    autoDirty: options?.autoDirty,
+    lazy: options?.lazy,
+    rewardEarly: options?.rewardEarly,
+    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
   function useZodRegle<

@@ -23,16 +23,18 @@ const { r$ } = useRegle({}, {}, {""})
 ```
 
 ### `autoDirty`
-Type: `boolean`
 
-Default: `true`
+__Type__: `boolean`
+
+__Default__: `true`
 
 Automatically tracks changes in the state for all nested rules. If set to `false`, you must manually call `$touch` to mark fields as dirty.
 
 ### `lazy`
-Type: `boolean`
 
-Default: `false`
+__Type__: `boolean`
+
+__Default__: `false`
 
 Usage:
 
@@ -40,7 +42,7 @@ When set to false, tells the rules to be called on init, otherwise they are lazy
 
 ### `externalErrors`
 
-Type: `RegleExternalErrorTree<State>` 
+__Type__: `RegleExternalErrorTree<State>` 
 
 Pass an object, matching your error state, that holds external validation errors. These can be from a backend validations or something else.
 
@@ -83,26 +85,28 @@ Result:
 
 ### `rewardEarly`
 
-Type: `boolean`
+__Type__: `boolean`
 
-Default: `false`
+__Default__: `false`
+
+__Side effect__: disable `$autoDirty` when `true`.
 
 Enables the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method.
 
-This will have an effect only if you use `autoDirty: false`.
+This will have no effect only if you use `autoDirty: true`.
 
 ### `clearExternalErrorsOnChange`
 
-Type: `boolean`
+__Type__: `boolean`
 
-Default: `true`
+__Default__: `true`
 
 This mode is similar to `rewardEarly`, but only applies to external errors.
 Setting it to `false` will keep the server errors until `$clearExternalErrors` is called.
 
 ### `validationGroups`
 
-Type: `(fields) => Record<string, (RegleFieldStatus |RegleCollectionStatus)[]>`
+__Type__: `(fields) => Record<string, (RegleFieldStatus |RegleCollectionStatus)[]>`
 
 Validation groups let you merge field properties under one, to better handle validation status.
 

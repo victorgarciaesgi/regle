@@ -6,8 +6,9 @@
         :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
         placeholder="Type your name"
       />
-      
+
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
 
     <ul v-if="r$.$errors.name.length">

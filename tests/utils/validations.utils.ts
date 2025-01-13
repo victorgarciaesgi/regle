@@ -31,6 +31,7 @@ export function shouldBeInvalidField(field?: PossibleFields) {
     expect(field?.$anyDirty).toBe(false);
   }
   expect(field?.$pending).toBe(false);
+  expect(field?.$ready).toBe(false);
   expect(field?.$valid).toBe(false);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
@@ -42,6 +43,7 @@ export function shouldBeErrorField(field?: PossibleFields) {
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$dirty).toBe(true);
   }
+  expect(field?.$ready).toBe(false);
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(false);
@@ -54,6 +56,7 @@ export function shouldBeValidField(field?: PossibleFields) {
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
+  expect(field?.$ready).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(true);
   if (field && !('$fields' in field) && !('$each' in field)) {
@@ -68,6 +71,7 @@ export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | ZodR
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
+  expect(field?.$ready).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(true);
   expect(field?.$touch).toBeInstanceOf(Function);
@@ -79,6 +83,7 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
   expect(field?.$anyDirty).toBe(false);
+  expect(field?.$ready).toBe(false);
   expect(field?.$pending).toBe(false);
   expect(field?.$valid).toBe(false);
   expect(field?.$errors).toStrictEqual([]);
@@ -93,6 +98,7 @@ export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> |
   expect(field?.$pending).toBe(false);
   expect(field?.$dirty).toBe(true);
   expect(field?.$valid).toBe(false);
+  expect(field?.$ready).toBe(true);
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);

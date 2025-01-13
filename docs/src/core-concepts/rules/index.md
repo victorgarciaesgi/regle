@@ -28,22 +28,85 @@ You can jump directly to the [createRule section](/core-concepts/rules/reusable-
 
 You can write inline rules as simple functions that receive the value being evaluated as a parameter. Use the `InlineRuleDeclaration` type helper for enhanced type safety.
 
-``` ts twoslash
-// @noErrors
-const someAsyncCall = async () => await Promise.resolve(true);
+Simple rule
+```ts twoslash
+import {useRegle} from '@regle/core';
 // ---cut---
-import type { Maybe, InlineRuleDeclaration } from '@regle/core';
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    simpleRule: (value) => value === 'regle'
+  }
+})
+```
 
-const customRuleInline = (value: Maybe<string>) => value === 'regle';
+Async rule
+``` ts twoslash
+const someAsyncCall = async () => await Promise.resolve(true);
+import {useRegle} from '@regle/core';
+// ---cut---
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    asyncRule: async (value) => await someAsyncCall()
+  }
+})
+```
 
-/** Async rule that will activate the $pending state of your field  */
-const customRuleInlineAsync = async (value: Maybe<string>) => {
-  return await someAsyncCall();
-};
+Rule with metadata
 
-/** You can return any data from your rule as long as the $valid property is present  */
-const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
-  $valid: value === 'regle',
-  foo: 'bar'
-})) satisfies InlineRuleDeclaration;
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    metadataRule: (value) => ({
+      $valid: value === 'regle',
+      foo: 'bar'
+    })
+  }
+})
+
+```
+
+## Adding error messages
+
+Any rule can be wrapped with the `withMessage` helper to provide error messages.
+
+```ts
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    foo: withMessage((value) => value === "foo", "Value must be 'foo'"),
+  }
+})
+```
+
+:::tip
+You can read more informations on wrappers [here](/core-concepts/rules/rule-wrappers)
+:::
+
+## Handling `optional` and `required` rules
+
+In the **Regle** pattern (borrowed from Vuelidate), all rules are by default optional.
+
+That means they will only run if a value is defined.
+
+To enforce a required field, you just have to add the `required` validator or any of it's variations.
+
+This allow to separate the core rule logic of how a field should look and whether or not it's required.
+
+It will also output better errors.
+
+
+It's advised to keep this logic in mind when writing custom rules.
+
+
+```ts
+import {isFilled} from '@regle/rules'
+
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    mustBeFoo: (value) => {
+      return isFilled(value) && value === 'foo'
+    }
+  }
+})
 ```

@@ -3,8 +3,9 @@
     <div class="row">
       <MyInput v-model="r$.$value.name" :field="r$.$fields.name" placeholder="Type your name" />
       <MyInput v-model="r$.$value.email" :field="r$.$fields.email" placeholder="Type your email" />
-      
+
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </form>
 </template>

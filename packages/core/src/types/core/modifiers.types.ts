@@ -8,32 +8,34 @@ import type {
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleStatus,
-} from '../../types/rules';
-import type { DeepMaybeRef, OmitByType, Unwrap } from '../../types/utils';
+} from '../rules';
+import type { DeepMaybeRef, OmitByType, Unwrap } from '../utils';
 
 export interface RegleBehaviourOptions {
   /**
    * Only display error when calling `r$.$validate()`
    * @default false
    */
-  lazy?: boolean;
+  lazy?: boolean | undefined;
   /**
    * Automaticaly set the dirty set without the need of `$value` or `$touch`
    * @default true
+   *
+   * @default false if rewardEarly is true
+
    */
-  autoDirty?: boolean;
+  autoDirty?: boolean | undefined;
   /**
    * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
    * @default false
-   *
    */
-  rewardEarly?: boolean;
+  rewardEarly?: boolean | undefined;
   /**
    * Define wether or not the external errors should be cleared when updating a field
    * @default true
    *
    */
-  clearExternalErrorsOnChange?: boolean;
+  clearExternalErrorsOnChange?: boolean | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<

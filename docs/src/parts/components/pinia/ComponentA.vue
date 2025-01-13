@@ -6,8 +6,9 @@
         :class="{ valid: r$.$fields.email.$valid, error: r$.$fields.email.$error }"
         placeholder="Type your email"
       />
-      
+
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </div>
 </template>

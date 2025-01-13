@@ -1,2 +1,2 @@
 export * from './useRegle.types';
-export * from './options.types';
+export * from './modifiers.types';

@@ -1,6 +1,6 @@
-import type { RequiredDeep } from 'type-fest';
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { computed, isRef, ref } from 'vue';
+import { cloneDeep } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
@@ -15,7 +15,6 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type { DeepMaybeRef, MismatchInfo, NoInferLegacy, Unwrap } from '../../types/utils';
-import { cloneDeep } from '../../../../shared';
 import { useRootStorage } from './root';
 
 export type useRegleFn<
@@ -49,11 +48,11 @@ export function createUseRegleComposable<
   options?: RegleBehaviourOptions,
   shortcuts?: RegleShortcutDefinition | undefined
 ): useRegleFn<TCustomRules, TShortcuts> {
-  const globalOptions: RequiredDeep<RegleBehaviourOptions> = {
-    autoDirty: options?.autoDirty ?? true,
-    lazy: options?.lazy ?? false,
-    rewardEarly: options?.rewardEarly ?? false,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange ?? true,
+  const globalOptions: RegleBehaviourOptions = {
+    autoDirty: options?.autoDirty,
+    lazy: options?.lazy,
+    rewardEarly: options?.rewardEarly,
+    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
   function useRegle(

@@ -172,32 +172,39 @@ export function createReactiveFieldStatus({
       const $lazy = computed<boolean | undefined>(() => {
         if ($localOptions.value.$lazy != null) {
           return $localOptions.value.$lazy;
+        } else if (unref(options.lazy) != null) {
+          return unref(options.lazy);
         }
-        return unref(options.lazy);
+        return false;
       });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
-        if ($autoDirty.value === true) {
-          return false;
-        }
         if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
+        } else if (unref(options.rewardEarly) != null) {
+          return unref(options.rewardEarly);
         }
-        return unref(options.rewardEarly);
+        return false;
       });
 
       const $clearExternalErrorsOnChange = computed<boolean | undefined>(() => {
         if ($localOptions.value.$clearExternalErrorsOnChange != null) {
           return $localOptions.value.$clearExternalErrorsOnChange;
+        } else if (unref(options.clearExternalErrorsOnChange) != null) {
+          return unref(options.clearExternalErrorsOnChange);
         }
-        return unref(options.clearExternalErrorsOnChange);
+        return true;
       });
 
       const $autoDirty = computed<boolean | undefined>(() => {
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
+        } else if (unref(options.autoDirty) != null) {
+          return unref(options.autoDirty);
+        } else if ($rewardEarly.value) {
+          return false;
         }
-        return unref(options.autoDirty);
+        return true;
       });
 
       const $validating = computed(() => {
@@ -252,7 +259,10 @@ export function createReactiveFieldStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        return !($invalid.value || $pending.value);
+        if (!$autoDirty.value) {
+          return !($invalid.value || $pending.value);
+        }
+        return $anyDirty.value && !($invalid.value || $pending.value);
       });
 
       const $pending = computed<boolean>(() => {

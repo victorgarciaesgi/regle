@@ -76,25 +76,48 @@ _**Type**_: `string | string[] | (metadata) => (string | string[])`
 Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `$field.xxx.$tooltips`. This is useful for providing additional information or guidance.
 
 
-## Parameters and Active Mode
+## Reactive parameters
 
-With `createRule` you can easily define a rule that will depend on external parameters, and have an `$active` state.
+With `createRule` you can easily define a rule that will depend on external reactive parameters.
+
+### Declaration
 
 When declaring your validator, **Regle** will detect that your rule requires parameters and transform it into a function declaration:
 
 ```ts twoslash
 // @noErrors
-import { createRule } from '@regle/core';
+import { createRule, type Maybe } from '@regle/core';
 // ---cut---
 export const myValidator = createRule({
   validator: (value: Maybe<string>, arg: number) => {
-    // any logic
+    return true;
   },
   message: ({ $params: [arg] }) => {
     return 'This field is invalid';
   }
 });
 ```
+
+The parameters detection also works with optional and spread parameters
+
+```ts twoslash
+import { createRule, type Maybe } from '@regle/core';
+// ---cut---
+export const myValidator = createRule({
+  validator: (value: Maybe<string>, optionalArg?: number, ...anyOtherArg: string[]) => {
+    return true;
+  },
+  message: ({ $params: [optionalArg, ...anyOtherArg] }) => {
+    return 'This field is invalid';
+  }
+});
+
+myValidator()
+myValidator(5)
+myValidator(5, 'foo', 'bar');
+```
+
+### Reactivity
 
 The real advantage of using `createRule` is that it automatically registers parameters as reactive dependencies. This means your rule works seamlessly with plain values, refs, or getter functions.
 
@@ -164,8 +187,75 @@ useRegle(state, rules);
 ```
 :::
 
-### Example: Recreating `requiredIf` rules
+### Active property
 
+The `active` property option is a field that will provide the rule an `on/off` behaviour.
+
+Some rules have conditionnal validation properties, such as `requiredIf` or any rule using `applyIf`.
+This property allows you to declare the active state of the rule.
+
+It will then be exposed in the `$active` rule property and be used to reflect the validation to your user.
+
+
+```ts twoslash
+// @noErrors
+import { createRule, useRegle } from '@regle/core';
+
+const myConditionalRule = createRule({
+  validator(value: unknown, param: string) {
+    // Params like `condition` will always be unwrapped here
+    // no need to check if it's a value, a ref or a getter function
+    if (param === "Yes") {
+      return isFilled(value);
+    }
+    return true;
+  },
+  active({ $params: [condition] }) {
+    return condition === 'Yes';
+  },
+});
+```
+
+Usage in a component:
+
+```vue twoslash
+<script setup lang='ts'>
+// @noErrors
+const myConditionalRule = createRule({
+  validator(value: unknown, param: string) {
+    // Params like `condition` will always be unwrapped here
+    // no need to check if it's a value, a ref or a getter function
+    if (param === "Yes") {
+      return isFilled(value);
+    }
+    return true;
+  },
+  active({ $params: [condition] }) {
+    return condition === 'Yes';
+  },
+});
+// ---cut---
+import { createRule, useRegle } from '@regle/core';
+
+const yesOrNo = ref('No');
+
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    myConditionalRule: myConditionalRule(yesOrNo);
+  }
+})
+
+</script>
+
+<template>
+  <label>
+    Name <span v-if="r$.$fields.name.$rules.myConditionalRule.$active">(required)</span>
+  </label>
+</template>
+
+```
+
+### Recreating `requiredIf` rule
 
 ::: code-group
 ```ts twoslash include requiredIf [requiredIf.ts]
@@ -185,7 +275,7 @@ export const requiredIf = createRule({
   },
   message({ $params: [condition] }) {
     return `This field is required`,
-  }
+  },
   active({ $params: [condition] }) {
     return condition;
   },

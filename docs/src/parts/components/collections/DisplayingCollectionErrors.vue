@@ -27,6 +27,7 @@
       </button>
       <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </div>
 </template>

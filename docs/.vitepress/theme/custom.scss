@@ -219,6 +219,13 @@ iframe {
     + button {
       margin-left: 4px;
     }
+
+    &.primary {
+      background-color: var(--vp-c-brand-3);
+      &:hover:not(:disabled) {
+        background-color: var(--vp-c-brand-2);
+      }
+    }
   }
 
   & + .demo-container {

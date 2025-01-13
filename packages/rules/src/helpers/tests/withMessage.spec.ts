@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition } from '@regle/core';
+import type { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
@@ -109,6 +109,12 @@ describe('withMessage helper', () => {
       >
     >();
 
+    // @ts-expect-error no message argument ❌
+    withMessage((value) => true);
+
+    // @ts-expect-error incorrrect return type ❌
+    withMessage((value) => {}, 'Message');
+
     expectTypeOf(withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
@@ -148,6 +154,13 @@ describe('withMessage helper', () => {
         boolean,
         string | any[] | Record<PropertyKey, any>
       >
+    >();
+
+    const message = withMessage(minLength, ({ $value, $params: [count] }) => {
+      return `Minimum length is ${count}. Current length: ${$value?.length}`;
+    });
+    expectTypeOf(message).toEqualTypeOf<
+      RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>
     >();
 
     expectTypeOf(

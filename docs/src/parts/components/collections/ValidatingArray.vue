@@ -29,6 +29,7 @@
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
       <button type="button" @click="r$.$resetAll">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </div>
 </template>
@@ -44,6 +45,8 @@ const form = ref<{ collection: Array<{ name: string }> }>({
 
 const { r$ } = useRegle(form, {
   collection: {
+    // $rewardEarly avoid the error being display too soon
+    $rewardEarly: true,
     minLength: minLength(4),
     $each: {
       name: { required },

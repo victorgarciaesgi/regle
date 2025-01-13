@@ -41,6 +41,13 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+Every error can be accessed in the `r$` object. In either `$errors` (if the field is dirty) or `$silentErrors` properties.
+
+In this case:
+
+- `r$.$errors.name`
+- `r$.$fields.name.$errors`
+
 ### `withParams`
 
 The withParams wrapper allows your rule to depend on external parameters, such as a reactive property in your component or store.
@@ -110,7 +117,11 @@ const { r$ } = useRegle({ name: '' }, {
 
 ### `withTooltip`
 
-The `withTooltip` wrapper allows you to display additional messages for your field that aren’t necessarily errors. Tooltips are aggregated and accessible via `$field.xxx.$tooltips`.
+The `withTooltip` wrapper allows you to display additional messages for your field that aren’t necessarily errors. 
+
+Tooltips are aggregated and accessible via `$field.xxx.$tooltips`.
+
+
 
 ## Chaining wrappers
 

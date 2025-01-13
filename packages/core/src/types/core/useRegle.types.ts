@@ -10,7 +10,7 @@ import type {
   RegleRuleDefinition,
 } from '../rules';
 import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, Prettify } from '../utils';
-import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './options.types';
+import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 export interface Regle<
   TState extends Record<string, any> = EmptyObject,

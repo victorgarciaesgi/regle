@@ -14,7 +14,7 @@ import type {
   RegleValidationGroupOutput,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
-import { isRefObject, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import { isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
@@ -251,8 +251,24 @@ export function createReactiveNestedStatus({
 
       const $error = computed<boolean>(() => $anyDirty.value && !$pending.value && $invalid.value);
 
+      const $rewardEarly = computed<boolean | undefined>(() => {
+        if (unref(commonArgs.options.rewardEarly) != null) {
+          return unref(commonArgs.options.rewardEarly);
+        }
+        return false;
+      });
+
+      const $autoDirty = computed<boolean | undefined>(() => {
+        if (unref(commonArgs.options.autoDirty) != null) {
+          return unref(commonArgs.options.autoDirty);
+        } else if ($rewardEarly.value) {
+          return false;
+        }
+        return true;
+      });
+
       const $ready = computed<boolean>(() => {
-        if (!unref(commonArgs.options.autoDirty)) {
+        if (!$autoDirty.value) {
           return !($invalid.value || $pending.value);
         }
         return $anyDirty.value && !($invalid.value || $pending.value);

@@ -8,7 +8,6 @@ import type {
   Unwrap,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
-import type { RequiredDeep } from 'type-fest';
 import type * as v from 'valibot';
 import type { MaybeRef, Ref } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
@@ -29,11 +28,11 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
   options?: RegleBehaviourOptions,
   shortcuts?: RegleShortcutDefinition | undefined
 ): useValibotRegleFn<TShortcuts> {
-  const globalOptions: RequiredDeep<RegleBehaviourOptions> = {
-    autoDirty: options?.autoDirty ?? true,
-    lazy: options?.lazy ?? false,
-    rewardEarly: options?.rewardEarly ?? false,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange ?? true,
+  const globalOptions: RegleBehaviourOptions = {
+    autoDirty: options?.autoDirty,
+    lazy: options?.lazy,
+    rewardEarly: options?.rewardEarly,
+    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
   function useValibotRegle<

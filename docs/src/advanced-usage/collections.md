@@ -119,6 +119,7 @@ const form = ref<{ collection: Array<{ name: string }> }>({
 
 const { r$ } = useRegle(form, {
   collection: {
+    $rewardEarly: true,
     minLength: minLength(4),
     $each: {
       name: { required },
