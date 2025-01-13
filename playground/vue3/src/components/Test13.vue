@@ -1,9 +1,13 @@
 <template>
   <main>
+    <br />
+    <br />
+    <input type="text" v-model="data.test" />
+    <ul>
+      <li v-for="error of r$.$errors.test" :key="error">{{ error }}</li>
+    </ul>
+
     <button @click="() => r$.$validate()">validate</button>
-    <br />
-    <br />
-    <input type="text" v-model="data.a.one.two.three" />
 
     <pre>
       {{ r$ }}
@@ -13,24 +17,22 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
-import { and, applyIf, checked, minLength, required, withMessage } from '@regle/rules';
+import { and, applyIf, checked, minLength, required, oneOf, nativeEnum } from '@regle/rules';
 import { ref } from 'vue';
 
 const data = ref({
-  a: {
-    one: {
-      two: { three: '' },
-    },
-    two: { three: { four: {} } },
-    three: { four: '' },
-  },
-  b: {},
-  c: {},
+  test: '',
 });
 
+enum Food {
+  Meat = 'Meat',
+  Fish = 'Fish',
+}
+
 const { r$ } = useRegle(data, {
-  a: {
-    one: { two: { three: { required } } },
+  test: {
+    // oneOf: oneOf(['One', 'Two']),
+    enum: nativeEnum(Food),
   },
 });
 

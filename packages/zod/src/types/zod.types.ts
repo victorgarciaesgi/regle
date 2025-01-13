@@ -1,7 +1,7 @@
 import type { Maybe } from '@regle/core';
 import { type UnionToTuple } from 'type-fest';
 import type { IsUnion } from 'type-fest/source/internal';
-import type { EnumLike, z, ZodTypeAny } from 'zod';
+import type { z } from 'zod';
 
 // -- Utils
 

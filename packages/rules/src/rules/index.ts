@@ -28,3 +28,5 @@ export * from './contains';
 export * from './startsWith';
 export * from './endsWith';
 export * from './regex';
+export * from './oneOf';
+export * from './nativeEnum';

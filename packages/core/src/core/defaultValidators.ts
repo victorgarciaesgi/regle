@@ -1,4 +1,4 @@
-import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type { EnumLike, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
 export type DefaultValidators = {
   alpha: RegleRuleDefinition<string>;
@@ -49,6 +49,7 @@ export type DefaultValidators = {
     false,
     boolean
   >;
+
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
@@ -56,7 +57,9 @@ export type DefaultValidators = {
   maxValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   minLength: RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>;
   minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  nativeEnum: RegleRuleDefinition<string | number, [enumLike: EnumLike], false, boolean, string | number>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+  oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;

@@ -12,3 +12,8 @@ export type JoinDiscriminatedUnions<TUnion extends unknown> =
           Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>
       >
     : TUnion;
+
+export type EnumLike = {
+  [k: string]: string | number;
+  [nu: number]: string;
+};

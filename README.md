@@ -20,6 +20,7 @@
 
 
 Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript-first model-based form validation library for Vue 3.
+
 It's heavily inspired by Vuelidate.
 
 
@@ -38,7 +39,6 @@ It's heavily inspired by Vuelidate.
 |[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
 ## 🧰 Features
-- ✅ Typescript first
 - 🤖 100% type inference
 - 📖 Model based validation
 - 🪗 Extensible
@@ -87,6 +87,8 @@ const { r$ } = useRegle({ email: '' }, {
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.3+
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia
+- 🦸‍♂️ Zod
+- 🤖 Valibot
 
 
 ## ⬇️ Quick install

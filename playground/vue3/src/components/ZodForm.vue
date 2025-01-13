@@ -1,15 +1,17 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
-    <input v-model="form.email" placeholder="email" />
+    <input v-model="form.nativeEnum" placeholder="nativeEnum" />
 
     <ul>
-      <li v-for="error of r$.$errors.email" :key="error">{{ error }}</li>
+      <li v-for="error of r$.$errors.nativeEnum" :key="error">{{ error }}</li>
     </ul>
 
     <input v-model="form.firstName" placeholder="firstname" />
     <ul>
       <li v-for="error of r$.$errors.firstName" :key="error">{{ error }}</li>
     </ul>
+
+    Gift:
 
     <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
       <option disabled value="">Select a value</option>
@@ -37,14 +39,14 @@
       </ul>
     </template>
 
-    <template v-for="(input, index) of form.nested" :key="index">
+    <!-- <template v-for="(input, index) of form.nested" :key="index">
       <input v-model="input.name" placeholder="name" />
       <ul>
         <li v-for="error of r$.$errors.nested.$each[index].name" :key="error">
           {{ error }}
         </li>
       </ul>
-    </template>
+    </template> -->
 
     <button type="submit" @click="form.nested.push({ name: '' })"> Add entry </button>
     <button type="submit" @click="form.nested.splice(0, 1)"> Remove first </button>
@@ -52,8 +54,7 @@
 
     <pre style="max-width: 100%">
       <code>
-{{ r$.$fields.gift?.$valid }}
-{{ r$.$fields.gift }}
+Gift field: {{ r$.$fields.gift }}
       </code>
     </pre>
   </div>
