@@ -1,5 +1,5 @@
 import type { EmptyObject, UnionToIntersection } from 'type-fest';
-import type { MaybeRef } from 'vue';
+import type { MaybeRef, Raw } from 'vue';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
@@ -23,7 +23,7 @@ export interface Regle<
    *
    * To see the list of properties: {@link https://www.reglejs.dev/core-concepts/validation-properties}
    */
-  r$: RegleRoot<TState, TRules, TValidationGroups, TShortcuts>;
+  r$: Raw<RegleRoot<TState, TRules, TValidationGroups, TShortcuts>>;
 }
 
 export type isDeepExact<T, U> = {

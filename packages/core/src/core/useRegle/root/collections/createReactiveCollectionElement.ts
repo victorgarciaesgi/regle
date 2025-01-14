@@ -16,7 +16,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
-  initialState: Ref<any[] | undefined>;
+  initialState: Ref<unknown>;
 }
 
 export function createCollectionElement({
@@ -59,7 +59,7 @@ export function createCollectionElement({
     storage,
     options,
     externalErrors: toRef(externalErrors?.value ?? [], index),
-    initialState: computed(() => initialState.value?.[index]),
+    initialState,
     shortcuts,
     fieldName,
   });

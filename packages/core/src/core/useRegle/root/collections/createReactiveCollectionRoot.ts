@@ -129,6 +129,8 @@ export function createReactiveCollectionStatus({
             collectionScopes.push(scope);
           }
 
+          const initialStateRef = toRef(initialState.value ?? [], index);
+
           const element = createCollectionElement({
             $id: $id.value,
             path,
@@ -139,7 +141,7 @@ export function createReactiveCollectionStatus({
             options,
             storage,
             externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-            initialState: computed(() => initialState.value?.[index]),
+            initialState: initialStateRef,
             shortcuts,
             fieldName,
           });
@@ -199,7 +201,7 @@ export function createReactiveCollectionStatus({
                 options,
                 storage,
                 externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-                initialState: computed(() => initialState.value?.[index]),
+                initialState: toRef(initialState.value ?? [], index),
                 shortcuts,
                 fieldName,
               });
@@ -310,7 +312,6 @@ export function createReactiveCollectionStatus({
 
       const $edited = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$edited &&
           !!$eachStatus.value.length &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$edited;

@@ -11,8 +11,6 @@ export function isDate(value: unknown): value is Date {
     let possibleDate: Date | null = null;
     if (value instanceof Date) {
       possibleDate = value;
-    } else if (typeof value === 'number' && !isNaN(value)) {
-      possibleDate = new Date(value);
     } else if (typeof value === 'string') {
       const date = new Date(value);
       if (date.toString() === 'Invalid Date') {

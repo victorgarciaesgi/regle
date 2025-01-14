@@ -18,9 +18,13 @@
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
     </select>
-    <ul>
-      <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
-    </ul>
+    <Transition mode="out-in" name="fade">
+      <div v-if="r$.$fields.gift.$error" class="text-red-500 mt-2 text-sm">
+        <ul>
+          <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
+        </ul>
+      </div>
+    </Transition>
 
     <template v-if="r$.$value.gift?.type === 'Cash'">
       <input v-model.number="r$.$value.gift.amount" placeholder="amount" />
@@ -152,4 +156,18 @@ const { r$ } = useZodRegle(
   }),
   { externalErrors }
 );
+
+const test = ref(r$);
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

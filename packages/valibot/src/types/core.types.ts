@@ -9,6 +9,7 @@ import type { PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type * as v from 'valibot';
 import type { MaybeArrayAsync, MaybeObjectAsync, MaybeSchemaAsync, ValibotObj } from './valibot.types';
+import type { Raw } from 'vue';
 
 export interface ValibotRegle<
   TState extends Record<string, any>,
@@ -20,7 +21,7 @@ export interface ValibotRegle<
    *
    * To see the list of properties: {@link https://www.reglejs.dev/core-concepts/validation-properties}
    */
-  r$: ValibotRegleStatus<TState, TSchema, TShortcuts>;
+  r$: Raw<ValibotRegleStatus<TState, TSchema, TShortcuts>>;
 }
 
 export type ValibotRegleResult<TSchema extends MaybeSchemaAsync<unknown>> =

@@ -11,6 +11,7 @@ import type { PartialDeep } from 'type-fest';
 import type { z, ZodTypeAny } from 'zod';
 import type { GetNestedZodSchema } from './utils.types';
 import type { toZod } from './zod.types';
+import type { Raw } from 'vue';
 
 export interface ZodRegle<
   TState extends Record<string, any>,
@@ -22,7 +23,7 @@ export interface ZodRegle<
    *
    * To see the list of properties: {@link https://www.reglejs.dev/core-concepts/validation-properties}
    */
-  r$: ZodRegleStatus<TState, TSchema, TShortcuts>;
+  r$: Raw<ZodRegleStatus<TState, TSchema, TShortcuts>>;
 }
 
 export type ZodRegleResult<TSchema extends z.ZodTypeAny> =

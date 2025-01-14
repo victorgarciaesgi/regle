@@ -74,10 +74,6 @@ export function createUseRegleComposable<
 
     const initialState = ref({ ...cloneDeep(processedState.value) });
 
-    function onReset() {
-      initialState.value = { ...cloneDeep(processedState.value) };
-    }
-
     const regle = useRootStorage({
       scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,
       state: processedState,
@@ -85,7 +81,6 @@ export function createUseRegleComposable<
       initialState,
       customRules,
       shortcuts,
-      onReset,
     });
 
     return {

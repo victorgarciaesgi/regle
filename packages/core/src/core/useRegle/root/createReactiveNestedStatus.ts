@@ -24,9 +24,8 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any>>;
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
-  initialState: Readonly<Ref<Record<string, any> | undefined>>;
+  initialState: Ref<Record<string, any> | undefined>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
-  onReset?: () => void;
   validationGroups?:
     | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
     | undefined;
@@ -73,7 +72,7 @@ export function createReactiveNestedStatus({
             const stateRef = toRef(state.value, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
             const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
-            const initialStateRef = computed(() => initialState?.value?.[statePropKey]);
+            const initialStateRef = toRef(initialState?.value ?? {}, statePropKey);
 
             return [
               statePropKey,
@@ -97,7 +96,7 @@ export function createReactiveNestedStatus({
         .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
         .map(([key]) => {
           const stateRef = toRef(state.value, key);
-          const initialStateRef = computed(() => initialState?.value?.[key]);
+          const initialStateRef = toRef(initialState?.value ?? {}, key);
           return [
             key,
             createReactiveChildrenStatus({
@@ -118,7 +117,7 @@ export function createReactiveNestedStatus({
         .filter(([key]) => !(key in rulesDef.value) && !(key in (externalRulesStatus.value ?? {})))
         .map(([key]) => {
           const stateRef = toRef(state.value, key);
-          const initialStateRef = computed(() => initialState?.value?.[key]);
+          const initialStateRef = toRef(initialState?.value ?? {}, key);
 
           return [
             key,
@@ -155,7 +154,7 @@ export function createReactiveNestedStatus({
     Object.values($fields.value).forEach((statusOrField) => {
       statusOrField.$reset();
     });
-    commonArgs.onReset?.();
+    initialState.value = { ...cloneDeep(state.value) };
     define$WatchExternalErrors();
   }
 

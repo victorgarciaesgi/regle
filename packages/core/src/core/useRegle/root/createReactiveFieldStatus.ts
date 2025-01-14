@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, isDate, isEmpty } from '../../../../../shared';
+import { cloneDeep, isDate, isEmpty, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -242,7 +242,15 @@ export function createReactiveFieldStatus({
       const $edited = computed<boolean>(() => {
         if ($dirty.value) {
           if (isDate(initialState.value) && isDate(state.value)) {
-            return initialState.value.getDate() !== state.value.getDate();
+            return toDate(initialState.value).getDate() !== toDate(state.value).getDate();
+          }
+          if (initialState.value == null) {
+            // Keep empty string as the same value of undefined|null
+            return !!state.value;
+          }
+          // For arrays only compare the length
+          if (Array.isArray(state.value) && Array.isArray(initialState.value)) {
+            return state.value.length !== initialState.value.length;
           }
           return initialState.value !== state.value;
         }
@@ -458,6 +466,11 @@ export function createReactiveFieldStatus({
     scopeState.$dirty.value = false;
     scopeState.triggerPunishment.value = false;
     storage.setDirtyEntry(path, false);
+    initialState.value = isObject(state.value)
+      ? cloneDeep(state.value)
+      : Array.isArray(state.value)
+        ? [...state.value]
+        : state.value;
     Object.entries($rules.value).forEach(([_, rule]) => {
       rule.$reset();
     });

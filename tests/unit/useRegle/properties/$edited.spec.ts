@@ -103,8 +103,8 @@ describe('$edited', () => {
     await vm.$nextTick();
 
     expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$edited).toBe(true);
+    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$edited).toBe(false);
+    expect(vm.r$.$fields.contacts.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(true);
     expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
 
