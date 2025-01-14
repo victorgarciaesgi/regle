@@ -1,6 +1,6 @@
 {
   "name": "@regle/zod",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "description": "Zod adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",

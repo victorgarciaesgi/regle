@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "private": true,
   "description": "Type safe model-based form validation library for Vue.js",
   "scripts": {
