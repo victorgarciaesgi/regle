@@ -300,7 +300,7 @@ export function createReactiveFieldStatus({
         } else if (isEmpty($rules.value)) {
           return false;
         } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
-          return Object.entries($rules.value).some(([key, ruleResult]) => {
+          return Object.entries($rules.value).some(([_, ruleResult]) => {
             return !ruleResult.$valid;
           });
         }

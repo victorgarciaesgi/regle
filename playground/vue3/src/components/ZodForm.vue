@@ -14,12 +14,13 @@
     Gift:
 
     <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
-      <option disabled value="">Select a value</option>
+      <option value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
     </select>
+    {{ r$.$fields.gift.$fields.type.$error }}
     <Transition mode="out-in" name="fade">
-      <div v-if="r$.$fields.gift.$error" class="text-red-500 mt-2 text-sm">
+      <div v-if="r$.$fields.gift.$fields.type.$error" class="text-red-500 mt-2 text-sm">
         <ul>
           <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
         </ul>
@@ -67,7 +68,7 @@ Gift field: {{ r$.$fields.gift }}
 <script setup lang="ts">
 import type { Maybe, RegleExternalErrorTree } from '@regle/core';
 import { useZodRegle } from '@regle/zod';
-import { nextTick, reactive, ref } from 'vue';
+import { nextTick, reactive, ref, watch } from 'vue';
 import { nativeEnum, z } from 'zod';
 
 enum MyEnum {
@@ -157,13 +158,20 @@ const { r$ } = useZodRegle(
   { externalErrors }
 );
 
+watch(
+  () => r$.$fields.gift.$fields.type.$invalid,
+  (value) => {
+    console.log(value);
+  }
+);
+
 const test = ref(r$);
 </script>
 
-<style>
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 1s ease;
 }
 
 .fade-enter-from,

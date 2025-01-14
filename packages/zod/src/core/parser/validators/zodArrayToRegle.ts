@@ -2,11 +2,12 @@ import type { RegleCollectionRuleDecl } from '@regle/core';
 import { exactLength, maxLength, minLength } from '@regle/rules';
 import { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
+import type { Ref } from 'vue';
 
 export function zodArrayToRegle(
   def: z.ZodArrayDef | z.ZodTupleDef,
   schema: z.ZodSchema<any>,
-  state: unknown
+  state: Ref<unknown>
 ): RegleCollectionRuleDecl {
   const arrayValidators =
     def.typeName === z.ZodFirstPartyTypeKind.ZodArray

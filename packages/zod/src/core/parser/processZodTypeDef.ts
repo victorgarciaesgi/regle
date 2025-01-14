@@ -4,6 +4,7 @@ import z from 'zod';
 import { extractIssuesMessages, transformZodValidatorAdapter, zodArrayToRegle, zodObjectToRegle } from './validators';
 import type { PossibleDefTypes } from '../../types';
 import { zodDiscriminatedUnionToRegle } from './validators/zodDiscriminatedUnionToRegle';
+import type { Ref } from 'vue';
 
 const typesWithInnerTypes = [
   z.ZodFirstPartyTypeKind.ZodDefault,
@@ -39,7 +40,7 @@ function getNestedInnerType(def: PossibleDefTypes) {
 export function processZodTypeDef(
   def: PossibleDefTypes,
   schema: z.ZodSchema<any>,
-  state: unknown
+  state: Ref<unknown>
 ): RegleFormPropertyType {
   const schemaDef = getNestedInnerType(def);
   if (schemaDef) {
