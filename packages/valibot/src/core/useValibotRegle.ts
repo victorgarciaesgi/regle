@@ -66,7 +66,11 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
 
-    const initialState = { ...cloneDeep(processedState.value) };
+    const initialState = ref({ ...cloneDeep(processedState.value) });
+
+    function onReset() {
+      initialState.value = { ...cloneDeep(processedState.value) };
+    }
 
     watch(
       scopeRules,
@@ -83,6 +87,7 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
       options: resolvedOptions,
       initialState,
       shortcuts,
+      onReset,
     });
     return {
       r$: regle.regle as any,

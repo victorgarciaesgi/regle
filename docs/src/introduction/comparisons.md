@@ -18,7 +18,7 @@ Both libraries share a similar API and developer experience (DX), including:
 Regle builds upon these features and adds several improvements:
 - 100% type safety
 - Autocomplete
-- Zod support (with more integrations planned)
+- Zod/Valibot support (with more integrations planned)
 - Global config
 - Improved API in some areas, such as rules declaration, `$each`, `validationGroups`, `$validate`
 
@@ -28,7 +28,7 @@ VeeValidate is primarily focused on being component-centric. It now also offers 
 
 Its API is less declarative compared to Regle, making it challenging to handle large forms or manage form state within a Pinia store.
 
-While VeeValidate supports typed schemas using libraries like Zod, Yup, or Validbot, this comes at the cost of losing some of VeeValidate's native features. In contrast, when using Zod with Regle, you retain all the features available in the default @regle/rules, ensuring a consistent developer experience.
+While VeeValidate supports typed schemas using libraries like Zod, Yup, or Valibot, this comes at the cost of losing some of VeeValidate's native features. In contrast, when using Zod with Regle, you retain all the features available in the default @regle/rules, ensuring a consistent developer experience.
 
 ## Formkit
 

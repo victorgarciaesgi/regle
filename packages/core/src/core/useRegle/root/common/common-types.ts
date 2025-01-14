@@ -25,4 +25,6 @@ export interface CommonResolverScopedState {
   $error: ComputedRef<boolean>;
   $pending: ComputedRef<boolean>;
   $name: ComputedRef<string>;
+  $edited: ComputedRef<boolean>;
+  $anyEdited: ComputedRef<boolean>;
 }

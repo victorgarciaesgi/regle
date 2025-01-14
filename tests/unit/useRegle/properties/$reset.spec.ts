@@ -105,5 +105,19 @@ describe('.$reset', () => {
     await nextTick();
 
     shouldBePristineField(vm.r$);
+
+    vm.r$.$resetAll();
+    await nextTick();
+
+    // Check if $reset updated the initialState
+    expect(vm.r$.$value).toStrictEqual({
+      nested: {
+        collection: [{ name: 'eee' }],
+      },
+      contacts: [{ name: 'eee' }],
+      email: 'eee@free.fr',
+      user: { firstName: 'eee', lastName: 'eee' },
+      userRequired: true,
+    });
   });
 });

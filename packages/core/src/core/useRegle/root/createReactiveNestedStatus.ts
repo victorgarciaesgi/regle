@@ -24,8 +24,9 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any>>;
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
-  initialState: Readonly<Record<string, any> | undefined>;
+  initialState: Readonly<Ref<Record<string, any> | undefined>>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
+  onReset?: () => void;
   validationGroups?:
     | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
     | undefined;
@@ -72,6 +73,7 @@ export function createReactiveNestedStatus({
             const stateRef = toRef(state.value, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
             const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
+            const initialStateRef = computed(() => initialState?.value?.[statePropKey]);
 
             return [
               statePropKey,
@@ -80,7 +82,7 @@ export function createReactiveNestedStatus({
                 rulesDef: statePropRulesRef,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
                 externalErrors: $externalErrors,
-                initialState: initialState?.[statePropKey],
+                initialState: initialStateRef,
                 fieldName: statePropKey,
                 ...commonArgs,
               }),
@@ -95,6 +97,7 @@ export function createReactiveNestedStatus({
         .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
         .map(([key]) => {
           const stateRef = toRef(state.value, key);
+          const initialStateRef = computed(() => initialState?.value?.[key]);
           return [
             key,
             createReactiveChildrenStatus({
@@ -102,7 +105,7 @@ export function createReactiveNestedStatus({
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
               externalErrors: toRef(externalErrors?.value ?? {}, key),
-              initialState: initialState?.[key],
+              initialState: initialStateRef,
               fieldName: key,
               ...commonArgs,
             }),
@@ -115,6 +118,8 @@ export function createReactiveNestedStatus({
         .filter(([key]) => !(key in rulesDef.value) && !(key in (externalRulesStatus.value ?? {})))
         .map(([key]) => {
           const stateRef = toRef(state.value, key);
+          const initialStateRef = computed(() => initialState?.value?.[key]);
+
           return [
             key,
             createReactiveChildrenStatus({
@@ -122,7 +127,7 @@ export function createReactiveNestedStatus({
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
               externalErrors: toRef(externalErrors?.value ?? {}, key),
-              initialState: initialState?.[key],
+              initialState: initialStateRef,
               fieldName: key,
               ...commonArgs,
             }),
@@ -150,6 +155,7 @@ export function createReactiveNestedStatus({
     Object.values($fields.value).forEach((statusOrField) => {
       statusOrField.$reset();
     });
+    commonArgs.onReset?.();
     define$WatchExternalErrors();
   }
 
@@ -296,6 +302,21 @@ export function createReactiveNestedStatus({
         );
       });
 
+      const $edited = computed<boolean>(() => {
+        return (
+          !!Object.entries($fields.value).length &&
+          Object.entries($fields.value).every(([_, statusOrField]) => {
+            return statusOrField?.$edited;
+          })
+        );
+      });
+
+      const $anyEdited = computed<boolean>(() => {
+        return Object.entries($fields.value).some(([_, statusOrField]) => {
+          return statusOrField?.$anyEdited;
+        });
+      });
+
       const $name = computed(() => fieldName);
 
       function processShortcuts() {
@@ -322,6 +343,8 @@ export function createReactiveNestedStatus({
                     $silentErrors: $silentErrors as any,
                     $errors: $errors as any,
                     $fields,
+                    $edited,
+                    $anyEdited,
                   })
                 );
               });
@@ -383,6 +406,8 @@ export function createReactiveNestedStatus({
         $shortcuts,
         $groups,
         $silentValue,
+        $edited,
+        $anyEdited,
       } satisfies ScopeState;
     })!;
   }
@@ -413,7 +438,7 @@ export function createReactiveNestedStatus({
 
   async function $resetAll() {
     $unwatch();
-    state.value = cloneDeep({ ...(initialState ?? {}) });
+    state.value = cloneDeep({ ...(initialState.value ?? {}) });
     $reset();
     createReactiveFieldsStatus();
   }
@@ -485,7 +510,7 @@ interface CreateReactiveChildrenStatus extends CommonResolverOptions {
   state: Ref<any>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
   externalErrors: Ref<$InternalRegleErrors | undefined> | undefined;
-  initialState: any;
+  initialState: Readonly<Ref<any>>;
 }
 
 /**

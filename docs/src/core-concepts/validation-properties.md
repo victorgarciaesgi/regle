@@ -47,7 +47,6 @@ True only when the field is dirty and passes validation. Useful for showing UI i
 ### `$dirty`
 - Type: `readonly boolean`
   
-
 Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the `$touch` and `$reset` methods. The `$dirty` flag is considered true if the current model has been touched or if all its children are dirty. 
 
 
@@ -55,6 +54,18 @@ Indicates whether a field has been validated or interacted with by the user at l
 - Type: `readonly boolean`
 
 Similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true if given model was touched or any of its children are `$anyDirty` which means at least one descendant is `$dirty`.
+
+
+### `$edited`
+- Type: `readonly boolean`
+  
+Indicates whether a field has been touched and if the value is different than the initial one.
+
+
+### `$anyEdited`
+- Type: `readonly boolean`
+
+Similar to `$edited`, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is `$edited`.
 
 
 ### `$value`
@@ -124,7 +135,9 @@ Marks the field and all nested properties as `$dirty`.
 ### `$reset`
 - Type: `() => void`
 
-Resets the `$dirty` state on all nested properties of a form.
+- Restore the validation state to a pristine state while keeping the current state.
+- Resets the `$dirty` state on all nested properties of a form.
+- Rerun rules if `$lazy` is false
 
 ### `$resetAll`
 - Type: `() => void`

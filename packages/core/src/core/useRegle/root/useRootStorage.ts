@@ -17,13 +17,15 @@ export function useRootStorage({
   state,
   customRules,
   shortcuts,
+  onReset,
 }: {
   scopeRules: ComputedRef<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
   options: ResolvedRegleBehaviourOptions;
-  initialState: Record<string, any>;
+  initialState: Ref<Record<string, any>>;
   customRules?: () => CustomRulesDeclarationTree;
   shortcuts: RegleShortcutDefinition | undefined;
+  onReset?: () => void;
 }) {
   const storage = useStorage();
 
@@ -42,6 +44,7 @@ export function useRootStorage({
     shortcuts,
     fieldName: 'root',
     path: '',
+    onReset,
   });
 
   if (getCurrentScope()) {

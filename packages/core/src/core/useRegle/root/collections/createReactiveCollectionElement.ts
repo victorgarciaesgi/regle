@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
@@ -16,7 +16,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
-  initialState: any[] | undefined;
+  initialState: Ref<any[] | undefined>;
 }
 
 export function createCollectionElement({
@@ -59,7 +59,7 @@ export function createCollectionElement({
     storage,
     options,
     externalErrors: toRef(externalErrors?.value ?? [], index),
-    initialState: initialState?.[index],
+    initialState: computed(() => initialState.value?.[index]),
     shortcuts,
     fieldName,
   });

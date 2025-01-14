@@ -212,6 +212,10 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $dirty: boolean;
   /* Similar to $dirty, with one exception. The $anyDirty flag is considered true if given model was touched or any of its children are $anyDirty which means at least one descendant is $dirty. */
   readonly $anyDirty: boolean;
+  /* Indicates whether a field has been touched and if the value is different than the initial one. */
+  readonly $edited: boolean;
+  /* Similar to $edited, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is $edited. */
+  readonly $anyEdited: boolean;
   /** Indicates if any async rule for the field is currently running. Always false for synchronous rules. */
   readonly $pending: boolean;
   /** Convenience flag to easily decide if a message should be displayed. Equivalent to $dirty && !$pending && $invalid. */
@@ -228,7 +232,11 @@ export interface RegleCommonStatus<TValue = any> {
   $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** Marks the field and all nested properties as $dirty. */
   $touch(runCommit?: boolean, withConditions?: boolean): void;
-  /** Resets the $dirty state on all nested properties of a form. */
+  /**
+   * - Restore the validation state to a pristine state while keeping the current state.
+   * - Resets the `$dirty` state on all nested properties of a form.
+   * - Rerun rules if `$lazy` is false
+   */
   $reset(): void;
   /** Will reset both your validation state and your form state to their initial values. */
   $resetAll: () => void;
@@ -252,6 +260,7 @@ export type RegleRuleStatus<
   readonly $type: string;
   /** Returns the computed error message or messages for the current rule. */
   readonly $message: string | string[];
+  /** Stores the current rule tooltip or tooltips */
   readonly $tooltip: string | string[];
   /** Indicates whether or not the rule is enabled (for rules like requiredIf) */
   readonly $active: boolean;

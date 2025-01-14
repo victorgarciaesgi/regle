@@ -39,13 +39,13 @@ It's heavily inspired by Vuelidate.
 |[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
 ## 🧰 Features
-- 🤖 100% type inference
+- ✅ 100% type inference
 - 📖 Model based validation
+- 💀 Headless
 - 🪗 Extensible
 - 🛒 Collection validation
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🤖 [Valibot](https://valibot.dev/) support
-- 🪶 Light(~7kb gzip) and 0 dependencies
 
 ## 🫶 Credits
 
@@ -65,7 +65,7 @@ It's heavily inspired by Vuelidate.
   />
 
   <ul>
-    <li v-for="error of r$.$fields.email.$errors" :key='error'>
+    <li v-for="error of r$.$errors.email" :key='error'>
       {{ error }}
     </li>
   </ul>

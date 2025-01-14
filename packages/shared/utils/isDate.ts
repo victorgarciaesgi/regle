@@ -1,4 +1,4 @@
-import { isEmpty } from '../../../../shared';
+import { isEmpty } from './isEmpty';
 
 /**
  * This is a useful helper that can check if the provided value is a Date, it is used internally for date rules. This can also check strings.

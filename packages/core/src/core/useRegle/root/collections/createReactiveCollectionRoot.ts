@@ -15,7 +15,7 @@ import { randomId, unwrapGetter } from '../../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
 import type { RegleStorage } from '../../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
-import type { StateWithId } from '../common/common-types';
+import type { CommonResolverScopedState, StateWithId } from '../common/common-types';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
 
@@ -29,7 +29,7 @@ interface CreateReactiveCollectionStatusArgs {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
-  initialState: any[];
+  initialState: Ref<any[]>;
   shortcuts: RegleShortcutDefinition | undefined;
 }
 
@@ -45,17 +45,11 @@ export function createReactiveCollectionStatus({
   shortcuts,
   fieldName,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | undefined {
-  interface ScopeReturnState {
+  interface ScopeReturnState extends CommonResolverScopedState {
     $dirty: ComputedRef<boolean>;
-    $anyDirty: ComputedRef<boolean>;
-    $invalid: ComputedRef<boolean>;
-    $valid: ComputedRef<boolean>;
-    $error: ComputedRef<boolean>;
-    $pending: ComputedRef<boolean>;
     $errors: ComputedRef<$InternalRegleCollectionErrors>;
     $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
     $ready: ComputedRef<boolean>;
-    $name: ComputedRef<string>;
     $shortcuts: ToRefs<RegleShortcutDefinition['collections']>;
     $silentValue: ComputedRef<any>;
   }
@@ -145,7 +139,7 @@ export function createReactiveCollectionStatus({
             options,
             storage,
             externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-            initialState: initialState?.[index],
+            initialState: computed(() => initialState.value?.[index]),
             shortcuts,
             fieldName,
           });
@@ -205,7 +199,7 @@ export function createReactiveCollectionStatus({
                 options,
                 storage,
                 externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-                initialState: initialState?.[index],
+                initialState: computed(() => initialState.value?.[index]),
                 shortcuts,
                 fieldName,
               });
@@ -258,6 +252,7 @@ export function createReactiveCollectionStatus({
       const $dirty = computed<boolean>(() => {
         return (
           $fieldStatus.value.$dirty &&
+          !!$eachStatus.value.length &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$dirty;
           })
@@ -313,6 +308,25 @@ export function createReactiveCollectionStatus({
         );
       });
 
+      const $edited = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$edited &&
+          !!$eachStatus.value.length &&
+          $eachStatus.value.every((statusOrField) => {
+            return statusOrField.$edited;
+          })
+        );
+      });
+
+      const $anyEdited = computed<boolean>(() => {
+        return (
+          $fieldStatus.value.$anyEdited ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$anyEdited;
+          })
+        );
+      });
+
       const $errors = computed(() => {
         return {
           $self: $fieldStatus.value.$errors,
@@ -354,6 +368,8 @@ export function createReactiveCollectionStatus({
                     $each: $eachStatus,
                     $field: $fieldStatus as any,
                     $value: state,
+                    $edited,
+                    $anyEdited,
                   })
                 );
               });
@@ -381,6 +397,8 @@ export function createReactiveCollectionStatus({
         $name,
         $shortcuts,
         $silentValue,
+        $edited,
+        $anyEdited,
       } satisfies ScopeReturnState;
     })!;
 
@@ -479,7 +497,7 @@ export function createReactiveCollectionStatus({
 
   function $resetAll() {
     $unwatch();
-    state.value = cloneDeep(initialState);
+    state.value = cloneDeep(initialState.value);
     $reset();
   }
 

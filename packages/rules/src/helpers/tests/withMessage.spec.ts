@@ -7,6 +7,7 @@ import { email, minLength, required } from '../../rules';
 import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
+import { withParams } from '../withParams';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({
@@ -92,10 +93,12 @@ describe('withMessage helper', () => {
   });
 
   it('should have correct types', () => {
+    // Correct return type with a built-in rule
     expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
       RegleRuleDefinition<unknown, [], false, boolean, unknown>
     >();
 
+    // Correct return type with inline rule and metadata
     expectTypeOf(withMessage((value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
@@ -115,6 +118,7 @@ describe('withMessage helper', () => {
     // @ts-expect-error incorrrect return type ❌
     withMessage((value) => {}, 'Message');
 
+    // Correct type with async value returning metadata
     expectTypeOf(withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
@@ -128,6 +132,7 @@ describe('withMessage helper', () => {
       >
     >();
 
+    // Correct types with using modifiers
     expectTypeOf(
       withMessage(and(minLength(4), email), ({ $params: [count] }) => {
         return ['Must be email', `Must be min: ${count}`];
@@ -142,6 +147,7 @@ describe('withMessage helper', () => {
       >
     >();
 
+    // Correct types when accessing $params from function
     expectTypeOf(
       withMessage(minLength(4), ({ $value, $params: [count] }) => {
         return `Value: ${$value} Min: ${count}`;
@@ -171,5 +177,17 @@ describe('withMessage helper', () => {
         'Required async'
       )
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+
+    expectTypeOf(
+      withMessage(
+        withParams(
+          (value) => {
+            return true;
+          },
+          [() => true]
+        ),
+        'Required async'
+      )
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, [boolean], false, true, unknown>>();
   });
 });

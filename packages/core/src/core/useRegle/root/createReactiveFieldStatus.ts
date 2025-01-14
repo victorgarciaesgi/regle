@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, isEmpty } from '../../../../../shared';
+import { cloneDeep, isDate, isEmpty } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -21,7 +21,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   externalErrors: Ref<string[] | undefined> | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
-  initialState: unknown | undefined;
+  initialState: Ref<unknown | undefined>;
 }
 
 export function createReactiveFieldStatus({
@@ -239,6 +239,18 @@ export function createReactiveFieldStatus({
         return [];
       });
 
+      const $edited = computed<boolean>(() => {
+        if ($dirty.value) {
+          if (isDate(initialState.value) && isDate(state.value)) {
+            return initialState.value.getDate() !== state.value.getDate();
+          }
+          return initialState.value !== state.value;
+        }
+        return false;
+      });
+
+      const $anyEdited = computed(() => $edited.value);
+
       const $tooltips = computed<string[]>(() => {
         return extractRulesTooltips({
           field: {
@@ -342,6 +354,8 @@ export function createReactiveFieldStatus({
                     $tooltips,
                     $name,
                     $inactive,
+                    $edited,
+                    $anyEdited,
                   })
                 );
               });
@@ -375,6 +389,8 @@ export function createReactiveFieldStatus({
         $autoDirty,
         $clearExternalErrorsOnChange,
         $anyDirty,
+        $edited,
+        $anyEdited,
         $name,
         $haveAnyAsyncRule,
         $shortcuts,
@@ -440,8 +456,9 @@ export function createReactiveFieldStatus({
   function $reset(): void {
     $clearExternalErrors();
     scopeState.$dirty.value = false;
+    scopeState.triggerPunishment.value = false;
     storage.setDirtyEntry(path, false);
-    Object.entries($rules.value).forEach(([key, rule]) => {
+    Object.entries($rules.value).forEach(([_, rule]) => {
       rule.$reset();
     });
     if (!scopeState.$lazy.value && scopeState.$autoDirty.value) {
