@@ -1,39 +1,50 @@
 import type { ReglePartialRuleTree } from '@regle/core';
-import type { PossibleDefTypes } from '../../../types';
-import type { z } from 'zod';
-import { processZodTypeDef } from '../processZodTypeDef';
-import { isObject } from '../../../../../shared';
 import { required } from '@regle/rules';
-import { computed, effectScope, toRef, type ComputedRef, type Ref } from 'vue';
+import { computed, effectScope, onScopeDispose, ref, toRef, watch, type ComputedRef, type Ref } from 'vue';
+import type { z } from 'zod';
+import { isObject } from '../../../../../shared';
+import { processZodTypeDef } from '../processZodTypeDef';
 
 export function zodDiscriminatedUnionToRegle(
-  def: z.ZodDiscriminatedUnionDef<any>,
+  schema: z.ZodDiscriminatedUnion<any, any>,
   state: Ref<unknown>
-): ComputedRef<ReglePartialRuleTree<any, any>> {
-  const scopeState = effectScope().run(() => {
-    const zodRule = computed(() => {
-      if (isObject(state.value) && state.value[def.discriminator]) {
-        const selectedDiscriminant = def.optionsMap.get(state.value[def.discriminator]);
-        if (selectedDiscriminant) {
-          return Object.fromEntries(
-            Object.entries(selectedDiscriminant._def.shape()).map(([key, shape]) => {
-              if (typeof shape === 'object' && '_def' in shape) {
-                const def = shape._def as PossibleDefTypes;
+): { zodRule: Ref<ReglePartialRuleTree<any, any>> } {
+  const scope = effectScope();
 
-                return [key, processZodTypeDef(def, shape, toRef(isObject(state.value) ? state.value : {}, key))];
-              }
-              return [key, {}];
-            })
-          );
+  const scopeState = scope.run(() => {
+    const zodRule = ref<ReglePartialRuleTree<any, any>>({});
+
+    watch(
+      state,
+      () => {
+        if (isObject(state.value) && state.value[schema._def.discriminator]) {
+          const selectedDiscriminant = schema._def.optionsMap.get(state.value[schema._def.discriminator]);
+          if (selectedDiscriminant) {
+            zodRule.value = Object.fromEntries(
+              Object.entries(selectedDiscriminant._def.shape()).map(([key, shape]) => {
+                if (typeof shape === 'object' && '_def' in shape) {
+                  return [key, processZodTypeDef(shape, toRef(isObject(state.value) ? state.value : {}, key))];
+                }
+                return [key, {}];
+              })
+            );
+          } else {
+            zodRule.value = {};
+          }
+        } else {
+          zodRule.value = {
+            [schema._def.discriminator]: { required },
+          };
         }
-        return {};
-      }
-      return {
-        [def.discriminator]: { required },
-      };
+      },
+      { deep: true, flush: 'pre', immediate: true }
+    );
+
+    onScopeDispose(() => {
+      scope.stop();
     });
 
-    return zodRule;
+    return { zodRule };
   })!;
 
   return scopeState;

@@ -37,6 +37,7 @@
     "typescript": "catalog:",
     "vite": "^6.0.7",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "type-fest": "4.32.0"
   }
 }

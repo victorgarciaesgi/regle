@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isDate, isEmpty, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
@@ -436,6 +436,7 @@ export function createReactiveFieldStatus({
             scopeState.$dirty.value = true;
           }
         }
+
         if (rulesDef.value instanceof Function) {
           createReactiveRulesResult();
         }
@@ -446,7 +447,7 @@ export function createReactiveFieldStatus({
           $clearExternalErrors();
         }
       },
-      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
+      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'post' }
     );
   }
 

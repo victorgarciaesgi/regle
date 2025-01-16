@@ -47,10 +47,7 @@ function nestedReactiveObjectValidation() {
         level2: z.object({
           child: zodIsEven.optional(),
         }),
-        collection: z
-          .array(z.object({ name: zodIsEven }))
-          .min(3)
-          .default([]),
+        collection: z.array(z.object({ name: zodIsEven })).min(3),
       }),
     })
   );
@@ -66,6 +63,7 @@ describe('useZodRegle ', async () => {
   });
 
   const { vm } = createRegleComponent(nestedReactiveObjectValidation);
+  await vm.$nextTick();
 
   it('should have a initial state', () => {
     expect(vm.r$.$errors).toStrictEqual({

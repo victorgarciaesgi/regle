@@ -38,12 +38,11 @@ type ZodArrayChild<T extends any, TFix = UnionToTuple<T>[number]> = NonNullable<
           ? MaybeZodType<z.objectOutputType<ZodObj<T>, any>> | MaybeZodType<T>
           : MaybeZodType<T>
 >;
-export type toZod<T extends Record<PropertyKey, any>> = z.ZodObject<ZodObj<T>>;
+export type toZod<T extends Record<PropertyKey, any>> = MaybeZodType<z.objectOutputType<ZodObj<T>, any>>;
 
 // Types
 
 export type PossibleDefTypes =
-  | z.ZodDefaultDef
   | z.ZodAnyDef
   | z.ZodMapDef
   | z.ZodSetDef
@@ -77,4 +76,10 @@ export type PossibleDefTypes =
   | z.ZodNaNDef
   | z.ZodUndefinedDef
   | z.ZodNativeEnumDef
-  | z.ZodDiscriminatedUnionDef<any>;
+  | z.ZodDiscriminatedUnionDef<any>
+  | z.ZodIntersectionDef
+  | z.ZodDefaultDef
+  | z.ZodCatchDef
+  | z.ZodReadonlyDef
+  | z.ZodNullableDef
+  | z.ZodOptionalDef;

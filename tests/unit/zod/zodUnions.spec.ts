@@ -1,6 +1,7 @@
-import { useZodRegle } from '@regle/zod';
+import type { RegleShortcutDefinition } from '@regle/core';
+import { useZodRegle, type ZodRegleFieldStatus } from '@regle/zod';
 import { reactive } from 'vue';
-import { z } from 'zod';
+import { z, type ZodDiscriminatedUnionOption } from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -33,6 +34,7 @@ const SharesGift = z.object({
     })
     .nonempty("Company can't be empty"),
 });
+
 const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
 
 enum MyEnum {
@@ -41,14 +43,14 @@ enum MyEnum {
 }
 
 function zodUnionForm() {
-  type Form = {
-    enum?: 'Salmon' | 'Tuna' | 'Trout';
-    nativeEnum?: MyEnum;
-    gift?: z.infer<typeof Gift>;
-    union?: string | number;
-  };
+  const schema = z.object({
+    enum: z.enum(['Salmon', 'Tuna', 'Trout']),
+    nativeEnum: z.nativeEnum(MyEnum),
+    union: z.union([z.number(), z.string()]),
+    gift: Gift,
+  });
 
-  const form = reactive<Form>({});
+  const form = reactive<Partial<z.input<typeof schema>>>({});
 
   return useZodRegle(
     form,
@@ -132,6 +134,13 @@ describe('zod unions', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.company);
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.shares);
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
+
+    expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
+      ZodRegleFieldStatus<z.ZodString, string | undefined, RegleShortcutDefinition<any>> | undefined
+    >();
+    expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
+      ZodRegleFieldStatus<z.ZodNumber, number | undefined, RegleShortcutDefinition<any>> | undefined
+    >();
 
     // @ts-expect-error Invalid type on purpose
     vm.r$.$value.enum = 'Not valid';

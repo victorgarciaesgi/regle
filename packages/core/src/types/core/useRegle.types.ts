@@ -21,7 +21,7 @@ export interface Regle<
   /**
    * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
    *
-   * To see the list of properties: {@link https://www.reglejs.dev/core-concepts/validation-properties}
+   * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleRoot<TState, TRules, TValidationGroups, TShortcuts>>;
 }

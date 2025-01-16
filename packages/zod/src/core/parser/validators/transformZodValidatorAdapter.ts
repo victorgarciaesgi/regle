@@ -72,43 +72,40 @@ function isAsyncFunctionOrPromiseReturning(fn: unknown): boolean {
   }
 }
 
-function hasAsyncRefinement(schema: z.ZodTypeAny): boolean {
-  if (schema._def.typeName === 'ZodEffects') {
-    const effect = schema._def.effect;
-    if (effect?.type === 'refinement' || effect?.type === 'transform') {
+function hasAsyncRefinement(schema?: z.ZodTypeAny): boolean {
+  if (schema?._def) {
+    if (schema._def.typeName === 'ZodEffects') {
+      const effect = schema._def.effect;
       return isAsyncFunctionOrPromiseReturning(effect.refinement || effect.transform);
     }
-    if (effect?.type === 'preprocess') {
-      return hasAsyncRefinement(effect.schema);
+
+    if (schema._def.typeName === 'ZodObject') {
+      return Object.values(schema._def.shape()).some((schema) => hasAsyncRefinement(schema as any));
     }
-  }
 
-  if (schema._def.typeName === 'ZodObject') {
-    return Object.values(schema._def.shape()).some((schema) => hasAsyncRefinement(schema as any));
-  }
+    if (schema._def.typeName === 'ZodUnion' || schema._def.typeName === 'ZodIntersection') {
+      return schema._def.options.some(hasAsyncRefinement);
+    }
 
-  if (schema._def.typeName === 'ZodUnion' || schema._def.typeName === 'ZodIntersection') {
-    return schema._def.options.some(hasAsyncRefinement);
-  }
+    if (schema._def.typeName === 'ZodArray') {
+      return hasAsyncRefinement(schema._def.type);
+    }
 
-  if (schema._def.typeName === 'ZodArray') {
-    return hasAsyncRefinement(schema._def.type);
-  }
+    if (schema._def.typeName === 'ZodOptional' || schema._def.typeName === 'ZodNullable') {
+      return hasAsyncRefinement(schema._def.innerType);
+    }
 
-  if (schema._def.typeName === 'ZodOptional' || schema._def.typeName === 'ZodNullable') {
-    return hasAsyncRefinement(schema._def.innerType);
-  }
+    if (schema._def.typeName === 'ZodTuple') {
+      return schema._def.items.some(hasAsyncRefinement);
+    }
 
-  if (schema._def.typeName === 'ZodTuple') {
-    return schema._def.items.some(hasAsyncRefinement);
-  }
-
-  if (
-    schema._def.typeName === 'ZodString' ||
-    schema._def.typeName === 'ZodNumber' ||
-    schema._def.typeName === 'ZodDate'
-  ) {
-    return schema._def.checks?.some((check: any) => isAsyncFunctionOrPromiseReturning(check.refinement));
+    if (
+      schema._def.typeName === 'ZodString' ||
+      schema._def.typeName === 'ZodNumber' ||
+      schema._def.typeName === 'ZodDate'
+    ) {
+      return schema._def.checks?.some((check: any) => isAsyncFunctionOrPromiseReturning(check.refinement));
+    }
   }
 
   return false; // Default: No async refinements found

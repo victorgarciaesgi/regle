@@ -91,7 +91,7 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> | ZodRegleFieldStatus<any>) {
+export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> | ZodRegleFieldStatus<any, any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$anyDirty).toBe(true);

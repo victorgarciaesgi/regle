@@ -9,22 +9,10 @@ import type {
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { MaybeRef, Ref } from 'vue';
-import {
-  computed,
-  effectScope,
-  isRef,
-  nextTick,
-  reactive,
-  ref,
-  shallowRef,
-  toRef,
-  unref,
-  watch,
-  watchEffect,
-} from 'vue';
+import { computed, isRef, reactive, ref, unref, watch, watchEffect } from 'vue';
 import { cloneDeep } from '../../../shared';
-import type { DeepReactiveState, PossibleDefTypes, ZodRegle, toZod } from '../types';
-import { processZodTypeDef } from './parser/processZodTypeDef';
+import type { DeepReactiveState, ZodRegle, toZod } from '../types';
+import { zodObjectToRegle } from './parser/validators';
 
 export type useZodRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
@@ -68,17 +56,15 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
 
     const initialState = ref({ ...cloneDeep(processedState.value) });
 
-    watchEffect(() => {
-      rules.value = Object.fromEntries(
-        Object.entries(scopeRules.value.shape).map(([key, shape]) => {
-          if (typeof shape === 'object' && '_def' in shape) {
-            const def = shape._def as PossibleDefTypes;
-            return [key, processZodTypeDef(def, shape, toRef(processedState.value, key))];
-          }
-          return [key, {}];
-        })
-      );
-    });
+    watch(
+      scopeRules,
+      () => {
+        if (scopeRules.value && typeof scopeRules.value === 'object') {
+          rules.value = reactive(zodObjectToRegle(scopeRules.value, processedState));
+        }
+      },
+      { deep: true, immediate: true }
+    );
 
     const regle = useRootStorage({
       scopeRules: rules as any,
