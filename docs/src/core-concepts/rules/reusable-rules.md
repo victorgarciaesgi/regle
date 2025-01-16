@@ -73,7 +73,7 @@ _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
 *optional*
 
-Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `$field.xxx.$tooltips`. This is useful for providing additional information or guidance.
+Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `$fields.xxx.$tooltips`. This is useful for providing additional information or guidance.
 
 
 ## Reactive parameters

@@ -176,6 +176,6 @@ This represents all the children of your object. You can access any nested child
 
 This will store the status of every item in your collection. Each item will be a field you can access, or map on it to display your elements.
 
-### `$field`
+### `$self`
 
 Represents the status of the collection itself. You can have validation rules on the array like `minLength`, this field represents the isolated status of the collection.

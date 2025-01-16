@@ -93,7 +93,7 @@ describe('errors', () => {
     expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedErrors);
     expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedErrors);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedErrors);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$errors.$self).toStrictEqual(expectedErrors);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
       expectedErrors

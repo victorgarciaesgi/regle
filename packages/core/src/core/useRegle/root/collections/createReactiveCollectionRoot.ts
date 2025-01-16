@@ -73,7 +73,7 @@ export function createReactiveCollectionStatus({
 
   let $unwatchState: WatchStopHandle;
 
-  const $fieldStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
+  const $selfStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
 
   immediateScopeState = immediateScope.run(() => {
@@ -115,7 +115,7 @@ export function createReactiveCollectionStatus({
       return;
     }
 
-    $value.value = $fieldStatus.value.$value;
+    $value.value = $selfStatus.value.$value;
 
     if (Array.isArray(state.value)) {
       $eachStatus.value = state.value
@@ -156,7 +156,7 @@ export function createReactiveCollectionStatus({
       $eachStatus.value = [];
     }
 
-    $fieldStatus.value = createReactiveFieldStatus({
+    $selfStatus.value = createReactiveFieldStatus({
       state,
       rulesDef,
       customMessages,
@@ -253,7 +253,7 @@ export function createReactiveCollectionStatus({
 
       const $dirty = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$dirty &&
+          $selfStatus.value.$dirty &&
           !!$eachStatus.value.length &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$dirty;
@@ -263,7 +263,7 @@ export function createReactiveCollectionStatus({
 
       const $anyDirty = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$anyDirty ||
+          $selfStatus.value.$anyDirty ||
           $eachStatus.value.some((statusOrField) => {
             return statusOrField.$anyDirty;
           })
@@ -272,7 +272,7 @@ export function createReactiveCollectionStatus({
 
       const $invalid = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$invalid ||
+          $selfStatus.value.$invalid ||
           $eachStatus.value.some((statusOrField) => {
             return statusOrField.$invalid;
           })
@@ -281,7 +281,7 @@ export function createReactiveCollectionStatus({
 
       const $valid = computed<boolean>(() => {
         return (
-          (isEmpty($fieldStatus.value.$rules) ? true : $fieldStatus.value.$valid) &&
+          (isEmpty($selfStatus.value.$rules) ? true : $selfStatus.value.$valid) &&
           $eachStatus.value.every((statusOrField) => {
             return statusOrField.$valid;
           })
@@ -290,7 +290,7 @@ export function createReactiveCollectionStatus({
 
       const $error = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$error ||
+          $selfStatus.value.$error ||
           $eachStatus.value.some((statusOrField) => {
             return statusOrField.$error;
           })
@@ -303,7 +303,7 @@ export function createReactiveCollectionStatus({
 
       const $pending = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$pending ||
+          $selfStatus.value.$pending ||
           $eachStatus.value.some((statusOrField) => {
             return statusOrField.$pending;
           })
@@ -321,7 +321,7 @@ export function createReactiveCollectionStatus({
 
       const $anyEdited = computed<boolean>(() => {
         return (
-          $fieldStatus.value.$anyEdited ||
+          $selfStatus.value.$anyEdited ||
           $eachStatus.value.some((statusOrField) => {
             return statusOrField.$anyEdited;
           })
@@ -330,14 +330,14 @@ export function createReactiveCollectionStatus({
 
       const $errors = computed(() => {
         return {
-          $self: $fieldStatus.value.$errors,
+          $self: $selfStatus.value.$errors,
           $each: $eachStatus.value.map(($each) => $each.$errors),
         } satisfies $InternalRegleCollectionErrors;
       });
 
       const $silentErrors = computed(() => {
         return {
-          $self: $fieldStatus.value.$silentErrors,
+          $self: $selfStatus.value.$silentErrors,
           $each: $eachStatus.value.map(($each) => $each.$silentErrors),
         } satisfies $InternalRegleCollectionErrors;
       });
@@ -367,7 +367,7 @@ export function createReactiveCollectionStatus({
                     $anyDirty,
                     $name: $name,
                     $each: $eachStatus,
-                    $field: $fieldStatus as any,
+                    $self: $selfStatus as any,
                     $value: state,
                     $edited,
                     $anyEdited,
@@ -415,8 +415,8 @@ export function createReactiveCollectionStatus({
     if ($unwatchState) {
       $unwatchState();
     }
-    if ($fieldStatus.value) {
-      $fieldStatus.value.$unwatch();
+    if ($selfStatus.value) {
+      $selfStatus.value.$unwatch();
     }
     if ($eachStatus.value) {
       $eachStatus.value.forEach((element) => {
@@ -434,14 +434,14 @@ export function createReactiveCollectionStatus({
   }
 
   function $touch(runCommit = true, withConditions = false): void {
-    $fieldStatus.value.$touch(runCommit, withConditions);
+    $selfStatus.value.$touch(runCommit, withConditions);
     $eachStatus.value.forEach(($each) => {
       $each.$touch(runCommit, withConditions);
     });
   }
 
   function $reset(): void {
-    $fieldStatus.value.$reset();
+    $selfStatus.value.$reset();
     $eachStatus.value.forEach(($each) => {
       $each.$reset();
     });
@@ -451,7 +451,7 @@ export function createReactiveCollectionStatus({
     const data = state.value;
     try {
       const results = await Promise.allSettled([
-        $fieldStatus.value.$validate(),
+        $selfStatus.value.$validate(),
         ...$eachStatus.value.map((rule) => {
           return rule.$validate();
         }),
@@ -471,7 +471,7 @@ export function createReactiveCollectionStatus({
   }
 
   function $clearExternalErrors() {
-    $fieldStatus.value.$clearExternalErrors();
+    $selfStatus.value.$clearExternalErrors();
     $eachStatus.value.forEach(($each) => {
       $each.$clearExternalErrors();
     });
@@ -505,7 +505,7 @@ export function createReactiveCollectionStatus({
   const { $shortcuts, ...restScopeState } = scopeState;
 
   return reactive({
-    $field: $fieldStatus,
+    $self: $selfStatus,
     ...restScopeState,
     ...$shortcuts,
     $each: $eachStatus,

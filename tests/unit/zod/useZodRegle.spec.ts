@@ -99,7 +99,7 @@ describe('useZodRegle ', async () => {
     shouldBeInvalidField(vm.r$.$fields.level1);
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.child);
     shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$field);
+    shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$self);
     shouldBePristineField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
   });
 

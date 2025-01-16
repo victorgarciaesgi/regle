@@ -73,7 +73,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
       expectedMessage
     );
@@ -83,7 +83,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedMessage);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
       expectedMessage
     );
@@ -94,9 +94,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$rules.createRuleMetadataRule.$active).toBe(true);
     expect(vm.r$.$fields.user.$fields.firstName.$rules.createRuleMetadataRule.$active).toBe(true);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$rules.createRuleMetadataRule.$active).toBe(
-      true
-    );
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$rules.createRuleMetadataRule.$active).toBe(true);
     expect(
       vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$rules.createRuleMetadataRule.$active
     ).toBe(true);
@@ -111,7 +109,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
       expectedMessage2
     );
@@ -121,7 +119,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedMessage2);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
       expectedMessage2
     );
@@ -132,7 +130,7 @@ describe('metadata', () => {
     expect(vm.r$.$fields.email.$rules.createRuleMetadataRule.$active).toBe(false);
     expect(vm.r$.$fields.user.$fields.firstName.$rules.createRuleMetadataRule.$active).toBe(false);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$rules.createRuleMetadataRule.$active).toBe(false);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$rules.createRuleMetadataRule.$active).toBe(
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$rules.createRuleMetadataRule.$active).toBe(
       false
     );
     expect(

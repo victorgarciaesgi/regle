@@ -153,7 +153,7 @@ export type ValibotRegleCollectionStatus<
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
   readonly $each: Array<InferValibotRegleStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
-  readonly $field: ValibotRegleFieldStatus<TSchema, TState>;
+  readonly $self: ValibotRegleFieldStatus<TSchema, TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */

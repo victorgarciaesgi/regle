@@ -97,7 +97,7 @@ describe('tooltips', () => {
     expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedTooltips);
     expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedTooltips);
     expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedTooltips);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$field.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedTooltips);
     expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
       expectedTooltips
     );

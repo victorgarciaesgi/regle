@@ -335,7 +335,7 @@ export type RegleCollectionStatus<
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
-  readonly $field: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
+  readonly $self: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -358,7 +358,7 @@ export type RegleCollectionStatus<
  */
 export interface $InternalRegleCollectionStatus
   extends Omit<$InternalRegleStatus, '$fields' | '$errors' | '$silentErrors'> {
-  readonly $field: $InternalRegleFieldStatus;
+  readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;

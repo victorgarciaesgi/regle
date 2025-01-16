@@ -103,7 +103,7 @@ Sometimes, you may want to validate not only each field in every element of the 
 
 You can do this just like you would with a normal field.
 
-Errors can be displayed either using `r$.$errors.[field].$self` or `r$.$fields.[field].$field.$errors`.
+Errors can be displayed either using `r$.$errors.[field].$self` or `r$.$fields.[field].$self.$errors`.
 
 
 ```ts twoslash
