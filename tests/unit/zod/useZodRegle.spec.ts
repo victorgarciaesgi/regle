@@ -11,17 +11,6 @@ import { z } from 'zod';
 import { isFilled } from '@regle/rules';
 
 function nestedReactiveObjectValidation() {
-  const form = reactive({
-    level0: 0,
-    level1: {
-      child: 1,
-      level2: {
-        child: 2,
-      },
-      collection: [{ name: 0 as number | null }],
-    },
-  });
-
   const zodIsEven = z
     .number({
       required_error: 'This field is required',
@@ -35,22 +24,31 @@ function nestedReactiveObjectValidation() {
         return true;
       },
       { message: 'Custom error' }
-    )
-    .default(0);
+    );
 
-  return useZodRegle(
-    form,
-    z.object({
-      level0: zodIsEven.optional(),
-      level1: z.object({
+  const schema = z.object({
+    level0: zodIsEven.optional(),
+    level1: z.object({
+      child: zodIsEven.optional(),
+      level2: z.object({
         child: zodIsEven.optional(),
-        level2: z.object({
-          child: zodIsEven.optional(),
-        }),
-        collection: z.array(z.object({ name: zodIsEven })).min(3),
       }),
-    })
-  );
+      collection: z.array(z.object({ name: zodIsEven })).min(3),
+    }),
+  });
+
+  const form = reactive({
+    level0: 0,
+    level1: {
+      child: 1,
+      level2: {
+        child: 2,
+      },
+      collection: [{ name: 0 as number | undefined }],
+    },
+  });
+
+  return useZodRegle(form, schema);
 }
 
 describe('useZodRegle ', async () => {
@@ -133,7 +131,7 @@ describe('useZodRegle ', async () => {
 
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
-    vm.r$.$value.level1.collection.push({ name: null }, { name: null });
+    vm.r$.$value.level1.collection.push({ name: undefined }, { name: undefined });
 
     await nextTick();
 
@@ -166,7 +164,7 @@ describe('useZodRegle ', async () => {
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: null }, { name: null }],
+        collection: [{ name: 0 }, { name: undefined }, { name: undefined }],
       },
     });
 

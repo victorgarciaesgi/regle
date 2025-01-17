@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import z from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../utils/validations.utils';
-import { defineZodRegleConfig } from '@regle/zod';
+import { defineZodRegleConfig, useZodRegle } from '@regle/zod';
 
 function nestedRefObjectValidation() {
   const { useZodRegle } = defineZodRegleConfig({});

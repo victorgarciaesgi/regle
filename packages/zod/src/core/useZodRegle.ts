@@ -1,5 +1,6 @@
 import type {
   DeepMaybeRef,
+  DeepReactiveState,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
@@ -11,7 +12,7 @@ import { useRootStorage } from '@regle/core';
 import type { MaybeRef, Ref } from 'vue';
 import { computed, isRef, reactive, ref, unref, watch, watchEffect } from 'vue';
 import { cloneDeep } from '../../../shared';
-import type { DeepReactiveState, ZodRegle, toZod } from '../types';
+import type { ZodRegle, toZod } from '../types';
 import { zodObjectToRegle } from './parser/validators';
 
 export type useZodRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <

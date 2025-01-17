@@ -1,5 +1,6 @@
 import type {
   DeepMaybeRef,
+  DeepReactiveState,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
@@ -8,12 +9,11 @@ import type {
   Unwrap,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
-import type * as v from 'valibot';
 import type { MaybeRef, Ref } from 'vue';
-import { computed, isRef, ref, unref, watch } from 'vue';
+import { computed, isRef, reactive, ref, unref, watch } from 'vue';
 import { cloneDeep } from '../../../shared';
-import type { DeepReactiveState, toValibot, ValibotRegle } from '../types';
-import { processValibotTypeDef } from './parser/processValibotTypeDef';
+import type { toValibot, ValibotRegle } from '../types';
+import { valibotObjectToRegle } from './parser/validators';
 
 export type useValibotRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
@@ -53,17 +53,6 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
       ...options,
     } as any;
 
-    function valibotShapeToRegleRules() {
-      rules.value = Object.fromEntries(
-        Object.entries(scopeRules.value.entries).map(([key, schema]: [string, v.BaseSchema<unknown, unknown, any>]) => {
-          if (typeof schema === 'object') {
-            return [key, processValibotTypeDef(schema)];
-          }
-          return [key, {}];
-        })
-      );
-    }
-
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
 
     const initialState = ref({ ...cloneDeep(processedState.value) });
@@ -71,11 +60,12 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
     watch(
       scopeRules,
       () => {
-        valibotShapeToRegleRules();
+        if (scopeRules.value && typeof scopeRules.value === 'object') {
+          rules.value = reactive(valibotObjectToRegle(scopeRules.value, processedState));
+        }
       },
-      { deep: true }
+      { deep: true, immediate: true }
     );
-    valibotShapeToRegleRules();
 
     const regle = useRootStorage({
       scopeRules: rules as any,

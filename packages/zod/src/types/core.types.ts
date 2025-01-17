@@ -8,10 +8,10 @@ import type {
   RegleShortcutDefinition,
 } from '@regle/core';
 import type { PartialDeep } from 'type-fest';
-import type { z, ZodDiscriminatedUnionOption, ZodTypeAny } from 'zod';
+import type { Raw } from 'vue';
+import type { z, ZodTypeAny } from 'zod';
 import type { GetNestedZodSchema } from './utils.types';
 import type { toZod } from './zod.types';
-import type { Raw } from 'vue';
 
 export interface ZodRegle<
   TState extends Record<string, any>,

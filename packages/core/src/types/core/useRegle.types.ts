@@ -48,9 +48,18 @@ type CheckDeepExact<T, U> = [U] extends [never]
         ? isDeepExact<T, U>
         : false;
 
-export type DeepReactiveState<T extends Record<string, any>> = {
-  [K in keyof T]: MaybeRef<T[K]>;
+export type DeepReactiveState<T extends Record<string, any> | undefined> = {
+  [K in keyof T]: InferDeepReactiveState<T[K]>;
 };
+
+export type InferDeepReactiveState<TState> =
+  NonNullable<TState> extends Array<infer U extends Record<string, any>>
+    ? DeepReactiveState<U[]>
+    : NonNullable<TState> extends Date | File
+      ? MaybeRef<TState>
+      : TState extends Record<string, any> | undefined
+        ? DeepReactiveState<TState>
+        : MaybeRef<TState>;
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,

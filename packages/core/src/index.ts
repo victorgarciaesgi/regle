@@ -59,4 +59,5 @@ export type {
   PrimitiveTypes,
   $InternalRegleStatus,
   JoinDiscriminatedUnions,
+  DeepReactiveState,
 } from './types';

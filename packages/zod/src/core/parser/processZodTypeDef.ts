@@ -32,7 +32,7 @@ function isDefWithInnerSchema(
   return false;
 }
 
-export function getNestedInnerType(schema: z.ZodType<any>, effects?: Effect<any>[]): z.ZodType<any> | undefined {
+export function getNestedInnerType(schema: z.ZodType<any>): z.ZodType<any> | undefined {
   if (schema?._def && typeof schema._def === 'object' && 'typeName' in schema._def) {
     if (isDefWithInnerType(schema)) {
       return getNestedInnerType(schema._def.innerType);

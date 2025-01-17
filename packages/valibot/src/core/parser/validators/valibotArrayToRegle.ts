@@ -1,13 +1,18 @@
 import type { RegleCollectionRuleDecl } from '@regle/core';
-import { exactLength, maxLength, minLength, withMessage } from '@regle/rules';
+import { withMessage } from '@regle/rules';
 import * as v from 'valibot';
+import type { Ref } from 'vue';
+import type { MaybeArrayAsync } from '../../../types';
 import { processValibotTypeDef } from '../processValibotTypeDef';
-import { transformValibotAdapter } from './transformValibotAdapter';
 import { extractIssuesMessages } from './extractIssuesMessages';
+import { transformValibotAdapter } from './transformValibotAdapter';
 
 type ArraySchema = v.ArraySchema<v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>, undefined>;
 export function valibotArrayToRegle(
-  schema: ArraySchema | v.SchemaWithPipe<[ArraySchema, ...v.BaseValidation<unknown, unknown, v.BaseIssue<unknown>>[]]>
+  schema:
+    | MaybeArrayAsync<any>
+    | v.SchemaWithPipe<[ArraySchema, ...v.BaseValidation<unknown, unknown, v.BaseIssue<unknown>>[]]>,
+  state: Ref<unknown>
 ): RegleCollectionRuleDecl {
   let filteredSelfSchema: Record<string, any> = {};
   if ('pipe' in schema) {
@@ -22,7 +27,7 @@ export function valibotArrayToRegle(
   }
 
   return {
-    $each: processValibotTypeDef(schema.item),
+    $each: processValibotTypeDef(schema.item, state),
     ...filteredSelfSchema,
   };
 }

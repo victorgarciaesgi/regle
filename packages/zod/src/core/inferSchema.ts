@@ -1,6 +1,6 @@
-import { ref, type ComputedRef, type MaybeRef } from 'vue';
-import type { DeepReactiveState, toZod, ZodChild } from '../types';
-import type { NoInferLegacy, PrimitiveTypes, RegleRuleDecl, Unwrap } from '@regle/core';
+import type { DeepReactiveState, NoInferLegacy, PrimitiveTypes, Unwrap } from '@regle/core';
+import { type ComputedRef, type MaybeRef } from 'vue';
+import type { toZod, ZodChild } from '../types';
 
 export interface inferZodSchemaFn {
   <TState extends Record<string, any>, TZodSchema extends toZod<Unwrap<TState>> = toZod<Unwrap<TState>>>(

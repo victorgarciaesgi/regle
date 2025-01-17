@@ -1,11 +1,12 @@
 import type {
+  JoinDiscriminatedUnions,
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
-import type { PartialDeep } from 'type-fest';
+import type { PartialDeep, TupleToUnion, UnionToIntersection } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type * as v from 'valibot';
 import type { MaybeArrayAsync, MaybeObjectAsync, MaybeSchemaAsync, ValibotObj } from './valibot.types';
@@ -28,6 +29,21 @@ export type ValibotRegleResult<TSchema extends MaybeSchemaAsync<unknown>> =
   | { result: false; data: PartialDeep<v.InferOutput<TSchema>> }
   | { result: true; data: v.InferOutput<TSchema> };
 
+type MergeIntersect<T extends readonly any[]> = T extends [infer F, ...infer R]
+  ? [InferObjectSchema<F>, ...MergeIntersect<R>]
+  : [];
+
+type InferObjectSchema<T> =
+  T extends v.ObjectSchema<infer O, any>
+    ? O
+    : T extends v.ObjectSchemaAsync<infer O, any>
+      ? O
+      : T extends v.IntersectSchema<infer O, any>
+        ? UnionToIntersection<TupleToUnion<MergeIntersect<O>>>
+        : T extends v.IntersectSchemaAsync<infer O, any>
+          ? UnionToIntersection<TupleToUnion<MergeIntersect<O>>>
+          : undefined;
+
 /**
  * @public
  */
@@ -35,27 +51,31 @@ export type ValibotRegleStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends MaybeObjectAsync<any> = MaybeObjectAsync<any>,
   TShortcuts extends RegleShortcutDefinition = {},
-  TEntries = TSchema extends v.ObjectSchema<infer O, any>
-    ? O
-    : TSchema extends v.ObjectSchemaAsync<infer O, any>
-      ? O
-      : undefined,
+  TEntries = InferObjectSchema<TSchema>,
 > = RegleCommonStatus<TState> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: {
-    readonly [TKey in keyof TState]: TKey extends keyof TEntries
-      ? TEntries[TKey] extends MaybeSchemaAsync<any>
-        ? InferValibotRegleStatusType<TEntries[TKey], TState[TKey], TShortcuts>
+    readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TEntries>
+      ? NonNullable<JoinDiscriminatedUnions<TEntries>[TKey]> extends MaybeSchemaAsync<any>
+        ? InferValibotRegleStatusType<
+            NonNullable<JoinDiscriminatedUnions<TEntries>[TKey]>,
+            JoinDiscriminatedUnions<TState>[TKey],
+            TShortcuts
+          >
         : never
-      : ValibotRegleFieldStatus<undefined, TState[TKey], TShortcuts>;
+      : never;
   } & {
-    readonly [TKey in keyof TState as TKey extends keyof TEntries
-      ? TEntries[TKey] extends NonNullable<TEntries[TKey]>
+    readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<TEntries>
+      ? JoinDiscriminatedUnions<TEntries>[TKey] extends NonNullable<JoinDiscriminatedUnions<TEntries>[TKey]>
         ? TKey
         : never
-      : never]-?: TKey extends keyof TEntries
-      ? TEntries[TKey] extends MaybeSchemaAsync<any>
-        ? InferValibotRegleStatusType<TEntries[TKey], NonNullable<TState[TKey]>, TShortcuts>
+      : never]-?: TKey extends keyof JoinDiscriminatedUnions<TEntries>
+      ? JoinDiscriminatedUnions<TEntries>[TKey] extends MaybeSchemaAsync<any>
+        ? InferValibotRegleStatusType<
+            JoinDiscriminatedUnions<TEntries>[TKey],
+            NonNullable<JoinDiscriminatedUnions<TState>[TKey]>,
+            TShortcuts
+          >
         : never
       : never;
   };
@@ -76,13 +96,15 @@ export type ValibotRegleStatus<
       });
 
 type InferSchema<T> =
-  T extends v.SchemaWithPipe<[infer U extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>, ...any[]]>
+  NonNullable<T> extends v.SchemaWithPipe<
+    [infer U extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>, ...any[]]
+  >
     ? U
-    : T extends v.SchemaWithPipeAsync<
+    : NonNullable<T> extends v.SchemaWithPipeAsync<
           [infer U extends v.BaseSchemaAsync<unknown, unknown, v.BaseIssue<unknown>>, ...any[]]
         >
       ? U
-      : T extends MaybeSchemaAsync<any>
+      : NonNullable<T> extends MaybeSchemaAsync<any>
         ? T
         : undefined;
 
@@ -98,9 +120,19 @@ export type InferValibotRegleStatusType<
     ? ValibotRegleCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
     : NonNullable<TState> extends Date | File
       ? ValibotRegleFieldStatus<InferSchema<TSchema>, TState, TShortcuts>
-      : InferSchema<TSchema> extends MaybeObjectAsync<Record<string, any>>
-        ? ValibotRegleStatus<TState extends Record<string, any> ? TState : {}, InferSchema<TSchema>, TShortcuts>
-        : ValibotRegleFieldStatus<InferSchema<TSchema>, TState, TShortcuts>;
+      : InferSchema<TSchema> extends v.VariantSchema<any, infer U, any>
+        ? ValibotRegleStatus<
+            NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+            U[number] extends MaybeObjectAsync<any> ? U[number] : never,
+            TShortcuts
+          >
+        : InferSchema<TSchema> extends MaybeObjectAsync<Record<string, any>>
+          ? ValibotRegleStatus<
+              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+              InferSchema<TSchema>,
+              TShortcuts
+            >
+          : ValibotRegleFieldStatus<InferSchema<TSchema>, TState, TShortcuts>;
 
 /**
  * @public

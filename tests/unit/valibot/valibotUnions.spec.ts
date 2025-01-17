@@ -1,7 +1,6 @@
 import type { RegleShortcutDefinition } from '@regle/core';
-import { useZodRegle, type ZodRegleFieldStatus } from '@regle/zod';
 import { reactive } from 'vue';
-import { z } from 'zod';
+import * as v from 'valibot';
 import { createRegleComponent } from '../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -9,33 +8,27 @@ import {
   shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../utils/validations.utils';
+import { useValibotRegle, type ValibotRegleFieldStatus, type ValibotRegleStatus } from '@regle/valibot';
 
-const GiftType = z.enum(['Cash', 'Shares'], {
-  required_error: 'Please select an option',
+const GiftType = v.picklist(['Cash', 'Shares'], 'Please select an option');
+
+const CashGift = v.object({
+  type: v.literal(GiftType.options[0]),
+  amount: v.pipe(v.number(), v.minValue(0), v.finite()),
 });
 
-const CashGift = z.object({
-  type: z.literal(GiftType.Values.Cash),
-  amount: z.number().nonnegative().finite(),
+const SharesGift = v.object({
+  type: v.literal(GiftType.options[1]),
+  shares: v.pipe(
+    v.number('Shares must be a number'),
+    v.integer(),
+    v.minValue(0, 'Must be a positive number'),
+    v.finite()
+  ),
+  company: v.pipe(v.string(), v.nonEmpty("Company can't be empty")),
 });
 
-const SharesGift = z.object({
-  type: z.literal(GiftType.Values.Shares),
-  shares: z
-    .number({
-      invalid_type_error: 'Shares must be a number',
-    })
-    .int()
-    .nonnegative('Must be a positive number')
-    .finite(),
-  company: z
-    .string({
-      required_error: "Company can't be empty",
-    })
-    .nonempty("Company can't be empty"),
-});
-
-const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
+const Gift = v.variant('type', [CashGift, SharesGift]);
 
 enum MyEnum {
   Foo = 'Foo',
@@ -43,24 +36,16 @@ enum MyEnum {
 }
 
 function zodUnionForm() {
-  const schema = z.object({
-    enum: z.enum(['Salmon', 'Tuna', 'Trout']),
-    nativeEnum: z.nativeEnum(MyEnum),
-    union: z.union([z.number(), z.string()]),
+  const schema = v.object({
+    enum: v.picklist(['Salmon', 'Tuna', 'Trout']),
+    nativeEnum: v.enum(MyEnum),
+    union: v.union([v.number(), v.string()]),
     gift: Gift,
   });
 
-  const form = reactive<Partial<z.input<typeof schema>>>({});
+  const form = reactive<Partial<v.InferInput<typeof schema>>>({});
 
-  return useZodRegle(
-    form,
-    z.object({
-      enum: z.enum(['Salmon', 'Tuna', 'Trout']),
-      nativeEnum: z.nativeEnum(MyEnum),
-      union: z.union([z.number(), z.string()]),
-      gift: Gift,
-    })
-  );
+  return useValibotRegle(form, schema);
 }
 
 describe('zod unions', () => {
@@ -136,10 +121,10 @@ describe('zod unions', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      ZodRegleFieldStatus<z.ZodString, string | undefined, RegleShortcutDefinition<any>> | undefined
+      ValibotRegleFieldStatus<v.StringSchema<undefined>, string | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      ZodRegleFieldStatus<z.ZodNumber, number | undefined, RegleShortcutDefinition<any>> | undefined
+      ValibotRegleFieldStatus<v.NumberSchema<undefined>, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

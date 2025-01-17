@@ -1,13 +1,14 @@
 import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleMetadataDefinition, RegleRuleRaw } from '@regle/core';
 import { withAsync, withParams } from '@regle/rules';
 import * as v from 'valibot';
+import type { MaybeSchemaAsync } from '../../../types';
 
 export function transformValibotAdapter(
-  schema: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>
+  schema: MaybeSchemaAsync<unknown>
 ): FormRuleDeclaration<unknown, [], v.MaybePromise<{ $valid: boolean; $issues: v.BaseIssue<unknown>[] }>> {
   const isAsync = schema.async;
   const validatorFn = (value: unknown) => {
-    const result = trySafeTransform(schema, value, isAsync);
+    const result = trySafeTransform(schema, value);
 
     if (result instanceof Promise) {
       return result;
@@ -33,14 +34,13 @@ export function transformValibotAdapter(
 }
 
 function trySafeTransform(
-  schema: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>,
-  value: unknown,
-  isAsync: boolean
+  schema: MaybeSchemaAsync<unknown>,
+  value: unknown
 ):
   | v.SafeParseResult<v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>
   | Promise<{ $valid: boolean; $issues: v.BaseIssue<unknown>[] }> {
   try {
-    if (isAsync) {
+    if (schema.async) {
       return new Promise<{ $valid: boolean; $issues: any[] }>(async (resolve) => {
         const result = await v.safeParseAsync(schema, value);
         if (result.success) {

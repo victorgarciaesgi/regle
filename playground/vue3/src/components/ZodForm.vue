@@ -154,23 +154,7 @@ const formSchema = z
       .min(1),
   })
   .and(z.object({ enum: z.enum(['Salmon', 'Tuna', 'Trout']) }))
-  .and(z.object({ nativeEnum: z.nativeEnum(MyEnum) }))
-  .transform((arg) => arg);
-
-type ExtractZodObject<T extends z.ZodType> =
-  T extends z.ZodType<any, ZodIntersectionDef<infer A extends z.ZodObject<any>, infer B extends z.ZodObject<any>>>
-    ? z.ZodObject<z.objectUtil.extendShape<A['shape'], B['shape']>>
-    : T extends z.ZodType<any, ZodIntersectionDef<infer A, infer B>>
-      ? ExtractZodObject<A> & ExtractZodObject<B>
-      : T extends z.ZodObject<any>
-        ? T
-        : T extends z.ZodDiscriminatedUnion<any, infer U extends z.ZodDiscriminatedUnionOption<any>[]>
-          ? ExtractZodObject<U[number]>
-          : T extends z.ZodEffects<infer U extends z.ZodType>
-            ? ExtractZodObject<U>
-            : T;
-
-type foo = ExtractZodObject<typeof formSchema>;
+  .and(z.object({ nativeEnum: z.nativeEnum(MyEnum) }));
 
 const form = reactive<Partial<z.infer<typeof formSchema>>>({
   gift: {} as any,

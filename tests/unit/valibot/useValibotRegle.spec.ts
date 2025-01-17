@@ -1,4 +1,6 @@
-import { useValibotRegle, type toValibot } from '@regle/valibot';
+import { isFilled } from '@regle/rules';
+import { useValibotRegle } from '@regle/valibot';
+import * as v from 'valibot';
 import { nextTick, reactive } from 'vue';
 import { createRegleComponent } from '../../utils/test.utils';
 import {
@@ -7,9 +9,6 @@ import {
   shouldBePristineField,
   shouldBeValidField,
 } from '../../utils/validations.utils';
-import * as v from 'valibot';
-import { isFilled } from '@regle/rules';
-import type { Maybe } from '@regle/core';
 
 function nestedReactiveObjectValidation() {
   const form = reactive({
@@ -19,7 +18,7 @@ function nestedReactiveObjectValidation() {
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 as number | null }],
+      collection: [{ name: 0 as number | undefined }],
     },
   });
 
@@ -127,7 +126,7 @@ describe('useValibotRegle ', async () => {
 
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
-    vm.r$.$value.level1.collection.push({ name: null }, { name: null });
+    vm.r$.$value.level1.collection.push({ name: undefined }, { name: undefined });
 
     await nextTick();
 
@@ -160,7 +159,7 @@ describe('useValibotRegle ', async () => {
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: null }, { name: null }],
+        collection: [{ name: 0 }, { name: undefined }, { name: undefined }],
       },
     });
 

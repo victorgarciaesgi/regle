@@ -30,11 +30,16 @@ export type ValibotChildWithoutAsync<TValue extends unknown> =
 
 export type MaybeSchemaAsync<T> =
   | v.BaseSchema<Maybe<T>, Maybe<T>, v.BaseIssue<unknown>>
-  | v.BaseSchemaAsync<Maybe<T>, Maybe<T>, v.BaseIssue<unknown>>;
+  | v.BaseSchemaAsync<Maybe<T>, Maybe<T>, v.BaseIssue<unknown>>
+  | v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>;
 
-export type MaybeObjectAsync<T extends Record<string, unknown>> =
-  | v.ObjectSchema<ValibotObjWithoutAsync<T>, any>
-  | v.ObjectSchemaAsync<ValibotObj<T>, any>;
+export type MaybeInputObjectAsync<T extends Record<string, unknown>> =
+  | v.BaseSchema<v.InferObjectInput<ValibotObjWithoutAsync<T>>, any, v.BaseIssue<unknown>>
+  | v.BaseSchemaAsync<v.InferObjectInput<ValibotObjWithoutAsync<T>>, any, v.BaseIssue<unknown>>;
+
+export type MaybeObjectAsync<T extends v.ObjectEntries | v.ObjectEntriesAsync> =
+  | v.BaseSchema<v.InferObjectInput<T>, any, any>
+  | v.BaseSchemaAsync<v.InferObjectInput<T>, any, any>;
 
 export type MaybeArrayAsync<A extends MaybeSchemaAsync<unknown>> =
   | v.ArraySchema<
@@ -44,4 +49,17 @@ export type MaybeArrayAsync<A extends MaybeSchemaAsync<unknown>> =
   | v.ArraySchemaAsync<A, v.ErrorMessage<v.ArrayIssue> | undefined>;
 
 //
-export type toValibot<T extends Record<string, unknown>> = MaybeObjectAsync<T>;
+export type toValibot<T extends Record<string, unknown>> = MaybeInputObjectAsync<T>;
+
+type test = toValibot<{
+  level0: number;
+  level1: {
+    child: number;
+    level2: {
+      child: number;
+    };
+    collection: {
+      name: number | undefined;
+    }[];
+  };
+}>;

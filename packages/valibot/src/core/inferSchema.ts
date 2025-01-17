@@ -1,6 +1,6 @@
 import { ref, type ComputedRef, type MaybeRef } from 'vue';
-import type { DeepReactiveState, toValibot, ValibotChild } from '../types';
-import type { NoInferLegacy, PrimitiveTypes, RegleRuleDecl, Unwrap } from '@regle/core';
+import type { toValibot, ValibotChild } from '../types';
+import type { DeepReactiveState, NoInferLegacy, PrimitiveTypes, RegleRuleDecl, Unwrap } from '@regle/core';
 
 export interface inferValibotSchemaFn {
   <TState extends Record<string, any>, TValibotSchema extends toValibot<Unwrap<TState>> = toValibot<Unwrap<TState>>>(

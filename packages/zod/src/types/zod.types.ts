@@ -5,7 +5,7 @@ import type { z } from 'zod';
 
 // -- Utils
 
-type MaybeZodType<T> = z.ZodType<Maybe<T>, any, CatchableMaybe<T>>;
+export type MaybeZodType<T> = z.ZodType<Maybe<T>, any, CatchableMaybe<T>>;
 
 type CatchableMaybe<T> = Maybe<T> | unknown;
 
