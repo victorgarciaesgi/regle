@@ -21,7 +21,7 @@ import type { CommonResolverOptions, CommonResolverScopedState } from './common/
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 
 interface CreateReactiveNestedStatus extends CommonResolverOptions {
-  state: Ref<Record<string, any>>;
+  state: Ref<Record<string, any> | undefined>;
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Ref<Record<string, any> | undefined>;
@@ -69,7 +69,7 @@ export function createReactiveNestedStatus({
         .filter(([_, rule]) => !!rule)
         .map(([statePropKey, statePropRules]) => {
           if (statePropRules) {
-            const stateRef = toRef(state.value, statePropKey);
+            const stateRef = toRef(state.value ?? {}, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
             const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
             const initialStateRef = toRef(initialState?.value ?? {}, statePropKey);
@@ -95,7 +95,7 @@ export function createReactiveNestedStatus({
       Object.entries(unref(externalErrors) ?? {})
         .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
         .map(([key]) => {
-          const stateRef = toRef(state.value, key);
+          const stateRef = toRef(state.value ?? {}, key);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
           return [
             key,
@@ -113,10 +113,10 @@ export function createReactiveNestedStatus({
     );
 
     const statesWithNoRules = Object.fromEntries(
-      Object.entries(state.value)
+      Object.entries(state.value ?? {})
         .filter(([key]) => !(key in rulesDef.value) && !(key in (externalRulesStatus.value ?? {})))
         .map(([key]) => {
-          const stateRef = toRef(state.value, key);
+          const stateRef = toRef(state.value ?? {}, key);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
 
           return [
@@ -330,8 +330,8 @@ export function createReactiveNestedStatus({
                 result.value = value(
                   reactive({
                     $dirty,
-                    $value: state,
-                    $silentValue,
+                    $value: state as any,
+                    $silentValue: $silentValue as any,
                     $error,
                     $pending,
                     $invalid,

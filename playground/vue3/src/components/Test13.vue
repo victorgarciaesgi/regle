@@ -1,40 +1,57 @@
 <template>
   <main>
+    invalid: {{ r$.$invalid }}
     <br />
     <br />
-    <input type="text" v-model="data.test" />
-    <ul>
-      <li v-for="error of r$.$errors.test" :key="error">{{ error }}</li>
-    </ul>
-
-    <button @click="() => r$.$validate()">validate</button>
-
-    <pre>
-      {{ r$ }}
-    </pre>
+    <button
+      v-if="!data.level"
+      @click="
+        () => {
+          data.level = { id: 1 };
+        }
+      "
+    >
+      set level
+    </button>
+    <button
+      v-else
+      @click="
+        () => {
+          data.level = undefined;
+        }
+      "
+    >
+      unset level
+    </button>
+    <br />
+    <br />
+    <strong>r$.$fields.level.id.$value: </strong>
+    <code> {{ r$.$fields.level.$fields.id.$value }}</code>
+    <br />
+    <br />
+    <strong>r$.$fields.level.$value: </strong>
+    <code> {{ r$.$fields.level?.$value }}</code>
+    <br />
+    <br />
+    <strong> r$.$value: </strong>
+    <code> {{ r$.$value }} </code>
   </main>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useRegle } from '@regle/core';
-import { and, applyIf, checked, minLength, required, oneOf, nativeEnum } from '@regle/rules';
-import { ref } from 'vue';
+import { maxLength, minLength, required } from '@regle/rules';
 
 const data = ref({
-  test: '',
+  competency: 'c1',
+  level: { id: 1 },
 });
-
-enum Food {
-  Meat = 'Meat',
-  Fish = 'Fish',
-}
 
 const { r$ } = useRegle(data, {
-  test: {
-    // oneOf: oneOf(['One', 'Two']),
-    enum: nativeEnum(Food),
+  competency: { required },
+  level: {
+    id: { required },
   },
 });
-
-r$.$reset();
 </script>
