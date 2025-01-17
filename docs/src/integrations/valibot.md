@@ -46,6 +46,15 @@ You still benefit from features like dirty tracking and custom error handling.
 
 All schemas are parsed using `safeParse` and `safeParseAsync` (if your schema includes asynchronous transformations or refinements). Error messages defined in the schema will automatically be retrieved.
 
+:::warn
+`refine` and `transform` and other effects functions on `v.object` are not supported in Regle.
+
+Regle splits the Valibot schema into nested independents schema, so only the field you modify will run it's own schema, and will not rerun the entire object schema for each input.
+
+This prevent the use of effects in object schemas.
+:::
+
+
 ```ts twoslash
 import { useValibotRegle } from '@regle/valibot';
 import * as v from 'valibot';
