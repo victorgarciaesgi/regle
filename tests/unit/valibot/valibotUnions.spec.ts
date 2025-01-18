@@ -28,6 +28,14 @@ const SharesGift = v.object({
   company: v.pipe(v.string(), v.nonEmpty("Company can't be empty")),
 });
 
+const Dateish = v.pipe(
+  v.string(),
+  v.transform((x) => {
+    return x && typeof x === 'string' ? new Date(x) : x;
+  }),
+  v.date('Please provide a valid date')
+);
+
 const Gift = v.variant('type', [CashGift, SharesGift]);
 
 enum MyEnum {
@@ -41,6 +49,7 @@ function zodUnionForm() {
     nativeEnum: v.enum(MyEnum),
     union: v.union([v.number(), v.string()]),
     gift: Gift,
+    date: Dateish,
   });
 
   const form = reactive<Partial<v.InferInput<typeof schema>>>({});
@@ -64,10 +73,13 @@ describe('zod unions', () => {
     shouldBeInvalidField(vm.r$.$fields.nativeEnum);
     shouldBeInvalidField(vm.r$.$fields.union);
     shouldBeInvalidField(vm.r$.$fields.gift);
+    shouldBeInvalidField(vm.r$.$fields.date);
 
     vm.r$.$value.enum = 'Salmon';
     vm.r$.$value.nativeEnum = MyEnum.Foo;
     vm.r$.$value.union = 6;
+    vm.r$.$value.date = '1995-01-08';
+
     if (vm.r$.$fields.gift) {
       vm.r$.$fields.gift.$fields.type.$value = 'Cash';
     }
@@ -76,6 +88,7 @@ describe('zod unions', () => {
     shouldBeValidField(vm.r$.$fields.enum);
     shouldBeValidField(vm.r$.$fields.nativeEnum);
     shouldBeValidField(vm.r$.$fields.union);
+    shouldBeValidField(vm.r$.$fields.date);
     shouldBeErrorField(vm.r$.$fields.gift);
 
     if (vm.r$.$fields.gift) {
@@ -125,6 +138,14 @@ describe('zod unions', () => {
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
       ValibotRegleFieldStatus<v.NumberSchema<undefined>, number | undefined, RegleShortcutDefinition<any>> | undefined
+    >();
+    expectTypeOf(vm.r$.$fields.gift?.$fields.shares).toEqualTypeOf<
+      | ValibotRegleFieldStatus<
+          v.NumberSchema<'Shares must be a number'>,
+          number | undefined,
+          RegleShortcutDefinition<any>
+        >
+      | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

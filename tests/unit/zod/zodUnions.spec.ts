@@ -35,6 +35,16 @@ const SharesGift = z.object({
     .nonempty("Company can't be empty"),
 });
 
+const Dateish = z.preprocess(
+  (x) => {
+    return x && typeof x === 'string' ? new Date(x) : x;
+  },
+  z.date({
+    required_error: 'Please provide a valid date',
+    invalid_type_error: 'Please provide a valid date',
+  })
+);
+
 const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
 
 enum MyEnum {
@@ -48,19 +58,12 @@ function zodUnionForm() {
     nativeEnum: z.nativeEnum(MyEnum),
     union: z.union([z.number(), z.string()]),
     gift: Gift,
+    date: Dateish,
   });
 
   const form = reactive<Partial<z.input<typeof schema>>>({});
 
-  return useZodRegle(
-    form,
-    z.object({
-      enum: z.enum(['Salmon', 'Tuna', 'Trout']),
-      nativeEnum: z.nativeEnum(MyEnum),
-      union: z.union([z.number(), z.string()]),
-      gift: Gift,
-    })
-  );
+  return useZodRegle(form, schema);
 }
 
 describe('zod unions', () => {
@@ -79,10 +82,13 @@ describe('zod unions', () => {
     shouldBeInvalidField(vm.r$.$fields.nativeEnum);
     shouldBeInvalidField(vm.r$.$fields.union);
     shouldBeInvalidField(vm.r$.$fields.gift);
+    shouldBeInvalidField(vm.r$.$fields.date);
 
     vm.r$.$value.enum = 'Salmon';
     vm.r$.$value.nativeEnum = MyEnum.Foo;
     vm.r$.$value.union = 6;
+    vm.r$.$value.date = '1995-01-08';
+
     if (vm.r$.$fields.gift) {
       vm.r$.$fields.gift.$fields.type.$value = 'Cash';
     }
@@ -91,6 +97,7 @@ describe('zod unions', () => {
     shouldBeValidField(vm.r$.$fields.enum);
     shouldBeValidField(vm.r$.$fields.nativeEnum);
     shouldBeValidField(vm.r$.$fields.union);
+    shouldBeValidField(vm.r$.$fields.date);
     shouldBeErrorField(vm.r$.$fields.gift);
 
     if (vm.r$.$fields.gift) {
@@ -142,12 +149,17 @@ describe('zod unions', () => {
       ZodRegleFieldStatus<z.ZodNumber, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
+    expectTypeOf(vm.r$.$fields.date).toEqualTypeOf<
+      ZodRegleFieldStatus<z.ZodEffects<z.ZodDate, Date, unknown>, unknown, RegleShortcutDefinition<any>> | undefined
+    >();
+
     // @ts-expect-error Invalid type on purpose
     vm.r$.$value.enum = 'Not valid';
     // @ts-expect-error Invalid type on purpose
     vm.r$.$value.nativeEnum = 'Not valid';
     // @ts-expect-error Invalid type on purpose
     vm.r$.$value.union = false;
+
     await vm.$nextTick();
 
     shouldBeErrorField(vm.r$.$fields.enum);
