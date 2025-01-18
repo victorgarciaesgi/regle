@@ -9,7 +9,7 @@ import type {
 } from '@regle/core';
 import type { PartialDeep } from 'type-fest';
 import type { Raw } from 'vue';
-import type { z, ZodTypeAny } from 'zod';
+import type { ArrayCardinality, z, ZodTypeAny } from 'zod';
 import type { GetNestedZodSchema } from './utils.types';
 import type { toZod } from './zod.types';
 
@@ -109,8 +109,8 @@ export type InferZodRegleStatusType<
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
 > =
-  TState[TKey] extends Array<any>
-    ? GetNestedZodSchema<TSchema> extends z.ZodType<z.arrayOutputType<infer A>>
+  NonNullable<TState[TKey]> extends Array<any>
+    ? GetNestedZodSchema<TSchema> extends z.ZodType<any, z.ZodArrayDef<infer A>>
       ? ZodRegleCollectionStatus<A, TState[TKey], TShortcuts>
       : RegleCommonStatus<TState[TKey]>
     : GetNestedZodSchema<TSchema> extends z.ZodType<z.objectOutputType<any, any>>

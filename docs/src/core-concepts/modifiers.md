@@ -28,7 +28,7 @@ __Type__: `boolean`
 
 __Default__: `true`
 
-Automatically tracks changes in the state for all nested rules. If set to `false`, you must manually call `$touch` to mark fields as dirty.
+Automatically tracks changes in the state for all nested rules. If set to `false`, you must manually call `$touch` or `$validate` to mark fields as dirty and display errors.
 
 ### `lazy`
 
@@ -91,7 +91,7 @@ __Default__: `false`
 
 __Side effect__: disable `$autoDirty` when `true`.
 
-Enables the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by or `$validate` method.
+Enables the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by `$validate` method.
 
 This will have no effect only if you use `autoDirty: true`.
 

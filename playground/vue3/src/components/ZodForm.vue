@@ -145,6 +145,14 @@ const formSchema = z
     }),
     date: Dateish,
     firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
+    donors: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        address: z.string(),
+        job: z.string(),
+      })
+    ),
     nested: z
       .array(
         z.object({

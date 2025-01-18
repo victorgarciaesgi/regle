@@ -60,6 +60,9 @@ export interface RegleValidationGroupOutput {
 }
 
 export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOptions> & {
+  /**
+   * Let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
+   */
   $debounce?: number;
 };
 
@@ -71,10 +74,19 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
 };
 
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
+  /**
+   * Allow you to customize the properties of every single field
+   */
   fields?: ShortcutCommonFn<RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>>;
+  /**
+   * Allow you to customize the properties of every parent of a nested object
+   */
   nested?: ShortcutCommonFn<
     RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>>
   >;
+  /**
+   * Allow you to customize the properties of every parent of a collection
+   */
   collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
 };
 
