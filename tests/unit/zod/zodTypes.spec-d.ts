@@ -35,13 +35,23 @@ it('zod collections should have the correct type', () => {
     collection: z.array(childSchema),
   });
 
-  const { r$ } = useZodRegle({} as z.infer<typeof schema>, schema);
+  const { r$ } = useZodRegle({} as Partial<z.infer<typeof schema>>, schema);
 
   expectTypeOf(r$.$fields.collection).toEqualTypeOf<
-    ZodRegleCollectionStatus<typeof childSchema, z.infer<typeof childSchema>[], RegleShortcutDefinition<any>>
+    | ZodRegleCollectionStatus<
+        typeof childSchema,
+        z.infer<typeof childSchema>[] | undefined,
+        RegleShortcutDefinition<any>
+      >
+    | undefined
   >;
 
-  expectTypeOf(r$.$fields.collection.$each[0].$fields.grandChildren).toEqualTypeOf<
-    ZodRegleCollectionStatus<typeof grandChildSchema, z.infer<typeof grandChildSchema>[], RegleShortcutDefinition<any>>
+  expectTypeOf(r$.$fields.collection?.$each[0].$fields.grandChildren).toEqualTypeOf<
+    | ZodRegleCollectionStatus<
+        typeof grandChildSchema,
+        z.infer<typeof grandChildSchema>[],
+        RegleShortcutDefinition<any>
+      >
+    | undefined
   >;
 });

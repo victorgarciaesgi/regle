@@ -160,21 +160,21 @@ export type ZodRegleFieldStatus<
  */
 export type ZodRegleCollectionStatus<
   TSchema extends z.ZodTypeAny,
-  TState extends any[],
+  TState extends any[] | undefined,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<ZodRegleFieldStatus<TSchema, TState>, '$errors' | '$silentErrors'> & {
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
-  readonly $each: Array<InferZodRegleStatusType<NonNullable<TSchema>, TState, number, TShortcuts>>;
+  readonly $each: Array<InferZodRegleStatusType<NonNullable<TSchema>, NonNullable<TState>, number, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
-  readonly $self: ZodRegleFieldStatus<TSchema, TState[number], TShortcuts>;
+  readonly $self: ZodRegleFieldStatus<TSchema, NonNullable<TState>[number], TShortcuts>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleCollectionErrors<TState>;
+  readonly $errors: RegleCollectionErrors<NonNullable<TState>>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
-  readonly $silentErrors: RegleCollectionErrors<TState>;
+  readonly $silentErrors: RegleCollectionErrors<NonNullable<TState>>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<NonNullable<TState>>;
   $validate: () => Promise<ZodRegleResult<TSchema>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}

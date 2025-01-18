@@ -8,11 +8,11 @@ export default defineWorkspace([
       globals: true,
       testTimeout: 10000,
       environment: 'happy-dom',
-      include: ['./packages/**/*.spec.ts', './tests/**/*.spec(-d)?.ts'],
+      include: ['./packages/**/*.spec.ts', './tests/**/*.spec.ts'],
       exclude: ['./packages/nuxt/**', 'packages/**/node_modules/**'],
       typecheck: {
         enabled: true,
-        include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+        include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
         ignoreSourceErrors: true,
       },
     },
