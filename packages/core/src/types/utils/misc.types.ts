@@ -10,6 +10,8 @@ export type Prettify<T> = T extends infer R
 export type Maybe<T = any> = T | null | undefined;
 export type MaybeNull<T> = T | null;
 
+export type PromiseReturn<T> = T extends Promise<infer U> ? U : T;
+
 export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}> =
   | T
   | ((value: Ref<V>, index: number) => T & TAdd);
