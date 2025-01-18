@@ -1,71 +1,58 @@
 <template>
   <main>
-    Dirty: {{ r$.$anyDirty }}
-    <br />
-    <br />
-    <input type="text" v-model="data.firstName" />
-    <br />
-    <br />
-    <button @click="touch">touch</button>
-    <button @click="r$.$resetAll()">reset</button>
-    <button @click="validate">validate</button>
-    <br />
-    <br />
-    {{ validForm }}{{ validateResult }}
-    <br />
-    <br />
-    Error: {{ error }}
+    <input v-model="r$Merged.$value.r$.competency" placeholder="Competency" />
+    <ul v-if="r$Merged.$errors.r$.competency">
+      <li v-for="error of r$Merged.$errors.r$.competency" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+
+    <input v-model="otherR$.$value.level.count" placeholder="Count" />
+    <ul v-if="otherR$.$errors.level.count.length">
+      <li v-for="error of otherR$.$errors.level.count" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+
+    <button type="button" @click="r$Merged.$resetAll">Reset</button>
+
+    <JSONViewer :data="r$Merged" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRegle, type RegleResult } from '@regle/core';
-import { maxLength, minLength, required } from '@regle/rules';
+import { mergeSchemas, useRegle } from '@regle/core';
+import { numeric, required } from '@regle/rules';
+import { ref } from 'vue';
+import JSONViewer from './JSONViewer.vue';
 
-const validForm = ref('');
-const error = ref('');
-const validateResult = ref<object>();
+const data = ref({
+  competency: 'c1',
+  level: { id: 1 },
+});
 
-const data = ref<{
-  firstName?: string;
-  groups?: number[];
-}>({
-  firstName: 'John',
-  groups: [1, 2, 3, 4, 5, 6], // when remove groups then works
+const data2 = ref({
+  name: '',
+  level: { count: 1 },
 });
 
 const { r$ } = useRegle(data, {
-  firstName: { required },
-  groups: { required },
+  competency: { required },
+  level: {
+    id: { required },
+  },
 });
 
-const clear = () => {
-  error.value = '';
-  validForm.value = '';
-  validateResult.value = undefined;
-};
+const { r$: otherR$ } = useRegle(data2, {
+  name: { required },
+  level: {
+    count: { numeric },
+  },
+});
 
-const touch = () => {
-  clear();
+const r$Merged = mergeSchemas({ r$, otherR$ });
 
-  try {
-    r$.$touch();
-    validForm.value = r$.$invalid ? 'invalid' : 'valid';
-  } catch (e: any) {
-    error.value = e;
-    throw e;
-  }
-};
-
-const validate = async () => {
-  clear();
-
-  try {
-    validateResult.value = await r$.$validate();
-  } catch (e: any) {
-    error.value = e;
-    throw e;
-  }
-};
+async function submit() {
+  const { result, data } = await r$Merged.$validate();
+}
 </script>
