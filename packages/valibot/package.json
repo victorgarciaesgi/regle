@@ -1,6 +1,6 @@
 {
   "name": "@regle/valibot",
-  "version": "0.6.0",
+  "version": "0.6.1-beta.1",
   "description": "Valibot adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
