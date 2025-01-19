@@ -6,11 +6,11 @@ import type {
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
-import type { PartialDeep, TupleToUnion, UnionToIntersection } from 'type-fest';
+import type { PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
 
-export interface ValibotRegle<
+export interface RegleSchema<
   TState extends Record<string, any>,
   TSchema extends Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
@@ -20,17 +20,17 @@ export interface ValibotRegle<
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
-  r$: Raw<ValibotRegleStatus<TState, TSchema, TShortcuts>>;
+  r$: Raw<RegleSchemaStatus<TState, TSchema, TShortcuts>>;
 }
 
-export type ValibotRegleResult<TSchema extends unknown> =
+export type RegleSchemaResult<TSchema extends unknown> =
   | { result: false; data: PartialDeep<TSchema> }
   | { result: true; data: TSchema };
 
 /**
  * @public
  */
-export type ValibotRegleStatus<
+export type RegleSchemaStatus<
   TState extends Record<string, any> = Record<string, any>,
   TSchema extends Record<string, any> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
@@ -38,7 +38,7 @@ export type ValibotRegleStatus<
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: {
     readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-      ? InferValibotRegleStatusType<
+      ? InferRegleSchemaStatusType<
           NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
           JoinDiscriminatedUnions<TState>[TKey],
           TShortcuts
@@ -50,7 +50,7 @@ export type ValibotRegleStatus<
         ? TKey
         : never
       : never]-?: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-      ? InferValibotRegleStatusType<
+      ? InferRegleSchemaStatusType<
           NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
           JoinDiscriminatedUnions<TState>[TKey],
           TShortcuts
@@ -66,7 +66,7 @@ export type ValibotRegleStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<ValibotRegleResult<TSchema>>;
+  $validate: () => Promise<RegleSchemaResult<TSchema>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -76,27 +76,27 @@ export type ValibotRegleStatus<
 /**
  * @public
  */
-export type InferValibotRegleStatusType<
+export type InferRegleSchemaStatusType<
   TSchema extends unknown,
   TState extends unknown,
   TShortcuts extends RegleShortcutDefinition = {},
 > =
   NonNullable<TSchema> extends Array<infer A extends Record<string, any>>
-    ? ValibotRegleCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
+    ? RegleSchemaCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
     : NonNullable<TState> extends Date | File
-      ? ValibotRegleFieldStatus<TSchema, TState, TShortcuts>
+      ? RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
       : NonNullable<TSchema> extends Record<string, any>
-        ? ValibotRegleStatus<
+        ? RegleSchemaStatus<
             NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
             NonNullable<TSchema>,
             TShortcuts
           >
-        : ValibotRegleFieldStatus<TSchema, TState, TShortcuts>;
+        : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
 
 /**
  * @public
  */
-export type ValibotRegleFieldStatus<
+export type RegleSchemaFieldStatus<
   TSchema extends unknown,
   TState = any,
   TShortcuts extends RegleShortcutDefinition = {},
@@ -116,7 +116,7 @@ export type ValibotRegleFieldStatus<
     [`~validator`]: RegleRuleStatus<TState, []>;
   };
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<ValibotRegleResult<TSchema>>;
+  $validate: () => Promise<RegleSchemaResult<TSchema>>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
 } & ([TShortcuts['fields']] extends [never]
@@ -128,15 +128,15 @@ export type ValibotRegleFieldStatus<
 /**
  * @public
  */
-export type ValibotRegleCollectionStatus<
+export type RegleSchemaCollectionStatus<
   TSchema extends Record<string, any>,
   TState extends any[],
   TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<ValibotRegleFieldStatus<TSchema, TState>, '$errors' | '$silentErrors' | '$validate'> & {
+> = Omit<RegleSchemaFieldStatus<TSchema, TState>, '$errors' | '$silentErrors' | '$validate'> & {
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
-  readonly $each: Array<InferValibotRegleStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
+  readonly $each: Array<InferRegleSchemaStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
-  readonly $self: ValibotRegleFieldStatus<TSchema, TState>;
+  readonly $self: RegleSchemaFieldStatus<TSchema, TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -146,7 +146,7 @@ export type ValibotRegleCollectionStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<ValibotRegleResult<TSchema>>;
+  $validate: () => Promise<RegleSchemaResult<TSchema>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {

@@ -11,13 +11,7 @@ it('valibot intersection types should correctly infer types', () => {
 
   const { r$ } = useValibotRegle({} as v.InferInput<typeof schema>, schema);
 
-  expectTypeOf(r$.$fields.count).toEqualTypeOf<
-    ValibotRegleFieldStatus<v.NumberSchema<any>, number, RegleShortcutDefinition<any>>
-  >();
-  expectTypeOf(r$.$fields.name).toEqualTypeOf<
-    ValibotRegleFieldStatus<v.StringSchema<any>, string, RegleShortcutDefinition<any>>
-  >();
-  expectTypeOf(r$.$fields.email).toEqualTypeOf<
-    ValibotRegleFieldStatus<v.StringSchema<any>, string, RegleShortcutDefinition<any>>
-  >();
+  expectTypeOf(r$.$fields.count).toEqualTypeOf<ValibotRegleFieldStatus<number, number, RegleShortcutDefinition<any>>>();
+  expectTypeOf(r$.$fields.name).toEqualTypeOf<ValibotRegleFieldStatus<string, string, RegleShortcutDefinition<any>>>();
+  expectTypeOf(r$.$fields.email).toEqualTypeOf<ValibotRegleFieldStatus<string, string, RegleShortcutDefinition<any>>>();
 });

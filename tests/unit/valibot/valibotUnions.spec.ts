@@ -134,18 +134,13 @@ describe('valibot unions', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      ValibotRegleFieldStatus<v.StringSchema<undefined>, string | undefined, RegleShortcutDefinition<any>> | undefined
+      ValibotRegleFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      ValibotRegleFieldStatus<v.NumberSchema<undefined>, number | undefined, RegleShortcutDefinition<any>> | undefined
+      ValibotRegleFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.shares).toEqualTypeOf<
-      | ValibotRegleFieldStatus<
-          v.NumberSchema<'Shares must be a number'>,
-          number | undefined,
-          RegleShortcutDefinition<any>
-        >
-      | undefined
+      ValibotRegleFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

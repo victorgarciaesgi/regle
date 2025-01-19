@@ -3,7 +3,6 @@ import { useValibotRegle } from '@regle/valibot';
 import { flushPromises } from '@vue/test-utils';
 import * as v from 'valibot';
 import { nextTick, ref } from 'vue';
-import type { MaybeObjectAsync, MaybeSchemaAsync } from '../../../packages/valibot/src/types';
 import { timeout } from '../../utils';
 import { createRegleComponent } from '../../utils/test.utils';
 
@@ -50,18 +49,17 @@ function nesteAsyncObjectWithRefsValidation() {
     }, 'Custom error')
   );
 
-  return useValibotRegle(
-    form,
-    v.objectAsync({
-      level0Async: ruleMockIsEvenAsync,
-      level1: v.objectAsync({
-        child: valibotIsEven,
-        level2: v.objectAsync({
-          childAsync: ruleMockIsFooAsync,
-        }),
+  const schema = v.objectAsync({
+    level0Async: ruleMockIsEvenAsync,
+    level1: v.objectAsync({
+      child: valibotIsEven,
+      level2: v.objectAsync({
+        childAsync: ruleMockIsFooAsync,
       }),
-    })
-  );
+    }),
+  });
+
+  return useValibotRegle(form, schema);
 }
 
 describe('useValibotRegle with async rules and Object refs', async () => {

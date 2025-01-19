@@ -1,7 +1,7 @@
 {
-  "name": "@regle/zod",
+  "name": "@regle/schemas",
   "version": "0.6.1",
-  "description": "Zod adapter for Regle",
+  "description": "Schemas adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsup",
@@ -10,7 +10,7 @@
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "zod": "^3"
+    "valibot": "^1"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
@@ -33,37 +33,38 @@
     "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
+    "valibot": "1.0.0-beta.12",
+    "zod": "3.24.1",
     "vitest": "2.1.8",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:",
-    "zod": "3.24.1"
+    "vue-tsc": "catalog:"
   },
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/regle-zod.d.ts",
+      "types": "./dist/regle-valibot.d.ts",
       "node": {
         "import": {
-          "production": "./dist/regle-zod.min.mjs",
-          "development": "./dist/regle-zod.mjs",
-          "default": "./dist/regle-zod.mjs"
+          "production": "./dist/regle-valibot.min.mjs",
+          "development": "./dist/regle-valibot.mjs",
+          "default": "./dist/regle-valibot.mjs"
         },
         "require": {
-          "production": "./dist/regle-zod.min.cjs",
-          "development": "./dist/regle-zod.cjs",
+          "production": "./dist/regle-valibot.min.cjs",
+          "development": "./dist/regle-valibot.cjs",
           "default": "./index.js"
         }
       },
-      "import": "./dist/regle-zod.mjs",
+      "import": "./dist/regle-valibot.mjs",
       "require": "./index.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
   "main": "index.js",
-  "module": "./dist/regle-zod.mjs",
-  "types": "./dist/regle-zod.d.ts",
+  "module": "./dist/regle-valibot.mjs",
+  "types": "./dist/regle-valibot.d.ts",
   "files": [
     "dist",
     "index.js",

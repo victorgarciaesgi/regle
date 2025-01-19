@@ -14,10 +14,10 @@ import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Ref, UnwrapNestedRefs } from 'vue';
 import { computed, isRef, reactive, ref, unref, watch } from 'vue';
 import { cloneDeep } from '../../../shared';
-import type { ValibotRegle } from '../types';
+import type { RegleSchema } from '../types';
 import { valibotObjectToRegle } from './parser/validators';
 
-export type useValibotRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
+export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
   TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
   TValid = UnwrapNestedRefs<TState> extends PartialDeep<
@@ -31,12 +31,12 @@ export type useValibotRegleFn<TShortcuts extends RegleShortcutDefinition<any> = 
   schema: MaybeRef<TSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never>
-) => ValibotRegle<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
+) => RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
 
-export function createUseValibotRegleComposable<TShortcuts extends RegleShortcutDefinition<any>>(
+export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
   options?: RegleBehaviourOptions,
   shortcuts?: RegleShortcutDefinition | undefined
-): useValibotRegleFn<TShortcuts> {
+): useRegleSchemaFn<TShortcuts> {
   const globalOptions: RegleBehaviourOptions = {
     autoDirty: options?.autoDirty,
     lazy: options?.lazy,
@@ -44,14 +44,11 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
     clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
-  function useValibotRegle<
-    TState extends Record<string, any>,
-    TValibotSchema extends StandardSchemaV1 = StandardSchemaV1,
-  >(
+  function useRegleSchema<TState extends Record<string, any>, TSchema extends StandardSchemaV1 = StandardSchemaV1>(
     state: MaybeRef<TState> | DeepReactiveState<TState>,
-    schema: MaybeRef<TValibotSchema>,
+    schema: MaybeRef<TSchema>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
-  ): ValibotRegle<TState, TValibotSchema> {
+  ): RegleSchema<TState, TSchema> {
     //
     const rules = ref<ReglePartialRuleTree<any, any>>({});
 
@@ -88,7 +85,7 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
     };
   }
 
-  return useValibotRegle as any;
+  return useRegleSchema as any;
 }
 
 /**
@@ -101,13 +98,13 @@ export function createUseValibotRegleComposable<TShortcuts extends RegleShortcut
  * @param modifiers - customize regle behaviour
  * 
  * ```ts
- * import { useValibotRegle } from '@regle/valibot';
+ * import { useRegleSchema } from '@regle/schemas';
   import * as v from 'valibot';
 
-  const { r$ } = useValibotRegle({ name: '' }, v.object({
+  const { r$ } = useRegleSchema({ name: '' }, v.object({
     name: v.pipe(v.string(), v.minLength(3))
   }))
  * ```
- * Docs: {@link https://reglejs.dev/integrations/valibot#usage}  
+ * Docs: {@link https://reglejs.dev/integrations/valibot#usage}
  */
-export const useValibotRegle = createUseValibotRegleComposable();
+export const useRegleSchema = createUseRegleSchemaComposable();

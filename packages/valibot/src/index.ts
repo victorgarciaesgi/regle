@@ -5,7 +5,5 @@ export type {
   ValibotRegleStatus,
   ValibotRegleFieldStatus,
   ValibotRegleCollectionStatus,
-  ValibotChild,
-  toValibot,
   ValibotRegleResult,
 } from './types';

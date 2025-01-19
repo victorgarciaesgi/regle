@@ -25,6 +25,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@standard-schema/spec": "1.0.0-rc.0",
     "@pinia/testing": "0.1.7",
     "@playwright/test": "1.49.1",
     "@regle/core": "workspace:*",
