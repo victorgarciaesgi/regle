@@ -13,7 +13,7 @@ import { createReactiveChildrenStatus } from '../createReactiveNestedStatus';
 interface CreateCollectionElementArgs extends CommonResolverOptions {
   $id: string;
   index: number;
-  stateValue: Ref<StateWithId>;
+  stateValue: Ref<StateWithId | undefined>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
   initialState: Ref<unknown>;

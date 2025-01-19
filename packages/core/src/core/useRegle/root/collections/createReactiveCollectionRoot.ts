@@ -20,7 +20,7 @@ import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs {
-  state: Ref<StateWithId[] & StateWithId>;
+  state: Ref<(StateWithId[] & StateWithId) | undefined>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
@@ -29,7 +29,7 @@ interface CreateReactiveCollectionStatusArgs {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
-  initialState: Ref<any[]>;
+  initialState: Ref<(unknown | undefined)[]>;
   shortcuts: RegleShortcutDefinition | undefined;
 }
 
@@ -215,8 +215,8 @@ export function createReactiveCollectionStatus({
         .filter((each) => !!each);
 
       previousStatus
-        .filter(($each) => !state.value.find((f) => $each.$id === f.$id))
-        .forEach(($each, index) => {
+        .filter(($each) => !state.value?.find((f) => $each.$id === f.$id))
+        .forEach((_, index) => {
           storage.deleteArrayStatus($id.value, index.toString());
         });
     } else {
@@ -357,7 +357,7 @@ export function createReactiveCollectionStatus({
                   reactive({
                     $dirty,
                     $error,
-                    $silentValue,
+                    $silentValue: $silentValue as any,
                     $pending,
                     $invalid,
                     $valid,
@@ -368,7 +368,7 @@ export function createReactiveCollectionStatus({
                     $name: $name,
                     $each: $eachStatus,
                     $self: $selfStatus as any,
-                    $value: state,
+                    $value: state as any,
                     $edited,
                     $anyEdited,
                   })
@@ -498,7 +498,7 @@ export function createReactiveCollectionStatus({
 
   function $resetAll() {
     $unwatch();
-    state.value = cloneDeep(initialState.value);
+    state.value = cloneDeep(initialState.value) as any;
     $reset();
   }
 

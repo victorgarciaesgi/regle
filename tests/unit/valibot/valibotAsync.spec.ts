@@ -64,7 +64,7 @@ function nesteAsyncObjectWithRefsValidation() {
   );
 }
 
-describe('useRegle with async rules and Object refs', async () => {
+describe('useValibotRegle with async rules and Object refs', async () => {
   beforeAll(() => {
     vi.useFakeTimers();
   });

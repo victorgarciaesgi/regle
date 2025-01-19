@@ -534,23 +534,35 @@ export function createReactiveChildrenStatus({
         ...properties,
       });
     } else {
-      const fakeState = ref({});
+      const scope = effectScope();
 
-      const unwatchState = watch(
-        fakeState,
-        (value) => {
-          unwatchState();
-          properties.state.value = value;
-        },
-        { deep: true }
-      );
+      const scopeState = scope.run(() => {
+        const fakeState = toRef(properties.state.value ? properties.state : ref({}));
+
+        watch(
+          () => properties.state.value,
+          (value) => {
+            fakeState.value = value;
+          },
+          { deep: true }
+        );
+        watch(
+          fakeState,
+          (value) => {
+            properties.state.value = value;
+          },
+          { deep: true }
+        );
+
+        return { fakeState };
+      })!;
 
       const { state, ...restProperties } = properties;
       return createReactiveNestedStatus({
         rulesDef,
         externalErrors: externalErrors as any,
         ...restProperties,
-        state: fakeState,
+        state: scopeState.fakeState,
       });
     }
   } else if (isValidatorRulesDef(rulesDef)) {

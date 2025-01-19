@@ -16,9 +16,9 @@
       <li v-for="error of r$.$errors.date" :key="error">{{ error }}</li>
     </ul>
 
-    Gift:
+    Gift: invalid: {{ r$.$fields.gift?.$value }}
 
-    <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
+    <select v-if="r$.$fields.gift" v-model="r$.$fields.gift.$fields.type.$value">
       <option value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
@@ -31,8 +31,12 @@
       </div>
     </Transition>
 
-    <template v-if="r$.$value.gift?.type === 'Cash'">
-      <input v-model.number="r$.$value.gift.amount" placeholder="amount" />
+    <template v-if="r$.$fields.gift?.$fields.type.$value === 'Cash'">
+      <input
+        v-if="r$.$fields.gift.$fields.amount"
+        v-model.number="r$.$fields.gift.$value.amount"
+        placeholder="amount"
+      />
       <ul>
         <li v-for="error of r$.$errors.gift?.amount" :key="error">{{ error }}</li>
       </ul>
@@ -165,7 +169,6 @@ const formSchema = z
   .and(z.object({ nativeEnum: z.nativeEnum(MyEnum) }));
 
 const form = reactive<Partial<z.infer<typeof formSchema>>>({
-  gift: {} as any,
   nested: [],
 });
 

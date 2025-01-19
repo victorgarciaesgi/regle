@@ -2,7 +2,7 @@ import type { RegleShortcutDefinition } from '@regle/core';
 import { useValibotRegle, type ValibotRegleFieldStatus } from '@regle/valibot';
 import * as v from 'valibot';
 
-it('zod intersection types should correctly infer types', () => {
+it('valibot intersection types should correctly infer types', () => {
   const schema = v.intersect([
     v.object({ name: v.string() }),
     v.object({ count: v.number() }),

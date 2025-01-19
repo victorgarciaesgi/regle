@@ -57,7 +57,7 @@ function zodUnionForm() {
   return useValibotRegle(form, schema);
 }
 
-describe('zod unions', () => {
+describe('valibot unions', () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });

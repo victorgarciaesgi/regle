@@ -39,7 +39,7 @@ function nestedRefObjectValidation() {
   };
 }
 
-describe('defineRegleConfig rules', () => {
+describe('defineRegleConfig rules for Valibot', () => {
   it('should display global errors instead of rule-defined error', async () => {
     const { vm } = createRegleComponent(nestedRefObjectValidation);
 
