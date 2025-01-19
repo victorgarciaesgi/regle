@@ -1,81 +1,67 @@
-<template>
-  <main>
-    invalid: {{ r$.$invalid }}
-    <br />
+<script lang="ts" setup>
+import { z } from 'zod';
+import { ref, computed } from 'vue';
+import { useZodRegle } from '@regle/zod';
+import JSONViewer from './JSONViewer.vue';
 
-    {{ r$.$fields.competencies.$each.map((x) => x.$invalid) }}
+const data = ref<
+  Partial<{
+    condition: boolean;
+    nested: {
+      list: {
+        name: string;
+      }[];
+    };
+  }>
+>({});
 
-    <br />
-    <div v-for="(item, index) in data.competencies" :key="index">
-      <br />
-      <br />
-      <strong>r$.$fields.competencies.$each[index].$fields.level.$fields.id.$invalid: </strong>
-      <code> {{ r$.$fields.competencies.$each[index].$fields.level?.$fields?.id?.$invalid }}</code>
-      <br />
-      <br />
-      <strong>r$.$fields.competencies.$each[index].$fields.level.$fields.id.$value: </strong>
-      <code> {{ r$.$fields.competencies.$each[index].$fields.level?.$fields?.id?.$value }}</code>
-      <br />
-      <br />
-      <strong>r$.$fields.level.$value: </strong>
-      <code> {{ r$.$fields.competencies.$each[index].$fields.level?.$value }}</code>
-      <br />
-      <br />
-      {{ item.competency }} {{ item.level?.id }}
-      <button
-        v-if="!item.level"
-        @click="
-          () => {
-            item.level = { id: 1 };
-          }
-        "
-      >
-        set level
-      </button>
-      <button
-        v-else
-        @click="
-          () => {
-            item.level = undefined;
-          }
-        "
-      >
-        unset level
-      </button>
-      <hr />
-    </div>
-    <strong> r$.$value: </strong>
-    <code> {{ r$.$value }} </code>
-  </main>
-</template>
-
-<script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRegle } from '@regle/core';
-import { maxLength, minLength, required } from '@regle/rules';
-
-const data = ref<{
-  competencies: { competency: string; level?: { id: number } }[];
-}>({
-  competencies: [
-    {
-      competency: 'c1',
-      level: { id: 1 },
-    },
-    {
-      competency: 'c2',
-      level: undefined,
-    },
-  ],
-});
-
-const { r$ } = useRegle(data, {
-  competencies: {
-    $each: () => ({
-      level: {
-        id: { required },
-      },
+const schema = computed(() => {
+  return z.object({
+    condition: z.boolean(),
+    ...(data.value.condition === true && {
+      nested: z.object({
+        list: z.array(
+          z.object({
+            name: z.string(),
+          })
+        ),
+      }),
     }),
-  },
+  });
 });
+
+const rewardEarly = ref(true);
+const { r$ } = useZodRegle(data, schema, { rewardEarly });
 </script>
+
+<template>
+  <label>
+    <input type="radio" v-model="r$.$fields.condition.$value" :value="true" />
+    yes
+  </label>
+
+  <label>
+    <input type="radio" v-model="r$.$fields.condition.$value" :value="false" />
+    no
+  </label>
+
+  <div v-if="r$.$fields.condition.$value">
+    <div v-for="field in r$.$fields.nested?.$fields.list.$each" :key="field.$id">
+      <input v-model="field.$fields.name.$value" :key="field.$id" />
+    </div>
+
+    <button
+      @click="
+        () => {
+          if (r$.$fields.nested) {
+            (r$.$fields.nested.$fields.list.$value ??= []).push({ name: 'John' });
+          }
+        }
+      "
+    >
+      add ({{ r$.$fields.nested?.$fields.list?.$value?.length }})
+    </button>
+
+    <JSONViewer :data="r$" />
+  </div>
+</template>
