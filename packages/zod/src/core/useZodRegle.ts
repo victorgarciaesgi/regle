@@ -3,6 +3,7 @@ import type {
   DeepReactiveState,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
+  RegleExternalErrorTree,
   ReglePartialRuleTree,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
@@ -11,9 +12,10 @@ import type {
 import { useRootStorage } from '@regle/core';
 import type { MaybeRef, Ref } from 'vue';
 import { computed, isRef, reactive, ref, unref, watch } from 'vue';
-import { cloneDeep } from '../../../shared';
+import { cloneDeep, setObjectError } from '../../../shared';
 import type { ZodRegle, toZod } from '../types';
 import { zodObjectToRegle } from './parser/validators';
+import type { SafeParseReturnType } from 'zod';
 
 export type useZodRegleFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
@@ -21,7 +23,8 @@ export type useZodRegleFn<TShortcuts extends RegleShortcutDefinition<any> = neve
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TSchema>,
-  options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
+  options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+    LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: 'schema' | 'nested' }
 ) => ZodRegle<TState, TSchema, TShortcuts>;
 
 export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefinition<any>>(
@@ -41,31 +44,70 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     schema: MaybeRef<TZodSchema>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Unwrap<TState>, {}, never>
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode: 'schema' | 'nested' }
   ): ZodRegle<TState, TZodSchema> {
     //
     const rules = ref<ReglePartialRuleTree<any, any>>({});
 
-    const scopeRules = computed(() => unref(schema));
+    const computedSchema = computed(() => unref(schema));
 
-    const resolvedOptions: ResolvedRegleBehaviourOptions = {
-      ...globalOptions,
-      ...options,
-    } as any;
+    const { mode = 'nested', ...regleOptions } = options ?? {};
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
 
     const initialState = ref({ ...cloneDeep(processedState.value) });
 
-    watch(
-      scopeRules,
-      () => {
-        if (scopeRules.value && typeof scopeRules.value === 'object') {
-          rules.value = reactive(zodObjectToRegle(scopeRules.value, processedState));
+    const customErrors = ref<RegleExternalErrorTree>({});
+
+    if (mode === 'nested') {
+      // Convert zod schema to regle rules
+      watch(
+        computedSchema,
+        () => {
+          if (computedSchema.value && typeof computedSchema.value === 'object') {
+            rules.value = reactive(zodObjectToRegle(computedSchema.value, processedState));
+          }
+        },
+        { deep: true, immediate: true }
+      );
+    } else {
+      // Re-run whole schema on each input
+      const emptySchemaSkeleton = computed(() => computedSchema.value.safeParse(processedState.value));
+
+      customErrors.value = zodErrorsToRecord(emptySchemaSkeleton.value);
+
+      function zodErrorsToRecord(result: SafeParseReturnType<any, any>) {
+        const output = {};
+        if (result.success === false) {
+          const errors = result.error.issues.map((issue) => ({
+            path: issue.path.join('.'),
+            message: issue.message,
+            type: 'type' in issue ? issue.type : 'string',
+          }));
+
+          errors.forEach((error) => {
+            setObjectError(output, error.path, [error.message], error.type);
+          });
         }
-      },
-      { deep: true, immediate: true }
-    );
+        return output;
+      }
+
+      watch(
+        [processedState, computedSchema],
+        async () => {
+          const result = await computedSchema.value.safeParseAsync(processedState.value);
+          customErrors.value = zodErrorsToRecord(result);
+        },
+        { deep: true, immediate: true, flush: 'post' }
+      );
+    }
+
+    const resolvedOptions: ResolvedRegleBehaviourOptions = {
+      ...globalOptions,
+      ...regleOptions,
+      externalErrors: customErrors,
+    } as any;
 
     const regle = useRootStorage({
       scopeRules: rules as any,

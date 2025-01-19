@@ -18,7 +18,7 @@
 
     Gift:
 
-    <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
+    <!-- <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
       <option value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
@@ -29,7 +29,7 @@
           <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
         </ul>
       </div>
-    </Transition>
+    </Transition> -->
 
     <template v-if="r$.$value.gift?.type === 'Cash'">
       <input v-model.number="r$.$value.gift.amount" placeholder="amount" />
@@ -48,8 +48,8 @@
       </ul>
     </template>
 
-    <template v-for="(input, index) of form.nested" :key="index">
-      <input v-model="input.name" placeholder="name" />
+    <template v-for="(field, index) of r$.$fields.nested?.$each" :key="index">
+      <input v-model="field.$value.name" placeholder="name" />
       <ul>
         <li v-for="error of r$.$errors.nested?.$each[index].name" :key="error">
           {{ error }}
@@ -175,11 +175,7 @@ async function submit() {
   console.log(r$.$errors);
 }
 
-const externalErrors = ref<RegleExternalErrorTree<Partial<z.infer<typeof formSchema>>>>({
-  email: [''],
-});
-
-const { r$ } = useZodRegle(form, formSchema, { externalErrors });
+const { r$ } = useZodRegle(form, formSchema, { mode: 'schema' });
 </script>
 
 <style scoped>
