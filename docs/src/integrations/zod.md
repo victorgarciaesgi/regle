@@ -13,23 +13,23 @@ Regle offers an adapter for [Zod](https://zod.dev/). You can use any zod object 
 
 ## Prerequisites
 
-- `zod` version `3.x`
+- `zod` version `3.24+`
 
 ::: code-group
 ```sh [pnpm]
-pnpm add @regle/zod
+pnpm add @regle/schemas
 ```
 
 ```sh [npm]
-npm install @regle/zod
+npm install @regle/schemas
 ```
 
 ```sh [yarn]
-yarn add @regle/zod
+yarn add @regle/schemas
 ```
 
 ```sh [bun]
-bun add @regle/zod
+bun add @regle/schemas
 ```
 :::
 
@@ -37,36 +37,54 @@ bun add @regle/zod
 
 ## Usage
 
-
-To use `@regle/zod`, you only need one composable: `useZodRegle`.
-
-The `useZodRegle` composable has the same type definitions as `useRegle` for state and options. However, instead of passing rules as the second parameter, you provide a Zod schema.
-
-You still benefit from features like dirty tracking and custom error handling.
-
-All schemas are independently parsed using `safeParse` and `safeParseAsync` (if your schema includes asynchronous transformations or refinements). Error messages defined in the schema will automatically be retrieved.
+You can use your Zod schemas to handle forms with the help of `useRegleSchema`, exported from `@regle/schemas`.
 
 
-:::warn
-`refine` and `transform` and other effects functions on `z.object` are not supported in Regle.
+```ts twoslash
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
+
+const { r$ } = useRegleSchema({ name: '' }, z.object({
+  name: z.string().min(1)
+}))
+```
+
+<QuickUsage />
+
+## Mode
+
+`useRegleSchema` have 2 modes: `rules` and `schema`.
+
+- `rules` (default)
+  - Convert and splits the Zod schema into Regle-compatible rules, allowing the use of every functionnality of Regle.
+  - This means that editing a field will only only run it's own validator and not parse the entire schema.
+  - This enables independant `async` handling and parsing.
+  - Enable the use of `withDeps`
+
+:::warning
+`refine` and `transform` and other effects functions on `z.object` are not supported in Regle with `rules` mode.
 
 Regle splits the Zod schema into nested independents schema, so only the field you modify will run it's own schema, and will not rerun the entire object schema for each input.
 
 This prevent the use of effects in a object schema.
 :::
 
+- `schema` (experimental)
+  - This mode will parse your whole schema at each input, spreading the errors to your nested fields.
+  - Less performant, but allow more compatibility with schemas.
+  - Prevent the use of nested `$pending` and `$validate`.
+  - Prevent the use of `withDeps`.
+
 ```ts twoslash
-import { useZodRegle } from '@regle/zod';
+import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
 
-const { r$ } = useZodRegle({ name: '' }, z.object({
+const { r$ } = useRegleSchema({ name: '' }, z.object({
   name: z.string().min(1)
-}))
-
+}), {
+  mode: 'schema'
+})
 ```
-
-<QuickUsage />
-
 
 ## Computed schema
 
@@ -79,7 +97,7 @@ Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper 
 :::
 
 ```ts twoslash
-import { useZodRegle, type toZod, withDeps } from '@regle/zod';
+import { useRegleSchema, inferSchema, withDeps } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -91,7 +109,7 @@ type Form = {
 const form = ref<Form>({ firstName: '', lastName: '' })
 
 const schema = computed(() =>
-  z.object({
+  inferSchema(form, z.object({
     firstName: z.string(),
     /** 
      * Important to keep track of the depency change
@@ -103,22 +121,27 @@ const schema = computed(() =>
       }),
       [() => form.value.firstName]
     ),
-  }) satisfies toZod<Form>
+  }))
 );
 
-const { r$ } = useZodRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 
 ```
 
 <ComputedSchema />
 
 
+:::warning
+`withDeps` is only compatible with `rules` mode
+:::
+
+
 ## Type safe output
 
-Similar to the main `useRegle` composable, `r$.$validate` in useZodRegle also returns a type-safe output.
+Similar to the main `useRegle` composable, `r$.$validate` also returns a type-safe output using Zod type schema parser.
 
 ```ts twoslash
-import { useZodRegle, toZod } from '@regle/zod';
+import { useRegleSchema, inferSchema } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -129,14 +152,14 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => z.object({
+const schema = computed(() => inferSchema(form, z.object({
   firstName: z.string().optional(),
   lastName: z.string().min(1).refine(v => v !== form.value.firstName, {
     message: "Last name can't be equal to first name"
   }),
-}) satisfies toZod<Form>)
+})))
 
-const { r$ } = useZodRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 
 async function submit() {
   const { result, data } = await r$.$validate();

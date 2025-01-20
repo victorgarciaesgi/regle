@@ -1,7 +1,9 @@
 import type { ComputedRef, Ref } from 'vue';
 import { getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
 import type {
+  $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
+  $InternalRegleResult,
   $InternalRegleStatus,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
@@ -17,13 +19,19 @@ export function useRootStorage({
   state,
   customRules,
   shortcuts,
+  schemaErrors,
+  schemaMode = false,
+  onValidate,
 }: {
-  scopeRules: ComputedRef<$InternalReglePartialRuleTree>;
+  scopeRules: Ref<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
   options: ResolvedRegleBehaviourOptions;
   initialState: Ref<Record<string, any>>;
   customRules?: () => CustomRulesDeclarationTree;
   shortcuts: RegleShortcutDefinition | undefined;
+  schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  schemaMode?: boolean;
+  onValidate?: () => Promise<$InternalRegleResult>;
 }) {
   const storage = useStorage();
 
@@ -42,6 +50,10 @@ export function useRootStorage({
     shortcuts,
     fieldName: 'root',
     path: '',
+    schemaErrors,
+    rootSchemaErrors: schemaErrors,
+    schemaMode,
+    onValidate,
   });
 
   if (getCurrentScope()) {

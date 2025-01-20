@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import type { RegleExternalErrorTree } from '@regle/core';
-import { useZodRegle } from '@regle/zod';
+import { useRegleSchema } from '@regle/schemas';
 import { nextTick, reactive, ref } from 'vue';
 import { z } from 'zod';
 
@@ -59,7 +59,7 @@ const externalErrors = ref<RegleExternalErrorTree<Form>>({
   email: [''],
 });
 
-const { r$ } = useZodRegle(
+const { r$ } = useRegleSchema(
   form,
   z.object({
     email: z.string(),

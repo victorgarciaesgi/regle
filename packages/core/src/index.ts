@@ -60,4 +60,5 @@ export type {
   $InternalRegleStatus,
   JoinDiscriminatedUnions,
   DeepReactiveState,
+  MismatchInfo,
 } from './types';

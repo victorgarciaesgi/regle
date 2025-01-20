@@ -29,6 +29,8 @@ interface CreateReactiveCollectionStatusArgs {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
+  schemaErrors?: ComputedRef<$InternalRegleCollectionErrors | undefined> | undefined;
+  schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
   shortcuts: RegleShortcutDefinition | undefined;
 }
@@ -41,6 +43,8 @@ export function createReactiveCollectionStatus({
   storage,
   options,
   externalErrors,
+  schemaErrors,
+  schemaMode,
   initialState,
   shortcuts,
   fieldName,
@@ -130,6 +134,8 @@ export function createReactiveCollectionStatus({
           }
 
           const initialStateRef = toRef(initialState.value ?? [], index);
+          const $externalErrors = toRef(externalErrors?.value ?? {}, `$each`);
+          const $schemaErrors = computed(() => schemaErrors?.value?.$each);
 
           const element = createCollectionElement({
             $id: $id.value,
@@ -140,10 +146,12 @@ export function createReactiveCollectionStatus({
             index,
             options,
             storage,
-            externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
+            externalErrors: $externalErrors,
+            schemaErrors: $schemaErrors,
             initialState: initialStateRef,
             shortcuts,
             fieldName,
+            schemaMode,
           });
 
           if (element) {
@@ -164,10 +172,12 @@ export function createReactiveCollectionStatus({
       storage,
       options,
       externalErrors: toRef(externalErrors?.value ?? {}, `$self`),
+      schemaErrors: computed(() => schemaErrors?.value?.$self),
       $isArray: true,
       initialState: initialState,
       shortcuts,
       fieldName,
+      schemaMode,
     });
   }
 
@@ -190,26 +200,29 @@ export function createReactiveCollectionStatus({
             if (scope) {
               collectionScopes.push(scope);
             }
-            if (unwrapped) {
-              const element = createCollectionElement({
-                $id: $id.value,
-                path,
-                customMessages,
-                rules: unwrapped,
-                stateValue: currentValue,
-                index,
-                options,
-                storage,
-                externalErrors: toRef(externalErrors?.value ?? {}, `$each`),
-                initialState: toRef(initialState.value ?? [], index),
-                shortcuts,
-                fieldName,
-              });
-              if (element) {
-                return element;
-              }
-              return null;
+            const $externalErrors = toRef(externalErrors?.value ?? {}, `$each`);
+            const $schemaErrors = computed(() => schemaErrors?.value?.$each ?? []);
+
+            const element = createCollectionElement({
+              $id: $id.value,
+              path,
+              customMessages,
+              rules: unwrapped ?? {},
+              stateValue: currentValue,
+              index,
+              options,
+              storage,
+              externalErrors: $externalErrors,
+              schemaErrors: $schemaErrors,
+              initialState: toRef(initialState.value ?? [], index),
+              shortcuts,
+              fieldName,
+              schemaMode,
+            });
+            if (element) {
+              return element;
             }
+            return null;
           }
         })
         .filter((each) => !!each);

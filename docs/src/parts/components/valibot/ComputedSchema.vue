@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { useValibotRegle, withDeps } from '@regle/valibot';
+import { useRegleSchema, withDeps } from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -55,5 +55,5 @@ const schema = computed(() =>
   })
 );
 
-const { r$ } = useValibotRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 </script>

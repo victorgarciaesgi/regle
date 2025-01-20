@@ -1,12 +1,11 @@
 import type { Regle } from '@regle/core';
-import type { ValibotRegle } from '@regle/valibot';
-import type { ZodRegle } from '@regle/zod';
+import type { RegleSchema } from '@regle/schemas';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
-export function createRegleComponent<
-  T extends Regle<any, any, any, any> | ZodRegle<any, any, any> | ValibotRegle<any, any>,
->(regleComposable: () => T) {
+export function createRegleComponent<T extends Regle<any, any, any, any> | RegleSchema<{}, {}, any>>(
+  regleComposable: () => T
+) {
   return mount(
     defineComponent({
       setup() {

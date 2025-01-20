@@ -4,14 +4,16 @@ export function extractRulesErrors({
   field,
   silent = false,
 }: {
-  field: Pick<$InternalRegleFieldStatus, '$rules' | '$dirty' | '$externalErrors'>;
+  field: Pick<$InternalRegleFieldStatus, '$rules' | '$error' | '$externalErrors'> & {
+    $schemaErrors: string[] | undefined;
+  };
   silent?: boolean;
 }): string[] {
   return Object.entries(field.$rules ?? {})
-    .map(([ruleKey, rule]) => {
+    .map(([_, rule]) => {
       if (silent) {
         return rule.$message;
-      } else if (!rule.$valid && field.$dirty && !rule.$validating) {
+      } else if (!rule.$valid && field.$error && !rule.$validating) {
         return rule.$message;
       }
 
@@ -25,12 +27,13 @@ export function extractRulesErrors({
         return acc?.concat(value);
       }
     }, [])
-    .concat(field.$dirty ? (field.$externalErrors ?? []) : []);
+    .concat(field.$error ? (field.$externalErrors ?? []) : [])
+    .concat(field.$error ? (field.$schemaErrors ?? []) : []);
 }
 
 export function extractRulesTooltips({ field }: { field: Pick<$InternalRegleFieldStatus, '$rules'> }): string[] {
   return Object.entries(field.$rules ?? {})
-    .map(([ruleKey, rule]) => rule.$tooltip)
+    .map(([_, rule]) => rule.$tooltip)
     .filter((tooltip): tooltip is string | string[] => !!tooltip)
     .reduce<string[]>((acc, value) => {
       if (typeof value === 'string') {

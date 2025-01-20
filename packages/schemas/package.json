@@ -1,0 +1,90 @@
+{
+  "name": "@regle/schemas",
+  "version": "0.6.1",
+  "description": "Schemas adapter for Regle",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "build:dev": "tsup --config=tsup.dev.ts",
+    "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
+    "dev": "tsup --config=tsup.dev.ts --watch",
+    "test": "echo 'no tests'"
+  },
+  "peerDependencies": {
+    "valibot": "^1",
+    "zod": "^3.24.0"
+  },
+  "dependencies": {
+    "@regle/core": "workspace:*",
+    "@regle/rules": "workspace:*",
+    "@standard-schema/spec": "1.0.0-rc.0"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "0.6.1",
+    "@types/node": "22.10.5",
+    "@typescript-eslint/eslint-plugin": "8.19.1",
+    "@typescript-eslint/parser": "8.19.1",
+    "@vue/test-utils": "2.4.6",
+    "bumpp": "9.10.0",
+    "changelogithub": "0.13.11",
+    "cross-env": "7.0.3",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "type-fest": "catalog:",
+    "typescript": "catalog:",
+    "valibot": "1.0.0-beta.12",
+    "zod": "3.24.1",
+    "vitest": "2.1.8",
+    "vue": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-schemas.d.ts",
+      "node": {
+        "import": {
+          "production": "./dist/regle-schemas.min.mjs",
+          "development": "./dist/regle-schemas.mjs",
+          "default": "./dist/regle-schemas.mjs"
+        },
+        "require": {
+          "production": "./dist/regle-schemas.min.cjs",
+          "development": "./dist/regle-schemas.cjs",
+          "default": "./index.js"
+        }
+      },
+      "import": "./dist/regle-schemas.mjs",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "main": "index.js",
+  "module": "./dist/regle-schemas.mjs",
+  "types": "./dist/regle-schemas.d.ts",
+  "files": [
+    "dist",
+    "index.js",
+    "index.cjs",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "homepage": "https://reglejs.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "license": "MIT"
+}

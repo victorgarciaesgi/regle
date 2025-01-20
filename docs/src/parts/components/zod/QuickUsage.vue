@@ -20,10 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { useZodRegle } from '@regle/zod';
+import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
 
-const { r$ } = useZodRegle(
+const { r$ } = useRegleSchema(
   { name: '' },
   z.object({
     name: z.string().min(1),

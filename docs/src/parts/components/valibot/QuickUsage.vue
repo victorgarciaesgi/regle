@@ -20,10 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { useValibotRegle } from '@regle/valibot';
+import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
 
-const { r$ } = useValibotRegle(
+const { r$ } = useRegleSchema(
   { name: '' },
   v.object({
     name: v.pipe(v.string(), v.minLength(3)),

@@ -6,7 +6,7 @@ import type {
   ReglePartialRuleTree,
   RegleRuleDecl,
 } from '../../types';
-import type { NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
 
 export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>> {
   <
@@ -17,7 +17,10 @@ export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>
       ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
     > extends true
       ? {}
-      : never,
+      : MismatchInfo<
+          NoInferLegacy<TRules>,
+          ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+        >,
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
     rulesFactory: TRules

@@ -1,6 +1,7 @@
 packages:
   - packages/core
   - packages/rules
+  - packages/schemas
   - packages/zod
   - packages/valibot
   - packages/nuxt

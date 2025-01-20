@@ -26,6 +26,10 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Ref<Record<string, any> | undefined>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
+  schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  rootSchemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  schemaMode: boolean | undefined;
+  onValidate?: () => Promise<$InternalRegleResult>;
   validationGroups?:
     | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
     | undefined;
@@ -37,6 +41,8 @@ export function createReactiveNestedStatus({
   path = '',
   rootRules,
   externalErrors,
+  schemaErrors,
+  rootSchemaErrors,
   validationGroups,
   initialState,
   fieldName,
@@ -50,6 +56,7 @@ export function createReactiveNestedStatus({
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
+    $localPending: Ref<boolean>;
   }
   let scope = effectScope();
   let scopeState!: ScopeState;
@@ -57,6 +64,7 @@ export function createReactiveNestedStatus({
   let nestedScopes: EffectScope[] = [];
 
   let $unwatchRules: WatchStopHandle | null = null;
+  let $unwatchSchemaErrors: WatchStopHandle | null = null;
   let $unwatchExternalErrors: WatchStopHandle | null = null;
   let $unwatchState: WatchStopHandle | null = null;
   let $unwatchGroups: WatchStopHandle | null = null;
@@ -72,6 +80,7 @@ export function createReactiveNestedStatus({
             const stateRef = toRef(state.value ?? {}, statePropKey);
             const statePropRulesRef = toRef(() => statePropRules);
             const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
+            const $schemaErrors = computed(() => schemaErrors?.value?.[statePropKey]);
             const initialStateRef = toRef(initialState?.value ?? {}, statePropKey);
 
             return [
@@ -81,6 +90,7 @@ export function createReactiveNestedStatus({
                 rulesDef: statePropRulesRef,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
                 externalErrors: $externalErrors,
+                schemaErrors: $schemaErrors,
                 initialState: initialStateRef,
                 fieldName: statePropKey,
                 ...commonArgs,
@@ -96,6 +106,8 @@ export function createReactiveNestedStatus({
         .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
         .map(([key]) => {
           const stateRef = toRef(state.value ?? {}, key);
+          const $externalErrors = toRef(externalErrors?.value ?? {}, key);
+          const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
           return [
             key,
@@ -103,7 +115,8 @@ export function createReactiveNestedStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
-              externalErrors: toRef(externalErrors?.value ?? {}, key),
+              externalErrors: $externalErrors,
+              schemaErrors: $schemaErrors,
               initialState: initialStateRef,
               fieldName: key,
               ...commonArgs,
@@ -112,11 +125,39 @@ export function createReactiveNestedStatus({
         })
     );
 
+    const schemasRulesStatus = Object.fromEntries(
+      Object.entries(unref(schemaErrors) ?? {}).map(([key]) => {
+        const stateRef = toRef(state.value ?? {}, key);
+        const $externalErrors = toRef(externalErrors?.value ?? {}, key);
+        const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
+        const initialStateRef = toRef(initialState?.value ?? {}, key);
+
+        return [
+          key,
+          createReactiveChildrenStatus({
+            state: stateRef,
+            rulesDef: computed(() => ({})),
+            path: path ? `${path}.${key}` : key,
+            externalErrors: $externalErrors,
+            schemaErrors: $schemaErrors,
+            initialState: initialStateRef,
+            fieldName: key,
+            ...commonArgs,
+          }),
+        ];
+      })
+    );
+
     const statesWithNoRules = Object.fromEntries(
       Object.entries(state.value ?? {})
-        .filter(([key]) => !(key in rulesDef.value) && !(key in (externalRulesStatus.value ?? {})))
+        .filter(
+          ([key]) =>
+            !(key in rulesDef.value) && !(key in (externalRulesStatus ?? {})) && !(key in (schemasRulesStatus ?? {}))
+        )
         .map(([key]) => {
           const stateRef = toRef(state.value ?? {}, key);
+          const $externalErrors = toRef(externalErrors?.value ?? {}, key);
+          const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
 
           return [
@@ -125,7 +166,8 @@ export function createReactiveNestedStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
-              externalErrors: toRef(externalErrors?.value ?? {}, key),
+              externalErrors: $externalErrors,
+              schemaErrors: $schemaErrors,
               initialState: initialStateRef,
               fieldName: key,
               ...commonArgs,
@@ -137,6 +179,7 @@ export function createReactiveNestedStatus({
     $fields.value = {
       ...scopedRulesStatus,
       ...externalRulesStatus,
+      ...schemasRulesStatus,
       ...statesWithNoRules,
     };
     if (watchSources) {
@@ -165,7 +208,7 @@ export function createReactiveNestedStatus({
   }
 
   function define$WatchExternalErrors() {
-    if (externalErrors?.value) {
+    if (externalErrors) {
       $unwatchExternalErrors = watch(
         externalErrors,
         () => {
@@ -203,6 +246,18 @@ export function createReactiveNestedStatus({
       );
 
       define$WatchExternalErrors();
+    }
+
+    if (rootSchemaErrors) {
+      $unwatchSchemaErrors?.();
+      $unwatchSchemaErrors = watch(
+        rootSchemaErrors,
+        () => {
+          $unwatch();
+          createReactiveFieldsStatus();
+        },
+        { deep: true, flush: 'post' }
+      );
     }
 
     define$watchState();
@@ -279,10 +334,15 @@ export function createReactiveNestedStatus({
         return $anyDirty.value && !($invalid.value || $pending.value);
       });
 
+      const $localPending = ref(false);
+
       const $pending = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$pending;
-        });
+        return (
+          $localPending.value ||
+          Object.entries($fields.value).some(([key, statusOrField]) => {
+            return statusOrField?.$pending;
+          })
+        );
       });
 
       const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
@@ -407,6 +467,7 @@ export function createReactiveNestedStatus({
         $silentValue,
         $edited,
         $anyEdited,
+        $localPending,
       } satisfies ScopeState;
     })!;
   }
@@ -466,28 +527,40 @@ export function createReactiveNestedStatus({
 
   async function $validate(): Promise<$InternalRegleResult> {
     try {
-      const data = state.value;
-
-      const results = await Promise.allSettled(
-        Object.values($fields.value).map((statusOrField) => {
-          return statusOrField.$validate();
-        })
-      );
-
-      const validationResults = results.every((value) => {
-        if (value.status === 'fulfilled') {
-          return value.value.result === true;
+      if (commonArgs.schemaMode) {
+        if (commonArgs.onValidate) {
+          $touch(false);
+          scopeState.$localPending.value = true;
+          return commonArgs.onValidate();
         } else {
-          return false;
+          return { result: false, data: state.value };
         }
-      });
-      return { result: validationResults, data };
+      } else {
+        const data = state.value;
+
+        const results = await Promise.allSettled(
+          Object.values($fields.value).map((statusOrField) => {
+            return statusOrField.$validate();
+          })
+        );
+
+        const validationResults = results.every((value) => {
+          if (value.status === 'fulfilled') {
+            return value.value.result === true;
+          } else {
+            return false;
+          }
+        });
+        return { result: validationResults, data };
+      }
     } catch (e) {
       return { result: false, data: state.value };
+    } finally {
+      scopeState.$localPending.value = false;
     }
   }
 
-  const { $shortcuts, ...restScopeState } = scopeState;
+  const { $shortcuts, $localPending, ...restScopeState } = scopeState;
 
   return reactive({
     ...restScopeState,
@@ -508,7 +581,9 @@ export function createReactiveNestedStatus({
 interface CreateReactiveChildrenStatus extends CommonResolverOptions {
   state: Ref<any>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
-  externalErrors: Ref<$InternalRegleErrors | undefined> | undefined;
+  externalErrors: Ref<any | undefined> | undefined;
+  schemaErrors?: ComputedRef<any | undefined>;
+  schemaMode: boolean | undefined;
   initialState: Readonly<Ref<any>>;
 }
 
@@ -517,23 +592,21 @@ interface CreateReactiveChildrenStatus extends CommonResolverOptions {
  */
 export function createReactiveChildrenStatus({
   rulesDef,
-  externalErrors,
   ...properties
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | undefined {
   if (isCollectionRulesDef(rulesDef, properties.state)) {
     return createReactiveCollectionStatus({
       rulesDef,
-      externalErrors: externalErrors as any,
       ...properties,
     });
   } else if (isNestedRulesDef(properties.state, rulesDef)) {
     if (isRefObject(properties.state)) {
       return createReactiveNestedStatus({
         rulesDef,
-        externalErrors: externalErrors as any,
         ...properties,
       });
     } else {
+      // Undefined object can still be updated throw this fake state trap
       const scope = effectScope();
 
       const scopeState = scope.run(() => {
@@ -560,7 +633,6 @@ export function createReactiveChildrenStatus({
       const { state, ...restProperties } = properties;
       return createReactiveNestedStatus({
         rulesDef,
-        externalErrors: externalErrors as any,
         ...restProperties,
         state: scopeState.fakeState,
       });
@@ -568,7 +640,6 @@ export function createReactiveChildrenStatus({
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
       rulesDef,
-      externalErrors: externalErrors as any,
       ...properties,
     });
   }

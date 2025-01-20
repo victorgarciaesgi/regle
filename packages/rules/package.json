@@ -5,6 +5,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsup",
+    "build:dev": "tsup --config=tsup.dev.ts",
     "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "vitest run"

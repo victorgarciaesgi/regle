@@ -17,19 +17,19 @@ Regle offers an adapter for [Valibot](https://valibot.dev/). You can use any val
 
 ::: code-group
 ```sh [pnpm]
-pnpm add @regle/valibot
+pnpm add @regle/schemas
 ```
 
 ```sh [npm]
-npm install @regle/valibot
+npm install @regle/schemas
 ```
 
 ```sh [yarn]
-yarn add @regle/valibot
+yarn add @regle/schemas
 ```
 
 ```sh [bun]
-bun add @regle/valibot
+bun add @regle/schemas
 ```
 :::
 
@@ -38,34 +38,55 @@ bun add @regle/valibot
 ## Usage
 
 
-To use `@regle/valibot`, you only need one composable: `useValibotRegle`.
-
-The `useValibot` composable has the same type definitions as `useRegle` for state and options. However, instead of passing rules as the second parameter, you provide a Valibot schema.
-
-You still benefit from features like dirty tracking and custom error handling.
-
-All schemas are parsed using `safeParse` and `safeParseAsync` (if your schema includes asynchronous transformations or refinements). Error messages defined in the schema will automatically be retrieved.
-
-:::warn
-`refine` and `transform` and other effects functions on `v.object` are not supported in Regle.
-
-Regle splits the Valibot schema into nested independents schema, so only the field you modify will run it's own schema, and will not rerun the entire object schema for each input.
-
-This prevent the use of effects in object schemas.
-:::
-
+You can use your Valibot schemas to handle forms with the help of `useRegleSchema`, exported from `@regle/schemas`.
 
 ```ts twoslash
-import { useValibotRegle } from '@regle/valibot';
+import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
 
-const { r$ } = useValibotRegle({ name: '' }, v.object({
+const { r$ } = useRegleSchema({ name: '' }, v.object({
   name: v.pipe(v.string(), v.minLength(3))
 }))
-
 ```
 
 <QuickUsage />
+
+## Mode
+
+`useRegleSchema` have 2 modes: `rules` and `schema`.
+
+- `rules` (default)
+  - Convert and splits the Valibot schema into Regle-compatible rules, allowing the use of every functionnality of Regle.
+  - This means that editing a field will only only run it's own validator and not parse the entire schema.
+  - This enables independant `async` handling and parsing.
+  - Enable the use of `withDeps`
+
+:::warning
+`check` and `transform` and other effects functions on `z.object` are not supported in Regle with `rules` mode.
+
+Regle splits the Valibot schema into nested independents schema, so only the field you modify will run it's own schema, and will not rerun the entire object schema for each input.
+
+This prevent the use of effects in a object schema.
+:::
+
+- `schema` (experimental)
+  - This mode will parse your whole schema at each input, spreading the errors to your nested fields.
+  - Less performant, but allow more compatibility with schemas.
+  - Prevent the use of nested `$pending` and `$validate`.
+  - Prevent the use of `withDeps`.
+
+```ts twoslash
+import { useRegleSchema } from '@regle/schemas';
+import * as v from 'valibot';
+
+const { r$ } = useRegleSchema({ name: '' }, v.object({
+  name: v.pipe(v.string(), v.minLength(3))
+}), {
+  mode: 'schema'
+})
+```
+
+
 
 
 ## Computed schema
@@ -79,7 +100,7 @@ Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper 
 :::
 
 ```ts twoslash
-import { useValibotRegle, type toValibot, withDeps} from '@regle/valibot';
+import { useRegleSchema, inferSchema, withDeps} from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -91,7 +112,7 @@ type Form = {
 const form = ref<Form>({ firstName: '', lastName: '' })
 
 const schema = computed(() => 
-  v.object({
+  inferSchema(form, v.object({
     firstName: v.string(),
     /** 
      * Important to keep track of the depency change
@@ -104,10 +125,10 @@ const schema = computed(() =>
         ),
         [() => form.value.firstName]
       ),
-  }) satisfies toValibot<Form>
+  }))
 )
 
-const { r$ } = useValibotRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 
 ```
 
@@ -116,10 +137,10 @@ const { r$ } = useValibotRegle(form, schema);
 
 ## Type safe output
 
-Similar to the main `useRegle` composable, `r$.$validate` in useValibotRegle also returns a type-safe output.
+Similar to the main `useRegle` composable, `r$.$validate` in useRegleSchema also returns a type-safe output.
 
 ```ts twoslash
-import { useValibotRegle, toValibot } from '@regle/valibot';
+import { useRegleSchema, inferSchema } from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -130,16 +151,18 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => v.object({
-  firstName: v.optional(v.string()),
-  lastName: v.pipe(
-      v.string(),
-      v.minLength(3),
-      v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
-    )
-}) satisfies toValibot<Form>)
+const schema = computed(() => {
+  return inferSchema(form, v.object({
+    firstName: v.optional(v.string()),
+    lastName: v.pipe(
+        v.string(),
+        v.minLength(3),
+        v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+      )
+  }))
+})
 
-const { r$ } = useValibotRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 
 async function submit() {
   const { result, data } = await r$.$validate();

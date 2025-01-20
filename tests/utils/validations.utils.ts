@@ -1,20 +1,25 @@
 import type { RegleCollectionStatus, RegleFieldStatus, RegleStatus } from '@regle/core';
-import type { ZodRegleCollectionStatus, ZodRegleFieldStatus, ZodRegleStatus } from '@regle/zod';
+import type { RegleSchemaStatus, RegleSchemaCollectionStatus, RegleSchemaFieldStatus } from '@regle/schemas';
+import type { RegleSchemaMode } from '../../packages/schemas/src/types';
 
 type PossibleFields =
   | RegleStatus<any, any>
   | RegleFieldStatus<any, any>
   | RegleCollectionStatus<any, any, any>
-  | ZodRegleStatus<any, any>
-  | ZodRegleFieldStatus<any, any>
-  | ZodRegleCollectionStatus<any, any>;
+  | RegleSchemaStatus<{}, {}, any, any, true>
+  | RegleSchemaStatus<{}, {}, 'schema', any, false>
+  | RegleSchemaFieldStatus<any, any, 'rules', any>
+  | RegleSchemaFieldStatus<any, any, 'schema', any>
+  | RegleSchemaCollectionStatus<{}, any, any, any>;
 
 export function shouldBePristineField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
   expect(field?.$anyDirty).toBe(false);
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$valid).toBe(false);
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$errors).toStrictEqual([]);
@@ -30,7 +35,9 @@ export function shouldBeInvalidField(field?: PossibleFields) {
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$anyDirty).toBe(false);
   }
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$ready).toBe(false);
   expect(field?.$valid).toBe(false);
   expect(field?.$touch).toBeInstanceOf(Function);
@@ -45,7 +52,9 @@ export function shouldBeErrorField(field?: PossibleFields) {
   }
   expect(field?.$ready).toBe(false);
   expect(field?.$anyDirty).toBe(true);
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$valid).toBe(false);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
@@ -57,7 +66,9 @@ export function shouldBeValidField(field?: PossibleFields) {
   expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$ready).toBe(true);
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$valid).toBe(true);
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$errors).toStrictEqual([]);
@@ -66,13 +77,15 @@ export function shouldBeValidField(field?: PossibleFields) {
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | ZodRegleStatus) {
+export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | RegleSchemaStatus<any, any, any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);
   expect(field?.$anyDirty).toBe(true);
   expect(field?.$ready).toBe(true);
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$valid).toBe(true);
   expect(field?.$touch).toBeInstanceOf(Function);
   expect(field?.$reset).toBeInstanceOf(Function);
@@ -91,13 +104,36 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> | ZodRegleFieldStatus<any, any>) {
+export function shouldBeUnRuledCorrectField(
+  field?:
+    | RegleFieldStatus<any, any>
+    | RegleSchemaFieldStatus<any, any, 'rules'>
+    | RegleSchemaFieldStatus<any, any, 'schema'>
+) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$anyDirty).toBe(true);
-  expect(field?.$pending).toBe(false);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
   expect(field?.$dirty).toBe(true);
   expect(field?.$valid).toBe(false);
+  expect(field?.$ready).toBe(true);
+  expect(field?.$errors).toStrictEqual([]);
+  expect(field?.$touch).toBeInstanceOf(Function);
+  expect(field?.$reset).toBeInstanceOf(Function);
+}
+
+export function shouldBeUnRuledSchemaCorrectField(
+  field?: RegleSchemaFieldStatus<any, any, 'rules'> | RegleSchemaFieldStatus<any, any, 'schema'>
+) {
+  expect(field?.$invalid).toBe(false);
+  expect(field?.$error).toBe(false);
+  expect(field?.$anyDirty).toBe(true);
+  if (field && '$pending' in field) {
+    expect(field?.$pending).toBe(false);
+  }
+  expect(field?.$dirty).toBe(true);
   expect(field?.$ready).toBe(true);
   expect(field?.$errors).toStrictEqual([]);
   expect(field?.$touch).toBeInstanceOf(Function);
