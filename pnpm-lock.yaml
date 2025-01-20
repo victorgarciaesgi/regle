@@ -401,10 +401,10 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:../rules
-    devDependencies:
       '@standard-schema/spec':
         specifier: 1.0.0-rc.0
         version: 1.0.0-rc.0
+    devDependencies:
       '@total-typescript/ts-reset':
         specifier: 0.6.1
         version: 0.6.1
