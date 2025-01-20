@@ -1,5 +1,4 @@
 import type { RegleShortcutDefinition } from '@regle/core';
-import { useZodRegle, type ZodRegleFieldStatus } from '@regle/zod';
 import { reactive } from 'vue';
 import { z } from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
@@ -9,6 +8,7 @@ import {
   shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../utils/validations.utils';
+import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 
 const GiftType = z.enum(['Cash', 'Shares'], {
   required_error: 'Please select an option',
@@ -63,7 +63,7 @@ function zodUnionForm() {
 
   const form = reactive<Partial<z.input<typeof schema>>>({});
 
-  return useZodRegle(form, schema);
+  return useRegleSchema(form, schema);
 }
 
 describe('zod unions', () => {
@@ -143,14 +143,14 @@ describe('zod unions', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      ZodRegleFieldStatus<z.ZodString, string | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      ZodRegleFieldStatus<z.ZodNumber, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
     expectTypeOf(vm.r$.$fields.date).toEqualTypeOf<
-      ZodRegleFieldStatus<z.ZodEffects<z.ZodDate, Date, unknown>, unknown, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<unknown, unknown, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

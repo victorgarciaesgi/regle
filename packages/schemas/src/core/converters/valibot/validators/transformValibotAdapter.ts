@@ -1,7 +1,7 @@
 import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleMetadataDefinition, RegleRuleRaw } from '@regle/core';
 import { withAsync, withParams } from '@regle/rules';
 import * as v from 'valibot';
-import type { MaybeSchemaAsync } from '../../../types';
+import type { MaybeSchemaAsync } from '../../../../types/valibot/valibot.schema.types';
 
 export function transformValibotAdapter(
   schema: MaybeSchemaAsync<unknown>

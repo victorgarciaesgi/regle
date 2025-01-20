@@ -1,8 +1,8 @@
-import { useZodRegle, withDeps } from '@regle/zod';
 import { computed, reactive } from 'vue';
 import { z } from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../utils/validations.utils';
+import { useRegleSchema, withDeps } from '@regle/schemas';
 
 function nestedReactiveObjectValidation() {
   const form = reactive({
@@ -17,6 +17,7 @@ function nestedReactiveObjectValidation() {
       field1: z.string(),
       nested: z.object({
         field2: withDeps(
+          /** TODO  ^ Not compatible with 'schema' mode */
           z.string().refine((v) => v !== form.field1),
           [() => form.field1]
         ),
@@ -24,7 +25,7 @@ function nestedReactiveObjectValidation() {
     });
   });
 
-  return useZodRegle(form, schema);
+  return useRegleSchema(form, schema);
 }
 
 describe('Zod deps using withDeps', async () => {

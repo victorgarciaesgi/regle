@@ -9,7 +9,7 @@ import { createInferValibotSchemaHelper, type inferValibotSchemaFn } from './inf
  *
  * It will return:
  *
- * - a `useValibotRegle` composable that can typecheck your custom rules
+ * - a `useRegleSchema` composable that can typecheck your custom rules
  * - an `inferSchema` helper that can typecheck your custom rules
  */
 export function defineRegleSchemaConfig<TShortcuts extends RegleShortcutDefinition>({
@@ -19,11 +19,11 @@ export function defineRegleSchemaConfig<TShortcuts extends RegleShortcutDefiniti
   modifiers?: RegleBehaviourOptions;
   shortcuts?: TShortcuts;
 }): {
-  useValibotRegle: useRegleSchemaFn<TShortcuts>;
+  useRegleSchema: useRegleSchemaFn<TShortcuts>;
   inferSchema: inferValibotSchemaFn;
 } {
-  const useValibotRegle = createUseRegleSchemaComposable<TShortcuts>(modifiers, shortcuts as any);
+  const useRegleSchema = createUseRegleSchemaComposable<TShortcuts>(modifiers, shortcuts as any);
   const inferSchema = createInferValibotSchemaHelper();
 
-  return { useValibotRegle, inferSchema };
+  return { useRegleSchema, inferSchema };
 }

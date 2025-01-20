@@ -5,12 +5,7 @@ export function isObject(obj: unknown): obj is Record<string, any> {
   return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 }
 
-export function setObjectError(
-  obj: Record<string, any>,
-  propsArg: string,
-  value: any,
-  type: 'string' | 'number' | 'bigint' | 'set' | 'array' | 'date' | undefined
-) {
+export function setObjectError(obj: Record<string, any>, propsArg: string | undefined, value: any, isArray: boolean) {
   var props, lastProp;
   if (Array.isArray(propsArg)) {
     props = propsArg.slice(0);
@@ -46,7 +41,7 @@ export function setObjectError(
       return false;
     }
   }
-  if (type === 'array') {
+  if (isArray) {
     obj[lastProp] = { ...obj[lastProp], $self: value };
   } else {
     obj[lastProp] = value;

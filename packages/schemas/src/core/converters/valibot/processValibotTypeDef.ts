@@ -1,16 +1,12 @@
 import type { RegleFormPropertyType } from '@regle/core';
 import { withMessage } from '@regle/rules';
 import type * as v from 'valibot';
-import {
-  extractIssuesMessages,
-  transformValibotAdapter,
-  valibotArrayToRegle,
-  valibotObjectToRegle,
-} from './validators';
+import { transformValibotAdapter, valibotArrayToRegle, valibotObjectToRegle } from './validators';
 import type { Ref } from 'vue';
-import { isWrappedType } from '../../utils/guards';
-import type { MaybeArrayAsync, MaybeSchemaAsync } from '../../types';
 import { valibotVariantToRegle } from './validators/valibotVariantToRegle';
+import { extractIssuesMessages } from '../extractIssuesMessages';
+import type { MaybeArrayAsync, MaybeSchemaAsync } from '../../../types/valibot/valibot.schema.types';
+import { isWrappedType } from './guards';
 
 function isArraySchema(schema: MaybeSchemaAsync<unknown>): schema is MaybeArrayAsync<any> {
   return schema.type === 'array';

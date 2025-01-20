@@ -5,6 +5,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsup",
+    "build:dev": "tsup --config=tsup.dev.ts",
     "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
     "dev": "tsup --config=tsup.dev.ts --watch",
     "test": "echo 'no tests'"
@@ -43,28 +44,28 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/regle-valibot.d.ts",
+      "types": "./dist/regle-schemas.d.ts",
       "node": {
         "import": {
-          "production": "./dist/regle-valibot.min.mjs",
-          "development": "./dist/regle-valibot.mjs",
-          "default": "./dist/regle-valibot.mjs"
+          "production": "./dist/regle-schemas.min.mjs",
+          "development": "./dist/regle-schemas.mjs",
+          "default": "./dist/regle-schemas.mjs"
         },
         "require": {
-          "production": "./dist/regle-valibot.min.cjs",
-          "development": "./dist/regle-valibot.cjs",
+          "production": "./dist/regle-schemas.min.cjs",
+          "development": "./dist/regle-schemas.cjs",
           "default": "./index.js"
         }
       },
-      "import": "./dist/regle-valibot.mjs",
+      "import": "./dist/regle-schemas.mjs",
       "require": "./index.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
   "main": "index.js",
-  "module": "./dist/regle-valibot.mjs",
-  "types": "./dist/regle-valibot.d.ts",
+  "module": "./dist/regle-schemas.mjs",
+  "types": "./dist/regle-schemas.d.ts",
   "files": [
     "dist",
     "index.js",

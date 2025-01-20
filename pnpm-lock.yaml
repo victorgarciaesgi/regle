@@ -59,6 +59,9 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:packages/rules
+      '@regle/schemas':
+        specifier: workspace:*
+        version: link:packages/schemas
       '@regle/valibot':
         specifier: workspace:*
         version: link:packages/valibot
@@ -270,6 +273,9 @@ importers:
         specifier: workspace:*
         version: link:../rules
     optionalDependencies:
+      '@regle/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       '@regle/valibot':
         specifier: workspace:*
         version: link:../valibot
@@ -666,6 +672,9 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:../../packages/rules
+      '@regle/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       '@regle/valibot':
         specifier: workspace:*
         version: link:../../packages/valibot

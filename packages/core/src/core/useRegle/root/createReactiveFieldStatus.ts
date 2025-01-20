@@ -19,6 +19,8 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
   externalErrors: Ref<string[] | undefined> | undefined;
+  schemaErrors?: Ref<string[] | undefined> | undefined;
+  schemaMode: boolean | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: Ref<unknown | undefined>;
@@ -33,6 +35,8 @@ export function createReactiveFieldStatus({
   storage,
   options,
   externalErrors,
+  schemaErrors,
+  schemaMode,
   onUnwatch,
   $isArray,
   initialState,
@@ -227,16 +231,26 @@ export function createReactiveFieldStatus({
       });
 
       const $errors = computed<string[]>(() => {
-        if ($error.value) {
-          return extractRulesErrors({
-            field: {
-              $dirty: $dirty.value,
-              $externalErrors: externalErrors?.value,
-              $rules: $rules.value,
-            },
-          });
-        }
-        return [];
+        return extractRulesErrors({
+          field: {
+            $error: $error.value,
+            $externalErrors: externalErrors?.value,
+            $schemaErrors: schemaErrors?.value,
+            $rules: $rules.value,
+          },
+        });
+      });
+
+      const $silentErrors = computed<string[]>(() => {
+        return extractRulesErrors({
+          field: {
+            $error: true,
+            $externalErrors: externalErrors?.value,
+            $schemaErrors: schemaErrors?.value,
+            $rules: $rules.value,
+          },
+          silent: true,
+        });
       });
 
       const $edited = computed<boolean>(() => {
@@ -267,17 +281,6 @@ export function createReactiveFieldStatus({
         });
       });
 
-      const $silentErrors = computed<string[]>(() => {
-        return extractRulesErrors({
-          field: {
-            $dirty: $dirty.value,
-            $externalErrors: externalErrors?.value,
-            $rules: $rules.value,
-          },
-          silent: true,
-        });
-      });
-
       const $ready = computed<boolean>(() => {
         if (!$autoDirty.value) {
           return !($invalid.value || $pending.value);
@@ -295,9 +298,9 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if (externalErrors?.value?.length) {
+        if (externalErrors?.value?.length || schemaErrors?.value?.length) {
           return true;
-        } else if (isEmpty($rules.value)) {
+        } else if ($inactive.value) {
           return false;
         } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
           return Object.entries($rules.value).some(([_, ruleResult]) => {
@@ -310,7 +313,7 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName);
 
       const $inactive = computed<boolean>(() => {
-        if (isEmpty($rules.value)) {
+        if (isEmpty($rules.value) && !schemaMode) {
           return true;
         }
         return false;
@@ -322,9 +325,13 @@ export function createReactiveFieldStatus({
         } else if ($inactive.value) {
           return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
-          return Object.values($rules.value).every((ruleResult) => {
-            return ruleResult.$valid && ruleResult.$active;
-          });
+          if (schemaMode) {
+            return !schemaErrors?.value?.length;
+          } else {
+            return Object.values($rules.value).every((ruleResult) => {
+              return ruleResult.$valid && ruleResult.$active;
+            });
+          }
         }
         return false;
       });
@@ -505,8 +512,9 @@ export function createReactiveFieldStatus({
       } else if (scopeState.$autoDirty.value && scopeState.$dirty.value && !scopeState.$pending.value) {
         return { result: !scopeState.$error.value, data };
       }
-
-      if (isEmpty($rules.value)) {
+      if (schemaMode) {
+        return { result: !schemaErrors?.value?.length, data };
+      } else if (isEmpty($rules.value)) {
         return { result: true, data };
       }
       const results = await Promise.allSettled(

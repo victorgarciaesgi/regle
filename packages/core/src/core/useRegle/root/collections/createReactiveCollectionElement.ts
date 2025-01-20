@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { computed, toRef } from 'vue';
 import type {
   $InternalFormPropertyTypes,
@@ -16,7 +16,9 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId | undefined>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
+  schemaErrors: ComputedRef<$InternalRegleErrors[] | undefined> | undefined;
   initialState: Ref<unknown>;
+  schemaMode: boolean | undefined;
 }
 
 export function createCollectionElement({
@@ -29,9 +31,11 @@ export function createCollectionElement({
   customMessages,
   rules,
   externalErrors,
+  schemaErrors,
   initialState,
   shortcuts,
   fieldName,
+  schemaMode,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = rules.$key ? rules.$key : randomId();
   let $path = `${path}.${String($fieldId)}`;
@@ -51,6 +55,9 @@ export function createCollectionElement({
     }
   }
 
+  const $externalErrors = toRef(externalErrors?.value ?? [], index);
+  const $schemaErrors = computed(() => schemaErrors?.value?.[index]);
+
   const $status = createReactiveChildrenStatus({
     state: stateValue,
     rulesDef: toRef(() => rules),
@@ -58,10 +65,12 @@ export function createCollectionElement({
     path: $path,
     storage,
     options,
-    externalErrors: toRef(externalErrors?.value ?? [], index),
+    externalErrors: $externalErrors,
+    schemaErrors: $schemaErrors,
     initialState,
     shortcuts,
     fieldName,
+    schemaMode,
   });
 
   if ($status) {

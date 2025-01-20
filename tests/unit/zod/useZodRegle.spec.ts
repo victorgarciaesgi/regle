@@ -1,4 +1,3 @@
-import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive } from 'vue';
 import { createRegleComponent } from '../../utils/test.utils';
 import {
@@ -9,6 +8,7 @@ import {
 } from '../../utils/validations.utils';
 import { z } from 'zod';
 import { isFilled } from '@regle/rules';
+import { useRegleSchema } from '@regle/schemas';
 
 function nestedReactiveObjectValidation() {
   const zodIsEven = z
@@ -48,7 +48,7 @@ function nestedReactiveObjectValidation() {
     },
   });
 
-  return useZodRegle(form, schema);
+  return useRegleSchema(form, schema);
 }
 
 describe('useZodRegle ', async () => {

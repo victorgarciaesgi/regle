@@ -86,9 +86,9 @@ export function createUseZodRegleComposable<TShortcuts extends RegleShortcutDefi
             type: 'type' in issue ? issue.type : 'string',
           }));
 
-          errors.forEach((error) => {
-            setObjectError(output, error.path, [error.message], error.type);
-          });
+          // errors.forEach((error) => {
+          //   setObjectError(output, error.path, [error.message], error.type);
+          // });
         }
         return output;
       }

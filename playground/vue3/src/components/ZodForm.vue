@@ -1,4 +1,5 @@
 <template>
+  Zod
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.nativeEnum" placeholder="nativeEnum" />
 
@@ -18,7 +19,7 @@
 
     Gift:
 
-    <!-- <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
+    <select v-if="r$.$value.gift" v-model="r$.$value.gift.type">
       <option value="">Select a value</option>
       <option value="Cash">Cash</option>
       <option value="Shares">Shares</option>
@@ -29,7 +30,7 @@
           <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
         </ul>
       </div>
-    </Transition> -->
+    </Transition>
 
     <template v-if="r$.$value.gift?.type === 'Cash'">
       <input v-model.number="r$.$value.gift.amount" placeholder="amount" />
@@ -71,6 +72,7 @@
 
 <script setup lang="ts">
 import type { Maybe, RegleExternalErrorTree } from '@regle/core';
+import { useRegleSchema } from '@regle/schemas';
 import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive, ref, watch } from 'vue';
 import {
@@ -175,7 +177,7 @@ async function submit() {
   console.log(r$.$errors);
 }
 
-const { r$ } = useZodRegle(form, formSchema, { mode: 'schema' });
+const { r$ } = useRegleSchema(form, formSchema);
 </script>
 
 <style scoped>

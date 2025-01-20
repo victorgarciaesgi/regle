@@ -1,8 +1,8 @@
-import { useValibotRegle, withDeps } from '@regle/valibot';
 import * as v from 'valibot';
 import { computed, reactive } from 'vue';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../utils/validations.utils';
+import { useRegleSchema, withDeps } from '@regle/schemas';
 
 function nestedReactiveObjectValidation() {
   const form = reactive({
@@ -27,7 +27,7 @@ function nestedReactiveObjectValidation() {
     });
   });
 
-  return useValibotRegle(form, schema);
+  return useRegleSchema(form, schema);
 }
 
 describe('Valibot deps using withDeps', async () => {

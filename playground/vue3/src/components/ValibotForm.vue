@@ -59,6 +59,7 @@
 
     <button type="submit" @click="form.nested?.push({ name: '' })"> Add entry </button>
     <button type="submit" @click="form.nested?.splice(0, 1)"> Remove first </button>
+    <button type="submit" @click="r$.$reset">Submit</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre style="max-width: 100%">
@@ -70,10 +71,9 @@
 </template>
 
 <script setup lang="ts">
-import { useValibotRegle, withDeps } from '@regle/valibot';
+import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
 import { reactive } from 'vue';
-import type { UnionToIntersection, TupleToUnion } from 'type-fest';
 
 const GiftType = v.picklist(['Cash', 'Shares'], 'Please select an option');
 
@@ -140,29 +140,12 @@ const formSchema = v.intersect([
   v.object({ nativeEnum: v.enum(MyEnum) }),
 ]);
 
-type MergeIntersect<T extends readonly any[]> = T extends [infer F, ...infer R]
-  ? [InferObjectSchema<F>, ...MergeIntersect<R>]
-  : [];
-
-type InferObjectSchema<T> =
-  T extends v.ObjectSchema<infer O, any>
-    ? O
-    : T extends v.ObjectSchemaAsync<infer O, any>
-      ? O
-      : T extends v.IntersectSchema<infer O, any>
-        ? UnionToIntersection<TupleToUnion<MergeIntersect<O>>>
-        : T extends v.IntersectSchemaAsync<infer O, any>
-          ? UnionToIntersection<TupleToUnion<MergeIntersect<O>>>
-          : undefined;
-
-type test = InferObjectSchema<typeof formSchema>;
-
 const form = reactive<Partial<v.InferInput<typeof formSchema>>>({
   gift: {} as any,
   nested: [],
 });
 
-const { r$ } = useValibotRegle(form, formSchema);
+const { r$ } = useRegleSchema(form, formSchema);
 
 async function submit() {
   const { result, data } = await r$.$validate();

@@ -2,11 +2,11 @@ import type { ReglePartialRuleTree } from '@regle/core';
 import { required } from '@regle/rules';
 import { computed, effectScope, onScopeDispose, ref, toRef, watch, type ComputedRef, type Ref } from 'vue';
 import type * as v from 'valibot';
-import { isObject } from '../../../../../shared';
 import { processValibotTypeDef } from '../processValibotTypeDef';
 import { getNestedValibotObjectSchema } from './valibotObjectToRegle';
-import type { MaybeSchemaAsync } from '../../../types';
-import { isObjectSchema } from '../../../utils/guards';
+import type { MaybeSchemaAsync } from '../../../../types/valibot/valibot.schema.types';
+import { isObject } from '../../../../../../shared';
+import { isObjectSchema } from '../guards';
 
 function isLiteralSchema(schema?: MaybeSchemaAsync<unknown>): schema is v.LiteralSchema<any, any> {
   return schema?.type === 'literal';

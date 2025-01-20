@@ -6,7 +6,7 @@ import type {
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
-import type { PartialDeep } from 'type-fest';
+import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
 
@@ -85,13 +85,15 @@ export type InferRegleSchemaStatusType<
     ? RegleSchemaCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
     : NonNullable<TState> extends Date | File
       ? RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
-      : NonNullable<TSchema> extends Record<string, any>
-        ? RegleSchemaStatus<
-            NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-            NonNullable<TSchema>,
-            TShortcuts
-          >
-        : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
+      : unknown extends TState
+        ? RegleSchemaFieldStatus<TSchema extends EmptyObject ? unknown : TSchema, TState, TShortcuts>
+        : NonNullable<TSchema> extends Record<string, any>
+          ? RegleSchemaStatus<
+              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+              NonNullable<TSchema>,
+              TShortcuts
+            >
+          : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
 
 /**
  * @public

@@ -1,5 +1,6 @@
 import type * as v from 'valibot';
-import type { MaybeSchemaAsync } from '../types';
+import type { MaybeSchemaAsync } from '../../../types/valibot/valibot.schema.types';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 export function isIntersectSchema(
   schema: MaybeSchemaAsync<unknown>

@@ -2,10 +2,10 @@ import type { RegleCollectionRuleDecl } from '@regle/core';
 import { withMessage } from '@regle/rules';
 import * as v from 'valibot';
 import type { Ref } from 'vue';
-import type { MaybeArrayAsync } from '../../../types';
 import { processValibotTypeDef } from '../processValibotTypeDef';
-import { extractIssuesMessages } from './extractIssuesMessages';
 import { transformValibotAdapter } from './transformValibotAdapter';
+import type { MaybeArrayAsync } from '../../../../types/valibot/valibot.schema.types';
+import { extractIssuesMessages } from '../../extractIssuesMessages';
 
 type ArraySchema = v.ArraySchema<v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>, undefined>;
 export function valibotArrayToRegle(

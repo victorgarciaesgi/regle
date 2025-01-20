@@ -2,10 +2,10 @@ import { ref } from 'vue';
 import z from 'zod';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../utils/validations.utils';
-import { defineZodRegleConfig, useZodRegle } from '@regle/zod';
+import { defineRegleSchemaConfig } from '@regle/schemas';
 
 function nestedRefObjectValidation() {
-  const { useZodRegle } = defineZodRegleConfig({});
+  const { useRegleSchema } = defineRegleSchemaConfig({});
 
   const condition = ref(true);
   const form = ref({
@@ -20,7 +20,7 @@ function nestedRefObjectValidation() {
 
   return {
     condition,
-    ...useZodRegle(
+    ...useRegleSchema(
       form,
       z.object({
         level0: z.string().nonempty(),

@@ -1,10 +1,10 @@
 import { isFilled } from '@regle/rules';
-import { useZodRegle } from '@regle/zod';
 import { flushPromises } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
 import { z } from 'zod';
 import { timeout } from '../../utils';
 import { createRegleComponent } from '../../utils/test.utils';
+import { useRegleSchema } from '@regle/schemas';
 
 function nesteAsyncObjectWithRefsValidation() {
   const form = {
@@ -54,7 +54,7 @@ function nesteAsyncObjectWithRefsValidation() {
       { message: 'Custom error' }
     );
 
-  return useZodRegle(
+  return useRegleSchema(
     form,
     z.object({
       level0Async: ruleMockIsEvenAsync,

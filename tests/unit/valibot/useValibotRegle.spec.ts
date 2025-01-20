@@ -1,5 +1,4 @@
 import { isFilled } from '@regle/rules';
-import { useValibotRegle } from '@regle/valibot';
 import * as v from 'valibot';
 import { nextTick, reactive } from 'vue';
 import { createRegleComponent } from '../../utils/test.utils';
@@ -9,6 +8,7 @@ import {
   shouldBePristineField,
   shouldBeValidField,
 } from '../../utils/validations.utils';
+import { useRegleSchema } from '@regle/schemas';
 
 function nestedReactiveObjectValidation() {
   const form = reactive({
@@ -32,7 +32,7 @@ function nestedReactiveObjectValidation() {
     }, 'Custom error')
   );
 
-  return useValibotRegle(
+  return useRegleSchema(
     form,
     v.object({
       level0: v.optional(valibotIsEven),

@@ -1,11 +1,11 @@
 import { ref } from 'vue';
 import * as v from 'valibot';
-import { defineValibotRegleConfig } from '@regle/valibot';
 import { createRegleComponent } from '../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../utils/validations.utils';
+import { defineRegleSchemaConfig } from '../../../packages/schemas/src';
 
 function nestedRefObjectValidation() {
-  const { useValibotRegle } = defineValibotRegleConfig({});
+  const { useRegleSchema } = defineRegleSchemaConfig({});
 
   const condition = ref(true);
   const form = ref({
@@ -20,7 +20,7 @@ function nestedRefObjectValidation() {
 
   return {
     condition,
-    ...useValibotRegle(
+    ...useRegleSchema(
       form,
       v.object({
         level0: v.pipe(v.string(), v.nonEmpty()),

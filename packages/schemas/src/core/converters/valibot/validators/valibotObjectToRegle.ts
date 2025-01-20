@@ -1,10 +1,10 @@
 import type { ReglePartialRuleTree } from '@regle/core';
 import * as v from 'valibot';
 import { toRef, type Ref } from 'vue';
-import { isIntersectSchema, isObjectSchema, isWrappedType } from '../../../utils/guards';
 import { processValibotTypeDef } from '../processValibotTypeDef';
-import type { MaybeObjectAsync, MaybeSchemaAsync } from '../../../types';
-import { isObject } from '../../../../../shared';
+import { isIntersectSchema, isObjectSchema, isWrappedType } from '../guards';
+import { isObject } from '../../../../../../shared';
+import type { MaybeObjectAsync, MaybeSchemaAsync } from '../../../../types/valibot/valibot.schema.types';
 
 export function getNestedValibotObjectSchema(
   schema: MaybeSchemaAsync<unknown>

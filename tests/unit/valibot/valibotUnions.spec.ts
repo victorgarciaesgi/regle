@@ -8,7 +8,7 @@ import {
   shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../utils/validations.utils';
-import { useValibotRegle, type ValibotRegleFieldStatus, type ValibotRegleStatus } from '@regle/valibot';
+import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 
 const GiftType = v.picklist(['Cash', 'Shares'], 'Please select an option');
 
@@ -43,7 +43,7 @@ enum MyEnum {
   Bar = 'Bar',
 }
 
-function zodUnionForm() {
+function valibotUnionForm() {
   const schema = v.object({
     enum: v.picklist(['Salmon', 'Tuna', 'Trout']),
     nativeEnum: v.enum(MyEnum),
@@ -54,7 +54,7 @@ function zodUnionForm() {
 
   const form = reactive<Partial<v.InferInput<typeof schema>>>({});
 
-  return useValibotRegle(form, schema);
+  return useRegleSchema(form, schema);
 }
 
 describe('valibot unions', () => {
@@ -67,7 +67,7 @@ describe('valibot unions', () => {
   });
 
   it('should behave correctly with unions, nums, and discriminated unions', async () => {
-    const { vm } = createRegleComponent(zodUnionForm);
+    const { vm } = createRegleComponent(valibotUnionForm);
 
     shouldBeInvalidField(vm.r$.$fields.enum);
     shouldBeInvalidField(vm.r$.$fields.nativeEnum);
@@ -134,13 +134,13 @@ describe('valibot unions', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      ValibotRegleFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      ValibotRegleFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.shares).toEqualTypeOf<
-      ValibotRegleFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose
