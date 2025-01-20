@@ -18,14 +18,12 @@ const data = ref<
 const schema = computed(() => {
   return z.object({
     condition: z.boolean(),
-    ...(data.value.condition === true && {
-      nested: z.object({
-        list: z.array(
-          z.object({
-            name: z.string(),
-          })
-        ),
-      }),
+    nested: z.object({
+      list: z.array(
+        z.object({
+          name: z.string(),
+        })
+      ),
     }),
   });
 });
