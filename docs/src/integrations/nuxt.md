@@ -9,6 +9,12 @@ Adding the Nuxt module enables auto-imports for selected exports.
 
 Run the following command in your Nuxt application:
 
+```bash
+npx nuxi module add regle
+```
+
+Or do it manually
+
 :::code-group
 <!-- ```bash [nuxt]
 npx nuxi module add regle
