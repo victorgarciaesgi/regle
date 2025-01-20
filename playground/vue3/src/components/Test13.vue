@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { z } from 'zod';
 import { ref, computed } from 'vue';
-import { useZodRegle } from '@regle/zod';
+import { useRegleSchema } from '@regle/schemas';
 import JSONViewer from './JSONViewer.vue';
 
 const data = ref<
@@ -31,7 +31,7 @@ const schema = computed(() => {
 });
 
 const rewardEarly = ref(true);
-const { r$ } = useZodRegle(data, schema, { rewardEarly });
+const { r$ } = useRegleSchema(data, schema, { rewardEarly });
 </script>
 
 <template>

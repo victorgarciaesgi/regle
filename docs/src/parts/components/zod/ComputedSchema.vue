@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { useZodRegle, withDeps, type toZod } from '@regle/zod';
+import { useRegleSchema, withDeps } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -54,5 +54,5 @@ const schema = computed(() =>
   })
 );
 
-const { r$ } = useZodRegle(form, schema);
+const { r$ } = useRegleSchema(form, schema);
 </script>

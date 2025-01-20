@@ -32,8 +32,6 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "@regle/valibot": "workspace:*",
-    "@regle/zod": "workspace:*",
     "@shikijs/vitepress-twoslash": "1.26.1",
     "@tailwindcss/forms": "0.5.10",
     "@types/semver": "7.5.8",

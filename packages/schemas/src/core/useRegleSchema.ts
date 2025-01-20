@@ -8,6 +8,7 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
   Unwrap,
+  MismatchInfo,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
@@ -27,12 +28,15 @@ export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = n
     { recurseIntoArrays: true }
   >
     ? {}
-    : "[Schema input doesn't match the state]",
+    : MismatchInfo<
+        UnwrapNestedRefs<TState>,
+        PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
+      >,
 >(
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never> & { mode?: 'schema' | 'nested' }
+    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never> & { mode?: 'schema' | 'rules' }
 ) => RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
@@ -50,14 +54,14 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     schema: MaybeRef<TSchema>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: 'schema' | 'nested' }
+      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: 'schema' | 'rules' }
   ): RegleSchema<TState, TSchema> {
     //
     const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
 
     const computedSchema = computed(() => unref(schema));
 
-    const { mode = 'nested', ...regleOptions } = options ?? {};
+    const { mode = 'rules', ...regleOptions } = options ?? {};
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
@@ -70,7 +74,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     const customErrors = ref<Raw<RegleExternalErrorTree>>({});
 
-    if (mode === 'nested') {
+    if (mode === 'rules') {
       watch(
         computedSchema,
         () => {
@@ -118,7 +122,6 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         async () => {
           const result = await computedSchema.value['~standard'].validate(processedState.value);
           customErrors.value = zodErrorsToRecord(result);
-          console.log(customErrors.value);
         },
         { deep: true, immediate: true, flush: 'post' }
       );

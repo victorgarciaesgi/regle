@@ -12,7 +12,7 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
-    "@regle/zod": "workspace:*",
+    "@regle/schemas": "workspace:*",
     "pinia": "^2.3.0",
     "typescript": "5.6.3",
     "zod": "3.24.1"

@@ -52,7 +52,6 @@ The following exports will become globally available in your Nuxt application:
   - withMessage
   - withParams
   - withTooltip
-- `@regle/zod` (if present)
-  - useZodRegle
-- `@regle/valibot` (if present)
-  - useValibotRegle
+- `@regle/schemas` (if present)
+  - useRegleSchemas
+

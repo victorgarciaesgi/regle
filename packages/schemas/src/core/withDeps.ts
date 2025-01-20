@@ -2,7 +2,9 @@ import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { type Ref } from 'vue';
 
 /**
- * Force dependency on any Valibot schema
+ * ⚠️ Not compatible with `schema` mode
+ *
+ * Force dependency on any RPC schema
  * ```ts
  * const foo = ref('');
  * withDeps(

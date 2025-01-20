@@ -62,12 +62,6 @@ importers:
       '@regle/schemas':
         specifier: workspace:*
         version: link:packages/schemas
-      '@regle/valibot':
-        specifier: workspace:*
-        version: link:packages/valibot
-      '@regle/zod':
-        specifier: workspace:*
-        version: link:packages/zod
       '@shikijs/vitepress-twoslash':
         specifier: 1.26.1
         version: 1.26.1(@nuxt/kit@3.15.1(magicast@0.3.5)(rollup@4.30.1))(typescript@5.6.3)
@@ -276,12 +270,6 @@ importers:
       '@regle/schemas':
         specifier: workspace:*
         version: link:../schemas
-      '@regle/valibot':
-        specifier: workspace:*
-        version: link:../valibot
-      '@regle/zod':
-        specifier: workspace:*
-        version: link:../zod
     devDependencies:
       '@nuxt/devtools':
         specifier: 1.7.0
@@ -487,152 +475,6 @@ importers:
         specifier: 'catalog:'
         version: 4.28.0
 
-  packages/valibot:
-    dependencies:
-      '@regle/core':
-        specifier: workspace:*
-        version: link:../core
-      '@regle/rules':
-        specifier: workspace:*
-        version: link:../rules
-    devDependencies:
-      '@standard-schema/spec':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0
-      '@total-typescript/ts-reset':
-        specifier: 0.6.1
-        version: 0.6.1
-      '@types/node':
-        specifier: 22.10.5
-        version: 22.10.5
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.19.1
-        version: 8.19.1(@typescript-eslint/parser@8.19.1(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3))(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
-      '@typescript-eslint/parser':
-        specifier: 8.19.1
-        version: 8.19.1(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
-      '@vue/test-utils':
-        specifier: 2.4.6
-        version: 2.4.6
-      bumpp:
-        specifier: 9.10.0
-        version: 9.10.0(magicast@0.3.5)
-      changelogithub:
-        specifier: 0.13.11
-        version: 0.13.11(magicast@0.3.5)
-      cross-env:
-        specifier: 7.0.3
-        version: 7.0.3
-      eslint:
-        specifier: 'catalog:'
-        version: 9.15.0(jiti@2.4.2)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 9.1.0(eslint@9.15.0(jiti@2.4.2))
-      eslint-plugin-vue:
-        specifier: 'catalog:'
-        version: 9.31.0(eslint@9.15.0(jiti@2.4.2))
-      prettier:
-        specifier: 'catalog:'
-        version: 3.3.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.3.5(@microsoft/api-extractor@7.49.1(@types/node@22.10.5))(jiti@2.4.2)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.6.3)(yaml@2.7.0)
-      type-fest:
-        specifier: 'catalog:'
-        version: 4.28.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.6.3
-      valibot:
-        specifier: 1.0.0-beta.11
-        version: 1.0.0-beta.11(typescript@5.6.3)
-      vitest:
-        specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.3)(sass@1.83.1)(terser@5.37.0)
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.13(typescript@5.6.3)
-      vue-eslint-parser:
-        specifier: 'catalog:'
-        version: 9.4.3(eslint@9.15.0(jiti@2.4.2))
-      vue-tsc:
-        specifier: 'catalog:'
-        version: 2.1.10(typescript@5.6.3)
-
-  packages/zod:
-    dependencies:
-      '@regle/core':
-        specifier: workspace:*
-        version: link:../core
-      '@regle/rules':
-        specifier: workspace:*
-        version: link:../rules
-    devDependencies:
-      '@standard-schema/spec':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0
-      '@total-typescript/ts-reset':
-        specifier: 0.6.1
-        version: 0.6.1
-      '@types/node':
-        specifier: 22.10.5
-        version: 22.10.5
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.19.1
-        version: 8.19.1(@typescript-eslint/parser@8.19.1(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3))(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
-      '@typescript-eslint/parser':
-        specifier: 8.19.1
-        version: 8.19.1(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)
-      '@vue/test-utils':
-        specifier: 2.4.6
-        version: 2.4.6
-      bumpp:
-        specifier: 9.10.0
-        version: 9.10.0(magicast@0.3.5)
-      changelogithub:
-        specifier: 0.13.11
-        version: 0.13.11(magicast@0.3.5)
-      cross-env:
-        specifier: 7.0.3
-        version: 7.0.3
-      eslint:
-        specifier: 'catalog:'
-        version: 9.15.0(jiti@2.4.2)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 9.1.0(eslint@9.15.0(jiti@2.4.2))
-      eslint-plugin-vue:
-        specifier: 'catalog:'
-        version: 9.31.0(eslint@9.15.0(jiti@2.4.2))
-      prettier:
-        specifier: 'catalog:'
-        version: 3.3.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.3.5(@microsoft/api-extractor@7.49.1(@types/node@22.10.5))(jiti@2.4.2)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.6.3)(yaml@2.7.0)
-      type-fest:
-        specifier: 'catalog:'
-        version: 4.28.0
-      typescript:
-        specifier: 'catalog:'
-        version: 5.6.3
-      vitest:
-        specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.3)(sass@1.83.1)(terser@5.37.0)
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.13(typescript@5.6.3)
-      vue-eslint-parser:
-        specifier: 'catalog:'
-        version: 9.4.3(eslint@9.15.0(jiti@2.4.2))
-      vue-tsc:
-        specifier: 'catalog:'
-        version: 2.1.10(typescript@5.6.3)
-      zod:
-        specifier: 3.24.1
-        version: 3.24.1
-
   playground/nuxt:
     dependencies:
       '@regle/core':
@@ -641,9 +483,9 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:../../packages/rules
-      '@regle/zod':
+      '@regle/schemas':
         specifier: workspace:*
-        version: link:../../packages/zod
+        version: link:../../packages/schemas
       pinia:
         specifier: ^2.3.0
         version: 2.3.0(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
@@ -675,12 +517,6 @@ importers:
       '@regle/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
-      '@regle/valibot':
-        specifier: workspace:*
-        version: link:../../packages/valibot
-      '@regle/zod':
-        specifier: workspace:*
-        version: link:../../packages/zod
       pinia:
         specifier: 2.3.0
         version: 2.3.0(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
@@ -754,9 +590,9 @@ importers:
       '@regle/rules':
         specifier: workspace:*
         version: link:../../../packages/rules
-      '@regle/zod':
+      '@regle/schemas':
         specifier: workspace:*
-        version: link:../../../packages/zod
+        version: link:../../../packages/schemas
       check-password-strength:
         specifier: 2.0.10
         version: 2.0.10

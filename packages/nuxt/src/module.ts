@@ -26,23 +26,11 @@ export default defineNuxtModule<ModuleOptions>({
     });
 
     try {
-      const regleZod = await import('@regle/zod');
+      const regleZod = await import('@regle/schemas');
       if (regleZod) {
         addImportsSources({
-          from: '@regle/zod',
-          imports: ['useZodRegle'] as Array<keyof typeof import('@regle/zod')>,
-        });
-      }
-    } catch (e) {
-      // do nothing
-    }
-
-    try {
-      const regleZod = await import('@regle/valibot');
-      if (regleZod) {
-        addImportsSources({
-          from: '@regle/valibot',
-          imports: ['useValibotRegle'] as Array<keyof typeof import('@regle/valibot')>,
+          from: '@regle/schemas',
+          imports: ['useRegleSchema', 'inferSchema', 'withDeps'] as Array<keyof typeof import('@regle/schemas')>,
         });
       }
     } catch (e) {

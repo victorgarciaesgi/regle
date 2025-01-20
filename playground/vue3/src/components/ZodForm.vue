@@ -73,7 +73,6 @@
 <script setup lang="ts">
 import type { Maybe, RegleExternalErrorTree } from '@regle/core';
 import { useRegleSchema } from '@regle/schemas';
-import { useZodRegle } from '@regle/zod';
 import { nextTick, reactive, ref, watch } from 'vue';
 import {
   nativeEnum,

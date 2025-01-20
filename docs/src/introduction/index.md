@@ -22,21 +22,21 @@ Declare your form rules inside a component or a Pinia store and use it wherever 
 ### Prerequisites
 
 Required
-- [Vue](https://vuejs.org/) <span data-title="vue"></span> version `3.3` or higher.
-- [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span> version `4.8` or higher
-  - Also compatible with plain javascript.
+- [Vue](https://vuejs.org/) <span data-title="vue"></span>  `3.3+`.
+- [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span>  `4.8+`. 
+  - Compatible with plain javascript.
 - Text Editor with Vue syntax support.
   -  [VSCode](https://code.visualstudio.com/) <span data-title=".vscode"></span> is recommended, along with the [official Vue extension](https://marketplace.visualstudio.com/items?itemName=Vue.volar).
 
 Optional
 - [Nuxt](https://nuxt.com/) <span data-title="nuxt"></span> 
-  - Nuxt version `3.0` or higher, and check docs for [Nuxt module](/integrations/nuxt)
+  - Nuxt  `3.1+`, and check docs for [Nuxt module](/integrations/nuxt)
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
-  - Pinia version `2.1` or higher
+  - Pinia  `2.1+`
 - [Zod](https://zod.dev/) <span data-title="zod"></span> 
-  - Zod version `3.0` or higher. Check [Zod usage](/integrations/zod)
+  - Zod  `3.24+`. Check [Zod usage](/integrations/zod)
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 
-  - Valibot version `1.0.0-beta.9` or higher. Check [Valibot usage](/integrations/valibot)
+  - Valibot  `1.0.0-beta.9+`. Check [Valibot usage](/integrations/valibot)
 
 <br/>
 

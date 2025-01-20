@@ -1,4 +1,4 @@
-import type { DeepReactiveState, NoInferLegacy, PrimitiveTypes, Unwrap } from '@regle/core';
+import type { DeepReactiveState, MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
 import { type ComputedRef, type MaybeRef, type UnwrapNestedRefs } from 'vue';
@@ -12,7 +12,10 @@ export interface inferValibotSchemaFn {
       { recurseIntoArrays: true }
     >
       ? {}
-      : "[Schema input doesn't match the state]",
+      : MismatchInfo<
+          UnwrapNestedRefs<TState>,
+          PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
+        >,
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
     rulesFactory: TSchema
@@ -20,7 +23,9 @@ export interface inferValibotSchemaFn {
   <
     TState extends PrimitiveTypes,
     TSchema extends StandardSchemaV1 & TValid,
-    TValid = TState extends StandardSchemaV1.InferInput<TSchema> ? {} : "[Schema input doesn't match the state]",
+    TValid = TState extends StandardSchemaV1.InferInput<TSchema>
+      ? {}
+      : MismatchInfo<TState, StandardSchemaV1.InferInput<TSchema>>,
   >(
     state: MaybeRef<TState>,
     rulesFactory: TSchema

@@ -18,7 +18,7 @@ import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';
 
 const { r$ } = useRegle({ email: '' }, {
-  email: { required,email, minLength: minLength(4)}
+  email: { required, email, minLength: minLength(4)}
 })
 </script>
 ```
