@@ -4,7 +4,7 @@ import { defaultOptions, outExtension } from '../../tsup.common.build';
 const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
-  external: ['vue', 'valibot', 'zod'],
+  external: ['vue', 'valibot', 'zod', '@standard-schema/spec'],
 };
 
 export default defineConfig([

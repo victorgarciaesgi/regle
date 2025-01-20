@@ -11,14 +11,15 @@
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "valibot": "^1"
+    "valibot": "^1",
+    "zod": "^3.24.0"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
-    "@regle/rules": "workspace:*"
+    "@regle/rules": "workspace:*",
+    "@standard-schema/spec": "1.0.0-rc.0"
   },
   "devDependencies": {
-    "@standard-schema/spec": "1.0.0-rc.0",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "22.10.5",
     "@typescript-eslint/eslint-plugin": "8.19.1",
