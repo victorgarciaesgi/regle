@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { mergeSchemas, useRegle } from '@regle/core';
+import { mergeRegles, useRegle } from '@regle/core';
 import { numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
@@ -50,7 +50,7 @@ const { r$: otherR$ } = useRegle(data2, {
   },
 });
 
-const r$Merged = mergeSchemas({ r$, otherR$ });
+const r$Merged = mergeRegles({ r$, otherR$ });
 
 async function submit() {
   const { result, data } = await r$Merged.$validate();
