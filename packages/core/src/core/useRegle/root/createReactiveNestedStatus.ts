@@ -29,6 +29,7 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
   rootSchemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
   schemaMode: boolean | undefined;
+  onValidate?: () => Promise<$InternalRegleResult>;
   validationGroups?:
     | ((rules: { [x: string]: $InternalRegleStatusType }) => Record<string, RegleValidationGroupEntry[]>)
     | undefined;
@@ -55,6 +56,7 @@ export function createReactiveNestedStatus({
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
+    $localPending: Ref<boolean>;
   }
   let scope = effectScope();
   let scopeState!: ScopeState;
@@ -332,10 +334,15 @@ export function createReactiveNestedStatus({
         return $anyDirty.value && !($invalid.value || $pending.value);
       });
 
+      const $localPending = ref(false);
+
       const $pending = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([key, statusOrField]) => {
-          return statusOrField?.$pending;
-        });
+        return (
+          $localPending.value ||
+          Object.entries($fields.value).some(([key, statusOrField]) => {
+            return statusOrField?.$pending;
+          })
+        );
       });
 
       const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
@@ -460,6 +467,7 @@ export function createReactiveNestedStatus({
         $silentValue,
         $edited,
         $anyEdited,
+        $localPending,
       } satisfies ScopeState;
     })!;
   }
@@ -519,28 +527,40 @@ export function createReactiveNestedStatus({
 
   async function $validate(): Promise<$InternalRegleResult> {
     try {
-      const data = state.value;
-
-      const results = await Promise.allSettled(
-        Object.values($fields.value).map((statusOrField) => {
-          return statusOrField.$validate();
-        })
-      );
-
-      const validationResults = results.every((value) => {
-        if (value.status === 'fulfilled') {
-          return value.value.result === true;
+      if (commonArgs.schemaMode) {
+        if (commonArgs.onValidate) {
+          $touch(false);
+          scopeState.$localPending.value = true;
+          return commonArgs.onValidate();
         } else {
-          return false;
+          return { result: false, data: state.value };
         }
-      });
-      return { result: validationResults, data };
+      } else {
+        const data = state.value;
+
+        const results = await Promise.allSettled(
+          Object.values($fields.value).map((statusOrField) => {
+            return statusOrField.$validate();
+          })
+        );
+
+        const validationResults = results.every((value) => {
+          if (value.status === 'fulfilled') {
+            return value.value.result === true;
+          } else {
+            return false;
+          }
+        });
+        return { result: validationResults, data };
+      }
     } catch (e) {
       return { result: false, data: state.value };
+    } finally {
+      scopeState.$localPending.value = false;
     }
   }
 
-  const { $shortcuts, ...restScopeState } = scopeState;
+  const { $shortcuts, $localPending, ...restScopeState } = scopeState;
 
   return reactive({
     ...restScopeState,

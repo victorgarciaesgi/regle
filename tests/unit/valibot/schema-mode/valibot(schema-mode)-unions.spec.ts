@@ -6,6 +6,7 @@ import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBeUnRuledCorrectField,
+  shouldBeUnRuledSchemaCorrectField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
@@ -52,9 +53,11 @@ function valibotUnionForm() {
     date: Dateish,
   });
 
-  const form = reactive<Partial<v.InferInput<typeof schema>>>({});
+  const form = reactive<Partial<v.InferInput<typeof schema>>>({
+    gift: {} as any,
+  });
 
-  return useRegleSchema(form, schema);
+  return useRegleSchema(form, schema, { mode: 'schema' });
 }
 
 describe('valibot - unions types', () => {
@@ -83,6 +86,8 @@ describe('valibot - unions types', () => {
     if (vm.r$.$fields.gift) {
       vm.r$.$fields.gift.$fields.type.$value = 'Cash';
     }
+
+    await vm.$nextTick();
     await vm.$nextTick();
 
     shouldBeValidField(vm.r$.$fields.enum);
@@ -105,11 +110,16 @@ describe('valibot - unions types', () => {
       vm.r$.$fields.gift.$fields.type.$value = 'Shares';
     }
     await vm.$nextTick();
+    await vm.$nextTick();
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$value.company = 'Regle';
-      vm.r$.$fields.gift.$value.shares = 100;
+    if (vm.r$.$fields.gift.$fields.company) {
+      vm.r$.$fields.gift.$fields.company.$value = 'Regle';
     }
+    if (vm.r$.$fields.gift.$fields.shares) {
+      vm.r$.$fields.gift.$fields.shares.$value = 100;
+    }
+
+    await vm.$nextTick();
     await vm.$nextTick();
 
     shouldBeValidField(vm.r$.$fields.gift);
@@ -123,24 +133,26 @@ describe('valibot - unions types', () => {
       vm.r$.$fields.gift.$fields.type.$value = undefined as any;
     }
     await vm.$nextTick();
+    await vm.$nextTick();
 
     expect(result).toBe(true);
 
     shouldBeErrorField(vm.r$.$fields.gift);
     shouldBeErrorField(vm.r$.$fields.gift?.$fields.type);
     expect(vm.r$.$value.gift?.type).toBe(undefined);
-    shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.company);
-    shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.shares);
-    shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
+    // Can't remove the "valid" as we cannot know if the field is supposed to have a validation
+    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.company);
+    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.shares);
+    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      RegleSchemaFieldStatus<string, string | undefined, 'rules', RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<string, string | undefined, 'schema', RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, number | undefined, 'rules', RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, 'schema', RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.shares).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, number | undefined, 'rules', RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, 'schema', RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

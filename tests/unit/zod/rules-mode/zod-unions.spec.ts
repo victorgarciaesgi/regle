@@ -143,14 +143,14 @@ describe('zod - unions types', () => {
     shouldBeUnRuledCorrectField(vm.r$.$fields.gift?.$fields.amount);
 
     expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
-      RegleSchemaFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<string, string | undefined, 'rules', RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number | undefined, 'rules', RegleShortcutDefinition<any>> | undefined
     >();
 
     expectTypeOf(vm.r$.$fields.date).toEqualTypeOf<
-      RegleSchemaFieldStatus<unknown, unknown, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<unknown, unknown, 'rules', RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

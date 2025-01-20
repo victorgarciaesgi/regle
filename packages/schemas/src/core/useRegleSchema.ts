@@ -9,20 +9,22 @@ import type {
   ResolvedRegleBehaviourOptions,
   Unwrap,
   MismatchInfo,
+  NoInferLegacy,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
-import { computed, isRef, reactive, readonly, ref, unref, watch } from 'vue';
+import { computed, isRef, reactive, ref, unref, watch } from 'vue';
 import { cloneDeep, setObjectError } from '../../../shared';
-import type { RegleSchema } from '../types';
+import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSchemaModeOptions } from '../types';
 import { valibotObjectToRegle } from './converters/valibot/validators';
 import { zodObjectToRegle } from './converters/zod/validators';
 
 export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
   TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
+  TMode extends RegleSchemaMode = never,
   TValid = UnwrapNestedRefs<TState> extends PartialDeep<
     StandardSchemaV1.InferInput<TSchema>,
     { recurseIntoArrays: true }
@@ -36,8 +38,14 @@ export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = n
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never> & { mode?: 'schema' | 'rules' }
-) => RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
+    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never> &
+    RegleSchemaModeOptions<TMode>
+) => RegleSchema<
+  UnwrapNestedRefs<TState>,
+  StandardSchemaV1.InferInput<TSchema>,
+  [TMode] extends [never] ? 'rules' : TMode,
+  TShortcuts
+>;
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
   options?: RegleBehaviourOptions,
@@ -54,7 +62,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     state: MaybeRef<TState> | DeepReactiveState<TState>,
     schema: MaybeRef<TSchema>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: 'schema' | 'rules' }
+      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: RegleSchemaMode }
   ): RegleSchema<TState, TSchema> {
     //
     const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
@@ -74,6 +82,8 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     const customErrors = ref<Raw<RegleExternalErrorTree>>({});
 
+    let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
+
     if (mode === 'rules') {
       watch(
         computedSchema,
@@ -89,18 +99,19 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         { deep: true, immediate: true, flush: 'post' }
       );
     } else {
+      // ---- Schema mode
       const emptySkeleton = computedSchema.value['~standard'].validate(initialState.value);
 
-      customErrors.value = zodErrorsToRecord(emptySkeleton as StandardSchemaV1.Result<unknown>);
+      customErrors.value = issuesToRegleErrors(emptySkeleton as StandardSchemaV1.Result<unknown>);
 
-      function zodErrorsToRecord(result: StandardSchemaV1.Result<unknown>) {
+      function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>) {
         const output = {};
         if (result.issues) {
           const errors = result.issues.map((issue) => {
             const path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item)).join('.');
             const lastItem = issue.path?.[issue.path.length - 1];
             const isArray =
-              (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ??
+              (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
               ('type' in issue ? issue.type === 'array' : false);
 
             return {
@@ -121,10 +132,24 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         [processedState, computedSchema],
         async () => {
           const result = await computedSchema.value['~standard'].validate(processedState.value);
-          customErrors.value = zodErrorsToRecord(result);
+          customErrors.value = issuesToRegleErrors(result);
         },
         { deep: true, immediate: true, flush: 'post' }
       );
+
+      onValidate = async () => {
+        try {
+          const result = await computedSchema.value['~standard'].validate(processedState.value);
+          customErrors.value = issuesToRegleErrors(result);
+
+          return {
+            result: !result.issues?.length,
+            data: processedState.value,
+          };
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
     }
 
     const regle = useRootStorage({
@@ -135,6 +160,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       initialState,
       shortcuts,
       schemaMode: mode === 'schema',
+      onValidate,
     });
     return {
       r$: regle.regle as any,

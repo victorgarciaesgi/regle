@@ -9,16 +9,16 @@ it('valibot - intersection types should correctly infer types', () => {
     v.object({ email: v.string() }),
   ]);
 
-  const { r$ } = useRegleSchema({} as v.InferInput<typeof schema>, schema);
+  const { r$ } = useRegleSchema({} as v.InferInput<typeof schema>, schema, { mode: 'schema' });
 
   expectTypeOf(r$.$fields.count).toEqualTypeOf<
-    RegleSchemaFieldStatus<number, number, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<number, number, 'schema', RegleShortcutDefinition<any>>
   >();
   expectTypeOf(r$.$fields.name).toEqualTypeOf<
-    RegleSchemaFieldStatus<string, string, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<string, string, 'schema', RegleShortcutDefinition<any>>
   >();
   expectTypeOf(r$.$fields.email).toEqualTypeOf<
-    RegleSchemaFieldStatus<string, string, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<string, string, 'schema', RegleShortcutDefinition<any>>
   >();
 });
 
@@ -39,13 +39,13 @@ it('valibot - collections should have the correct type', () => {
     test: v.string(),
   });
 
-  const { r$ } = useRegleSchema({} as Partial<v.InferInput<typeof schema>>, schema);
+  const { r$ } = useRegleSchema({} as Partial<v.InferInput<typeof schema>>, schema, { mode: 'schema' });
 
   expectTypeOf(r$.$fields.collection).toEqualTypeOf<
     RegleSchemaCollectionStatus<
       v.InferInput<typeof childSchema>,
       v.InferInput<typeof childSchema>[] | [],
-      'rules',
+      'schema',
       RegleShortcutDefinition<any>
     >
   >;
@@ -54,7 +54,7 @@ it('valibot - collections should have the correct type', () => {
     RegleSchemaCollectionStatus<
       v.InferInput<typeof grandChildSchema>,
       v.InferInput<typeof grandChildSchema>[],
-      'rules',
+      'schema',
       RegleShortcutDefinition<any>
     >
   >;

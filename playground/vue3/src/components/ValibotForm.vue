@@ -24,7 +24,7 @@
       <option value="Shares">Shares</option>
     </select>
     <Transition mode="out-in" name="fade">
-      <div v-if="r$.$fields.gift?.$fields.type.$error" class="text-red-500 mt-2 text-sm">
+      <div v-if="r$.$fields.gift?.$fields?.type.$error" class="text-red-500 mt-2 text-sm">
         <ul>
           <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
         </ul>
@@ -59,7 +59,7 @@
 
     <button type="submit" @click="form.nested?.push({ name: '' })"> Add entry </button>
     <button type="submit" @click="form.nested?.splice(0, 1)"> Remove first </button>
-    <button type="submit" @click="r$.$reset">Submit</button>
+    <button type="submit" @click="r$.$reset">Reset</button>
     <button type="submit" @click="submit">Submit</button>
 
     <pre style="max-width: 100%">
@@ -145,7 +145,7 @@ const form = reactive<Partial<v.InferInput<typeof formSchema>>>({
   nested: [],
 });
 
-const { r$ } = useRegleSchema(form, formSchema);
+const { r$ } = useRegleSchema(form, formSchema, { mode: 'schema' });
 
 async function submit() {
   const { result, data } = await r$.$validate();

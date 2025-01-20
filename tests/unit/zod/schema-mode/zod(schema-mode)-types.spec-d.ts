@@ -8,16 +8,16 @@ it('zod - intersection types should correctly infer types', () => {
     .and(z.object({ count: z.number() }))
     .and(z.object({ email: z.string() }));
 
-  const { r$ } = useRegleSchema({} as z.infer<typeof schema>, schema);
+  const { r$ } = useRegleSchema({} as z.infer<typeof schema>, schema, { mode: 'schema' });
 
   expectTypeOf(r$.$fields.count).toEqualTypeOf<
-    RegleSchemaFieldStatus<number, number, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<number, number, 'schema', RegleShortcutDefinition<any>>
   >();
   expectTypeOf(r$.$fields.name).toEqualTypeOf<
-    RegleSchemaFieldStatus<string, string, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<string, string, 'schema', RegleShortcutDefinition<any>>
   >();
   expectTypeOf(r$.$fields.email).toEqualTypeOf<
-    RegleSchemaFieldStatus<string, string, 'rules', RegleShortcutDefinition<any>>
+    RegleSchemaFieldStatus<string, string, 'schema', RegleShortcutDefinition<any>>
   >();
 });
 
@@ -38,13 +38,13 @@ it('zod - collections should have the correct type', () => {
     test: z.string(),
   });
 
-  const { r$ } = useRegleSchema({} as Partial<z.infer<typeof schema>>, schema);
+  const { r$ } = useRegleSchema({} as Partial<z.infer<typeof schema>>, schema, { mode: 'schema' });
 
   expectTypeOf(r$.$fields.collection).toEqualTypeOf<
     RegleSchemaCollectionStatus<
       z.infer<typeof childSchema>,
       z.infer<typeof childSchema>[] | [],
-      'rules',
+      'schema',
       RegleShortcutDefinition<any>
     >
   >;
@@ -53,7 +53,7 @@ it('zod - collections should have the correct type', () => {
     RegleSchemaCollectionStatus<
       z.infer<typeof grandChildSchema>,
       z.infer<typeof grandChildSchema>[],
-      'rules',
+      'schema',
       RegleShortcutDefinition<any>
     >
   >;

@@ -140,7 +140,7 @@ const { r$ } = useRegleSchema(form, schema);
 Similar to the main `useRegle` composable, `r$.$validate` in useRegleSchema also returns a type-safe output.
 
 ```ts twoslash
-import { useRegleSchema, toValibot } from '@regle/schemas';
+import { useRegleSchema, inferSchema } from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
 
@@ -151,14 +151,16 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => v.object({
-  firstName: v.optional(v.string()),
-  lastName: v.pipe(
-      v.string(),
-      v.minLength(3),
-      v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
-    )
-}) satisfies toValibot<Form>)
+const schema = computed(() => {
+  return inferSchema(form, v.object({
+    firstName: v.optional(v.string()),
+    lastName: v.pipe(
+        v.string(),
+        v.minLength(3),
+        v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+      )
+  }))
+})
 
 const { r$ } = useRegleSchema(form, schema);
 

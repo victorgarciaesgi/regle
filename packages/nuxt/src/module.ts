@@ -26,8 +26,8 @@ export default defineNuxtModule<ModuleOptions>({
     });
 
     try {
-      const regleZod = await import('@regle/schemas');
-      if (regleZod) {
+      const regleSchema = await import('@regle/schemas');
+      if (regleSchema) {
         addImportsSources({
           from: '@regle/schemas',
           imports: ['useRegleSchema', 'inferSchema', 'withDeps'] as Array<keyof typeof import('@regle/schemas')>,

@@ -3,6 +3,7 @@ import { getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
+  $InternalRegleResult,
   $InternalRegleStatus,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
@@ -20,6 +21,7 @@ export function useRootStorage({
   shortcuts,
   schemaErrors,
   schemaMode = false,
+  onValidate,
 }: {
   scopeRules: Ref<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any>>;
@@ -29,6 +31,7 @@ export function useRootStorage({
   shortcuts: RegleShortcutDefinition | undefined;
   schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
   schemaMode?: boolean;
+  onValidate?: () => Promise<$InternalRegleResult>;
 }) {
   const storage = useStorage();
 
@@ -50,6 +53,7 @@ export function useRootStorage({
     schemaErrors,
     rootSchemaErrors: schemaErrors,
     schemaMode,
+    onValidate,
   });
 
   if (getCurrentScope()) {

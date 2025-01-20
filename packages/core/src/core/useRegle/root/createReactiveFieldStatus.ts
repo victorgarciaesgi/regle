@@ -573,6 +573,7 @@ export function createReactiveFieldStatus({
     $haveAnyAsyncRule,
     $debounce,
     $lazy,
+    triggerPunishment,
     ...restScope
   } = scopeState;
 

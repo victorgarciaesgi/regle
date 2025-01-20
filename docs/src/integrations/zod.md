@@ -97,7 +97,7 @@ Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper 
 :::
 
 ```ts twoslash
-import { useRegleSchema, type toZod, withDeps } from '@regle/schemas';
+import { useRegleSchema, inferSchema, withDeps } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -109,7 +109,7 @@ type Form = {
 const form = ref<Form>({ firstName: '', lastName: '' })
 
 const schema = computed(() =>
-  z.object({
+  inferSchema(form, z.object({
     firstName: z.string(),
     /** 
      * Important to keep track of the depency change
@@ -121,7 +121,7 @@ const schema = computed(() =>
       }),
       [() => form.value.firstName]
     ),
-  }) satisfies toZod<Form>
+  }))
 );
 
 const { r$ } = useRegleSchema(form, schema);
@@ -131,7 +131,7 @@ const { r$ } = useRegleSchema(form, schema);
 <ComputedSchema />
 
 
-:::warn
+:::warning
 `withDeps` is only compatible with `rules` mode
 :::
 
@@ -141,7 +141,7 @@ const { r$ } = useRegleSchema(form, schema);
 Similar to the main `useRegle` composable, `r$.$validate` also returns a type-safe output using Zod type schema parser.
 
 ```ts twoslash
-import { useRegleSchema, toZod } from '@regle/schemas';
+import { useRegleSchema, inferSchema } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
 
@@ -152,12 +152,12 @@ type Form = {
 
 const form = ref<Form>({ firstName: '', lastName: '' })
 
-const schema = computed(() => z.object({
+const schema = computed(() => inferSchema(form, z.object({
   firstName: z.string().optional(),
   lastName: z.string().min(1).refine(v => v !== form.value.firstName, {
     message: "Last name can't be equal to first name"
   }),
-}) satisfies toZod<Form>)
+})))
 
 const { r$ } = useRegleSchema(form, schema);
 
