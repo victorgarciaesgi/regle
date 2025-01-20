@@ -53,5 +53,7 @@ The following exports will become globally available in your Nuxt application:
   - withParams
   - withTooltip
 - `@regle/schemas` (if present)
-  - useRegleSchemas
+  - useRegleSchema
+  - inferSchema
+  - withDeps
 
