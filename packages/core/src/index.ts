@@ -5,8 +5,8 @@ export {
   unwrapRuleParameters,
   useRegle,
   useRootStorage,
-  mergeSchemas,
-  type MergedSchemas,
+  mergeRegles,
+  type MergedRegles,
 } from './core';
 export { InternalRuleType } from './types';
 export type {

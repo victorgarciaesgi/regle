@@ -8,7 +8,7 @@ import type {
 } from '../types';
 import { computed, reactive, ref } from 'vue';
 
-export type MergedSchemas<
+export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,
   TValue = {
     [K in keyof TRegles]: TRegles[K]['$value'];
@@ -53,9 +53,9 @@ type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>
       };
     };
 
-export function mergeSchemas<TRegles extends Record<string, SuperCompatibleRegleRoot>>(
+export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>>(
   regles: TRegles
-): MergedSchemas<TRegles> {
+): MergedRegles<TRegles> {
   const $value = computed({
     get: () => Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$value])),
     set: (value) => {
