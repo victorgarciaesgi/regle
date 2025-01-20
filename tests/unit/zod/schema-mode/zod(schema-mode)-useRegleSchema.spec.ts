@@ -101,7 +101,7 @@ describe('zod - useRegleSchema ', async () => {
     shouldBePristineField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
   });
 
-  it.only('should error on initial submit', async () => {
+  it('should error on initial submit', async () => {
     const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
     expect(result).toBe(false);
