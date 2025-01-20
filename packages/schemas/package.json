@@ -1,6 +1,6 @@
 {
   "name": "@regle/schemas",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Schemas adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
