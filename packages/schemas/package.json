@@ -14,20 +14,8 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@standard-schema/spec": "1.0.0-rc.0",
-    "valibot": "1.0.0-beta.12",
-    "zod": "^3.24.1"
-  },
-  "peerDependencies": {
-    "valibot": "^1",
+    "valibot": "^1.0.0-beta.12",
     "zod": "^3.24.0"
-  },
-  "peerDependenciesMeta": {
-    "valibot": {
-      "optional": true
-    },
-    "zod": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
