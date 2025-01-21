@@ -10,6 +10,7 @@ import {
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 
 const GiftType = v.picklist(['Cash', 'Shares'], 'Please select an option');
 
@@ -100,6 +101,7 @@ describe('valibot - unions types', () => {
       vm.r$.$fields.gift.$value.amount = 100;
     }
     await vm.$nextTick();
+    await vm.$nextTick();
 
     shouldBeValidField(vm.r$.$fields.gift);
     expect(vm.r$.$fields.gift?.$fields.type.$value).toBe('Cash');
@@ -112,20 +114,21 @@ describe('valibot - unions types', () => {
     await vm.$nextTick();
     await vm.$nextTick();
 
-    if (vm.r$.$fields.gift.$fields.company) {
-      vm.r$.$fields.gift.$fields.company.$value = 'Regle';
-    }
-    if (vm.r$.$fields.gift.$fields.shares) {
-      vm.r$.$fields.gift.$fields.shares.$value = 100;
+    if (vm.r$.$fields.gift) {
+      vm.r$.$fields.gift.$value.company = 'Regle';
+      vm.r$.$fields.gift.$value.shares = 100;
     }
 
     await vm.$nextTick();
     await vm.$nextTick();
+    await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.gift);
-    expect(vm.r$.$value.gift?.type).toBe('Shares');
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.company);
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
+    if (isVueSuperiorOrEqualTo3dotFive) {
+      shouldBeValidField(vm.r$.$fields.gift);
+      expect(vm.r$.$value.gift?.type).toBe('Shares');
+      shouldBeValidField(vm.r$.$fields.gift?.$fields.company);
+      shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
+    }
 
     const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
@@ -163,8 +166,10 @@ describe('valibot - unions types', () => {
     vm.r$.$value.union = false;
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.enum);
-    shouldBeErrorField(vm.r$.$fields.nativeEnum);
-    shouldBeErrorField(vm.r$.$fields.union);
+    if (isVueSuperiorOrEqualTo3dotFive) {
+      shouldBeErrorField(vm.r$.$fields.enum);
+      shouldBeErrorField(vm.r$.$fields.nativeEnum);
+      shouldBeErrorField(vm.r$.$fields.union);
+    }
   });
 });

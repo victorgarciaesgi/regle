@@ -1,12 +1,13 @@
 <template>
   <main>
-    invalid: {{ r$.$invalid }}
+    Dirty: {{ r$.$anyDirty }}
     <br />
     <br />
     <input type="text" v-model="data.firstName" />
     <br />
     <br />
     <button @click="touch">touch</button>
+    <button @click="r$.$resetAll()">reset</button>
     <button @click="validate">validate</button>
     <br />
     <br />

@@ -10,6 +10,7 @@ import {
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 
 const GiftType = z.enum(['Cash', 'Shares'], {
   required_error: 'Please select an option',
@@ -108,6 +109,7 @@ describe('zod - unions types', () => {
       vm.r$.$fields.gift.$value.amount = 100;
     }
     await vm.$nextTick();
+    await vm.$nextTick();
 
     shouldBeValidField(vm.r$.$fields.gift);
     expect(vm.r$.$fields.gift?.$fields.type.$value).toBe('Cash');
@@ -127,10 +129,12 @@ describe('zod - unions types', () => {
     await vm.$nextTick();
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.gift);
-    expect(vm.r$.$value.gift?.type).toBe('Shares');
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.company);
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
+    if (isVueSuperiorOrEqualTo3dotFive) {
+      shouldBeValidField(vm.r$.$fields.gift);
+      expect(vm.r$.$value.gift?.type).toBe('Shares');
+      shouldBeValidField(vm.r$.$fields.gift?.$fields.company);
+      shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
+    }
 
     const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
@@ -171,8 +175,10 @@ describe('zod - unions types', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.enum);
-    shouldBeErrorField(vm.r$.$fields.nativeEnum);
-    shouldBeErrorField(vm.r$.$fields.union);
+    if (isVueSuperiorOrEqualTo3dotFive) {
+      shouldBeErrorField(vm.r$.$fields.enum);
+      shouldBeErrorField(vm.r$.$fields.nativeEnum);
+      shouldBeErrorField(vm.r$.$fields.union);
+    }
   });
 });

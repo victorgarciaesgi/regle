@@ -32,7 +32,7 @@ Optional
 - [Nuxt](https://nuxt.com/) <span data-title="nuxt"></span> 
   - Nuxt  `3.1+`, and check docs for [Nuxt module](/integrations/nuxt)
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
-  - Pinia  `2.1+`
+  - Pinia  `2.2.5+`
 - [Zod](https://zod.dev/) <span data-title="zod"></span> 
   - Zod  `3.24+`. Check [Zod usage](/integrations/zod)
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 

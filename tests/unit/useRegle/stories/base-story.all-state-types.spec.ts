@@ -1,4 +1,4 @@
-import { nextTick } from 'vue';
+import { nextTick, version } from 'vue';
 import {
   nestedReactiveObjectValidation,
   nestedReactiveWithRefsValidation,
@@ -13,6 +13,8 @@ import {
   shouldBePristineField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
+
+console.log(version);
 
 describe.each([
   ['reactive', nestedReactiveObjectValidation],
@@ -263,6 +265,7 @@ describe.each([
       },
     });
 
+    expect(vm.r$.$fields.level0Boolean.$dirty).toBe(false);
     expect(vm.r$.$ready).toBe(false);
 
     expect(vm.r$.$anyDirty).toBe(false);

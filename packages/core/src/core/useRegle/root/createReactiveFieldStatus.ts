@@ -71,6 +71,7 @@ export function createReactiveFieldStatus({
   let $unwatchValid: WatchStopHandle;
   let $unwatchDirty: WatchStopHandle;
   let $unwatchAsync: WatchStopHandle;
+  let $unwatchRuleFieldValues: WatchStopHandle;
 
   let $commit = () => {};
 
@@ -93,13 +94,6 @@ export function createReactiveFieldStatus({
             return [
               ruleKey,
               createReactiveRuleStatus({
-                fieldProperties: {
-                  $dirty: scopeState.$dirty,
-                  $error: scopeState.$error,
-                  $invalid: scopeState.$invalid,
-                  $pending: scopeState.$pending,
-                  $valid: scopeState.$valid,
-                },
                 modifiers: {
                   $autoDirty: scopeState.$autoDirty,
                   $rewardEarly: scopeState.$rewardEarly,
@@ -145,10 +139,13 @@ export function createReactiveFieldStatus({
         rule.$unwatch();
       });
     }
+
     $unwatchDirty();
+    $unwatchRuleFieldValues?.();
     if (scopeState.$dirty.value) {
       storage.setDirtyEntry(path, scopeState.$dirty.value);
     }
+
     $unwatchState?.();
     $unwatchValid?.();
     scope.stop();
@@ -421,9 +418,24 @@ export function createReactiveFieldStatus({
 
     define$watchState();
 
-    $unwatchDirty = watch(scopeState.$dirty, () => {
-      storage.setDirtyEntry(path, scopeState.$dirty.value);
+    $unwatchDirty = watch(scopeState.$dirty, (newDirty) => {
+      storage.setDirtyEntry(path, newDirty);
+      Object.values($rules.value).forEach((rule) => {
+        rule.$fieldDirty = newDirty;
+      });
     });
+
+    $unwatchRuleFieldValues = watch(
+      [scopeState.$error, scopeState.$valid, scopeState.$invalid, scopeState.$pending],
+      () => {
+        Object.values($rules.value).forEach((rule) => {
+          rule.$fieldError = scopeState.$error.value;
+          rule.$fieldInvalid = scopeState.$invalid.value;
+          rule.$fieldPending = scopeState.$pending.value;
+          rule.$fieldValid = scopeState.$valid.value;
+        });
+      }
+    );
 
     $unwatchValid = watch(scopeState.$valid, (valid) => {
       if (scopeState.$rewardEarly.value && valid) {

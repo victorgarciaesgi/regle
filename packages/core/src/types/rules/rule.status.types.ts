@@ -312,6 +312,11 @@ export interface $InternalRegleRuleStatus {
   $metadata: any;
   $haveAsync: boolean;
   $validating: boolean;
+  $fieldDirty: boolean;
+  $fieldInvalid: boolean;
+  $fieldPending: boolean;
+  $fieldValid: boolean;
+  $fieldError: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
   $unwatch(): void;

@@ -20,13 +20,6 @@ interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
   ruleKey: string;
   rule: Ref<$InternalInlineRuleDeclaration | $InternalRegleRuleDefinition>;
-  fieldProperties: {
-    $dirty: Readonly<Ref<boolean>>;
-    $invalid: Readonly<Ref<boolean>>;
-    $pending: Readonly<Ref<boolean>>;
-    $valid: Readonly<Ref<boolean>>;
-    $error: Readonly<Ref<boolean>>;
-  };
   modifiers: {
     $rewardEarly: ComputedRef<boolean | undefined>;
     $autoDirty: ComputedRef<boolean | undefined>;
@@ -38,7 +31,6 @@ interface CreateReactiveRuleStatusOptions {
 }
 
 export function createReactiveRuleStatus({
-  fieldProperties,
   customMessages,
   rule,
   ruleKey,
@@ -58,6 +50,11 @@ export function createReactiveRuleStatus({
     >;
     $params: ComputedRef<any[]>;
     $path: ComputedRef<string>;
+    $fieldDirty: Ref<boolean>;
+    $fieldError: Ref<boolean>;
+    $fieldInvalid: Ref<boolean>;
+    $fieldPending: Ref<boolean>;
+    $fieldValid: Ref<boolean>;
   };
   let scope = effectScope();
   let scopeState: ScopeState = {} as any;
@@ -71,13 +68,29 @@ export function createReactiveRuleStatus({
   function $watch() {
     scope = effectScope();
     scopeState = scope.run(() => {
+      // Temp fix for Vue 3.4, to avoid loops
+      const $fieldDirty = ref(false);
+
+      // Temp fix for Vue 3.4, to avoid loops
+      const $fieldError = ref(false);
+
+      // Temp fix for Vue 3.4, to avoid loops
+      const $fieldInvalid = ref(true);
+
+      // Temp fix for Vue 3.4, to avoid loops
+      const $fieldPending = ref(false);
+
+      // Temp fix for Vue 3.4, to avoid loops
+      // Represent the parent field $valid status
+      const $fieldValid = ref(false);
+
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
         $value: state.value,
-        $error: fieldProperties.$error.value,
-        $dirty: fieldProperties.$dirty.value,
-        $pending: fieldProperties.$pending.value,
-        $valid: fieldProperties.$valid.value,
-        $invalid: fieldProperties.$invalid.value,
+        $error: $fieldError.value,
+        $dirty: $fieldDirty.value,
+        $pending: $fieldPending.value,
+        $valid: $fieldValid.value,
+        $invalid: $fieldInvalid.value,
         $rule: {
           $valid: $valid.value,
           $invalid: !$valid.value,
@@ -174,11 +187,16 @@ export function createReactiveRuleStatus({
         $params,
         $path,
         $tooltip,
+        $fieldValid,
+        $fieldError,
+        $fieldDirty,
+        $fieldPending,
+        $fieldInvalid,
       } satisfies ScopeState;
     })!;
 
     $unwatchState = watch(scopeState?.$params, () => {
-      if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && fieldProperties.$error.value)) {
+      if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
         $validate();
       }
     });
@@ -188,7 +206,7 @@ export function createReactiveRuleStatus({
 
   function updatePendingState() {
     $valid.value = true;
-    if (fieldProperties.$dirty.value) {
+    if (scopeState.$fieldDirty.value) {
       $pending.value = true;
     }
   }

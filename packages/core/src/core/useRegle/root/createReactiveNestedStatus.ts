@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -192,21 +192,6 @@ export function createReactiveNestedStatus({
   // Create reactive nested fields
   createReactiveFieldsStatus();
 
-  function $reset(): void {
-    $unwatchExternalErrors?.();
-    Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$reset();
-    });
-    initialState.value = { ...cloneDeep(state.value) };
-    define$WatchExternalErrors();
-  }
-
-  function $touch(runCommit = true, withConditions = false): void {
-    Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$touch(runCommit, withConditions);
-    });
-  }
-
   function define$WatchExternalErrors() {
     if (externalErrors) {
       $unwatchExternalErrors = watch(
@@ -262,7 +247,6 @@ export function createReactiveNestedStatus({
 
     define$watchState();
 
-    scope = effectScope();
     scopeState = scope.run(() => {
       const $silentValue = computed({
         get: () => state.value,
@@ -477,11 +461,15 @@ export function createReactiveNestedStatus({
     $unwatchExternalErrors?.();
     $unwatchState?.();
     $unwatchGroups?.();
+    $unwatchSchemaErrors?.();
 
-    nestedScopes.forEach((s) => s.stop());
+    // Apparently doesn't need to be stopped with Vue 3.5 https://github.com/vuejs/core/issues/11886
+    // nestedScopes.forEach((s) => s.stop());
     nestedScopes = [];
 
-    scope.stop();
+    // Apparently doesn't need to be stopped with Vue 3.5 https://github.com/vuejs/core/issues/11886
+    // scope.stop();
+    scopeState = {} as any;
 
     if ($fields.value) {
       Object.entries($fields.value).forEach(([_, field]) => {
@@ -493,6 +481,21 @@ export function createReactiveNestedStatus({
   function $clearExternalErrors() {
     Object.entries($fields.value).forEach(([_, field]) => {
       field.$clearExternalErrors();
+    });
+  }
+
+  function $reset(): void {
+    $unwatchExternalErrors?.();
+    Object.values($fields.value).forEach((statusOrField) => {
+      statusOrField.$reset();
+    });
+    initialState.value = { ...cloneDeep(state.value) };
+    define$WatchExternalErrors();
+  }
+
+  function $touch(runCommit = true, withConditions = false): void {
+    Object.values($fields.value).forEach((statusOrField) => {
+      statusOrField.$touch(runCommit, withConditions);
     });
   }
 
