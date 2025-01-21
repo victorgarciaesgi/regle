@@ -1,65 +1,70 @@
-<script lang="ts" setup>
-import { z } from 'zod';
-import { ref, computed } from 'vue';
-import { useRegleSchema } from '@regle/schemas';
-import JSONViewer from './JSONViewer.vue';
+<template>
+  <main>
+    invalid: {{ r$.$invalid }}
+    <br />
+    <br />
+    <input type="text" v-model="data.firstName" />
+    <br />
+    <br />
+    <button @click="touch">touch</button>
+    <button @click="validate">validate</button>
+    <br />
+    <br />
+    {{ validForm }}{{ validateResult }}
+    <br />
+    <br />
+    Error: {{ error }}
+  </main>
+</template>
 
-const data = ref<
-  Partial<{
-    condition: boolean;
-    nested: {
-      list: {
-        name: string;
-      }[];
-    };
-  }>
->({});
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { useRegle, type RegleResult } from '@regle/core';
+import { maxLength, minLength, required } from '@regle/rules';
 
-const schema = computed(() => {
-  return z.object({
-    condition: z.boolean(),
-    nested: z.object({
-      list: z.array(
-        z.object({
-          name: z.string(),
-        })
-      ),
-    }),
-  });
+const validForm = ref('');
+const error = ref('');
+const validateResult = ref<object>();
+
+const data = ref<{
+  firstName?: string;
+  groups?: number[];
+}>({
+  firstName: 'John',
+  groups: [1, 2, 3, 4, 5, 6], // when remove groups then works
 });
 
-const rewardEarly = ref(true);
-const { r$ } = useRegleSchema(data, schema, { rewardEarly });
+const { r$ } = useRegle(data, {
+  firstName: { required },
+  groups: { required },
+});
+
+const clear = () => {
+  error.value = '';
+  validForm.value = '';
+  validateResult.value = undefined;
+};
+
+const touch = () => {
+  clear();
+
+  try {
+    r$.$touch();
+    validForm.value = r$.$invalid ? 'invalid' : 'valid';
+  } catch (e: any) {
+    error.value = e;
+    throw e;
+  }
+};
+
+const validate = async () => {
+  clear();
+
+  try {
+    validateResult.value = await r$.$validate();
+  } catch (e: any) {
+    error.value = e;
+    throw e;
+  }
+};
 </script>
-
-<template>
-  <label>
-    <input type="radio" v-model="r$.$fields.condition.$value" :value="true" />
-    yes
-  </label>
-
-  <label>
-    <input type="radio" v-model="r$.$fields.condition.$value" :value="false" />
-    no
-  </label>
-
-  <div v-if="r$.$fields.condition.$value">
-    <div v-for="field in r$.$fields.nested?.$fields.list.$each" :key="field.$id">
-      <input v-model="field.$fields.name.$value" :key="field.$id" />
-    </div>
-
-    <button
-      @click="
-        () => {
-          if (r$.$fields.nested) {
-            (r$.$fields.nested.$fields.list.$value ??= []).push({ name: 'John' });
-          }
-        }
-      "
-    >
-      add ({{ r$.$fields.nested?.$fields.list?.$value?.length }})
-    </button>
-
-    <JSONViewer :data="r$" />
-  </div>
-</template>

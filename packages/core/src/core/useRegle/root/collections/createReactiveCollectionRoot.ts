@@ -115,14 +115,11 @@ export function createReactiveCollectionStatus({
       }
     }
 
-    if (immediateScopeState.isPrimitiveArray.value) {
-      return;
-    }
-
     $value.value = $selfStatus.value.$value;
 
-    if (Array.isArray(state.value)) {
+    if (Array.isArray(state.value) && !immediateScopeState.isPrimitiveArray.value) {
       $eachStatus.value = state.value
+        .filter((value) => typeof value === 'object')
         .map((value, index) => {
           const { scope, unwrapped } = unwrapGetter(
             rulesDef.value.$each,
@@ -182,10 +179,11 @@ export function createReactiveCollectionStatus({
   }
 
   function updateStatus() {
-    if (Array.isArray(state.value)) {
+    if (Array.isArray(state.value) && !immediateScopeState.isPrimitiveArray.value) {
       const previousStatus = cloneDeep($eachStatus.value);
 
       $eachStatus.value = state.value
+        .filter((value) => typeof value === 'object')
         .map((value, index) => {
           const currentValue = toRef(() => value);
           if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
@@ -267,10 +265,10 @@ export function createReactiveCollectionStatus({
       const $dirty = computed<boolean>(() => {
         return (
           $selfStatus.value.$dirty &&
-          !!$eachStatus.value.length &&
-          $eachStatus.value.every((statusOrField) => {
-            return statusOrField.$dirty;
-          })
+          (!$eachStatus.value.length ||
+            $eachStatus.value.every((statusOrField) => {
+              return statusOrField.$dirty;
+            }))
         );
       });
 
@@ -295,9 +293,10 @@ export function createReactiveCollectionStatus({
       const $valid = computed<boolean>(() => {
         return (
           (isEmpty($selfStatus.value.$rules) ? true : $selfStatus.value.$valid) &&
-          $eachStatus.value.every((statusOrField) => {
-            return statusOrField.$valid;
-          })
+          (!$eachStatus.value.length ||
+            $eachStatus.value.every((statusOrField) => {
+              return statusOrField.$valid;
+            }))
         );
       });
 
@@ -416,11 +415,10 @@ export function createReactiveCollectionStatus({
       } satisfies ScopeReturnState;
     })!;
 
-    if (immediateScopeState.isPrimitiveArray.value) {
+    if (immediateScopeState.isPrimitiveArray.value && rulesDef.value.$each) {
       console.warn(
         `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. We advise to use an Array of objects instead`
       );
-      $unwatchState();
     }
   }
 
