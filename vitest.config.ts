@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['packages/*/src/**', 'packages/*/dist/**'],
-      exclude: ['**/index.ts', '**/types/**', '**/*.d.ts', '**/*.spec.ts', 'packages/nuxt/dist/**'],
+      exclude: ['**/index.ts', '**/types/**', '**/dist/**/*.cjs', '**/*.d.ts', '**/*.spec.ts', 'packages/nuxt/dist/**'],
     },
   },
 });
