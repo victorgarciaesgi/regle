@@ -117,7 +117,7 @@
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
   "engines": {
-    "node": ">=18.18.0",
+    "node": ">=18.18.0 < 23",
     "pnpm": ">=9.1.0"
   },
   "license": "MIT",

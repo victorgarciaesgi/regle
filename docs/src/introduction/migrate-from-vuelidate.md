@@ -138,7 +138,7 @@ export const minLengthValidator = (value) =>
   );
 ```
 
-You can remove it and do configure it with [global config](advanced-usage/global-config#replace-built-in-rules-messages).
+You can remove it and do configure it with [global config](/advanced-usage/global-config#replace-built-in-rules-messages).
 
 ```ts twoslash
 import { defineRegleConfig } from '@regle/core';
