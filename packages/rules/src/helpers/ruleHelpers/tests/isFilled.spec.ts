@@ -3,6 +3,7 @@ import { isFilled } from '../isFilled';
 describe('test the isFilled helper for "required"', () => {
   it.each([
     [[], false],
+    [[], true, false],
     [[1], true],
     [undefined, false],
     [null, false],
@@ -13,7 +14,7 @@ describe('test the isFilled helper for "required"', () => {
     [1, true],
     ['asd', true],
     ['', false],
-  ])('isFilled(%s) should be %s', (a, expected) => {
-    expect(isFilled(a)).toBe(expected);
+  ])('isFilled(%s) should be %s', (a, expected, considerEmptyArrayInvalid = true) => {
+    expect(isFilled(a, considerEmptyArrayInvalid)).toBe(expected);
   });
 });
