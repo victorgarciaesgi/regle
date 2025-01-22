@@ -10,9 +10,9 @@
 
 <script setup lang="ts">
 import { required } from '@regle/rules';
-import { useNestedRegle } from './config';
+import { useScopedRegle } from './config';
 
-const { r$ } = useNestedRegle({ nameFromCompo1: '' }, { nameFromCompo1: { required: required } });
+const { r$ } = useScopedRegle({ nameFromCompo1: '' }, { nameFromCompo1: { required: required } });
 </script>
 
 <style lang="scss" scoped></style>

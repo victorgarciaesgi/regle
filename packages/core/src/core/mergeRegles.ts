@@ -39,7 +39,7 @@ export type MergedRegles<
   $validate: () => Promise<MergedReglesResult<TRegles>>;
 };
 
-export type MergedNestedRegles<TValue extends Record<string, any> = Record<string, unknown>> = Omit<
+export type MergedScopedRegles<TValue extends Record<string, any> = Record<string, unknown>> = Omit<
   MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
   '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue'
 >;
@@ -58,11 +58,11 @@ type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>
       };
     };
 
-export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>, TNested extends boolean = false>(
+export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>, TScoped extends boolean = false>(
   regles: TRegles,
-  _nested?: TNested
-): TNested extends false ? MergedRegles<TRegles> : MergedNestedRegles {
-  const nested = _nested == null ? false : _nested;
+  _scoped?: TScoped
+): TScoped extends false ? MergedRegles<TRegles> : MergedScopedRegles {
+  const scoped = _scoped == null ? false : _scoped;
 
   const $value = computed({
     get: () => Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$value])),
@@ -208,7 +208,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   }
 
   return reactive({
-    ...(!nested && {
+    ...(!scoped && {
       $instances,
       $value: $value as any,
       $silentValue: $silentValue as any,

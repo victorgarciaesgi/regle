@@ -3,4 +3,4 @@ export { useRegle, inferRules, useRootStorage } from './useRegle';
 export { defineRegleConfig } from './defineRegleConfig';
 export type { DefaultValidators } from './defaultValidators';
 export { mergeRegles, type MergedRegles } from './mergeRegles';
-export { createNestedUseRegle } from './createNestedUseRegle';
+export { createScopedUseRegle } from './createScopedUseRegle';
