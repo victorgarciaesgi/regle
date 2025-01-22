@@ -189,7 +189,7 @@ export default defineConfig({
     return head;
   },
   transformPageData(pageData) {
-    const canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`.replace(/index\.md$/, '').replace(/\.md$/, '/');
+    const canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`.replace(/index\.md$/, '').replace(/\.md$/, '');
 
     pageData.frontmatter.head ??= [];
     pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }]);
