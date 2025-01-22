@@ -6,6 +6,7 @@ export {
   useRegle,
   useRootStorage,
   mergeRegles,
+  createNestedUseRegle,
   type MergedRegles,
 } from './core';
 export { InternalRuleType } from './types';

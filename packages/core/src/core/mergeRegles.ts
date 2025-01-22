@@ -6,7 +6,7 @@ import type {
   RegleCommonStatus,
   SuperCompatibleRegleRoot,
 } from '../types';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive } from 'vue';
 
 export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,
@@ -39,6 +39,11 @@ export type MergedRegles<
   $validate: () => Promise<MergedReglesResult<TRegles>>;
 };
 
+export type MergedNestedRegles<TValue extends Record<string, any> = Record<string, unknown>> = Omit<
+  MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
+  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue'
+>;
+
 type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>> =
   | {
       result: false;
@@ -53,9 +58,12 @@ type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>
       };
     };
 
-export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>>(
-  regles: TRegles
-): MergedRegles<TRegles> {
+export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>, TNested extends boolean = false>(
+  regles: TRegles,
+  _nested?: TNested
+): TNested extends false ? MergedRegles<TRegles> : MergedNestedRegles {
+  const nested = _nested == null ? false : _nested;
+
   const $value = computed({
     get: () => Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$value])),
     set: (value) => {
@@ -200,20 +208,22 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   }
 
   return reactive({
-    $value: $value as any,
-    $silentValue: $silentValue as any,
+    ...(!nested && {
+      $instances,
+      $value: $value as any,
+      $silentValue: $silentValue as any,
+      $errors,
+      $silentErrors: $silentErrors,
+    }),
     $dirty,
     $anyDirty,
     $invalid,
     $valid,
     $error,
     $pending,
-    $errors,
-    $silentErrors: $silentErrors,
     $ready,
     $edited,
     $anyEdited,
-    $instances,
     $resetAll,
     $reset,
     $touch,
