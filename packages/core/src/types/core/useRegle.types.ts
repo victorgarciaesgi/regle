@@ -12,19 +12,20 @@ import type {
 import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, Prettify } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
-export interface Regle<
+export type Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree> = EmptyObject,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
   TShortcuts extends RegleShortcutDefinition = {},
-> {
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
   /**
    * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleRoot<TState, TRules, TValidationGroups, TShortcuts>>;
-}
+} & TAdditionalReturnProperties;
 
 export type isDeepExact<T, U> = {
   [K in keyof T]-?: CheckDeepExact<NonNullable<T[K]>, K extends keyof U ? NonNullable<U[K]> : never>;
