@@ -8,7 +8,7 @@
     <Compo2 />
     <Compo1 />
 
-    Collected from nested component:
+    Collected from scoped components:
     <div>
       <pre>
         <code>{{ r$ }}</code>
@@ -16,10 +16,11 @@
     </div>
 
     <div>
-      <button @click="r$.$validate">Validate nested component</button>
+      <button @click="r$.$validate">Validate scoped components</button>
+      <button @click="r$.$reset">Reset scoped components</button>
     </div>
-
-    <label>Local Input (not using nested): </label>
+    <hr />
+    <label>Local Input (not using scoped): </label>
     <input v-model="independantR$.$value.local" placeholder="Local" />
     <ul>
       <li v-for="error of independantR$.$errors.local" :key="error">
@@ -34,10 +35,10 @@ import { useRegle } from '@regle/core';
 import Compo1 from './Compo1.vue';
 import Compo2 from './Compo2.vue';
 import Compo3 from './Compo3.vue';
-import { useCollectNestedValidations } from './config';
+import { useCollectScopedValidations } from './config';
 import { minLength } from '@regle/rules';
 
-const { r$ } = useCollectNestedValidations();
+const { r$ } = useCollectScopedValidations();
 
 const { r$: independantR$ } = useRegle(
   { local: '' },

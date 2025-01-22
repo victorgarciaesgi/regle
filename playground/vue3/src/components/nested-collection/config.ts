@@ -1,3 +1,3 @@
-import { createNestedUseRegle } from '@regle/core';
+import { createScopedUseRegle } from '@regle/core';
 
-export const { useCollectNestedValidations, useNestedRegle } = createNestedUseRegle();
+export const { useCollectScopedValidations, useScopedRegle } = createScopedUseRegle();

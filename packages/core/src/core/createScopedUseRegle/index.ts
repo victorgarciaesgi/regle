@@ -1,0 +1,1 @@
+export { createScopedUseRegle } from './createScopedUseRegle';

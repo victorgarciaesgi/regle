@@ -10,9 +10,9 @@
 
 <script setup lang="ts">
 import { minValue, numeric, required } from '@regle/rules';
-import { useNestedRegle } from './config';
+import { useScopedRegle } from './config';
 
-const { r$ } = useNestedRegle(
+const { r$ } = useScopedRegle(
   { countFromCompo3: 0 },
   { countFromCompo3: { required, numeric, minValue: minValue(4) } }
 );

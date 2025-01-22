@@ -3,18 +3,18 @@ import type { AllRulesDeclarations, Regle, SuperCompatibleRegleRoot } from '../.
 import { randomId } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
 
-export function createUseNestedRegleComposable<
+export function createUseScopedRegleComposable<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<AllRulesDeclarations>>,
 >(
   customUseRegle?: TCustomRegle
 ): {
-  useNestedRegle: TCustomRegle;
+  useScopedRegle: TCustomRegle;
   instances: Ref<Record<string, SuperCompatibleRegleRoot>>;
 } {
   const scopedUseRegle = customUseRegle ?? useRegle;
   const instances = ref<Record<string, SuperCompatibleRegleRoot>>({});
 
-  const useNestedRegle: TCustomRegle = ((
+  const useScopedRegle: TCustomRegle = ((
     state: Record<string, unknown>,
     rulesFactory: MaybeRefOrGetter<{}>,
     options: any
@@ -36,5 +36,5 @@ export function createUseNestedRegleComposable<
     return { r$: r$, $dispose } as Regle;
   }) as any;
 
-  return { useNestedRegle, instances };
+  return { useScopedRegle, instances };
 }
