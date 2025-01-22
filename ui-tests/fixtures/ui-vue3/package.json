@@ -15,13 +15,13 @@
     "@regle/schemas": "workspace:*",
     "check-password-strength": "2.0.10",
     "pinia": "catalog:",
-    "sass": "1.83.1",
+    "sass": "1.83.4",
     "vue": "catalog:",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.10.7",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "latest",

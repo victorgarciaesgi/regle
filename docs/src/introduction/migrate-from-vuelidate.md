@@ -114,6 +114,55 @@ const result = await v$.$validate(); // [!code --]
 const {result, data} = await r$.$validate(); // [!code ++]
 ```
 
+## Custom messages
+
+If you used to declare this kind of helper methods with Vuelidate:
+
+```ts
+import {helpers, required, numeric, minLength} from '@vuelidate/validators';
+
+export const requiredValidator = helpers.withMessage(
+  'This field is required.',
+  required
+);
+export const numericValidator = helpers.withMessage(
+  'Please enter a valid value.',
+  numeric
+);
+
+export const minLengthValidator = (value) =>
+  helpers.withMessage(
+    ({ $model, $params }) =>
+      `Please enter a value greater than or equal to  ${$params.max}.`,
+    minLength(value)
+  );
+```
+
+You can remove it and do configure it with [global config](advanced-usage/global-config#replace-built-in-rules-messages).
+
+```ts twoslash
+import { defineRegleConfig } from '@regle/core';
+import { withMessage, minLength, required, numeric } from '@regle/rules';
+
+const { useRegle: useCustomRegle } = defineRegleConfig({
+  rules: () => ({
+    required: withMessage(required, 'This field is required.'),
+    numeric: withMessage(numeric, 'Please enter a valid value.'),
+    minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
+      return `Minimum length is ${max}. Current length: ${$value?.length}`;
+    })
+  })
+})
+
+const { r$ } = useCustomRegle({ name: '' }, {
+  name: {
+    required,
+    numeric,
+    minLength: minLength(6)
+  }
+})
+```
+
 ## Validation groups
 
 ```ts

@@ -11,8 +11,8 @@
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
-    "vue": ">=3.3.0",
-    "pinia": ">=2.2.5"
+    "pinia": ">=2.2.5",
+    "vue": ">=3.3.0"
   },
   "peerDependenciesMeta": {
     "pinia": {
@@ -21,12 +21,12 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "22.10.5",
-    "@typescript-eslint/eslint-plugin": "8.19.1",
-    "@typescript-eslint/parser": "8.19.1",
+    "@types/node": "22.10.7",
+    "@typescript-eslint/eslint-plugin": "8.21.0",
+    "@typescript-eslint/parser": "8.21.0",
     "@vue/test-utils": "2.4.6",
-    "bumpp": "9.10.0",
-    "changelogithub": "0.13.11",
+    "bumpp": "9.10.2",
+    "changelogithub": "13.12.1",
     "cross-env": "7.0.3",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
@@ -34,7 +34,7 @@
     "expect-type": "1.1.0",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.32.0",
+    "type-fest": "4.33.0",
     "typescript": "catalog:",
     "vitest": "2.1.8",
     "vue": "catalog:",
