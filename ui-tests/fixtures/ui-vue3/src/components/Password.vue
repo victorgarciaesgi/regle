@@ -35,7 +35,7 @@ const modelValue = defineModel<Maybe<string>>();
 
 const props = defineProps<{
   field: RegleFieldStatus<
-    string,
+    string | undefined,
     RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
     InferRegleShortcuts<typeof useCustomRegle>
   >;

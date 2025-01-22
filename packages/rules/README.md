@@ -23,7 +23,7 @@ It's heavily inspired by Vuelidate.
 - ✅ 100% type inference
 - 📖 Model based validation
 - 🛒 Collection validation
+- 💀 Headless
 - 🪗 Extensible
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🤖 [Valibot](https://valibot.dev/) support
-- 🪶 Light(~7kb gzip) and 0 dependencies
