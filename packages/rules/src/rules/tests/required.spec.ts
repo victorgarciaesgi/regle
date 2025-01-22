@@ -6,7 +6,7 @@ describe('required validator', () => {
   });
 
   it('should not validate empty arrays', () => {
-    expect(required.exec([])).toBe(true);
+    expect(required.exec([])).toBe(false);
   });
 
   it('should validate nonempty arrays', () => {

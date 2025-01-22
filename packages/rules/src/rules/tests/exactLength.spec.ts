@@ -41,6 +41,10 @@ describe('exactLength validator', () => {
     expect(exactLength(1).exec([1])).toBe(true);
   });
 
+  it('should not validate incorrect length on empty array', () => {
+    expect(exactLength(5).exec([])).toBe(false);
+  });
+
   it('should not validate too long arrays', () => {
     expect(exactLength(5).exec([1, 2, 3, 4, 5, 6])).toBe(false);
   });

@@ -29,7 +29,7 @@ describe('minLength validator', () => {
     expect(minLength(5).exec('     ')).toBe(true);
   });
 
-  it('should validate empty arrays', () => {
+  it('should not validate empty arrays', () => {
     expect(minLength(5).exec([])).toBe(false);
   });
 

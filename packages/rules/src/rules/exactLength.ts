@@ -15,7 +15,7 @@ export const exactLength: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'exactLength',
   validator: (value: Maybe<string | Record<PropertyKey, any> | any[]>, count: number) => {
-    if (isFilled(value) && isFilled(count)) {
+    if (isFilled(value, false) && isFilled(count)) {
       if (isNumber(count)) {
         return getSize(value) === count;
       }

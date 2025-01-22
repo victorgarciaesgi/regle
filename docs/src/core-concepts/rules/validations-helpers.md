@@ -18,10 +18,16 @@ import { isFilled, isEmpty, getSize, ... } from '@regle/rules';
 
 ### `isFilled`
 
+_**Params**_
+ - `value: unknown`
+ - `considerEmptyArrayInvalid = true`
+
 This is almost a must have for optional fields. It checks if any value you provided is defined (including arrays and objects).
 You can base your validator result on this.
 
 `isFilled` also acts as a type guard.
+
+By default, it considers empty array as `false`. You can override this behaviour with the `considerEmptyArrayInvalid`
 
 ```ts twoslash
 const check = (value: any) => false;
@@ -42,9 +48,16 @@ const rule = createRule({
 
 ### `isEmpty`
 
+_**Params**_
+ - `value: unknown`
+ - `considerEmptyArrayInvalid = true`
+
 This is the inverse of `isFilled`. It will check if the value is in any way empty (including arrays and objects)
 
 `isEmpty` also acts as a type guard.
+
+By default, it considers empty array as `true`. You can override this behaviour with the `considerEmptyArrayInvalid`
+
 
 ```ts twoslash
 const check = (value: any) => false;

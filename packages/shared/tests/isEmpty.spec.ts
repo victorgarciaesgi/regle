@@ -2,7 +2,8 @@ import { isEmpty } from '../utils';
 
 describe('test the isEmpty helper', () => {
   it.each([
-    [[], false],
+    [[], false, false],
+    [[], true],
     [[1], false],
     [undefined, true],
     [null, true],
@@ -13,7 +14,7 @@ describe('test the isEmpty helper', () => {
     [1, false],
     ['asd', false],
     ['', true],
-  ])('isFilled(%s) should be %s', (a, expected) => {
-    expect(isEmpty(a)).toBe(expected);
+  ])('isEmpty(%s) should be %s', (a, expected, considerEmptyArrayInvalid = true) => {
+    expect(isEmpty(a, considerEmptyArrayInvalid)).toBe(expected);
   });
 });

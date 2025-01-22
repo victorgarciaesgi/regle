@@ -33,8 +33,12 @@ describe('maxLength validator', () => {
     expect(maxLength(5).exec('     ')).toBe(true);
   });
 
-  it('should validate empty arrays', () => {
-    expect(maxLength(-2).exec([])).toBe(false);
+  it('should not validate negative values', () => {
+    expect(maxLength(-2).exec([1, 2])).toBe(false);
+  });
+
+  it('should not validate empty arrays', () => {
+    expect(maxLength(5).exec([])).toBe(true);
   });
 
   it('should validate short arrays', () => {
