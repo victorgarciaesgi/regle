@@ -16,7 +16,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "composite": true,
+    "composite": false,
     "verbatimModuleSyntax": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
@@ -30,4 +30,7 @@
     "./tests/**/*",
     "**/tsup*"
   ],
+  "exclude": [
+    "./packages/**/dist/**/*",
+  ]
 }

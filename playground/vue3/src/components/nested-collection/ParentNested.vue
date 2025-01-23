@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="show">
       <Compo3 />
       <Compo1 />
       <Compo2 />
@@ -8,17 +8,19 @@
     <Compo2 />
     <Compo1 />
 
-    Collected from scoped components:
-    <div>
-      <pre>
-        <code>{{ r$ }}</code>
-      </pre>
-    </div>
-
     <div>
       <button @click="r$.$validate">Validate scoped components</button>
       <button @click="r$.$reset">Reset scoped components</button>
+      <button @click="show = !show">Toggle show</button>
     </div>
+
+    Collected from scoped components:
+    <div>
+      <pre>
+        <code>{{ r$.$instances.length }}</code>
+      </pre>
+    </div>
+
     <hr />
     <label>Local Input (not using scoped): </label>
     <input v-model="independantR$.$value.local" placeholder="Local" />
@@ -37,8 +39,11 @@ import Compo2 from './Compo2.vue';
 import Compo3 from './Compo3.vue';
 import { useCollectScopedValidations } from './config';
 import { minLength } from '@regle/rules';
+import { ref, useId } from 'vue';
 
 const { r$ } = useCollectScopedValidations();
+
+const show = ref(false);
 
 const { r$: independantR$ } = useRegle(
   { local: '' },

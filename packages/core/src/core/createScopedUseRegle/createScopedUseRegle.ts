@@ -1,4 +1,6 @@
-import type { AllRulesDeclarations } from '../../types';
+import { ref, type Ref } from 'vue';
+import type { AllRulesDeclarations, SuperCompatibleRegleRoot } from '../../types';
+import { createGlobalState } from '../../utils';
 import type { MergedScopedRegles } from '../mergeRegles';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScopedValidations } from './useCollectScopedValidations';
@@ -9,20 +11,28 @@ export function createScopedUseRegle<
   TReturnedRegle extends useRegleFn<any, any> = TCustomRegle extends useRegleFn<infer A, infer B>
     ? useRegleFn<A, B, { $dispose: () => void }>
     : useRegleFn<Partial<AllRulesDeclarations>>,
->(
-  customUseRegle?: TCustomRegle
-): {
+>(options?: {
+  customUseRegle?: TCustomRegle;
+  customStore?: Ref<Record<string, SuperCompatibleRegleRoot>>;
+}): {
   useScopedRegle: TReturnedRegle;
-  useCollectScopedValidations<TValue extends Record<string, any> = Record<string, unknown>>(): {
+  useCollectScopedValidations<TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(): {
     r$: MergedScopedRegles<TValue>;
   };
 } {
-  const { instances, useScopedRegle } = createUseScopedRegleComposable(customUseRegle);
+  const useInstances = options?.customStore
+    ? () => options.customStore!
+    : createGlobalState(() => {
+        const $inst = ref<Record<string, SuperCompatibleRegleRoot>>({});
+        return $inst;
+      });
+  const instances = useInstances();
 
+  const { useScopedRegle } = createUseScopedRegleComposable(useInstances, options?.customUseRegle);
   const { useCollectScopedValidations } = createUseCollectScopedValidations(instances);
 
   return {
     useScopedRegle: useScopedRegle as unknown as TReturnedRegle,
-    useCollectScopedValidations,
+    useCollectScopedValidations: useCollectScopedValidations,
   };
 }

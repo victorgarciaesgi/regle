@@ -1,4 +1,3 @@
-import type { EmptyObject } from 'type-fest';
 import type { AllRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefinition } from '../types';
 import { createUseRegleComposable, type useRegleFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
@@ -17,7 +16,7 @@ import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules'
  */
 export function defineRegleConfig<
   TShortcuts extends RegleShortcutDefinition<TCustomRules>,
-  TCustomRules extends Partial<AllRulesDeclarations> = EmptyObject,
+  TCustomRules extends Partial<AllRulesDeclarations>,
 >({
   rules,
   modifiers,

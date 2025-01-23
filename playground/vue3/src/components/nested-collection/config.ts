@@ -1,3 +1,10 @@
-import { createScopedUseRegle } from '@regle/core';
+import { createScopedUseRegle, defineRegleConfig } from '@regle/core';
+import { required, withMessage } from '@regle/rules';
 
-export const { useCollectScopedValidations, useScopedRegle } = createScopedUseRegle();
+const { useRegle } = defineRegleConfig({
+  rules: () => ({
+    required: withMessage(required, 'Coucou la global config'),
+  }),
+});
+
+export const { useCollectScopedValidations, useScopedRegle } = createScopedUseRegle(useRegle);

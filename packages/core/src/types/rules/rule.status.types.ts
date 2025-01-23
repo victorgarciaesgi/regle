@@ -22,6 +22,7 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
+  RegleValidationErrors,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
 } from '..';
@@ -55,8 +56,8 @@ export interface SuperCompatibleRegleStatus extends RegleCommonStatus {
   $fields: {
     [x: string]: unknown;
   };
-  readonly $errors: Record<string, $InternalRegleErrors>;
-  readonly $silentErrors: Record<string, $InternalRegleErrors>;
+  readonly $errors: Record<string, RegleValidationErrors<any>>;
+  readonly $silentErrors: Record<string, RegleValidationErrors<any>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: () => Promise<$InternalRegleResult>;
 }

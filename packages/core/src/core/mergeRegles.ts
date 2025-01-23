@@ -1,9 +1,9 @@
 import type { PartialDeep } from 'type-fest';
 import type {
-  $InternalRegleErrors,
-  $InternalRegleResult,
   PromiseReturn,
   RegleCommonStatus,
+  RegleResult,
+  RegleValidationErrors,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { computed, reactive } from 'vue';
@@ -39,10 +39,19 @@ export type MergedRegles<
   $validate: () => Promise<MergedReglesResult<TRegles>>;
 };
 
-export type MergedScopedRegles<TValue extends Record<string, any> = Record<string, unknown>> = Omit<
+export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record<string, unknown>[]> = Omit<
   MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
   '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue'
->;
+> & {
+  /** Array of scoped Regles instances  */
+  readonly $instances: SuperCompatibleRegleRoot[];
+  /** Collection of all registered Regles instances values */
+  readonly $value: TValue;
+  /** Collection of all registered Regles instances errors */
+  readonly $errors: RegleValidationErrors<any>[];
+  /** Collection of all registered Regles instances silent errors */
+  readonly $silentErrors: RegleValidationErrors<any>;
+};
 
 type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>> =
   | {
@@ -65,10 +74,18 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   const scoped = _scoped == null ? false : _scoped;
 
   const $value = computed({
-    get: () => Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$value])),
+    get: () => {
+      if (scoped) {
+        return Object.values(regles).map((r) => r.$value);
+      } else {
+        return Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$value]));
+      }
+    },
     set: (value) => {
-      if (typeof value === 'object') {
-        Object.entries(value).forEach(([key, newValue]) => (regles[key].$value = newValue));
+      if (!scoped) {
+        if (typeof value === 'object') {
+          Object.entries(value).forEach(([key, newValue]) => (regles[key].$value = newValue));
+        }
       }
     },
   });
@@ -83,9 +100,13 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   });
 
   const $dirty = computed<boolean>(() => {
-    return Object.entries(regles).every(([_, regle]) => {
-      return regle?.$dirty;
-    });
+    const entries = Object.entries(regles);
+    return (
+      !!entries.length &&
+      entries.every(([_, regle]) => {
+        return regle?.$dirty;
+      })
+    );
   });
 
   const $anyDirty = computed<boolean>(() => {
@@ -101,9 +122,14 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   });
 
   const $valid = computed<boolean>(() => {
-    return Object.entries(regles).every(([_, regle]) => {
-      return regle?.$invalid;
-    });
+    const entries = Object.entries(regles);
+
+    return (
+      !!entries.length &&
+      entries.every(([_, regle]) => {
+        return regle?.$invalid;
+      })
+    );
   });
 
   const $error = computed<boolean>(() => {
@@ -113,9 +139,14 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
   });
 
   const $ready = computed<boolean>(() => {
-    return Object.entries(regles).every(([_, regle]) => {
-      return regle?.$ready;
-    });
+    const entries = Object.entries(regles);
+
+    return (
+      !!entries.length &&
+      entries.every(([_, regle]) => {
+        return regle?.$ready;
+      })
+    );
   });
 
   const $pending = computed<boolean>(() => {
@@ -124,26 +155,43 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
-  const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
-    return Object.fromEntries(
-      Object.entries(regles).map(([key, regle]) => {
-        return [key, regle.$errors];
-      })
-    );
+  const $errors = computed<Record<string, RegleValidationErrors<any>> | RegleValidationErrors<any>[]>(() => {
+    if (scoped) {
+      return Object.entries(regles).map(([_, regle]) => {
+        return regle.$errors;
+      });
+    } else {
+      return Object.fromEntries(
+        Object.entries(regles).map(([key, regle]) => {
+          return [key, regle.$errors];
+        })
+      );
+    }
   });
 
-  const $silentErrors = computed<Record<string, $InternalRegleErrors>>(() => {
-    return Object.fromEntries(
-      Object.entries(regles).map(([key, regle]) => {
-        return [key, regle.$silentErrors];
-      })
-    );
+  const $silentErrors = computed<Record<string, RegleValidationErrors<any>> | RegleValidationErrors<any>[]>(() => {
+    if (scoped) {
+      return Object.entries(regles).map(([_, regle]) => {
+        return regle.$silentErrors;
+      });
+    } else {
+      return Object.fromEntries(
+        Object.entries(regles).map(([key, regle]) => {
+          return [key, regle.$silentErrors];
+        })
+      );
+    }
   });
 
   const $edited = computed<boolean>(() => {
-    return Object.entries(regles).every(([_, regle]) => {
-      return regle?.$edited;
-    });
+    const entries = Object.entries(regles);
+
+    return (
+      !!entries.length &&
+      entries.every(([_, regle]) => {
+        return regle?.$edited;
+      })
+    );
   });
 
   const $anyEdited = computed<boolean>(() => {
@@ -152,8 +200,12 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
-  const $instances = computed(() => {
-    return regles;
+  const $instances = computed<TRegles | SuperCompatibleRegleRoot[]>(() => {
+    if (scoped) {
+      return Object.values(regles);
+    } else {
+      return regles;
+    }
   });
 
   function $reset() {
@@ -184,7 +236,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   }
 
-  async function $validate(): Promise<$InternalRegleResult> {
+  async function $validate(): Promise<RegleResult<any, any>> {
     try {
       const data = $value.value;
 
@@ -209,12 +261,12 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
 
   return reactive({
     ...(!scoped && {
-      $instances,
-      $value: $value as any,
       $silentValue: $silentValue as any,
-      $errors,
-      $silentErrors: $silentErrors,
     }),
+    $errors,
+    $silentErrors: $silentErrors,
+    $instances,
+    $value: $value as any,
     $dirty,
     $anyDirty,
     $invalid,

@@ -71,4 +71,6 @@ export type {
   JoinDiscriminatedUnions,
   DeepReactiveState,
   MismatchInfo,
+  SuperCompatibleRegleRoot,
+  SuperCompatibleRegleStatus,
 } from './types';
