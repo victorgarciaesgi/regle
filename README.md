@@ -86,10 +86,10 @@ const { r$ } = useRegle({ email: '' }, {
 
 
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.3+
-- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3
-- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia
-- 🦸‍♂️ Zod
-- 🤖 Valibot
+- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3.1+
+- <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia 2.2.5+
+- 🦸‍♂️ Zod 3.24+
+- 🤖 Valibot 1.0+
 
 
 ## ⬇️ Quick install
