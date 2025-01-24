@@ -17,7 +17,8 @@ describe('$edited', () => {
     expect(vm.r$.$fields.email.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
-    vm.r$.$value.email = 'new value';
+    // shouldn't be considered as a Date
+    vm.r$.$value.email = 'test 1';
     await vm.$nextTick();
     vm.r$.$reset();
     await vm.$nextTick();
@@ -25,13 +26,13 @@ describe('$edited', () => {
     expect(vm.r$.$fields.email.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
-    vm.r$.$value.email = 'edited';
+    vm.r$.$value.email = 'test 2';
     await vm.$nextTick();
 
     expect(vm.r$.$fields.email.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
 
-    vm.r$.$value.email = 'new value';
+    vm.r$.$value.email = 'test 1';
     await vm.$nextTick();
 
     expect(vm.r$.$fields.email.$edited).toBe(false);

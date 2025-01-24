@@ -252,7 +252,7 @@ export function createReactiveFieldStatus({
 
       const $edited = computed<boolean>(() => {
         if ($dirty.value) {
-          if (isDate(initialState.value) && isDate(state.value)) {
+          if (initialState.value instanceof Date && state.value instanceof Date) {
             return toDate(initialState.value).getDate() !== toDate(state.value).getDate();
           }
           if (initialState.value == null) {
