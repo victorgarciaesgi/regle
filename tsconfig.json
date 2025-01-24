@@ -10,17 +10,18 @@
     "moduleDetection": "force",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "composite": true,
+    "composite": false,
     "verbatimModuleSyntax": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "types": [
       "vitest/globals"
     ]
@@ -30,4 +31,7 @@
     "./tests/**/*",
     "**/tsup*"
   ],
+  "exclude": [
+    "./packages/**/dist/**/*",
+  ]
 }

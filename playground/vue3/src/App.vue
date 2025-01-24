@@ -1,9 +1,10 @@
 <template>
   <!-- <TestForm /> -->
-  <ValibotForm />
+  <!-- <ValibotForm /> -->
   <!-- <ZodForm /> -->
   <!-- <Test13 /> -->
   <!-- <Parent /> -->
+  <ParentNested />
 </template>
 
 <script setup lang="ts">
@@ -14,4 +15,5 @@ import ZodForm from './components/ZodForm.vue';
 import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';
 import Parent from './components/tests-pinia/Parent.vue';
+import ParentNested from './components/nested-collection/ParentNested.vue';
 </script>

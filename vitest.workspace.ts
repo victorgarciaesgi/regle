@@ -30,6 +30,7 @@ export default defineWorkspace([
         enabled: true,
         include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
         ignoreSourceErrors: true,
+        checker: 'vue-tsc',
       },
     },
     resolve: {

@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "0.7.3",
+  "version": "0.7.4-beta.3",
   "description": "Type safe form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",

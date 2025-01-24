@@ -1,5 +1,6 @@
 ---
 title: Migrate from Vuelidate
+description: Migrate to Regle with ease
 ---
 
 # Migrate from Vuelidate
@@ -161,6 +162,39 @@ const { r$ } = useCustomRegle({ name: '' }, {
     minLength: minLength(6)
   }
 })
+```
+
+## Nested component validation
+
+__**Nested component**__ validation is replaced by __**Scoped validation**__.
+
+See [docs for scoped validation](/advanced-usage/scoped-validation) for more details
+
+```ts twoslash
+// [scoped-config.ts]
+import { createScopedUseRegle, useRegle } from '@regle/core'; // [!code ++]
+export const { useScopedRegle, useCollectScope } = createScopedUseRegle(); // [!code ++]
+
+// @noErrors
+// Parent.vue
+const v$ = useVuelidate(); // [!code --]
+const v$ = useVuelidate({}, {}, {$scope: 'foo'}); // [!code --]
+
+const { r$ } = useCollectScope(); // [!code ++]
+const { r$ } = useCollectScope('foo'); // [!code ++]
+
+
+// Child.vue
+
+const v$ = useVuelidate(validations, state); // [!code --]
+const v$ = useVuelidate(validations, state, { $scope: false }); // [!code --]
+const v$ = useVuelidate(validations, state, { $scope: 'foo' }); // [!code --]
+const v$ = useVuelidate(validations, state, { $stopPropagation: true }); // [!code --]
+
+const { r$ } = useScopedRegle(state, validations); // [!code ++]
+const { r$ } = useRegle(state, validations); // [!code ++]
+const { r$ } = useScopedRegle(state, validations, {namespace: 'foo'}); // [!code ++]
+const { r$ } = useScopedRegle(state, validations); // [!code ++]
 ```
 
 ## Validation groups

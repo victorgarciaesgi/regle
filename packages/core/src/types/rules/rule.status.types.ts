@@ -22,6 +22,7 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
+  RegleValidationErrors,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
 } from '..';
@@ -45,6 +46,26 @@ export type RegleRoot<
           readonly [TKey in keyof TValidationGroups]: RegleValidationGroupOutput;
         };
       });
+
+/** Supports both core Regle and schemas Regle for Zod/Valibot */
+export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
+  $groups?: { [x: string]: RegleValidationGroupOutput };
+};
+
+export type ScopedInstancesRecord = Record<string, Record<string, SuperCompatibleRegleRoot>> & {
+  '~~global': Record<string, SuperCompatibleRegleRoot>;
+};
+export type ScopedInstancesRecordLike = Partial<ScopedInstancesRecord>;
+
+export interface SuperCompatibleRegleStatus extends RegleCommonStatus {
+  $fields: {
+    [x: string]: unknown;
+  };
+  readonly $errors: Record<string, RegleValidationErrors<any>>;
+  readonly $silentErrors: Record<string, RegleValidationErrors<any>>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
+  $validate: () => Promise<$InternalRegleResult>;
+}
 
 /**
  * @public

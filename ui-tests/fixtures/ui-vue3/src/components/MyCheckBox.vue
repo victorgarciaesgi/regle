@@ -23,7 +23,7 @@ import { computed } from 'vue';
 const modelValue = defineModel<boolean>();
 
 const props = defineProps<{
-  field: RegleFieldStatus<boolean>;
+  field: RegleFieldStatus<boolean | undefined>;
   placeholder: string;
 }>();
 

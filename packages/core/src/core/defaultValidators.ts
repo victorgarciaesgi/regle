@@ -64,5 +64,6 @@ export type DefaultValidators = {
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
+  exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

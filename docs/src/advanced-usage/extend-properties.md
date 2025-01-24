@@ -1,11 +1,12 @@
 ---
 title: Extend properties
+description: Regle offers a way to extend the default validation properties with defineRegleConfig
 ---
 
 
 # Extend properties
 
-Regle offers a way to extend the default validation properties via `defineRegleConfig`
+Regle offers a way to extend the default validation properties with `defineRegleConfig`.
 
 For more information about global config [check here](/advanced-usage/global-config)
 

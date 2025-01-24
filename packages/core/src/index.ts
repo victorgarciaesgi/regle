@@ -1,4 +1,14 @@
-export { createRule, defineRegleConfig, inferRules, unwrapRuleParameters, useRegle, useRootStorage } from './core';
+export {
+  createRule,
+  defineRegleConfig,
+  inferRules,
+  unwrapRuleParameters,
+  useRegle,
+  useRootStorage,
+  mergeRegles,
+  createScopedUseRegle,
+  type MergedRegles,
+} from './core';
 export { InternalRuleType } from './types';
 export type {
   Regle,
@@ -61,4 +71,8 @@ export type {
   JoinDiscriminatedUnions,
   DeepReactiveState,
   MismatchInfo,
+  SuperCompatibleRegleRoot,
+  SuperCompatibleRegleStatus,
+  ScopedInstancesRecord,
+  ScopedInstancesRecordLike,
 } from './types';

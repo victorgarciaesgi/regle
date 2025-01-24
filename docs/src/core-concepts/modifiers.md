@@ -1,5 +1,6 @@
 ---
 title: Modifiers
+description: Modifiers allow you to control the behavior and settings of validation rules in your application
 ---
 
 <script setup>

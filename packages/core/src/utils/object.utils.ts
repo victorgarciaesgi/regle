@@ -4,9 +4,6 @@ import type { MaybeGetter } from '../types';
 import { isObject } from '../../../shared';
 
 export function isRefObject(obj: Ref<unknown>): obj is Ref<Record<string, any>> {
-  if (obj.value instanceof Date || obj.value instanceof File) {
-    return false;
-  }
   return isObject(obj.value);
 }
 

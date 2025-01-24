@@ -20,6 +20,8 @@ import { useRootStorage } from './root';
 export type useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
+  TAdditionalReturnProperties extends Record<string, any> = {},
+  TAdditionalOptions extends Record<string, any> = {},
 > = <
   TState extends Record<string, any>,
   TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
@@ -37,8 +39,9 @@ export type useRegleFn<
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   rulesFactory: MaybeRefOrGetter<TRules>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups>
-) => Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts>;
+    LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups> &
+    TAdditionalOptions
+) => Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts, TAdditionalReturnProperties>;
 
 export function createUseRegleComposable<
   TCustomRules extends Partial<AllRulesDeclarations>,

@@ -1,5 +1,6 @@
 ---
 title: Usage with Pinia
+description: Since Regle is headless, you can use it anywhere in your app
 ---
 
 <script setup>

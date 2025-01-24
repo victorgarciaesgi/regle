@@ -11,7 +11,7 @@ export function extractRulesErrors({
 }): string[] {
   return Object.entries(field.$rules ?? {})
     .map(([_, rule]) => {
-      if (silent) {
+      if (silent && !rule.$valid) {
         return rule.$message;
       } else if (!rule.$valid && field.$error && !rule.$validating) {
         return rule.$message;
