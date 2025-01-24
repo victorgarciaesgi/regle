@@ -67,5 +67,5 @@ export async function generateSatoriBanner({
   const pngBuffer = pngData.asPng();
   await fs.promises.writeFile(path.join(outputDir, `og-images_${parsedName}.png`), pngBuffer);
 
-  return `og-images_${parsedName}.png`;
+  return `assets/og-images_${parsedName}.png`;
 }
