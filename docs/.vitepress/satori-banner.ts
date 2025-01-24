@@ -24,7 +24,7 @@ export async function generateSatoriBanner({
     <div style="display:flex;flex-direction:column;max-width:450px;flex-wrap:wrap;row-gap:4px;color:white">
       <span style="font-size:16px;color:#00bb7f">Regle docs</span>
       <span style="font-size:36px;margin:10px 0;font-weight:bold;color:#fff">${title}</span>
-      <span style="font-size:22px;color:#fff">${description}</span>
+      <span style="font-size:26px;color:#fff">${description}</span>
     </div>
     <svg width="210" height="210" viewBox="0 0 501 501">
       <g>
