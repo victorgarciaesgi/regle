@@ -63,7 +63,7 @@ export async function generateSatoriBanner({
   const parsedName = kebabCase(name);
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
-  await fs.promises.writeFile(path.resolve(__dirname, `../src/public/og-images/${parsedName}.png`), pngBuffer);
+  await fs.promises.writeFile(path.resolve(__dirname, `../src/public/og-images_${parsedName}.png`), pngBuffer);
 
-  return `og-images/${parsedName}.png`;
+  return `og-images_${parsedName}.png`;
 }
