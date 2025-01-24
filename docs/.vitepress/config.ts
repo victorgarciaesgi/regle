@@ -2,6 +2,8 @@ import { transformerTwoslash } from '@shikijs/vitepress-twoslash';
 import type { DefaultTheme, HeadConfig, PageData } from 'vitepress';
 import { defineConfig } from 'vitepress';
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import { generateSatoriBanner } from './satori-banner';
 
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
@@ -109,9 +111,13 @@ const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
   { text: 'Reactivity caveats', link: '/troubleshooting/reactivity' },
 ];
 
+const shortDescription = 'Type safe model-based form validation library for Vue.js';
+const longDescription =
+  'Regle is a type safe form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms.';
+
 export default defineConfig({
   title: 'Regle',
-  description: 'Type safe model-based form validation library for Vue.js',
+  description: shortDescription,
   sitemap: {
     hostname: 'https://reglejs.dev',
   },
@@ -183,15 +189,48 @@ export default defineConfig({
       copyright: 'Copyright © 2023-present Victor Garcia',
     },
   },
-  transformHead: ({ pageData }) => {
+  transformHead: async ({ pageData, siteConfig }) => {
     const head: HeadConfig[] = [];
 
-    head.push(['meta', { property: 'og:title', content: pageData.frontmatter.title ?? 'Regle' }]);
+    const relativePath = pageData.relativePath.replace(/index\.md$/, '').replace(/\.md$/, '');
+
+    const pageTitle = pageData.frontmatter?.title ?? siteConfig.site?.title;
+    const pageDescription = pageData.frontmatter?.description ?? siteConfig.site?.description;
+
+    const satoriImage = await generateSatoriBanner({ title: pageTitle, description: pageDescription, bread: [] });
+    head.push(['meta', { property: 'og:title', content: pageTitle }]);
+    head.push(['meta', { property: 'og:description', content: pageDescription }]);
+
+    if (satoriImage && relativePath !== '') {
+      head.push(['meta', { property: 'description', content: pageDescription }]);
+      head.push([
+        'meta',
+        {
+          property: 'og:image',
+          content: satoriImage,
+        },
+      ]);
+    } else {
+      head.push(['meta', { property: 'description', content: longDescription }]);
+      head.push([
+        'meta',
+        {
+          property: 'og:image',
+          content: 'https://reglejs.dev/banner-og.png',
+        },
+      ]);
+    }
 
     return head;
   },
   transformPageData(pageData) {
-    const canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`.replace(/index\.md$/, '').replace(/\.md$/, '');
+    const relativePath = pageData.relativePath.replace(/index\.md$/, '').replace(/\.md$/, '');
+    let canonicalUrl: string;
+    if (relativePath === '') {
+      canonicalUrl = `https://reglejs.dev`;
+    } else {
+      canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`;
+    }
 
     pageData.frontmatter.head ??= [];
     pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }]);
@@ -248,14 +287,7 @@ export default defineConfig({
       'meta',
       {
         property: 'description',
-        content: `Regle is a type safe form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms`,
-      },
-    ],
-    [
-      'meta',
-      {
-        property: 'og:description',
-        content: `Regle is a type safe form validation library for Vue.js`,
+        content: longDescription,
       },
     ],
     [
@@ -290,6 +322,7 @@ export default defineConfig({
   },
   vite: {
     plugins: [
+      vueJsx(),
       groupIconVitePlugin({
         customIcon: {
           pinia:

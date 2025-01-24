@@ -1,5 +1,6 @@
 ---
 title: Migrate from Vuelidate
+description: Migrate to Regle with ease
 ---
 
 # Migrate from Vuelidate

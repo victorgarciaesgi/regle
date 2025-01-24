@@ -1,5 +1,6 @@
 ---
 title: Rule wrappers
+description: Rule wrappers let you customize or upgrade your rules by injecting or replacing some properties.
 ---
 
 # Rule wrappers

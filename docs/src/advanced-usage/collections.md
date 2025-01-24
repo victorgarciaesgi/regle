@@ -1,5 +1,6 @@
 ---
 title: Collections - Declaring rules
+description: API usage of $each
 ---
 
 <script setup>

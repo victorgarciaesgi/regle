@@ -10,7 +10,6 @@
     "moduleDetection": "force",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
     "strict": true,
@@ -21,6 +20,8 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "types": [
       "vitest/globals"
     ]

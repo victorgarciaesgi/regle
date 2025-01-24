@@ -1,5 +1,6 @@
 ---
 title: Rule properties
+description: Rule properties are computed values or methods available in every nested rule status
 ---
 
 # Rule properties

@@ -1,5 +1,6 @@
 ---
 title: Scoped validation
+description: Scoped validation in Regle is made to port Vuelidate's nested component validation
 ---
 
 <script setup>

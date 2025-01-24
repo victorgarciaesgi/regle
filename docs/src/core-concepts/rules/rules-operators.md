@@ -1,5 +1,6 @@
 ---
 title: Rules operators
+description: Regle provides tools to combine and operate on different rules
 ---
 
 <script setup>

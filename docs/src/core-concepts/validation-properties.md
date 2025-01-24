@@ -1,5 +1,6 @@
 ---
 title: Validation properties
+description: Validation properties are computed values or methods available for every nested rule status
 ---
 
 # Validation properties

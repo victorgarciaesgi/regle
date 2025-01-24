@@ -1,5 +1,6 @@
 ---
 title: Rules metadata
+description: Rule validator functions can return more than just a boolean
 ---
 <script setup>
 import UsingMetadataCreateRule from '../parts/components/metadata/UsingMetadataCreateRule.vue';
