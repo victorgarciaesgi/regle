@@ -189,7 +189,7 @@ export default defineConfig({
       copyright: 'Copyright © 2023-present Victor Garcia',
     },
   },
-  transformHead: async ({ pageData, siteConfig }) => {
+  transformHead: async ({ pageData, siteConfig, assets }) => {
     const head: HeadConfig[] = [];
 
     const relativePath = pageData.relativePath.replace(/index\.md$/, '').replace(/\.md$/, '');
@@ -207,6 +207,8 @@ export default defineConfig({
         description: pageDescription,
         bread: [],
       });
+
+      assets.push(`/${satoriImagePath}`);
 
       head.push(['meta', { property: 'description', content: pageDescription }]);
       head.push([
