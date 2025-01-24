@@ -70,6 +70,7 @@
     "prettier": "catalog:",
     "satori": "0.12.1",
     "satori-html": "0.3.2",
+    "@resvg/resvg-js": "2.6.2",
     "opentype.js": "1.3.4",
     "sass": "1.83.4",
     "semver": "7.6.3",

@@ -2,7 +2,7 @@ import satori from 'satori';
 import { html } from 'satori-html';
 import fs from 'fs';
 import path from 'path';
-import opentype from 'opentype.js';
+import { Resvg } from '@resvg/resvg-js';
 
 export async function generateSatoriBanner({
   title,
@@ -14,8 +14,6 @@ export async function generateSatoriBanner({
   bread: string[];
 }) {
   const fontBuffer = await fs.promises.readFile(path.resolve(import.meta.dirname, './theme/inter.ttf'));
-
-  const maybeBread = ``;
 
   const convertedHtml = html` <div
     style="height:100%;width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;background-color:#0b0d0c;font-size:32px;font-weight:600;padding:0 40px;column-gap:40px;background-image:radial-gradient(circle at 25px 25px, rgba(255,255,255, 0.5) 1%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(0, 187, 127, 0.3) 2%, transparent 0%);background-size:100px 100px"
@@ -36,7 +34,7 @@ export async function generateSatoriBanner({
     </svg>
   </div>`;
 
-  return await satori(convertedHtml, {
+  const svg = await satori(convertedHtml, {
     width: 800,
     height: 400,
     fonts: [
@@ -48,4 +46,17 @@ export async function generateSatoriBanner({
       },
     ],
   });
+
+  const resvg = new Resvg(svg, {
+    fitTo: {
+      mode: 'width',
+      value: 1000,
+    },
+    font: {
+      fontFiles: ['./theme/inter.ttf'],
+      loadSystemFonts: false,
+    },
+  });
+  const pngData = resvg.render();
+  return pngData.asPng().toString();
 }
