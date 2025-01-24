@@ -73,4 +73,5 @@ export type {
   MismatchInfo,
   SuperCompatibleRegleRoot,
   SuperCompatibleRegleStatus,
+  ScopedInstancesRecord,
 } from './types';

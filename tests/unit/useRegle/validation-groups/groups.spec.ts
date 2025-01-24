@@ -35,7 +35,6 @@ describe('validation groups', () => {
     expect(vm.r$.$groups.nameAndEmail.$pending).toBe(false);
     expect(vm.r$.$groups.nameAndEmail.$silentErrors).toStrictEqual([
       'This field is required',
-      'Value must be an valid email address',
       'This field is required',
     ]);
     expect(vm.r$.$groups.nameAndEmail.$valid).toStrictEqual(false);
@@ -47,10 +46,7 @@ describe('validation groups', () => {
     expect(vm.r$.$groups.nameAndEmail.$error).toBe(true);
     expect(vm.r$.$groups.nameAndEmail.$invalid).toBe(true);
     expect(vm.r$.$groups.nameAndEmail.$pending).toBe(false);
-    expect(vm.r$.$groups.nameAndEmail.$errors).toStrictEqual([
-      'This field is required',
-      'This field is required',
-    ]);
+    expect(vm.r$.$groups.nameAndEmail.$errors).toStrictEqual(['This field is required', 'This field is required']);
     expect(vm.r$.$groups.nameAndEmail.$valid).toStrictEqual(false);
 
     vm.r$.$value.email = 'foo@free.fr';

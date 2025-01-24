@@ -19,9 +19,11 @@ export default {
     const pinia = createPinia();
     app.use(pinia);
 
-    onMounted(async () => {
-      await nextTick();
-      scrollToActiveSidebarItem();
+    app.use({
+      async install() {
+        await nextTick();
+        scrollToActiveSidebarItem();
+      },
     });
 
     watch(

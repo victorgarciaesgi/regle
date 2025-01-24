@@ -48,9 +48,9 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
   /** Collection of all registered Regles instances values */
   readonly $value: TValue;
   /** Collection of all registered Regles instances errors */
-  readonly $errors: RegleValidationErrors<any>[];
+  readonly $errors: RegleValidationErrors<Record<string, unknown>>[];
   /** Collection of all registered Regles instances silent errors */
-  readonly $silentErrors: RegleValidationErrors<any>;
+  readonly $silentErrors: RegleValidationErrors<Record<string, unknown>>[];
 };
 
 type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>> =
@@ -127,7 +127,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     return (
       !!entries.length &&
       entries.every(([_, regle]) => {
-        return regle?.$invalid;
+        return regle?.$valid;
       })
     );
   });
@@ -155,7 +155,9 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
-  const $errors = computed<Record<string, RegleValidationErrors<any>> | RegleValidationErrors<any>[]>(() => {
+  const $errors = computed<
+    Record<string, RegleValidationErrors<any>> | RegleValidationErrors<Record<string, unknown>>[]
+  >(() => {
     if (scoped) {
       return Object.entries(regles).map(([_, regle]) => {
         return regle.$errors;
@@ -169,7 +171,9 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     }
   });
 
-  const $silentErrors = computed<Record<string, RegleValidationErrors<any>> | RegleValidationErrors<any>[]>(() => {
+  const $silentErrors = computed<
+    Record<string, RegleValidationErrors<any>> | RegleValidationErrors<Record<string, unknown>>[]
+  >(() => {
     if (scoped) {
       return Object.entries(regles).map(([_, regle]) => {
         return regle.$silentErrors;

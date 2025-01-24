@@ -7,4 +7,4 @@ const { useRegle } = defineRegleConfig({
   }),
 });
 
-export const { useCollectScopedValidations, useScopedRegle } = createScopedUseRegle(useRegle);
+export const { useCollectScope, useScopedRegle } = createScopedUseRegle({ customUseRegle: useRegle });

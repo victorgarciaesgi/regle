@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { required } from '@regle/rules';
-import { useScoped3Regle } from './config';
+import { useScoped3Regle } from './scoped-config';
 
-const { r$ } = useScoped3Regle({ scope3Data: '' }, { scope3Data: { customRule: required } });
+const { r$ } = useScoped3Regle({ scope3Data: '' }, { scope3Data: { myCustomRule: required } });
 </script>

@@ -1,10 +1,10 @@
 <template>
   <div>
     <div v-if="show">
-      <Compo3 />
       <Compo1 />
       <Compo2 />
     </div>
+    <Compo3 />
     <Compo2 />
     <Compo1 />
 
@@ -17,7 +17,7 @@
     Collected from scoped components:
     <div>
       <pre>
-        <code>{{ r$.$instances.length }}</code>
+        <code>{{ r$.$errors }}</code>
       </pre>
     </div>
 
@@ -37,11 +37,11 @@ import { useRegle } from '@regle/core';
 import Compo1 from './Compo1.vue';
 import Compo2 from './Compo2.vue';
 import Compo3 from './Compo3.vue';
-import { useCollectScopedValidations } from './config';
+import { useCollectScope } from './config';
 import { minLength } from '@regle/rules';
-import { ref, useId } from 'vue';
+import { ref } from 'vue';
 
-const { r$ } = useCollectScopedValidations();
+const { r$ } = useCollectScope('foo');
 
 const show = ref(false);
 

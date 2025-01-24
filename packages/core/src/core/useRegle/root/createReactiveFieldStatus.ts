@@ -230,10 +230,10 @@ export function createReactiveFieldStatus({
       const $errors = computed<string[]>(() => {
         return extractRulesErrors({
           field: {
+            $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
-            $rules: $rules.value,
           },
         });
       });
@@ -241,10 +241,10 @@ export function createReactiveFieldStatus({
       const $silentErrors = computed<string[]>(() => {
         return extractRulesErrors({
           field: {
-            $error: true,
+            $rules: $rules.value,
+            $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
-            $rules: $rules.value,
           },
           silent: true,
         });

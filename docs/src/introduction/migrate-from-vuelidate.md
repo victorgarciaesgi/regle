@@ -163,6 +163,26 @@ const { r$ } = useCustomRegle({ name: '' }, {
 })
 ```
 
+## Nested component validation
+
+__**Nested component**__ validation is replaced by __**Scoped validation**__.
+
+See [docs for scoped validation](/advanced-usage/scoped-validation) for more details
+
+```ts twoslash
+// [scoped-config.ts]
+import { createScopedUseRegle } from '@regle/core'; // [!code ++]
+export const { useScopedRegle, useCollectScope } = createScopedUseRegle(); // [!code ++]
+
+// @noErrors
+// Parent.vue
+const v$ = useVuelidate(); // [!code --]
+const v$ = useVuelidate({}, {}, {$scope: 'foo'}); // [!code --]
+
+const {r$} = useCollectScope(); // [!code ++]
+
+```
+
 ## Validation groups
 
 ```ts

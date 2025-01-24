@@ -52,6 +52,10 @@ export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
   $groups?: { [x: string]: RegleValidationGroupOutput };
 };
 
+export type ScopedInstancesRecord = Record<string, Record<string, SuperCompatibleRegleRoot>> & {
+  '~~global': Record<string, SuperCompatibleRegleRoot>;
+};
+
 export interface SuperCompatibleRegleStatus extends RegleCommonStatus {
   $fields: {
     [x: string]: unknown;

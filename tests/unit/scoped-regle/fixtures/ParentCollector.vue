@@ -1,6 +1,6 @@
 <template>
   <div v-if="showScope1">
-    <Scope1 key="1" />
+    <Scope1 v-if="showScope1_1" key="1" />
     <Scope1 key="2" />
   </div>
   <div v-if="showScope2">
@@ -11,22 +11,43 @@
   <div v-if="showScope3">
     <Scope3CustomConfig />
   </div>
+  <div v-if="showScope1Namespace">
+    <Scope4WithNamespace :scope="scopeNamespace" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useScope1Validations, useScope2Validations, useScope3Validations } from './config';
+import { useScope1Validations, useScope2Validations, useScope3Validations } from './scoped-config';
 import Scope1 from './Scope1.vue';
 import Scope2 from './Scope2.vue';
 import Scope3CustomConfig from './Scope3CustomConfig.vue';
+import Scope4WithNamespace from './Scope4WithNamespace.vue';
 
 const showScope1 = ref(false);
+const showScope1_1 = ref(true);
+
 const showScope2 = ref(false);
 const showScope3 = ref(false);
 
+const showScope1Namespace = ref(false);
+const scopeNamespace = ref('scope');
+
 const { r$: scope1R$ } = useScope1Validations();
+const { r$: scope1NamespaceR$ } = useScope1Validations('scope');
 const { r$: scope2R$ } = useScope2Validations();
 const { r$: scope3R$ } = useScope3Validations();
 
-defineExpose({ showScope1, showScope2, showScope3, scope1R$, scope2R$, scope3R$ });
+defineExpose({
+  showScope1,
+  showScope1_1,
+  showScope1Namespace,
+  showScope2,
+  showScope3,
+  scope1R$,
+  scope2R$,
+  scope3R$,
+  scope1NamespaceR$,
+  scopeNamespace,
+});
 </script>

@@ -1,12 +1,12 @@
-import { getCurrentInstance, onMounted, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { AllRulesDeclarations, Regle, SuperCompatibleRegleRoot } from '../../types';
-import { tryOnScopeDispose } from '../../utils';
+import { computed, getCurrentInstance, onMounted, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue';
+import type { AllRulesDeclarations, Regle, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
+import { randomId, tryOnScopeDispose } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
 
 export function createUseScopedRegleComposable<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<AllRulesDeclarations>>,
 >(
-  useInstances: () => Ref<Record<string, SuperCompatibleRegleRoot>>,
+  instances: Ref<ScopedInstancesRecord>,
   customUseRegle?: TCustomRegle
 ): {
   useScopedRegle: TCustomRegle;
@@ -16,17 +16,29 @@ export function createUseScopedRegleComposable<
   const useScopedRegle: TCustomRegle = ((
     state: Record<string, unknown>,
     rulesFactory: MaybeRefOrGetter<{}>,
-    options: any
+    options?: { namespace?: MaybeRefOrGetter<string> } & Record<string, any>
   ) => {
-    const instances = useInstances();
+    const { namespace, ...restOptions } = options ?? {};
 
-    const $id = Object.keys(instances.value).length + 1;
+    const computedNamespace = computed(() => toValue(namespace));
 
-    const { r$ } = scopedUseRegle(state, rulesFactory, options) as unknown as Regle;
+    // Keep order while avoiding conflits of ids
+    const $id = ref(`${Object.keys(instances.value).length + 1}-${randomId()}`);
 
-    instances.value[$id] = r$;
+    const instanceName = computed(() => {
+      return `instance-${$id.value}`;
+    });
+
+    const { r$ } = scopedUseRegle(state, rulesFactory, restOptions) as unknown as Regle;
+
+    register();
 
     tryOnScopeDispose(dispose);
+
+    watch(computedNamespace, (newName, oldName) => {
+      dispose(oldName);
+      register();
+    });
 
     if (getCurrentInstance()) {
       onMounted(() => {
@@ -43,11 +55,32 @@ export function createUseScopedRegleComposable<
       });
     }
 
-    function dispose() {
-      delete instances.value[$id];
+    function dispose(oldName?: string) {
+      const nameToClean = oldName ?? computedNamespace.value;
+      if (nameToClean) {
+        if (instances.value[nameToClean]) {
+          delete instances.value[nameToClean][instanceName.value];
+        }
+      } else if (instances.value['~~global'][instanceName.value]) {
+        delete instances.value['~~global'][instanceName.value];
+      }
     }
 
-    return { r$: r$, dispose } as Regle;
+    function register() {
+      if (computedNamespace.value) {
+        if (!instances.value[computedNamespace.value]) {
+          instances.value[computedNamespace.value] = {};
+        }
+        instances.value[computedNamespace.value][instanceName.value] = r$;
+      } else {
+        if (!instances.value['~~global']) {
+          instances.value['~~global'] = {};
+        }
+        instances.value['~~global'][instanceName.value] = r$;
+      }
+    }
+
+    return { r$: r$, dispose, register } as Regle;
   }) as any;
 
   return { useScopedRegle };
