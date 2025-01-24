@@ -244,6 +244,8 @@ You can provide your own store ref.
 
 
 ```ts twoslash
+import {ref} from 'vue';
+// ---cut---
 import { createScopedUseRegle, type ScopedInstancesRecordLike } from '@regle/core';
 
 // Having a default 
