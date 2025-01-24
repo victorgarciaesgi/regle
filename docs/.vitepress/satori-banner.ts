@@ -3,12 +3,15 @@ import { html } from 'satori-html';
 import fs from 'fs';
 import path from 'path';
 import { Resvg } from '@resvg/resvg-js';
+import { kebabCase } from 'lodash-es';
 
 export async function generateSatoriBanner({
+  name,
   title,
   description,
   bread,
 }: {
+  name: string;
   title: string;
   description: string;
   bread: string[];
@@ -57,6 +60,10 @@ export async function generateSatoriBanner({
       loadSystemFonts: false,
     },
   });
+  const parsedName = kebabCase(name);
   const pngData = resvg.render();
-  return pngData.asPng().toString();
+  const pngBuffer = pngData.asPng();
+  await fs.promises.writeFile(path.resolve(__dirname, `../src/public/og-images/${parsedName}.png`), pngBuffer);
+
+  return `og-images/${parsedName}.png`;
 }

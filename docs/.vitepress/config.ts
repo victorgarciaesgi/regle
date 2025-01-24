@@ -197,18 +197,23 @@ export default defineConfig({
     const pageTitle = pageData.frontmatter?.title ?? siteConfig.site?.title;
     const pageDescription = pageData.frontmatter?.description ?? siteConfig.site?.description;
 
-    // const satoriImage = await generateSatoriBanner({ title: pageTitle, description: pageDescription, bread: [] });
-    const satoriImage = false;
     head.push(['meta', { property: 'og:title', content: pageTitle }]);
     head.push(['meta', { property: 'og:description', content: pageDescription }]);
 
-    if (satoriImage && relativePath !== '') {
+    if (relativePath !== '') {
+      const satoriImagePath = await generateSatoriBanner({
+        name: relativePath,
+        title: pageTitle,
+        description: pageDescription,
+        bread: [],
+      });
+
       head.push(['meta', { property: 'description', content: pageDescription }]);
       head.push([
         'meta',
         {
           property: 'og:image',
-          content: satoriImage,
+          content: `https://reglejs.dev/${satoriImagePath}`,
         },
       ]);
     } else {
