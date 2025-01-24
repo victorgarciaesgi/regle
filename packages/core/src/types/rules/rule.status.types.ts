@@ -55,6 +55,7 @@ export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
 export type ScopedInstancesRecord = Record<string, Record<string, SuperCompatibleRegleRoot>> & {
   '~~global': Record<string, SuperCompatibleRegleRoot>;
 };
+export type ScopedInstancesRecordLike = Partial<ScopedInstancesRecord>;
 
 export interface SuperCompatibleRegleStatus extends RegleCommonStatus {
   $fields: {

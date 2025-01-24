@@ -74,4 +74,5 @@ export type {
   SuperCompatibleRegleRoot,
   SuperCompatibleRegleStatus,
   ScopedInstancesRecord,
+  ScopedInstancesRecordLike,
 } from './types';

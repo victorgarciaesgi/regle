@@ -144,6 +144,69 @@ export const {
 } = createScopedUseRegle();
 ```
 
+## Namespaces inside scopes
+
+Each scope can collect a specific namespace. Giving a namespace name will collect only the children with the same namespace name.
+
+The namespace can be reactive, so it will update every time it changes.
+
+In this exemple, only the components using the same scope and same namespace will be collected.
+
+:::code-group
+```vue twoslash [Parent.vue]
+<script setup lang="ts">
+import { createScopedUseRegle } from '@regle/core';
+const { useScopedRegle, useCollectScope } = createScopedUseRegle();
+// ---cut---
+// @noErrors
+import { useCollectScope } from './scoped-config';
+import Child1 from './Child1.vue';
+import Child2 from './Child2.vue';
+
+const { r$ } = useCollectScope('contacts');
+</script>
+```
+
+```vue [Child1.vue]
+<template>
+  <input v-model="r$.$value.firstName" placeholder="Type your firstname" />
+  <ul>
+    <li v-for="error of r$.$errors.firstName" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+</template>
+
+<script setup lang="ts">
+import { required } from '@regle/rules';
+import { useScopedRegle } from './scoped-config';
+
+const { r$ } = useScopedRegle(
+  { firstName: '' }, 
+  { firstName: { required } }
+  { namespace: 'contacts' }
+);
+</script>
+```
+
+```vue [Child2.vue]
+<template>
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <ul>
+    <li v-for="error of r$.$errors.email" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+</template>
+
+<script setup lang="ts">
+import { required, email } from '@regle/rules';
+import { useScopedRegle } from './scoped-config';
+
+const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
+</script>
+```
+:::
 
 ## Inject global config
 
@@ -169,6 +232,24 @@ const {r$} = useScopedRegle({name: ''}, {
 //     ^|
   }
 })
+
+```
+
+
+## Custom store for instances
+
+By default collected instances are stored in a local ref. 
+
+You can provide your own store ref.
+
+
+```ts twoslash
+import { createScopedUseRegle, type ScopedInstancesRecordLike } from '@regle/core';
+
+// Having a default 
+const myCustomStore = ref<ScopedInstancesRecordLike>({});
+
+const { useScopedRegle, useCollectScope } = createScopedUseRegle({customStore: myCustomStore});
 
 ```
 

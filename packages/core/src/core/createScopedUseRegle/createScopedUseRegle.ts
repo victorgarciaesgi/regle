@@ -1,5 +1,5 @@
 import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { AllRulesDeclarations, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
+import type { AllRulesDeclarations, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
 import type { MergedScopedRegles } from '../mergeRegles';
 import { type useRegleFn } from '../useRegle';
@@ -13,7 +13,7 @@ export function createScopedUseRegle<
     : useRegleFn<Partial<AllRulesDeclarations>>,
 >(options?: {
   customUseRegle?: TCustomRegle;
-  customStore?: Ref<ScopedInstancesRecord>;
+  customStore?: Ref<ScopedInstancesRecordLike>;
 }): {
   useScopedRegle: TReturnedRegle;
   useCollectScope<TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
@@ -23,7 +23,16 @@ export function createScopedUseRegle<
   };
 } {
   const useInstances = options?.customStore
-    ? () => options.customStore!
+    ? () => {
+        if (options.customStore) {
+          if (!options.customStore?.value['~~global']) {
+            options.customStore.value['~~global'] = {};
+          } else if (options.customStore?.value) {
+            options.customStore.value = { '~~global': {} };
+          }
+        }
+        return options.customStore as Ref<ScopedInstancesRecord>;
+      }
     : createGlobalState(() => {
         const $inst = ref<ScopedInstancesRecord>({ '~~global': {} });
         return $inst;
