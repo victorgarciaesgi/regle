@@ -1,0 +1,31 @@
+{
+  "name": "regle-tests",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@regle/core": "workspace:*",
+    "@regle/rules": "workspace:*",
+    "@regle/schemas": "workspace:*",
+    "vue": "catalog:",
+    "vue3.4": "catalog:",
+    "pinia": "catalog:",
+    "pinia2.2.5": "catalog:",
+    "vitest": "catalog:",
+    "@vue/compiler-dom": "catalog:",
+    "@pinia/testing": "0.1.7",
+    "@vue/reactivity": "catalog:",
+    "@vue/runtime-core": "catalog:",
+    "@vue/runtime-dom": "catalog:",
+    "@vue/server-renderer": "catalog:",
+    "@vue/compiler-dom3.4": "catalog:",
+    "@vue/reactivity3.4": "catalog:",
+    "@vue/runtime-core3.4": "catalog:",
+    "@vue/runtime-dom3.4": "catalog:",
+    "@vue/server-renderer3.4": "catalog:",
+    "@vue/test-utils": "2.4.6",
+    "typescript": "catalog:",
+    "date-fns": "4.1.0",
+    "valibot": "1.0.0-beta.14",
+    "zod": "3.24.1"
+  }
+}

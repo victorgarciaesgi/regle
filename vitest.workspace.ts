@@ -18,14 +18,14 @@ const alias = {
 
 export default defineWorkspace([
   {
-    plugins: [vue()],
+    plugins: [vue() as any],
     test: {
-      name: `Vue ${vueVersion}.x`,
+      name: `Global tests - Vue ${vueVersion}.x`,
+      root: './tests',
       globals: true,
       testTimeout: 10000,
       environment: 'happy-dom',
-      include: ['./packages/**/*.spec.ts', './tests/**/*.spec.ts'],
-      exclude: ['./packages/nuxt/**', 'packages/**/node_modules/**'],
+      include: ['./tests/**/*.spec.ts'],
       typecheck: {
         enabled: true,
         include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
@@ -38,9 +38,27 @@ export default defineWorkspace([
     },
   },
   {
+    plugins: [vue() as any],
     test: {
-      name: '@regle/nuxt',
+      name: `Rules tests - Vue ${vueVersion}.x`,
+      root: './packages/rules',
+      globals: true,
+      testTimeout: 10000,
+      environment: 'happy-dom',
+      include: ['./packages/rules/**/*.spec.ts'],
+      typecheck: {
+        enabled: true,
+        include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
+        ignoreSourceErrors: true,
+        checker: 'vue-tsc',
+      },
+    },
+  },
+  {
+    test: {
+      name: `Nuxt tests - Vue ${vueVersion}.x`,
       root: './packages/nuxt',
+      globals: true,
       include: ['test/**/*.{spec,test}.ts'],
     },
   },

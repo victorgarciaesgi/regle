@@ -2,10 +2,10 @@ packages:
   - packages/core
   - packages/rules
   - packages/schemas
-  - packages/zod
-  - packages/valibot
   - packages/nuxt
   - packages/shared
+  - tests
+  - docs
   - playground/vue3
   - playground/nuxt
   - ui-tests/fixtures/ui-vue3
@@ -35,4 +35,5 @@ catalog:
   prettier: 3.3.3
   typescript: 5.6.3
   vue-tsc: 2.1.10
+  vitest: 2.1.8
   tsup: 8.3.5

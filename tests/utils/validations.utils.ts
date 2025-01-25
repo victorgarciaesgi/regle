@@ -1,6 +1,5 @@
 import type { RegleCollectionStatus, RegleFieldStatus, RegleStatus } from '@regle/core';
 import type { RegleSchemaStatus, RegleSchemaCollectionStatus, RegleSchemaFieldStatus } from '@regle/schemas';
-import type { RegleSchemaMode } from '../../packages/schemas/src/types';
 
 type PossibleFields =
   | RegleStatus<any, any>

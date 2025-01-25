@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "devDependencies": {
+    "@regle/core": "workspace:*",
     "type-fest": "catalog:"
   }
 }

@@ -14,7 +14,6 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "composite": false,
     "verbatimModuleSyntax": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
@@ -23,13 +22,9 @@
     "jsxImportSource": "vue",
     "types": [
       "vitest/globals"
-    ]
+    ],
   },
   "include": [
-    "./packages/**/*",
-    "**/tsup*"
+    "./**/*"
   ],
-  "exclude": [
-    "./packages/**/dist/**/*",
-  ]
 }
