@@ -1,9 +1,12 @@
 import type { RegleRuleDefinitionWithMetadataProcessor } from '@regle/core';
-import type * as v from 'valibot';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 export function extractIssuesMessages() {
-  return ((metadata: { $issues: v.BaseIssue<unknown>[] }) => {
+  return ((metadata: { $issues: StandardSchemaV1.Issue[] }) => {
     const issueMessages = metadata.$issues?.map((issue) => issue.message);
-    return issueMessages.length ? issueMessages : 'Error';
+    if (issueMessages?.length) {
+      return issueMessages.length ? issueMessages : 'Error';
+    }
+    return [];
   }) satisfies RegleRuleDefinitionWithMetadataProcessor<any, any, any>;
 }

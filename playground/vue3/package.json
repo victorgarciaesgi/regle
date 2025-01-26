@@ -16,7 +16,7 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "pinia": "2.3.0",
-    "valibot": "1.0.0-beta.14",
+    "zod": "3.24.1",
     "vue": "catalog:"
   },
   "devDependencies": {

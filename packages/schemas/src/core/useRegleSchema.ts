@@ -2,14 +2,13 @@ import type {
   DeepMaybeRef,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
+  MismatchInfo,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ReglePartialRuleTree,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
   Unwrap,
-  MismatchInfo,
-  NoInferLegacy,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
@@ -64,7 +63,6 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: RegleSchemaMode }
   ): RegleSchema<TState, TSchema> {
-    //
     const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
 
     const computedSchema = computed(() => unref(schema));

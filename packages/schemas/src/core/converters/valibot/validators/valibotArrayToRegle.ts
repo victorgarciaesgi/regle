@@ -1,9 +1,8 @@
 import type { RegleCollectionRuleDecl } from '@regle/core';
 import { withMessage } from '@regle/rules';
-import * as v from 'valibot';
+import type * as v from 'valibot';
 import type { Ref } from 'vue';
 import { processValibotTypeDef } from '../processValibotTypeDef';
-import { transformValibotAdapter } from './transformValibotAdapter';
 import type { MaybeArrayAsync } from '../../../../types/valibot/valibot.schema.types';
 import { extractIssuesMessages } from '../../extractIssuesMessages';
 
@@ -19,10 +18,13 @@ export function valibotArrayToRegle(
     schema.pipe
       .filter((f) => f.kind === 'validation')
       .forEach((validation) => {
-        filteredSelfSchema[validation.type] = withMessage(
-          transformValibotAdapter(v.pipe(v.array(v.any()), validation as any) as any) as any,
-          extractIssuesMessages() as any
-        );
+        filteredSelfSchema[validation.type] = withMessage((value) => {
+          const result = validation['~run']({ value, typed: true }, {});
+          return {
+            $valid: !result.issues,
+            $issues: result.issues,
+          };
+        }, extractIssuesMessages() as any);
       });
   }
 

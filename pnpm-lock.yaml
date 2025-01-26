@@ -453,12 +453,6 @@ importers:
       '@standard-schema/spec':
         specifier: 1.0.0-rc.0
         version: 1.0.0-rc.0
-      valibot:
-        specifier: 1.0.0-beta.14
-        version: 1.0.0-beta.14(typescript@5.6.3)
-      zod:
-        specifier: ^3.24.0
-        version: 3.24.1
     devDependencies:
       '@total-typescript/ts-reset':
         specifier: 0.6.1
@@ -505,6 +499,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
+      valibot:
+        specifier: 1.0.0-beta.14
+        version: 1.0.0-beta.14(typescript@5.6.3)
       vitest:
         specifier: 2.1.8
         version: 2.1.8(@types/node@22.10.7)(@vitest/ui@2.1.8)(happy-dom@16.7.2)(sass@1.83.4)(terser@5.37.0)
@@ -517,6 +514,9 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 2.1.10(typescript@5.6.3)
+      zod:
+        specifier: 3.24.1
+        version: 3.24.1
 
   packages/shared:
     devDependencies:
@@ -572,12 +572,12 @@ importers:
       pinia:
         specifier: 2.3.0
         version: 2.3.0(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
-      valibot:
-        specifier: 1.0.0-beta.14
-        version: 1.0.0-beta.14(typescript@5.6.3)
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.6.3)
+      zod:
+        specifier: 3.24.1
+        version: 3.24.1
     devDependencies:
       '@andypf/json-viewer':
         specifier: 2.1.7

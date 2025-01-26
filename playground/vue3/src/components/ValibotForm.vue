@@ -57,6 +57,13 @@
       </ul>
     </template>
 
+    <ul>
+      Array:
+      <li v-for="error of r$.$errors.nested?.$self" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+
     <button type="submit" @click="form.nested?.push({ name: '' })"> Add entry </button>
     <button type="submit" @click="form.nested?.splice(0, 1)"> Remove first </button>
     <button type="submit" @click="r$.$reset">Reset</button>
@@ -133,7 +140,7 @@ const formSchema = v.intersect([
           name: v.pipe(v.string(), v.minLength(3, 'Min Length : 3')),
         })
       ),
-      v.minLength(1)
+      v.minLength(2)
     ),
   }),
   v.object({ enum: v.picklist(['Salmon', 'Tuna', 'Trout']) }),
@@ -145,7 +152,7 @@ const form = reactive<Partial<v.InferInput<typeof formSchema>>>({
   nested: [],
 });
 
-const { r$ } = useRegleSchema(form, formSchema, { mode: 'schema' });
+const { r$ } = useRegleSchema(form, formSchema, { mode: 'rules' });
 
 async function submit() {
   const { result, data } = await r$.$validate();

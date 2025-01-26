@@ -1,6 +1,6 @@
 import type { RegleCollectionRuleDecl } from '@regle/core';
 import { exactLength, maxLength, minLength } from '@regle/rules';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { processZodTypeDef } from '../processZodTypeDef';
 import type { Ref } from 'vue';
 
@@ -9,7 +9,7 @@ export function zodArrayToRegle(
   state: Ref<unknown>
 ): RegleCollectionRuleDecl {
   const arrayValidators =
-    schema._def.typeName === z.ZodFirstPartyTypeKind.ZodArray
+    schema._def.typeName === 'ZodArray'
       ? {
           ...(!!schema._def.minLength && { minLength: minLength(schema._def.minLength?.value) }),
           ...(!!schema._def.maxLength && { maxLength: maxLength(schema._def.maxLength?.value) }),
@@ -17,7 +17,7 @@ export function zodArrayToRegle(
         }
       : {};
 
-  const items = schema._def.typeName === z.ZodFirstPartyTypeKind.ZodArray ? schema._def.type : schema._def.items;
+  const items = schema._def.typeName === 'ZodArray' ? schema._def.type : schema._def.items;
   return {
     $each: processZodTypeDef(items, state),
     ...arrayValidators,

@@ -13,9 +13,19 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
-    "@standard-schema/spec": "1.0.0-rc.0",
-    "valibot": "1.0.0-beta.14",
+    "@standard-schema/spec": "1.0.0-rc.0"
+  },
+  "peerDependencies": {
+    "valibot": "^1.0.0-beta.11",
     "zod": "^3.24.0"
+  },
+  "peerDependenciesMeta": {
+    "valibot": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
@@ -33,7 +43,7 @@
     "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "valibot": "1.0.0-beta.12",
+    "valibot": "1.0.0-beta.14",
     "vitest": "2.1.8",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",

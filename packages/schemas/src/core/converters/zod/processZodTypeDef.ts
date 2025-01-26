@@ -1,19 +1,12 @@
 import type { RegleFormPropertyType } from '@regle/core';
 import { withMessage } from '@regle/rules';
 import type { Ref } from 'vue';
-import type { Effect, ZodArray, ZodTuple } from 'zod';
-import z, { type ZodTypeAny } from 'zod';
+import type { ZodArray, ZodTuple, z, ZodTypeAny } from 'zod';
 import { transformZodValidatorAdapter, zodArrayToRegle, zodObjectToRegle } from './validators';
 import { zodDiscriminatedUnionToRegle } from './validators/zodDiscriminatedUnionToRegle';
 import { extractIssuesMessages } from '../extractIssuesMessages';
 
-const typesWithInnerTypes = [
-  z.ZodFirstPartyTypeKind.ZodDefault,
-  z.ZodFirstPartyTypeKind.ZodCatch,
-  z.ZodFirstPartyTypeKind.ZodNullable,
-  z.ZodFirstPartyTypeKind.ZodOptional,
-  z.ZodFirstPartyTypeKind.ZodReadonly,
-] as const;
+const typesWithInnerTypes = ['ZodDefault', 'ZodCatch', 'ZodNullable', 'ZodOptional', 'ZodReadonly'] as const;
 
 function isDefWithInnerType(
   schema: z.ZodType<any>
@@ -49,17 +42,11 @@ export function getNestedInnerType(schema: z.ZodType<any>): z.ZodType<any> | und
 export function processZodTypeDef(schema: z.ZodSchema<any>, state: Ref<unknown>): RegleFormPropertyType {
   const schemaDef = getNestedInnerType(schema);
   if (schemaDef?._def && 'typeName' in schemaDef._def) {
-    if (
-      schemaDef._def.typeName === z.ZodFirstPartyTypeKind.ZodArray ||
-      schemaDef._def.typeName === z.ZodFirstPartyTypeKind.ZodTuple
-    ) {
+    if (schemaDef._def.typeName === 'ZodArray' || schemaDef._def.typeName === 'ZodTuple') {
       return zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state);
-    } else if (
-      schemaDef._def.typeName === z.ZodFirstPartyTypeKind.ZodObject ||
-      schemaDef._def.typeName === z.ZodFirstPartyTypeKind.ZodIntersection
-    ) {
+    } else if (schemaDef._def.typeName === 'ZodObject' || schemaDef._def.typeName === 'ZodIntersection') {
       return zodObjectToRegle(schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>, state);
-    } else if (schemaDef._def.typeName === z.ZodFirstPartyTypeKind.ZodDiscriminatedUnion) {
+    } else if (schemaDef._def.typeName === 'ZodDiscriminatedUnion') {
       const zodRule = zodDiscriminatedUnionToRegle(schemaDef as z.ZodDiscriminatedUnion<any, any>, state);
       return zodRule.zodRule;
     } else {

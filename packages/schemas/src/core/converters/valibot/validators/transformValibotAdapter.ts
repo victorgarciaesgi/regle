@@ -1,6 +1,6 @@
-import type { FormRuleDeclaration, RegleRuleDefinition, RegleRuleMetadataDefinition, RegleRuleRaw } from '@regle/core';
+import type { FormRuleDeclaration } from '@regle/core';
 import { withAsync, withParams } from '@regle/rules';
-import * as v from 'valibot';
+import type * as v from 'valibot';
 import type { MaybeSchemaAsync } from '../../../../types/valibot/valibot.schema.types';
 
 export function transformValibotAdapter(
@@ -14,7 +14,7 @@ export function transformValibotAdapter(
       return result;
     }
 
-    if (result.success) {
+    if (!result.issues) {
       return {
         $valid: true,
         $issues: [],
@@ -42,8 +42,8 @@ function trySafeTransform(
   try {
     if (schema.async) {
       return new Promise<{ $valid: boolean; $issues: any[] }>(async (resolve) => {
-        const result = await v.safeParseAsync(schema, value);
-        if (result.success) {
+        const result = await schema['~standard'].validate(value);
+        if (!result.issues) {
           resolve({
             $valid: true,
             $issues: [],
@@ -51,13 +51,13 @@ function trySafeTransform(
         } else {
           resolve({
             $valid: false,
-            $issues: result.issues,
+            $issues: result.issues as v.BaseIssue<unknown>[],
           });
         }
       });
     } else {
-      const result = v.safeParse(schema, value);
-      return result;
+      const result = schema['~standard'].validate(value) as v.StandardResult<unknown>;
+      return result as v.SafeParseResult<any>;
     }
   } catch (e) {
     return {} as any;
