@@ -15,7 +15,7 @@
     "run:vitest:vue-3.4": "env-cmd -e 'vue3.4' -- vitest",
     "unit-tests:run": "pnpm run run:vitest:vue-3.5 run && pnpm run run:vitest:vue-3.4 run",
     "test": "pnpm run lint && pnpm run build:dev && pnpm run typecheck && pnpm run unit-tests:run && pnpm run ui-tests:run",
-    "test:coverage": "pnpm run build:sourcemaps && pnpm run run:vitest:vue-3.5 run --coverage",
+    "test:coverage": "pnpm run build:sourcemaps && env-cmd -e 'runtime-only' -- vitest run --coverage",
     "test:dev": "pnpm run run:vitest:vue-3.5",
     "release": "pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",

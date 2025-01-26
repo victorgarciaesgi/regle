@@ -2,6 +2,7 @@ import { defineWorkspace } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 
 const vueVersion = process.env.VUE_VERSION ?? '3.5';
+const testTypes = process.env.TEST_TYPES != null ? (process.env.TEST_TYPES === 'true' ? true : false) : true;
 
 const alias = {
   ...(vueVersion === '3.4' && {
@@ -27,7 +28,7 @@ export default defineWorkspace([
       environment: 'happy-dom',
       include: ['./tests/**/*.spec.ts'],
       typecheck: {
-        enabled: true,
+        enabled: testTypes,
         include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
         ignoreSourceErrors: true,
         checker: 'vue-tsc',
@@ -47,7 +48,7 @@ export default defineWorkspace([
       environment: 'happy-dom',
       include: ['./packages/rules/**/*.spec.ts'],
       typecheck: {
-        enabled: true,
+        enabled: testTypes,
         include: ['**/*.{test,spec}(-d)?.?(c|m)[jt]s?(x)'],
         ignoreSourceErrors: true,
         checker: 'vue-tsc',
