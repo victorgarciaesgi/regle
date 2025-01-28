@@ -1,7 +1,8 @@
 <template>
   <!-- <TestForm /> -->
   <!-- <ValibotForm /> -->
-  <ZodForm />
+  <!-- <ZodForm /> -->
+  <ZodValibotTypes />
   <!-- <Test13 /> -->
   <!-- <Parent /> -->
   <!-- <ParentNested /> -->
@@ -11,6 +12,7 @@
 import { ref } from 'vue';
 import Test13 from './components/Test13.vue';
 import ValibotForm from './components/ValibotForm.vue';
+import ZodValibotTypes from './components/ZodValibotTypes.vue';
 import ZodForm from './components/ZodForm.vue';
 import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';

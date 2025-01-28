@@ -7,7 +7,8 @@ import { processZodTypeDef } from '../processZodTypeDef';
 
 export function zodDiscriminatedUnionToRegle(
   schema: z.ZodDiscriminatedUnion<any, any>,
-  state: Ref<unknown>
+  state: Ref<unknown>,
+  additionalIssues?: Ref<z.ZodIssue[] | undefined>
 ): { zodRule: Ref<ReglePartialRuleTree<any, any>> } {
   const scope = effectScope();
 
@@ -23,7 +24,14 @@ export function zodDiscriminatedUnionToRegle(
             zodRule.value = Object.fromEntries(
               Object.entries(selectedDiscriminant._def.shape()).map(([key, shape]) => {
                 if (typeof shape === 'object' && '_def' in shape) {
-                  return [key, processZodTypeDef(shape, toRef(isObject(state.value) ? state.value : {}, key))];
+                  return [
+                    key,
+                    processZodTypeDef({
+                      schema: shape,
+                      state: toRef(isObject(state.value) ? state.value : {}),
+                      additionalIssues,
+                    }),
+                  ];
                 }
                 return [key, {}];
               })
