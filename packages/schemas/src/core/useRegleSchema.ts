@@ -24,7 +24,10 @@ export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = n
   TState extends Record<string, any>,
   TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
   TMode extends RegleSchemaMode = never,
-  TValid = StandardSchemaV1.InferInput<TSchema> extends UnwrapNestedRefs<TState>
+  TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
+    UnwrapNestedRefs<TState>,
+    { recurseIntoArrays: true }
+  >
     ? {}
     : MismatchInfo<
         UnwrapNestedRefs<TState>,

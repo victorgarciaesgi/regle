@@ -51,21 +51,22 @@ export function processZodTypeDef({
   const schemaDef = getNestedInnerType(schema);
   if (schemaDef?._def && 'typeName' in schemaDef._def) {
     if (schemaDef._def.typeName === 'ZodArray' || schemaDef._def.typeName === 'ZodTuple') {
-      return zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state, additionalIssues);
+      const schemaRef = zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state, additionalIssues);
+      return schemaRef.zodRule;
     } else if (schemaDef._def.typeName === 'ZodObject' || schemaDef._def.typeName === 'ZodIntersection') {
-      const zodRule = zodObjectToRegle(
+      const schemaRef = zodObjectToRegle(
         schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>,
         state,
         additionalIssues
       );
-      return zodRule.zodRule;
+      return schemaRef.zodRule;
     } else if (schemaDef._def.typeName === 'ZodDiscriminatedUnion') {
-      const zodRule = zodDiscriminatedUnionToRegle(
+      const schemaRef = zodDiscriminatedUnionToRegle(
         schemaDef as z.ZodDiscriminatedUnion<any, any>,
         state,
         additionalIssues
       );
-      return zodRule.zodRule;
+      return schemaRef.zodRule;
     } else {
       if (additionalIssues) {
         return {
