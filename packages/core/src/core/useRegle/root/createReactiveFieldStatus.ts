@@ -119,7 +119,10 @@ export function createReactiveFieldStatus({
 
     if (storeResult?.valid != null) {
       scopeState.$dirty.value = storage.getDirtyState(path);
-      if (scopeState.$dirty.value) {
+      if (
+        (scopeState.$dirty.value && scopeState.$autoDirty.value) ||
+        (scopeState.$rewardEarly.value && scopeState.$error.value)
+      ) {
         $commit();
       }
     }

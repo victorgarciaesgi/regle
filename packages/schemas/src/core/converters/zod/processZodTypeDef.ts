@@ -71,7 +71,7 @@ export function processZodTypeDef({
       if (additionalIssues) {
         return {
           [schemaDef.constructor.name]: withMessage(
-            withParams(transformZodValidatorAdapter(schema, additionalIssues) as any, [state, additionalIssues]),
+            withParams(transformZodValidatorAdapter(schema, additionalIssues) as any, [state]),
             extractIssuesMessages() as any
           ),
         };

@@ -74,7 +74,8 @@ export function zodObjectToRegle(
                   return additionalIssues.value
                     ?.filter((f) => f.path[0] === key)
                     .map((m) => {
-                      const [first, ...rest] = m.path;
+                      // Remove first item of path
+                      const [_, ...rest] = m.path;
                       return {
                         ...m,
                         path: rest,

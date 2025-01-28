@@ -291,6 +291,7 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Regle' }],
     ['meta', { property: 'og:site_name', content: 'Regle' }],
+    ['meta', { name: 'robots', content: 'nosnippet' }],
     [
       'meta',
       {

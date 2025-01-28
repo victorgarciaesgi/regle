@@ -1,8 +1,10 @@
 import type { RegleCollectionRuleDecl } from '@regle/core';
-import { exactLength, maxLength, minLength } from '@regle/rules';
-import type { z } from 'zod';
-import { processZodTypeDef } from '../processZodTypeDef';
+import { exactLength, maxLength, minLength, withMessage, withParams } from '@regle/rules';
 import { computed, effectScope, onScopeDispose, reactive, ref, watch, type Ref } from 'vue';
+import type { z } from 'zod';
+import { extractIssuesMessages } from '../../extractIssuesMessages';
+import { processZodTypeDef } from '../processZodTypeDef';
+import { transformZodValidatorAdapter } from './transformZodValidatorAdapter';
 
 function getNestedZodArraySchema(
   schema: z.ZodType,
@@ -29,6 +31,7 @@ export function zodArrayToRegle(
   const { nestedSchema, nestedEffects } = getNestedZodArraySchema(schema);
 
   const zodRule = ref<RegleCollectionRuleDecl<any, any>>({});
+
   if (nestedSchema) {
     const arrayValidators =
       nestedSchema._def.typeName === 'ZodArray'
@@ -38,7 +41,6 @@ export function zodArrayToRegle(
             ...(!!nestedSchema._def.exactLength && { exactLength: exactLength(nestedSchema._def.exactLength?.value) }),
           }
         : {};
-
     if (nestedEffects?.length) {
       const scope = effectScope();
 
@@ -48,25 +50,30 @@ export function zodArrayToRegle(
           return localAdditionalIssues.value.concat(rootAdditionalIssues?.value ?? []);
         });
 
-        watch(
-          state,
-          () => {
-            if (nestedSchema) {
-              localAdditionalIssues.value = (rootAdditionalIssues?.value ?? []).concat(
-                schema.safeParse(state.value).error?.issues.filter((f) => f.code === 'custom') ?? []
-              );
-            }
-          },
-          { deep: true, flush: 'pre', immediate: true }
-        );
+        if (!rootAdditionalIssues) {
+          // Local issues are already done by the parent refine if there is any
+          watch(
+            state,
+            () => {
+              if (nestedSchema) {
+                localAdditionalIssues.value =
+                  schema.safeParse(state.value).error?.issues.filter((f) => f.code === 'custom') ?? [];
+              }
+            },
+            { deep: true, flush: 'pre', immediate: true }
+          );
+        }
 
         if (nestedSchema) {
           const items = nestedSchema._def.typeName === 'ZodArray' ? nestedSchema._def.type : nestedSchema._def.items;
+
+          const selfAdditionalIssues = computed(() => additionalIssues.value.filter((f) => !f.path.length));
 
           zodRule.value = {
             $each: (_, index) => {
               const fieldIssues = computed(() => {
                 return additionalIssues.value
+                  ?.filter((f) => f.code === 'custom')
                   ?.filter((f) => f.path[0] === index.toString())
                   .map((m) => {
                     const [first, ...rest] = m.path;
@@ -78,7 +85,13 @@ export function zodArrayToRegle(
               });
               return processZodTypeDef({ schema: items, state, additionalIssues: fieldIssues });
             },
-            ...arrayValidators,
+            selfValidator: withMessage(
+              withParams(transformZodValidatorAdapter(undefined, selfAdditionalIssues) as any, [
+                state,
+                selfAdditionalIssues,
+              ]),
+              extractIssuesMessages() as any
+            ),
           };
         } else {
           zodRule.value = {};

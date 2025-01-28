@@ -73,6 +73,11 @@ export type {
   MismatchInfo,
   SuperCompatibleRegleRoot,
   SuperCompatibleRegleStatus,
+  SuperCompatibleRegleResult,
+  SuperCompatibleRegleFieldStatus,
+  SuperCompatibleRegleRuleStatus,
+  SuperCompatibleRegleCollectionErrors,
+  SuperCompatibleRegleCollectionStatus,
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
 } from './types';
