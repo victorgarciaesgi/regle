@@ -6,7 +6,8 @@ import type { Ref } from 'vue';
 
 export function zodArrayToRegle(
   schema: z.ZodArray<any> | z.ZodTuple<any>,
-  state: Ref<unknown>
+  state: Ref<unknown>,
+  additionalIssues?: Ref<z.ZodIssue[] | undefined>
 ): RegleCollectionRuleDecl {
   const arrayValidators =
     schema._def.typeName === 'ZodArray'
@@ -19,7 +20,7 @@ export function zodArrayToRegle(
 
   const items = schema._def.typeName === 'ZodArray' ? schema._def.type : schema._def.items;
   return {
-    $each: processZodTypeDef(items, state),
+    $each: processZodTypeDef({ schema: items, state, additionalIssues }),
     ...arrayValidators,
   };
 }

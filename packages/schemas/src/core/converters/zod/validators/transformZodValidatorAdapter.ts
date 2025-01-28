@@ -1,17 +1,23 @@
 import type { RegleRuleMetadataDefinition } from '@regle/core';
 import { withAsync, withParams } from '@regle/rules';
+import type { Ref } from 'vue';
 import type { z } from 'zod';
 
-export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
+export function transformZodValidatorAdapter(
+  schema: z.ZodSchema<any>,
+  additionalIssues?: Ref<z.ZodIssue[] | undefined>
+) {
   const isAsync = hasAsyncRefinement(schema);
+
   const validatorFn = (value: unknown): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> => {
-    const result = trySafeTransform(schema, value);
+    const result = trySafeTransform(schema, value, additionalIssues?.value);
 
     if (result instanceof Promise) {
       return result;
     }
+    const hasNoIssues = result.success && !additionalIssues?.value?.length;
 
-    if (result.success) {
+    if (hasNoIssues) {
       return {
         $valid: true,
         $issues: [],
@@ -19,7 +25,7 @@ export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
     } else {
       return {
         $valid: false,
-        $issues: result.error.issues,
+        $issues: (result.error?.issues ?? []).concat(additionalIssues?.value ?? []),
       };
     }
   };
@@ -32,7 +38,8 @@ export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
 
 function trySafeTransform(
   schema: z.ZodTypeAny,
-  value: unknown
+  value: unknown,
+  additionalIssues?: z.ZodIssue[] | undefined
 ): z.SafeParseReturnType<any, any> | Promise<RegleRuleMetadataDefinition> {
   try {
     const result = schema.safeParse(value);
@@ -41,7 +48,9 @@ function trySafeTransform(
     try {
       return new Promise<RegleRuleMetadataDefinition>(async (resolve) => {
         const result = await schema.safeParseAsync(value);
-        if (result.success) {
+        const hasNoIssues = result.success && !additionalIssues?.length;
+
+        if (hasNoIssues) {
           resolve({
             $valid: true,
             $issues: [],
@@ -49,7 +58,7 @@ function trySafeTransform(
         } else {
           resolve({
             $valid: false,
-            $issues: result.error.issues,
+            $issues: (result.error?.issues ?? []).concat(additionalIssues ?? []),
           });
         }
       });

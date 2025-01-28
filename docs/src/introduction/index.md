@@ -37,6 +37,8 @@ Optional
   - Zod  `3.24+`. Check [Zod usage](/integrations/zod)
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 
   - Valibot  `1.0.0-beta.9+`. Check [Valibot usage](/integrations/valibot)
+- [ArkType](https://arktype.io/) 
+  - ⚠️ Only with "schema" mode
 
 <br/>
 

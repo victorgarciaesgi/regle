@@ -451,8 +451,8 @@ importers:
         specifier: workspace:*
         version: link:../rules
       '@standard-schema/spec':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0
+        specifier: 1.0.0
+        version: 1.0.0
     devDependencies:
       '@total-typescript/ts-reset':
         specifier: 0.6.1
@@ -572,6 +572,9 @@ importers:
       pinia:
         specifier: 2.3.0
         version: 2.3.0(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
+      valibot:
+        specifier: 1.0.0-beta.14
+        version: 1.0.0-beta.14(typescript@5.6.3)
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.6.3)
@@ -2321,8 +2324,8 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@standard-schema/spec@1.0.0-rc.0':
-    resolution: {integrity: sha512-DcY/ICFcZIESNTLTexIT108HOqd1FtxsiLV4ZYGluySWyjF6TZ6troNyXjiqoHU6j0wN3A6SmYnTA5CHQp9blw==}
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
   '@stylistic/eslint-plugin@2.13.0':
     resolution: {integrity: sha512-RnO1SaiCFHn666wNz2QfZEFxvmiNRqhzaMXHXxXXKt+MEP7aajlPxUSMIQpKAaJfverpovEYqjBOXDq6dDcaOQ==}
@@ -8016,7 +8019,7 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@standard-schema/spec@1.0.0-rc.0': {}
+  '@standard-schema/spec@1.0.0': {}
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.15.0(jiti@2.4.2))(typescript@5.6.3)':
     dependencies:

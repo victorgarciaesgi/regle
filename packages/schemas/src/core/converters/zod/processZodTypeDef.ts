@@ -1,5 +1,5 @@
 import type { RegleFormPropertyType } from '@regle/core';
-import { withMessage } from '@regle/rules';
+import { withMessage, withParams } from '@regle/rules';
 import type { Ref } from 'vue';
 import type { ZodArray, ZodTuple, z, ZodTypeAny } from 'zod';
 import { transformZodValidatorAdapter, zodArrayToRegle, zodObjectToRegle } from './validators';
@@ -39,17 +39,42 @@ export function getNestedInnerType(schema: z.ZodType<any>): z.ZodType<any> | und
   return undefined;
 }
 
-export function processZodTypeDef(schema: z.ZodSchema<any>, state: Ref<unknown>): RegleFormPropertyType {
+export function processZodTypeDef({
+  schema,
+  state,
+  additionalIssues,
+}: {
+  schema: z.ZodSchema<any>;
+  state: Ref<unknown>;
+  additionalIssues?: Ref<z.ZodIssue[] | undefined>;
+}): RegleFormPropertyType {
   const schemaDef = getNestedInnerType(schema);
   if (schemaDef?._def && 'typeName' in schemaDef._def) {
     if (schemaDef._def.typeName === 'ZodArray' || schemaDef._def.typeName === 'ZodTuple') {
-      return zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state);
+      return zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state, additionalIssues);
     } else if (schemaDef._def.typeName === 'ZodObject' || schemaDef._def.typeName === 'ZodIntersection') {
-      return zodObjectToRegle(schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>, state);
+      const zodRule = zodObjectToRegle(
+        schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>,
+        state,
+        additionalIssues
+      );
+      return zodRule.zodRule;
     } else if (schemaDef._def.typeName === 'ZodDiscriminatedUnion') {
-      const zodRule = zodDiscriminatedUnionToRegle(schemaDef as z.ZodDiscriminatedUnion<any, any>, state);
+      const zodRule = zodDiscriminatedUnionToRegle(
+        schemaDef as z.ZodDiscriminatedUnion<any, any>,
+        state,
+        additionalIssues
+      );
       return zodRule.zodRule;
     } else {
+      if (additionalIssues) {
+        return {
+          [schemaDef.constructor.name]: withMessage(
+            withParams(transformZodValidatorAdapter(schema, additionalIssues) as any, [state, additionalIssues]),
+            extractIssuesMessages() as any
+          ),
+        };
+      }
       return {
         [schemaDef.constructor.name]: withMessage(
           transformZodValidatorAdapter(schema) as any,
