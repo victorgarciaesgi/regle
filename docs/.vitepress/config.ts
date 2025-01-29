@@ -198,7 +198,6 @@ export default defineConfig({
     const pageDescription = pageData.frontmatter?.description ?? siteConfig.site?.description;
 
     head.push(['meta', { property: 'og:title', content: pageTitle }]);
-    head.push(['meta', { property: 'og:description', content: pageDescription }]);
 
     if (relativePath !== '') {
       const satoriImagePath = await generateSatoriBanner({
@@ -211,6 +210,7 @@ export default defineConfig({
       assets.push(`/${satoriImagePath}`);
 
       head.push(['meta', { property: 'description', content: pageDescription }]);
+      head.push(['meta', { property: 'og:description', content: pageDescription }]);
       head.push([
         'meta',
         {
@@ -220,6 +220,8 @@ export default defineConfig({
       ]);
     } else {
       head.push(['meta', { property: 'description', content: longDescription }]);
+      head.push(['meta', { property: 'og:description', content: longDescription }]);
+
       head.push([
         'meta',
         {
@@ -242,6 +244,7 @@ export default defineConfig({
 
     pageData.frontmatter.head ??= [];
     pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }]);
+    pageData.frontmatter.head.push(['meta', { rel: 'og:url', href: canonicalUrl }]);
 
     function getJSONLD(pageData: PageData) {
       if (pageData.relativePath === 'index.md') {
@@ -287,10 +290,9 @@ export default defineConfig({
           'vue forms, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
       },
     ],
-    ['meta', { property: 'og:url', content: 'https://reglejs.dev' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'Regle' }],
     ['meta', { property: 'og:site_name', content: 'Regle' }],
+    ['meta', { name: 'robots', content: 'nosnippet' }],
     [
       'meta',
       {
@@ -298,14 +300,6 @@ export default defineConfig({
         content: longDescription,
       },
     ],
-    [
-      'meta',
-      {
-        property: 'og:image',
-        content: 'https://reglejs.dev/banner-og.png',
-      },
-    ],
-
     ['meta', { name: 'twitter:site', content: '@regle' }],
     ['meta', { name: 'twitter:domain', content: 'reglejs.dev' }],
     ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],

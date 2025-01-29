@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, nextTick, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, isDate, isEmpty, isObject, toDate } from '../../../../../shared';
+import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { cloneDeep, isEmpty, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -119,7 +119,10 @@ export function createReactiveFieldStatus({
 
     if (storeResult?.valid != null) {
       scopeState.$dirty.value = storage.getDirtyState(path);
-      if (scopeState.$dirty.value) {
+      if (
+        (scopeState.$dirty.value && scopeState.$autoDirty.value) ||
+        (scopeState.$rewardEarly.value && scopeState.$error.value)
+      ) {
         $commit();
       }
     }

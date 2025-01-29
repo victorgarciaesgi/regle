@@ -1,28 +1,9 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "lib": [
-      "esnext",
-      "DOM"
-    ],
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "verbatimModuleSyntax": true,
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-    "noErrorTruncation": true,
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "types": [
-      "vitest/globals"
-    ],
+    // Do not remove this, otherwise there is flacky type tests
+    "module": "ESNext",
+    "moduleResolution": "node16"
   },
   "include": [
     "./**/*"

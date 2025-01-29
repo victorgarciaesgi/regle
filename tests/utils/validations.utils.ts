@@ -1,15 +1,16 @@
-import type { RegleCollectionStatus, RegleFieldStatus, RegleStatus } from '@regle/core';
-import type { RegleSchemaStatus, RegleSchemaCollectionStatus, RegleSchemaFieldStatus } from '@regle/schemas';
+import type {
+  RegleFieldStatus,
+  RegleStatus,
+  SuperCompatibleRegleCollectionStatus,
+  SuperCompatibleRegleFieldStatus,
+  SuperCompatibleRegleStatus,
+} from '@regle/core';
+import type { RegleSchemaFieldStatus, RegleSchemaStatus } from '@regle/schemas';
 
 type PossibleFields =
-  | RegleStatus<any, any>
-  | RegleFieldStatus<any, any>
-  | RegleCollectionStatus<any, any, any>
-  | RegleSchemaStatus<{}, {}, any, any, true>
-  | RegleSchemaStatus<{}, {}, 'schema', any, false>
-  | RegleSchemaFieldStatus<any, any, 'rules', any>
-  | RegleSchemaFieldStatus<any, any, 'schema', any>
-  | RegleSchemaCollectionStatus<{}, any, any, any>;
+  | SuperCompatibleRegleStatus
+  | SuperCompatibleRegleFieldStatus
+  | SuperCompatibleRegleCollectionStatus;
 
 export function shouldBePristineField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(false);
@@ -45,10 +46,10 @@ export function shouldBeInvalidField(field?: PossibleFields) {
 
 export function shouldBeErrorField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(true);
-  expect(field?.$error).toBe(true);
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$dirty).toBe(true);
   }
+  expect(field?.$error).toBe(true);
   expect(field?.$ready).toBe(false);
   expect(field?.$anyDirty).toBe(true);
   if (field && '$pending' in field) {

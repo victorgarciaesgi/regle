@@ -7,7 +7,7 @@ titleTemplate: :title
 hero:
   name: "Regle"
   text: "Type safe form validation for Vue.js"
-  tagline: "Typescript first, model-based and intuitive API"
+  tagline: "Typescript first, model-based and intuitive API.\nThe perfect evolution of Vuelidate."
   image:
     dark: /logo-reglejs-favicon-reversed.svg
     light: /logo-reglejs-favicon.svg

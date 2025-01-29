@@ -1,4 +1,4 @@
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import {
   simpleNestedStateWithMixedValidation,
   simpleNestedStateWithMixedValidationAndGlobalConfig,
@@ -8,8 +8,11 @@ import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,
+  shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
+import { useRegle } from '@regle/core';
+import { required, withParams } from '@regle/rules';
 
 // TODO add test case for dependency change
 
@@ -124,5 +127,83 @@ describe.each([
     shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
     shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
     shouldBePristineField(vm.r$.$fields.contacts.$each[0]);
+  });
+
+  it('should not run validators with computed rules`', async () => {
+    const { vm } = await createRegleComponent(() => simpleNestedStateWithMixedValidation(false));
+    shouldBePristineField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
+    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
+    shouldBePristineField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.r$.$touch();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.condition = false;
+    vm.r$.$value.user.firstName = 'foo';
+    vm.r$.$value.user.lastName = 'bar';
+    vm.r$.$value.contacts[0].name = 'bar';
+
+    await nextTick();
+
+    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.r$.$touch();
+
+    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+    shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeValidField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeValidField(vm.r$.$fields.contacts.$each[0]);
+  });
+
+  it('should not re-run validators when a dependency changes`', async () => {
+    function simpleDepencyCase() {
+      const form = ref({ password: '', confirm: '' });
+
+      return useRegle(
+        form,
+        {
+          password: { required },
+          confirm: { same: withParams((value, pass) => value === pass, [() => form.value.password]) },
+        },
+        {
+          autoDirty: false,
+        }
+      );
+    }
+    const { vm } = await createRegleComponent(simpleDepencyCase);
+
+    shouldBePristineField(vm.r$.$fields.password);
+    shouldBePristineField(vm.r$.$fields.confirm);
+
+    vm.r$.$value.confirm = 'hello';
+    vm.r$.$value.password = 'foo';
+    await vm.$nextTick();
+
+    shouldBePristineField(vm.r$.$fields.password);
+    shouldBePristineField(vm.r$.$fields.confirm);
+
+    await vm.r$.$validate();
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$.$fields.password);
+    shouldBeErrorField(vm.r$.$fields.confirm);
+
+    vm.r$.$value.password = 'hello';
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.confirm);
+
+    await vm.r$.$validate();
+
+    shouldBeValidField(vm.r$.$fields.confirm);
   });
 });

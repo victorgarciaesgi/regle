@@ -31,26 +31,29 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     expectTypeOf(r$.$fields.name.$rules.required);
   });
 
-  // @ts-expect-error Known rules with inline validator NOT OK ❌
-  useRegle({ name: '' }, { name: { required: () => 'foo' } });
+  it('should report wrong types', () => {
+    // TODO Warning, flacky sometimes
+    // @ts-expect-error Known rules with inline validator NOT OK ❌
+    useRegle({ name: '' }, { name: { required: () => 'foo' } });
 
-  // Known rules with inline validator with no types
-  useRegle({ name: '' }, { name: { required: (value) => true } });
+    // Known rules with inline validator with no types
+    useRegle({ name: '' }, { name: { required: (value) => true } });
 
-  // Any rule name
-  useRegle({ name: '' }, { name: { baguette: (value) => true } });
+    // Any rule name
+    useRegle({ name: '' }, { name: { baguette: (value) => true } });
 
-  // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
-  useRegle({ name: '' }, { name: { required: (value: string) => true } });
+    // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
+    useRegle({ name: '' }, { name: { required: (value: string) => true } });
+
+    // @ts-expect-error Incorrect property ❌
+    useRegle({ name: '' }, { incorrect: { required: () => true } });
+
+    // @ts-expect-error Incorrect nested property ❌
+    useRegle({ name: { nested: '' } }, { name: { incorrect: { required: () => true } } });
+  });
 
   it('Known rules with inline validator returning metadata ✅', () => {
     const { r$ } = useRegle({ name: '' }, { name: { required: (value) => ({ $valid: true }) } });
     expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: true }>();
   });
-
-  // @ts-expect-error Incorrect property ❌
-  useRegle({ name: '' }, { incorrect: { required: () => true } });
-
-  // @ts-expect-error Incorrect nested property ❌
-  useRegle({ name: { nested: '' } }, { name: { incorrect: { required: () => true } } });
 });

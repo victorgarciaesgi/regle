@@ -24,8 +24,8 @@ export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = n
   TState extends Record<string, any>,
   TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
   TMode extends RegleSchemaMode = never,
-  TValid = UnwrapNestedRefs<TState> extends PartialDeep<
-    StandardSchemaV1.InferInput<TSchema>,
+  TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
+    UnwrapNestedRefs<TState>,
     { recurseIntoArrays: true }
   >
     ? {}
@@ -88,9 +88,16 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         () => {
           if (computedSchema.value && typeof computedSchema.value === 'object') {
             if (computedSchema.value['~standard'].vendor === 'zod') {
-              convertedRules.value = reactive(zodObjectToRegle(computedSchema.value as any, processedState));
+              const objectResult = zodObjectToRegle(computedSchema.value as any, processedState);
+              convertedRules.value = objectResult.zodRule;
             } else if (computedSchema.value['~standard'].vendor === 'valibot') {
               convertedRules.value = reactive(valibotObjectToRegle(computedSchema.value as any, processedState));
+            } else if (computedSchema.value?.['~standard']?.vendor) {
+              console.warn(
+                `This RPC library "${computedSchema.value['~standard'].vendor}" is not supported yet in 'rules' mode, switch to the "schema" mode option`
+              );
+            } else {
+              console.warn(`Only "standard-schema" compatible libraries are supported`);
             }
           }
         },
@@ -98,6 +105,9 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       );
     } else {
       // ---- Schema mode
+      if (!computedSchema.value?.['~standard']) {
+        throw new Error(`Only "standard-schema" compatible libraries are supported`);
+      }
       const emptySkeleton = computedSchema.value['~standard'].validate(initialState.value);
 
       customErrors.value = issuesToRegleErrors(emptySkeleton as StandardSchemaV1.Result<unknown>);

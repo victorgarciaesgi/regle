@@ -1,10 +1,24 @@
 import type { RegleRuleMetadataDefinition } from '@regle/core';
 import { withAsync, withParams } from '@regle/rules';
+import type { Ref } from 'vue';
 import type { z } from 'zod';
 
-export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
+export function transformZodValidatorAdapter(
+  schema?: z.ZodSchema<any>,
+  additionalIssues?: Ref<z.ZodIssue[] | undefined>
+) {
   const isAsync = hasAsyncRefinement(schema);
-  const validatorFn = (value: unknown): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> => {
+
+  // Regle validator function
+  function validatorFn(value: unknown): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> {
+    if (additionalIssues?.value?.length) {
+      return {
+        $valid: false,
+        // additionalIssues should already contain field error if there is a refinement in a parent
+        $issues: additionalIssues.value,
+      };
+    }
+
     const result = trySafeTransform(schema, value);
 
     if (result instanceof Promise) {
@@ -19,11 +33,13 @@ export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
     } else {
       return {
         $valid: false,
-        $issues: result.error.issues,
+        // additionalIssues should already contain field error if there is a refinement in a parent
+        $issues: result.error?.issues ?? [],
       };
     }
-  };
-  if ('__depsArray' in schema && Array.isArray(schema.__depsArray) && schema.__depsArray.length) {
+  }
+
+  if (schema && '__depsArray' in schema && Array.isArray(schema.__depsArray) && schema.__depsArray.length) {
     return isAsync ? withAsync(validatorFn, schema.__depsArray) : withParams(validatorFn as any, schema.__depsArray);
   }
 
@@ -31,31 +47,36 @@ export function transformZodValidatorAdapter(schema: z.ZodSchema<any>) {
 }
 
 function trySafeTransform(
-  schema: z.ZodTypeAny,
-  value: unknown
+  schema?: z.ZodTypeAny,
+  value?: unknown
 ): z.SafeParseReturnType<any, any> | Promise<RegleRuleMetadataDefinition> {
-  try {
-    const result = schema.safeParse(value);
-    return result;
-  } catch (e) {
+  if (schema) {
     try {
-      return new Promise<RegleRuleMetadataDefinition>(async (resolve) => {
-        const result = await schema.safeParseAsync(value);
-        if (result.success) {
-          resolve({
-            $valid: true,
-            $issues: [],
-          });
-        } else {
-          resolve({
-            $valid: false,
-            $issues: result.error.issues,
-          });
-        }
-      });
+      const result = schema.safeParse(value);
+      return result;
     } catch (e) {
-      return {} as any;
+      try {
+        return new Promise<RegleRuleMetadataDefinition>(async (resolve) => {
+          const result = await schema.safeParseAsync(value);
+
+          if (result.success) {
+            resolve({
+              $valid: true,
+              $issues: [],
+            });
+          } else {
+            resolve({
+              $valid: false,
+              $issues: result.error?.issues,
+            });
+          }
+        });
+      } catch (e) {
+        return {} as any;
+      }
     }
+  } else {
+    return { success: true, data: {} };
   }
 }
 
