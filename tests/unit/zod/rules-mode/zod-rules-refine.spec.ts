@@ -55,7 +55,6 @@ describe('zod - rules refinements ', async () => {
     vm.r$.$value.password = 'a';
     await vm.$nextTick();
     vm.r$.$value.nested.confirm = 'b';
-
     await vm.$nextTick();
 
     shouldBeValidField(vm.r$.$fields.password);

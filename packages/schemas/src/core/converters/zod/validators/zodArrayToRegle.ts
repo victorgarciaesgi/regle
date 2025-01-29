@@ -60,7 +60,7 @@ export function zodArrayToRegle(
                   schema.safeParse(state.value).error?.issues.filter((f) => f.code === 'custom') ?? [];
               }
             },
-            { deep: true, flush: 'pre', immediate: true }
+            { deep: true, immediate: true }
           );
         }
 

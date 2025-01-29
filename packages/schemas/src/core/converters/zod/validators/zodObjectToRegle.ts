@@ -62,7 +62,7 @@ export function zodObjectToRegle(
               );
             }
           },
-          { deep: true, flush: 'pre', immediate: true }
+          { deep: true, flush: 'sync', immediate: true }
         );
 
         if (nestedSchema?._def?.typeName === 'ZodObject') {
