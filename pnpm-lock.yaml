@@ -152,6 +152,9 @@ importers:
       semver:
         specifier: 7.6.3
         version: 7.6.3
+      std-env:
+        specifier: 3.8.0
+        version: 3.8.0
       tsup:
         specifier: 'catalog:'
         version: 8.3.5(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.6.3)(yaml@2.7.0)
