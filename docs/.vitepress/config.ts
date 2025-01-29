@@ -235,11 +235,12 @@ export default defineConfig({
   },
   transformPageData(pageData) {
     const relativePath = pageData.relativePath.replace(/index\.md$/, '').replace(/\.md$/, '');
+
     let canonicalUrl: string;
     if (relativePath === '') {
       canonicalUrl = `https://reglejs.dev`;
     } else {
-      canonicalUrl = `https://reglejs.dev/${pageData.relativePath}`;
+      canonicalUrl = `https://reglejs.dev/${relativePath}`;
     }
 
     pageData.frontmatter.head ??= [];
