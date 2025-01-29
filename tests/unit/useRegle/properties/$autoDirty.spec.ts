@@ -8,6 +8,7 @@ import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,
+  shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 
@@ -124,5 +125,40 @@ describe.each([
     shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
     shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
     shouldBePristineField(vm.r$.$fields.contacts.$each[0]);
+  });
+
+  it('should not run validators with computed rules`', async () => {
+    const { vm } = await createRegleComponent(() => simpleNestedStateWithMixedValidation(false));
+    shouldBePristineField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
+    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
+    shouldBePristineField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.r$.$touch();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.condition = false;
+    vm.r$.$value.user.firstName = 'foo';
+    vm.r$.$value.user.lastName = 'bar';
+    vm.r$.$value.contacts[0].name = 'bar';
+
+    await nextTick();
+
+    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.$fields.contacts.$each[0]);
+
+    vm.r$.$touch();
+
+    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+    shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeValidField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeValidField(vm.r$.$fields.contacts.$each[0]);
   });
 });

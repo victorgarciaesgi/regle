@@ -203,22 +203,29 @@ export function simpleNestedStateWithMixedValidation(autoDirty = true, rewardEar
     contacts: [{ name: '' }],
   });
 
-  return useRegle(
-    form,
-    {
-      email: { required: required, email: email },
-      user: {
-        firstName: { required },
-        lastName: { required },
-      },
-      contacts: {
-        $each: {
-          name: { required },
+  const condition = ref(true);
+
+  return {
+    condition,
+    ...useRegle(
+      form,
+      () => ({
+        ...(condition.value && {
+          email: { required: required, email: email },
+        }),
+        user: {
+          firstName: { required },
+          lastName: { required },
         },
-      },
-    },
-    { autoDirty, rewardEarly }
-  );
+        contacts: {
+          $each: {
+            name: { required },
+          },
+        },
+      }),
+      { autoDirty, rewardEarly }
+    ),
+  };
 }
 
 export function simpleNestedStateWithMixedValidationAndGlobalConfig(autoDirty = true) {
