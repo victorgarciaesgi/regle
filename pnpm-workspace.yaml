@@ -18,15 +18,15 @@ catalog:
   '@vue/shared': 3.5.13
   '@vue/compiler-dom': 3.5.13
   '@vue/server-renderer': 3.5.13
-  vue3.4: npm:vue@3.4.38
-  '@vue/reactivity3.4': npm:@vue/reactivity@3.4.38
-  '@vue/runtime-core3.4': npm:@vue/runtime-core@3.4.38
-  '@vue/runtime-dom3.4': npm:@vue/runtime-dom@3.4.38
-  '@vue/shared3.4': npm:@vue/shared@3.4.38
-  '@vue/compiler-dom3.4': npm:@vue/compiler-dom@3.4.38
-  '@vue/server-renderer3.4': npm:@vue/server-renderer@3.4.38
+  vue-3.4: npm:vue@3.4.38
+  '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
+  '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
+  '@vue/runtime-dom-3.4': npm:@vue/runtime-dom@3.4.38
+  '@vue/shared-3.4': npm:@vue/shared@3.4.38
+  '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
+  '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
   pinia: 2.2.6
-  pinia2.2.5: npm:pinia@2.2.5
+  pinia-2.2.5: npm:pinia@2.2.5
   eslint: 9.15.0
   eslint-plugin-vue: 9.31.0
   eslint-config-prettier: 9.1.0

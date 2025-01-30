@@ -1,10 +1,10 @@
+import { createTestingPinia } from '@pinia/testing';
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { flushPromises, mount } from '@vue/test-utils';
-import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
+import { defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
 import { defineComponent, nextTick, onScopeDispose, ref } from 'vue';
-import { shouldBeErrorField, shouldBePristineField } from '../../utils/validations.utils';
+import { shouldBePristineField } from '../../utils/validations.utils';
 
 describe('$dispose', () => {
   const pinia = createTestingPinia({ stubActions: false });
@@ -32,8 +32,6 @@ describe('$dispose', () => {
       setActivePinia(pinia);
       const testForm = useStore(pinia);
       const { r$ } = storeToRefs(testForm);
-
-      // console.log(r$.value.$value);
 
       onScopeDispose(() => {
         // TODO dispose break reactivity in tests only

@@ -1,10 +1,5 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    // Do not remove this, otherwise there is flacky type tests
-    "module": "ESNext",
-    "moduleResolution": "node16"
-  },
   "include": [
     "./**/*"
   ],

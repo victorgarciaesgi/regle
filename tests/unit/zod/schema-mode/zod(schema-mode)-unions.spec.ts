@@ -1,4 +1,4 @@
-import type { RegleShortcutDefinition } from '@regle/core';
+import { useRegle, type RegleShortcutDefinition } from '@regle/core';
 import { reactive } from 'vue';
 import { z } from 'zod';
 import { createRegleComponent } from '../../../utils/test.utils';

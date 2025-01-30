@@ -9,39 +9,9 @@ catalogs:
     '@vue/compiler-dom':
       specifier: 3.5.13
       version: 3.5.13
-    '@vue/compiler-dom3.4':
-      specifier: npm:@vue/compiler-dom@3.4.38
-      version: 3.4.38
     '@vue/reactivity':
       specifier: 3.5.13
       version: 3.5.13
-    '@vue/reactivity3.4':
-      specifier: npm:@vue/reactivity@3.4.38
-      version: 3.4.38
-    '@vue/runtime-core':
-      specifier: 3.5.13
-      version: 3.5.13
-    '@vue/runtime-core3.4':
-      specifier: npm:@vue/runtime-core@3.4.38
-      version: 3.4.38
-    '@vue/runtime-dom':
-      specifier: 3.5.13
-      version: 3.5.13
-    '@vue/runtime-dom3.4':
-      specifier: npm:@vue/runtime-dom@3.4.38
-      version: 3.4.38
-    '@vue/server-renderer':
-      specifier: 3.5.13
-      version: 3.5.13
-    '@vue/server-renderer3.4':
-      specifier: npm:@vue/server-renderer@3.4.38
-      version: 3.4.38
-    '@vue/shared':
-      specifier: 3.5.13
-      version: 3.5.13
-    '@vue/shared3.4':
-      specifier: npm:@vue/shared@3.4.38
-      version: 3.4.38
     eslint:
       specifier: 9.15.0
       version: 9.15.0
@@ -54,7 +24,7 @@ catalogs:
     pinia:
       specifier: 2.2.6
       version: 2.2.6
-    pinia2.2.5:
+    pinia-2.2.5:
       specifier: npm:pinia@2.2.5
       version: 2.2.5
     prettier:
@@ -75,15 +45,15 @@ catalogs:
     vue:
       specifier: 3.5.13
       version: 3.5.13
+    vue-3.4:
+      specifier: npm:vue@3.4.38
+      version: 3.4.38
     vue-eslint-parser:
       specifier: 9.4.3
       version: 9.4.3
     vue-tsc:
       specifier: 2.1.10
       version: 2.1.10
-    vue3.4:
-      specifier: npm:vue@3.4.38
-      version: 3.4.38
 
 importers:
 
@@ -140,6 +110,9 @@ importers:
       happy-dom:
         specifier: 16.7.2
         version: 16.7.2
+      pinia-2.2.5:
+        specifier: 'catalog:'
+        version: pinia@2.2.5(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
       playwright:
         specifier: 1.49.1
         version: 1.49.1
@@ -164,9 +137,15 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
+      vite:
+        specifier: 6.0.11
+        version: 6.0.11(@types/node@22.10.7)(jiti@2.4.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
       vitest:
         specifier: 'catalog:'
         version: 3.0.4(@types/debug@4.1.12)(@types/node@22.10.7)(happy-dom@16.7.2)(jiti@2.4.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
+      vue-3.4:
+        specifier: 'catalog:'
+        version: vue@3.4.38(typescript@5.6.3)
       vue-eslint-parser:
         specifier: 'catalog:'
         version: 9.4.3(eslint@9.15.0(jiti@2.4.2))
@@ -663,51 +642,15 @@ importers:
       '@vue/compiler-dom':
         specifier: 'catalog:'
         version: 3.5.13
-      '@vue/compiler-dom3.4':
-        specifier: 'catalog:'
-        version: '@vue/compiler-dom@3.4.38'
       '@vue/reactivity':
         specifier: 'catalog:'
         version: 3.5.13
-      '@vue/reactivity3.4':
-        specifier: 'catalog:'
-        version: '@vue/reactivity@3.4.38'
-      '@vue/runtime-core':
-        specifier: 'catalog:'
-        version: 3.5.13
-      '@vue/runtime-core3.4':
-        specifier: 'catalog:'
-        version: '@vue/runtime-core@3.4.38'
-      '@vue/runtime-dom':
-        specifier: 'catalog:'
-        version: 3.5.13
-      '@vue/runtime-dom3.4':
-        specifier: 'catalog:'
-        version: '@vue/runtime-dom@3.4.38'
-      '@vue/server-renderer':
-        specifier: 'catalog:'
-        version: 3.5.13(vue@3.5.13(typescript@5.6.3))
-      '@vue/server-renderer3.4':
-        specifier: 'catalog:'
-        version: '@vue/server-renderer@3.4.38(vue@3.5.13(typescript@5.6.3))'
-      '@vue/shared':
-        specifier: 'catalog:'
-        version: 3.5.13
-      '@vue/shared3.4':
-        specifier: 'catalog:'
-        version: '@vue/shared@3.4.38'
-      '@vue/test-utils':
-        specifier: 2.4.6
-        version: 2.4.6
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
       pinia:
         specifier: 'catalog:'
         version: 2.2.6(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
-      pinia2.2.5:
-        specifier: 'catalog:'
-        version: pinia@2.2.5(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
@@ -720,9 +663,6 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.6.3)
-      vue3.4:
-        specifier: 'catalog:'
-        version: vue@3.4.38(typescript@5.6.3)
       zod:
         specifier: 3.24.1
         version: 3.24.1

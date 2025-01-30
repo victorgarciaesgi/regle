@@ -6,7 +6,7 @@ const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
   external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
-  sourcemap: 'inline',
+  sourcemap: true,
 };
 
 export default defineConfig([

@@ -3,6 +3,7 @@ import { useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@
 describe('useRegle should throw errors for invalid rule schema', () => {
   it('Empty rules OK', () => {
     const { r$ } = useRegle({ name: '' }, {});
+
     expectTypeOf(r$.$fields.name).toEqualTypeOf<RegleFieldStatus<string, {}, RegleShortcutDefinition<any>>>();
     expectTypeOf(r$.$value.name).toEqualTypeOf<string>();
     expectTypeOf(r$.$errors.name).toEqualTypeOf<string[]>();
@@ -31,7 +32,10 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     expectTypeOf(r$.$fields.name.$rules.required);
   });
 
+  // TODO Disabled for now
   it('should report wrong types', () => {
+    // Keep this to avoid flacky type tests with ts-expect-error
+    expect(true).toBe(true);
     // TODO Warning, flacky sometimes
     // @ts-expect-error Known rules with inline validator NOT OK ❌
     useRegle({ name: '' }, { name: { required: () => 'foo' } });

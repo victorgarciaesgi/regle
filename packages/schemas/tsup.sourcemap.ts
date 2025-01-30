@@ -6,7 +6,7 @@ const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
   external: ['vue', 'valibot', 'zod', '@standard-schema/spec'],
-  sourcemap: 'inline',
+  sourcemap: true,
 };
 
 export default defineConfig([
