@@ -1,5 +1,5 @@
 import type { RegleFormPropertyType } from '@regle/core';
-import { withMessage } from '@regle/rules';
+import { withMessage, withParams } from '@regle/rules';
 import type * as v from 'valibot';
 import { transformValibotAdapter, valibotArrayToRegle, valibotObjectToRegle } from './validators';
 import type { Ref } from 'vue';
@@ -30,16 +30,34 @@ export function getNestedInnerType(schema: MaybeSchemaAsync<unknown>): MaybeSche
   }
 }
 
-export function processValibotTypeDef(schema: MaybeSchemaAsync<unknown>, state: Ref<unknown>): RegleFormPropertyType {
+export function processValibotTypeDef({
+  schema,
+  state,
+  additionalIssues,
+}: {
+  schema: MaybeSchemaAsync<unknown>;
+  state: Ref<unknown>;
+  additionalIssues?: Ref<v.BaseIssue<any>[] | undefined>;
+}): RegleFormPropertyType {
   const nestedSchema = getNestedInnerType(schema);
   if (isArraySchema(nestedSchema)) {
-    return valibotArrayToRegle(nestedSchema, state);
+    const schemaRef = valibotArrayToRegle(nestedSchema, state);
+    return schemaRef.valibotRule;
   } else if (isObjectSchema(nestedSchema)) {
-    return valibotObjectToRegle(nestedSchema, state);
+    const schemaRef = valibotObjectToRegle({ schema: nestedSchema, state, rootAdditionalIssues: additionalIssues });
+    return schemaRef.valibotRule;
   } else if (isVariantSchema(nestedSchema)) {
     const valibotRule = valibotVariantToRegle(nestedSchema, state);
     return valibotRule.valibotRule;
   } else {
+    if (additionalIssues) {
+      return {
+        [nestedSchema.type]: withMessage(
+          withParams(transformValibotAdapter(nestedSchema, additionalIssues) as any, [state]),
+          extractIssuesMessages() as any
+        ),
+      };
+    }
     return {
       [nestedSchema.type]: withMessage(transformValibotAdapter(nestedSchema) as any, extractIssuesMessages() as any),
     };

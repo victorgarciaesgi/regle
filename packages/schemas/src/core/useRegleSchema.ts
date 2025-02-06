@@ -88,10 +88,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         () => {
           if (computedSchema.value && typeof computedSchema.value === 'object') {
             if (computedSchema.value['~standard'].vendor === 'zod') {
-              const objectResult = zodObjectToRegle(computedSchema.value as any, processedState);
+              const objectResult = zodObjectToRegle({ schema: computedSchema.value as any, state: processedState });
               convertedRules.value = objectResult.zodRule;
             } else if (computedSchema.value['~standard'].vendor === 'valibot') {
-              convertedRules.value = reactive(valibotObjectToRegle(computedSchema.value as any, processedState));
+              const objectResult = valibotObjectToRegle({ schema: computedSchema.value as any, state: processedState });
+              convertedRules.value = objectResult.valibotRule;
             } else if (computedSchema.value?.['~standard']?.vendor) {
               console.warn(
                 `This RPC library "${computedSchema.value['~standard'].vendor}" is not supported yet in 'rules' mode, switch to the "schema" mode option`

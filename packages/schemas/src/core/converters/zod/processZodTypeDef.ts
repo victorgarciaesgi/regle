@@ -54,11 +54,11 @@ export function processZodTypeDef({
       const schemaRef = zodArrayToRegle(schema as ZodArray<any> | ZodTuple<any>, state, additionalIssues);
       return schemaRef.zodRule;
     } else if (schemaDef._def.typeName === 'ZodObject' || schemaDef._def.typeName === 'ZodIntersection') {
-      const schemaRef = zodObjectToRegle(
-        schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>,
+      const schemaRef = zodObjectToRegle({
+        schema: schemaDef as z.ZodObject<any> | z.ZodIntersection<any, any>,
         state,
-        additionalIssues
-      );
+        rootAdditionalIssues: additionalIssues,
+      });
       return schemaRef.zodRule;
     } else if (schemaDef._def.typeName === 'ZodDiscriminatedUnion') {
       const schemaRef = zodDiscriminatedUnionToRegle(

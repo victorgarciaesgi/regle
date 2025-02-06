@@ -35,31 +35,31 @@ function getNestedZodObjectSchema(
   return { nestedSchema: undefined };
 }
 
-export function zodObjectToRegle(
-  schema: z.ZodObject<any> | z.ZodIntersection<any, any>,
-  state: Ref<unknown>,
-  rootAdditionalIssues?: Ref<z.ZodIssue[] | undefined>
-): { zodRule: ReglePartialRuleTree<any, any> } {
+export function zodObjectToRegle({
+  schema,
+  state,
+  rootAdditionalIssues,
+}: {
+  schema: z.ZodObject<any> | z.ZodIntersection<any, any>;
+  state: Ref<unknown>;
+  rootAdditionalIssues?: Ref<z.ZodIssue[] | undefined>;
+}): { zodRule: ReglePartialRuleTree<any, any> } {
   const { nestedSchema, nestedEffects } = getNestedZodObjectSchema(schema);
 
   const zodRule = ref<ReglePartialRuleTree<any, any>>({});
 
   if (nestedSchema) {
-    if (nestedEffects?.length) {
+    if (nestedEffects?.length && !rootAdditionalIssues?.value?.length) {
       const scope = effectScope();
       scope.run(() => {
         const localAdditionalIssues = ref<z.ZodIssue[]>([]);
-        const additionalIssues = computed(() => {
-          return localAdditionalIssues.value.concat(rootAdditionalIssues?.value ?? []);
-        });
 
         watch(
           state,
           () => {
             if (nestedSchema?._def?.typeName === 'ZodObject') {
-              localAdditionalIssues.value = (rootAdditionalIssues?.value ?? []).concat(
-                schema.safeParse(state.value).error?.issues.filter((f) => f.code === 'custom') ?? []
-              );
+              localAdditionalIssues.value =
+                schema.safeParse(state.value).error?.issues.filter((f) => f.code === 'custom') ?? [];
             }
           },
           { deep: true, flush: 'sync', immediate: true }
@@ -71,7 +71,7 @@ export function zodObjectToRegle(
               if (shape && typeof shape === 'object' && '_def' in shape) {
                 const childState = toRef(isObject(state.value) ? state.value : {}, key);
                 const fieldIssues = computed(() => {
-                  return additionalIssues.value
+                  return localAdditionalIssues.value
                     ?.filter((f) => f.path[0] === key)
                     .map((m) => {
                       // Remove first item of path
@@ -90,7 +90,6 @@ export function zodObjectToRegle(
                     state: childState,
                     additionalIssues: fieldIssues,
                   }),
-                  [state],
                 ];
               }
               return [key, {}];
@@ -109,12 +108,24 @@ export function zodObjectToRegle(
         Object.entries(nestedSchema._def.shape()).map(([key, shape]) => {
           if (shape && typeof shape === 'object' && '_def' in shape) {
             const childState = toRef(isObject(state.value) ? state.value : {}, key);
+            const fieldIssues = computed(() => {
+              return rootAdditionalIssues?.value
+                ?.filter((f) => f.path[0] === key)
+                .map((m) => {
+                  // Remove first item of path
+                  const [_, ...rest] = m.path;
+                  return {
+                    ...m,
+                    path: rest,
+                  };
+                });
+            });
             return [
               key,
               processZodTypeDef({
                 schema: shape as z.ZodType,
                 state: childState,
-                additionalIssues: rootAdditionalIssues,
+                additionalIssues: fieldIssues,
               }),
             ];
           }

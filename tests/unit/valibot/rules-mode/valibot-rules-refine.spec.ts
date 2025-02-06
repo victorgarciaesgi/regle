@@ -1,51 +1,106 @@
 import { useRegleSchema } from '@regle/schemas';
 import { reactive } from 'vue';
-import { z } from 'zod';
+import * as v from 'valibot';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
 
 function nestedReactiveObjectValidation() {
-  const zodSchema = z
-    .object({
-      password: z.string().min(1),
-      nested: z
-        .object({
-          confirm: z
-            .string()
-            .min(1)
-            .refine((value) => value.length > 2, { message: 'Confirm length should be > 2' }),
-        })
-        .refine((data) => data.confirm === 'bar', {
-          path: ['confirm'],
-          message: 'Value must be "bar"',
+  const valibotSchema = v.pipe(
+    v.object({
+      password: v.pipe(v.string(), v.minLength(1)),
+      nested: v.pipe(
+        v.object({
+          confirm: v.pipe(
+            v.string(),
+            v.minLength(1),
+            v.check((value) => value.length > 2, 'Confirm length should be > 2')
+          ),
         }),
-      collection: z
-        .array(
-          z.object({
-            child: z.string().min(1),
-          })
-        )
-        .refine(
-          (arg) => {
-            return arg.every((v) => v.child?.length === 3);
-          },
-          {
-            message: 'All items children length must be min 3',
+        v.rawCheck(({ dataset, addIssue }) => {
+          if (dataset.typed) {
+            if (dataset.value.confirm !== 'bar') {
+              addIssue({
+                path: [
+                  {
+                    key: 'confirm',
+                    type: 'object',
+                    origin: 'value',
+                    input: dataset.value,
+                    value: dataset.value.confirm,
+                  },
+                ],
+                message: 'Value must be "bar"',
+              });
+            }
           }
-        )
-        .refine((arg) => arg[0].child === 'foo', {
-          message: 'First item must be "foo"',
-          path: ['0', 'child'],
-        }),
+        })
+      ),
+      collection: v.pipe(
+        v.array(
+          v.object({
+            child: v.pipe(v.string(), v.minLength(1)),
+          })
+        ),
+        v.check((arg) => {
+          return arg.every((v) => v.child?.length === 3);
+        }, 'All items children length must be min 3'),
+        v.rawCheck(({ addIssue, dataset }) => {
+          if (dataset.typed) {
+            if (dataset.value[0].child !== 'foo') {
+              addIssue({
+                path: [
+                  {
+                    key: 0,
+                    type: 'array',
+                    origin: 'value',
+                    input: dataset.value,
+                    value: dataset.value[0],
+                  },
+                  {
+                    key: 'child',
+                    type: 'object',
+                    origin: 'value',
+                    input: dataset.value[0],
+                    value: dataset.value[0].child,
+                  },
+                ],
+                message: 'First item must be "foo"',
+              });
+            }
+          }
+        })
+      ),
+    }),
+    v.rawCheck(({ dataset, addIssue }) => {
+      if (dataset.typed) {
+        if (dataset.value.nested.confirm !== dataset.value.password) {
+          addIssue({
+            path: [
+              {
+                key: 'nested',
+                type: 'object',
+                origin: 'value',
+                input: dataset.value,
+                value: dataset.value.nested,
+              },
+              {
+                key: 'confirm',
+                type: 'object',
+                origin: 'value',
+                input: dataset.value.nested,
+                value: dataset.value.nested.confirm,
+              },
+            ],
+            message: 'Password and confirm must match',
+          });
+        }
+      }
     })
-    .refine((data) => data.nested.confirm === data.password, {
-      path: ['nested', 'confirm'],
-      message: 'Password and confirm must match',
-    });
+  );
 
   const form = reactive({ password: '', nested: { confirm: '' }, collection: [{ child: '' }] });
 
-  return useRegleSchema(form, zodSchema);
+  return useRegleSchema(form, valibotSchema);
 }
 
 describe('zod - rules refinements ', async () => {
