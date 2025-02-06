@@ -211,10 +211,14 @@ export function createReactiveRuleStatus({
     }
   }
 
-  async function computeAsyncResult() {
+  async function computeAsyncResult(): Promise<boolean> {
     let ruleResult = false;
     try {
       const validator = scopeState.$validator.value;
+      if (typeof validator !== 'function') {
+        console.error(`${path}: Incorrect rule format, it needs to be either a function or created with "createRule".`);
+        return false;
+      }
       const resultOrPromise = validator(state.value, ...scopeState.$params.value);
       let cachedValue = state.value;
       updatePendingState();
