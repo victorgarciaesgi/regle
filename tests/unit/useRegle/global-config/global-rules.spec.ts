@@ -1,7 +1,7 @@
 import { defineRegleConfig, type RegleComputedRules } from '@regle/core';
 import { ref } from 'vue';
 import { ruleMockIsEven } from '../../../fixtures';
-import { minValue, required, withMessage } from '@regle/rules';
+import { and, applyIf, minValue, not, or, required, withMessage } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
 
 function nestedRefObjectValidation() {
@@ -12,6 +12,10 @@ function nestedRefObjectValidation() {
     }),
   });
   const form = ref({
+    withApply: 1,
+    withOr: 1,
+    withAnd: 1,
+    withNot: 2,
     level0: 1,
     level1: {
       child: 1,
@@ -25,6 +29,10 @@ function nestedRefObjectValidation() {
     form,
     () =>
       ({
+        withApply: { rule: applyIf(true, ruleMockIsEven) },
+        withAnd: { rule: and(ruleMockIsEven, minValue(1)) },
+        withOr: { rule: or(ruleMockIsEven, minValue(5)) },
+        withNot: { rule: not(ruleMockIsEven) },
         level0: { rule: ruleMockIsEven },
         level1: {
           child: { rule: ruleMockIsEven },
@@ -55,5 +63,10 @@ describe('defineRegleConfig rules', () => {
       'Patched min:3',
       'Re-patched rule',
     ]);
+
+    expect(vm.r$.$fields.withApply.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.$fields.withAnd.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
   });
 });

@@ -117,7 +117,6 @@ export function and<TRules extends FormRuleDeclaration<any, any>[]>(
 
   if (typeof newRule === 'function') {
     const executedRule = newRule(...newParams);
-    executedRule._message_patched = true;
     return executedRule as any;
   } else {
     return newRule as any;
