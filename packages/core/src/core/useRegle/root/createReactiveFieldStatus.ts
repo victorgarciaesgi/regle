@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, isEmpty, isObject, toDate } from '../../../../../shared';
+import { cloneDeep, debounce, isEmpty, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -10,7 +10,7 @@ import type {
   RegleRuleDecl,
   RegleShortcutDefinition,
 } from '../../../types';
-import { debounce, isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';

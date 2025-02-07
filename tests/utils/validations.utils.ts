@@ -104,12 +104,7 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeUnRuledCorrectField(
-  field?:
-    | RegleFieldStatus<any, any>
-    | RegleSchemaFieldStatus<any, any, 'rules'>
-    | RegleSchemaFieldStatus<any, any, 'schema'>
-) {
+export function shouldBeUnRuledCorrectField(field?: RegleFieldStatus<any, any> | RegleSchemaFieldStatus<any, any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$anyDirty).toBe(true);
@@ -124,9 +119,7 @@ export function shouldBeUnRuledCorrectField(
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeUnRuledSchemaCorrectField(
-  field?: RegleSchemaFieldStatus<any, any, 'rules'> | RegleSchemaFieldStatus<any, any, 'schema'>
-) {
+export function shouldBeUnRuledSchemaCorrectField(field?: RegleSchemaFieldStatus<any, any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$anyDirty).toBe(true);
