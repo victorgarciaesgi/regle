@@ -74,12 +74,8 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
     link: '/integrations/nuxt',
   },
   {
-    text: 'Zod',
-    link: '/integrations/zod',
-  },
-  {
-    text: 'Valibot',
-    link: '/integrations/valibot',
+    text: 'Schemas libraries',
+    link: '/schemas-libraries',
   },
 ];
 

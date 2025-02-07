@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, watch } from 'vue';
-import { isEmpty } from '../../../../../shared';
+import { debounce, isEmpty } from '../../../../../shared';
 import type {
   $InternalInlineRuleDeclaration,
   $InternalRegleRuleDefinition,
@@ -11,7 +11,6 @@ import type {
   RegleRuleDefinitionProcessor,
   RegleRuleMetadataDefinition,
 } from '../../../types';
-import { debounce } from '../../../utils';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';

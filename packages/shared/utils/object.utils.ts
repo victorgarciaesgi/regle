@@ -41,12 +41,54 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
       return false;
     }
   }
+
   if (isArray) {
-    obj[lastProp] = { ...obj[lastProp], $self: value };
+    if (!obj[lastProp]) {
+      obj[lastProp] = { ...obj[lastProp], $self: value };
+    } else {
+      obj[lastProp].$self = (obj[lastProp].$self ??= []).concat(value);
+    }
   } else {
-    obj[lastProp] = value;
+    if (Array.isArray(obj[lastProp])) {
+      obj[lastProp] = obj[lastProp].concat(value);
+    } else {
+      obj[lastProp] = value;
+    }
   }
   return true;
+}
+
+export function getDotPath(obj: Record<string, any>, propsArg: string | string[], defaultValue?: any) {
+  if (!obj) {
+    return defaultValue;
+  }
+  var props: any, prop: any;
+  if (Array.isArray(propsArg)) {
+    props = propsArg.slice(0);
+  }
+  if (typeof propsArg == 'string') {
+    props = propsArg.split('.');
+  }
+  if (typeof propsArg == 'symbol') {
+    props = [propsArg];
+  }
+  if (!Array.isArray(props)) {
+    throw new Error('props arg must be an array, a string or a symbol');
+  }
+  while (props.length) {
+    prop = props.shift();
+    if (!obj) {
+      return defaultValue;
+    }
+    if (!prop) {
+      return defaultValue;
+    }
+    obj = obj[prop];
+    if (obj === undefined) {
+      return defaultValue;
+    }
+  }
+  return obj;
 }
 
 function prototypeCheck(prop: string) {
