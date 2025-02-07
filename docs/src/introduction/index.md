@@ -33,11 +33,13 @@ Optional
   - Nuxt  `3.1+`, and check docs for [Nuxt module](/integrations/nuxt)
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
   - Pinia  `2.2.5+`
-- [Zod](https://zod.dev/) <span data-title="zod"></span> 
-  - Zod  `3.24+`. Check [Zod usage](/integrations/zod)
-- [Valibot](https://valibot.dev/) <span data-title="valibot"></span> 
-  - Valibot  `1.0.0-beta.9+`. Check [Valibot usage](/integrations/valibot)
-- Any library using the [Standard Schema Spec](https://standardschema.dev/) using the experimental "schema" mode
+
+Schema libraires: [Docs](/integrations/schemas-libraries)
+
+- [Zod](https://zod.dev/) <span data-title="zod"></span> `3.24+`. 
+- [Valibot](https://valibot.dev/) <span data-title="valibot"></span> `1+`.
+- [ArkType](https://arktype.io/) <span data-title="arktype"></span>  `2+`
+- Any library using the [Standard Schema Spec](https://standardschema.dev/) 
 
 <br/>
 

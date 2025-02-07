@@ -80,7 +80,8 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       const output = {};
       if (result.issues) {
         const errors = result.issues.map((issue) => {
-          const path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item)).join('.') ?? '';
+          const path =
+            issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
           const lastItem = issue.path?.[issue.path.length - 1];
           const isArray =
             (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||

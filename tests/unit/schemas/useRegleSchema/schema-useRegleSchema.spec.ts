@@ -8,10 +8,12 @@ import {
 } from '../../../utils/validations.utils';
 import { valibotNestedRegleFixture } from './fixtures/valibot.fixture';
 import { zodNestedRegleFixture } from './fixtures/zod.fixture';
+import { arktypeNestedRegleFixture } from './fixtures/arktype.fixture';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],
   ['zod', zodNestedRegleFixture],
+  // ['arktype', arktypeNestedRegleFixture],
 ])('schemas (%s) - useRegleSchema ', async (name, regleSchema) => {
   beforeEach(() => {
     vi.useFakeTimers();

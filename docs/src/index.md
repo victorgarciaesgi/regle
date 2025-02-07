@@ -34,10 +34,10 @@ features:
   - title: Extensible
     icon: 🪗
     details: Extend validation schema with your own properties.
-  - title: Zod & Valibot support
+  - title: Standard Schema support
     icon: 
-      src: /zod-valibot.png
-      alt: zod-valibot icon
-    details: Use Zod or Valibot to control your validations.
+      src: /standard-schema.svg
+      alt: standard-schema icon
+    details: Use any schema library like Zod, Valibot or ArkType to control your validations.
 ---
 

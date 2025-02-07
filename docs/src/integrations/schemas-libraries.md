@@ -9,13 +9,16 @@ import ComputedSchema from '../parts/components/zod/ComputedSchema.vue';
 
 # Schemas libraries
 
-Regle offers an adapter for schemas libraries that are [Standard Schema spec](https://standardschema.dev/) compliant.
+Regle supports the [Standard Schema Spec](https://standardschema.dev/).
 
-The out of the box support for any library is limited to the [schema mode](/todo).
+This means any Standard Schema compliant RPC library can be used with Regle.
 
-## Prerequisites
+Official list of supported libraries:
 
-- `zod` version `3.24+`
+- [Zod](https://zod.dev/) <span data-title="zod"></span> `3.24+`. 
+- [Valibot](https://valibot.dev/) <span data-title="valibot"></span> `1+`.
+- [ArkType](https://arktype.io/) <span data-title="arktype"></span>  `2+`
+- Any library following the [Standard Schema Spec](https://standardschema.dev/) 
 
 ::: code-group
 ```sh [pnpm]
@@ -36,13 +39,13 @@ bun add @regle/schemas
 :::
 
 
-
 ## Usage
 
-You can use your Zod schemas to handle forms with the help of `useRegleSchema`, exported from `@regle/schemas`.
+Instead of using the core `useRegle`, use `useRegleSchema` export from `@regle/schemas`.
 
 
-```ts twoslash
+:::code-group
+```ts twoslash [Zod]
 import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
 
@@ -51,42 +54,39 @@ const { r$ } = useRegleSchema({ name: '' }, z.object({
 }))
 ```
 
-<QuickUsage />
+```ts twoslash [Valibot]
+import { useRegleSchema } from '@regle/schemas';
+import * as v from 'valibot';
 
-## Mode
+const { r$ } = useRegleSchema({ name: '' }, v.object({
+  name: v.pipe(v.string(), v.minLength(3))
+}))
+```
 
-`useRegleSchema` have 2 modes: `rules` and `schema`.
+```ts twoslash [ArkType]
+import { useRegleSchema } from '@regle/schemas';
+import { type } from 'arktype';
 
-- `rules` (default)
-  - Convert and splits the Zod schema into Regle-compatible rules, allowing the use of every functionnality of Regle.
-  - This means that editing a field will only only run it's own validator and not parse the entire schema.
-  - This enables independant `async` handling and parsing.
-  - Enable the use of `withDeps`
+const { r$ } = useRegleSchema({ name: '' }, type({
+  name: "string > 1"
+}))
+```
 
-:::warning
-`refine` and `transform` and other effects functions on `z.object` are not supported in Regle with `rules` mode.
-
-Regle splits the Zod schema into nested independents schema, so only the field you modify will run it's own schema, and will not rerun the entire object schema for each input.
-
-This prevent the use of effects in a object schema.
 :::
 
-- `schema` (experimental)
-  - This mode will parse your whole schema at each input, spreading the errors to your nested fields.
-  - Less performant, but allow more compatibility with schemas.
-  - Prevent the use of nested `$pending` and `$validate`.
-  - Prevent the use of `withDeps`.
+<QuickUsage />
 
-```ts twoslash
-import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod';
 
-const { r$ } = useRegleSchema({ name: '' }, z.object({
-  name: z.string().min(1)
-}), {
-  mode: 'schema'
-})
-```
+:::warning
+Limitations from the core behaviour
+
+Using schema libraries uses a different mechanism than the core "rules" one. Regle will parse the entire tree instead of doing it per-field. Than means that properties or methods are not available in nested values:
+
+- `$validate` (only at root)
+- `$pending` (only at root)
+:::
+
+
 
 ## Computed schema
 
@@ -98,7 +98,9 @@ When doing refinements or transform, Vue can't track what the schema depends on 
 Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper to force dependencies on any schema
 :::
 
-```ts twoslash
+:::code-group
+
+```ts twoslash [Zod]
 import { useRegleSchema, inferSchema, withDeps } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
@@ -129,20 +131,50 @@ const schema = computed(() =>
 const { r$ } = useRegleSchema(form, schema);
 
 ```
+```ts twoslash [Valibot]
+import { useRegleSchema, inferSchema, withDeps} from '@regle/schemas';
+import * as v from 'valibot';
+import { ref, computed } from 'vue';
+
+type Form = {
+  firstName?: string;
+  lastName?: string
+}
+
+const form = ref<Form>({ firstName: '', lastName: '' })
+
+const schema = computed(() => 
+  inferSchema(form, v.object({
+    firstName: v.string(),
+    /** 
+     * Important to keep track of the depency change
+     * Without it, the validator wouldn't run if `firstName` changed
+    */
+    lastName: withDeps(
+        v.pipe(
+          v.string(),
+          v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+        ),
+        [() => form.value.firstName]
+      ),
+  }))
+)
+
+const { r$ } = useRegleSchema(form, schema);
+
+```
+
+:::
 
 <ComputedSchema />
-
-
-:::warning
-`withDeps` is only compatible with `rules` mode
-:::
 
 
 ## Type safe output
 
 Similar to the main `useRegle` composable, `r$.$validate` also returns a type-safe output using Zod type schema parser.
 
-```ts twoslash
+:::code-group
+```ts twoslash [Zod]
 import { useRegleSchema, inferSchema } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
@@ -173,3 +205,76 @@ async function submit() {
 
 ```
 
+```ts twoslash [Valibot]
+import { useRegleSchema, inferSchema } from '@regle/schemas';
+import * as v from 'valibot';
+import { ref, computed } from 'vue';
+
+type Form = {
+  firstName?: string;
+  lastName?: string
+}
+
+const form = ref<Form>({ firstName: '', lastName: '' })
+
+const schema = computed(() => {
+  return inferSchema(form, v.object({
+    firstName: v.optional(v.string()),
+    lastName: v.pipe(
+        v.string(),
+        v.minLength(3),
+        v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+      )
+  }))
+})
+
+const { r$ } = useRegleSchema(form, schema);
+
+async function submit() {
+  const { result, data } = await r$.$validate();
+  if (result) {
+    console.log(data);
+    //            ^?
+  }
+}
+
+```
+
+```ts twoslash [ArkType]
+import { useRegleSchema, inferSchema } from '@regle/schemas';
+import { type } from 'arktype';
+import { ref, computed } from 'vue';
+
+type Form = {
+  firstName?: string;
+  lastName?: string
+}
+
+const form = ref<Form>({ firstName: '', lastName: '' })
+
+const schema = computed(() => {
+  return inferSchema(form, type({
+    'firstName?': 'string',
+    lastName: 'string > 3',
+  }).narrow((data, ctx) => {
+    if (data.firstName !== data.lastName) {
+      return true;
+    }
+    return ctx.reject({
+      expected: 'different than firstName',
+      path: ['lastName'],
+    });
+  }))
+})
+
+const { r$ } = useRegleSchema(form, schema);
+
+async function submit() {
+  const { result, data } = await r$.$validate();
+  if (result) {
+    console.log(data);
+    //            ^?
+  }
+}
+```
+:::

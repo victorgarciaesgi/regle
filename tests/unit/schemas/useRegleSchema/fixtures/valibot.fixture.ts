@@ -18,10 +18,7 @@ export function valibotNestedRegleFixture() {
   const valibotIsEven = v.pipe(
     v.number('This field is required'),
     v.check((value) => {
-      if (isFilled(value)) {
-        return value % 2 === 0;
-      }
-      return true;
+      return value % 2 === 0;
     }, 'Custom error')
   );
 
