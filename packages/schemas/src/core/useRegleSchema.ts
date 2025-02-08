@@ -14,16 +14,13 @@ import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
-import { computed, isRef, reactive, ref, unref, watch } from 'vue';
-import { cloneDeep, setObjectError } from '../../../shared';
-import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSchemaModeOptions } from '../types';
-import { valibotObjectToRegle } from './converters/valibot/validators';
-import { zodObjectToRegle } from './converters/zod/validators';
+import { computed, isRef, ref, unref, watch } from 'vue';
+import { cloneDeep, getDotPath, setObjectError } from '../../../shared';
+import type { $InternalRegleResult, RegleSchema, RegleSchemaMode } from '../types';
 
 export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
   TState extends Record<string, any>,
   TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
-  TMode extends RegleSchemaMode = never,
   TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
     UnwrapNestedRefs<TState>,
     { recurseIntoArrays: true }
@@ -37,14 +34,8 @@ export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = n
   state: MaybeRef<TState> | DeepReactiveState<TState>,
   schema: MaybeRef<TSchema>,
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never> &
-    RegleSchemaModeOptions<TMode>
-) => RegleSchema<
-  UnwrapNestedRefs<TState>,
-  StandardSchemaV1.InferInput<TSchema>,
-  [TMode] extends [never] ? 'rules' : TMode,
-  TShortcuts
->;
+    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never>
+) => RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
   options?: RegleBehaviourOptions,
@@ -67,11 +58,9 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     const computedSchema = computed(() => unref(schema));
 
-    const { mode = 'rules', ...regleOptions } = options ?? {};
-
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
-      ...regleOptions,
+      ...options,
     } as any;
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
@@ -82,83 +71,60 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
 
-    if (mode === 'rules') {
-      watch(
-        computedSchema,
-        () => {
-          if (computedSchema.value && typeof computedSchema.value === 'object') {
-            if (computedSchema.value['~standard'].vendor === 'zod') {
-              const objectResult = zodObjectToRegle(computedSchema.value as any, processedState);
-              convertedRules.value = objectResult.zodRule;
-            } else if (computedSchema.value['~standard'].vendor === 'valibot') {
-              convertedRules.value = reactive(valibotObjectToRegle(computedSchema.value as any, processedState));
-            } else if (computedSchema.value?.['~standard']?.vendor) {
-              console.warn(
-                `This RPC library "${computedSchema.value['~standard'].vendor}" is not supported yet in 'rules' mode, switch to the "schema" mode option`
-              );
-            } else {
-              console.warn(`Only "standard-schema" compatible libraries are supported`);
-            }
-          }
-        },
-        { deep: true, immediate: true, flush: 'post' }
-      );
-    } else {
-      // ---- Schema mode
-      if (!computedSchema.value?.['~standard']) {
-        throw new Error(`Only "standard-schema" compatible libraries are supported`);
-      }
-      const emptySkeleton = computedSchema.value['~standard'].validate(initialState.value);
+    // ---- Schema mode
+    if (!computedSchema.value?.['~standard']) {
+      throw new Error(`Only "standard-schema" compatible libraries are supported`);
+    }
 
-      customErrors.value = issuesToRegleErrors(emptySkeleton as StandardSchemaV1.Result<unknown>);
-
-      function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>) {
-        const output = {};
-        if (result.issues) {
-          const errors = result.issues.map((issue) => {
-            const path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item)).join('.');
-            const lastItem = issue.path?.[issue.path.length - 1];
-            const isArray =
-              (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
-              ('type' in issue ? issue.type === 'array' : false);
-
-            return {
-              path: path,
-              message: issue.message,
-              isArray,
-            };
-          });
-
-          errors.forEach((error) => {
-            setObjectError(output, error.path, [error.message], error.isArray);
-          });
-        }
-        return output;
-      }
-
-      watch(
-        [processedState, computedSchema],
-        async () => {
-          const result = await computedSchema.value['~standard'].validate(processedState.value);
-          customErrors.value = issuesToRegleErrors(result);
-        },
-        { deep: true, immediate: true, flush: 'post' }
-      );
-
-      onValidate = async () => {
-        try {
-          const result = await computedSchema.value['~standard'].validate(processedState.value);
-          customErrors.value = issuesToRegleErrors(result);
+    function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>) {
+      const output = {};
+      if (result.issues) {
+        const errors = result.issues.map((issue) => {
+          const path =
+            issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+          const lastItem = issue.path?.[issue.path.length - 1];
+          const isArray =
+            (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
+            ('type' in issue ? issue.type === 'array' : false) ||
+            Array.isArray(getDotPath(processedState.value, path));
 
           return {
-            result: !result.issues?.length,
-            data: processedState.value,
+            path: path,
+            message: issue.message,
+            isArray,
           };
-        } catch (e) {
-          return Promise.reject(e);
-        }
-      };
+        });
+
+        errors.forEach((error) => {
+          setObjectError(output, error.path, [error.message], error.isArray);
+        });
+      }
+      return output;
     }
+
+    async function computeErrors() {
+      let result = computedSchema.value['~standard'].validate(processedState.value);
+      if (result instanceof Promise) {
+        result = await result;
+      }
+      customErrors.value = issuesToRegleErrors(result);
+      return result;
+    }
+
+    watch([processedState, computedSchema], computeErrors, { deep: true, immediate: true });
+
+    onValidate = async () => {
+      try {
+        const result = await computeErrors();
+
+        return {
+          result: !result.issues?.length,
+          data: processedState.value,
+        };
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    };
 
     const regle = useRootStorage({
       scopeRules: convertedRules as any,
@@ -167,7 +133,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       schemaErrors: customErrors,
       initialState,
       shortcuts,
-      schemaMode: mode === 'schema',
+      schemaMode: true,
       onValidate,
     });
     return {
