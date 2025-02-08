@@ -46,6 +46,8 @@ It's heavily inspired by Vuelidate.
 - 🛒 Collection validation
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🤖 [Valibot](https://valibot.dev/) support
+- 🚢 [ArkType](https://arktype.io)  🚧
+
 
 ## 🫶 Credits
 
