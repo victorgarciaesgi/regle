@@ -1,6 +1,9 @@
 import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
+  RegleRuleDefinitionWithMetadataProcessor,
+  RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
@@ -34,20 +37,36 @@ export function withParams<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, any[], TAsync, TMetadata>,
   depsArray: [...TParams]
 ): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, TAsync, TMetadata> {
-  const validator = (value: any | null | undefined, ...params: any[]) => {
-    return rule(value, ...(params as any));
-  };
+  let _type: string | undefined;
+  let validator: RegleRuleDefinitionProcessor<any, any, any>;
+  let _params: any[] | undefined = [];
+  let _message: RegleRuleDefinitionWithMetadataProcessor<
+    any,
+    RegleRuleMetadataConsumer<any, any>,
+    string | string[]
+  > = '';
+
+  if (typeof rule === 'function') {
+    _type = InternalRuleType.Inline;
+    validator = (value: any | null | undefined, ...params: any[]) => {
+      return rule(value, ...(params as any));
+    };
+    _params = [depsArray];
+  } else {
+    ({ _type, validator, _message } = rule);
+    _params = _params = rule._params?.concat(depsArray as any);
+  }
 
   const newRule = createRule({
     type: InternalRuleType.Inline,
     validator: validator,
-    message: '',
+    message: _message,
   });
 
-  newRule._params = newRule._params?.concat(depsArray);
+  newRule._params = newRule._params?.concat(_params);
 
   return newRule(...depsArray) as any;
 }
