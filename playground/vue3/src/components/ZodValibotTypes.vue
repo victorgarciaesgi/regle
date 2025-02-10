@@ -187,9 +187,7 @@ const valibotSchema = v.pipe(
   })
 );
 
-const { r$ } = useRegleSchema({ password: '', nested: { confirm: '' }, collection: [{ child: '' }] }, zodSchema, {
-  mode: 'schema',
-});
+const { r$ } = useRegleSchema({ password: '', nested: { confirm: '' }, collection: [{ child: '' }] }, zodSchema);
 </script>
 
 <style lang="scss" scoped></style>
