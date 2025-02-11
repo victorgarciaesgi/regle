@@ -19,14 +19,15 @@ export function isEmpty(
   if (value instanceof Date) {
     // invalid date won't pass
     return isNaN(value.getTime());
-  }
-  if (Array.isArray(value)) {
+  } else if (value instanceof File) {
+    // invalid date won't pass
+    return value.size > 0;
+  } else if (Array.isArray(value)) {
     if (considerEmptyArrayInvalid) {
       return value.length === 0;
     }
     return false;
-  }
-  if (typeof value === 'object' && value != null) {
+  } else if (typeof value === 'object' && value != null) {
     return Object.keys(value).length === 0;
   }
   return !String(value).length;
