@@ -14,8 +14,6 @@ import {
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 
-console.log(version);
-
 describe.each([
   ['reactive', nestedReactiveObjectValidation],
   ['ref', nestedRefObjectValidation],

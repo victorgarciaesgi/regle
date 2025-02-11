@@ -21,7 +21,7 @@ export function isEmpty(
     return isNaN(value.getTime());
   } else if (value.constructor.name == 'File' || value.constructor.name == 'FileList') {
     // empty files won't pass
-    return (value as File).size > 0;
+    return (value as File).size <= 0;
   } else if (Array.isArray(value)) {
     if (considerEmptyArrayInvalid) {
       return value.length === 0;

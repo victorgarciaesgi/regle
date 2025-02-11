@@ -4,6 +4,14 @@
   "type": "module",
   "devDependencies": {
     "@regle/core": "workspace:*",
-    "type-fest": "catalog:"
+    "type-fest": "catalog:",
+    "typescript": "catalog:",
+    "tsup": "catalog:"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build:dev": "tsup --config=tsup.dev.ts",
+    "dev": "tsup --config=tsup.dev.ts --watch",
+    "test": "echo 'no tests'"
   }
 }
