@@ -20,7 +20,7 @@ export function isEmpty(
     // invalid date won't pass
     return isNaN(value.getTime());
   } else if (value instanceof File) {
-    // invalid date won't pass
+    // empty files won't pass
     return value.size > 0;
   } else if (Array.isArray(value)) {
     if (considerEmptyArrayInvalid) {
