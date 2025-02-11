@@ -66,6 +66,7 @@
                   <label class="inline-flex items-center">
                     <input
                       v-model="r$.$value.acceptTC"
+                      data-testid="acceptTC-checkbox"
                       type="checkbox"
                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
                     />
@@ -106,6 +107,7 @@ interface Form {
   eventType?: string;
   details?: string;
   acceptTC?: boolean;
+  eventFile: File;
 }
 
 const { r$ } = useRegle({ fullName: 'Hello' } as Form, {
@@ -129,6 +131,7 @@ const { r$ } = useRegle({ fullName: 'Hello' } as Form, {
     $autoDirty: false,
     required: withMessage(and(required, checked), 'You must accept the terms and conditions'),
   },
+  eventFile: { required },
 });
 
 async function submit() {

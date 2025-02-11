@@ -19,9 +19,9 @@ export function isEmpty(
   if (value instanceof Date) {
     // invalid date won't pass
     return isNaN(value.getTime());
-  } else if (value instanceof File) {
+  } else if (value.constructor.name == 'File' || value.constructor.name == 'FileList') {
     // empty files won't pass
-    return value.size > 0;
+    return (value as File).size > 0;
   } else if (Array.isArray(value)) {
     if (considerEmptyArrayInvalid) {
       return value.length === 0;

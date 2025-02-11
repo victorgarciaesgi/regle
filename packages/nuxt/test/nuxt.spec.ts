@@ -12,5 +12,9 @@ describe('Nuxt SSR', async () => {
 
   it('renders the index page', async () => {
     await expectNoClientErrors('/');
+
+    const page = await createPage('/');
+
+    expect(await page.getByTestId('acceptTC-checkbox').isVisible()).toBe(true);
   });
 });
