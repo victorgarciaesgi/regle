@@ -105,7 +105,7 @@ Here's how you can do it:
   <div class="my-input">
     <input
       v-model="modelValue"
-      :class="{ valid: field.$valid, error: field.$error }"
+      :class="{ valid: field.$correct, error: field.$error }"
       :placeholder="placeholder"
     />
 

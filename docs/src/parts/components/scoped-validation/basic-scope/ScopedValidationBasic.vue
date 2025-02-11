@@ -16,7 +16,7 @@
   </div>
   <br />
   <div
-    >Valid: <b>{{ r$.$valid }}</b>
+    >Valid: <b>{{ r$.$correct }}</b>
   </div>
   Collected errors:
   <pre class="json">{{ r$.$errors }}</pre>

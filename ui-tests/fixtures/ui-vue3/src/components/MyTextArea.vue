@@ -3,7 +3,7 @@
     <label v-if="label">{{ label }}</label>
     <textarea
       v-model="modelValue"
-      :class="{ valid: field.$valid, error: field.$error, pending: field.$pending }"
+      :class="{ valid: field.$correct, error: field.$error, pending: field.$pending }"
       :placeholder="placeholder"
     />
     <span v-if="field.$pending" class="pending-text"> Checking... </span>

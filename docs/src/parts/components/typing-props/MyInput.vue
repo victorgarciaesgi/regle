@@ -2,7 +2,7 @@
   <div class="my-input input-container">
     <input
       v-model="modelValue"
-      :class="{ valid: field.$valid, error: field.$error }"
+      :class="{ valid: field.$correct, error: field.$error }"
       :placeholder="placeholder"
       :name="field.$name"
     />

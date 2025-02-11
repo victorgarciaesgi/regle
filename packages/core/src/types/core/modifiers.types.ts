@@ -54,7 +54,7 @@ export interface RegleValidationGroupOutput {
   $error: boolean;
   $pending: boolean;
   $dirty: boolean;
-  $valid: boolean;
+  $correct: boolean;
   $errors: string[];
   $silentErrors: string[];
 }

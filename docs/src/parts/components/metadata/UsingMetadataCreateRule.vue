@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="r$.$value.password"
-        :class="{ valid: r$.$fields.password.$valid }"
+        :class="{ valid: r$.$fields.password.$correct }"
         placeholder="Type your password"
       />
 
@@ -19,7 +19,7 @@
       </li>
     </ul>
 
-    <div v-else-if="r$.$fields.password.$valid" class="success"> Your password is strong enough </div>
+    <div v-else-if="r$.$fields.password.$correct" class="success"> Your password is strong enough </div>
   </div>
 </template>
 

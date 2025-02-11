@@ -7,7 +7,7 @@
     <div>
       <input
         v-model="form.name"
-        :class="{ valid: r$.$fields.name.$valid, error: r$.$fields.name.$error }"
+        :class="{ valid: r$.$fields.name.$correct, error: r$.$fields.name.$error }"
         :placeholder="`Type your name${r$.$fields.name.$rules.required.$active ? '*' : ''}`"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>

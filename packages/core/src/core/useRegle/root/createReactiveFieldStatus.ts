@@ -319,7 +319,7 @@ export function createReactiveFieldStatus({
         return false;
       });
 
-      const $valid = computed<boolean>(() => {
+      const $correct = computed<boolean>(() => {
         if (externalErrors?.value?.length) {
           return false;
         } else if ($inactive.value) {
@@ -328,9 +328,14 @@ export function createReactiveFieldStatus({
           if (schemaMode) {
             return !schemaErrors?.value?.length;
           } else {
-            return Object.values($rules.value).every((ruleResult) => {
-              return ruleResult.$valid && ruleResult.$active;
-            });
+            const atLeastOneActiveRule = Object.values($rules.value).some((ruleResult) => ruleResult.$active);
+            if (atLeastOneActiveRule) {
+              return Object.values($rules.value)
+                .filter((ruleResult) => ruleResult.$active)
+                .every((ruleResult) => ruleResult.$valid);
+            } else {
+              return false;
+            }
           }
         }
         return false;
@@ -361,7 +366,7 @@ export function createReactiveFieldStatus({
                     $error,
                     $pending,
                     $invalid,
-                    $valid,
+                    $correct,
                     $errors,
                     $ready,
                     $silentErrors,
@@ -394,7 +399,7 @@ export function createReactiveFieldStatus({
         $error,
         $pending,
         $invalid,
-        $valid,
+        $correct,
         $debounce,
         $lazy,
         $errors,
@@ -429,19 +434,19 @@ export function createReactiveFieldStatus({
     });
 
     $unwatchRuleFieldValues = watch(
-      [scopeState.$error, scopeState.$valid, scopeState.$invalid, scopeState.$pending],
+      [scopeState.$error, scopeState.$correct, scopeState.$invalid, scopeState.$pending],
       () => {
         Object.values($rules.value).forEach((rule) => {
           rule.$fieldError = scopeState.$error.value;
           rule.$fieldInvalid = scopeState.$invalid.value;
           rule.$fieldPending = scopeState.$pending.value;
-          rule.$fieldValid = scopeState.$valid.value;
+          rule.$fieldCorrect = scopeState.$correct.value;
         });
       }
     );
 
-    $unwatchValid = watch(scopeState.$valid, (valid) => {
-      if (scopeState.$rewardEarly.value && valid) {
+    $unwatchValid = watch(scopeState.$invalid, (invalid) => {
+      if (scopeState.$rewardEarly.value && !invalid) {
         scopeState.triggerPunishment.value = false;
       }
     });

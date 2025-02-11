@@ -53,7 +53,7 @@ export function createReactiveRuleStatus({
     $fieldError: Ref<boolean>;
     $fieldInvalid: Ref<boolean>;
     $fieldPending: Ref<boolean>;
-    $fieldValid: Ref<boolean>;
+    $fieldCorrect: Ref<boolean>;
   };
   let scope = effectScope();
   let scopeState: ScopeState = {} as any;
@@ -81,14 +81,14 @@ export function createReactiveRuleStatus({
 
       // Temp fix for Vue 3.4, to avoid loops
       // Represent the parent field $valid status
-      const $fieldValid = ref(false);
+      const $fieldCorrect = ref(false);
 
       const $defaultMetadata = computed<$InternalRegleRuleMetadataConsumer>(() => ({
         $value: state.value,
         $error: $fieldError.value,
         $dirty: $fieldDirty.value,
         $pending: $fieldPending.value,
-        $valid: $fieldValid.value,
+        $correct: $fieldCorrect.value,
         $invalid: $fieldInvalid.value,
         $rule: {
           $valid: $valid.value,
@@ -186,7 +186,7 @@ export function createReactiveRuleStatus({
         $params,
         $path,
         $tooltip,
-        $fieldValid,
+        $fieldCorrect,
         $fieldError,
         $fieldDirty,
         $fieldPending,

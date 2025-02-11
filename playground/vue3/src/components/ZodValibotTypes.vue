@@ -23,7 +23,7 @@
     <div class="field">
       <input
         v-model="item.$value.child"
-        :class="{ valid: item.$fields.child.$valid, error: item.$fields.child.$error }"
+        :class="{ valid: item.$fields.child.$correct, error: item.$fields.child.$error }"
         placeholder="Type an item value"
       />
 
@@ -187,9 +187,7 @@ const valibotSchema = v.pipe(
   })
 );
 
-const { r$ } = useRegleSchema({ password: '', nested: { confirm: '' }, collection: [{ child: '' }] }, zodSchema, {
-  mode: 'schema',
-});
+const { r$ } = useRegleSchema({ password: '', nested: { confirm: '' }, collection: [{ child: '' }] }, zodSchema);
 </script>
 
 <style lang="scss" scoped></style>

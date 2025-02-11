@@ -4,7 +4,7 @@
     <input
       v-model="modelValue"
       type="password"
-      :class="{ valid: field.$valid, error: field.$error, pending: field.$pending }"
+      :class="{ valid: field.$correct, error: field.$error, pending: field.$pending }"
       :placeholder
     />
     <div
@@ -17,7 +17,7 @@
         {{ tooltip }}
       </li>
     </ul>
-    <div v-else-if="field.$valid" class="success">Your password is strong enough</div>
+    <div v-else-if="field.$correct" class="success">Your password is strong enough</div>
   </div>
 </template>
 

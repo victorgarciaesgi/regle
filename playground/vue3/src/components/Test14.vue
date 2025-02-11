@@ -8,7 +8,7 @@
       <input
         type="date"
         v-model="form.foo"
-        :class="{ valid: r$.$fields.foo.$valid, error: r$.$fields.foo.$error }"
+        :class="{ valid: r$.$fields.foo.$correct, error: r$.$fields.foo.$error }"
         :placeholder="`Type your foo${r$.$fields.foo.$rules.required.$active ? '*' : ''}`"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>

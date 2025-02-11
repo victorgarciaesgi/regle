@@ -37,7 +37,7 @@ describe('validation groups', () => {
       'This field is required',
       'This field is required',
     ]);
-    expect(vm.r$.$groups.nameAndEmail.$valid).toStrictEqual(false);
+    expect(vm.r$.$groups.nameAndEmail.$correct).toStrictEqual(false);
 
     vm.r$.$touch();
     await vm.$nextTick();
@@ -47,7 +47,7 @@ describe('validation groups', () => {
     expect(vm.r$.$groups.nameAndEmail.$invalid).toBe(true);
     expect(vm.r$.$groups.nameAndEmail.$pending).toBe(false);
     expect(vm.r$.$groups.nameAndEmail.$errors).toStrictEqual(['This field is required', 'This field is required']);
-    expect(vm.r$.$groups.nameAndEmail.$valid).toStrictEqual(false);
+    expect(vm.r$.$groups.nameAndEmail.$correct).toStrictEqual(false);
 
     vm.r$.$value.email = 'foo@free.fr';
     vm.r$.$value.name = 'bar';
@@ -58,6 +58,6 @@ describe('validation groups', () => {
     expect(vm.r$.$groups.nameAndEmail.$invalid).toBe(false);
     expect(vm.r$.$groups.nameAndEmail.$pending).toBe(false);
     expect(vm.r$.$groups.nameAndEmail.$errors).toStrictEqual([]);
-    expect(vm.r$.$groups.nameAndEmail.$valid).toStrictEqual(true);
+    expect(vm.r$.$groups.nameAndEmail.$correct).toStrictEqual(true);
   });
 });

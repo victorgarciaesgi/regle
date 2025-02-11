@@ -39,10 +39,14 @@ r$.$fields.email.$e
 Indicates whether the field is invalid. It becomes `true` if any associated rules return `false`.
 
 
-### `$valid`
+### `$correct`
 - Type: `readonly boolean`
   
-True only when the field is dirty and passes validation. Useful for showing UI indicators that the field is valid.
+This is not the opposite of `$invalid`. Correct is meant to display UI validation report. 
+This will be `true` only if:
+- The field have at least one active rule
+- Is dirty and not empty
+- Passes validation
 
 
 ### `$dirty`

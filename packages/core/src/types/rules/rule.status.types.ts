@@ -76,7 +76,7 @@ export type SuperCompatibleRegleRuleStatus = Omit<
   | '$fieldDirty'
   | '$fieldInvalid'
   | '$fieldPending'
-  | '$fieldValid'
+  | '$fieldCorrect'
   | '$fieldError'
   | '$unwatch'
   | '$watch'
@@ -267,10 +267,17 @@ export interface $InternalRegleFieldStatus extends RegleCommonStatus {
  * @public
  */
 export interface RegleCommonStatus<TValue = any> {
-  /* True only when the field is dirty and passes validation. Useful for showing UI indicators that the field is valid. */
-  readonly $valid: boolean;
   /* Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
+  /**
+   * This is not the opposite of `$invalid`. Correct is meant to display UI validation report.
+   *
+   * This will be `true` only if:
+   * - The field have at least one active rule
+   * - Is dirty and not empty
+   * - Passes validation
+   */
+  readonly $correct: boolean;
   /* Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the $touch and $reset methods. The $dirty flag is considered true if the current model has been touched or if all its children are dirty.*/
   readonly $dirty: boolean;
   /* Similar to $dirty, with one exception. The $anyDirty flag is considered true if given model was touched or any of its children are $anyDirty which means at least one descendant is $dirty. */
@@ -378,7 +385,7 @@ export interface $InternalRegleRuleStatus {
   $fieldDirty: boolean;
   $fieldInvalid: boolean;
   $fieldPending: boolean;
-  $fieldValid: boolean;
+  $fieldCorrect: boolean;
   $fieldError: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;

@@ -13,7 +13,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
@@ -28,7 +28,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
@@ -46,7 +46,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
@@ -61,7 +61,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
@@ -79,7 +79,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
       expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
@@ -94,7 +94,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(true);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
       expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(true);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
@@ -111,7 +111,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(true);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(true);
+      expect(wrapper.vm.scope1R$.$correct).toBe(true);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(true);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
@@ -126,7 +126,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(true);
+      expect(wrapper.vm.scope1R$.$correct).toBe(true);
       expect(wrapper.vm.scope1R$.$edited).toBe(true);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
       expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
@@ -136,7 +136,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope2R$.$dirty).toBe(false);
       expect(wrapper.vm.scope2R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope2R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope2R$.$valid).toBe(false);
+      expect(wrapper.vm.scope2R$.$correct).toBe(false);
       expect(wrapper.vm.scope2R$.$error).toBe(false);
       expect(wrapper.vm.scope2R$.$edited).toBe(false);
       expect(wrapper.vm.scope2R$.$anyEdited).toBe(false);
@@ -156,7 +156,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
@@ -171,7 +171,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
@@ -188,7 +188,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope3R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope3R$.$invalid).toBe(true);
       expect(wrapper.vm.scope3R$.$error).toBe(false);
-      expect(wrapper.vm.scope3R$.$valid).toBe(false);
+      expect(wrapper.vm.scope3R$.$correct).toBe(false);
       expect(wrapper.vm.scope3R$.$edited).toBe(false);
       expect(wrapper.vm.scope3R$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope3R$.$instances).toHaveLength(1);
@@ -202,7 +202,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope3R$.$dirty).toBe(true);
       expect(wrapper.vm.scope3R$.$anyDirty).toBe(true);
       expect(wrapper.vm.scope3R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope3R$.$valid).toBe(true);
+      expect(wrapper.vm.scope3R$.$correct).toBe(true);
       expect(wrapper.vm.scope3R$.$error).toBe(false);
       expect(wrapper.vm.scope3R$.$edited).toBe(true);
       expect(wrapper.vm.scope3R$.$anyEdited).toBe(true);
@@ -219,7 +219,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
       expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$valid).toBe(false);
+      expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
@@ -235,7 +235,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
@@ -251,7 +251,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
       expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$valid).toBe(false);
+      expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
@@ -267,7 +267,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$dirty).toBe(false);
       expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
       expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$valid).toBe(false);
+      expect(wrapper.vm.scope1R$.$correct).toBe(false);
       expect(wrapper.vm.scope1R$.$error).toBe(false);
       expect(wrapper.vm.scope1R$.$edited).toBe(false);
       expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
