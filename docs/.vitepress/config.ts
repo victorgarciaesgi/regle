@@ -222,7 +222,7 @@ export default defineConfig({
         'meta',
         {
           property: 'og:image',
-          content: 'https://reglejs.dev/banner-og.png',
+          content: 'https://reglejs.dev/regle-banner-og.png',
         },
       ]);
     }
@@ -301,7 +301,7 @@ export default defineConfig({
     ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],
     ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
     ['meta', { name: 'twitter:title', content: 'Regle' }],
-    ['meta', { name: 'twitter:image', content: 'https://reglejs.dev/banner-og.png' }],
+    ['meta', { name: 'twitter:image', content: 'https://reglejs.dev/regle-banner-og.png' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     [
       'script',
