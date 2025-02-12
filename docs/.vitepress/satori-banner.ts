@@ -18,7 +18,7 @@ export async function generateSatoriBanner({
 }) {
   const fontBuffer = await fs.promises.readFile(path.resolve(import.meta.dirname, './theme/inter.ttf'));
 
-  const convertedHtml = html` <div
+  const convertedHtml = html`<div
     style="height:100%;width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;background-color:#0b0d0c;font-size:32px;font-weight:600;padding:0 40px;column-gap:40px;background-image:radial-gradient(circle at 25px 25px, rgba(255,255,255, 0.5) 1%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(0, 187, 127, 0.3) 2%, transparent 0%);background-size:100px 100px"
   >
     <div style="display:flex;flex-direction:column;max-width:450px;flex-wrap:wrap;row-gap:4px;color:white">
