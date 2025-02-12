@@ -17,6 +17,10 @@ describe('oneOf validator', () => {
     expect(oneOf([4, 5, 6]).exec(undefined)).toBe(true);
   });
 
+  it('should not validate empty array', () => {
+    expect(oneOf([] as any).exec('Foo')).toBe(false);
+  });
+
   it('should validate undefined option', () => {
     expect(oneOf(undefined as any).exec(5)).toBe(true);
   });
