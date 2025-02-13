@@ -22,19 +22,28 @@ export async function generateSatoriBanner({
     style="height:100%;width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;background-color:#0b0d0c;font-size:32px;font-weight:600;padding:0 40px;column-gap:40px;background-image:radial-gradient(circle at 25px 25px, rgba(255,255,255, 0.5) 1%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(0, 187, 127, 0.3) 2%, transparent 0%);background-size:100px 100px"
   >
     <div style="display:flex;flex-direction:column;max-width:450px;flex-wrap:wrap;row-gap:4px;color:white">
-      <span style="font-size:16px;color:#00bb7f">Regle docs</span>
-      <span style="font-size:36px;margin:10px 0;font-weight:bold;color:#fff">${title}</span>
-      <span style="font-size:26px;color:#fff">${description}</span>
+      <div
+        style="font-size:24px;font-weight:normal;line-height:1.3;color:transparent;background-image:linear-gradient(90deg, #1aedaa, #00bb7f);background-clip:text;-webkit-background-clip:text"
+      >
+        Regle docs
+      </div>
+      <span style="font-size:46px;color:#fff">${title}</span
+      ><span style="font-size:26px;margin-top:10px;font-weight:normal;color:#ddd">${description}</span>
     </div>
-    <svg width="210" height="210" viewBox="0 0 501 501">
-      <g>
-        <path
-          d="m147 110 155.1 24.6c45.2 7.1 60.4 70.6 24.3 101.4L147 388.8v-84.5L274.3 196 147 178z"
-          style="fill:#00bb7f"
-        ></path>
-        <path d="m249.6 325.8 33.2 62.7h80l-58-109.7z" style="fill:#fff"></path>
-      </g>
-    </svg>
+    <div style="display:flex;position:relative">
+      <div
+        style="display:flex;position:absolute;top:50%;left:50%;width:200;height:200;background-image:linear-gradient(90deg, #1aedaa, #00bb7f);filter:blur(80px);transform:translate(0%, -80%);z-index:-1;border-radius:50%"
+      ></div>
+      <svg width="230" height="230" viewBox="0 0 501 501">
+        <g>
+          <path
+            d="m147 110 155.1 24.6c45.2 7.1 60.4 70.6 24.3 101.4L147 388.8v-84.5L274.3 196 147 178z"
+            style="fill:#00bb7f"
+          ></path>
+          <path d="m249.6 325.8 33.2 62.7h80l-58-109.7z" style="fill:#fff"></path>
+        </g>
+      </svg>
+    </div>
   </div>`;
 
   const svg = await satori(convertedHtml, {
