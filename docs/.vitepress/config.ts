@@ -207,13 +207,16 @@ export default defineConfig({
 
       head.push(['meta', { property: 'description', content: pageDescription }]);
       head.push(['meta', { property: 'og:description', content: pageDescription }]);
+
+      const ogImageUrl = `https://reglejs.dev/${satoriImagePath}`;
       head.push([
         'meta',
         {
           property: 'og:image',
-          content: `https://reglejs.dev/${satoriImagePath}`,
+          content: ogImageUrl,
         },
       ]);
+      head.push(['meta', { name: 'twitter:image', content: ogImageUrl }]);
     } else {
       head.push(['meta', { property: 'description', content: longDescription }]);
       head.push(['meta', { property: 'og:description', content: longDescription }]);
@@ -225,6 +228,7 @@ export default defineConfig({
           content: 'https://reglejs.dev/regle-banner-og.png',
         },
       ]);
+      head.push(['meta', { name: 'twitter:image', content: 'https://reglejs.dev/regle-banner-og.png' }]);
     }
 
     return head;
@@ -301,7 +305,6 @@ export default defineConfig({
     ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],
     ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
     ['meta', { name: 'twitter:title', content: 'Regle' }],
-    ['meta', { name: 'twitter:image', content: 'https://reglejs.dev/regle-banner-og.png' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     [
       'script',

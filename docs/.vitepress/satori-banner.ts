@@ -31,17 +31,31 @@ export async function generateSatoriBanner({
       ><span style="font-size:26px;margin-top:10px;font-weight:normal;color:#ddd">${description}</span>
     </div>
     <div style="display:flex;position:relative">
-      <div
-        style="display:flex;position:absolute;top:50%;left:50%;width:200;height:200;background-image:linear-gradient(90deg, #1aedaa, #00bb7f);filter:blur(80px);transform:translate(0%, -80%);z-index:-1;border-radius:50%"
-      ></div>
-      <svg width="230" height="230" viewBox="0 0 501 501">
+      <svg
+        width="230"
+        height="230"
+        style="position:absolute;top:60%;transform:translate(0%, -50%)"
+        viewBox="0 0 501 501"
+      >
         <g>
           <path
             d="m147 110 155.1 24.6c45.2 7.1 60.4 70.6 24.3 101.4L147 388.8v-84.5L274.3 196 147 178z"
             style="fill:#00bb7f"
           ></path>
           <path d="m249.6 325.8 33.2 62.7h80l-58-109.7z" style="fill:#fff"></path>
-        </g>
+        </g></svg
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="900"
+        style="top:-30px;left:-200px;opacity:0.7;z-index:-1"
+        height="500"
+      >
+        <defs>
+          <filter id="f" x="-100%" y="-100%" width="400%" height="300%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="100"></feGaussianBlur>
+          </filter>
+        </defs>
+        <circle cx="400" cy="300" r="200" fill="#00bb7f" filter="url(#f)"></circle>
       </svg>
     </div>
   </div>`;
@@ -68,6 +82,7 @@ export async function generateSatoriBanner({
       fontFiles: ['./theme/inter.ttf'],
       loadSystemFonts: false,
     },
+    shapeRendering: 2,
   });
   const outputDir = path.resolve(__dirname, './dist/assets');
   fs.mkdirSync(outputDir, { recursive: true });
