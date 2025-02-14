@@ -5,7 +5,7 @@
         v-model="r$.$value.firstName"
         :class="{
           error: r$.$fields.firstName.$error,
-          valid: r$.$fields.firstName.$valid,
+          valid: r$.$fields.firstName.$correct,
         }"
         placeholder="Type your firstname"
       />

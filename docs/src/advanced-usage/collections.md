@@ -56,7 +56,7 @@ Alternatively, you can map your errors using `r$.$errors.collection.$each`.
     <div>
       <input
         v-model="item.$value.name"
-        :class="{ valid: item.$fields.name.$valid }"
+        :class="{ valid: item.$fields.name.$correct }"
         placeholder="Type an item value"
       />
 

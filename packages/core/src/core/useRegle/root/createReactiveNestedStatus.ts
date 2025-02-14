@@ -278,7 +278,7 @@ export function createReactiveNestedStatus({
         });
       });
 
-      const $valid = computed<boolean>(() => {
+      const $correct = computed<boolean>(() => {
         const fields = Object.entries($fields.value).filter(([_, statusOrField]) => {
           if (isFieldStatus(statusOrField)) {
             return !statusOrField.$inactive;
@@ -287,7 +287,7 @@ export function createReactiveNestedStatus({
         });
         if (fields.length) {
           return fields.every(([_, statusOrField]) => {
-            return statusOrField?.$valid;
+            return statusOrField?.$correct || (statusOrField.$anyDirty && !statusOrField.$invalid);
           });
         }
         return false;
@@ -379,7 +379,7 @@ export function createReactiveNestedStatus({
                     $error,
                     $pending,
                     $invalid,
-                    $valid,
+                    $correct,
                     $ready,
                     $anyDirty,
                     $name,
@@ -409,7 +409,7 @@ export function createReactiveNestedStatus({
                     key,
                     {
                       ...Object.fromEntries(
-                        (['$invalid', '$error', '$pending', '$dirty', '$valid'] as const).map((property) => [
+                        (['$invalid', '$error', '$pending', '$dirty', '$correct'] as const).map((property) => [
                           property,
                           mergeBooleanGroupProperties(entries, property),
                         ])
@@ -439,7 +439,7 @@ export function createReactiveNestedStatus({
         $dirty,
         $anyDirty,
         $invalid,
-        $valid,
+        $correct,
         $error,
         $pending,
         $errors,

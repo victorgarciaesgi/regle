@@ -3,7 +3,7 @@
     <div class="field">
       <input
         v-model.number="item.$value.name"
-        :class="{ valid: item.$fields.name.$valid, error: item.$fields.name.$error }"
+        :class="{ valid: item.$fields.name.$correct, error: item.$fields.name.$error }"
         placeholder="Type an item value"
       />
 

@@ -4,7 +4,7 @@
       <input
         v-model="modelValue"
         type="checkbox"
-        :class="{ valid: field.$valid, error: field.$error, $pending: field.$pending }"
+        :class="{ valid: field.$correct, error: field.$error, $pending: field.$pending }"
       />
       <label>{{ placeholder }}<span v-if="isRequired">*</span></label>
     </div>

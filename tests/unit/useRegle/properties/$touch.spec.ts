@@ -1,7 +1,4 @@
-import {
-  simpleNestedStateWithComputedValidation,
-  simpleNestedStateWithMixedValidation,
-} from '../../../fixtures';
+import { simpleNestedStateWithComputedValidation, simpleNestedStateWithMixedValidation } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 
 describe('.$touch', () => {
@@ -54,7 +51,7 @@ describe('.$touch', () => {
 
     expect(vm.r$.$fields.email.$invalid).toBe(true);
     expect(vm.r$.$fields.email.$error).toBe(false);
-    expect(vm.r$.$fields.email.$valid).toBe(false);
+    expect(vm.r$.$fields.email.$correct).toBe(false);
 
     vm.r$.$fields.email.$touch();
 

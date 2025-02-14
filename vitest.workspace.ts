@@ -50,6 +50,18 @@ export default defineWorkspace([
     },
   },
   {
+    plugins: [vue()],
+    test: {
+      alias,
+      name: `Shared tests - Vue ${vueVersion}.x`,
+      root: './packages/shared',
+      globals: true,
+      testTimeout: 1000,
+      environment: 'happy-dom',
+      include: ['**/*.spec.ts'],
+    },
+  },
+  {
     test: {
       name: `Nuxt tests - Vue ${vueVersion}.x`,
       root: './packages/nuxt',

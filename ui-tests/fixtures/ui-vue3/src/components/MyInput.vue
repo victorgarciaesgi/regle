@@ -6,7 +6,7 @@
     <input
       v-model="modelValue"
       :type
-      :class="{ valid: field.$valid, error: field.$error, pending: field.$pending }"
+      :class="{ valid: field.$correct, error: field.$error, pending: field.$pending }"
       :placeholder
     />
     <span v-if="field.$pending" class="pending-text"> Checking... </span>

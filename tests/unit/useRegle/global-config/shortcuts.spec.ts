@@ -10,11 +10,11 @@ function nestedRefObjectValidation() {
       fields: {
         $isRequired: (field) => field.$rules.required?.$active ?? false,
       },
-      collections: {
-        $haveLeastOneValid: (collec) => collec.$each.some((field) => field.$valid),
-      },
       nested: {
-        $haveLeastOneValid: (nest) => Object.values(nest.$fields).some((field) => field.$valid),
+        $haveLeastOneCorrect: (nest) => Object.values(nest.$fields).some((field) => field.$correct),
+      },
+      collections: {
+        $haveLeastOneInvalid: (collec) => collec.$each.some((field) => field.$invalid),
       },
     },
   });
@@ -60,8 +60,8 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(false);
     expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(true);
 
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneValid).toBe(false);
-    expect(vm.r$.$fields.collection.$haveLeastOneValid).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(false);
+    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(true);
 
     vm.r$.$value = {
       level0: 'foo',
@@ -79,9 +79,9 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(false);
     expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(true);
 
-    // `$valid` is true is set only if the rule is active
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneValid).toBe(false);
-    expect(vm.r$.$fields.collection.$haveLeastOneValid).toBe(true);
+    // `$correct` is true is set only if the rule is active
+    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(false);
+    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(true);
 
     vm.condition = false;
     await vm.$nextTick();
@@ -90,7 +90,9 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(true);
     expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(false);
 
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneValid).toBe(true);
-    expect(vm.r$.$fields.collection.$haveLeastOneValid).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(true);
+    expect(vm.r$.$fields.collection.$correct).toBe(true);
+    expect(vm.r$.$fields.collection.$each[0].$fields.name.$correct).toBe(false);
+    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(false);
   });
 });

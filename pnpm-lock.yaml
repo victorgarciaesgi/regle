@@ -514,9 +514,15 @@ importers:
       '@regle/core':
         specifier: workspace:*
         version: link:../core
+      tsup:
+        specifier: 'catalog:'
+        version: 8.3.5(jiti@2.4.2)(postcss@8.5.1)(tsx@4.19.2)(typescript@5.6.3)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
         version: 4.28.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.3
 
   playground/nuxt:
     dependencies:

@@ -21,7 +21,7 @@ export interface CommonResolverOptions {
 export interface CommonResolverScopedState {
   $anyDirty: ComputedRef<boolean>;
   $invalid: ComputedRef<boolean>;
-  $valid: ComputedRef<boolean>;
+  $correct: ComputedRef<boolean>;
   $error: ComputedRef<boolean>;
   $pending: ComputedRef<boolean>;
   $name: ComputedRef<string>;

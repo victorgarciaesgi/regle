@@ -290,12 +290,12 @@ export function createReactiveCollectionStatus({
         );
       });
 
-      const $valid = computed<boolean>(() => {
+      const $correct = computed<boolean>(() => {
         return (
-          (isEmpty($selfStatus.value.$rules) ? true : $selfStatus.value.$valid) &&
+          (isEmpty($selfStatus.value.$rules) ? true : $selfStatus.value.$correct) &&
           (!$eachStatus.value.length ||
             $eachStatus.value.every((statusOrField) => {
-              return statusOrField.$valid;
+              return statusOrField.$correct || (statusOrField.$anyDirty && !statusOrField.$invalid);
             }))
         );
       });
@@ -372,7 +372,7 @@ export function createReactiveCollectionStatus({
                     $silentValue: $silentValue as any,
                     $pending,
                     $invalid,
-                    $valid,
+                    $correct,
                     $errors: $errors as any,
                     $ready,
                     $silentErrors: $silentErrors as any,
@@ -401,7 +401,7 @@ export function createReactiveCollectionStatus({
         $dirty,
         $anyDirty,
         $invalid,
-        $valid,
+        $correct,
         $error,
         $pending,
         $errors,

@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="r$.$value.regex"
-        :class="{ valid: r$.$fields.regex.$valid, error: r$.$fields.regex.$error }"
+        :class="{ valid: r$.$fields.regex.$correct, error: r$.$fields.regex.$error }"
         placeholder="Type your regex"
       />
 

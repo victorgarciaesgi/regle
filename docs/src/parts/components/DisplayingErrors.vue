@@ -5,7 +5,7 @@
         v-model="r$.$value.email"
         :class="{
           error: r$.$fields.email.$error,
-          valid: r$.$fields.email.$valid,
+          valid: r$.$fields.email.$correct,
         }"
         placeholder="Type your email"
       />

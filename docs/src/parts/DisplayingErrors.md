@@ -3,7 +3,7 @@
   <input 
     :class="{
       error: r$.$fields.email.$error,
-      valid: r$.$fields.email.$valid
+      valid: r$.$fields.email.$correct
     }" 
     v-model='r$.$value.email' 
     placeholder='Type your email'

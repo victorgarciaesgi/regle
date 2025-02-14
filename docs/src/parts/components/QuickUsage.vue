@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="r$.$value.email"
-        :class="{ valid: r$.$fields.email.$valid, error: r$.$fields.email.$error }"
+        :class="{ valid: r$.$fields.email.$correct, error: r$.$fields.email.$error }"
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>

@@ -45,10 +45,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
   });
 
   it('should error on initial submit', async () => {
@@ -73,10 +73,10 @@ describe.each([
     expect(vm.r$.$error).toBe(true);
     expect(vm.r$.$pending).toBe(false);
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(true);
-    expect(vm.r$.$fields.level1.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(true);
+    expect(vm.r$.$fields.level1.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
   });
 
   it('should update dirty state and errors when updating form', async () => {
@@ -110,10 +110,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
@@ -156,10 +156,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
   });
 
   it('should remove errors when all values are valid', async () => {
@@ -203,11 +203,11 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(true);
-    expect(vm.r$.$fields.level0Async.$valid).toBe(true);
-    expect(vm.r$.$fields.level1.$valid).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(true);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(true);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(true);
+    expect(vm.r$.$fields.level1.$correct).toBe(true);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(true);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(true);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
     const [{ result, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
@@ -257,9 +257,9 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$valid).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$valid).toBe(false);
+    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
   });
 });

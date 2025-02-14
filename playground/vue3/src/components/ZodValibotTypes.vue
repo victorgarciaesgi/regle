@@ -23,7 +23,7 @@
     <div class="field">
       <input
         v-model="item.$value.child"
-        :class="{ valid: item.$fields.child.$valid, error: item.$fields.child.$error }"
+        :class="{ valid: item.$fields.child.$correct, error: item.$fields.child.$error }"
         placeholder="Type an item value"
       />
 

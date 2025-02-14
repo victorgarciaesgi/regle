@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="form.email"
-        :class="{ valid: r$.$fields.email.$valid, pending: r$.$fields.email.$pending }"
+        :class="{ valid: r$.$fields.email.$correct, pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$resetAll">Reset</button>

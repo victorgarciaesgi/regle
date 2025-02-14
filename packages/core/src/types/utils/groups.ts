@@ -4,7 +4,7 @@ import type { RegleValidationGroupEntry } from '../core';
 
 export function mergeBooleanGroupProperties(
   entries: RegleValidationGroupEntry[],
-  property: Extract<keyof RegleValidationGroupEntry, '$invalid' | '$error' | '$pending' | '$dirty' | '$valid'>
+  property: Extract<keyof RegleValidationGroupEntry, '$invalid' | '$error' | '$pending' | '$dirty' | '$correct'>
 ) {
   return entries.some((entry) => {
     return entry[property];

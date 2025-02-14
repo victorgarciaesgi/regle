@@ -121,13 +121,13 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
-  const $valid = computed<boolean>(() => {
+  const $correct = computed<boolean>(() => {
     const entries = Object.entries(regles);
 
     return (
       !!entries.length &&
       entries.every(([_, regle]) => {
-        return regle?.$valid;
+        return regle?.$correct || (regle.$anyDirty && !regle.$invalid);
       })
     );
   });
@@ -274,7 +274,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $dirty,
     $anyDirty,
     $invalid,
-    $valid,
+    $correct,
     $error,
     $pending,
     $ready,

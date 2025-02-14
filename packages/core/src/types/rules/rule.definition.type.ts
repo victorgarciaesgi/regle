@@ -1,7 +1,13 @@
 import type { RegleRuleCore } from './rule.init.types';
 import type { RegleUniversalParams } from './rule.params.types';
 import type { RegleInternalRuleDefs } from './rule.internal.types';
-import type { AllRulesDeclarations, RegleCommonStatus, RegleFormPropertyType, RegleRuleDecl } from '.';
+import type {
+  $InternalRegleRuleStatus,
+  AllRulesDeclarations,
+  RegleCommonStatus,
+  RegleFormPropertyType,
+  RegleRuleDecl,
+} from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { FieldRegleBehaviourOptions } from '../core';
 
@@ -73,11 +79,11 @@ export type RegleRuleMetadataDefinition = RegleRuleMetadataExtended | boolean;
 
 type DefaultMetadataPropertiesCommon = Pick<
   ExcludeByType<RegleCommonStatus, Function>,
-  '$invalid' | '$dirty' | '$pending' | '$valid' | '$error'
+  '$invalid' | '$dirty' | '$pending' | '$correct' | '$error'
 >;
 
 type DefaultMetadataProperties = DefaultMetadataPropertiesCommon & {
-  $rule: Omit<DefaultMetadataPropertiesCommon, '$dirty' | '$error'>;
+  $rule: Pick<$InternalRegleRuleStatus, '$valid' | '$pending'>;
 };
 
 /**

@@ -13,7 +13,7 @@ export function oneOf<const TValues extends [string | number, ...(string | numbe
   const rule = withMessage(
     withParams(
       (value: Maybe<string | number>, options) => {
-        if (isFilled(value) && isFilled(options)) {
+        if (isFilled(value) && isFilled(options, false)) {
           return options.includes(value);
         }
 
