@@ -29,7 +29,7 @@
       <button type="button" @click="form.collection.push({ name: '', condition: false })">🆕 Add item</button>
       <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem">Remove random item</button>
       <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </div>

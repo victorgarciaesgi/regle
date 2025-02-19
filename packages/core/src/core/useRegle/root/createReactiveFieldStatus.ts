@@ -9,6 +9,7 @@ import type {
   FieldRegleBehaviourOptions,
   RegleRuleDecl,
   RegleShortcutDefinition,
+  ResetOptions,
 } from '../../../types';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
@@ -489,23 +490,49 @@ export function createReactiveFieldStatus({
 
   createReactiveRulesResult();
 
-  function $reset(): void {
+  function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     $clearExternalErrors();
     scopeState.$dirty.value = false;
     scopeState.triggerPunishment.value = false;
     storage.setDirtyEntry(path, false);
-    initialState.value = isObject(state.value)
-      ? cloneDeep(state.value)
-      : Array.isArray(state.value)
-        ? [...state.value]
-        : state.value;
-    Object.entries($rules.value).forEach(([_, rule]) => {
-      rule.$reset();
-    });
+
+    if (!fromParent) {
+      if (options?.toInitialState) {
+        $unwatch();
+        state.value = cloneDeep(initialState);
+      } else if (options?.toState) {
+        $unwatch();
+        let newInitialState: unknown;
+        if (typeof options?.toState === 'function') {
+          newInitialState = options?.toState();
+        } else {
+          newInitialState = options?.toState;
+        }
+        initialState.value = cloneDeep(newInitialState);
+        state.value = cloneDeep(newInitialState);
+      } else {
+        initialState.value = isObject(state.value)
+          ? cloneDeep(state.value)
+          : Array.isArray(state.value)
+            ? [...state.value]
+            : state.value;
+      }
+    }
+
+    if (!fromParent) {
+      Object.entries($rules.value).forEach(([_, rule]) => {
+        rule.$reset();
+      });
+    }
+
     if (!scopeState.$lazy.value && scopeState.$autoDirty.value) {
       Object.values($rules.value).forEach((rule) => {
         return rule.$validate();
       });
+    }
+
+    if (!fromParent) {
+      createReactiveRulesResult();
     }
   }
 
@@ -557,12 +584,6 @@ export function createReactiveFieldStatus({
     }
   }
 
-  function $resetAll() {
-    $unwatch();
-    state.value = cloneDeep(initialState);
-    $reset();
-  }
-
   function $extractDirtyFields(filterNullishValues: boolean = true): unknown | null | { _null: true } {
     if (scopeState.$dirty.value) {
       return state.value;
@@ -608,7 +629,6 @@ export function createReactiveFieldStatus({
     $validate,
     $unwatch,
     $watch,
-    $resetAll,
     $extractDirtyFields,
     $clearExternalErrors,
   }) satisfies $InternalRegleFieldStatus;

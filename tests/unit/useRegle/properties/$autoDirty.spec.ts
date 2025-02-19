@@ -123,10 +123,10 @@ describe.each([
 
     vm.r$.$reset();
 
-    shouldBePristineField(vm.r$.$fields.email);
-    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
-    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
-    shouldBePristineField(vm.r$.$fields.contacts.$each[0]);
+    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
+    shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.$fields.contacts.$each[0]);
   });
 
   it('should not run validators with computed rules`', async () => {

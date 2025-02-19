@@ -68,7 +68,7 @@ This can be used to display a loading icon and a custom message indicating that 
         placeholder="Type your email"
       />
 
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
       <button type="button" @click="r$.$validate">Submit</button>
     </div>
 

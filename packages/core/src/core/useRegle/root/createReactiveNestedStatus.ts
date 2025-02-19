@@ -12,6 +12,7 @@ import type {
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
+  ResetOptions,
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
 import { isRefObject } from '../../../utils';
@@ -484,26 +485,41 @@ export function createReactiveNestedStatus({
     });
   }
 
-  function $reset(): void {
+  function $reset(options?: ResetOptions<Record<string, unknown>>, fromParent?: boolean): void {
     $unwatchExternalErrors?.();
+    $unwatch();
+
+    if (!fromParent) {
+      if (options?.toInitialState) {
+        state.value = cloneDeep({ ...(initialState.value ?? {}) });
+      } else if (options?.toState) {
+        let newInitialState: Record<string, unknown>;
+        if (typeof options?.toState === 'function') {
+          newInitialState = options?.toState();
+        } else {
+          newInitialState = options?.toState;
+        }
+        initialState.value = cloneDeep(newInitialState);
+        state.value = cloneDeep(newInitialState);
+      } else {
+        initialState.value = cloneDeep(state.value);
+      }
+    }
+
     Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$reset();
+      statusOrField.$reset(options, true);
     });
-    initialState.value = { ...cloneDeep(state.value) };
+
     define$WatchExternalErrors();
+    if (!fromParent) {
+      createReactiveFieldsStatus();
+    }
   }
 
   function $touch(runCommit = true, withConditions = false): void {
     Object.values($fields.value).forEach((statusOrField) => {
       statusOrField.$touch(runCommit, withConditions);
     });
-  }
-
-  async function $resetAll() {
-    $unwatch();
-    state.value = cloneDeep({ ...(initialState.value ?? {}) });
-    $reset();
-    createReactiveFieldsStatus();
   }
 
   function filterNullishFields(fields: [string, unknown][]) {
@@ -570,7 +586,6 @@ export function createReactiveNestedStatus({
     ...$shortcuts,
     $fields,
     $value: state,
-    $resetAll,
     $reset,
     $touch,
     $validate,

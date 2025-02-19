@@ -239,8 +239,8 @@ describe.each([
     });
   });
 
-  it('should reset on initial state when calling r$.$resetAll', async () => {
-    vm.r$.$resetAll();
+  it('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {
+    vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
 

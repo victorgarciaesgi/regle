@@ -305,21 +305,20 @@ export interface RegleCommonStatus<TValue = any> {
   /** Marks the field and all nested properties as $dirty. */
   $touch(): void;
   /**
-   * - Restore the validation state to a pristine state while keeping the current state.
-   * - Resets the `$dirty` state on all nested properties of a form.
-   * - Rerun rules if `$lazy` is false
+   * Reset the validation status to a pristine state while keeping the current form state.
+   * Resets the `$dirty` state on all nested properties of a form.
+   * Rerun rules if `$lazy` is false
    */
   $reset(options?: ResetOptions<TValue>): void;
-  /** Will reset both your validation state and your form state to their initial values. */
-  $resetAll: () => void;
   /** Clears the $externalResults state back to an empty object. */
   $clearExternalErrors(): void;
 }
 
-interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch'> {
+interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
   $touch(runCommit?: boolean, withConditions?: boolean): void;
   $unwatch(): void;
   $watch(): void;
+  $reset(options?: ResetOptions<any>, fromParent?: boolean): void;
 }
 
 /**

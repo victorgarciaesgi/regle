@@ -9,6 +9,7 @@ import type {
   $InternalRegleResult,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
+  ResetOptions,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
 import { randomId, unwrapGetter } from '../../../../utils';
@@ -451,11 +452,34 @@ export function createReactiveCollectionStatus({
     });
   }
 
-  function $reset(): void {
+  function $reset(options?: ResetOptions<unknown[]>, fromParent?: boolean): void {
+    $unwatch();
+
+    if (!fromParent) {
+      if (options?.toInitialState) {
+        state.value = cloneDeep(initialState.value) as any[];
+      } else if (options?.toState) {
+        let newInitialState: unknown[];
+        if (typeof options?.toState === 'function') {
+          newInitialState = options?.toState();
+        } else {
+          newInitialState = options?.toState;
+        }
+        initialState.value = cloneDeep(newInitialState);
+        state.value = cloneDeep(newInitialState) as any[] & StateWithId;
+      } else {
+        initialState.value = cloneDeep(state.value) as any[] & StateWithId;
+      }
+    }
+
     $selfStatus.value.$reset();
     $eachStatus.value.forEach(($each) => {
-      $each.$reset();
+      $each.$reset(options, true);
     });
+
+    if (!fromParent) {
+      createStatus();
+    }
   }
 
   async function $validate(): Promise<$InternalRegleResult> {
@@ -507,12 +531,6 @@ export function createReactiveCollectionStatus({
     return dirtyFields;
   }
 
-  function $resetAll() {
-    $unwatch();
-    state.value = cloneDeep(initialState.value) as any;
-    $reset();
-  }
-
   const { $shortcuts, ...restScopeState } = scopeState;
 
   return reactive({
@@ -526,7 +544,6 @@ export function createReactiveCollectionStatus({
     $watch,
     $touch,
     $reset,
-    $resetAll,
     $extractDirtyFields,
     $clearExternalErrors,
   }) satisfies $InternalRegleCollectionStatus;

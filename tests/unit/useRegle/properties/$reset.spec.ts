@@ -106,7 +106,7 @@ describe('.$reset', () => {
 
     shouldBePristineField(vm.r$);
 
-    vm.r$.$resetAll();
+    vm.r$.$reset({ toInitialState: true });
     await nextTick();
 
     // Check if $reset updated the initialState

@@ -12,7 +12,7 @@
     </li>
   </ul>
 
-  <button @click="r$.$resetAll">Reset</button>
+  <button @click="r$.$reset({toInitialState: true})">Reset</button>
   <button @click="r$.$validate">Submit</button>
 </template>
 

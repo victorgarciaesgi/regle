@@ -138,17 +138,26 @@ By default it will filter out nullish values or objects, but you can override it
 Marks the field and all nested properties as `$dirty`.
 
 ### `$reset`
-- Type: `() => void`
+- Type: `(options?: ResetOptions) => void`
 
-- Restore the validation state to a pristine state while keeping the current state.
-- Resets the `$dirty` state on all nested properties of a form.
-- Rerun rules if `$lazy` is false
+Restore the validation status to a pristine state while keeping the current state.
+The current state is treated as the new initial state.
 
-### `$resetAll`
-- Type: `() => void`
+#### Options
 
-Will reset both your validation state and your form state to their initial values.
-
+```ts
+type ResetOptions<TState extends unknown> = {
+  /**
+   * Reset validation status and reset form state to its initial state
+   */
+  toInitialState?: boolean;
+  /**
+   * Reset validation status and reset form state to the given state
+   */
+  toState?: TState | (() => TState);
+};
+```
+     
 ### `$clearExternalErrors`
 - Type: `() => void`
 

@@ -51,7 +51,7 @@ export const strongPassword = createRule({
       placeholder="Type your password"
     />
 
-    <button type="button" @click="r$.$resetAll">Reset</button>
+    <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
   </div>
 
   <div

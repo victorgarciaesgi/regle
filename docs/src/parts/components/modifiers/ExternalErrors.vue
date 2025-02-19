@@ -35,7 +35,7 @@
     <div class="button-list">
       <button type="button" @click="submit">Submit</button>
       <button type="button" @click="r$.$clearExternalErrors">Reset Errors</button>
-      <button type="button" @click="r$.$resetAll">Reset All</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset All</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>
   </div>

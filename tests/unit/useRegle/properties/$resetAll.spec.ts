@@ -39,7 +39,7 @@ export function simpleNestedStateInitialState() {
   };
 }
 
-describe('.$resetAll', () => {
+describe('r$.$reset to initial state', () => {
   it('should update the $dirty state to false and reset state to initial state', async () => {
     const { vm } = createRegleComponent(simpleNestedStateInitialState);
 
@@ -81,7 +81,7 @@ describe('.$resetAll', () => {
     await nextTick();
     shouldBeErrorField(vm.r$.$fields.email);
 
-    vm.r$.$resetAll();
+    vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
 

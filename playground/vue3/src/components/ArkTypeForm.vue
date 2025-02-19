@@ -30,7 +30,7 @@
   </ul>
 
   <button type="button" @click="r$.$value.level1.collection.push({ name: 0 })">🆕 Add item</button>
-  <button @click="r$.$resetAll">Reset</button>
+  <button @click="r$.$reset({ toInitialState: true })">Reset</button>
   <button @click="r$.$validate">Submit</button>
 </template>
 

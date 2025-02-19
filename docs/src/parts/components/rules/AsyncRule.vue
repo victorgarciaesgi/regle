@@ -6,7 +6,7 @@
         :class="{ valid: r$.$fields.email.$correct, pending: r$.$fields.email.$pending }"
         placeholder="Type your email"
       />
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button type="button" @click="r$.$validate">Validate</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
     </div>

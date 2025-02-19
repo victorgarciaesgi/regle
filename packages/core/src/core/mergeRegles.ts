@@ -4,6 +4,7 @@ import type {
   RegleCommonStatus,
   RegleResult,
   RegleValidationErrors,
+  ResetOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { computed, reactive } from 'vue';
@@ -212,21 +213,15 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     }
   });
 
-  function $reset() {
+  function $reset(options?: ResetOptions<unknown>) {
     Object.values(regles).forEach((regle) => {
-      regle.$reset();
+      regle.$reset(options);
     });
   }
 
   function $touch() {
     Object.values(regles).forEach((regle) => {
       regle.$touch();
-    });
-  }
-
-  function $resetAll() {
-    Object.values(regles).forEach((regle) => {
-      regle.$resetAll();
     });
   }
 
@@ -280,7 +275,6 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $ready,
     $edited,
     $anyEdited,
-    $resetAll,
     $reset,
     $touch,
     $validate,
