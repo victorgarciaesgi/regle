@@ -54,7 +54,7 @@ describe('nested validations', () => {
     shouldBeErrorField(vm.r$.$fields.testDate);
     shouldBeErrorField(vm.r$.$fields.testFile);
 
-    vm.r$.$resetAll();
+    vm.r$.$reset({ toInitialState: true });
 
     await vm.$nextTick();
 

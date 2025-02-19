@@ -94,7 +94,7 @@
       />
     </div>
     <div class="button-list">
-      <button data-testid="reset" type="button" @click="r$.$resetAll">Reset</button>
+      <button data-testid="reset" type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button data-testid="submit" type="submit">Submit</button>
     </div>
   </form>

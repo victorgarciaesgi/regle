@@ -14,7 +14,7 @@
       </li>
     </ul>
 
-    <button type="button" @click="r$Merged.$resetAll">Reset</button>
+    <button type="button" @click="r$Merged.$reset({ toInitialState: true })">Reset</button>
 
     <JSONViewer :data="r$" />
   </main>
@@ -27,8 +27,8 @@ import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
 
 function handleEvent(event: Event) {
-  console.log(event.target.files[0]);
-  r$Merged.$value.r$.competency = event.target.files[0];
+  // console.log(event.target.files[0]);
+  // r$Merged.$value.r$.competency = event.target.files[0];
 }
 
 const data = ref({

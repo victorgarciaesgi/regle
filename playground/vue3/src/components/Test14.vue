@@ -11,7 +11,7 @@
         :class="{ valid: r$.$fields.foo.$correct, error: r$.$fields.foo.$error }"
         :placeholder="`Type your foo${r$.$fields.foo.$rules.required.$active ? '*' : ''}`"
       />
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
     </div>
     <ul v-if="r$.$errors.foo.length">
       <li v-for="error of r$.$errors.foo" :key="error">

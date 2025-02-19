@@ -309,7 +309,7 @@ const { r$ } = useRegle({name: ''}, {
       :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'
     />
 
-    <button type="button" @click="r$.$resetAll">Reset</button>
+    <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
   </div>
 
   <ul v-if="r$.$errors.name.length">
@@ -340,7 +340,7 @@ Async rules are useful for server-side validations or computationally expensive 
         placeholder="Type your email"
       />
 
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
       <button type="button" @click="r$.$validate">Submit</button>
     </div>
 

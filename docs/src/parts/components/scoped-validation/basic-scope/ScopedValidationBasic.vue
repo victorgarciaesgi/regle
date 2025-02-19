@@ -37,7 +37,7 @@ const showChild2 = ref(true);
 function reset() {
   showChild1.value = true;
   showChild2.value = true;
-  r$.$resetAll();
+  r$.$reset({ toInitialState: true });
 }
 
 const { r$ } = useCollectScope();

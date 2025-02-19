@@ -69,7 +69,7 @@ Alternatively, you can map your errors using `r$.$errors.collection.$each`.
   </div>
 
   <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
-  <button type="button" @click="r$.$resetAll">Reset</button>
+  <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
 </template>
 
 <script setup lang="ts">

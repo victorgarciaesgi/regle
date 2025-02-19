@@ -2,7 +2,7 @@
   <div class="demo-container">
     <div>
       <input v-model="testForm.r$.$value.name" placeholder="Name:" />
-      <button type="button" @click="testForm.r$.$resetAll">Reset</button>
+      <button type="button" @click="testForm.r$.$reset({ toInitialState: true })">Reset</button>
       <button type="button" @click="testForm.r$.$silentValue = { name: 'bite' }">Set value</button>
     </div>
     <ul v-if="testForm.r$.$errors.name.length">

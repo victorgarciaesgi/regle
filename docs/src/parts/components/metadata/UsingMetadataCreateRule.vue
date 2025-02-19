@@ -7,7 +7,7 @@
         placeholder="Type your password"
       />
 
-      <button type="button" @click="r$.$resetAll">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
     </div>
 
     <div class="password-strength" :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">

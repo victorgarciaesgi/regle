@@ -39,7 +39,7 @@ export const useDemoStore = defineStore('demo-store', () => {
 ``` vue twoslash [ComponentA.vue]
 <template>
   <input v-model='r$.$value.email' placeholder='Type your email'/>
-  <button type="button" @click="r$.$resetAll">Reset</button>
+  <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
 </template>
 
 <script setup lang='ts'>

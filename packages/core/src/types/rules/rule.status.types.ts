@@ -25,6 +25,7 @@ import type {
   RegleValidationErrors,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
+  ResetOptions,
 } from '..';
 
 /**
@@ -132,7 +133,8 @@ export type RegleStatus<
         : never
       : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
-  /** Collection of all the error messages, collected for all children properties and nested forms.
+  /**
+   * Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
   readonly $errors: RegleErrorTree<TState>;
@@ -151,7 +153,7 @@ export type RegleStatus<
  * @internal
  * @reference {@link RegleStatus}
  */
-export interface $InternalRegleStatus extends RegleCommonStatus {
+export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   $fields: {
     [x: string]: $InternalRegleStatusType;
   };
@@ -251,7 +253,7 @@ export type RegleFieldStatus<
  * @internal
  * @reference {@link RegleFieldStatus}
  */
-export interface $InternalRegleFieldStatus extends RegleCommonStatus {
+export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   $value: any;
   $silentValue: any;
   readonly $rules: Record<string, $InternalRegleRuleStatus>;
@@ -301,21 +303,22 @@ export interface RegleCommonStatus<TValue = any> {
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** Marks the field and all nested properties as $dirty. */
-  $touch(runCommit?: boolean, withConditions?: boolean): void;
+  $touch(): void;
   /**
-   * - Restore the validation state to a pristine state while keeping the current state.
-   * - Resets the `$dirty` state on all nested properties of a form.
-   * - Rerun rules if `$lazy` is false
+   * Reset the validation status to a pristine state while keeping the current form state.
+   * Resets the `$dirty` state on all nested properties of a form.
+   * Rerun rules if `$lazy` is false
    */
-  $reset(): void;
-  /** Will reset both your validation state and your form state to their initial values. */
-  $resetAll: () => void;
+  $reset(options?: ResetOptions<TValue>): void;
   /** Clears the $externalResults state back to an empty object. */
   $clearExternalErrors(): void;
-  /** @interal */
+}
+
+interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
+  $touch(runCommit?: boolean, withConditions?: boolean): void;
   $unwatch(): void;
-  /** @interal */
   $watch(): void;
+  $reset(options?: ResetOptions<any>, fromParent?: boolean): void;
 }
 
 /**
@@ -389,9 +392,9 @@ export interface $InternalRegleRuleStatus {
   $fieldError: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $validate(): Promise<boolean>;
+  $reset(): void;
   $unwatch(): void;
   $watch(): void;
-  $reset(): void;
 }
 
 /**
@@ -440,7 +443,4 @@ export interface $InternalRegleCollectionStatus
   readonly $externalErrors?: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate: () => Promise<$InternalRegleResult>;
-  /** Track each array state */
-  $unwatch(): void;
-  $watch(): void;
 }
