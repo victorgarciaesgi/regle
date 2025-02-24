@@ -117,6 +117,14 @@ myValidator(5)
 myValidator(5, 'foo', 'bar');
 ```
 
+
+:::warning
+
+While adding spread parameters `...anyOtherArg` is supported, keep in mind that it will receive every parameters, even the ones injected by a parent modifier like `applyIf`, `and`, `or` etc..
+
+So it's not advised to use it
+:::
+
 ### Reactivity
 
 The real advantage of using `createRule` is that it automatically registers parameters as reactive dependencies. This means your rule works seamlessly with plain values, refs, or getter functions.

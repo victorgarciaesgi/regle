@@ -343,7 +343,7 @@ const { r$ } = useRegle({ aliment: 'Fish' }, {
 ## `regex`
 
 _**Params**_
-- `...regexps: [...Ref<RegExp> | RegExp | () => RegExp]`
+- `...regexps: [MaybeRefOrGetter<RegExp | RegExp[]>]`
 
 Checks if the value matches one or more regular expressions.
 

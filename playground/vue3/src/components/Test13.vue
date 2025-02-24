@@ -1,6 +1,6 @@
 <template>
   <main>
-    <input type="file" @change="handleEvent" placeholder="Competency" />
+    <input v-model="data.competency" placeholder="test" />
     <ul v-if="r$Merged.$errors.r$.competency">
       <li v-for="error of r$Merged.$errors.r$.competency" :key="error">
         {{ error }}
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { mergeRegles, useRegle } from '@regle/core';
-import { numeric, required } from '@regle/rules';
+import { applyIf, numeric, regex, required, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
 
@@ -32,7 +32,7 @@ function handleEvent(event: Event) {
 }
 
 const data = ref({
-  competency: new Date(),
+  competency: 0,
   level: { id: 1 },
 });
 
@@ -42,7 +42,7 @@ const data2 = ref({
 });
 
 const { r$ } = useRegle(data, {
-  competency: { required },
+  competency: { number: applyIf(() => true, withMessage(regex(/\d/), 'Your password must have one number')) },
   level: {
     id: { required },
   },
