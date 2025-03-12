@@ -24,8 +24,8 @@ export interface RegleSchema<
 }
 
 export type RegleSchemaResult<TSchema extends unknown> =
-  | { result: false; data: PartialDeep<TSchema> }
-  | { result: true; data: TSchema };
+  | { valid: false; data: PartialDeep<TSchema> }
+  | { valid: true; data: TSchema };
 
 /**
  * @public

@@ -135,8 +135,8 @@ const { r$ } = useRegle({ fullName: 'Hello' } as Form, {
 });
 
 async function submit() {
-  const { result, data } = await r$.$validate();
-  if (result) {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
     alert('Your form is valid!');
   }
 }

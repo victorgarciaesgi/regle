@@ -196,8 +196,8 @@ const schema = computed(() => inferSchema(form, z.object({
 const { r$ } = useRegleSchema(form, schema);
 
 async function submit() {
-  const { result, data } = await r$.$validate();
-  if (result) {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
     console.log(data);
     //            ^?
   }
@@ -231,8 +231,8 @@ const schema = computed(() => {
 const { r$ } = useRegleSchema(form, schema);
 
 async function submit() {
-  const { result, data } = await r$.$validate();
-  if (result) {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
     console.log(data);
     //            ^?
   }
@@ -270,8 +270,8 @@ const schema = computed(() => {
 const { r$ } = useRegleSchema(form, schema);
 
 async function submit() {
-  const { result, data } = await r$.$validate();
-  if (result) {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
     console.log(data);
     //            ^?
   }

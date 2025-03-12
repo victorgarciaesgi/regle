@@ -81,7 +81,7 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
 
 export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRules extends ReglePartialRuleTree<any>> =
   | {
-      result: false;
+      valid: false;
       data: NonNullable<Data> extends Date | File
         ? Maybe<Data>
         : NonNullable<Data> extends Array<infer U extends Record<string, any>>
@@ -91,7 +91,7 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
             : Maybe<Data>;
     }
   | {
-      result: true;
+      valid: true;
       data: Data extends Array<infer U extends Record<string, any>>
         ? DeepSafeFormState<U, TRules>[]
         : Data extends Date | File
@@ -101,6 +101,6 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
             : SafeFieldProperty<Data, TRules>;
     };
 
-export type $InternalRegleResult = { result: boolean; data: any };
+export type $InternalRegleResult = { valid: boolean; data: any };
 
 export type DataType = string | number | Record<string, any> | File | Array<any> | Date | null | undefined;

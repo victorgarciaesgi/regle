@@ -481,7 +481,7 @@ export function createReactiveFieldStatus({
 
   function $commitHandler() {
     Object.values($rules.value).forEach((rule) => {
-      rule.$validate();
+      rule.$parse();
     });
   }
 
@@ -527,7 +527,7 @@ export function createReactiveFieldStatus({
 
     if (!scopeState.$lazy.value && scopeState.$autoDirty.value) {
       Object.values($rules.value).forEach((rule) => {
-        return rule.$validate();
+        return rule.$parse();
       });
     }
 
@@ -557,16 +557,16 @@ export function createReactiveFieldStatus({
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
       } else if (scopeState.$autoDirty.value && scopeState.$dirty.value && !scopeState.$pending.value) {
-        return { result: !scopeState.$error.value, data };
+        return { valid: !scopeState.$error.value, data };
       }
       if (schemaMode) {
-        return { result: !schemaErrors?.value?.length, data };
+        return { valid: !schemaErrors?.value?.length, data };
       } else if (isEmpty($rules.value)) {
-        return { result: true, data };
+        return { valid: true, data };
       }
       const results = await Promise.allSettled(
         Object.entries($rules.value).map(([key, rule]) => {
-          return rule.$validate();
+          return rule.$parse();
         })
       );
 
@@ -578,9 +578,9 @@ export function createReactiveFieldStatus({
         }
       });
 
-      return { result: validationResults, data };
+      return { valid: validationResults, data };
     } catch (e) {
-      return { result: false, data: state.value };
+      return { valid: false, data: state.value };
     }
   }
 

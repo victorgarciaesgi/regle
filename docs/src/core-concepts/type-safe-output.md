@@ -15,7 +15,7 @@ Inspired by the `Zod` parse output type, `Regle` will also infer your validator 
 Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return an object containing the status of your form.
 
 ```ts
-const { result, data } = await r$.$validate();
+const { valid, data } = await r$.$validate();
 ```
 
 If your *_result_* is `true`, the **data** will be type safe.
@@ -40,9 +40,9 @@ const { r$ } = useRegle(form, {
 });
 
 async function submit() {
-  const { result, data } = await r$.$validate();
+  const { valid, data } = await r$.$validate();
 
-  if (result) {
+  if (valid) {
     console.log(data);
     //            ^?
   }

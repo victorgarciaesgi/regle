@@ -118,7 +118,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         const result = await computeErrors();
 
         return {
-          result: !result.issues?.length,
+          valid: !result.issues?.length,
           data: processedState.value,
         };
       } catch (e) {

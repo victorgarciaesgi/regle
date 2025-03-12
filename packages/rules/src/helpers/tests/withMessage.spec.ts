@@ -59,8 +59,8 @@ describe('withMessage helper', () => {
   });
 
   it('should return errors when submitting no values', async () => {
-    const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
-    expect(result).toBe(false);
+    const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
+    expect(valid).toBe(false);
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$errors.firstName).toStrictEqual(['Required']);
   });

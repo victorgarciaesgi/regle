@@ -196,7 +196,7 @@ export function createReactiveRuleStatus({
 
     $unwatchState = watch(scopeState?.$params, () => {
       if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
-        $validate();
+        $parse();
       }
     });
   }
@@ -249,7 +249,7 @@ export function createReactiveRuleStatus({
 
   const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 200);
 
-  async function $validate(): Promise<boolean> {
+  async function $parse(): Promise<boolean> {
     try {
       $validating.value = true;
 
@@ -307,7 +307,7 @@ export function createReactiveRuleStatus({
     $metadata,
     $haveAsync,
     $validating,
-    $validate,
+    $parse,
     $unwatch,
     $watch,
     $reset,

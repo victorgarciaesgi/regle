@@ -487,21 +487,21 @@ export function createReactiveCollectionStatus({
     try {
       const results = await Promise.allSettled([
         $selfStatus.value.$validate(),
-        ...$eachStatus.value.map((rule) => {
-          return rule.$validate();
+        ...$eachStatus.value.map((status) => {
+          return status.$validate();
         }),
       ]);
 
       const validationResults = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return value.value.result === true;
+          return value.value.valid === true;
         } else {
           return false;
         }
       });
-      return { result: validationResults, data };
+      return { valid: validationResults, data };
     } catch (e) {
-      return { result: false, data };
+      return { valid: false, data };
     }
   }
 
