@@ -48,7 +48,7 @@ describe.each([
     shouldBeValidField(vm.r$.$fields.nativeEnum);
     shouldBeValidField(vm.r$.$fields.union);
     shouldBeValidField(vm.r$.$fields.date);
-    shouldBeErrorField(vm.r$.$fields.gift);
+    shouldBeInvalidField(vm.r$.$fields.gift);
 
     if (vm.r$.$fields.gift) {
       vm.r$.$fields.gift.$value.amount = 100;
