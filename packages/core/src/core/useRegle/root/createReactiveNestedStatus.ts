@@ -274,9 +274,12 @@ export function createReactiveNestedStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([_, statusOrField]) => {
-          return statusOrField?.$invalid;
-        });
+        return (
+          !!Object.entries($fields.value).length &&
+          Object.entries($fields.value).some(([_, statusOrField]) => {
+            return statusOrField?.$invalid;
+          })
+        );
       });
 
       const $correct = computed<boolean>(() => {
@@ -294,7 +297,14 @@ export function createReactiveNestedStatus({
         return false;
       });
 
-      const $error = computed<boolean>(() => $anyDirty.value && !$pending.value && $invalid.value);
+      const $error = computed<boolean>(() => {
+        return (
+          !!Object.entries($fields.value).length &&
+          Object.entries($fields.value).some(([_, statusOrField]) => {
+            return statusOrField?.$error;
+          })
+        );
+      });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
         if (unref(commonArgs.options.rewardEarly) != null) {

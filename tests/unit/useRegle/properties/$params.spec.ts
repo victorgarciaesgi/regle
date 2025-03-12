@@ -134,7 +134,7 @@ describe('$params', () => {
 
       await nextTick();
 
-      shouldBeErrorField(vm.r$);
+      shouldBeInvalidField(vm.r$);
       shouldBeValidField(vm.r$.$fields.email);
       shouldBeCorrectNestedStatus(vm.r$.$fields.user);
       shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
