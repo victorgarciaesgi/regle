@@ -552,7 +552,7 @@ export function createReactiveNestedStatus({
           scopeState.$localPending.value = true;
           return commonArgs.onValidate();
         } else {
-          return { result: false, data: state.value };
+          return { valid: false, data: state.value };
         }
       } else {
         const data = state.value;
@@ -565,15 +565,15 @@ export function createReactiveNestedStatus({
 
         const validationResults = results.every((value) => {
           if (value.status === 'fulfilled') {
-            return value.value.result === true;
+            return value.value.valid === true;
           } else {
             return false;
           }
         });
-        return { result: validationResults, data };
+        return { valid: validationResults, data };
       }
     } catch (e) {
-      return { result: false, data: state.value };
+      return { valid: false, data: state.value };
     } finally {
       scopeState.$localPending.value = false;
     }

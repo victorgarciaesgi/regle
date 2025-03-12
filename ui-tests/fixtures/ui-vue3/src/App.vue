@@ -183,9 +183,9 @@ const { r$ } = useCustomRegle(form, {
 });
 
 async function submit() {
-  const { result, data } = await r$.$validate();
+  const { valid, data } = await r$.$validate();
 
-  if (result) {
+  if (valid) {
     alert('Form is valid!');
   }
 }

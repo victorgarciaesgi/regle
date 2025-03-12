@@ -346,7 +346,7 @@ export type RegleRuleStatus<
   /** Contains the metadata returned by the validator function. */
   readonly $metadata: TMetadata;
   /** Run the rule validator and compute its properties like $message and $active */
-  $validate(): Promise<boolean>;
+  $parse(): Promise<boolean>;
   /** Reset the $valid, $metadata and $pending states */
   $reset(): void;
   /** Returns the original rule validator function. */
@@ -391,7 +391,7 @@ export interface $InternalRegleRuleStatus {
   $fieldCorrect: boolean;
   $fieldError: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
-  $validate(): Promise<boolean>;
+  $parse(): Promise<boolean>;
   $reset(): void;
   $unwatch(): void;
   $watch(): void;

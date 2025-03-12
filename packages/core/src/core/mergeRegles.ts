@@ -56,15 +56,15 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
 
 type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>> =
   | {
-      result: false;
+      valid: false;
       data: {
-        [K in keyof TRegles]: Extract<PromiseReturn<ReturnType<TRegles[K]['$validate']>>, { result: false }>['data'];
+        [K in keyof TRegles]: Extract<PromiseReturn<ReturnType<TRegles[K]['$validate']>>, { valid: false }>['data'];
       };
     }
   | {
-      result: true;
+      valid: true;
       data: {
-        [K in keyof TRegles]: Extract<PromiseReturn<ReturnType<TRegles[K]['$validate']>>, { result: true }>['data'];
+        [K in keyof TRegles]: Extract<PromiseReturn<ReturnType<TRegles[K]['$validate']>>, { valid: true }>['data'];
       };
     };
 
@@ -247,14 +247,14 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
 
       const validationResults = results.every((value) => {
         if (value.status === 'fulfilled') {
-          return value.value.result === true;
+          return value.value.valid === true;
         } else {
           return false;
         }
       });
-      return { result: validationResults, data };
+      return { valid: validationResults, data };
     } catch (e) {
-      return { result: false, data: $value.value };
+      return { valid: false, data: $value.value };
     }
   }
 

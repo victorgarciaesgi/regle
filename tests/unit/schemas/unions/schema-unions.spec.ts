@@ -83,7 +83,7 @@ describe.each([
       shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
     }
 
-    const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
+    const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
     if (vm.r$.$fields.gift) {
       vm.r$.$fields.gift.$fields.type.$value = undefined as any;
@@ -91,7 +91,7 @@ describe.each([
     await vm.$nextTick();
     await vm.$nextTick();
 
-    expect(result).toBe(true);
+    expect(valid).toBe(true);
 
     shouldBeErrorField(vm.r$.$fields.gift);
     shouldBeErrorField(vm.r$.$fields.gift?.$fields.type);

@@ -112,7 +112,7 @@ const { r$ } = useRegle({collection: [{name: ''}]}, { // [!code ++]
 
 ```ts
 const result = await v$.$validate(); // [!code --]
-const {result, data} = await r$.$validate(); // [!code ++]
+const {valid, data} = await r$.$validate(); // [!code ++]
 ```
 
 ## Custom messages

@@ -34,10 +34,10 @@ describe('$validate', () => {
   it('should have a deep safe form if the result is true', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    const { result, data } = await vm.r$.$validate();
+    const { valid, data } = await vm.r$.$validate();
 
     // TODO handle optional objects/arrays
-    if (result) {
+    if (valid) {
       expectTypeOf(data).toEqualTypeOf<{
         email: string;
         date?: Date | undefined;

@@ -93,7 +93,7 @@ Returns the current path of the rule (used internally for tracking)
 ## Common methods for rules
 
 
-### `$validate`
+### `$parse`
 - Type: `() => Promise<boolean>`
 
 Run the rule validator and compute its properties like `$message` and `$active`

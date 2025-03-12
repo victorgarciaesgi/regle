@@ -52,10 +52,10 @@ describe.each([
   });
 
   it('should error on initial submit', async () => {
-    const [{ result }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
+    const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
     await nextTick();
 
-    expect(result).toBe(false);
+    expect(valid).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
       level0Async: [],
       level1: {
@@ -210,11 +210,11 @@ describe.each([
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(true);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
 
-    const [{ result, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
+    const [{ valid, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
 
     await nextTick();
 
-    expect(result).toBe(true);
+    expect(valid).toBe(true);
     expect(data).toStrictEqual({
       level0Async: 2,
       level1: {

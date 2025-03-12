@@ -3,11 +3,7 @@ import { useRegle } from '@regle/core';
 import { ruleMockIsEvenAsync } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
-import {
-  shouldBeErrorField,
-  shouldBePristineField,
-  shouldBeValidField,
-} from '../../../utils/validations.utils';
+import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
 
 function nesteAsyncObjectWithRefsValidation() {
   const form = ref({
@@ -75,14 +71,11 @@ describe('$pending', () => {
     expect(vm.r$.$fields.level0.$pending).toBe(false);
     expect(vm.r$.$ready).toBe(true);
 
-    const [{ result, data }] = await Promise.all([
-      vm.r$.$validate(),
-      vi.advanceTimersByTimeAsync(2300),
-    ]);
+    const [{ valid, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(2300)]);
 
     expect(vm.r$.$fields.level0.$pending).toBe(false);
 
-    expect(result).toBe(true);
+    expect(valid).toBe(true);
     expect(data).toStrictEqual({
       level0: 2,
       level1: {
