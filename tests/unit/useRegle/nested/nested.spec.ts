@@ -14,7 +14,7 @@ Object.defineProperty(normalFile, 'size', { value: 1024 * 1024, configurable: tr
 describe('nested validations', () => {
   function nestedCollectionRules() {
     const form = ref({
-      level0: { level1: { name: '' } },
+      level0: { level1: { name: '' }, level2: '' },
       testDate: null as Date | null,
       testFile: null as File | null,
     });
@@ -22,6 +22,7 @@ describe('nested validations', () => {
     return useRegle(form, {
       level0: {
         level1: { name: { required } },
+        level2: { required },
       },
       testDate: { required, dateAfter: dateAfter(addDays(new Date(), 1)) },
       testFile: { required },
@@ -36,11 +37,17 @@ describe('nested validations', () => {
     shouldBeInvalidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
     shouldBeInvalidField(vm.r$.$fields.testDate);
 
+    vm.r$.$value.level0.level1.name = 'Hello';
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.$fields.level0);
+
     vm.r$.$value = {
       level0: {
         level1: {
           name: 'foobar',
         },
+        level2: '',
       },
       testDate: new Date(),
       testFile: emptyFile,
@@ -48,7 +55,7 @@ describe('nested validations', () => {
 
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.level0);
+    shouldBeErrorField(vm.r$.$fields.level0);
     shouldBeValidField(vm.r$.$fields.level0.$fields.level1);
     shouldBeValidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
     shouldBeErrorField(vm.r$.$fields.testDate);
@@ -69,6 +76,7 @@ describe('nested validations', () => {
         level1: {
           name: 'foobar',
         },
+        level2: 'Foo',
       },
       testDate: addDays(new Date(), 3),
       testFile: normalFile,
