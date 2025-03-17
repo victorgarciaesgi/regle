@@ -309,6 +309,7 @@ export interface RegleCommonStatus<TValue = any> {
    * Resets the `$dirty` state on all nested properties of a form.
    * Rerun rules if `$lazy` is false
    */
+  $reset(): void;
   $reset(options?: ResetOptions<TValue>): void;
   /** Clears the $externalResults state back to an empty object. */
   $clearExternalErrors(): void;
