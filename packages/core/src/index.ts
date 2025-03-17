@@ -12,6 +12,7 @@ export {
 export { InternalRuleType } from './types';
 export type {
   Regle,
+  RegleSingleField,
   RegleRoot,
   RegleBehaviourOptions,
   RegleCollectionErrors,

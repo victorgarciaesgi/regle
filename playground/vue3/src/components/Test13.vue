@@ -1,15 +1,8 @@
 <template>
   <main>
-    <input v-model="data.competency" placeholder="test" />
-    <ul v-if="r$Merged.$errors.r$.competency">
-      <li v-for="error of r$Merged.$errors.r$.competency" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-
-    <input v-model="otherR$.$value.level.count" placeholder="Count" />
-    <ul v-if="otherR$.$errors.level.count.length">
-      <li v-for="error of otherR$.$errors.level.count" :key="error">
+    <input v-model="foo" placeholder="test" />
+    <ul v-if="r$Field.$errors">
+      <li v-for="error of r$Field.$errors" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -41,6 +34,10 @@ const data2 = ref({
   level: { count: 1 },
 });
 
+const foo = ref('bar');
+
+const { r$: r$Field } = useRegle(foo, { required });
+
 const { r$ } = useRegle(data, {
   competency: { number: applyIf(() => true, withMessage(regex(/\d/), 'Your password must have one number')) },
   level: {
@@ -58,6 +55,6 @@ const { r$: otherR$ } = useRegle(data2, {
 const r$Merged = mergeRegles({ r$, otherR$ });
 
 async function submit() {
-  const { result, data } = await r$Merged.$validate();
+  const { valid, data } = await r$Merged.$validate();
 }
 </script>

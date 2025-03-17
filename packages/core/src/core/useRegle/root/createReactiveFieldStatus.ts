@@ -25,6 +25,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: Ref<unknown | undefined>;
+  onValidate?: () => Promise<$InternalRegleResult>;
 }
 
 export function createReactiveFieldStatus({
@@ -42,6 +43,7 @@ export function createReactiveFieldStatus({
   $isArray,
   initialState,
   shortcuts,
+  onValidate,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   interface ScopeReturnState extends CommonResolverScopedState {
     $debounce: ComputedRef<number | undefined>;
@@ -552,8 +554,17 @@ export function createReactiveFieldStatus({
 
   async function $validate(): Promise<$InternalRegleResult> {
     try {
+      if (schemaMode) {
+        if (onValidate) {
+          $touch(false);
+          return onValidate();
+        } else {
+          return { valid: false, data: state.value };
+        }
+      }
       const data = state.value;
       scopeState.triggerPunishment.value = true;
+
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
       } else if (scopeState.$autoDirty.value && scopeState.$dirty.value && !scopeState.$pending.value) {

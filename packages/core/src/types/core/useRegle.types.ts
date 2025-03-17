@@ -3,13 +3,14 @@ import type { MaybeRef, Raw } from 'vue';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
+  RegleFieldStatus,
   RegleFormPropertyType,
   ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, Prettify } from '../utils';
+import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, Prettify, PrimitiveTypes } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 export type Regle<
@@ -25,6 +26,20 @@ export type Regle<
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleRoot<TState, TRules, TValidationGroups, TShortcuts>>;
+} & TAdditionalReturnProperties;
+
+export type RegleSingleField<
+  TState extends Maybe<PrimitiveTypes> = any,
+  TRules extends RegleRuleDecl<NonNullable<TState>> = EmptyObject,
+  TShortcuts extends RegleShortcutDefinition = {},
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
+  /**
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   *
+   * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
+   */
+  r$: Raw<RegleFieldStatus<TState, TRules, TShortcuts>>;
 } & TAdditionalReturnProperties;
 
 export type isDeepExact<T, U> = {

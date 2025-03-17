@@ -22,7 +22,7 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       RegleFieldStatus<
         string,
         {
-          required: () => true;
+          required: () => boolean;
         },
         RegleShortcutDefinition<any>
       >

@@ -2,7 +2,9 @@ import type {
   DeepMaybeRef,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
+  Maybe,
   MismatchInfo,
+  PrimitiveTypes,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ReglePartialRuleTree,
@@ -13,29 +15,42 @@ import type {
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
-import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, MaybeRefOrGetter, Raw, Ref, UnwrapNestedRefs } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
-import { cloneDeep, getDotPath, setObjectError } from '../../../shared';
-import type { $InternalRegleResult, RegleSchema, RegleSchemaMode } from '../types';
+import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
+import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSingleFieldSchema } from '../types';
 
-export type useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> = <
-  TState extends Record<string, any>,
-  TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
-  TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
-    UnwrapNestedRefs<TState>,
-    { recurseIntoArrays: true }
-  >
-    ? {}
-    : MismatchInfo<
-        UnwrapNestedRefs<TState>,
-        PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
-      >,
->(
-  state: MaybeRef<TState> | DeepReactiveState<TState>,
-  schema: MaybeRef<TSchema>,
-  options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never>
-) => RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
+export interface useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> {
+  /**
+   * Primitive parameter
+   * */
+  <TState extends Maybe<PrimitiveTypes>, TRules extends StandardSchemaV1<TState>>(
+    state: MaybeRef<TState>,
+    rulesFactory: MaybeRefOrGetter<TRules>,
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>>
+  ): RegleSingleFieldSchema<TState, TRules, TShortcuts>;
+  /**
+   * Object parameter
+   * */
+  <
+    TState extends Record<string, any>,
+    TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
+    TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
+      UnwrapNestedRefs<TState>,
+      { recurseIntoArrays: true }
+    >
+      ? {}
+      : MismatchInfo<
+          UnwrapNestedRefs<TState>,
+          PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
+        >,
+  >(
+    state: MaybeRef<TState> | DeepReactiveState<TState>,
+    schema: MaybeRef<TSchema>,
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never>
+  ): RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
+}
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
   options?: RegleBehaviourOptions,
@@ -48,12 +63,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
-  function useRegleSchema<TState extends Record<string, any>, TSchema extends StandardSchemaV1 = StandardSchemaV1>(
-    state: MaybeRef<TState> | DeepReactiveState<TState>,
-    schema: MaybeRef<TSchema>,
+  function useRegleSchema(
+    state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
+    schema: MaybeRef<StandardSchemaV1>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Unwrap<TState>, {}, never> & { mode?: RegleSchemaMode }
-  ): RegleSchema<TState, TSchema> {
+      LocalRegleBehaviourOptions<Record<string, any>, {}, never> & { mode?: RegleSchemaMode }
+  ): RegleSchema<Record<string, any>, StandardSchemaV1> {
     const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
 
     const computedSchema = computed(() => unref(schema));
@@ -63,11 +78,14 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       ...options,
     } as any;
 
+    const isSingleField = computed(() => !isObject(processedState.value));
+
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
 
-    const initialState = ref({ ...cloneDeep(processedState.value) });
-
-    const customErrors = ref<Raw<RegleExternalErrorTree>>({});
+    const initialState = ref(
+      isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
+    );
+    const customErrors = ref<Raw<RegleExternalErrorTree> | string[]>({});
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
 
@@ -107,7 +125,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       if (result instanceof Promise) {
         result = await result;
       }
-      customErrors.value = issuesToRegleErrors(result);
+      if (isSingleField.value) {
+        customErrors.value = result.issues?.map((issue) => issue.message) ?? [];
+      } else {
+        customErrors.value = issuesToRegleErrors(result);
+      }
       return result;
     }
 

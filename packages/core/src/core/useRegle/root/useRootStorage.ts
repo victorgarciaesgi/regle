@@ -1,15 +1,18 @@
-import type { ComputedRef, Ref } from 'vue';
+import type { Ref } from 'vue';
 import { getCurrentScope, onScopeDispose, reactive, ref } from 'vue';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
-  $InternalRegleStatus,
+  $InternalRegleStatusType,
   CustomRulesDeclarationTree,
+  PrimitiveTypes,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
+import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 
 export function useRootStorage({
@@ -24,37 +27,55 @@ export function useRootStorage({
   onValidate,
 }: {
   scopeRules: Ref<$InternalReglePartialRuleTree>;
-  state: Ref<Record<string, any>>;
+  state: Ref<Record<string, any> | PrimitiveTypes>;
   options: ResolvedRegleBehaviourOptions;
-  initialState: Ref<Record<string, any>>;
+  initialState: Ref<Record<string, any> | PrimitiveTypes>;
   customRules?: () => CustomRulesDeclarationTree;
   shortcuts: RegleShortcutDefinition | undefined;
-  schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  schemaErrors?: Ref<any | undefined>;
   schemaMode?: boolean;
   onValidate?: () => Promise<$InternalRegleResult>;
 }) {
   const storage = useStorage();
 
-  const regle = ref<$InternalRegleStatus>();
+  const regle = ref<$InternalRegleStatusType>();
 
-  regle.value = createReactiveNestedStatus({
-    rootRules: scopeRules,
-    rulesDef: scopeRules,
-    state,
-    customMessages: customRules?.(),
-    storage,
-    options,
-    externalErrors: options.externalErrors as any,
-    validationGroups: options.validationGroups,
-    initialState,
-    shortcuts,
-    fieldName: 'root',
-    path: '',
-    schemaErrors,
-    rootSchemaErrors: schemaErrors,
-    schemaMode,
-    onValidate,
-  });
+  if (isNestedRulesDef(state, scopeRules)) {
+    regle.value = createReactiveNestedStatus({
+      rootRules: scopeRules,
+      rulesDef: scopeRules,
+      state: state as Ref<Record<string, any>>,
+      customMessages: customRules?.(),
+      storage,
+      options,
+      externalErrors: options.externalErrors as any,
+      validationGroups: options.validationGroups,
+      initialState: initialState as Ref<Record<string, any>>,
+      shortcuts,
+      fieldName: 'root',
+      path: '',
+      schemaErrors,
+      rootSchemaErrors: schemaErrors,
+      schemaMode,
+      onValidate,
+    });
+  } else if (isValidatorRulesDef(scopeRules)) {
+    regle.value = createReactiveFieldStatus({
+      rulesDef: scopeRules,
+      state: state as Ref<Record<string, any>>,
+      customMessages: customRules?.(),
+      storage,
+      options,
+      externalErrors: options.externalErrors as any,
+      initialState,
+      shortcuts,
+      fieldName: 'root',
+      path: '',
+      schemaMode,
+      schemaErrors,
+      onValidate,
+    });
+  }
 
   if (getCurrentScope()) {
     onScopeDispose(() => {

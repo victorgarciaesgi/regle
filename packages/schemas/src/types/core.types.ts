@@ -1,8 +1,11 @@
 import type {
   JoinDiscriminatedUnions,
+  Maybe,
+  PrimitiveTypes,
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
+  RegleFieldStatus,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
@@ -21,6 +24,19 @@ export interface RegleSchema<
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleSchemaStatus<TState, TSchema, TShortcuts, true>>;
+}
+
+export interface RegleSingleFieldSchema<
+  TState extends Maybe<PrimitiveTypes>,
+  TSchema extends Record<string, any>,
+  TShortcuts extends RegleShortcutDefinition = {},
+> {
+  /**
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   *
+   * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
+   */
+  r$: Raw<RegleFieldStatus<TState, TSchema, TShortcuts>>;
 }
 
 export type RegleSchemaResult<TSchema extends unknown> =

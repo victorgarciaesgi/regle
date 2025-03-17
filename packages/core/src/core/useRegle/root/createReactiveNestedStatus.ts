@@ -3,6 +3,7 @@ import { computed, effectScope, nextTick, reactive, ref, toRef, unref, watch, wa
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
+  $InternalRegleCollectionErrors,
   $InternalRegleErrors,
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
@@ -613,6 +614,7 @@ interface CreateReactiveChildrenStatus extends CommonResolverOptions {
   schemaErrors?: ComputedRef<any | undefined>;
   schemaMode: boolean | undefined;
   initialState: Readonly<Ref<any>>;
+  onValidate?: () => Promise<$InternalRegleResult>;
 }
 
 /**

@@ -25,10 +25,10 @@ describe('$params', () => {
     return {
       min,
       ...useRegle(form, {
-        email: { testParams: withParams((value, min) => (value?.length ?? 0) > min, [min]) },
+        email: { testParams: withParams((value: Maybe<string>, min) => (value?.length ?? 0) > min, [min]) },
         user: {
           firstName: {
-            testParams: withParams((value, min) => (value?.length ?? 0) > min, [() => min.value]),
+            testParams: withParams((value: Maybe<string>, min) => (value?.length ?? 0) > min, [() => min.value]),
           },
         },
         contacts: {

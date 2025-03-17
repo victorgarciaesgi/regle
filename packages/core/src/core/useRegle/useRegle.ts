@@ -1,6 +1,6 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { computed, isRef, ref } from 'vue';
-import { cloneDeep } from '../../../../shared';
+import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
@@ -10,38 +10,53 @@ import type {
   Regle,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
+  RegleRuleDecl,
   RegleShortcutDefinition,
+  RegleSingleField,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import type { DeepMaybeRef, MismatchInfo, NoInferLegacy, Unwrap } from '../../types/utils';
+import type { DeepMaybeRef, Maybe, MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
 import { useRootStorage } from './root';
 
-export type useRegleFn<
+export interface useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
-> = <
-  TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
-  TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
-  TValid = isDeepExact<
-    NoInferLegacy<TRules>,
-    ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-  > extends true
-    ? {}
-    : MismatchInfo<
-        NoInferLegacy<TRules>,
-        ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-      >,
->(
-  state: MaybeRef<TState> | DeepReactiveState<TState>,
-  rulesFactory: MaybeRefOrGetter<TRules>,
-  options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-    LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups> &
-    TAdditionalOptions
-) => Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts, TAdditionalReturnProperties>;
+> {
+  /**
+   * Primitive parameter
+   * */
+  <TState extends Maybe<PrimitiveTypes>, TRules extends RegleRuleDecl<NonNullable<TState>, TCustomRules>>(
+    state: MaybeRef<TState>,
+    rulesFactory: MaybeRefOrGetter<TRules>,
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
+  ): RegleSingleField<TState, TRules, TShortcuts, TAdditionalReturnProperties>;
+  /**
+   * Object parameter
+   * */
+  <
+    TState extends Record<string, any>,
+    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
+    TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
+    TValid = isDeepExact<
+      NoInferLegacy<TRules>,
+      ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+    > extends true
+      ? {}
+      : MismatchInfo<
+          NoInferLegacy<TRules>,
+          ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+        >,
+  >(
+    state: MaybeRef<TState> | DeepReactiveState<TState>,
+    rulesFactory: MaybeRefOrGetter<TRules>,
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups> &
+      TAdditionalOptions
+  ): Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts, TAdditionalReturnProperties>;
+}
 
 export function createUseRegleComposable<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -59,7 +74,7 @@ export function createUseRegleComposable<
   };
 
   function useRegle(
-    state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
+    state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
     rulesFactory: Record<string, any> | (() => Record<string, any>) | ComputedRef<Record<string, any>>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>
@@ -73,9 +88,11 @@ export function createUseRegleComposable<
       ...options,
     } as any;
 
-    const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
+    const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any> | PrimitiveTypes>;
 
-    const initialState = ref({ ...cloneDeep(processedState.value) });
+    const initialState = ref(
+      isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
+    );
 
     const regle = useRootStorage({
       scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,

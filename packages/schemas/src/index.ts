@@ -6,4 +6,5 @@ export type {
   RegleSchemaFieldStatus,
   RegleSchemaResult,
   RegleSchemaStatus,
+  RegleSingleFieldSchema,
 } from './types';
