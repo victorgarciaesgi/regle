@@ -1,5 +1,6 @@
 import type { PartialDeep } from 'type-fest';
 import type {
+  ArrayElement,
   PromiseReturn,
   RegleCommonStatus,
   RegleResult,
@@ -42,7 +43,7 @@ export type MergedRegles<
 
 export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record<string, unknown>[]> = Omit<
   MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
-  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue'
+  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue' | '$validate'
 > & {
   /** Array of scoped Regles instances  */
   readonly $instances: SuperCompatibleRegleRoot[];
@@ -52,6 +53,8 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
   readonly $errors: RegleValidationErrors<Record<string, unknown>>[];
   /** Collection of all registered Regles instances silent errors */
   readonly $silentErrors: RegleValidationErrors<Record<string, unknown>>[];
+  /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
+  $validate: () => Promise<{ valid: boolean; data: TValue }>;
 };
 
 type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>> =

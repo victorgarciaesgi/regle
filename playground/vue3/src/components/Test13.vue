@@ -14,10 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import { mergeRegles, useRegle } from '@regle/core';
+import { mergeRegles, useRegle, useCollectScope } from '@regle/core';
 import { applyIf, numeric, regex, required, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 import JSONViewer from './JSONViewer.vue';
+
+const { r$: s$ } = useCollectScope<[{ foo: string }]>();
+
+const { valid, data: data6 } = await s$.$validate();
 
 function handleEvent(event: Event) {
   // console.log(event.target.files[0]);

@@ -271,3 +271,21 @@ const { r$, dispose, register } = useScopedRegle();
 </script>
 ```
 
+
+## Manual typing
+
+:::warning
+Use with care, only if you're 100% sure of what return type your collected types will have.
+
+The order of the collected values can change depending on if they added/deleted.
+This is here for convenience but not advised.
+:::
+
+```ts twoslash
+import { useCollectScope } from '@regle/core';
+
+const { r$ } = useCollectScope<[{ foo: string }]>();
+
+const { valid, data } = await r$.$validate();
+//               ^?
+```
