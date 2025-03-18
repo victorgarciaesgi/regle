@@ -74,6 +74,7 @@ export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
 </template>
 
 <script setup lang="ts">
+// @noErrors
 import { useCollectScope } from '@regle/core';
 import Child1 from './Child1.vue';
 import Child2 from './Child2.vue';
