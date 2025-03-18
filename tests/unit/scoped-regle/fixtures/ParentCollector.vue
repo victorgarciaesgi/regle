@@ -1,4 +1,5 @@
 <template>
+  <Scope0 />
   <div v-if="showScope1">
     <Scope1 v-if="showScope1_1" key="1" />
     <Scope1 key="2" />
@@ -19,10 +20,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useScope1Validations, useScope2Validations, useScope3Validations } from './scoped-config';
+import Scope0 from './Scope0.vue';
 import Scope1 from './Scope1.vue';
 import Scope2 from './Scope2.vue';
 import Scope3CustomConfig from './Scope3CustomConfig.vue';
 import Scope4WithNamespace from './Scope4WithNamespace.vue';
+import { useCollectScope } from '@regle/core';
 
 const showScope1 = ref(false);
 const showScope1_1 = ref(true);
@@ -33,6 +36,7 @@ const showScope3 = ref(false);
 const showScope1Namespace = ref(false);
 const scopeNamespace = ref('scope');
 
+const { r$: scope0R$ } = useCollectScope();
 const { r$: scope1R$ } = useScope1Validations();
 const { r$: scope1NamespaceR$ } = useScope1Validations('scope');
 const { r$: scope2R$ } = useScope2Validations();
@@ -44,6 +48,7 @@ defineExpose({
   showScope1Namespace,
   showScope2,
   showScope3,
+  scope0R$,
   scope1R$,
   scope2R$,
   scope3R$,

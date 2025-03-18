@@ -22,17 +22,8 @@ Problems with Vuelidate's approach:
 
 Regle's solution solves all this problems
 
-## `createScopedUseRegle`
 
-To make it declarative, you can use the `createScopedUseRegle` helper method.
-
-It will returns two composable with different usages
-
-```ts twoslash [scoped-config.ts]
-import { createScopedUseRegle } from '@regle/core';
-
-export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
-```
+## Collecting validation with `useCollectScope` and `useScopedRegle`
 
 ### `useScopedRegle`
 
@@ -51,16 +42,25 @@ Children properties like `$value` and `$errors` will not be objects, and are con
 You will also have access to every validation properties like `$error`, `$invalid` etc...
 
 
-### Exemple
+## `createScopedUseRegle`
 
+If you want to create your own separated scope, you can use `createScopedUseRegle` helper method.
 
-:::code-group
+It will returns 2 new `useCollectScope` and `useScopedRegle`, that are only linked to each others.
 
-```ts twoslash [scope-config.ts]
+It's advised to change the name of this composable to avoid conflicts or issues.
+
+```ts twoslash [scoped-config.ts]
 import { createScopedUseRegle } from '@regle/core';
 
 export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
 ```
+
+
+### Exemple
+
+
+:::code-group
 
 ```vue twoslash [Parent.vue]
 <template>
@@ -74,11 +74,7 @@ export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
 </template>
 
 <script setup lang="ts">
-import { createScopedUseRegle } from '@regle/core';
-const { useScopedRegle, useCollectScope } = createScopedUseRegle();
-// ---cut---
-// @noErrors
-import { useCollectScope } from './scoped-config';
+import { useCollectScope } from '@regle/core';
 import Child1 from './Child1.vue';
 import Child2 from './Child2.vue';
 
@@ -99,7 +95,7 @@ const { r$ } = useCollectScope();
 
 <script setup lang="ts">
 import { required } from '@regle/rules';
-import { useScopedRegle } from './scoped-config';
+import { useScopedRegle } from '@regle/core';
 
 const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
 </script>
@@ -117,7 +113,7 @@ const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
 
 <script setup lang="ts">
 import { required, email } from '@regle/rules';
-import { useScopedRegle } from './scoped-config';
+import { useScopedRegle } from '@regle/core';
 
 const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
 </script>

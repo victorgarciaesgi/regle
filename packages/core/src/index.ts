@@ -7,6 +7,8 @@ export {
   useRootStorage,
   mergeRegles,
   createScopedUseRegle,
+  useCollectScope,
+  useScopedRegle,
   type MergedRegles,
 } from './core';
 export { InternalRuleType } from './types';

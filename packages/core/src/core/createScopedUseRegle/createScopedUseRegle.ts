@@ -48,3 +48,5 @@ export function createScopedUseRegle<
     useCollectScope: useCollectScope,
   };
 }
+
+export const { useCollectScope, useScopedRegle } = createScopedUseRegle();

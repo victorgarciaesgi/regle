@@ -1,1 +1,1 @@
-export { createScopedUseRegle } from './createScopedUseRegle';
+export { createScopedUseRegle, useCollectScope, useScopedRegle } from './createScopedUseRegle';

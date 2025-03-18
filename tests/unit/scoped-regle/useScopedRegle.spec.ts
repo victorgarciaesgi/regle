@@ -7,6 +7,21 @@ describe('useScopedRegle', () => {
   if (isVueSuperiorOrEqualTo3dotFive) {
     const wrapper = mount(ParentCollector, { attachTo: document.documentElement });
 
+    it('should work with default exported scoped composables', async () => {
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.scope0R$.$dirty).toBe(false);
+      expect(wrapper.vm.scope0R$.$anyDirty).toBe(false);
+      expect(wrapper.vm.scope0R$.$invalid).toBe(true);
+      expect(wrapper.vm.scope0R$.$correct).toBe(false);
+      expect(wrapper.vm.scope0R$.$error).toBe(false);
+      expect(wrapper.vm.scope0R$.$edited).toBe(false);
+      expect(wrapper.vm.scope0R$.$anyEdited).toBe(false);
+      expect(wrapper.vm.scope0R$.$instances).toHaveLength(1);
+      expect(wrapper.vm.scope0R$.$errors).toStrictEqual([{ scope0Data: [] }]);
+      expect(wrapper.vm.scope0R$.$silentErrors).toStrictEqual([{ scope0Data: ['This field is required'] }]);
+      expect(wrapper.vm.scope0R$.$value).toStrictEqual([{ scope0Data: '' }]);
+    });
+
     it('should behave correctly with multiple scopes', async () => {
       await wrapper.vm.$nextTick();
 
