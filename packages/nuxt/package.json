@@ -25,9 +25,8 @@
     "build": "pnpm run dev:prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
-    "postinstall": "pnpm exec playwright install",
     "lint": "eslint .",
-    "test": "vitest run",
+    "test": "pnpm exec playwright install && vitest run",
     "test:watch": "vitest watch"
   },
   "dependencies": {
