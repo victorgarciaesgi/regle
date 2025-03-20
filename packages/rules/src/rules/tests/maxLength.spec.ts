@@ -25,6 +25,10 @@ describe('maxLength validator', () => {
     expect(maxLength(5).exec('abcde')).toBe(true);
   });
 
+  it('should not validate characters on length bound without allowEqual', () => {
+    expect(maxLength(5, { allowEqual: false }).exec('abcde')).toBe(false);
+  });
+
   it('should not validate too much characters', () => {
     expect(maxLength(5).exec('abcdefghi')).toBe(false);
   });

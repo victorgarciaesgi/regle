@@ -5,6 +5,10 @@ describe('minValue validator', () => {
     expect(minValue(5).exec(5)).toBe(true);
   });
 
+  it('should not validate min numbe without allowEqual', () => {
+    expect(minValue(5, { allowEqual: false }).exec(5)).toBe(false);
+  });
+
   it('should validate the valid number', () => {
     expect(minValue(5).exec(6)).toBe(true);
   });

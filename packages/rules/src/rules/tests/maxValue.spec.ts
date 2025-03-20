@@ -5,6 +5,10 @@ describe('maxValue validator', () => {
     expect(maxValue(5).exec(5)).toBe(true);
   });
 
+  it('should not validate max number without allowEqual', () => {
+    expect(maxValue(5, { allowEqual: false }).exec(5)).toBe(false);
+  });
+
   it('should validate the valid number', () => {
     expect(maxValue(5).exec(4)).toBe(true);
   });

@@ -41,18 +41,12 @@ type MetadataBase = {
 type ExtractMetaDataFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<any, any, any, infer M extends MetadataBase>
     ? [M, ...ExtractMetaDataFromRules<R>]
-    : F extends InlineRuleDeclaration<
-          any,
-          any[],
-          infer M extends MetadataBase | Promise<MetadataBase>
-        >
+    : F extends InlineRuleDeclaration<any, any[], infer M extends MetadataBase | Promise<MetadataBase>>
       ? [M, ...ExtractMetaDataFromRules<R>]
       : [...ExtractMetaDataFromRules<R>]
   : [];
 
-type ExtractMetadata<T extends [...any[]]> = T extends [infer F, ...infer R]
-  ? F & ExtractMetadata<R>
-  : {};
+type ExtractMetadata<T extends [...any[]]> = T extends [infer F, ...infer R] ? F & ExtractMetadata<R> : {};
 
 export type GuessMetadataFromRules<
   T extends any[],
@@ -88,4 +82,4 @@ type UnwrapTuplesRaw<T extends any[] = [], F = CreateFn<T>> = [T] extends [[]]
         : never
     >;
 
-export type UnwrapTuples<T extends any[]> = FilterTuple<UnwrapTuplesRaw<T>>;
+export type UnwrapTuples<T extends any[]> = FilterTuple<T> extends [infer U extends any[]] ? U : FilterTuple<T>;

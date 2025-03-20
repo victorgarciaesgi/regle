@@ -22,6 +22,14 @@ describe('between validator', () => {
     expect(between(5, 10).exec(5)).toBe(true);
   });
 
+  it('should not have inclusive lower bound without allowEqual', () => {
+    expect(between(5, 10, { allowEqual: false }).exec(5)).toBe(false);
+  });
+
+  it('should not have inclusive lower bound without allowEqual', () => {
+    expect(between(5, 10, { allowEqual: false }).exec(10)).toBe(false);
+  });
+
   it('should have inclusive upper bound', () => {
     expect(between(3, 4).exec(4)).toBe(true);
   });

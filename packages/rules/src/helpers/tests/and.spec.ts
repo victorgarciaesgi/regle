@@ -2,6 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../rules';
 import { and } from '../and';
+import type { CommonComparationOptions } from '../../types/common-rules.types';
 
 describe('and validator', () => {
   it('should not validate no functions', () => {
@@ -57,10 +58,17 @@ describe('and validator', () => {
   });
 
   it('should have correct return types', () => {
+    const test = and(required, email, minLength(6));
     expectTypeOf(and()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
     expectTypeOf(and(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
     expectTypeOf(and(required, email, minLength(6))).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [number], false, boolean, unknown>
+      RegleRuleDefinition<
+        unknown,
+        [count: number, options?: CommonComparationOptions | undefined],
+        false,
+        boolean,
+        unknown
+      >
     >();
 
     expectTypeOf(and()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();

@@ -21,6 +21,10 @@ describe('minLength validator', () => {
     expect(minLength(5).exec('abcde')).toBe(true);
   });
 
+  it('should not validate enough characters without allowEqual', () => {
+    expect(minLength(5, { allowEqual: false }).exec('abcde')).toBe(false);
+  });
+
   it('should validate more than necessary characters', () => {
     expect(minLength(5).exec('abcdefghi')).toBe(true);
   });

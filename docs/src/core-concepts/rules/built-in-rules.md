@@ -40,20 +40,45 @@ This allow to have rules even if the field is not required.
 
 Allows only alphabetic characters.
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { alpha } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { alpha },
+})
+```
+
 ## `alphaNum`
 
 Allows only alphanumeric characters.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { alphaNum } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { alphaNum },
+})
+```
 
 ## `between`
 
 _**Params**_
   - `min: Ref<number> | number | () => number`
   - `max: Ref<number> | number | () => number`
+  - `options?: {allowEqual?: boolean}`
 
 
 Checks if a number is in specified bounds. `min` and `max` are both inclusive.
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { between } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -61,7 +86,7 @@ const maxCount = ref(6);
 const { r$ } = useRegle({ count: 0 }, {
   count: {
     between: between(1, 6),
-    between: between(1, maxCount),
+    between: between(1, maxCount, {allowEqual: false}),
     between: between(() => maxCount.value, 10)
   },
 })
@@ -71,12 +96,34 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Requires a boolean value to be `true`. This is useful for checkbox inputs.
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { checked } from '@regle/rules';
+
+const { r$ } = useRegle({ confirm: false }, {
+  confirm: { checked },
+})
+```
+
 ## `contains`
 
 _**Params**_
 - `contain: Ref<string> | string | () => string`
 
 Checks if the string contains the specified substring.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { contains } from '@regle/rules';
+
+const { r$ } = useRegle({ bestLib: '' }, {
+  bestLib: {
+    contains: contains('regle')
+  },
+})
+```
 
 
 ## `dateAfter`
@@ -86,18 +133,18 @@ _**Params**_
 
 Checks if the date is after the given parameter.
 
-_**Metadata**_
-```ts
-| true
-| {
-    $valid: false;
-    error: 'date-not-after';
-  }
-| {
-    $valid: false;
-    error: 'value-or-paramater-not-a-date';
-  }
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { dateAfter } from '@regle/rules';
+
+const { r$ } = useRegle({ birthday: null as Date | null }, {
+  birthday: {
+    dateAfter: dateAfter(new Date())
+  },
+})
 ```
+
 
 ## `dateBefore`
 _**Params**_
@@ -106,17 +153,16 @@ _**Params**_
 
 Checks if the date is before the given parameter.
 
-_**Metadata**_
-```ts
-| true
-| {
-    $valid: false;
-    error: 'date-not-before';
-  }
-| {
-    $valid: false;
-    error: 'value-or-paramater-not-a-date';
-  }
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { dateBefore } from '@regle/rules';
+
+const { r$ } = useRegle({ birthday: null as Date | null }, {
+  birthday: {
+    dateBefore: dateBefore(new Date())
+  },
+})
 ```
 
 ## `dateBetweeen`
@@ -128,14 +174,47 @@ _**Params**_
 
 Checks if the date falls between the specified bounds.
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { dateBetween } from '@regle/rules';
+
+const { r$ } = useRegle({ birthday: null as Date | null }, {
+  birthday: {
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1))
+  },
+})
+```
+
 
 ## `decimal`
 
 Allows positive and negative decimal numbers.
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { decimal } from '@regle/rules';
+
+const { r$ } = useRegle({ price: 0 }, {
+  price: { decimal },
+})
+```
+
+
 ## `email`
 
 Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { email } from '@regle/rules';
+
+const { r$ } = useRegle({ email: '' }, {
+  email: { email },
+})
+```
 
 ## `endsWith`
 
@@ -143,6 +222,16 @@ _**Params**_
 - `end: Ref<string> | string | () => string`
 
 Checks if the string ends with the specified substring.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { endsWith } from '@regle/rules';
+
+const { r$ } = useRegle({ firstName: '' }, {
+  firstName: { endsWith: endsWith('foo') },
+})
+```
 
 
 ## `exactLength`
@@ -152,7 +241,11 @@ _**Params**_
 
 Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { exactLength } from '@regle/rules';
 
 const exactValue = ref(6);
@@ -175,6 +268,10 @@ _**Params**_
 Requires a field to have a strict numeric value.
 
 ```ts
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { exactValue } from '@regle/rules';
 
 const exactCount = ref(6);
@@ -192,10 +289,30 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Allows only integers (positive and negative).
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { integer } from '@regle/rules';
+
+const { r$ } = useRegle({ count: 0 }, {
+  count: { integer },
+})
+```
+
 
 ## `ipAddress`
 
 Validates IPv4 addresses in dotted decimal notation *127.0.0.1*.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { ipAddress } from '@regle/rules';
+
+const { r$ } = useRegle({ address: '' }, {
+  address: { ipAddress },
+})
+```
 
 
 
@@ -206,7 +323,10 @@ _**Params**_
 
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
 import { macAddress } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -223,6 +343,7 @@ const { r$ } = useRegle({ address: '' }, {
 
 _**Params**_
   - `max: Ref<number> | number | () => number`
+  - `options?: {allowEqual?: boolean}`
 
 _**Works with**_
   - `Array | Record | string | number`
@@ -230,7 +351,11 @@ _**Works with**_
 
 Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { maxLength } from '@regle/rules';
 
 const maxValue = ref(6);
@@ -248,11 +373,16 @@ const { r$ } = useRegle({ name: '' }, {
 
 _**Params**_
   - `min: Ref<number> | number | () => number`
+  - `options?: {allowEqual?: boolean}`
 
 
   Requires a field to have a specified maximum numeric value.
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { maxValue } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -260,7 +390,7 @@ const maxCount = ref(6);
 const { r$ } = useRegle({ count: 0 }, {
   count: {
     maxValue: maxValue(6),
-    maxValue: maxValue(maxCount),
+    maxValue: maxValue(maxCount, {allowEqual: false}),
     maxValue: maxValue(() => maxCount.value)
   },
 })
@@ -270,13 +400,18 @@ const { r$ } = useRegle({ count: 0 }, {
 
 _**Params**_
   - `min: Ref<number> | number | () => number`
+  - `options?: {allowEqual?: boolean}`
 
 _**Works with**_
   - `Array | Record | string | number`
 
 Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { minLength } from '@regle/rules';
 
 const minValue = ref(6);
@@ -294,13 +429,18 @@ const { r$ } = useRegle({ name: '' }, {
 
 _**Params**_
   - `min: Ref<number> | number | () => number`
+  - `options?: {allowEqual?: boolean}`
 
 _**Works with**_
   - `number`
 
 Requires a field to have a specified minimum numeric value.
 
-```ts
+```ts twoslash
+import {ref} from 'vue'
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import { minValue } from '@regle/rules';
 
 const minCount = ref(6);
@@ -308,7 +448,7 @@ const minCount = ref(6);
 const { r$ } = useRegle({ count: 0 }, {
   count: {
     minValue: minValue(6),
-    minValue: minValue(minCount),
+    minValue: minValue(minCount, {allowEqual: false}),
     minValue: minValue(() => minCount.value)
   },
 })
@@ -318,9 +458,33 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Validate against a native Typescript enum value. Similiar to Zod's `nativeEnum`
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { nativeEnum } from '@regle/rules';
+
+enum Foo {
+  Bar, Baz
+}
+
+const { r$ } = useRegle({ type: '' }, {
+  type: { nativeEnum: nativeEnum(Foo) },
+})
+```
+
 ## `numeric`
 
 Allows only numeric values (including numeric strings).
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { numeric } from '@regle/rules';
+
+const { r$ } = useRegle({ count: 0 }, {
+  count: { numeric },
+})
+```
 
 
 ## `oneOf`
@@ -330,7 +494,9 @@ Allow only one of the values from a fixed Array of possible entries.
 _**Params**_
   - `options: MaybeRefOrGetter<Array<string | number>>`
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
 import { oneOf } from '@regle/rules';
 
 const { r$ } = useRegle({ aliment: 'Fish' }, {
@@ -346,6 +512,20 @@ _**Params**_
 - `...regexps: [MaybeRefOrGetter<RegExp | RegExp[]>]`
 
 Checks if the value matches one or more regular expressions.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
+import { regex } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: {
+    regex: regex(/^foo/),
+    regex: regex([/^bar/, /baz$/]),
+  },
+})
+```
 
 
 ## `required`
@@ -436,8 +616,30 @@ _**Params**_
 
 Checks if the string starts with the specified substring.
 
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { startsWith } from '@regle/rules';
+
+const { r$ } = useRegle({ bestLib: '' }, {
+  bestLib: {
+    startsWith: startsWith('regle')
+  },
+})
+```
+
 
 ## `url`
 
 Validates URLs.
+
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+import { url } from '@regle/rules';
+
+const { r$ } = useRegle({ bestUrl: '' }, {
+  bestUrl: { url },
+})
+```
 

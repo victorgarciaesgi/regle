@@ -1,6 +1,7 @@
 import { isFilled, toNumber, isNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
+import type { CommonComparationOptions } from '../types/common-rules.types';
 
 /**
  * Checks if a number is in specified bounds. min and max are both inclusive.
@@ -8,15 +9,26 @@ import { createRule } from '@regle/core';
  * @param min - the minimum limit
  * @param max - the maximum limit
  */
-export const between: RegleRuleWithParamsDefinition<number, [min: number, max: number], false, boolean> = createRule({
+export const between: RegleRuleWithParamsDefinition<
+  number,
+  [min: number, max: number, options?: CommonComparationOptions],
+  false,
+  boolean
+> = createRule({
   type: 'between',
-  validator: (value: Maybe<number>, min: number, max: number) => {
+  validator: (value: Maybe<number>, min: number, max: number, options?: CommonComparationOptions) => {
+    const { allowEqual = true } = options ?? {};
+
     if (isFilled(value) && isFilled(min) && isFilled(max)) {
       const tValue = toNumber(value);
       const tMin = toNumber(min);
       const tMax = toNumber(max);
       if (isNumber(tValue) && isNumber(tMin) && isNumber(tMax)) {
-        return tValue >= tMin && tValue <= tMax;
+        if (allowEqual) {
+          return tValue >= tMin && tValue <= tMax;
+        } else {
+          return tValue > tMin && tValue < tMax;
+        }
       }
       console.warn(`[between] Value or parameters aren't numbers, got value: ${value}, min: ${min}, max: ${max}`);
       return false;
