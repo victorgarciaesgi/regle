@@ -18,6 +18,12 @@ import { useRegle } from '@regle/core'; // [!code ++]
 import { required } from '@regle/rules'; // [!code ++]
 ```
 
+```ts
+const v$ = useVuelidate(rules, state, options); // [!code --]
+const { r$ } = useRegle(state, rules, options); // [!code ++]
+```
+
+
 ## Helpers
 
 ```ts
@@ -172,8 +178,7 @@ See [docs for scoped validation](/advanced-usage/scoped-validation) for more det
 
 ```ts twoslash
 // [scoped-config.ts]
-import { createScopedUseRegle, useRegle } from '@regle/core'; // [!code ++]
-export const { useScopedRegle, useCollectScope } = createScopedUseRegle(); // [!code ++]
+import { useScopedRegle, useCollectScope, useRegle } from '@regle/core'; // [!code ++]
 
 // @noErrors
 // Parent.vue
