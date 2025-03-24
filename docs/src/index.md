@@ -20,7 +20,7 @@ hero:
       text: Core concepts
       link: /core-concepts
     - theme: alt
-      text: ▶️ Play with it
+      text: ▶ Play with it
       link: /examples/playground
 
 features:

@@ -42,24 +42,6 @@ Children properties like `$value` and `$errors` will not be objects, and are con
 You will also have access to every validation properties like `$error`, `$invalid` etc...
 
 
-## `createScopedUseRegle`
-
-If you want to create your own separated scope, you can use `createScopedUseRegle` helper method.
-
-It will returns 2 new `useCollectScope` and `useScopedRegle`, that are only linked to each others.
-
-It's advised to change the name of this composable to avoid conflicts or issues.
-
-```ts twoslash [scoped-config.ts]
-import { createScopedUseRegle } from '@regle/core';
-
-export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
-```
-
-
-### Exemple
-
-
 :::code-group
 
 ```vue twoslash [Parent.vue]
@@ -130,7 +112,9 @@ Result:
 
 ## Multiple scopes
 
-To have multiple scopes in your app, or even in your component, simply create other entries, and use them in the components you need.
+If you want to create your own separated scope, you can use `createScopedUseRegle` helper method.
+
+It's advised to change the name of this composable to avoid conflicts or issues.
 
 ```ts twoslash [scoped-config.ts]
 import { createScopedUseRegle } from '@regle/core';
