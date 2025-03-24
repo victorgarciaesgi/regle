@@ -124,7 +124,7 @@ Return the current key name of the field.
 - Type: `() => Promise<false | SafeOutput<TState>>`
 
 Sets all properties as dirty, triggering all rules. 
-It returns a promise that will either resolve to `false` or a type safe copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
+It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
 
 ### `$extractDirtyFields`
 - Type: `(filterNullishValues = true) => PartialDeep<TState>`

@@ -1,13 +1,13 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
-title: Regle - Type safe form validation library for Vue.js
+title: Regle - Headless form validation library for Vue.js
 titleTemplate: :title
 
 hero:
   name: "Regle"
-  text: "Type safe form validation for Vue.js"
-  tagline: "Typescript first, model-based and intuitive API.\nThe perfect evolution of Vuelidate."
+  text: "Headless form validation for Vue.js"
+  tagline: "Type safe, model-based and intuitive API.\nThe perfect evolution of Vuelidate."
   image:
     dark: /logo-reglejs-favicon-reversed.svg
     light: /logo-reglejs-favicon.svg
@@ -16,8 +16,11 @@ hero:
     - theme: brand
       text: Get Started
       link: /introduction
+    - theme: secondary
+      text: Core concepts
+      link: /core-concepts
     - theme: alt
-      text: Playground
+      text: ▶️ Play with it
       link: /examples/playground
 
 features:

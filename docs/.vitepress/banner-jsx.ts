@@ -60,7 +60,7 @@ const bannerJsx = `<div
       Regle
     </div>
     <span style={{ fontSize: 36, color: "#fff" }}>
-      Type safe form validation for Vue.js
+      Headless form validation for Vue.js
     </span>
     <span style={{ fontSize: 16, marginTop: "10px", fontWeight: "normal", color: "#ddd" }}>
       Typescript first, model-based and intuitive API.

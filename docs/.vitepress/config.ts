@@ -107,9 +107,9 @@ const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
   { text: 'Reactivity caveats', link: '/troubleshooting/reactivity' },
 ];
 
-const shortDescription = 'Type safe model-based form validation library for Vue.js';
+const shortDescription = 'Headless model-based form validation library for Vue.js';
 const longDescription =
-  'Regle is a type safe form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms.';
+  'Regle is a Headless form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms.';
 
 export default defineConfig({
   title: 'Regle',
@@ -143,6 +143,7 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'Getting Started', link: '/introduction/' },
+          { text: 'Installation', link: '/introduction/installation' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
           { text: 'Migrate from Vuelidate', link: '/introduction/migrate-from-vuelidate' },
         ],
@@ -254,7 +255,7 @@ export default defineConfig({
           "@type":"WebSite",
           "url":"https:\/\/reglejs.dev\/",
           "inLanguage":"en",
-          "description":"Type safe model-based form validation library for Vue.js",
+          "description":"Headless model-based form validation library for Vue.js",
           "name":"${pageData.title}"
         }`;
       } else {
@@ -302,7 +303,7 @@ export default defineConfig({
     ],
     ['meta', { name: 'twitter:site', content: '@regle' }],
     ['meta', { name: 'twitter:domain', content: 'reglejs.dev' }],
-    ['meta', { name: 'twitter:description', content: 'Regle is a type safe form validation library made for Vue.js' }],
+    ['meta', { name: 'twitter:description', content: 'Regle is a Headless form validation library made for Vue.js' }],
     ['meta', { name: 'twitter:url', content: 'https://reglejs.dev' }],
     ['meta', { name: 'twitter:title', content: 'Regle' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],

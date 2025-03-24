@@ -6,14 +6,9 @@
     placeholder='Type your email'
   />
 
-  <ul>
-    <li v-for="error of r$.$errors.email" :key='error'>
-      {{ error }}
-    </li>
-  </ul>
-
-  <button @click="r$.$reset({toInitialState: true})">Reset</button>
-  <button @click="r$.$validate">Submit</button>
+  <li v-for="error of r$.$errors.email" :key='error'>
+    {{ error }}
+  </li>
 </template>
 
 <script setup lang='ts'>

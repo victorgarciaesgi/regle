@@ -2,7 +2,7 @@
   "name": "regle",
   "version": "0.10.6",
   "private": true,
-  "description": "Type safe model-based form validation library for Vue.js",
+  "description": "Headless model-based form validation library for Vue.js",
   "scripts": {
     "lint": "eslint packages/**",
     "lint:fix": "eslint packages/** --fix",

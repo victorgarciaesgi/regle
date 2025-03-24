@@ -19,9 +19,9 @@
 # Regle
 
 
-Regle \ʁɛɡl\ (French word for 'rule' ) is a type-safe model-based form validation library for Vue 3.
+Regle \ʁɛɡl\ (French word for 'rule' ) is a headless model-based form validation library for Vue 3.
 
-It's heavily inspired by Vuelidate.
+It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 
 
 ## 📚 Documentation
@@ -44,9 +44,10 @@ It's heavily inspired by Vuelidate.
 - 💀 Headless
 - 🪗 Extensible
 - 🛒 Collection validation
-- 🦸‍♂️ [Zod](https://zod.dev/) support
-- 🤖 [Valibot](https://valibot.dev/) support
-- 🚢 [ArkType](https://arktype.io)  🚧
+- Standard Schemas spec support
+  - 🦸‍♂️ [Zod](https://zod.dev/)
+  - 🤖 [Valibot](https://valibot.dev/)
+  - 🚢 [ArkType](https://arktype.io)  🚧
 
 
 ## 🫶 Credits
@@ -56,7 +57,7 @@ It's heavily inspired by Vuelidate.
 - [Vuelidate](https://vuelidate-next.netlify.app) Which I loved and used for 8 years, and is my main inspiration for creating Regle
 
 
-## Example
+## Basic example
 
 ```vue
 <template>
@@ -90,8 +91,10 @@ const { r$ } = useRegle({ email: '' }, {
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.3+
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3.1+
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/pinia.svg" alt='pinia'/> Pinia 2.2.5+
-- 🦸‍♂️ Zod 3.24+
-- 🤖 Valibot 1.0+
+- Standard Schemas
+  - 🦸‍♂️ Zod 3.24+
+  - 🤖 Valibot 1.0+
+  - 🚢 Arktype 2.0.0+
 
 
 ## ⬇️ Quick install
