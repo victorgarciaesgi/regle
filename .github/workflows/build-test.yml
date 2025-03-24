@@ -28,8 +28,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v4
       - run: pnpm i
-      - run: pnpm exec playwright install --with-deps
-      - run: cd packages/nuxt && pnpm exec playwright install --with-deps
+      - run: pnpm exec playwright install
+      - run: cd packages/nuxt && pnpm exec playwright install
       - run: pnpm build
       - run: pnpm run test
         env:
