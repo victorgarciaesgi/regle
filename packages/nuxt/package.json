@@ -58,7 +58,8 @@
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "vite-plugin-vue-tracer": "0.1.2"
   },
   "publishConfig": {
     "access": "public"

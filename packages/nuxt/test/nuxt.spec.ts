@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { fileURLToPath } from 'node:url';
-import { setup, $fetch, createPage } from '@nuxt/test-utils/e2e';
+import { setup, createPage } from '@nuxt/test-utils/e2e';
 import { expectNoClientErrors } from './utils/error.utils';
 
 describe('Nuxt SSR', async () => {
