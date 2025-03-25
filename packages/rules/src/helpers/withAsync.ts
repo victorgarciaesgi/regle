@@ -59,7 +59,7 @@ export function withAsync(
   let _params: any[] | undefined = [];
   let _message: RegleRuleDefinitionWithMetadataProcessor<
     any,
-    RegleRuleMetadataConsumer<any, any>,
+    RegleRuleMetadataConsumer<any, any[]>,
     string | string[]
   > = '';
 

@@ -15,7 +15,7 @@ import type { FieldRegleBehaviourOptions } from '../core';
  * Returned typed of rules created with `createRule`
  * */
 export interface RegleRuleDefinition<
-  TValue extends any = any,
+  TValue extends any = unknown,
   TParams extends any[] = [],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
@@ -53,9 +53,10 @@ export interface RegleRuleWithParamsDefinition<
   TParams extends any[] = [],
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
-> extends RegleRuleCore<TValue, TParams, TAsync, TMetadata>,
-    RegleInternalRuleDefs<TValue, TParams, TAsync, TMetadata> {
-  (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+> extends RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata>,
+    RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> {
+  (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata>;
 }
 
 export type RegleRuleMetadataExtended = {
@@ -97,7 +98,7 @@ export type RegleRuleMetadataConsumer<
   (TParams extends never
     ? {}
     : {
-        $params: TParams;
+        $params: [...TParams];
       }) &
   (Exclude<TMetadata, boolean> extends RegleRuleMetadataExtended
     ? TMetadata extends boolean
@@ -154,7 +155,7 @@ export type RegleRuleDefinitionProcessor<TValue extends any = any, TParams exten
 
 export type RegleRuleDefinitionWithMetadataProcessor<
   TValue extends any,
-  TMetadata extends RegleRuleMetadataConsumer<TValue, any>,
+  TMetadata extends RegleRuleMetadataConsumer<TValue, any[]>,
   TReturn = any,
 > = ((metadata: TMetadata) => TReturn) | TReturn;
 

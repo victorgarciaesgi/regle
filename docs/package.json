@@ -15,7 +15,7 @@
     "@shikijs/vitepress-twoslash": "3.2.1",
     "@tailwindcss/forms": "0.5.10",
     "@types/lodash-es": "4.17.12",
-    "arktype": "2.1.10",
+    "arktype": "2.1.12",
     "autoprefixer": "10.4.21",
     "check-password-strength": "2.0.10",
     "lodash-es": "4.17.21",

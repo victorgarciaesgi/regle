@@ -27,12 +27,11 @@
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
     "lint": "eslint .",
     "test": "pnpm exec playwright install && vitest run",
-    "test:watch": "vitest watch",
-    "postinstall": "pnpm exec playwright install"
+    "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@nuxt/kit": "3.16.0",
-    "@nuxt/schema": "3.16.0",
+    "@nuxt/kit": "3.16.1",
+    "@nuxt/schema": "3.16.1",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*"
   },
@@ -40,21 +39,21 @@
     "@regle/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/devtools": "2.3.0",
+    "@nuxt/devtools": "2.3.1",
     "@nuxt/eslint-config": "1.2.0",
     "@nuxt/module-builder": "0.8.4",
     "@nuxt/schema": "3.16.0",
-    "@nuxt/test-utils": "3.15.2",
+    "@nuxt/test-utils": "3.17.2",
     "@types/node": "22.13.10",
     "c12": "3.0.2",
     "changelogen": "0.6.1",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
-    "nuxt": "3.16.0",
+    "nuxt": "3.16.1",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.37.0",
+    "type-fest": "4.38.0",
     "typescript": "catalog:",
     "unbuild": "3.5.0",
     "vitest": "catalog:",

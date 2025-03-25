@@ -30,7 +30,7 @@
     "prettier": "3.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "catalog:",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "catalog:"
   }

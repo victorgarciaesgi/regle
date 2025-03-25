@@ -9,7 +9,7 @@
     "@regle/schemas": "workspace:*",
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
-    "arktype": "2.1.10",
+    "arktype": "2.1.12",
     "date-fns": "4.1.0",
     "pinia": "catalog:",
     "typescript": "catalog:",

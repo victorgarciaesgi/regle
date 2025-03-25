@@ -57,13 +57,13 @@ export function withTooltip<
 ): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withTooltip(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
-  newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any[], any>, string | string[]>
+  newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>
 ): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any | Promise<any>>;
   let _active:
     | boolean
-    | RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any>, boolean>
+    | RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, boolean>
     | undefined;
   let _params: any[] | undefined;
   let _message: any;

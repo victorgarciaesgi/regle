@@ -366,7 +366,7 @@ export type RegleRuleStatus<
         readonly $params?: any[];
       }
     : {
-        readonly $params: TParams;
+        readonly $params: [...TParams];
       });
 
 /**

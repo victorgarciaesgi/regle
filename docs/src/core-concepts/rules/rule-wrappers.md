@@ -145,8 +145,8 @@ const { r$ } = useRegle({ name: '' },
           async (value, param) => await someAsyncCall(param),
           [base]
         ),
-        ({ $params: [param] }) => `Custom error: ${value} != ${param}`
-        //              ^?
+        ({$value,  $params: [param] }) => `Custom error: ${$value} != ${param}`
+        //                     ^?
       ),
     },
   }

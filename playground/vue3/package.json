@@ -15,7 +15,7 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "arktype": "2.1.10",
+    "arktype": "2.1.12",
     "pinia": "2.3.0",
     "valibot": "1.0.0",
     "vue": "catalog:",
@@ -35,9 +35,9 @@
     "npm-run-all2": "^7.0.2",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.37.0",
+    "type-fest": "4.38.0",
     "typescript": "catalog:",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }

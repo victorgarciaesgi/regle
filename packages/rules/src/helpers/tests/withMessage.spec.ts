@@ -117,10 +117,16 @@ describe('withMessage helper', () => {
       { firstName: '' },
       {
         firstName: {
-          required: withMessage((value) => {
-            expectTypeOf(value).toExtend<Maybe<string>>();
-            return true;
-          }, 'Hello'),
+          required: withMessage(
+            (value) => {
+              expectTypeOf(value).toExtend<Maybe<string>>();
+              return true;
+            },
+            ({ $value }) => {
+              expectTypeOf($value).toExtend<Maybe<string>>();
+              return '';
+            }
+          ),
         },
       }
     );

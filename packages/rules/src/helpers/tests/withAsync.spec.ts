@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition } from '@regle/core';
+import type { Maybe, RegleRuleDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
@@ -120,5 +120,28 @@ describe('withAsync helper', () => {
         return true;
       })
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+
+    const base = ref(1);
+
+    const someAsyncCall = async (param: number) => await Promise.resolve(true);
+
+    const { r$ } = useRegle(
+      { name: '' },
+      {
+        name: {
+          customRule: withMessage(
+            withAsync(
+              async (value, param) => {
+                expectTypeOf(value).toExtend<Maybe<string>>();
+                expectTypeOf(param).toBeNumber();
+                return await someAsyncCall(param);
+              },
+              [base]
+            ),
+            ({ $value, $params: [param] }) => `Custom error: ${$value} != ${param}`
+          ),
+        },
+      }
+    );
   });
 });

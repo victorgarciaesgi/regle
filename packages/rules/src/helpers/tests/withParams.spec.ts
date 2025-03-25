@@ -99,12 +99,29 @@ describe('withParams helper', () => {
         name: {
           required: withParams(
             (value, foo) => {
-              expectTypeOf(value).toExtend<Maybe<string>>();
-              expectTypeOf(foo).toExtend<number>();
+              expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
+              expectTypeOf(foo).toEqualTypeOf<number>();
               return true;
             },
             [() => 0]
           ),
+          foo: withMessage(
+            withParams(
+              (value, foo) => {
+                expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
+                expectTypeOf(foo).toEqualTypeOf<number>();
+                return true;
+              },
+              [() => 0]
+            ),
+            ({ $params, $value }) => {
+              expectTypeOf($params).toEqualTypeOf<[number]>();
+              expectTypeOf($params[0]).toEqualTypeOf<number>();
+              expectTypeOf($value).toEqualTypeOf<Maybe<string>>();
+              return '';
+            }
+          ),
+          bar: withMessage((value) => true, ''),
         },
       }
     );
