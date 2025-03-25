@@ -25,7 +25,6 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: pnpm i
       - run: pnpm exec playwright install
-      - run: cd packages/nuxt && pnpm exec playwright install
       - run: pnpm run test:coverage
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
