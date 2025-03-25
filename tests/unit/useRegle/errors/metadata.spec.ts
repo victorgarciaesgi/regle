@@ -5,6 +5,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 
 function metadateRules() {
   const externalDep = ref('external');
+
   const inlineMetadataRule = withTooltip(
     withMessage(
       withParams(

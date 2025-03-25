@@ -41,6 +41,8 @@ export type {
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   Maybe,
+  MaybeOutput,
+  MaybeInput,
   InferRegleRule,
   UnwrapRegleUniversalParams,
   FormRuleDeclaration,

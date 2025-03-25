@@ -1,6 +1,6 @@
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, Maybe, Prettify } from '../utils';
+import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, Maybe, MaybeOutput, Prettify } from '../utils';
 import type { ReglePartialRuleTree } from './rule.declaration.types';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
@@ -67,7 +67,7 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
           ? never
           : TState[K] extends Array<any>
             ? never
-            : K]?: Maybe<TState[K]>;
+            : K]?: MaybeOutput<TState[K]>;
       } & {
         [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
           ? K
@@ -83,12 +83,12 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
   | {
       valid: false;
       data: NonNullable<Data> extends Date | File
-        ? Maybe<Data>
+        ? MaybeOutput<Data>
         : NonNullable<Data> extends Array<infer U extends Record<string, any>>
           ? PartialFormState<U>[]
           : NonNullable<Data> extends Record<string, any>
             ? PartialFormState<NonNullable<Data>>
-            : Maybe<Data>;
+            : MaybeOutput<Data>;
     }
   | {
       valid: true;

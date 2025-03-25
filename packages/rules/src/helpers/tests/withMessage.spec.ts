@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
 import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
@@ -112,6 +112,18 @@ describe('withMessage helper', () => {
         unknown
       >
     >();
+
+    useRegle(
+      { firstName: '' },
+      {
+        firstName: {
+          required: withMessage((value) => {
+            expectTypeOf(value).toExtend<Maybe<string>>();
+            return true;
+          }, 'Hello'),
+        },
+      }
+    );
 
     // @ts-expect-error no message argument ❌
     withMessage((value) => true);

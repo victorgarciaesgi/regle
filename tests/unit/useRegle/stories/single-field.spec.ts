@@ -34,4 +34,14 @@ describe('useRegle should work with single field validation', () => {
 
     expect(valid).toBe(false);
   });
+
+  it('should have the correct type when using $validate', async () => {
+    const { vm } = createRegleComponent(singleFieldValidion);
+
+    const { data, valid } = await vm.r$.$validate();
+
+    if (valid) {
+      expectTypeOf(data).toExtend<number>;
+    }
+  });
 });

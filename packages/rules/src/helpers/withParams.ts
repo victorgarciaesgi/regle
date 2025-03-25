@@ -5,6 +5,8 @@ import type {
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
+  RegleRuleRaw,
+  RegleRuleWithParamsDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
@@ -39,7 +41,21 @@ export function withParams<
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, any[], TAsync, TMetadata>,
   depsArray: [...TParams]
-): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, TAsync, TMetadata> {
+): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, TAsync, TMetadata>;
+export function withParams<
+  TValue extends any,
+  TParams extends any[],
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+>(
+  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
+  depsArray: [...TParams]
+): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+export function withParams(
+  rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
+  depsArray: any[]
+): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined = [];
@@ -52,7 +68,7 @@ export function withParams<
   if (typeof rule === 'function') {
     _type = InternalRuleType.Inline;
     validator = (value: any | null | undefined, ...params: any[]) => {
-      return rule(value, ...(params as any));
+      return rule(value, ...(params as []));
     };
     _params = [depsArray];
   } else {

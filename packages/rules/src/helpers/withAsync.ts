@@ -2,7 +2,12 @@ import type { Ref } from 'vue';
 import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
+  RegleRuleDefinitionProcessor,
+  RegleRuleDefinitionWithMetadataProcessor,
+  RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
+  RegleRuleRaw,
+  RegleRuleWithParamsDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
@@ -35,18 +40,48 @@ export function withAsync<
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   depsArray?: [...TParams]
-): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata> {
-  const validator = async (value: any | null | undefined, ...params: any[]) => {
-    return rule(value, ...(params as any));
-  };
+): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata>;
+export function withAsync<
+  TValue extends any,
+  TParams extends any[],
+  TMetadata extends RegleRuleMetadataDefinition,
+  TReturn extends TMetadata | Promise<TMetadata>,
+>(
+  rule: RegleRuleWithParamsDefinition<TValue, TParams, boolean, TMetadata>,
+  depsArray?: [...TParams]
+): RegleRuleWithParamsDefinition<TValue, TParams, true, TReturn extends Promise<infer M> ? M : TReturn>;
+export function withAsync(
+  rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
+  depsArray?: any[]
+): RegleRuleWithParamsDefinition<any, any, true, any> | RegleRuleDefinition<any, any, true, any> {
+  let _type: string | undefined;
+  let validator: RegleRuleDefinitionProcessor<any, any, any>;
+  let _params: any[] | undefined = [];
+  let _message: RegleRuleDefinitionWithMetadataProcessor<
+    any,
+    RegleRuleMetadataConsumer<any, any>,
+    string | string[]
+  > = '';
+
+  if (typeof rule === 'function') {
+    _type = InternalRuleType.Inline;
+    validator = async (value: any | null | undefined, ...params: any[]) => {
+      return rule(value, ...(params as []));
+    };
+    _params = [depsArray];
+  } else {
+    ({ _type, _message } = rule);
+    _params = _params = rule._params?.concat(depsArray as any);
+    validator = async (...args: any[]) => rule.validator(args);
+  }
 
   const newRule = createRule({
     type: InternalRuleType.Async,
-    validator: validator as any,
-    message: '',
+    validator: validator,
+    message: _message,
   });
 
-  newRule._params = newRule._params?.concat(depsArray);
+  newRule._params = newRule._params?.concat(_params);
 
   return newRule(...(depsArray ?? [])) as any;
 }

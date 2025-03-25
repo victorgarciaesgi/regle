@@ -1,4 +1,4 @@
-import { inferRules, useRegle } from '@regle/core';
+import { inferRules, useRegle, type Maybe } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, ref } from 'vue';
 import { withParams } from '../withParams';
@@ -90,5 +90,23 @@ describe('withParams helper', () => {
     await vm.$nextTick();
 
     expect(vm.r$.$fields.two.$invalid).toBe(false);
+  });
+
+  it('should correctly infer types', () => {
+    useRegle(
+      { name: '' },
+      {
+        name: {
+          required: withParams(
+            (value, foo) => {
+              expectTypeOf(value).toExtend<Maybe<string>>();
+              expectTypeOf(foo).toExtend<number>();
+              return true;
+            },
+            [() => 0]
+          ),
+        },
+      }
+    );
   });
 });

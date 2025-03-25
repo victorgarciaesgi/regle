@@ -10,7 +10,15 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, Prettify, PrimitiveTypes } from '../utils';
+import type {
+  ArrayElement,
+  ExtendOnlyRealRecord,
+  ExtractFromGetter,
+  Maybe,
+  MaybeOutput,
+  Prettify,
+  PrimitiveTypes,
+} from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 export type Regle<
@@ -176,12 +184,12 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
 export type SafeFieldProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends RegleRuleDecl<any, any>
     ? unknown extends TRule['required']
-      ? Maybe<TState>
+      ? MaybeOutput<TState>
       : TRule['required'] extends undefined
         ? never
         : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
           ? Params extends never[]
-            ? Maybe<TState>
-            : Maybe<TState>
-          : Maybe<TState>
-    : Maybe<TState>;
+            ? NonNullable<TState>
+            : MaybeOutput<TState>
+          : MaybeOutput<TState>
+    : MaybeOutput<TState>;

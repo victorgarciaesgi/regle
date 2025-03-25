@@ -1,5 +1,5 @@
 import { createRegleComponent } from '../../../utils/test.utils';
-import { useRegle, type Maybe } from '@regle/core';
+import { useRegle, type MaybeOutput } from '@regle/core';
 import { email, required } from '@regle/rules';
 
 function simpleNestedStateWithMixedValidation() {
@@ -36,7 +36,6 @@ describe('$validate', () => {
 
     const { valid, data } = await vm.r$.$validate();
 
-    // TODO handle optional objects/arrays
     if (valid) {
       expectTypeOf(data).toEqualTypeOf<{
         email: string;
@@ -54,17 +53,17 @@ describe('$validate', () => {
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
-        email?: Maybe<string | undefined>;
-        date?: Maybe<Date>;
+        email?: MaybeOutput<string>;
+        date?: MaybeOutput<Date>;
         user?: {
-          firstName?: Maybe<string | undefined>;
-          lastName?: Maybe<string | undefined>;
+          firstName?: MaybeOutput<string>;
+          lastName?: MaybeOutput<string>;
         };
         contacts?: {
-          name?: Maybe<string>;
+          name?: MaybeOutput<string>;
         }[];
         collection?: {
-          name?: Maybe<string>;
+          name?: MaybeOutput<string>;
         }[];
       }>();
     }
