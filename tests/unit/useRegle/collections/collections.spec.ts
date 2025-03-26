@@ -1,6 +1,6 @@
 import { createRule, useRegle } from '@regle/core';
 import { isFilled, minLength, required } from '@regle/rules';
-import { nextTick, ref, type Ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeInvalidField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
 
@@ -155,5 +155,55 @@ describe('collections validations', () => {
 
     shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
     shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
+  });
+
+  it("shouldn't be considered collection if no $each rule is present", async () => {
+    function regleComposable() {
+      const form = ref({
+        level0: [] as { name: string; level1: { name: string }[] }[],
+      });
+
+      return useRegle(form, {
+        level0: {
+          minLength: minLength(1),
+        },
+      });
+    }
+
+    const { vm } = createRegleComponent(regleComposable);
+
+    // @ts-expect-error This should not be considered a collection
+    expect(vm.r$.$fields.level0.$each).toBeUndefined();
+
+    expect(vm.r$.$fields.level0.$errors).toStrictEqual([]);
+    expect(vm.r$.$errors.level0).toStrictEqual([]);
+
+    expectTypeOf(vm.r$.$fields.level0.$errors).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.level0).toEqualTypeOf<string[]>();
+  });
+
+  it("Array of files should't be considered a collection", async () => {
+    function regleComposable() {
+      const form = ref({
+        files: [] as File[],
+      });
+
+      return useRegle(form, {
+        files: {
+          minLength: minLength(1),
+        },
+      });
+    }
+
+    const { vm } = createRegleComponent(regleComposable);
+
+    // @ts-expect-error This should not be considered a collection
+    expect(vm.r$.$fields.files.$each).toBeUndefined();
+
+    expect(vm.r$.$fields.files.$errors).toStrictEqual([]);
+    expect(vm.r$.$errors.files).toStrictEqual([]);
+
+    expectTypeOf(vm.r$.$fields.files.$errors).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.files).toEqualTypeOf<string[]>();
   });
 });

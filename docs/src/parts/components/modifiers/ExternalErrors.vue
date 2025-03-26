@@ -33,10 +33,9 @@
       </div>
     </div>
     <div class="button-list">
-      <button type="button" @click="submit">Submit</button>
-      <button type="button" @click="r$.$clearExternalErrors">Reset Errors</button>
-      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset All</button>
-      <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <button type="button" @click="r$.$clearExternalErrors">Reset external Errors</button>
+      <button type="button" @click="() => r$.$reset({ toInitialState: true })">Reset All</button>
+      <button class="primary" type="button" @click="submit">Submit</button>
     </div>
   </div>
 </template>
@@ -67,6 +66,7 @@ const { r$ } = useRegle(
 );
 
 function submit() {
+  r$.$validate();
   externalErrors.value = {
     email: ['Email already exists'],
     name: {

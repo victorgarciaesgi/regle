@@ -65,8 +65,8 @@ export interface SuperCompatibleRegleStatus extends SuperCompatibleRegleCommonSt
   $fields: {
     [x: string]: unknown;
   };
-  readonly $errors: Record<string, RegleValidationErrors<any>>;
-  readonly $silentErrors: Record<string, RegleValidationErrors<any>>;
+  readonly $errors: Record<string, RegleValidationErrors<any, false, any>>;
+  readonly $silentErrors: Record<string, RegleValidationErrors<any, false, any>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate?: () => Promise<SuperCompatibleRegleResult>;
 }
@@ -137,9 +137,9 @@ export type RegleStatus<
    * Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleErrorTree<TState>;
+  readonly $errors: RegleErrorTree<TState, TRules>;
   /** Collection of all the error messages, collected for all children properties. */
-  readonly $silentErrors: RegleErrorTree<TState>;
+  readonly $silentErrors: RegleErrorTree<TState, TRules>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -177,7 +177,7 @@ export type InferRegleStatusType<
       ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
         ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
         : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-      : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
+      : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
     : TRule extends ReglePartialRuleTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>
         ? RegleCommonStatus<TState[TKey]>
@@ -418,9 +418,9 @@ export type RegleCollectionStatus<
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleCollectionErrors<TState>;
+  readonly $errors: RegleCollectionErrors<TState, TRules>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
-  readonly $silentErrors: RegleCollectionErrors<TState>;
+  readonly $silentErrors: RegleCollectionErrors<TState, TRules>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */

@@ -15,8 +15,8 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   index: number;
   stateValue: Ref<StateWithId | undefined>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
-  externalErrors: Ref<$InternalRegleErrors[] | undefined> | undefined;
-  schemaErrors: ComputedRef<$InternalRegleErrors[] | undefined> | undefined;
+  externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
+  schemaErrors: ComputedRef<$InternalRegleErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
   schemaMode: boolean | undefined;
 }

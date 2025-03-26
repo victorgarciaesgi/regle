@@ -1,11 +1,24 @@
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, Maybe, MaybeOutput, Prettify } from '../utils';
-import type { ReglePartialRuleTree } from './rule.declaration.types';
+import type {
+  ExtendOnlyRealRecord,
+  ExtractFromGetter,
+  JoinDiscriminatedUnions,
+  Maybe,
+  MaybeOutput,
+  Prettify,
+} from '../utils';
+import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from './rule.declaration.types';
+import type { RegleCollectionRuleDefinition } from './rule.definition.type';
 
-export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+export type RegleErrorTree<
+  TState = MaybeRef<Record<string, any> | any[]>,
+  TRules extends ReglePartialRuleTree<any> = {},
+> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>]: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K]
+    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K],
+    false,
+    K extends keyof TRules ? TRules[K] : {}
   >;
 };
 
@@ -19,22 +32,31 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
 export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
+  TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialRuleTree<any> | undefined = {},
 > =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
-    ? TExternal extends false
-      ? RegleCollectionErrors<U>
-      : RegleExternalCollectionErrors<U>
+    ? ExtendOnlyRealRecord<U> extends true
+      ? TExternal extends false
+        ? TRule extends RegleCollectionRuleDefinition<any, any>
+          ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
+            ? RegleCollectionErrors<U, ExtractFromGetter<TRule['$each']>>
+            : string[]
+          : string[]
+        : RegleExternalCollectionErrors<U>
+      : string[]
     : NonNullable<TState> extends Date | File
       ? string[]
       : NonNullable<TState> extends Record<string, any>
         ? TExternal extends false
-          ? RegleErrorTree<TState>
+          ? TRule extends ReglePartialRuleTree<any>
+            ? RegleErrorTree<TState, TRule>
+            : RegleErrorTree<TState, {}>
           : RegleExternalErrorTree<TState>
         : string[];
 
-export type RegleCollectionErrors<TState extends Record<string, any>> = {
+export type RegleCollectionErrors<TState extends Record<string, any>, TRule extends ReglePartialRuleTree<any> = {}> = {
   readonly $self: string[];
-  readonly $each: RegleValidationErrors<TState>[];
+  readonly $each: RegleValidationErrors<TState, false, TRule>[];
 };
 
 export type RegleExternalCollectionErrors<TState extends Record<string, any>> = {

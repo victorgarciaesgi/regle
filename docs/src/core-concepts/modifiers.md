@@ -84,6 +84,22 @@ Result:
 <ExternalErrors/>
 
 
+:::warning
+
+If you're working with collections and server-only validations, you'll have to at least specify an empty `$each` object in the client rules to tell Regle that the array is to be treated as a collection
+
+```ts
+const { r$ } = useRegle({collection: []}, {
+  collection: {
+    $each: {}
+  },
+}, { externalErrors })
+
+```
+
+:::
+
+
 ### `rewardEarly`
 
 __Type__: `boolean`

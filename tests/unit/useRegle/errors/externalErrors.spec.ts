@@ -32,7 +32,13 @@ describe('external errors', () => {
 
       return {
         externalErrors,
-        ...useRegle(form, {}, { externalErrors }),
+        ...useRegle(
+          form,
+          {
+            collection: { $each: {} },
+          },
+          { externalErrors }
+        ),
       };
     }
     const { vm } = createRegleComponent(nestedExternalErrorsOnly);
@@ -91,6 +97,20 @@ describe('external errors', () => {
     expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+
+    vm.r$.$reset({ toInitialState: true });
+
+    await nextTick();
+
+    shouldBeUnRuledPristineField(vm.r$.$fields.root);
+    shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+
+    expect(vm.r$.$value).toStrictEqual({
+      root: '',
+      nested: { name1: { name2: '' } },
+      collection: [{ item: '' }, { item: '' }],
+    });
   });
 
   function nestedExternalErrorsWithRules() {

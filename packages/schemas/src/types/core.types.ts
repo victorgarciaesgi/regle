@@ -162,9 +162,9 @@ export type RegleSchemaCollectionStatus<
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleCollectionErrors<TSchema>;
+  readonly $errors: RegleCollectionErrors<TSchema, {}>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
-  readonly $silentErrors: RegleCollectionErrors<TSchema>;
+  readonly $silentErrors: RegleCollectionErrors<TSchema, {}>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
 } & ([TShortcuts['collections']] extends [never]

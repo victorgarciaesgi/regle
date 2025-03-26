@@ -1,14 +1,20 @@
 import type { PartialDeep } from 'type-fest';
 import type {
-  ArrayElement,
   PromiseReturn,
+  RegleCollectionErrors,
   RegleCommonStatus,
+  RegleErrorTree,
   RegleResult,
   RegleValidationErrors,
   ResetOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { computed, reactive } from 'vue';
+
+type PossibleRegleErrors =
+  | RegleErrorTree<any, {}>
+  | RegleCollectionErrors<Record<string, any>, any>
+  | RegleErrorTree<any, any>;
 
 export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,
@@ -159,9 +165,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
-  const $errors = computed<
-    Record<string, RegleValidationErrors<any>> | RegleValidationErrors<Record<string, unknown>>[]
-  >(() => {
+  const $errors = computed(() => {
     if (scoped) {
       return Object.entries(regles).map(([_, regle]) => {
         return regle.$errors;
@@ -175,9 +179,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     }
   });
 
-  const $silentErrors = computed<
-    Record<string, RegleValidationErrors<any>> | RegleValidationErrors<Record<string, unknown>>[]
-  >(() => {
+  const $silentErrors = computed(() => {
     if (scoped) {
       return Object.entries(regles).map(([_, regle]) => {
         return regle.$silentErrors;
