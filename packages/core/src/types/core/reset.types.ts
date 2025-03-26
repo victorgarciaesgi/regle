@@ -4,6 +4,8 @@ export type ResetOptions<TState extends unknown> = RequireOneOrNone<
   {
     /**
      * Reset validation status and reset form state to its initial state
+     *
+     * ⚠️ This doesn't work if the state is a `reactive` object.
      */
     toInitialState?: boolean;
     /**
