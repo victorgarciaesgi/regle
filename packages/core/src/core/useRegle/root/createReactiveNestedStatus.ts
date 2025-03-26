@@ -521,6 +521,10 @@ export function createReactiveNestedStatus({
       statusOrField.$reset(options, true);
     });
 
+    if (options?.clearExternalErrors) {
+      $clearExternalErrors();
+    }
+
     define$WatchExternalErrors();
     if (!fromParent) {
       createReactiveFieldsStatus();

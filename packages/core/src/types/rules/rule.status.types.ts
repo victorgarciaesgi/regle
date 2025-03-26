@@ -311,7 +311,7 @@ export interface RegleCommonStatus<TValue = any> {
    */
   $reset(): void;
   $reset(options?: ResetOptions<TValue>): void;
-  /** Clears the $externalResults state back to an empty object. */
+  /** Clears the $externalErrors state back to an empty object. */
   $clearExternalErrors(): void;
 }
 

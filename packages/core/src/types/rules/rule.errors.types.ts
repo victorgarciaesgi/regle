@@ -7,6 +7,7 @@ import type {
   Maybe,
   MaybeOutput,
   Prettify,
+  UnwrapMaybeRef,
 } from '../utils';
 import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from './rule.declaration.types';
 import type { RegleCollectionRuleDefinition } from './rule.definition.type';
@@ -15,16 +16,16 @@ export type RegleErrorTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TRules extends ReglePartialRuleTree<any> = {},
 > = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>]: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K],
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
     false,
     K extends keyof TRules ? TRules[K] : {}
   >;
 };
 
 export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>]?: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapNestedRefs<TState>>[K],
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
     true
   >;
 };

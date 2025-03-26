@@ -70,6 +70,7 @@ const { r$ } = useRegle(form, {
 }, { externalErrors })
 
 function submit() {
+  r$.$validate();
   externalErrors.value = {
     email: ["Email already exists"],
     name: {

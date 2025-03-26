@@ -34,7 +34,9 @@
     </div>
     <div class="button-list">
       <button type="button" @click="r$.$clearExternalErrors">Reset external Errors</button>
-      <button type="button" @click="() => r$.$reset({ toInitialState: true })">Reset All</button>
+      <button type="button" @click="() => r$.$reset({ toInitialState: true, clearExternalErrors: true })"
+        >Reset All</button
+      >
       <button class="primary" type="button" @click="submit">Submit</button>
     </div>
   </div>
@@ -45,7 +47,7 @@ import { required } from '@regle/rules';
 import { ref, reactive } from 'vue';
 import { type RegleExternalErrorTree, useRegle } from '@regle/core';
 
-const form = reactive({
+const form = ref({
   email: '',
   name: {
     pseudo: '',

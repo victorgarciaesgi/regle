@@ -521,6 +521,10 @@ export function createReactiveFieldStatus({
       }
     }
 
+    if (options?.clearExternalErrors) {
+      $clearExternalErrors();
+    }
+
     if (!fromParent) {
       Object.entries($rules.value).forEach(([_, rule]) => {
         rule.$reset();
