@@ -477,7 +477,7 @@ export function createReactiveFieldStatus({
           $clearExternalErrors();
         }
       },
-      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'post' }
+      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
   }
 
