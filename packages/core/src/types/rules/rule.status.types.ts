@@ -6,9 +6,11 @@ import type {
   $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
+  ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
+  isRecordLiteral,
   JoinDiscriminatedUnions,
   Maybe,
   RegleCollectionErrors,
@@ -172,11 +174,13 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
 > =
-  NonNullable<TState[TKey]> extends Array<Record<string, any> | any>
-    ? TRule extends RegleCollectionRuleDefinition<any, any>
-      ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
-        ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
-        : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+  NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
+    ? ExtendOnlyRealRecord<U> extends true
+      ? TRule extends RegleCollectionRuleDefinition<any, any>
+        ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
+          ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
+          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+        : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
       : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
     : TRule extends ReglePartialRuleTree<any>
       ? NonNullable<TState[TKey]> extends Array<any>

@@ -98,6 +98,21 @@ Result:
 <DisplayingCollectionErrors/>
 
 
+:::warning
+
+If your array is empty, Regle can't know if it's supposed to be considered a field or a collection, only type-wise. Be sure to declare even an `$each` object in the client rules to tell Regle that the array is to be treated as a collection.
+
+```ts
+const { r$ } = useRegle({collection: [] as {name: string}}, {
+  collection: {
+    $each: {}
+  },
+})
+```
+
+:::
+
+
 ## Validating the array independently
 
 Sometimes, you may want to validate not only each field in every element of the array but also the array itself, such as its size.

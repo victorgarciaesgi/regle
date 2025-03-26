@@ -32,13 +32,7 @@ describe('external errors', () => {
 
       return {
         externalErrors,
-        ...useRegle(
-          form,
-          {
-            collection: { $each: {} },
-          },
-          { externalErrors }
-        ),
+        ...useRegle(form, {}, { externalErrors }),
       };
     }
     const { vm } = createRegleComponent(nestedExternalErrorsOnly);

@@ -42,13 +42,7 @@ export type RegleValidationErrors<
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
       ? TExternal extends false
-        ? TRule extends RegleCollectionRuleDefinition<any, any>
-          ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
-            ? RegleCollectionErrors<U, ExtractFromGetter<TRule['$each']>, TSchemaMode>
-            : string[]
-          : TSchemaMode extends true
-            ? RegleExternalCollectionErrors<U>
-            : string[]
+        ? RegleCollectionErrors<U>
         : RegleExternalCollectionErrors<U>
       : string[]
     : NonNullable<TState> extends Date | File

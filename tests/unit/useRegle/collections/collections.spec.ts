@@ -166,20 +166,19 @@ describe('collections validations', () => {
       return useRegle(form, {
         level0: {
           minLength: minLength(1),
+          $each: {},
         },
       });
     }
 
     const { vm } = createRegleComponent(regleComposable);
 
-    // @ts-expect-error This should not be considered a collection
-    expect(vm.r$.$fields.level0.$each).toBeUndefined();
+    expect(vm.r$.$fields.level0.$errors.$self).toStrictEqual([]);
+    expect(vm.r$.$errors.level0.$self).toStrictEqual([]);
 
-    expect(vm.r$.$fields.level0.$errors).toStrictEqual([]);
-    expect(vm.r$.$errors.level0).toStrictEqual([]);
-
-    expectTypeOf(vm.r$.$fields.level0.$errors).toEqualTypeOf<string[]>();
-    expectTypeOf(vm.r$.$errors.level0).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$fields.level0.$errors.$self).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.level0.$self).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.level0.$each[0]?.name).toEqualTypeOf<string[]>();
   });
 
   it("Array of files should't be considered a collection", async () => {

@@ -28,7 +28,9 @@ export function isCollectionRulesDef(
   schemaMode: boolean = false
 ): rules is Ref<$InternalRegleCollectionRuleDecl> {
   return (
-    (!!rules.value && isObject(rules.value) && '$each' in rules.value) || (schemaMode && Array.isArray(state.value))
+    (!!rules.value && isObject(rules.value) && '$each' in rules.value) ||
+    (schemaMode && Array.isArray(state.value) && state.value.some(isObject)) ||
+    (Array.isArray(state.value) && state.value.some(isObject))
   );
 }
 
