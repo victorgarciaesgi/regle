@@ -13,16 +13,10 @@ import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } fro
 import type { RegleCollectionRuleDefinition } from './rule.definition.type';
 import type { Or } from 'type-fest';
 
-export type RegleErrorTree<
-  TState = MaybeRef<Record<string, any> | any[]>,
-  TRules extends ReglePartialRuleTree<any> = {},
-  TSchemaMode extends boolean = false,
-> = {
+export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
     JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    false,
-    K extends keyof TRules ? TRules[K] : {},
-    TSchemaMode
+    false
   >;
 };
 
@@ -36,8 +30,6 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
 export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
-  TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialRuleTree<any> | undefined = {},
-  TSchemaMode extends boolean = false,
 > =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
@@ -49,19 +41,13 @@ export type RegleValidationErrors<
       ? string[]
       : NonNullable<TState> extends Record<string, any>
         ? TExternal extends false
-          ? TRule extends ReglePartialRuleTree<any>
-            ? RegleErrorTree<TState, TRule, TSchemaMode>
-            : RegleErrorTree<TState, {}, TSchemaMode>
+          ? RegleErrorTree<TState>
           : RegleExternalErrorTree<TState>
         : string[];
 
-export type RegleCollectionErrors<
-  TState extends Record<string, any>,
-  TRule extends ReglePartialRuleTree<any> = {},
-  TSchemaMode extends boolean = false,
-> = {
+export type RegleCollectionErrors<TState extends Record<string, any>> = {
   readonly $self: string[];
-  readonly $each: RegleValidationErrors<TState, false, TRule, TSchemaMode>[];
+  readonly $each: RegleValidationErrors<TState, false>[];
 };
 
 export type RegleExternalCollectionErrors<TState extends Record<string, any>> = {

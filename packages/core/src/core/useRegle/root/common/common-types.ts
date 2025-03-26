@@ -1,7 +1,7 @@
 import type { ComputedRef } from 'vue';
 import type {
+  $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
-  RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
 import type { RegleStorage } from '../../../useStorage';
@@ -15,7 +15,7 @@ export interface CommonResolverOptions {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   fieldName: string;
-  shortcuts: RegleShortcutDefinition | undefined;
+  shortcuts: $InternalRegleShortcutDefinition | undefined;
 }
 
 export interface CommonResolverScopedState {

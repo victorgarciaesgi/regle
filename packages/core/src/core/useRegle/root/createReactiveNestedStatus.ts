@@ -8,6 +8,7 @@ import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
+  $InternalRegleShortcutDefinition,
   $InternalRegleStatus,
   $InternalRegleStatusType,
   RegleShortcutDefinition,
@@ -56,7 +57,7 @@ export function createReactiveNestedStatus({
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
-    $shortcuts: ToRefs<RegleShortcutDefinition['nested']>;
+    $shortcuts: ToRefs<$InternalRegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
     $localPending: Ref<boolean>;
   }

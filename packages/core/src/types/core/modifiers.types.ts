@@ -2,6 +2,8 @@ import type { RequiredDeep } from 'type-fest';
 import type { Ref } from 'vue';
 import type { DefaultValidators } from '../../core';
 import type {
+  $InternalRegleCollectionStatus,
+  $InternalRegleStatus,
   CustomRulesDeclarationTree,
   RegleCollectionStatus,
   RegleExternalErrorTree,
@@ -88,6 +90,21 @@ export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {
    * Allow you to customize the properties of every parent of a collection
    */
   collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
+};
+
+export type $InternalRegleShortcutDefinition = {
+  /**
+   * Allow you to customize the properties of every single field
+   */
+  fields?: ShortcutCommonFn<Record<string, any>>;
+  /**
+   * Allow you to customize the properties of every parent of a nested object
+   */
+  nested?: ShortcutCommonFn<$InternalRegleStatus>;
+  /**
+   * Allow you to customize the properties of every parent of a collection
+   */
+  collections?: ShortcutCommonFn<$InternalRegleCollectionStatus>;
 };
 
 export type AddDollarToOptions<T extends Record<string, any>> = {

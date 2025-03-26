@@ -7,6 +7,7 @@ import type {
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
   $InternalRegleResult,
+  $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
   RegleShortcutDefinition,
   ResetOptions,
@@ -33,7 +34,7 @@ interface CreateReactiveCollectionStatusArgs {
   schemaErrors?: ComputedRef<$InternalRegleCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
-  shortcuts: RegleShortcutDefinition | undefined;
+  shortcuts: $InternalRegleShortcutDefinition | undefined;
 }
 
 export function createReactiveCollectionStatus({
