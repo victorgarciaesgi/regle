@@ -11,15 +11,18 @@ import type {
 } from '../utils';
 import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from './rule.declaration.types';
 import type { RegleCollectionRuleDefinition } from './rule.definition.type';
+import type { Or } from 'type-fest';
 
 export type RegleErrorTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TRules extends ReglePartialRuleTree<any> = {},
+  TSchemaMode extends boolean = false,
 > = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
     JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
     false,
-    K extends keyof TRules ? TRules[K] : {}
+    K extends keyof TRules ? TRules[K] : {},
+    TSchemaMode
   >;
 };
 
@@ -34,15 +37,18 @@ export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
   TRule extends RegleCollectionRuleDecl | RegleRuleDecl | ReglePartialRuleTree<any> | undefined = {},
+  TSchemaMode extends boolean = false,
 > =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
       ? TExternal extends false
         ? TRule extends RegleCollectionRuleDefinition<any, any>
           ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
-            ? RegleCollectionErrors<U, ExtractFromGetter<TRule['$each']>>
+            ? RegleCollectionErrors<U, ExtractFromGetter<TRule['$each']>, TSchemaMode>
             : string[]
-          : string[]
+          : TSchemaMode extends true
+            ? RegleExternalCollectionErrors<U>
+            : string[]
         : RegleExternalCollectionErrors<U>
       : string[]
     : NonNullable<TState> extends Date | File
@@ -50,14 +56,18 @@ export type RegleValidationErrors<
       : NonNullable<TState> extends Record<string, any>
         ? TExternal extends false
           ? TRule extends ReglePartialRuleTree<any>
-            ? RegleErrorTree<TState, TRule>
-            : RegleErrorTree<TState, {}>
+            ? RegleErrorTree<TState, TRule, TSchemaMode>
+            : RegleErrorTree<TState, {}, TSchemaMode>
           : RegleExternalErrorTree<TState>
         : string[];
 
-export type RegleCollectionErrors<TState extends Record<string, any>, TRule extends ReglePartialRuleTree<any> = {}> = {
+export type RegleCollectionErrors<
+  TState extends Record<string, any>,
+  TRule extends ReglePartialRuleTree<any> = {},
+  TSchemaMode extends boolean = false,
+> = {
   readonly $self: string[];
-  readonly $each: RegleValidationErrors<TState, false, TRule>[];
+  readonly $each: RegleValidationErrors<TState, false, TRule, TSchemaMode>[];
 };
 
 export type RegleExternalCollectionErrors<TState extends Record<string, any>> = {

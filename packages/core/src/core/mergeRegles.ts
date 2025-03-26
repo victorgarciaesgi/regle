@@ -1,20 +1,13 @@
 import type { PartialDeep } from 'type-fest';
 import type {
   PromiseReturn,
-  RegleCollectionErrors,
   RegleCommonStatus,
-  RegleErrorTree,
   RegleResult,
   RegleValidationErrors,
   ResetOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { computed, reactive } from 'vue';
-
-type PossibleRegleErrors =
-  | RegleErrorTree<any, {}>
-  | RegleCollectionErrors<Record<string, any>, any>
-  | RegleErrorTree<any, any>;
 
 export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,

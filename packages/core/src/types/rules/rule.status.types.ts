@@ -65,8 +65,8 @@ export interface SuperCompatibleRegleStatus extends SuperCompatibleRegleCommonSt
   $fields: {
     [x: string]: unknown;
   };
-  readonly $errors: Record<string, RegleValidationErrors<any, false, any>>;
-  readonly $silentErrors: Record<string, RegleValidationErrors<any, false, any>>;
+  readonly $errors: Record<string, RegleValidationErrors<any, false, any, any>>;
+  readonly $silentErrors: Record<string, RegleValidationErrors<any, false, any, any>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate?: () => Promise<SuperCompatibleRegleResult>;
 }
