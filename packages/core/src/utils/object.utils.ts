@@ -1,7 +1,7 @@
 import type { EffectScope } from 'vue';
 import { effectScope, type Ref } from 'vue';
-import type { MaybeGetter } from '../types';
 import { isObject } from '../../../shared';
+import type { MaybeGetter } from '../types';
 
 export function isRefObject(obj: Ref<unknown>): obj is Ref<Record<string, any>> {
   return isObject(obj.value);

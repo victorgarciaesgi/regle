@@ -32,3 +32,62 @@ Result:
 Result:
 
 <DisplayingErrors />
+
+
+## Display flat errors
+
+If you want to display the complete list of errors of a form, or the total count of errors, you can use the `flatErrors` utility.
+
+It will return an array of error strings.
+
+```ts twoslash
+import { flatErrors, useRegle } from '@regle/core';
+import { email, minLength, required } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { name: '', level0: { email: 'bar' } },
+  {
+    name: { required, minLength: minLength(5) },
+    level0: {
+      email: { email },
+    },
+  }
+);
+
+r$.$validate();
+
+const flattenErrors = flatErrors(r$.$errors);
+//     [
+//      "This field is required", 
+//      "Value must be an valid email address"
+//     ]
+```
+
+
+### `includePath` option
+
+This helper also include an option to have the path of the property (compatible with lodash `get`) next to the error.
+
+
+```ts twoslash
+import { flatErrors, useRegle } from '@regle/core';
+import { email, minLength, required } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { name: '', level0: { email: 'bar' } },
+  {
+    name: { required, minLength: minLength(5) },
+    level0: {
+      email: { email },
+    },
+  }
+);
+
+r$.$validate();
+
+const flattenErrors = flatErrors(r$.$errors, {includePath: true});
+//     [
+//      { error: "This field is required", path: "name" }, 
+//      { error: "Value must be an valid email address", path: "level0.email"}
+//     ]
+```

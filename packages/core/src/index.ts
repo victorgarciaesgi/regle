@@ -9,6 +9,7 @@ export {
   createScopedUseRegle,
   useCollectScope,
   useScopedRegle,
+  flatErrors,
   type MergedRegles,
 } from './core';
 export { InternalRuleType } from './types';

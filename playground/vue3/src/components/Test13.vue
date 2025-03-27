@@ -1,64 +1,38 @@
 <template>
   <main>
-    <input v-model="foo" placeholder="test" />
-    <ul v-if="r$Field.$errors">
-      <li v-for="error of r$Field.$errors" :key="error">
-        {{ error }}
-      </li>
-    </ul>
+    <code>r$.$errors</code>
+    <JSONViewer :data="r$.$errors" />
 
-    <button type="button" @click="r$Merged.$reset({ toInitialState: true })">Reset</button>
+    <code>flatErrors(r$.$errors)</code>
+    ⬇️
+    <JSONViewer :data="flatErrors(r$.$errors)" />
 
-    <JSONViewer :data="r$" />
+    <code>flatErrors(r$.$errors, {includePath: true})</code>
+    ⬇️
+    <JSONViewer :data="flatErrors(r$.$errors, { includePath: true })" />
+    <button type="button" @click="r$.$validate">Submit</button>
   </main>
 </template>
 
 <script setup lang="ts">
-import { mergeRegles, useRegle, useCollectScope } from '@regle/core';
-import { applyIf, numeric, regex, required, withMessage } from '@regle/rules';
-import { ref } from 'vue';
+import { flatErrors, useRegle } from '@regle/core';
+import { email, minLength, required } from '@regle/rules';
 import JSONViewer from './JSONViewer.vue';
 
-const { r$: s$ } = useCollectScope<[{ foo: string }]>();
-
-const { valid, data: data6 } = await s$.$validate();
-
-function handleEvent(event: Event) {
-  // console.log(event.target.files[0]);
-  // r$Merged.$value.r$.competency = event.target.files[0];
-}
-
-const data = ref({
-  competency: 0,
-  level: { id: 1 },
-});
-
-const data2 = ref({
-  name: '',
-  level: { count: 1 },
-});
-
-const foo = ref('bar');
-
-const { r$: r$Field } = useRegle(foo, { required });
-
-const { r$ } = useRegle(data, {
-  competency: { number: applyIf(() => true, withMessage(regex(/\d/), 'Your password must have one number')) },
-  level: {
-    id: { required },
-  },
-});
-
-const { r$: otherR$ } = useRegle(data2, {
-  name: { required },
-  level: {
-    count: { numeric },
-  },
-});
-
-const r$Merged = mergeRegles({ r$, otherR$ });
-
-async function submit() {
-  const { valid, data } = await r$Merged.$validate();
-}
+const { r$ } = useRegle(
+  { name: '', level0: { email: 'bar' }, collection: [{ foo: '' }] },
+  {
+    name: { required, minLength: minLength(5) },
+    level0: {
+      email: { email },
+    },
+    collection: {
+      $each: {
+        foo: {
+          required,
+        },
+      },
+    },
+  }
+);
 </script>
