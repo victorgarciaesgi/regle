@@ -14,24 +14,12 @@ import { createRule, InternalRuleType } from '@regle/core';
 /**
  * The withTooltip wrapper allows you to display additional messages for your field that aren’t necessarily errors. Tooltips are aggregated and accessible via $fields.xxx.$tooltips .
  */
+
 export function withTooltip<
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
->(
-  rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
-  newTooltip: RegleRuleDefinitionWithMetadataProcessor<
-    TValue,
-    RegleRuleMetadataConsumer<TValue, TParams, TReturn extends Promise<infer M> ? M : TReturn>,
-    string | string[]
-  >
-): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
-export function withTooltip<
-  TValue extends any,
-  TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
@@ -40,13 +28,13 @@ export function withTooltip<
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withTooltip<
   TValue extends any,
   TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
-  TAsync extends boolean,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<
@@ -54,7 +42,21 @@ export function withTooltip<
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+export function withTooltip<
+  TValue extends any,
+  TParams extends any[],
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+>(
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
+  newTooltip: RegleRuleDefinitionWithMetadataProcessor<
+    TValue,
+    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
+    string | string[]
+  >
+): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withTooltip(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

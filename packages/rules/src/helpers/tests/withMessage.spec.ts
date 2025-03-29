@@ -151,6 +151,22 @@ describe('withMessage helper', () => {
       >
     >();
 
+    // Correct type with async value returning metadata
+    expectTypeOf(
+      withMessage(
+        async (value) => ({ $valid: true, foo: 'bar' }),
+        ({ foo, $params }) => {
+          expectTypeOf(foo).toEqualTypeOf<string>();
+          expectTypeOf($params).toEqualTypeOf<[]>();
+          return '';
+        }
+      )
+    );
+
+    const test = withMessage(and(minLength(4), email), ({ $params: [count] }) => {
+      return ['Must be email', `Must be min: ${count}`];
+    });
+
     // Correct types with using modifiers
     expectTypeOf(
       withMessage(and(minLength(4), email), ({ $params: [count] }) => {

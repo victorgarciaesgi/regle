@@ -109,7 +109,7 @@ describe('withAsync helper', () => {
     expectTypeOf(
       withAsync(
         async (value) => {
-          return true;
+          return true as boolean;
         },
         [() => 0]
       )
@@ -117,7 +117,7 @@ describe('withAsync helper', () => {
 
     expectTypeOf(
       withAsync(async (value) => {
-        return true;
+        return true as boolean;
       })
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
 

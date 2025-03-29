@@ -33,23 +33,16 @@ import { createRule, InternalRuleType } from '@regle/core';
 export function withAsync<
   TValue,
   TParams extends (Ref<unknown> | (() => unknown))[] = [],
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
-    | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition>,
+  TReturn extends Promise<RegleRuleMetadataDefinition> = Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   depsArray?: [...TParams]
 ): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata>;
-export function withAsync<
-  TValue extends any,
-  TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
->(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, boolean, TMetadata>,
+export function withAsync<TValue extends any, TParams extends any[], TMetadata extends RegleRuleMetadataDefinition>(
+  rule: RegleRuleWithParamsDefinition<TValue, TParams, true, TMetadata>,
   depsArray?: [...TParams]
-): RegleRuleWithParamsDefinition<TValue, TParams, true, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleWithParamsDefinition<TValue, TParams, true, TMetadata>;
 export function withAsync(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray?: any[]

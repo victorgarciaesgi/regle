@@ -45,13 +45,13 @@ export function withParams<
 export function withParams<
   TValue extends any,
   TParams extends any[],
-  TMetadata extends RegleRuleMetadataDefinition,
-  TReturn extends TMetadata | Promise<TMetadata>,
+  TReturn extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
   depsArray: [...TParams]
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withParams(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray: any[]
