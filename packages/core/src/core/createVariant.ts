@@ -26,13 +26,10 @@ export function createVariant<
       if (variant[disciminantKey] && 'literal' in variant[disciminantKey]) {
         const literalRule = variant[disciminantKey]['literal'];
         if (isRuleDef(literalRule)) {
-          console.log(literalRule, watchableRoot.value);
           return unref(literalRule._params?.[0]) === watchableRoot.value;
         }
       }
     });
-
-    console.log(selectedVariant);
 
     if (selectedVariant) {
       return selectedVariant;
@@ -66,6 +63,5 @@ export function discriminateVariant<
   discriminantKey: TKey,
   discriminantValue: TValue
 ): root is Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }> {
-  console.log('check disc', root[discriminantKey]?.$value);
   return root[discriminantKey]?.$value === discriminantValue;
 }
