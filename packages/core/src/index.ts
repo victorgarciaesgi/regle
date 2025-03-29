@@ -10,6 +10,8 @@ export {
   useCollectScope,
   useScopedRegle,
   flatErrors,
+  createVariant,
+  discriminateVariant,
   type MergedRegles,
 } from './core';
 export { InternalRuleType } from './types';
@@ -86,4 +88,5 @@ export type {
   SuperCompatibleRegleCollectionStatus,
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
+  MaybeVariantStatus,
 } from './types';
