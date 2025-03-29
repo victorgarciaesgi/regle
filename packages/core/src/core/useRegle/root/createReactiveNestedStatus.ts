@@ -230,7 +230,7 @@ export function createReactiveNestedStatus({
           $unwatch();
           createReactiveFieldsStatus();
         },
-        { deep: true, flush: 'post' }
+        { deep: true, flush: 'pre' }
       );
 
       define$WatchExternalErrors();

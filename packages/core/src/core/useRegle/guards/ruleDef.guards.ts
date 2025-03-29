@@ -38,7 +38,7 @@ export function isValidatorRulesDef(rules: Ref<$InternalFormPropertyTypes>): rul
   return !!rules.value && isObject(rules.value);
 }
 
-export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any> {
+export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[]> {
   return isObject(rule) && '_validator' in rule;
 }
 

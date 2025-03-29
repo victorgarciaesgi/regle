@@ -10,6 +10,8 @@ export {
   useCollectScope,
   useScopedRegle,
   flatErrors,
+  createVariant,
+  discriminateVariant,
   type MergedRegles,
   type CommonComparationOptions,
 } from './core';
@@ -88,4 +90,5 @@ export type {
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
   InferSafeOutput,
+  MaybeVariantStatus,
 } from './types';

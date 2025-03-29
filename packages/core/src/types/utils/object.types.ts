@@ -24,3 +24,5 @@ export type enumType<T extends Record<string, unknown>> = T[keyof T];
 
 export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
+
+export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };
