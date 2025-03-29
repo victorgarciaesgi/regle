@@ -12,6 +12,7 @@ import type {
   InlineRuleDeclaration,
   JoinDiscriminatedUnions,
   Maybe,
+  MaybeVariantStatus,
   RegleCollectionErrors,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
@@ -37,7 +38,7 @@ export type RegleRoot<
   TRules extends ReglePartialRuleTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TShortcuts extends RegleShortcutDefinition = {},
-> = RegleStatus<TState, TRules, TShortcuts> &
+> = MaybeVariantStatus<TState, TRules, TShortcuts> &
   ([TValidationGroups] extends [never]
     ? {}
     : {
@@ -187,12 +188,12 @@ export type InferRegleStatusType<
         : NonNullable<TState[TKey]> extends Date | File
           ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
           : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-            ? RegleStatus<TState[TKey], TRule, TShortcuts>
+            ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
             : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
       : NonNullable<TState[TKey]> extends Date | File
         ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
         : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-          ? RegleStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+          ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
           : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
 
 /**

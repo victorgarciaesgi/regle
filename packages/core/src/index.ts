@@ -10,6 +10,8 @@ export {
   useCollectScope,
   useScopedRegle,
   flatErrors,
+  createVariant,
+  discriminateVariant,
   type MergedRegles,
   type CommonComparationOptions,
 } from './core';
@@ -87,4 +89,5 @@ export type {
   SuperCompatibleRegleCollectionStatus,
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
+  MaybeVariantStatus,
 } from './types';
