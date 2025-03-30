@@ -47,16 +47,15 @@ export function withTooltip<
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
-  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
-    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
+    RegleRuleMetadataConsumer<TValue, TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withTooltip(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

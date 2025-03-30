@@ -143,5 +143,14 @@ describe('withAsync helper', () => {
         },
       }
     );
+
+    withMessage(
+      withAsync(async (value, param) => ({ $valid: true, foo: 'bar' }), [() => 0]),
+      ({ foo, $params }) => {
+        expectTypeOf(foo).toEqualTypeOf<string>();
+        expectTypeOf($params).toEqualTypeOf<[number]>();
+        return '';
+      }
+    );
   });
 });

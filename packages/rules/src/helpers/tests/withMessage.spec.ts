@@ -3,7 +3,7 @@ import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { and } from '../and';
-import { email, minLength, required } from '../../rules';
+import { dateBefore, email, minLength, required } from '../../rules';
 import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
@@ -163,7 +163,49 @@ describe('withMessage helper', () => {
       )
     );
 
-    const test = withMessage(and(minLength(4), email), ({ $params: [count] }) => {
+    // Correct type with async value returning metadata
+    expectTypeOf(
+      withMessage(
+        (value) => ({ $valid: true, foo: 'bar' }),
+        ({ foo, $params }) => {
+          expectTypeOf(foo).toEqualTypeOf<string>();
+          expectTypeOf($params).toEqualTypeOf<[]>();
+          return '';
+        }
+      )
+    );
+
+    // Correct type with async value returning metadata
+    expectTypeOf(
+      withMessage(
+        (value) => {
+          const condition: boolean = false;
+          if (condition) {
+            return { $valid: false, custom: 0 };
+          }
+          return { $valid: true, data: { firstName: 'Victor' } };
+        },
+        ({ custom, data, $params }) => {
+          expectTypeOf(custom).toEqualTypeOf<number | undefined>();
+          expectTypeOf(data).toEqualTypeOf<
+            | {
+                firstName: string;
+              }
+            | undefined
+          >();
+          expectTypeOf($params).toEqualTypeOf<[]>();
+          return '';
+        }
+      )
+    );
+
+    withMessage(dateBefore(new Date()), ({ error }) => {
+      expectTypeOf(error).toEqualTypeOf<'date-not-before' | 'value-or-paramater-not-a-date' | undefined>();
+      return '';
+    });
+
+    withMessage(and(minLength(4), email), ({ $params: [count] }) => {
+      expectTypeOf(count).toEqualTypeOf<number>();
       return ['Must be email', `Must be min: ${count}`];
     });
 
