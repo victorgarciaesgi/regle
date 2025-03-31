@@ -197,7 +197,7 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
     strongPassword: withMessage(() => true, 'test')
   }),
   shortcuts: {
-    field: {
+    fields: {
       $test: () => true
     }
   }
