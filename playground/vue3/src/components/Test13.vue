@@ -45,7 +45,7 @@ import { ref } from 'vue';
 
 type Form = { name: string } & (
   | { type: 'ONE'; firstName: string }
-  | { type: 'TWO'; lastName: string }
+  | { type: 'TWO'; firstName: number; lastName: string }
   | { type?: undefined }
 );
 
@@ -53,10 +53,17 @@ const form = ref<Form>({
   name: '',
 });
 
+useRegle(
+  { name: '' },
+  {
+    name: { literal: literal('FOO') },
+  }
+);
+
 const { r$ } = useRegle(form, () => {
   const variant = createVariant(form, 'type', [
     { type: { literal: literal('ONE') }, firstName: { required } },
-    { type: { literal: literal('TWO') }, lastName: { required } },
+    { type: { literal: literal('TWO') }, firstName: { required } },
     { type: { required } },
   ]);
 
@@ -67,6 +74,9 @@ const { r$ } = useRegle(form, () => {
   };
 });
 
+// Problem with property with no rules
 if (discriminateVariant(r$.$fields, 'type', 'ONE')) {
+  // r$.$fields.firstName.$value
+  // r$.$fields.foo
 }
 </script>

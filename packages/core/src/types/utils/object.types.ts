@@ -7,11 +7,49 @@ type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extend
   ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]
   : [];
 
+/**
+ * Get item value from object, otherwise fallback to undefined. Avoid TS to not be able to infer keys not present on all unions
+ */
+type GetMaybeObjectValue<O extends Record<string, any>, K extends string> = K extends keyof O ? O[K] : undefined;
+
+/**
+ * Combine all unions values to be able to get even the normally "never" values, act as an intersection type
+ */
+type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> = T extends [
+  infer F extends Record<string, any>,
+  ...infer R,
+]
+  ? [
+      { [K in TKeys as GetMaybeObjectValue<F, K> extends undefined ? K : never]?: GetMaybeObjectValue<F, K> } & {
+        [K in TKeys as GetMaybeObjectValue<F, K> extends undefined ? never : K]: GetMaybeObjectValue<F, K>;
+      },
+      ...RetrieveUnionUnknownValues<R, TKeys>,
+    ]
+  : [];
+
+/**
+ * Get all possible keys from an union, even the ones present only on one union
+ */
+type RetrieveUnionUnknownKeysOf<T extends readonly any[]> = T extends [infer F, ...infer R]
+  ? [keyof F, ...RetrieveUnionUnknownKeysOf<R>]
+  : [];
+
+/**
+ * Transforms an union and apply undefined values to non-present keys to support intersection
+ */
+type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
+  NonNullable<UnionToTuple<TUnion>>,
+  RetrieveUnionUnknownKeysOf<NonNullable<UnionToTuple<TUnion>>>[number]
+>[number];
+
+/**
+ * Combine all members of an union type, merging types for each keys, and keeping loose types
+ */
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
   isRecordLiteral<TUnion> extends true
     ? Prettify<
-        Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NonNullable<TUnion>>[number]>> &
-          Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>
+        Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NormalizeUnion<TUnion>>[number]>> &
+          Pick<NormalizeUnion<TUnion>, keyof NormalizeUnion<TUnion>>
       >
     : TUnion;
 

@@ -99,9 +99,9 @@ export type RegleRuleDecl<
     infer TParams
   >
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
-    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
-      ? FormRuleDeclaration<TValue, any>
-      : FormRuleDeclaration<TValue, any> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
+      ? FormRuleDeclaration<TValue, any[]>
+      : FormRuleDeclaration<TValue, any[]> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
 };
 
 /**

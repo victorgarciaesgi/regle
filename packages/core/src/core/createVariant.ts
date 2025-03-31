@@ -1,4 +1,5 @@
-import { computed, ref, toValue, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue';
+import { computed, toRef, toValue, unref, type MaybeRefOrGetter, type Ref } from 'vue';
+import { isObject } from '../../../shared';
 import type {
   DeepReactiveState,
   JoinDiscriminatedUnions,
@@ -7,8 +8,7 @@ import type {
   ReglePartialRuleTree,
   RegleStatus,
 } from '../types';
-import { isRuleDef, isValidatorRulesDef } from './useRegle/guards';
-import { isObject } from '../../../shared';
+import { isRuleDef } from './useRegle/guards';
 
 export function createVariant<
   TForm extends Record<string, any>,
@@ -64,4 +64,24 @@ export function discriminateVariant<
   discriminantValue: TValue
 ): root is Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }> {
   return root[discriminantKey]?.$value === discriminantValue;
+}
+
+export function inferVariantRef<
+  TRoot extends RegleStatus['$fields'],
+  TKey extends keyof TRoot,
+  const TValue extends JoinDiscriminatedUnions<
+    Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+  > extends { $value: infer V }
+    ? V
+    : unknown,
+>(
+  root: TRoot,
+  discriminantKey: TKey,
+  discriminantValue: TValue
+): Ref<Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }>> | undefined {
+  let returnedRef: Ref<any> | undefined;
+  if (discriminateVariant(root, discriminantKey, discriminantValue)) {
+    returnedRef = toRef(root, discriminantKey);
+  }
+  return returnedRef;
 }
