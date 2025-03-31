@@ -225,9 +225,13 @@ const props = defineProps<{
 </script>
 ```
 
-
+:::
 
 ### For custom shortcuts
+
+
+
+
 
 ```vue twoslash [MyPassword.vue]
 <script setup lang="ts">
@@ -245,12 +249,10 @@ import type { useCustomRegle } from './config';
 const props = defineProps<{
   field: RegleFieldStatus<
     string,
-    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+    {},
     InferRegleShortcuts<typeof useCustomRegle>
   >;
 }>();
 </script>
 ```
 
-
-:::
