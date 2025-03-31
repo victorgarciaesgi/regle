@@ -12,6 +12,7 @@ export {
   flatErrors,
   createVariant,
   discriminateVariant,
+  inferVariantRef,
   type MergedRegles,
   type CommonComparationOptions,
 } from './core';

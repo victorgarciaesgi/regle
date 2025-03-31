@@ -1,17 +1,7 @@
-import type { MaybeRef, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef } from 'vue';
 import type { DeepSafeFormState, SafeFieldProperty } from '../core';
-import type {
-  ExtendOnlyRealRecord,
-  ExtractFromGetter,
-  JoinDiscriminatedUnions,
-  Maybe,
-  MaybeOutput,
-  Prettify,
-  UnwrapMaybeRef,
-} from '../utils';
-import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from './rule.declaration.types';
-import type { RegleCollectionRuleDefinition } from './rule.definition.type';
-import type { Or } from 'type-fest';
+import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, MaybeOutput, Prettify, UnwrapMaybeRef } from '../utils';
+import type { ReglePartialRuleTree } from './rule.declaration.types';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
