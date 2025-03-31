@@ -28,6 +28,16 @@ export const ruleMockIsEven = createRule({
   message: 'Custom error',
 });
 
+export const ruleMockMetadata = createRule({
+  validator(value: Maybe<number>) {
+    if (isFilled(value)) {
+      return mockedValidations.isEven(value);
+    }
+    return { $valid: true, customData: 'hello' };
+  },
+  message: 'Custom error',
+});
+
 export function ruleMockIsEvenAsync(time = 1000) {
   return createRule({
     async validator(value: Maybe<number>) {

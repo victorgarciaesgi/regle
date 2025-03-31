@@ -1,7 +1,7 @@
 import { isFilled, isNumber, toNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 /**
  * Requires a field to have a specified maximum numeric value.

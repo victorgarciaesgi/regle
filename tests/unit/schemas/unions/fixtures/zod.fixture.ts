@@ -39,10 +39,10 @@ const Dateish = z.preprocess(
 
 const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], { description: 'Gift' });
 
-export enum MyEnum {
-  Foo = 'Foo',
-  Bar = 'Bar',
-}
+export const MyEnum = {
+  Foo: 'Foo',
+  Bar: 'Bar',
+} as const;
 
 export function zodUnionsFixture() {
   const schema = z.object({

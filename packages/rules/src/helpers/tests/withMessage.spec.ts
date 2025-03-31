@@ -8,7 +8,7 @@ import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
 import { withParams } from '../withParams';
-import type { CommonComparationOptions } from '../../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({

@@ -19,6 +19,7 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "noErrorTruncation": true,
+    "erasableSyntaxOnly": true,
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "types": [

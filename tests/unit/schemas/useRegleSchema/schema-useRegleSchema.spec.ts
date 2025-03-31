@@ -1,4 +1,4 @@
-import { nextTick } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -8,6 +8,8 @@ import {
 } from '../../../utils/validations.utils';
 import { valibotNestedRegleFixture } from './fixtures/valibot.fixture';
 import { zodNestedRegleFixture } from './fixtures/zod.fixture';
+import { z } from 'zod';
+import { inferSchema } from '@regle/schemas';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],
@@ -282,5 +284,18 @@ describe.each([
     expect(vm.r$.$fields.level1.$correct).toBe(false);
     expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
     expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(false);
+  });
+
+  it('inferSchemas should have correct types', () => {
+    const formState = ref<{
+      firstName: string;
+    }>();
+    const schema = z.object({
+      firstName: z.string().nonempty(),
+    });
+
+    const computedRules = computed(() => inferSchema(formState, schema));
+
+    expect(computedRules.value).toStrictEqual(schema);
   });
 });

@@ -68,7 +68,7 @@ export type UnwrapRuleTree<T extends { [x: string]: RegleRuleRaw<any> | undefine
   [K in keyof T]: UnwrapRuleWithParams<T[K]>;
 };
 
-export type UnwrapRuleWithParams<T extends RegleRuleRaw<any> | undefined> =
+export type UnwrapRuleWithParams<T extends RegleRuleRaw<any, any, any, any> | undefined> =
   T extends RegleRuleWithParamsDefinition<infer TValue, infer TParams, infer TAsync, infer TMetadata>
     ? RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
     : T;

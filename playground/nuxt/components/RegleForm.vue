@@ -80,9 +80,9 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const { result, data } = await r$.$validate();
+  const { valid, data } = await r$.$validate();
 
-  if (result) {
+  if (valid) {
     const test: string = data.foo.bloublou.test[0].name;
   }
 }

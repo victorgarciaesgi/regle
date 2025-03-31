@@ -1,7 +1,7 @@
 import type { RegleRuleDefinition } from '@regle/core';
 import { minLength, required } from '../../rules';
 import { not } from '../not';
-import type { CommonComparationOptions } from '../../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 describe('not validator', () => {
   it('should not validate with true function', () => {

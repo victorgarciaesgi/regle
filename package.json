@@ -17,7 +17,7 @@
     "test": "pnpm run lint && pnpm run build && pnpm run typecheck && pnpm run unit-tests:run && pnpm run test:dts && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "pnpm run run:vitest:vue-3.5",
-    "test:dts": "vue-tsc --noEmit --project ./tests/tsconfig.json",
+    "test:dts": "vue-tsc --noEmit --project ./tests/tsconfig.json && pnpm run --filter='ui-vue3' typecheck",
     "release": "pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "play:vue3": "cd playground/vue3 && pnpm run dev",
@@ -37,8 +37,8 @@
     "@typescript-eslint/parser": "8.28.0",
     "@vitejs/plugin-vue": "5.2.3",
     "@vitejs/plugin-vue-jsx": "4.1.2",
-    "@vitest/coverage-istanbul": "3.0.9",
-    "@vitest/coverage-v8": "3.0.9",
+    "@vitest/coverage-istanbul": "3.1.1",
+    "@vitest/coverage-v8": "3.1.1",
     "@vue/test-utils": "2.4.6",
     "bumpp": "10.1.0",
     "changelogithub": "13.13.0",
@@ -99,8 +99,8 @@
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
   "engines": {
-    "node": ">=18.18.0 < 23",
-    "pnpm": ">=9.1.0"
+    "node": ">=20 < 23",
+    "pnpm": ">=9.7.0"
   },
   "license": "MIT",
   "packageManager": "pnpm@9.7.1+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"

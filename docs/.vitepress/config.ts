@@ -289,7 +289,7 @@ export default defineConfig({
       {
         name: 'keywords',
         content:
-          'vue forms, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
+          'vue forms, vue form library, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
       },
     ],
     ['meta', { property: 'og:type', content: 'website' }],

@@ -1,11 +1,14 @@
 import { version } from 'vue';
+import type { enumType } from '../types';
 
 export type Version = string | number;
-export enum VersionIs {
-  LessThan = -1,
-  EqualTo = 0,
-  GreaterThan = 1,
-}
+
+export const VersionIs = {
+  LessThan: -1,
+  EqualTo: 0,
+  GreaterThan: 1,
+} as const;
+export type VersionIs = enumType<typeof VersionIs>;
 
 /**
  * Compare two versions quickly.

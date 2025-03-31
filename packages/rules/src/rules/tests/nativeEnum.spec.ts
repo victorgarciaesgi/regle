@@ -1,14 +1,14 @@
 import { nativeEnum } from '../nativeEnum';
 
-enum Food {
-  Meat = 'Meat',
-  Fish = 'Fish',
-}
+const Food = {
+  Meat: 'Meat',
+  Fish: 'Fish',
+} as const;
 
-enum Position {
-  One,
-  Two,
-}
+const Position = {
+  One: 1,
+  Two: 2,
+} as const;
 
 describe('nativeEnum validator', () => {
   it('should not validate unvalid value', () => {

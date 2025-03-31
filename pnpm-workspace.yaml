@@ -36,8 +36,8 @@ catalog:
   nuxt: 3.16.1
   vue-router: 4.5.0
   # Nuxt buider not upgraded yet so TS should stay at 5.6.3
-  typescript: 5.6.3
+  typescript: 5.8.2
   vue-tsc: 2.2.8
-  vitest: 3.0.9
+  vitest: 3.1.1
   tsup: 8.4.0
   zod: 3.24.2

@@ -30,10 +30,10 @@ const Dateish = v.pipe(
 
 const Gift = v.variant('type', [CashGift, SharesGift]);
 
-export enum MyEnum {
-  Foo = 'Foo',
-  Bar = 'Bar',
-}
+export const MyEnum = {
+  Foo: 'Foo',
+  Bar: 'Bar',
+} as const;
 
 export function valibotUnionsFixture() {
   const schema = v.object({

@@ -10,6 +10,7 @@ export type ResetOptions<TState extends unknown> = RequireOneOrNone<
     toInitialState?: boolean;
     /**
      * Reset validation status and reset form state to the given state
+     * Also set the new state as new initial state.
      */
     toState?: TState | (() => TState);
     /**

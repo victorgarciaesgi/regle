@@ -2,7 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../rules';
 import { and } from '../and';
-import type { CommonComparationOptions } from '../../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 describe('and validator', () => {
   it('should not validate no functions', () => {

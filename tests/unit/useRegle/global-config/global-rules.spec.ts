@@ -1,6 +1,6 @@
 import { defineRegleConfig, type RegleComputedRules } from '@regle/core';
 import { ref } from 'vue';
-import { ruleMockIsEven } from '../../../fixtures';
+import { ruleMockIsEven, ruleMockMetadata } from '../../../fixtures';
 import { and, applyIf, minValue, not, or, required, withMessage } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
 
@@ -68,5 +68,20 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.withAnd.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
+
+    // Ensure types are infered well
+    defineRegleConfig({
+      rules: () => ({
+        minValue: withMessage(minValue, ({ $params: [min] }) => {
+          expectTypeOf(min).toEqualTypeOf<number>();
+          return '';
+        }),
+        ruleMockMetadata: withMessage(ruleMockMetadata, ({ customData }) => {
+          expectTypeOf(customData).toEqualTypeOf<string | undefined>();
+          return '';
+        }),
+        rule: withMessage(ruleMockIsEven, 'Patched rule'),
+      }),
+    });
   });
 });

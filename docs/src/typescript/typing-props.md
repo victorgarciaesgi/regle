@@ -159,6 +159,29 @@ const { r$ } = useRegle({ name: '', email: '' }, {
 
 On your common Input component, you can also enforce a rule to be present in the field.
 
+
+```vue twoslash [MyPassword.vue]
+<script setup lang="ts">
+import { computed } from 'vue';
+// @noErrors
+// ---cut---
+import {
+  type RegleEnforceRequiredRules,
+  type RegleFieldStatus,
+} from '@regle/core';
+
+const props = defineProps<{
+  field: RegleFieldStatus<
+    string | undefined,
+    RegleEnforceRequiredRules<'required' | 'minLength'>,
+  >;
+}>();
+</script>
+```
+
+
+### For a custom rule
+
 :::code-group
 
 
@@ -172,7 +195,12 @@ import { defineRegleConfig } from '@regle/core';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     strongPassword: withMessage(() => true, 'test')
-  })
+  }),
+  shortcuts: {
+    field: {
+      $test: () => true
+    }
+  }
 });
 ```
 
@@ -196,5 +224,33 @@ const props = defineProps<{
 }>();
 </script>
 ```
+
+
+
+### For custom shortcuts
+
+```vue twoslash [MyPassword.vue]
+<script setup lang="ts">
+import { computed } from 'vue';
+// @include: config
+// @noErrors
+// ---cut---
+import {
+  type RegleEnforceCustomRequiredRules,
+  type RegleFieldStatus,
+  type InferRegleShortcuts,
+} from '@regle/core';
+import type { useCustomRegle } from './config';
+
+const props = defineProps<{
+  field: RegleFieldStatus<
+    string,
+    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+    InferRegleShortcuts<typeof useCustomRegle>
+  >;
+}>();
+</script>
+```
+
 
 :::

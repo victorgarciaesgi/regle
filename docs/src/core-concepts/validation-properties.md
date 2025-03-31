@@ -154,7 +154,8 @@ type ResetOptions<TState extends unknown> = {
    */
   toInitialState?: boolean;
   /**
-   * Reset validation status and reset form state to the given state
+   * Reset validation status and reset form state to the given state.
+   * Also set the new state as new initial state.
    */
   toState?: TState | (() => TState);
   /**

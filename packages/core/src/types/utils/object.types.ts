@@ -20,5 +20,7 @@ export type EnumLike = {
   [nu: number]: string;
 };
 
+export type enumType<T extends Record<string, unknown>> = T[keyof T];
+
 export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;

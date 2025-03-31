@@ -1,6 +1,6 @@
 import type { RegleBehaviourOptions, RegleShortcutDefinition } from '@regle/core';
 import { createUseRegleSchemaComposable, type useRegleSchemaFn } from './useRegleSchema';
-import { createInferValibotSchemaHelper, type inferValibotSchemaFn } from './inferSchema';
+import { createInferSchemaHelper, type inferSchemaFn } from './inferSchema';
 
 /**
  * Define a global regle configuration, where you can:
@@ -20,10 +20,10 @@ export function defineRegleSchemaConfig<TShortcuts extends RegleShortcutDefiniti
   shortcuts?: TShortcuts;
 }): {
   useRegleSchema: useRegleSchemaFn<TShortcuts>;
-  inferSchema: inferValibotSchemaFn;
+  inferSchema: inferSchemaFn;
 } {
   const useRegleSchema = createUseRegleSchemaComposable<TShortcuts>(modifiers, shortcuts as any);
-  const inferSchema = createInferValibotSchemaHelper();
+  const inferSchema = createInferSchemaHelper();
 
   return { useRegleSchema, inferSchema };
 }

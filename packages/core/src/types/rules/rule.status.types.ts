@@ -10,7 +10,6 @@ import type {
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
-  isRecordLiteral,
   JoinDiscriminatedUnions,
   Maybe,
   RegleCollectionErrors,
@@ -358,7 +357,7 @@ export type RegleRuleStatus<
   /** Returns the original rule validator function. */
   $validator: ((
     value: Maybe<TValue>,
-    ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
+    ...args: any[]
   ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>) &
     ((
       value: TValue,

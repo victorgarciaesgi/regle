@@ -1,5 +1,13 @@
 import type { EnumLike, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
+export interface CommonComparationOptions {
+  /**
+   * Change the behaviour of the rule to check only if the value is equal in addition to be strictly superior or inferior
+   * @default true
+   */
+  allowEqual?: boolean;
+}
+
 export type DefaultValidators = {
   alpha: RegleRuleDefinition<string>;
   alphaNum: RegleRuleDefinition<string | number>;
@@ -53,10 +61,20 @@ export type DefaultValidators = {
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
-  maxLength: RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>;
-  maxValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
-  minLength: RegleRuleWithParamsDefinition<string | any[] | Record<PropertyKey, any>, [count: number], false, boolean>;
-  minValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  maxLength: RegleRuleWithParamsDefinition<
+    string | any[] | Record<PropertyKey, any>,
+    [count: number, options?: CommonComparationOptions],
+    false,
+    boolean
+  >;
+  maxValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparationOptions], false, boolean>;
+  minLength: RegleRuleWithParamsDefinition<
+    string | any[] | Record<PropertyKey, any>,
+    [count: number, options?: CommonComparationOptions],
+    false,
+    boolean
+  >;
+  minValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparationOptions], false, boolean>;
   nativeEnum: RegleRuleDefinition<string | number, [enumLike: EnumLike], false, boolean, string | number>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;

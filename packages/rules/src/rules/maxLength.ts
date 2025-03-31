@@ -1,7 +1,7 @@
 import { isFilled, isNumber, getSize } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 /**
  * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.

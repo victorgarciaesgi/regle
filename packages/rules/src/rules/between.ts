@@ -1,7 +1,7 @@
 import { isFilled, toNumber, isNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '../types/common-rules.types';
+import type { CommonComparationOptions } from '@regle/core';
 
 /**
  * Checks if a number is in specified bounds. min and max are both inclusive.

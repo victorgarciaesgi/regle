@@ -11,6 +11,7 @@ export {
   useScopedRegle,
   flatErrors,
   type MergedRegles,
+  type CommonComparationOptions,
 } from './core';
 export { InternalRuleType } from './types';
 export type {
