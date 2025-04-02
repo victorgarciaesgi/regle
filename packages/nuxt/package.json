@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.0.8",
+  "version": "1.1.0-beta.1",
   "description": "Regle nuxt module",
   "license": "MIT",
   "type": "module",
