@@ -8,6 +8,15 @@ type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extend
   : [];
 
 /**
+ * Restore the optional properties (with ?) of a generated mapped object type
+ */
+export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
+  [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? K : never]: TObject[K];
+} & {
+  [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? never : K]?: TObject[K];
+};
+
+/**
  * Get item value from object, otherwise fallback to undefined. Avoid TS to not be able to infer keys not present on all unions
  */
 type GetMaybeObjectValue<O extends Record<string, any>, K extends string> = K extends keyof O ? O[K] : undefined;
@@ -20,8 +29,14 @@ type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> 
   ...infer R,
 ]
   ? [
-      { [K in TKeys as GetMaybeObjectValue<F, K> extends undefined ? K : never]?: GetMaybeObjectValue<F, K> } & {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends undefined ? never : K]: GetMaybeObjectValue<F, K>;
+      {
+        [K in TKeys as GetMaybeObjectValue<F, K> extends NonNullable<GetMaybeObjectValue<F, K>>
+          ? never
+          : K]?: GetMaybeObjectValue<F, K>;
+      } & {
+        [K in TKeys as GetMaybeObjectValue<F, K> extends NonNullable<GetMaybeObjectValue<F, K>>
+          ? K
+          : never]: GetMaybeObjectValue<F, K>;
       },
       ...RetrieveUnionUnknownValues<R, TKeys>,
     ]
@@ -50,6 +65,14 @@ export type JoinDiscriminatedUnions<TUnion extends unknown> =
     ? Prettify<
         Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NormalizeUnion<TUnion>>[number]>> &
           Pick<NormalizeUnion<TUnion>, keyof NormalizeUnion<TUnion>>
+      >
+    : TUnion;
+
+export type LazyJoinDiscriminatedUnions<TUnion extends unknown> =
+  isRecordLiteral<TUnion> extends true
+    ? Prettify<
+        Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NonNullable<TUnion>>[number]>> &
+          Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>
       >
     : TUnion;
 

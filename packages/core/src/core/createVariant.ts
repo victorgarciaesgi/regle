@@ -1,29 +1,55 @@
 import { computed, toRef, toValue, unref, type MaybeRefOrGetter, type Ref } from 'vue';
 import { isObject } from '../../../shared';
 import type {
+  $InternalRegleStatus,
+  $InternalRegleStatusType,
+  AllRulesDeclarations,
   DeepReactiveState,
   JoinDiscriminatedUnions,
+  LazyJoinDiscriminatedUnions,
   RegleCollectionStatus,
   RegleFieldStatus,
   ReglePartialRuleTree,
+  RegleRuleDecl,
+  RegleRuleDefinition,
   RegleStatus,
 } from '../types';
 import { isRuleDef } from './useRegle/guards';
 
+type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
+  [TVal in NonNullable<T[TKey]>]: {
+    [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
+      literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, string | number>;
+    };
+  };
+};
+
+type RequiredForm<T extends Record<string, any>, TKey extends keyof T> = Omit<ReglePartialRuleTree<T>, TKey> &
+  PossibleLiteralTypes<T, TKey>[keyof PossibleLiteralTypes<T, TKey>];
+
+type Variant1<T extends Record<string, any>, TKey extends keyof T> = [
+  RequiredForm<T, TKey>,
+  ...RequiredForm<T, TKey>[],
+];
+
+/**
+ *
+ * Autocomplete may not work here because of https://github.com/microsoft/TypeScript/issues/49547
+ */
 export function createVariant<
-  TForm extends Record<string, any>,
-  TDiscriminant extends keyof TForm,
-  const TVariants extends [ReglePartialRuleTree<TForm>, ReglePartialRuleTree<TForm>, ...ReglePartialRuleTree<TForm>[]],
+  const TForm extends Record<string, any>,
+  const TDiscriminant extends keyof JoinDiscriminatedUnions<TForm>,
+  const TVariants extends Variant1<JoinDiscriminatedUnions<TForm>, TDiscriminant>,
 >(
   root: MaybeRefOrGetter<TForm> | DeepReactiveState<TForm>,
   disciminantKey: TDiscriminant,
   variants: [...TVariants]
 ): Ref<TVariants[number]> {
-  const watchableRoot = computed(() => toValue(root)[disciminantKey]);
+  const watchableRoot = computed(() => (toValue(root) as JoinDiscriminatedUnions<TForm>)[disciminantKey]);
 
   const computedRules = computed(() => {
     const selectedVariant = variants.find((variant) => {
-      if (variant[disciminantKey] && 'literal' in variant[disciminantKey]) {
+      if ((variant as any)[disciminantKey] && 'literal' in (variant as any)[disciminantKey]) {
         const literalRule = variant[disciminantKey]['literal'];
         if (isRuleDef(literalRule)) {
           return unref(literalRule._params?.[0]) === watchableRoot.value;
@@ -47,13 +73,15 @@ export function createVariant<
     }
   });
 
-  return computedRules;
+  return computedRules as any;
 }
 
 export function discriminateVariant<
-  TRoot extends RegleStatus['$fields'],
+  TRoot extends {
+    [x: string]: unknown;
+  },
   TKey extends keyof TRoot,
-  const TValue extends JoinDiscriminatedUnions<
+  const TValue extends LazyJoinDiscriminatedUnions<
     Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
   > extends { $value: infer V }
     ? V
@@ -63,13 +91,19 @@ export function discriminateVariant<
   discriminantKey: TKey,
   discriminantValue: TValue
 ): root is Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }> {
-  return root[discriminantKey]?.$value === discriminantValue;
+  return (
+    isObject(root[discriminantKey]) &&
+    '$value' in root[discriminantKey] &&
+    root[discriminantKey]?.$value === discriminantValue
+  );
 }
 
 export function inferVariantRef<
-  TRoot extends RegleStatus['$fields'],
+  TRoot extends {
+    [x: string]: unknown;
+  },
   TKey extends keyof TRoot,
-  const TValue extends JoinDiscriminatedUnions<
+  const TValue extends LazyJoinDiscriminatedUnions<
     Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
   > extends { $value: infer V }
     ? V

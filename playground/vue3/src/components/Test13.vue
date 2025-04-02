@@ -1,32 +1,34 @@
 <template>
   <main>
     <div>
-      <select v-model="r$.$value.type">
+      <select v-model="r$.$value.nested2.type">
         <option disabled value=""></option>
         <option value="ONE">ONE</option>
         <option value="TWO">TWO</option>
       </select>
     </div>
 
-    <ul v-if="r$.$errors.type?.length">
-      <li v-for="error of r$.$errors.type" :key="error">
+    <ul v-if="r$.$errors.nested2.type?.length">
+      <li v-for="error of r$.$errors.nested2.type" :key="error">
         {{ error }}
       </li>
     </ul>
 
-    <div v-if="discriminateVariant(r$.$fields, 'type', 'ONE')">
-      <input v-model="r$.$fields.firstName.$value" placeholder="firstname" />
-      <ul v-if="r$.$errors.firstName?.length">
-        <li v-for="error of r$.$errors.firstName" :key="error">
+    <div v-if="discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')">
+      ONE
+      <input v-model="r$.$fields.nested2.$fields.firstName.$value" placeholder="firstname" />
+      <ul v-if="r$.$errors.nested2.firstName?.length">
+        <li v-for="error of r$.$errors.nested2.firstName" :key="error">
           {{ error }}
         </li>
       </ul>
     </div>
 
-    <div v-else-if="discriminateVariant(r$.$fields, 'type', 'TWO')">
-      <input v-model="r$.$fields.lastName.$value" placeholder="lastName" />
-      <ul v-if="r$.$errors.lastName?.length">
-        <li v-for="error of r$.$errors.lastName" :key="error">
+    <div v-else-if="discriminateVariant(r$.$fields.nested2.$fields, 'type', 'TWO')">
+      TWO
+      <input v-model="r$.$fields.nested2.$fields.lastName.$value" placeholder="lastName" />
+      <ul v-if="r$.$errors.nested2.lastName?.length">
+        <li v-for="error of r$.$errors.nested2.lastName" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -38,45 +40,61 @@
 </template>
 
 <script setup lang="ts">
-import { createVariant, flatErrors, useRegle, discriminateVariant } from '@regle/core';
+import {
+  createVariant,
+  flatErrors,
+  useRegle,
+  discriminateVariant,
+  type RegleComputedRules,
+  inferVariantRef,
+} from '@regle/core';
 import { email, literal, minLength, required } from '@regle/rules';
 import JSONViewer from './JSONViewer.vue';
 import { ref } from 'vue';
 
-type Form = { name: string } & (
-  | { type: 'ONE'; firstName: string }
-  | { type: 'TWO'; firstName: number; lastName: string }
-  | { type?: undefined }
-);
-
+type Form = {
+  nested1: { foo: string };
+  nested2: { name: string } & (
+    | { type: 'ONE'; details: { quotes: { name: string }[] } }
+    | { type: 'TWO'; firstName: number; lastName: string }
+    | { type?: undefined }
+  );
+};
 const form = ref<Form>({
-  name: '',
+  nested1: { foo: '' },
+  nested2: {
+    name: '',
+  },
 });
 
-useRegle(
-  { name: '' },
-  {
-    name: { literal: literal('FOO') },
-  }
-);
-
 const { r$ } = useRegle(form, () => {
-  const variant = createVariant(form, 'type', [
-    { type: { literal: literal('ONE') }, firstName: { required } },
-    { type: { literal: literal('TWO') }, firstName: { required } },
+  const variant = createVariant(() => form.value.nested2, 'type', [
+    {
+      type: { literal: literal('ONE') },
+      details: {
+        quotes: {
+          $each: {
+            name: { required },
+          },
+        },
+      },
+    },
+    { type: { literal: literal('TWO') }, lastName: { required } },
     { type: { required } },
   ]);
 
-  console.log(variant.value);
   return {
-    name: { required },
+    nested1: {},
     ...variant.value,
   };
 });
+const lastName = inferVariantRef(r$.$fields.nested2.$fields, 'type', 'TWO');
 
-// Problem with property with no rules
-if (discriminateVariant(r$.$fields, 'type', 'ONE')) {
-  // r$.$fields.firstName.$value
-  // r$.$fields.foo
+// lastName?.value;
+// Problem with property with no rules = never
+
+if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
+  // r$.$fields.nested2.$fields.details.$fields.quotes
+  // r$.$fields.nested2.$fields
 }
 </script>
