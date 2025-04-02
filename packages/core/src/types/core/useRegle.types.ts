@@ -62,9 +62,24 @@ type CheckDeepExact<T, U> = [U] extends [never]
         ? isDeepExact<T, U>
         : false;
 
-export type DeepReactiveState<T extends Record<string, any> | undefined> = {
-  [K in keyof T]: InferDeepReactiveState<T[K]>;
+export type DeepExtend<T extends ReglePartialRuleTree<any>> = {
+  [K in keyof T]?: CheckDeepField<NonNullable<T[K]>>;
 };
+
+type CheckDeepField<T> = T extends RegleCollectionRuleDecl
+  ? DeepExtend<NonNullable<T['$each']>>
+  : T extends RegleRuleDecl
+    ? T
+    : T extends ReglePartialRuleTree<any>
+      ? DeepExtend<T>
+      : never;
+
+export type DeepReactiveState<T extends Record<string, any> | unknown | undefined> =
+  ExtendOnlyRealRecord<T> extends true
+    ? {
+        [K in keyof T]: InferDeepReactiveState<T[K]>;
+      }
+    : never;
 
 export type InferDeepReactiveState<TState> =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>

@@ -114,16 +114,25 @@ describe('withMessage helper', () => {
     >();
 
     useRegle(
+      { name: '' },
+      {
+        name: {
+          required: withMessage((value) => true, ''),
+        },
+      }
+    );
+
+    useRegle(
       { firstName: '' },
       {
         firstName: {
           required: withMessage(
             (value) => {
-              expectTypeOf(value).toExtend<Maybe<string>>();
+              expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
               return true;
             },
             ({ $value }) => {
-              expectTypeOf($value).toExtend<Maybe<string>>();
+              expectTypeOf($value).toEqualTypeOf<Maybe<string>>();
               return '';
             }
           ),
