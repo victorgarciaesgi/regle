@@ -98,7 +98,7 @@ export function discriminateVariant<
   );
 }
 
-export function inferVariantRef<
+export function inferVariantToRef<
   TRoot extends {
     [x: string]: unknown;
   },
