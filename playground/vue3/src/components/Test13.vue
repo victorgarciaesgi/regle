@@ -46,7 +46,7 @@ import {
   useRegle,
   discriminateVariant,
   type RegleComputedRules,
-  inferVariantRef,
+  inferVariantToRef,
 } from '@regle/core';
 import { email, literal, minLength, required } from '@regle/rules';
 import JSONViewer from './JSONViewer.vue';
@@ -88,7 +88,7 @@ const { r$ } = useRegle(form, () => {
     ...variant.value,
   };
 });
-const lastName = inferVariantRef(r$.$fields.nested2.$fields, 'type', 'TWO');
+const lastName = inferVariantToRef(r$.$fields.nested2.$fields, 'type', 'TWO');
 // Problem with property with no rules = never
 
 if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
