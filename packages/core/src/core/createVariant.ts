@@ -115,7 +115,7 @@ export function inferVariantRef<
 ): Ref<Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }>> | undefined {
   let returnedRef: Ref<any> | undefined;
   if (discriminateVariant(root, discriminantKey, discriminantValue)) {
-    returnedRef = toRef(root, discriminantKey);
+    returnedRef = toRef(root);
   }
   return returnedRef;
 }
