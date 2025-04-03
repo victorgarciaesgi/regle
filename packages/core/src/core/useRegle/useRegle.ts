@@ -4,9 +4,7 @@ import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
-  DeepExtend,
   DeepReactiveState,
-  isDeepExact,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
@@ -19,12 +17,9 @@ import type {
 } from '../../types';
 import type {
   DeepMaybeRef,
-  ExtendOnlyRealRecord,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
-  MismatchInfo,
-  NoInferLegacy,
   PrimitiveTypes,
   Unwrap,
 } from '../../types/utils';

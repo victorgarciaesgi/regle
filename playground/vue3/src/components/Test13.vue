@@ -55,7 +55,7 @@ import { ref } from 'vue';
 type Form = {
   nested1: { foo: string };
   nested2: { name: string } & (
-    | { type: 'ONE'; details: { quotes: { name: string }[] } }
+    | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
     | { type: 'TWO'; firstName: number; lastName: string }
     | { type?: undefined }
   );
@@ -89,8 +89,6 @@ const { r$ } = useRegle(form, () => {
   };
 });
 const lastName = inferVariantRef(r$.$fields.nested2.$fields, 'type', 'TWO');
-
-// lastName?.value;
 // Problem with property with no rules = never
 
 if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
