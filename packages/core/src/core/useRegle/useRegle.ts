@@ -55,8 +55,8 @@ export interface useRegleFn<
             TValidationGroups
           > &
           TAdditionalOptions
-  ): TState extends MaybeInput<PrimitiveTypes>
-    ? RegleSingleField<TState, TDecl, TShortcuts, TAdditionalReturnProperties>
+  ): NonNullable<TState> extends PrimitiveTypes
+    ? RegleSingleField<NonNullable<TState>, TDecl, TShortcuts, TAdditionalReturnProperties>
     : Regle<
         TState extends Record<string, any> ? Unwrap<TState> : {},
         TRules,

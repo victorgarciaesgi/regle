@@ -1,14 +1,13 @@
-import type { EmptyObject, UnionToIntersection } from 'type-fest';
+import type { EmptyObject } from 'type-fest';
 import type { MaybeRef, Raw } from 'vue';
 import type {
   CustomRulesDeclarationTree,
-  RegleCollectionRuleDecl,
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
 } from '../rules';
-import type { Maybe, PrimitiveTypes } from '../utils';
+import type { ExtendOnlyRealRecord, Maybe, PrimitiveTypes } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 export type Regle<

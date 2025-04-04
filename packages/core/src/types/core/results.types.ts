@@ -9,15 +9,7 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type {
-  ArrayElement,
-  ExtendOnlyRealRecord,
-  ExtractFromGetter,
-  Maybe,
-  MaybeOutput,
-  Prettify,
-  Unwrap,
-} from '../utils';
+import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, MaybeOutput, Prettify } from '../utils';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
   ? {}
@@ -64,7 +56,7 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
 export type InferSafeOutput<
   TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
 > =
-  UnwrapRef<TRegle> extends RegleRoot<infer TState, infer TRules>
+  UnwrapRef<TRegle> extends RegleRoot<infer TState extends Record<string, any>, infer TRules>
     ? DeepSafeFormState<TState, TRules>
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>
