@@ -96,7 +96,10 @@ describe.each([
 
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
-    vm.r$.$value.level1.collection.push({ name: undefined }, { name: undefined });
+    vm.r$.$value.level1.collection.push(
+      { name: undefined as unknown as number },
+      { name: undefined as unknown as number }
+    );
 
     await nextTick();
 
@@ -133,10 +136,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
+    expect(vm.r$.$fields.level0?.$correct).toBe(false);
     expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(true);
+    expect(vm.r$.$fields.level1.$fields.child?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.child?.$correct).toBe(true);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
@@ -169,10 +172,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
+    expect(vm.r$.$fields.level0?.$correct).toBe(false);
     expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1?.$fields.child?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.child?.$correct).toBe(false);
   });
 
   it('should remove errors when all values are valid', async () => {
@@ -280,10 +283,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
+    expect(vm.r$.$fields.level0?.$correct).toBe(false);
     expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.child?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1.$fields.level2.$fields.child?.$correct).toBe(false);
   });
 
   it('inferSchemas should have correct types', () => {

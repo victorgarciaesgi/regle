@@ -6,7 +6,7 @@
 import type {
   CommonComparationOptions,
   InferRegleShortcuts,
-  Maybe,
+  MaybeOutput,
   RegleEnforceCustomRequiredRules,
   RegleEnforceRequiredRules,
   RegleFieldStatus,
@@ -44,7 +44,7 @@ expectTypeOf(props.unknownField.$value).toEqualTypeOf<any>();
 expectTypeOf(props.booleanField.$rules).toEqualTypeOf<{
   readonly [x: string]: RegleRuleStatus<boolean | undefined, any[] | [], any>;
 }>();
-expectTypeOf(props.booleanField.$value).toEqualTypeOf<Maybe<boolean | undefined>>();
+expectTypeOf(props.booleanField.$value).toEqualTypeOf<MaybeOutput<boolean | undefined>>();
 
 //-
 
@@ -56,7 +56,7 @@ expectTypeOf(props.stringNumberField.$rules).toEqualTypeOf<
       readonly [x: string]: RegleRuleStatus<number | undefined, any[] | [], any>;
     }
 >();
-expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<Maybe<string | number>>();
+expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<MaybeOutput<string | number>>();
 
 //-
 expectTypeOf(props.customStringField.$test).toEqualTypeOf<boolean>();

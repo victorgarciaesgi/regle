@@ -1,14 +1,13 @@
-import type { EmptyObject, UnionToIntersection } from 'type-fest';
+import type { EmptyObject } from 'type-fest';
 import type { MaybeRef, Raw } from 'vue';
 import type {
   CustomRulesDeclarationTree,
-  RegleCollectionRuleDecl,
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
 } from '../rules';
-import type { Maybe, PrimitiveTypes } from '../utils';
+import type { ExtendOnlyRealRecord, Maybe, PrimitiveTypes } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 export type Regle<
@@ -40,37 +39,18 @@ export type RegleSingleField<
   r$: Raw<RegleFieldStatus<TState, TRules, TShortcuts>>;
 } & TAdditionalReturnProperties;
 
-export type isDeepExact<T, U> = {
-  [K in keyof T]-?: CheckDeepExact<NonNullable<T[K]>, K extends keyof U ? NonNullable<U[K]> : never>;
-}[keyof T] extends true
-  ? true
-  : false;
-
-type CheckDeepExact<T, U> = [U] extends [never]
-  ? false
-  : T extends RegleCollectionRuleDecl
-    ? U extends RegleCollectionRuleDecl
-      ? isDeepExact<NonNullable<T['$each']>, UnionToIntersection<NonNullable<U['$each']>>>
-      : T extends RegleRuleDecl
-        ? true
-        : T extends ReglePartialRuleTree<any>
-          ? isDeepExact<T, U>
-          : false
-    : T extends RegleRuleDecl
-      ? true
-      : T extends ReglePartialRuleTree<any>
-        ? isDeepExact<T, U>
-        : false;
-
-export type DeepReactiveState<T extends Record<string, any> | undefined> = {
-  [K in keyof T]: InferDeepReactiveState<T[K]>;
-};
+export type DeepReactiveState<T extends Record<string, any> | unknown | undefined> =
+  ExtendOnlyRealRecord<T> extends true
+    ? {
+        [K in keyof T]: InferDeepReactiveState<T[K]>;
+      }
+    : never;
 
 export type InferDeepReactiveState<TState> =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? DeepReactiveState<U[]>
     : NonNullable<TState> extends Date | File
       ? MaybeRef<TState>
-      : TState extends Record<string, any> | undefined
+      : NonNullable<TState> extends Record<string, any>
         ? DeepReactiveState<TState>
         : MaybeRef<TState>;

@@ -4,8 +4,6 @@ import type { Regle } from '../core';
 import type { AllRulesDeclarations, UnwrapRuleTree, UnwrapRuleWithParams } from '../rules';
 import type { Prettify } from './misc.types';
 
-type test = NonNullable<DefaultValidators[keyof DefaultValidators]>;
-
 export type InferRegleRoot<T extends (...args: any[]) => Regle<any, any, any, any>> = T extends (
   ...args: any[]
 ) => infer U

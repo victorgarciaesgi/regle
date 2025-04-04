@@ -57,9 +57,10 @@ export type DefaultValidators = {
     false,
     boolean
   >;
-
+  exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
+  literal: RegleRuleDefinition<string | number, [literal: string | number], false, boolean, string | number>;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
   maxLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
@@ -82,6 +83,5 @@ export type DefaultValidators = {
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
-  exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

@@ -1,32 +1,17 @@
 import { type ComputedRef, type MaybeRef } from 'vue';
-import type {
-  AllRulesDeclarations,
-  DeepReactiveState,
-  isDeepExact,
-  ReglePartialRuleTree,
-  RegleRuleDecl,
-} from '../../types';
-import type { MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { AllRulesDeclarations, DeepReactiveState, ReglePartialRuleTree, RegleRuleDecl } from '../../types';
+import type { MaybeInput, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
 
 export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>> {
   <
-    TState extends Record<string, any>,
-    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
-    TValid = isDeepExact<
-      NoInferLegacy<TRules>,
-      ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-    > extends true
-      ? {}
-      : MismatchInfo<
-          NoInferLegacy<TRules>,
-          ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-        >,
+    TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
+    TRules extends TState extends MaybeInput<PrimitiveTypes>
+      ? RegleRuleDecl<NonNullable<TState>, TCustomRules>
+      : TState extends Record<string, any>
+        ? ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+        : {},
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
-    rulesFactory: TRules
-  ): NoInferLegacy<TRules>;
-  <TState extends PrimitiveTypes, TRules extends RegleRuleDecl>(
-    state: MaybeRef<TState>,
+    state: MaybeRef<TState> | DeepReactiveState<TState>,
     rulesFactory: TRules
   ): NoInferLegacy<TRules>;
 }

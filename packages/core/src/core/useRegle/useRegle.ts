@@ -5,7 +5,6 @@ import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
   DeepReactiveState,
-  isDeepExact,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
@@ -16,7 +15,14 @@ import type {
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
-import type { DeepMaybeRef, Maybe, MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type {
+  DeepMaybeRef,
+  JoinDiscriminatedUnions,
+  Maybe,
+  MaybeInput,
+  PrimitiveTypes,
+  Unwrap,
+} from '../../types/utils';
 import { useRootStorage } from './root';
 
 export interface useRegleFn<
@@ -25,37 +31,39 @@ export interface useRegleFn<
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
 > {
-  /**
-   * Primitive parameter
-   * */
-  <TState extends Maybe<PrimitiveTypes>, TRules extends RegleRuleDecl<NonNullable<TState>, TCustomRules>>(
-    state: MaybeRef<TState>,
-    rulesFactory: MaybeRefOrGetter<TRules>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
-  ): RegleSingleField<TState, TRules, TShortcuts, TAdditionalReturnProperties>;
-  /**
-   * Object parameter
-   * */
   <
-    TState extends Record<string, any>,
-    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
+    TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
+    TRules extends ReglePartialRuleTree<
+      Unwrap<TState extends Record<string, any> ? TState : {}>,
+      Partial<AllRulesDeclarations> & TCustomRules
+    >,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
-    TValid = isDeepExact<
-      NoInferLegacy<TRules>,
-      ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-    > extends true
-      ? {}
-      : MismatchInfo<
-          NoInferLegacy<TRules>,
-          ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-        >,
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState>,
-    rulesFactory: MaybeRefOrGetter<TRules>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Unwrap<TState>, TRules, TValidationGroups> &
-      TAdditionalOptions
-  ): Regle<Unwrap<TState>, TRules, TValidationGroups, TShortcuts, TAdditionalReturnProperties>;
+    state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
+    rulesFactory: TState extends MaybeInput<PrimitiveTypes>
+      ? MaybeRefOrGetter<TDecl>
+      : TState extends Record<string, any>
+        ? MaybeRefOrGetter<TRules>
+        : {},
+    options?: TState extends MaybeInput<PrimitiveTypes>
+      ? Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
+      : Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+          LocalRegleBehaviourOptions<
+            JoinDiscriminatedUnions<TState extends Record<string, any> ? Unwrap<TState> : {}>,
+            TState extends Record<string, any> ? TRules : {},
+            TValidationGroups
+          > &
+          TAdditionalOptions
+  ): NonNullable<TState> extends PrimitiveTypes
+    ? RegleSingleField<NonNullable<TState>, TDecl, TShortcuts, TAdditionalReturnProperties>
+    : Regle<
+        TState extends Record<string, any> ? Unwrap<TState> : {},
+        TRules,
+        TValidationGroups,
+        TShortcuts,
+        TAdditionalReturnProperties
+      >;
 }
 
 export function createUseRegleComposable<

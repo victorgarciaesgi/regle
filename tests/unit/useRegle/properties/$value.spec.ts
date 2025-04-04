@@ -60,6 +60,7 @@ it('should update the source value', async () => {
   if (vm.r$.$fields.contacts.$each[0].$fields.level?.$fields) {
     vm.r$.$fields.contacts.$each[0].$fields.level.$fields.name.$value = 'Coucou';
   }
+
   await vm.$nextTick();
 
   expect(vm.r$.$value.contacts[0].level).toStrictEqual({ name: 'Coucou' });

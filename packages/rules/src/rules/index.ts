@@ -30,3 +30,4 @@ export * from './endsWith';
 export * from './regex';
 export * from './oneOf';
 export * from './nativeEnum';
+export * from './literal';
