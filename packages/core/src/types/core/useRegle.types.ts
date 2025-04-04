@@ -86,6 +86,6 @@ export type InferDeepReactiveState<TState> =
     ? DeepReactiveState<U[]>
     : NonNullable<TState> extends Date | File
       ? MaybeRef<TState>
-      : TState extends Record<string, any> | undefined
+      : NonNullable<TState> extends Record<string, any>
         ? DeepReactiveState<TState>
         : MaybeRef<TState>;

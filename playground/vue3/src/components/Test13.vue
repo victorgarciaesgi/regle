@@ -48,7 +48,7 @@ import {
   type RegleComputedRules,
   inferVariantToRef,
 } from '@regle/core';
-import { email, literal, minLength, required } from '@regle/rules';
+import { email, literal, minLength, required, withMessage, withParams } from '@regle/rules';
 import JSONViewer from './JSONViewer.vue';
 import { ref } from 'vue';
 

@@ -1,8 +1,6 @@
 import { computed, toRef, toValue, unref, type MaybeRefOrGetter, type Ref } from 'vue';
 import { isObject } from '../../../shared';
 import type {
-  $InternalRegleStatus,
-  $InternalRegleStatusType,
   AllRulesDeclarations,
   DeepReactiveState,
   JoinDiscriminatedUnions,
