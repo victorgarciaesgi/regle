@@ -87,4 +87,5 @@ export type {
   SuperCompatibleRegleCollectionStatus,
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
+  InferSafeOutput,
 } from './types';
