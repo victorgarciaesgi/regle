@@ -1,6 +1,13 @@
 import type { IsUnion } from 'expect-type';
 import type { UnionToTuple } from 'type-fest';
-import type { InferRegleStatusType, ReglePartialRuleTree, RegleStatus } from '../rules';
+import type {
+  AllRulesDeclarations,
+  InferRegleStatusType,
+  ReglePartialRuleTree,
+  RegleRuleDecl,
+  RegleRuleDefinition,
+  RegleStatus,
+} from '../rules';
 import type { JoinDiscriminatedUnions, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
@@ -33,3 +40,19 @@ export type MaybeVariantStatus<
         }[keyof TupleToPlainObj<UnionToTuple<TState>>];
       }
     : RegleStatus<TState, TRules, TShortcuts>;
+
+type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
+  [TVal in NonNullable<T[TKey]>]: {
+    [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
+      literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, string | number>;
+    };
+  };
+};
+
+type RequiredForm<T extends Record<string, any>, TKey extends keyof T> = Omit<ReglePartialRuleTree<T>, TKey> &
+  PossibleLiteralTypes<T, TKey>[keyof PossibleLiteralTypes<T, TKey>];
+
+export type VariantTuple<T extends Record<string, any>, TKey extends keyof T> = [
+  RequiredForm<T, TKey>,
+  ...RequiredForm<T, TKey>[],
+];

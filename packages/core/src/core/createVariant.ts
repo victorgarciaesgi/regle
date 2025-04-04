@@ -1,43 +1,24 @@
 import { computed, toRef, toValue, unref, type MaybeRefOrGetter, type Ref } from 'vue';
 import { isObject } from '../../../shared';
 import type {
-  AllRulesDeclarations,
   DeepReactiveState,
   JoinDiscriminatedUnions,
   LazyJoinDiscriminatedUnions,
   RegleCollectionStatus,
   RegleFieldStatus,
-  ReglePartialRuleTree,
-  RegleRuleDecl,
-  RegleRuleDefinition,
   RegleStatus,
+  VariantTuple,
 } from '../types';
 import { isRuleDef } from './useRegle/guards';
-
-type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
-  [TVal in NonNullable<T[TKey]>]: {
-    [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
-      literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, string | number>;
-    };
-  };
-};
-
-type RequiredForm<T extends Record<string, any>, TKey extends keyof T> = Omit<ReglePartialRuleTree<T>, TKey> &
-  PossibleLiteralTypes<T, TKey>[keyof PossibleLiteralTypes<T, TKey>];
-
-type Variant1<T extends Record<string, any>, TKey extends keyof T> = [
-  RequiredForm<T, TKey>,
-  ...RequiredForm<T, TKey>[],
-];
 
 /**
  *
  * Autocomplete may not work here because of https://github.com/microsoft/TypeScript/issues/49547
  */
 export function createVariant<
-  const TForm extends Record<string, any>,
-  const TDiscriminant extends keyof JoinDiscriminatedUnions<TForm>,
-  const TVariants extends Variant1<JoinDiscriminatedUnions<TForm>, TDiscriminant>,
+  TForm extends Record<string, any>,
+  TDiscriminant extends keyof JoinDiscriminatedUnions<TForm>,
+  TVariants extends VariantTuple<JoinDiscriminatedUnions<TForm>, TDiscriminant>,
 >(
   root: MaybeRefOrGetter<TForm> | DeepReactiveState<TForm>,
   disciminantKey: TDiscriminant,
