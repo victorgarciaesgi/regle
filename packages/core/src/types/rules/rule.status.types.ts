@@ -1,4 +1,4 @@
-import type { IsEmptyObject, PartialDeep } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, PartialDeep } from 'type-fest';
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -36,7 +36,7 @@ import type {
  * @public
  */
 export type RegleRoot<
-  TState extends Record<string, any> = Record<string, any>,
+  TState extends Record<string, any> = {},
   TRules extends ReglePartialRuleTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TShortcuts extends RegleShortcutDefinition = {},

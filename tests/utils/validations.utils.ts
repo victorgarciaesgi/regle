@@ -77,7 +77,7 @@ export function shouldBeValidField(field?: PossibleFields) {
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeCorrectNestedStatus(field?: RegleStatus<any, any> | RegleSchemaStatus<any, any, any>) {
+export function shouldBeCorrectNestedStatus(field?: RegleStatus<{}, any, any> | RegleSchemaStatus<any, any, any>) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);

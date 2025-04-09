@@ -35,7 +35,12 @@ export type MaybeVariantStatus<
               } & {
                 [TKey in keyof UnionToTuple<TState>[TIndexInt] as TKey extends keyof JoinDiscriminatedUnions<TRules>
                   ? never
-                  : TKey]: InferRegleStatusType<{}, NonNullable<UnionToTuple<TState>[TIndexInt]>, TKey, TShortcuts>;
+                  : TKey]: InferRegleStatusType<
+                  EmptyObject,
+                  NonNullable<UnionToTuple<TState>[TIndexInt]>,
+                  TKey,
+                  TShortcuts
+                >;
               }
             : {};
         }[keyof TupleToPlainObj<UnionToTuple<TState>>];

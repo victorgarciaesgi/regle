@@ -1,4 +1,4 @@
-import type { MaybeRef, UnwrapRef } from 'vue';
+import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
@@ -56,7 +56,7 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
 export type InferSafeOutput<
   TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
 > =
-  UnwrapRef<TRegle> extends RegleRoot<infer TState extends Record<string, any>, infer TRules>
+  UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
     ? DeepSafeFormState<TState, TRules>
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>

@@ -1,6 +1,6 @@
-import { createRegleComponent } from '../../../utils/test.utils';
 import { useRegle, type InferSafeOutput, type MaybeOutput } from '@regle/core';
-import { email, required } from '@regle/rules';
+import { required } from '@regle/rules';
+import { createRegleComponent } from '../../../utils/test.utils';
 
 function simpleNestedStateWithMixedValidation() {
   interface Form {
