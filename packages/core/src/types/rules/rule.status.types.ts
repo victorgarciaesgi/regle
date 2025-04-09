@@ -87,7 +87,7 @@ export type RegleStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<RegleResult<TState, TRules>>;
+  $validate: () => Promise<RegleResult<JoinDiscriminatedUnions<TState>, TRules>>;
 } & ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -115,8 +115,9 @@ export type InferRegleStatusType<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
-> =
-  NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
+> = [TState[TKey]] extends [undefined]
+  ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+  : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
       ? TRule extends RegleCollectionRuleDefinition<any, any>
         ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
@@ -371,7 +372,7 @@ export type RegleCollectionStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<RegleResult<TState, TRules>>;
+  $validate: () => Promise<RegleResult<JoinDiscriminatedUnions<TState>, JoinDiscriminatedUnions<TRules>>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {

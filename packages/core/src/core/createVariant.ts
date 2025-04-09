@@ -59,7 +59,7 @@ export function discriminateVariant<
   TRoot extends {
     [x: string]: unknown;
   },
-  TKey extends keyof TRoot,
+  const TKey extends keyof TRoot,
   const TValue extends LazyJoinDiscriminatedUnions<
     Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
   > extends { $value: infer V }
@@ -81,7 +81,7 @@ export function inferVariantToRef<
   TRoot extends {
     [x: string]: unknown;
   },
-  TKey extends keyof TRoot,
+  const TKey extends keyof TRoot,
   const TValue extends LazyJoinDiscriminatedUnions<
     Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
   > extends { $value: infer V }

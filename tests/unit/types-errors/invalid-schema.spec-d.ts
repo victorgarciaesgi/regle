@@ -1,4 +1,4 @@
-import { useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
+import { inferRules, useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
 
 describe('useRegle should throw errors for invalid rule schema', () => {
   it('Empty rules OK', () => {
@@ -33,17 +33,14 @@ describe('useRegle should throw errors for invalid rule schema', () => {
   });
 
   // TODO Disabled for now
-  it('should report wrong types', () => {
-    // Keep this to avoid flacky type tests with ts-expect-error
-    expect(true).toBe(true);
-    // TODO Warning, flacky sometimes
+  it('useRegle should report wrong types', () => {
     // @ts-expect-error Known rules with inline validator NOT OK ❌
     useRegle({ name: '' }, { name: { required: () => 'foo' } });
 
-    // Known rules with inline validator with no types
+    // ✅ Known rules with inline validator with no types
     useRegle({ name: '' }, { name: { required: (value) => true } });
 
-    // Any rule name
+    // ✅ Any rule name
     useRegle({ name: '' }, { name: { baguette: (value) => true } });
 
     // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
@@ -52,12 +49,64 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     // @ts-expect-error Incorrect property ❌
     useRegle({ name: '' }, { incorrect: { required: () => true } });
 
+    // @ts-expect-error Incorrect property ❌
+    useRegle({ name: '' }, { name: { required: () => true }, incorrect: { required: () => true } });
+
+    // @ts-expect-error Incorrect property ❌
+    useRegle({ name: '' }, () => ({ incorrect: { required: () => true } }));
+
+    // ✅ correct schema with getter
+    useRegle({ name: '' }, () => ({ name: { required: () => true } }));
+
+    useRegle(
+      { name: { nested: '' } },
+      // @ts-expect-error Incorrect nested property ❌
+      { name: { nested: { required: () => true }, incorrect: { required: () => true } } }
+    );
+
     // @ts-expect-error Incorrect nested property ❌
-    useRegle({ name: { nested: '' } }, { name: { incorrect: { required: () => true } } });
+    useRegle({ name: { nested: '' } }, () => ({
+      name: { nested: { required: () => true }, incorrect: { required: () => false } },
+    }));
+
+    // ✅ correct schema
+    useRegle({ name: { nested: '' } }, { name: { nested: { required: () => true, baguette: () => true } } });
+  });
+
+  it('inferRules should report wrong types', () => {
+    // @ts-expect-error Known rules with inline validator NOT OK ❌
+    inferRules({ name: '' }, { name: { required: () => 'foo' } });
+
+    // ✅ Known rules with inline validator with no types
+    inferRules({ name: '' }, { name: { required: (value) => true } });
+
+    // ✅ Any rule name
+    inferRules({ name: '' }, { name: { baguette: (value) => true } });
+
+    // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
+    inferRules({ name: '' }, { name: { required: (value: string) => true } });
+
+    // @ts-expect-error Incorrect property ❌
+    inferRules({ name: '' }, { incorrect: { required: () => true } });
+
+    // @ts-expect-error Incorrect property ❌
+    inferRules({ name: '' }, { name: { required: () => true }, incorrect: { required: () => true } });
+
+    // @ts-expect-error Incorrect property ❌
+    inferRules({ name: '' }, () => ({ incorrect: { required: () => true } }));
+
+    inferRules(
+      { name: { nested: '' } },
+      // @ts-expect-error Incorrect nested property ❌
+      { name: { nested: { required: () => true }, incorrect: { required: () => true } } }
+    );
+
+    // ✅ correct schema
+    inferRules({ name: { nested: '' } }, { name: { nested: { required: () => true, baguette: () => true } } });
   });
 
   it('Known rules with inline validator returning metadata ✅', () => {
-    const { r$ } = useRegle({ name: '' }, { name: { required: (value) => ({ $valid: true }) } });
-    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: true }>();
+    const { r$ } = useRegle({ name: '' }, { name: { required: (value) => ({ $valid: true, customMeta: 'bar' }) } });
+    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: true; customMeta: string }>();
   });
 });

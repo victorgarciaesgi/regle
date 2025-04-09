@@ -10,6 +10,7 @@ import type {
   RegleBehaviourOptions,
   ReglePartialRuleTree,
   RegleRuleDecl,
+  RegleRuleTree,
   RegleShortcutDefinition,
   RegleSingleField,
   RegleValidationGroupEntry,
@@ -17,13 +18,16 @@ import type {
 } from '../../types';
 import type {
   DeepMaybeRef,
+  isDeepExact,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
+  NoInferLegacy,
   PrimitiveTypes,
   Unwrap,
 } from '../../types/utils';
 import { useRootStorage } from './root';
+import type { MismatchInfo } from 'expect-type';
 
 export interface useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -36,9 +40,19 @@ export interface useRegleFn<
     TRules extends ReglePartialRuleTree<
       Unwrap<TState extends Record<string, any> ? TState : {}>,
       Partial<AllRulesDeclarations> & TCustomRules
-    >,
+    > &
+      TValid,
     TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
+    TValid = isDeepExact<NoInferLegacy<TRules>, Unwrap<TState extends Record<string, any> ? TState : {}>> extends true
+      ? {}
+      : MismatchInfo<
+          RegleRuleTree<
+            Unwrap<TState extends Record<string, any> ? TState : {}>,
+            Partial<AllRulesDeclarations> & TCustomRules
+          >,
+          NoInferLegacy<TRules>
+        >,
   >(
     state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
     rulesFactory: TState extends MaybeInput<PrimitiveTypes>

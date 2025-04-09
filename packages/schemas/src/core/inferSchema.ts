@@ -1,7 +1,7 @@
-import type { DeepReactiveState, MaybeInput, MismatchInfo, NoInferLegacy, PrimitiveTypes } from '@regle/core';
+import type { DeepReactiveState, NoInferLegacy } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
-import { type ComputedRef, type MaybeRef, type UnwrapNestedRefs } from 'vue';
+import { type ComputedRef, type MaybeRef } from 'vue';
 
 export interface inferSchemaFn {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(

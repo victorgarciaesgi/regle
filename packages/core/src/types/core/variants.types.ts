@@ -1,8 +1,9 @@
 import type { IsUnion } from 'expect-type';
-import type { UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, UnionToTuple } from 'type-fest';
 import type {
   AllRulesDeclarations,
   InferRegleStatusType,
+  RegleFieldStatus,
   ReglePartialRuleTree,
   RegleRuleDecl,
   RegleRuleDefinition,

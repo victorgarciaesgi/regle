@@ -85,15 +85,18 @@ export type DeepSafeFormState<
         >
       : TState;
 
-type FieldHaveRequiredRule<TRule extends RegleRuleDecl> = unknown extends TRule['required']
-  ? false
-  : TRule['required'] extends undefined
-    ? false
-    : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
-      ? Params extends never[]
-        ? true
-        : false
-      : false;
+type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
+  TRule extends RegleRuleDecl<any, any>
+    ? NonNullable<TRule['required']> extends TRule['required']
+      ? true
+      : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+        ? Params extends never[]
+          ? true
+          : false
+        : NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any>
+          ? true
+          : false
+    : false;
 
 type ObjectHaveAtLeastOneRequiredField<
   TState extends Record<string, any>,
@@ -131,7 +134,7 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
         : TRule extends RegleRuleDecl<any, any>
           ? FieldHaveRequiredRule<TRule> extends true
             ? TState
-            : Maybe<TState>
+            : MaybeOutput<TState>
           : TState
       : TState;
 
@@ -161,14 +164,4 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
       : false;
 
 export type SafeFieldProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined = never> =
-  TRule extends RegleRuleDecl<any, any>
-    ? unknown extends TRule['required']
-      ? MaybeOutput<TState>
-      : TRule['required'] extends undefined
-        ? never
-        : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
-          ? Params extends never[]
-            ? NonNullable<TState>
-            : MaybeOutput<TState>
-          : MaybeOutput<TState>
-    : MaybeOutput<TState>;
+  FieldHaveRequiredRule<TRule> extends true ? NonNullable<TState> : MaybeOutput<TState>;
