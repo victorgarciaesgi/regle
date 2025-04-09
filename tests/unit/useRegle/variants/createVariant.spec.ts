@@ -1,8 +1,15 @@
-import { createVariant, discriminateVariant, useRegle } from '@regle/core';
+import {
+  createVariant,
+  discriminateVariant,
+  useRegle,
+  type RegleFieldStatus,
+  type RegleShortcutDefinition,
+} from '@regle/core';
 import { literal, numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
+import type { EmptyObject } from 'type-fest';
 
 function createRootVariantRegle() {
   type FormVariant = {
@@ -110,15 +117,20 @@ describe('createVariant', () => {
     await vm.$nextTick();
 
     if (discriminateVariant(vm.r$.$fields, 'type', 'ONE')) {
-      // TODO in typings, this could be undefined
       expect(vm.r$.$fields.oneName).toBe(undefined);
+
+      expectTypeOf(vm.r$.$fields.oneName).toEqualTypeOf<
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
+      >();
 
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.twoName).toBe(undefined);
       shouldBeErrorField(vm.r$.$fields.oneValue);
     } else if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
-      // TODO in typings, this could be undefined
       expect(vm.r$.$fields.twoName).toBe(undefined);
+      expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
+      >();
 
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.oneName).toBe(undefined);

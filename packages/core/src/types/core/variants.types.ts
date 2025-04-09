@@ -71,19 +71,21 @@ type ProcessChildrenFields<
 > = {
   [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
-        [TKey in keyof UnionToTuple<TState>[TIndexInt]]: InferRegleStatusType<
-          TKey extends keyof UnionToTuple<TRules>[TIndexInt]
-            ? UnionToTuple<TRules>[TIndexInt][TKey] extends
-                | RegleCollectionRuleDecl
-                | RegleRuleDecl
-                | ReglePartialRuleTree<any>
-              ? UnionToTuple<TRules>[TIndexInt][TKey]
-              : EmptyObject
-            : EmptyObject,
-          NonNullable<UnionToTuple<TState>[TIndexInt]>,
-          TKey,
-          TShortcuts
-        >;
+        [TKey in keyof UnionToTuple<TState>[TIndexInt]]:
+          | InferRegleStatusType<
+              TKey extends keyof UnionToTuple<TRules>[TIndexInt]
+                ? UnionToTuple<TRules>[TIndexInt][TKey] extends
+                    | RegleCollectionRuleDecl
+                    | RegleRuleDecl
+                    | ReglePartialRuleTree<any>
+                  ? UnionToTuple<TRules>[TIndexInt][TKey]
+                  : EmptyObject
+                : EmptyObject,
+              NonNullable<UnionToTuple<TState>[TIndexInt]>,
+              TKey,
+              TShortcuts
+            >
+          | (TKey extends keyof UnionToTuple<TRules>[TIndexInt] ? never : undefined);
       }
     : {};
 };

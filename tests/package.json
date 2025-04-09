@@ -11,6 +11,7 @@
     "@vue/reactivity": "catalog:",
     "arktype": "2.1.12",
     "date-fns": "4.1.0",
+    "type-fest": "catalog:",
     "pinia": "catalog:",
     "typescript": "catalog:",
     "valibot": "1.0.0",

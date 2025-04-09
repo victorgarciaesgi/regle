@@ -66,6 +66,7 @@ const form = ref<Form>({
   },
 });
 
+
 const { r$ } = useRegle(form, () => {
   const variant = createVariant(() => form.value.nested2, 'type', [
     {

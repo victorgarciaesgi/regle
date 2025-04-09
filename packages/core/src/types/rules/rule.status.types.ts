@@ -183,19 +183,21 @@ export type RegleFieldStatus<
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
-  readonly $rules: {
-    readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
-      TState,
-      TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
-      TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
-        ? TMetadata
-        : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
-          ? TMetadata extends Promise<infer P>
-            ? P
-            : TMetadata
-          : any
-    >;
-  };
+  readonly $rules: IsEmptyObject<TRules> extends true
+    ? {}
+    : {
+        readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
+          TState,
+          TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
+          TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
+            ? TMetadata
+            : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
+              ? TMetadata extends Promise<infer P>
+                ? P
+                : TMetadata
+              : any
+        >;
+      };
 } & ([TShortcuts['fields']] extends [never]
     ? {}
     : {

@@ -35,7 +35,7 @@
     "npm-run-all2": "^7.0.2",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:",
     "vite": "^6.2.3",
     "vue-eslint-parser": "catalog:",
