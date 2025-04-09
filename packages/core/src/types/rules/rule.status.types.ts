@@ -31,6 +31,7 @@ import type {
   RegleValidationGroupOutput,
   ResetOptions,
 } from '..';
+import type { IsUnion } from 'expect-type';
 
 /**
  * @public
@@ -62,12 +63,13 @@ export type RegleStatus<
 > = RegleCommonStatus<TState> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: {
-    readonly [TKey in keyof TState as IsEmptyObject<TRules[TKey]> extends true ? never : TKey]: InferRegleStatusType<
-      NonNullable<TRules[TKey]>,
-      NonNullable<TState>,
-      TKey,
-      TShortcuts
-    >;
+    readonly [TKey in keyof TState as IsEmptyObject<TRules[TKey]> extends true ? never : TKey]: IsUnion<
+      NonNullable<TRules[TKey]>
+    > extends true
+      ? ExtendOnlyRealRecord<TState[TKey]> extends true
+        ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
+        : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
+      : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   } & {
     readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
       ? NonNullable<TRules[TKey]> extends RegleRuleDecl
@@ -75,7 +77,11 @@ export type RegleStatus<
           ? TKey
           : never
         : never
-      : never]-?: InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
+      : never]-?: IsUnion<NonNullable<TRules[TKey]>> extends true
+      ? ExtendOnlyRealRecord<TState[TKey]> extends true
+        ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
+        : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
+      : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
   /**
    * Collection of all the error messages, collected for all children properties and nested forms.

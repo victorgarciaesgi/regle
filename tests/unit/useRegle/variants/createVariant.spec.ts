@@ -31,7 +31,7 @@ function createRootVariantRegle() {
 function createNestedVariantRegle() {
   type Form = {
     nested2: { name: string } & (
-      | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
+      | { type: 'ONE'; firstName: string }
       | { type: 'TWO'; firstName: number; lastName: string }
       | { type?: undefined }
     );
@@ -68,6 +68,8 @@ function createNestedVariantRegle() {
   });
 
   // r$.$fields.
+
+  r$.$fields.nested2.$fields.type;
 
   if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'TWO')) {
     r$.$fields.nested2.$fields;
@@ -110,7 +112,17 @@ describe('createVariant', () => {
     if (discriminateVariant(vm.r$.$fields, 'type', 'ONE')) {
       // TODO in typings, this could be undefined
       expect(vm.r$.$fields.oneName).toBe(undefined);
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.twoName).toBe(undefined);
       shouldBeErrorField(vm.r$.$fields.oneValue);
+    } else if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
+      // TODO in typings, this could be undefined
+      expect(vm.r$.$fields.twoName).toBe(undefined);
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.oneName).toBe(undefined);
+      shouldBeErrorField(vm.r$.$fields.twoValue);
     }
   });
 });
