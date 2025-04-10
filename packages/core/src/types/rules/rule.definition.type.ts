@@ -10,6 +10,7 @@ import type {
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { FieldRegleBehaviourOptions } from '../core';
+type IsLiteral<T> = string extends T ? false : true;
 
 /**
  * Returned typed of rules created with `createRule`
@@ -30,6 +31,7 @@ export interface RegleRuleDefinition<
   active: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean;
   tooltip: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
   type?: string;
+  _value?: IsLiteral<TValue> extends true ? TValue : any;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
 

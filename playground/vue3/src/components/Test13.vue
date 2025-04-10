@@ -54,7 +54,7 @@ import JSONViewer from './JSONViewer.vue';
 import { ref } from 'vue';
 
 type Form = {
-  nested2: { name: string } & (
+  nested2: { name: 'ONE' } & (
     | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
     | { type: 'TWO'; firstName: number; lastName: string }
     | { type?: undefined }
@@ -62,7 +62,7 @@ type Form = {
 };
 const form = ref<Form>({
   nested2: {
-    name: '',
+    name: 'ONE',
   },
 });
 
@@ -85,6 +85,7 @@ const { r$ } = useRegle(form, () => {
 
   return {
     nested2: {
+      name: {},
       ...variant.value,
     },
   };

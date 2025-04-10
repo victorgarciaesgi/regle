@@ -2,10 +2,12 @@ import {
   createVariant,
   discriminateVariant,
   useRegle,
+  type CommonComparationOptions,
   type RegleFieldStatus,
+  type RegleRuleDefinition,
   type RegleShortcutDefinition,
 } from '@regle/core';
-import { literal, numeric, required } from '@regle/rules';
+import { literal, minValue, numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
@@ -24,7 +26,7 @@ function createRootVariantRegle() {
   return useRegle(state, () => {
     const variant = createVariant(state, 'type', [
       { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
-      { type: { literal: literal('ONE') }, oneValue: { numeric, required } },
+      { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
       { type: { required } },
     ]);
     return {
@@ -37,7 +39,7 @@ function createRootVariantRegle() {
 function createNestedVariantRegle() {
   type Form = {
     nested2: { name: string } & (
-      | { type: 'ONE'; firstName: string }
+      | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
       | { type: 'TWO'; firstName: number; lastName: string }
       | { type?: undefined }
     );
@@ -53,13 +55,13 @@ function createNestedVariantRegle() {
       {
         type: { literal: literal('ONE') },
         firstName: { required },
-        // details: {
-        //   quotes: {
-        //     $each: {
-        //       name: { required },
-        //     },
-        //   },
-        // },
+        details: {
+          quotes: {
+            $each: {
+              name: { required },
+            },
+          },
+        },
       },
       { type: { literal: literal('TWO') }, lastName: { required } },
       { type: { required } },
@@ -124,7 +126,27 @@ describe('createVariant', () => {
 
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.twoName).toBe(undefined);
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.twoValue).toBe(undefined);
       shouldBeErrorField(vm.r$.$fields.oneValue);
+
+      expectTypeOf(vm.r$.$fields.oneValue).toEqualTypeOf<
+        RegleFieldStatus<
+          number,
+          {
+            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            minValue: RegleRuleDefinition<
+              number,
+              [count: number, options?: CommonComparationOptions | undefined],
+              false,
+              boolean,
+              number
+            >;
+          },
+          RegleShortcutDefinition<any>
+        >
+      >();
     } else if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
       expect(vm.r$.$fields.twoName).toBe(undefined);
       expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
@@ -133,7 +155,21 @@ describe('createVariant', () => {
 
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.oneName).toBe(undefined);
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.oneValue).toBe(undefined);
+
       shouldBeErrorField(vm.r$.$fields.twoValue);
+      expectTypeOf(vm.r$.$fields.twoValue).toEqualTypeOf<
+        RegleFieldStatus<
+          number,
+          {
+            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+          },
+          RegleShortcutDefinition<any>
+        >
+      >();
     }
   });
 });

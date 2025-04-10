@@ -38,6 +38,19 @@ type rules = {
       };
 };
 
+type test2 = FindCorrespondingVariant<
+  {
+    type: 'ONE';
+    details: {
+      quotes: {
+        name: string;
+      }[];
+    };
+    firstName: string;
+  },
+  UnionToTuple<rules['nested']>
+>;
+
 type test = MaybeVariantStatus<
   {
     nested: { name: string } & (
@@ -73,19 +86,42 @@ type ProcessChildrenFields<
     ? {
         [TKey in keyof UnionToTuple<TState>[TIndexInt]]:
           | InferRegleStatusType<
-              TKey extends keyof UnionToTuple<TRules>[TIndexInt]
-                ? UnionToTuple<TRules>[TIndexInt][TKey] extends ReglePartialRuleTree<any>
-                  ? UnionToTuple<TRules>[TIndexInt][TKey]
+              FindCorrespondingVariant<
+                UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+                UnionToTuple<TRules>
+              > extends [infer U]
+                ? TKey extends keyof U
+                  ? U[TKey]
                   : EmptyObject
                 : EmptyObject,
               NonNullable<UnionToTuple<TState>[TIndexInt]>,
               TKey,
               TShortcuts
             >
-          | (TKey extends keyof UnionToTuple<TRules>[TIndexInt] ? never : undefined);
+          | (IsEmptyObject<
+              FindCorrespondingVariant<
+                UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+                UnionToTuple<TRules>
+              > extends [infer U]
+                ? TKey extends keyof U
+                  ? U[TKey]
+                  : EmptyObject
+                : EmptyObject
+            > extends true
+              ? undefined
+              : never);
       }
     : {};
 };
+
+type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends any[]> = TRules extends [
+  infer F,
+  ...infer R,
+]
+  ? F extends ReglePartialRuleTree<TState>
+    ? [F]
+    : FindCorrespondingVariant<TState, R>
+  : [];
 
 type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
   [TVal in NonNullable<T[TKey]>]: {
