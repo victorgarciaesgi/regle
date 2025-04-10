@@ -37,8 +37,8 @@ catalogs:
       specifier: 8.4.0
       version: 8.4.0
     type-fest:
-      specifier: 4.28.0
-      version: 4.28.0
+      specifier: 4.38.0
+      version: 4.38.0
     typescript:
       specifier: 5.8.2
       version: 5.8.2
@@ -296,7 +296,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -373,7 +373,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.6.3)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -440,7 +440,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -510,7 +510,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -543,7 +543,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -647,7 +647,7 @@ importers:
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -692,7 +692,7 @@ importers:
         version: 3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       type-fest:
         specifier: 'catalog:'
-        version: 4.28.0
+        version: 4.38.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -6277,10 +6277,6 @@ packages:
   type-fest@0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
-
-  type-fest@4.28.0:
-    resolution: {integrity: sha512-jXMwges/FVbFRe5lTMJZVEZCrO9kI9c8k0PA/z7nF3bo0JSCCLysvokFjNPIUK/itEMas10MQM+AiHoHt/T/XA==}
-    engines: {node: '>=16'}
 
   type-fest@4.38.0:
     resolution: {integrity: sha512-2dBz5D5ycHIoliLYLi0Q2V7KRaDlH0uWIvmk7TYlAg5slqwiPv1ezJdZm1QEM0xgk29oYWMCbIG7E6gHpvChlg==}
@@ -13706,8 +13702,6 @@ snapshots:
       prelude-ls: 1.2.1
 
   type-fest@0.20.2: {}
-
-  type-fest@4.28.0: {}
 
   type-fest@4.38.0: {}
 

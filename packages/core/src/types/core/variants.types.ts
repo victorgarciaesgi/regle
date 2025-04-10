@@ -74,10 +74,7 @@ type ProcessChildrenFields<
         [TKey in keyof UnionToTuple<TState>[TIndexInt]]:
           | InferRegleStatusType<
               TKey extends keyof UnionToTuple<TRules>[TIndexInt]
-                ? UnionToTuple<TRules>[TIndexInt][TKey] extends
-                    | RegleCollectionRuleDecl
-                    | RegleRuleDecl
-                    | ReglePartialRuleTree<any>
+                ? UnionToTuple<TRules>[TIndexInt][TKey] extends ReglePartialRuleTree<any>
                   ? UnionToTuple<TRules>[TIndexInt][TKey]
                   : EmptyObject
                 : EmptyObject,

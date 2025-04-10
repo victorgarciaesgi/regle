@@ -24,8 +24,8 @@ function createRootVariantRegle() {
 
   return useRegle(state, () => {
     const variant = createVariant(state, 'type', [
-      { type: { literal: literal('ONE') }, oneValue: { numeric, required } },
       { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
+      { type: { literal: literal('ONE') }, oneValue: { numeric, required } },
       { type: { required } },
     ]);
     return {

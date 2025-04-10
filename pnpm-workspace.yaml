@@ -31,7 +31,7 @@ catalog:
   eslint-plugin-vue: 9.31.0
   eslint-config-prettier: 9.1.0
   vue-eslint-parser: 9.4.3
-  type-fest: 4.28.0
+  type-fest: 4.38.0
   prettier: 3.3.3
   nuxt: 3.16.1
   vue-router: 4.5.0
