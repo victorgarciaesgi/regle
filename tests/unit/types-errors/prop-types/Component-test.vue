@@ -35,14 +35,14 @@ const props = defineProps<{
 // -
 
 expectTypeOf(props.unknownField.$rules).toEqualTypeOf<{
-  readonly [x: string]: RegleRuleStatus<any, any[] | [], any>;
+  readonly [x: string]: RegleRuleStatus<any, any[], any>;
 }>();
 expectTypeOf(props.unknownField.$value).toEqualTypeOf<any>();
 
 // -
 
 expectTypeOf(props.booleanField.$rules).toEqualTypeOf<{
-  readonly [x: string]: RegleRuleStatus<boolean | undefined, any[] | [], any>;
+  readonly [x: string]: RegleRuleStatus<boolean | undefined, any[], any>;
 }>();
 expectTypeOf(props.booleanField.$value).toEqualTypeOf<MaybeOutput<boolean | undefined>>();
 

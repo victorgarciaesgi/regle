@@ -1,4 +1,5 @@
-import type { EmptyObject, IsEmptyObject, PartialDeep } from 'type-fest';
+import type { IsUnion } from 'expect-type';
+import type { IsEmptyObject, PartialDeep } from 'type-fest';
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -11,7 +12,6 @@ import type {
   FieldRegleBehaviourOptions,
   InlineRuleDeclaration,
   JoinDiscriminatedUnions,
-  Maybe,
   MaybeInput,
   MaybeOutput,
   MaybeVariantStatus,
@@ -26,12 +26,10 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
-  RegleValidationErrors,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
 } from '..';
-import type { IsUnion } from 'expect-type';
 
 /**
  * @public
@@ -184,7 +182,9 @@ export type RegleFieldStatus<
   $validate: () => Promise<RegleResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: IsEmptyObject<TRules> extends true
-    ? {}
+    ? {
+        readonly [x: string]: RegleRuleStatus<TState, any[], any>;
+      }
     : {
         readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
           TState,

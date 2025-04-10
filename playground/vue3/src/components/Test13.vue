@@ -66,7 +66,6 @@ const form = ref<Form>({
   },
 });
 
-
 const { r$ } = useRegle(form, () => {
   const variant = createVariant(() => form.value.nested2, 'type', [
     {
@@ -78,7 +77,7 @@ const { r$ } = useRegle(form, () => {
       //     },
       //   },
       // },
-      firstName: {required},
+      firstName: { required },
     },
     { type: { literal: literal('TWO') }, lastName: { required } },
     { type: { required } },
@@ -94,8 +93,8 @@ const lastName = inferVariantToRef(r$.$fields.nested2.$fields, 'type', 'TWO');
 // Problem with property with no rules = never
 
 if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
-  console.log(r$.$fields.nested2.$fields.)
-  r$.$fields.nested2.$fields.
+  console.log(r$.$fields.nested2.$fields);
+  // r$.$fields.nested2.$fields
   // r$.$fields.nested2.$fields
 }
 </script>
