@@ -9,7 +9,6 @@ import { literal, numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
-import type { EmptyObject } from 'type-fest';
 
 function createRootVariantRegle() {
   type FormVariant = {
@@ -120,7 +119,7 @@ describe('createVariant', () => {
       expect(vm.r$.$fields.oneName).toBe(undefined);
 
       expectTypeOf(vm.r$.$fields.oneName).toEqualTypeOf<
-        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
@@ -129,7 +128,7 @@ describe('createVariant', () => {
     } else if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
       expect(vm.r$.$fields.twoName).toBe(undefined);
       expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
-        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
