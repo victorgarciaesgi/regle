@@ -100,6 +100,8 @@ describe('createVariant', () => {
     await vm.r$.$validate();
     await vm.$nextTick();
 
+    expect(discriminateVariant(vm.r$.$fields, 'type', 'ONE')).toBe(true);
+
     if (discriminateVariant(vm.r$.$fields, 'type', 'ONE')) {
       expect(vm.r$.$fields.oneName).toBe(undefined);
 
@@ -130,7 +132,17 @@ describe('createVariant', () => {
           RegleShortcutDefinition<any>
         >
       >();
-    } else if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
+    }
+
+    vm.r$.$value.type = 'TWO';
+    await vm.$nextTick();
+
+    await vm.r$.$validate();
+    await vm.$nextTick();
+
+    expect(discriminateVariant(vm.r$.$fields, 'type', 'TWO')).toBe(true);
+
+    if (discriminateVariant(vm.r$.$fields, 'type', 'TWO')) {
       expect(vm.r$.$fields.twoName).toBe(undefined);
       expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
@@ -160,8 +172,11 @@ describe('createVariant', () => {
     const { vm } = createRegleComponent(createNestedVariantRegle);
 
     expect(vm.r$.$fields.nested2.$fields.name.$invalid).toBe(true);
-    expect(vm.r$.$fields.nested2.$fields.definedName.$invalid).toBe(true);
-    expect(vm.r$.$fields.nested2.$fields.maybeUndefinedName?.$invalid).toBe(true);
+    // No rules so invalid is false
+    expect(vm.r$.$fields.nested2.$fields.definedName.$invalid).toBe(false);
+
+    // No value or rules
+    expect(vm.r$.$fields.nested2.$fields.maybeUndefinedName).toBe(undefined);
 
     expectTypeOf(vm.r$.$fields.nested2.$fields.maybeUndefinedName).toEqualTypeOf<
       RegleFieldStatus<string | undefined, {}, RegleShortcutDefinition<any>> | undefined
@@ -194,6 +209,8 @@ describe('createVariant', () => {
     await vm.r$.$validate();
     await vm.$nextTick();
 
+    expect(discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'ONE')).toBe(true);
+
     if (discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'ONE')) {
       expect(vm.r$.$fields.nested2.$fields.oneName).toBe(undefined);
 
@@ -224,7 +241,17 @@ describe('createVariant', () => {
           RegleShortcutDefinition<any>
         >
       >();
-    } else if (discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO')) {
+    }
+
+    vm.r$.$value.nested2.type = 'TWO';
+    await vm.$nextTick();
+
+    await vm.r$.$validate();
+    await vm.$nextTick();
+
+    expect(discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO')).toBe(true);
+
+    if (discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO')) {
       expect(vm.r$.$fields.nested2.$fields.twoName).toBe(undefined);
       expectTypeOf(vm.r$.$fields.nested2.$fields.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
