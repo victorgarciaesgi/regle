@@ -38,50 +38,33 @@ function createRootVariantRegle() {
 
 function createNestedVariantRegle() {
   type Form = {
-    nested2: { name: string } & (
-      | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
-      | { type: 'TWO'; firstName: number; lastName: string }
+    nested2: { name: string; definedName: string; maybeUndefinedName?: string } & (
+      | { type: 'ONE'; oneValue: number; oneName: string }
+      | { type: 'TWO'; twoValue: number; twoName: string }
       | { type?: undefined }
     );
   };
   const form = ref<Form>({
     nested2: {
       name: '',
+      definedName: '',
     },
   });
 
-  const { r$ } = useRegle(form, () => {
+  return useRegle(form, () => {
     const variant = createVariant(() => form.value.nested2, 'type', [
-      {
-        type: { literal: literal('ONE') },
-        firstName: { required },
-        details: {
-          quotes: {
-            $each: {
-              name: { required },
-            },
-          },
-        },
-      },
-      { type: { literal: literal('TWO') }, lastName: { required } },
+      { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
+      { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
       { type: { required } },
     ]);
 
     return {
       nested2: {
-        name: {},
+        name: { required },
         ...variant.value,
       },
     };
   });
-
-  // r$.$fields.
-
-  r$.$fields.nested2.$fields.type;
-
-  if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'TWO')) {
-    r$.$fields.nested2.$fields;
-  }
 }
 
 describe('createVariant', () => {
@@ -161,6 +144,100 @@ describe('createVariant', () => {
 
       shouldBeErrorField(vm.r$.$fields.twoValue);
       expectTypeOf(vm.r$.$fields.twoValue).toEqualTypeOf<
+        RegleFieldStatus<
+          number,
+          {
+            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+          },
+          RegleShortcutDefinition<any>
+        >
+      >();
+    }
+  });
+
+  it('should correctly create and discriminate [nested] variants', async () => {
+    const { vm } = createRegleComponent(createNestedVariantRegle);
+
+    expect(vm.r$.$fields.nested2.$fields.name.$invalid).toBe(true);
+    expect(vm.r$.$fields.nested2.$fields.definedName.$invalid).toBe(true);
+    expect(vm.r$.$fields.nested2.$fields.maybeUndefinedName?.$invalid).toBe(true);
+
+    expectTypeOf(vm.r$.$fields.nested2.$fields.maybeUndefinedName).toEqualTypeOf<
+      RegleFieldStatus<string | undefined, {}, RegleShortcutDefinition<any>> | undefined
+    >();
+
+    // @ts-expect-error unknown field
+    expect(vm.r$.$fields.nested2.$fields.oneValue).toBe(undefined);
+    // @ts-expect-error unknown field
+    expect(vm.r$.$fields.nested2.$fields.twoValue).toBe(undefined);
+
+    const { valid, data } = await vm.r$.$validate();
+
+    if (valid) {
+      expectTypeOf(data.nested2.name).toEqualTypeOf<string>();
+      expectTypeOf(data.nested2.type).toEqualTypeOf<'ONE' | 'TWO'>();
+      expectTypeOf(data.nested2.oneValue).toEqualTypeOf<number | undefined>();
+      expectTypeOf(data.nested2.twoValue).toEqualTypeOf<number | undefined>();
+      expectTypeOf(data.nested2.oneName).toEqualTypeOf<string | undefined>();
+      expectTypeOf(data.nested2.twoName).toEqualTypeOf<string | undefined>();
+    }
+
+    expect(vm.r$.$error).toBe(true);
+    shouldBeErrorField(vm.r$.$fields.nested2.$fields.type);
+
+    vm.r$.$value.nested2.type = 'ONE';
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$.$fields.nested2.$fields.type);
+
+    await vm.r$.$validate();
+    await vm.$nextTick();
+
+    if (discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'ONE')) {
+      expect(vm.r$.$fields.nested2.$fields.oneName).toBe(undefined);
+
+      expectTypeOf(vm.r$.$fields.nested2.$fields.oneName).toEqualTypeOf<
+        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+      >();
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.nested2.$fields.twoName).toBe(undefined);
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.twoValue).toBe(undefined);
+      shouldBeErrorField(vm.r$.$fields.nested2.$fields.oneValue);
+
+      expectTypeOf(vm.r$.$fields.nested2.$fields.oneValue).toEqualTypeOf<
+        RegleFieldStatus<
+          number,
+          {
+            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            minValue: RegleRuleDefinition<
+              number,
+              [count: number, options?: CommonComparationOptions | undefined],
+              false,
+              boolean,
+              number
+            >;
+          },
+          RegleShortcutDefinition<any>
+        >
+      >();
+    } else if (discriminateVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO')) {
+      expect(vm.r$.$fields.nested2.$fields.twoName).toBe(undefined);
+      expectTypeOf(vm.r$.$fields.nested2.$fields.twoName).toEqualTypeOf<
+        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+      >();
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.oneName).toBe(undefined);
+
+      // @ts-expect-error property should not be present here
+      expect(vm.r$.$fields.oneValue).toBe(undefined);
+
+      shouldBeErrorField(vm.r$.$fields.nested2.$fields.twoValue);
+      expectTypeOf(vm.r$.$fields.nested2.$fields.twoValue).toEqualTypeOf<
         RegleFieldStatus<
           number,
           {

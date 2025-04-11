@@ -3,64 +3,13 @@ import type { EmptyObject, IsEmptyObject, UnionToTuple } from 'type-fest';
 import type {
   AllRulesDeclarations,
   InferRegleStatusType,
-  RegleCollectionRuleDecl,
-  RegleFieldStatus,
   ReglePartialRuleTree,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { JoinDiscriminatedUnions, TupleToPlainObj } from '../utils';
+import type { TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
-
-type rules = {
-  nested:
-    | {
-        type: {
-          literal: RegleRuleDefinition<'TWO', [literal: 'TWO'], false, boolean, string | number>;
-        };
-        lastName: {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
-        };
-      }
-    | {
-        type: {
-          literal: RegleRuleDefinition<'ONE', [literal: 'ONE'], false, boolean, string | number>;
-        };
-        firstName: {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
-        };
-      }
-    | {
-        type: {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
-        };
-      };
-};
-
-type test2 = FindCorrespondingVariant<
-  {
-    type: 'ONE';
-    details: {
-      quotes: {
-        name: string;
-      }[];
-    };
-    firstName: string;
-  },
-  UnionToTuple<rules['nested']>
->;
-
-type test = MaybeVariantStatus<
-  {
-    nested: { name: string } & (
-      | { type: 'TWO'; firstName: number; lastName: string }
-      | { type: 'ONE'; details: { quotes: { name: string }[] }; firstName: string }
-      | { type?: undefined }
-    );
-  },
-  rules
->['$fields']['nested']['$fields'];
 
 export type MaybeVariantStatus<
   TState extends Record<string, any> | undefined = Record<string, any>,
@@ -108,7 +57,11 @@ type ProcessChildrenFields<
                   : EmptyObject
                 : EmptyObject
             > extends true
-              ? undefined
+              ? TKey extends keyof TState
+                ? NonNullable<TState[TKey]> extends TState[TKey]
+                  ? never
+                  : undefined
+                : undefined
               : never);
       }
     : {};

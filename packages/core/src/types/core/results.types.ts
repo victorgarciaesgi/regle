@@ -9,7 +9,15 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
 } from '../rules';
-import type { ArrayElement, ExtendOnlyRealRecord, ExtractFromGetter, Maybe, MaybeOutput, Prettify } from '../utils';
+import type {
+  ArrayElement,
+  ExtendOnlyRealRecord,
+  ExtractFromGetter,
+  JoinDiscriminatedUnions,
+  Maybe,
+  MaybeOutput,
+  Prettify,
+} from '../utils';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
   ? {}
@@ -57,7 +65,7 @@ export type InferSafeOutput<
   TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
 > =
   UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
-    ? DeepSafeFormState<TState, TRules>
+    ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>
       : never;
@@ -66,7 +74,7 @@ export type $InternalRegleResult = { valid: boolean; data: any };
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree> | undefined,
+  TRules extends ReglePartialRuleTree<Record<string, any>, CustomRulesDeclarationTree> | undefined,
 > = [unknown] extends [TState]
   ? {}
   : TRules extends undefined
@@ -130,7 +138,10 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
       : TState
     : TRule extends ReglePartialRuleTree<any, any>
       ? ExtendOnlyRealRecord<TState> extends true
-        ? DeepSafeFormState<NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {}, TRule>
+        ? DeepSafeFormState<
+            NonNullable<TState> extends Record<string, any> ? JoinDiscriminatedUnions<NonNullable<TState>> : {},
+            TRule
+          >
         : TRule extends RegleRuleDecl<any, any>
           ? FieldHaveRequiredRule<TRule> extends true
             ? TState
