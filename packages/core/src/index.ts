@@ -11,8 +11,8 @@ export {
   useScopedRegle,
   flatErrors,
   createVariant,
-  discriminateVariant,
-  inferVariantToRef,
+  narrowVariant,
+  variantToRef,
   type MergedRegles,
   type CommonComparationOptions,
 } from './core';

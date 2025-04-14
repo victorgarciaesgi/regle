@@ -14,9 +14,9 @@
       </li>
     </ul>
 
-    <div v-if="discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')">
+    <div v-if="narrowVariant(r$.$fields.nested2.$fields, 'type', 'ONE')">
       ONE
-      <input v-model="r$.$fields.nested2.$fields.firstName" placeholder="firstname" />
+      <input v-model="r$.$fields.nested2.$fields.firstName.$value" placeholder="firstname" />
       <ul v-if="r$.$errors.nested2.firstName?.length">
         <li v-for="error of r$.$errors.nested2.firstName" :key="error">
           {{ error }}
@@ -24,9 +24,10 @@
       </ul>
     </div>
 
-    <div v-else-if="discriminateVariant(r$.$fields.nested2.$fields, 'type', 'TWO')">
+    <div v-else-if="nested2TWOFields">
       TWO
-      <input v-model="r$.$fields.nested2.$fields.lastName" placeholder="lastName" />
+      <pre>{{ nested2TWOFields.lastName.$invalid }}</pre>
+      <input v-model="nested2TWOFields.lastName.$value" placeholder="lastName" />
       <ul v-if="r$.$errors.nested2.lastName?.length">
         <li v-for="error of r$.$errors.nested2.lastName" :key="error">
           {{ error }}
@@ -44,14 +45,14 @@ import {
   createVariant,
   flatErrors,
   useRegle,
-  discriminateVariant,
+  narrowVariant,
   type RegleComputedRules,
-  inferVariantToRef,
+  variantToRef,
   type Maybe,
 } from '@regle/core';
 import { email, literal, minLength, required, withMessage, withParams } from '@regle/rules';
 import JSONViewer from './JSONViewer.vue';
-import { ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 
 type Form = {
   nested2: { name: 'ONE' } & (
@@ -90,10 +91,10 @@ const { r$ } = useRegle(form, () => {
     },
   };
 });
-const lastName = inferVariantToRef(r$.$fields.nested2.$fields, 'type', 'TWO');
+const nested2TWOFields = variantToRef(r$.$fields.nested2, 'type', 'TWO');
 // Problem with property with no rules = never
 
-if (discriminateVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
+if (narrowVariant(r$.$fields.nested2.$fields, 'type', 'ONE')) {
   console.log(r$.$fields.nested2.$fields);
   // r$.$fields.nested2.$fields
   // r$.$fields.nested2.$fields

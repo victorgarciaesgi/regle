@@ -52,6 +52,7 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
   { text: 'Rules metadata', link: '/advanced-usage/rule-metadata' },
   { text: 'Async validators', link: '/advanced-usage/async-validation' },
   { text: 'Global configuration', link: '/advanced-usage/global-config' },
+  { text: 'Variants', link: '/advanced-usage/variants' },
   { text: 'Scoped validation', link: '/advanced-usage/scoped-validation' },
   { text: 'Properties shortcuts', link: '/advanced-usage/extend-properties' },
   { text: 'Merge multiple Regles', link: '/advanced-usage/merge-regles' },

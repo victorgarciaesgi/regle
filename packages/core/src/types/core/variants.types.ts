@@ -33,36 +33,63 @@ type ProcessChildrenFields<
 > = {
   [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
-        [TKey in keyof UnionToTuple<TState>[TIndexInt]]:
-          | InferRegleStatusType<
-              FindCorrespondingVariant<
-                UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
-                UnionToTuple<TRules>
-              > extends [infer U]
-                ? TKey extends keyof U
-                  ? U[TKey]
-                  : EmptyObject
-                : EmptyObject,
-              NonNullable<UnionToTuple<TState>[TIndexInt]>,
-              TKey,
-              TShortcuts
-            >
-          | (IsEmptyObject<
-              FindCorrespondingVariant<
-                UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
-                UnionToTuple<TRules>
-              > extends [infer U]
-                ? TKey extends keyof U
-                  ? U[TKey]
-                  : EmptyObject
-                : EmptyObject
-            > extends true
-              ? TKey extends keyof TState
-                ? NonNullable<TState[TKey]> extends TState[TKey]
-                  ? never
-                  : undefined
-                : undefined
-              : never);
+        [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
+          FindCorrespondingVariant<
+            UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+            UnionToTuple<TRules>
+          > extends [infer U]
+            ? TKey extends keyof U
+              ? U[TKey]
+              : EmptyObject
+            : EmptyObject
+        > extends true
+          ? TKey extends keyof TState
+            ? TState[TKey] extends NonNullable<TState[TKey]>
+              ? TKey
+              : never
+            : never
+          : TKey]-?: InferRegleStatusType<
+          FindCorrespondingVariant<
+            UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+            UnionToTuple<TRules>
+          > extends [infer U]
+            ? TKey extends keyof U
+              ? U[TKey]
+              : EmptyObject
+            : EmptyObject,
+          NonNullable<UnionToTuple<TState>[TIndexInt]>,
+          TKey,
+          TShortcuts
+        >;
+      } & {
+        [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
+          FindCorrespondingVariant<
+            UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+            UnionToTuple<TRules>
+          > extends [infer U]
+            ? TKey extends keyof U
+              ? U[TKey]
+              : EmptyObject
+            : EmptyObject
+        > extends true
+          ? TKey extends keyof TState
+            ? TState[TKey] extends NonNullable<TState[TKey]>
+              ? never
+              : TKey
+            : TKey
+          : never]?: InferRegleStatusType<
+          FindCorrespondingVariant<
+            UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
+            UnionToTuple<TRules>
+          > extends [infer U]
+            ? TKey extends keyof U
+              ? U[TKey]
+              : EmptyObject
+            : EmptyObject,
+          NonNullable<UnionToTuple<TState>[TIndexInt]>,
+          TKey,
+          TShortcuts
+        >;
       }
     : {};
 };
