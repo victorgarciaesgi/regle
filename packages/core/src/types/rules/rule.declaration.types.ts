@@ -168,11 +168,15 @@ export type $InternalInlineRuleDeclaration = (value: Maybe<any>, ...args: any[])
  * Regroup inline and registered rules
  * */
 export type FormRuleDeclaration<
-  TValue extends any,
-  TParams extends any[],
+  TValue extends any = unknown,
+  TParams extends any[] = any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
     | RegleRuleMetadataDefinition
     | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
-> = InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+> =
+  | InlineRuleDeclaration<TValue, TParams, TReturn>
+  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+  | RegleRuleWithParamsDefinition<TValue, [param?: any], TAsync, TMetadata>
+  | RegleRuleWithParamsDefinition<TValue, [param?: any, ...any[]], TAsync, TMetadata>;

@@ -11,7 +11,7 @@ import type {
 /**
  * The or operator validates successfully if at least one of the provided rules is valid.
  */
-export function or<TRules extends FormRuleDeclaration<any, any>[]>(
+export function or<TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],

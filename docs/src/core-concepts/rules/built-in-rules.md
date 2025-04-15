@@ -333,7 +333,9 @@ const maxCount = ref(6);
 
 const { r$ } = useRegle({ address: '' }, {
   address: {
-    macAddress: macAddress(),
+    macAddress,
+    // or
+    macAddress: macAddress('-')
   },
 })
 ```

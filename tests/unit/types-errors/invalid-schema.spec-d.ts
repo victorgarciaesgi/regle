@@ -22,7 +22,7 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       RegleFieldStatus<
         string,
         {
-          required: () => true;
+          required: () => boolean;
         },
         RegleShortcutDefinition<any>
       >
@@ -38,10 +38,10 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     useRegle({ name: '' }, { name: { required: () => 'foo' } });
 
     // ✅ Known rules with inline validator with no types
-    useRegle({ name: '' }, { name: { required: (value) => true } });
+    useRegle({ name: '' }, { name: { required: (value: unknown) => true } });
 
     // ✅ Any rule name
-    useRegle({ name: '' }, { name: { baguette: (value) => true } });
+    useRegle({ name: '' }, { name: { baguette: (value: unknown) => true } });
 
     // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
     useRegle({ name: '' }, { name: { required: (value: string) => true } });
@@ -78,10 +78,10 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     inferRules({ name: '' }, { name: { required: () => 'foo' } });
 
     // ✅ Known rules with inline validator with no types
-    inferRules({ name: '' }, { name: { required: (value) => true } });
+    inferRules({ name: '' }, { name: { required: (value: unknown) => true } });
 
     // ✅ Any rule name
-    inferRules({ name: '' }, { name: { baguette: (value) => true } });
+    inferRules({ name: '' }, { name: { baguette: (value: unknown) => true } });
 
     // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
     inferRules({ name: '' }, { name: { required: (value: string) => true } });
@@ -106,7 +106,10 @@ describe('useRegle should throw errors for invalid rule schema', () => {
   });
 
   it('Known rules with inline validator returning metadata ✅', () => {
-    const { r$ } = useRegle({ name: '' }, { name: { required: (value) => ({ $valid: true, customMeta: 'bar' }) } });
-    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: true; customMeta: string }>();
+    const { r$ } = useRegle(
+      { name: '' },
+      { name: { required: (value: unknown) => ({ $valid: true, customMeta: 'bar' }) } }
+    );
+    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: boolean; customMeta: string }>();
   });
 });

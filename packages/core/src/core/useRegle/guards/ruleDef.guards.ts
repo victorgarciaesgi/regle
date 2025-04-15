@@ -43,7 +43,13 @@ export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[]
 }
 
 export function isFormRuleDefinition(rule: Ref<unknown>): rule is Ref<RegleRuleDefinition<any, any>> {
-  return !(typeof rule.value === 'function');
+  if (typeof rule.value === 'function') {
+    if ('_validator' in rule.value) {
+      return true;
+    }
+    return false;
+  }
+  return true;
 }
 
 export function isFormInline(rule: Ref<unknown>): rule is Ref<InlineRuleDeclaration<any, any[], any>> {
