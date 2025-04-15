@@ -10,6 +10,7 @@ import type {
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { FieldRegleBehaviourOptions } from '../core';
+import type { MaybeRefOrGetter } from 'vue';
 type IsLiteral<T> = string extends T ? false : true;
 
 /**
@@ -52,7 +53,7 @@ export interface $InternalRegleRuleDefinition extends RegleInternalRuleDefs<any,
  */
 export type RegleRuleWithParamsDefinition<
   TValue extends any = any,
-  TParams extends any[] = any[],
+  TParams extends any[] = never,
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
   TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
@@ -60,6 +61,20 @@ export type RegleRuleWithParamsDefinition<
   RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
     (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata>;
   } & (TParams extends [param?: any, ...any[]]
+    ? {
+        exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+      }
+    : {});
+
+export type RegleRuleWithParamsDefinitionInput<
+  TValue extends any = any,
+  TParams extends any[] = never,
+  TAsync extends boolean = false,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+> = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
+  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> &
+  (TParams extends [param?: any, ...any[]]
     ? {
         exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
       }

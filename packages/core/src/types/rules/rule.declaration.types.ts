@@ -6,6 +6,7 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinition,
+  RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
 
@@ -178,5 +179,5 @@ export type FormRuleDeclaration<
 > =
   | InlineRuleDeclaration<TValue, TParams, TReturn>
   | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-  | RegleRuleWithParamsDefinition<TValue, [param?: any], TAsync, TMetadata>
-  | RegleRuleWithParamsDefinition<TValue, [param?: any, ...any[]], TAsync, TMetadata>;
+  | RegleRuleWithParamsDefinitionInput<TValue, [param?: any], TAsync, TMetadata>
+  | RegleRuleWithParamsDefinitionInput<TValue, [param?: any, ...any[]], TAsync, TMetadata>;

@@ -9,8 +9,8 @@ export interface CommonComparationOptions {
 }
 
 export type DefaultValidators = {
-  alpha: RegleRuleDefinition<string>;
-  alphaNum: RegleRuleDefinition<string | number>;
+  alpha: RegleRuleWithParamsDefinition<string, [allowSymbols?: boolean | undefined]>;
+  alphaNum: RegleRuleWithParamsDefinition<string | number, [allowSymbols?: boolean | undefined]>;
   between: RegleRuleWithParamsDefinition<number, [min: Maybe<number>, max: Maybe<number>]>;
   checked: RegleRuleDefinition<boolean, [], false, boolean, boolean>;
   contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;

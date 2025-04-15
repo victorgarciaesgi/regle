@@ -38,19 +38,30 @@ This allow to have rules even if the field is not required.
 
 ## `alpha`
 
+_**Params**_
+  - `allowSymbols?: MaybeRefOrGetter<boolean>`
+
 Allows only alphabetic characters.
 
 ```ts twoslash
+// @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
 import { alpha } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
-  name: { alpha },
+  name: { 
+    alpha,
+    // or
+    alpha: alpha(true),
+  },
 })
 ```
 
 ## `alphaNum`
+
+_**Params**_
+  - `allowSymbols?: MaybeRefOrGetter<boolean>`
 
 Allows only alphanumeric characters.
 
@@ -60,7 +71,10 @@ import {useRegle} from '@regle/core';
 import { alphaNum } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
-  name: { alphaNum },
+  name: { 
+    alphaNum,
+    // or
+    alphaNum: alphaNum(true),
 })
 ```
 
@@ -324,6 +338,7 @@ _**Params**_
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
 ```ts twoslash
+// @noErrors
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
 // ---cut---

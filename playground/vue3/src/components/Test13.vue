@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { narrowVariant, useRegle, variantToRef } from '@regle/core';
+import { narrowVariant, useRegle, variantToRef, type Maybe } from '@regle/core';
 import { macAddress } from '@regle/rules';
 import { ref } from 'vue';
 
@@ -46,9 +46,19 @@ const form = ref<Form>({
 
 const { r$ } = useRegle(form, {
   nested2: {
-    name: { macAddress },
+    name: { macAddress: macAddress },
   },
 });
+
+// ---cut---
+useRegle(
+  { name: '' },
+  {
+    name: {
+      required: (value) => true,
+    },
+  }
+);
 const nested2TWOFields = variantToRef(r$.$fields.nested2, 'type', 'TWO');
 // Problem with property with no rules = never
 

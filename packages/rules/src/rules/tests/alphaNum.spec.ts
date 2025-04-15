@@ -2,38 +2,46 @@ import { alphaNum } from '../alphaNum';
 
 describe('alphaNum validator', () => {
   it('should validate undefined', () => {
-    expect(alphaNum.validator(undefined)).toBe(true);
+    expect(alphaNum.exec(undefined)).toBe(true);
   });
 
   it('should validate null', () => {
-    expect(alphaNum.validator(null)).toBe(true);
+    expect(alphaNum.exec(null)).toBe(true);
   });
 
   it('should validate empty string', () => {
-    expect(alphaNum.validator('')).toBe(true);
+    expect(alphaNum.exec('')).toBe(true);
   });
 
   it('should validate numbers', () => {
-    expect(alphaNum.validator(1234567890)).toBe(true);
+    expect(alphaNum.exec(1234567890)).toBe(true);
   });
 
   it('should not validate space', () => {
-    expect(alphaNum.validator(' ')).toBe(false);
+    expect(alphaNum.exec(' ')).toBe(false);
   });
 
   it('should validate english letters', () => {
-    expect(alphaNum.validator('abcxyzABCXYZ')).toBe(true);
+    expect(alphaNum.exec('abcxyzABCXYZ')).toBe(true);
+  });
+
+  it('should validate english letters', () => {
+    expect(alphaNum.exec('abcxyz_ABCXYZ')).toBe(false);
+  });
+
+  it('should validate english letters', () => {
+    expect(alphaNum(true).exec('abcxyz_ABCXYZ')).toBe(true);
   });
 
   it('should validate alphaNum', () => {
-    expect(alphaNum.validator('abc123')).toBe(true);
+    expect(alphaNum.exec('abc123')).toBe(true);
   });
 
   it('should not validate padded letters', () => {
-    expect(alphaNum.validator(' abc ')).toBe(false);
+    expect(alphaNum.exec(' abc ')).toBe(false);
   });
 
   it('should not validate unicode', () => {
-    expect(alphaNum.validator('🎉')).toBe(false);
+    expect(alphaNum.exec('🎉')).toBe(false);
   });
 });
