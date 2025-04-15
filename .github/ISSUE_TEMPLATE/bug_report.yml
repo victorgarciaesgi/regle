@@ -9,7 +9,7 @@ body:
     id: reproduction
     attributes:
       label: Reproduction
-      description: 'If possible, provide reproduction of your bug using [this template on stackblitz](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-reproduction?file=src/views/Home.vue). You can also [clone the repository here](https://github.com/victorgarciaesgi/regle-reproduction)'
+      description: 'If possible, provide reproduction of your bug using [this template on stackblitz](https://stackblitz.com/github.com/victorgarciaesgi/regle-reproduction?file=src/views/Home.vue). You can also [clone the repository here](https://github.com/victorgarciaesgi/regle-reproduction)'
       placeholder: Reproduction
     validations:
       required: true
