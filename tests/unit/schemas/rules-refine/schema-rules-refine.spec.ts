@@ -2,12 +2,14 @@ import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
 import { valibotRulesRefineFixture } from './fixtures/valibot.fixture';
 import { zodRulesRefineFixture } from './fixtures/zod.fixture';
+import { zod4RulesRefineFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotRulesRefineFixture],
   ['zod', zodRulesRefineFixture],
+  // ['zod4', zod4RulesRefineFixture],
 ])('schemas (%s) - rules refinements ', async (name, regleSchema) => {
-  it('should take refinements in zod schemas', async () => {
+  it('should take refinements in schemas', async () => {
     const { vm } = createRegleComponent(regleSchema);
 
     vm.r$.$value.password = 'a';

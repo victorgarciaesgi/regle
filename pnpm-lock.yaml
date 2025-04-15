@@ -708,6 +708,9 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 3.24.2
+      zod4:
+        specifier: npm:zod@next
+        version: zod@4.0.0-beta.20250414T061543
 
   ui-tests/fixtures/ui-vue3:
     dependencies:
@@ -3157,6 +3160,9 @@ packages:
 
   '@vueuse/shared@12.5.0':
     resolution: {integrity: sha512-vMpcL1lStUU6O+kdj6YdHDixh0odjPAUM15uJ9f7MY781jcYkIwFA4iv2EfoIPO6vBmvutI1HxxAwmf0cx5ISQ==}
+
+  '@zod/core@0.5.0':
+    resolution: {integrity: sha512-9EW5fOng5558DM68WmVtecPzHuROdB5AcBVOBVqtPIup1quYRxxzwzT9+BPNX5Pr+so0wP/Hxv8+pCrBbjKQeg==}
 
   abbrev@2.0.0:
     resolution: {integrity: sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==}
@@ -6937,6 +6943,9 @@ packages:
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
+  zod@4.0.0-beta.20250414T061543:
+    resolution: {integrity: sha512-1X7/cVHAWBt9jEIIg2Q2GFEApZy1VYe+YBxsjwVMmDZfMvn09CylsKLGZtfjZ/cwYrJha0OIWOh+MouaOj3Zdg==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -9777,6 +9786,8 @@ snapshots:
       vue: 3.5.13(typescript@5.8.2)
     transitivePeerDependencies:
       - typescript
+
+  '@zod/core@0.5.0': {}
 
   abbrev@2.0.0: {}
 
@@ -14843,6 +14854,10 @@ snapshots:
       readable-stream: 4.7.0
 
   zod@3.24.2: {}
+
+  zod@4.0.0-beta.20250414T061543:
+    dependencies:
+      '@zod/core': 0.5.0
 
   zwitch@2.0.4: {}
 

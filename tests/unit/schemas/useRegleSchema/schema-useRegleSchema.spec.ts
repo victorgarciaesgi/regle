@@ -10,10 +10,12 @@ import { valibotNestedRegleFixture } from './fixtures/valibot.fixture';
 import { zodNestedRegleFixture } from './fixtures/zod.fixture';
 import { z } from 'zod';
 import { inferSchema } from '@regle/schemas';
+import { zod4NestedRegleFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],
   ['zod', zodNestedRegleFixture],
+  ['zod4', zod4NestedRegleFixture],
   // ['arktype', arktypeNestedRegleFixture],
 ])('schemas (%s) - useRegleSchema ', async (name, regleSchema) => {
   beforeEach(() => {

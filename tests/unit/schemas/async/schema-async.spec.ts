@@ -3,10 +3,12 @@ import { nextTick } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { valibotAsyncSchemaFixture } from './fixtures/valibot.fixture';
 import { zodAsyncSchemaFixture } from './fixtures/zod.fixture';
+import { zod4AsyncSchemaFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotAsyncSchemaFixture],
   ['zod', zodAsyncSchemaFixture],
+  ['zod4', zod4AsyncSchemaFixture],
 ])('schema (%s) - useRegleSchema with async rules and Object refs', async (name, regleSchema) => {
   beforeAll(() => {
     vi.useFakeTimers();

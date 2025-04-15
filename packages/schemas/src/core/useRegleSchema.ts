@@ -2,7 +2,6 @@ import type {
   DeepMaybeRef,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
-  MaybeInput,
   PrimitiveTypes,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
@@ -12,11 +11,11 @@ import type {
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
+import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSingleFieldSchema } from '../types';
-import type { PartialDeep } from 'type-fest';
 
 export interface useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
