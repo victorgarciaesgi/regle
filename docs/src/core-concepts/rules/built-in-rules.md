@@ -66,6 +66,7 @@ _**Params**_
 Allows only alphanumeric characters.
 
 ```ts twoslash
+// @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
 import { alphaNum } from '@regle/rules';
