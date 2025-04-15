@@ -58,6 +58,12 @@ describe('createVariant', () => {
     // @ts-expect-error unknown field
     expect(vm.r$.$fields.twoValue).toBe(undefined);
 
+    // @ts-expect-error unknown key
+    narrowVariant(vm.r$.$fields, 'NOT_KNOWN', 'ONE');
+
+    // @ts-expect-error unknown value
+    narrowVariant(vm.r$.$fields, 'type', 'NOT_ASSIGNABLE');
+
     const { valid, data } = await vm.r$.$validate();
 
     if (valid) {
@@ -156,6 +162,22 @@ describe('createVariant', () => {
         >
       >();
     }
+
+    vm.r$.$value.type = undefined;
+    await vm.$nextTick();
+
+    expect(narrowVariant(vm.r$.$fields, 'type', 'ONE')).toBe(false);
+    expect(narrowVariant(vm.r$.$fields, 'type', 'TWO')).toBe(false);
+
+    expectTypeOf(vm.r$.$fields.firstName).toEqualTypeOf<
+      RegleFieldStatus<
+        string | undefined,
+        {
+          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+        },
+        RegleShortcutDefinition<any>
+      >
+    >();
   });
 
   // - Given

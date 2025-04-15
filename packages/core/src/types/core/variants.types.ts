@@ -3,13 +3,27 @@ import type { EmptyObject, IsEmptyObject, UnionToTuple } from 'type-fest';
 import type {
   AllRulesDeclarations,
   InferRegleStatusType,
+  RegleCollectionStatus,
+  RegleFieldStatus,
   ReglePartialRuleTree,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { TupleToPlainObj } from '../utils';
+import type { LazyJoinDiscriminatedUnions, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
+
+export type NarrowVariant<
+  TRoot extends {
+    [x: string]: unknown;
+  },
+  TKey extends keyof TRoot,
+  TValue extends LazyJoinDiscriminatedUnions<
+    Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+  > extends { $value: infer V }
+    ? V
+    : unknown,
+> = Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }>;
 
 export type MaybeVariantStatus<
   TState extends Record<string, any> | undefined = Record<string, any>,

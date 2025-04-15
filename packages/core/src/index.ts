@@ -91,4 +91,5 @@ export type {
   ScopedInstancesRecordLike,
   InferSafeOutput,
   MaybeVariantStatus,
+  NarrowVariant,
 } from './types';
