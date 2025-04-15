@@ -1,6 +1,6 @@
 import type { MaybeRef, Ref } from 'vue';
 import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
-import type { ArrayElement, Maybe, MaybeGetter, Unwrap } from '../utils';
+import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
@@ -42,8 +42,8 @@ export type RegleComputedRules<
       : Partial<AllRulesDeclarations>
     : TCustomRules,
 > = {
-  [TKey in keyof TState]?: RegleFormPropertyType<
-    TState[TKey],
+  [TKey in keyof JoinDiscriminatedUnions<TState>]?: RegleFormPropertyType<
+    JoinDiscriminatedUnions<TState>[TKey],
     TCustom extends Partial<AllRulesDeclarations> ? TCustom : {}
   >;
 };
@@ -99,9 +99,9 @@ export type RegleRuleDecl<
     infer TParams
   >
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
-    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
-      ? FormRuleDeclaration<TValue, any>
-      : FormRuleDeclaration<TValue, any> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
+      ? FormRuleDeclaration<TValue, any[]>
+      : FormRuleDeclaration<TValue, any[]> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
 };
 
 /**

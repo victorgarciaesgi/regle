@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.0.9",
+  "version": "1.1.0-beta.2",
   "description": "Headless form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -34,9 +34,9 @@
     "expect-type": "1.2.0",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vitest": "3.0.9",
+    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"

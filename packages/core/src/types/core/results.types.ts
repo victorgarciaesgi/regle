@@ -1,4 +1,4 @@
-import type { MaybeRef, UnwrapRef } from 'vue';
+import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
   CustomRulesDeclarationTree,
   RegleCollectionRuleDecl,
@@ -13,10 +13,10 @@ import type {
   ArrayElement,
   ExtendOnlyRealRecord,
   ExtractFromGetter,
+  JoinDiscriminatedUnions,
   Maybe,
   MaybeOutput,
   Prettify,
-  Unwrap,
 } from '../utils';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
@@ -64,8 +64,8 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
 export type InferSafeOutput<
   TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
 > =
-  UnwrapRef<TRegle> extends RegleRoot<infer TState, infer TRules>
-    ? DeepSafeFormState<TState, TRules>
+  UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
+    ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>
       : never;
@@ -74,7 +74,7 @@ export type $InternalRegleResult = { valid: boolean; data: any };
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree> | undefined,
+  TRules extends ReglePartialRuleTree<Record<string, any>, CustomRulesDeclarationTree> | undefined,
 > = [unknown] extends [TState]
   ? {}
   : TRules extends undefined
@@ -93,15 +93,18 @@ export type DeepSafeFormState<
         >
       : TState;
 
-type FieldHaveRequiredRule<TRule extends RegleRuleDecl> = unknown extends TRule['required']
-  ? false
-  : TRule['required'] extends undefined
-    ? false
-    : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
-      ? Params extends never[]
-        ? true
-        : false
-      : false;
+type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
+  TRule extends RegleRuleDecl<any, any>
+    ? NonNullable<TRule['required']> extends TRule['required']
+      ? true
+      : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+        ? Params extends never[]
+          ? true
+          : false
+        : NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any>
+          ? true
+          : false
+    : false;
 
 type ObjectHaveAtLeastOneRequiredField<
   TState extends Record<string, any>,
@@ -135,11 +138,14 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
       : TState
     : TRule extends ReglePartialRuleTree<any, any>
       ? ExtendOnlyRealRecord<TState> extends true
-        ? DeepSafeFormState<NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {}, TRule>
+        ? DeepSafeFormState<
+            NonNullable<TState> extends Record<string, any> ? JoinDiscriminatedUnions<NonNullable<TState>> : {},
+            TRule
+          >
         : TRule extends RegleRuleDecl<any, any>
           ? FieldHaveRequiredRule<TRule> extends true
             ? TState
-            : Maybe<TState>
+            : MaybeOutput<TState>
           : TState
       : TState;
 
@@ -169,14 +175,4 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
       : false;
 
 export type SafeFieldProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined = never> =
-  TRule extends RegleRuleDecl<any, any>
-    ? unknown extends TRule['required']
-      ? MaybeOutput<TState>
-      : TRule['required'] extends undefined
-        ? never
-        : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
-          ? Params extends never[]
-            ? NonNullable<TState>
-            : MaybeOutput<TState>
-          : MaybeOutput<TState>
-    : MaybeOutput<TState>;
+  FieldHaveRequiredRule<TRule> extends true ? NonNullable<TState> : MaybeOutput<TState>;

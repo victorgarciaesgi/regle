@@ -23,7 +23,8 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "types": [
-      "vitest/globals"
+      "vitest/globals",
+      "node"
     ]
   },
   "include": [

@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.0.9",
+  "version": "1.1.0-beta.2",
   "description": "Regle nuxt module",
   "license": "MIT",
   "type": "module",
@@ -52,7 +52,7 @@
     "nuxt": "3.16.1",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "5.6.3",
     "unbuild": "3.5.0",
     "vitest": "catalog:",
