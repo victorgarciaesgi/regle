@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress';
 import { groupIconMdPlugin, groupIconVitePlugin, localIconLoader } from 'vitepress-plugin-group-icons';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { generateSatoriBanner } from './satori-banner';
+import { version } from '../../package.json';
 
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
@@ -40,7 +41,28 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 const Nav: DefaultTheme.NavItem[] = [
   { text: 'Getting Started', link: '/introduction/' },
   { text: 'Core concepts', items: CoreConcepts },
-  { text: 'Playground', link: 'https://play.reglejs.dev' },
+  { text: 'Playground', link: '/examples/playground' },
+  {
+    text: 'Blog',
+    link: '/blog',
+  },
+  {
+    text: `v${version}`,
+    items: [
+      {
+        items: [
+          {
+            text: `v${version}`,
+            link: `https://github.com/victorgarciaesgi/regle/releases/tag/v${version}`,
+          },
+          {
+            text: 'Releases Notes',
+            link: `https://github.com/victorgarciaesgi/regle/releases`,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -177,7 +199,11 @@ export default defineConfig({
         collapsed: true,
       },
     ],
-    socialLinks: [{ icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' }],
+    socialLinks: [
+      { icon: 'x', link: 'https://x.com/desnoth_dev' },
+      { icon: 'bluesky', link: 'https://bsky.app/profile/vicflix.dev' },
+      { icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' },
+    ],
     footer: {
       message: 'Released under the MIT License. Logo by Johannes Lacourly',
       copyright: 'Copyright © 2023-present Victor Garcia',
