@@ -21,7 +21,7 @@ export * from './url';
 export * from './dateAfter';
 export * from './dateBefore';
 export * from './dateBetween';
-export * from './ipAddress';
+export * from './ipv4Address';
 export * from './macAddress';
 export * from './checked';
 export * from './contains';

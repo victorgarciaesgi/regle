@@ -59,7 +59,7 @@ export type DefaultValidators = {
   >;
   exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-  ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
+  ipv4Address: RegleRuleDefinition<string, [], false, boolean, string>;
   literal: RegleRuleDefinition<string | number, [literal: string | number], false, boolean, string | number>;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
   maxLength: RegleRuleWithParamsDefinition<

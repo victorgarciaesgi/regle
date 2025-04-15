@@ -300,17 +300,17 @@ const { r$ } = useRegle({ count: 0 }, {
 ```
 
 
-## `ipAddress`
+## `ipv4Address`
 
 Validates IPv4 addresses in dotted decimal notation *127.0.0.1*.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
 // ---cut---
-import { ipAddress } from '@regle/rules';
+import { ipv4Address } from '@regle/rules';
 
 const { r$ } = useRegle({ address: '' }, {
-  address: { ipAddress },
+  address: { ipv4Address },
 })
 ```
 
