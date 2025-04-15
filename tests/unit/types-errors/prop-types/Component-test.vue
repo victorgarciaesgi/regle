@@ -76,7 +76,7 @@ expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength.$params).toEqualT
 
 //-
 expectTypeOf(props.enforcedCustomRulesField.$rules.myCustomRule).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, []>
+  RegleRuleStatus<string | undefined, any[], RegleRuleMetadataDefinition>
 >();
 </script>
 

@@ -4,6 +4,7 @@ import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
   AllRulesDeclarations,
+  CustomRulesDeclarationTree,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
   Regle,
@@ -78,6 +79,11 @@ export interface useRegleFn<
         TShortcuts,
         TAdditionalReturnProperties
       >;
+  __config?: {
+    rules?: () => CustomRulesDeclarationTree;
+    modifiers?: RegleBehaviourOptions;
+    shortcuts?: TShortcuts;
+  };
 }
 
 export function createUseRegleComposable<

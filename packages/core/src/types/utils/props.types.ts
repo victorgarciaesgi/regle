@@ -22,8 +22,8 @@ export type RegleEnforceRequiredRules<TRules extends keyof DefaultValidators> = 
 };
 
 export type RegleEnforceCustomRequiredRules<
-  T extends Partial<AllRulesDeclarations> | useRegleFn<any>,
-  TRules extends T extends useRegleFn<any> ? keyof InferRegleRules<T> : keyof T,
+  T extends Partial<AllRulesDeclarations> | useRegleFn<any, any>,
+  TRules extends T extends useRegleFn<any, any> ? keyof InferRegleRules<T> : keyof T,
 > = {
   [K in TRules]-?: T extends useRegleFn<any>
     ? K extends keyof InferRegleRules<T>

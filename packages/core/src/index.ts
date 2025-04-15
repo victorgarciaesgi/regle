@@ -1,6 +1,7 @@
 export {
   createRule,
   defineRegleConfig,
+  extendRegleConfig,
   inferRules,
   unwrapRuleParameters,
   useRegle,
