@@ -93,4 +93,5 @@ export type {
   InferSafeOutput,
   MaybeVariantStatus,
   NarrowVariant,
+  DefaultValidatorsTree,
 } from './types';

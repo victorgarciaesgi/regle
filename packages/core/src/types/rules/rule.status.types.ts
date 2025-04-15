@@ -61,9 +61,13 @@ export type RegleStatus<
 > = RegleCommonStatus<TState> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: {
-    readonly [TKey in keyof TState as IsEmptyObject<TRules[TKey]> extends true ? never : TKey]: IsUnion<
-      NonNullable<TRules[TKey]>
-    > extends true
+    readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+      ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+        ? IsEmptyObject<TRules[TKey]> extends true
+          ? TKey
+          : never
+        : never
+      : TKey]: IsUnion<NonNullable<TRules[TKey]>> extends true
       ? ExtendOnlyRealRecord<TState[TKey]> extends true
         ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
         : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
@@ -72,9 +76,9 @@ export type RegleStatus<
     readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
       ? NonNullable<TRules[TKey]> extends RegleRuleDecl
         ? IsEmptyObject<TRules[TKey]> extends true
-          ? TKey
-          : never
-        : never
+          ? never
+          : TKey
+        : TKey
       : never]-?: IsUnion<NonNullable<TRules[TKey]>> extends true
       ? ExtendOnlyRealRecord<TState[TKey]> extends true
         ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
@@ -284,7 +288,7 @@ interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | 
 export type RegleRuleStatus<
   TValue = any,
   TParams extends any[] = any[],
-  TMetadata extends RegleRuleMetadataDefinition = any,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
 > = {
   /** The name of the rule type. */
   readonly $type: string;

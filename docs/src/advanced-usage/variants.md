@@ -149,7 +149,7 @@ import {ref} from 'vue';
 
 // @include: nested-types
 
-
+// ---cut---
 import { useRegle, createVariant} from '@regle/core';
 import { literal, required, email } from '@regle/rules';
 
@@ -171,7 +171,6 @@ const {r$} = useRegle(state, () => {
     login: loginVariant.value
   };
 })
-// ---cut---
 ```
 
 In the component:

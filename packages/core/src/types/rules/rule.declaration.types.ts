@@ -154,9 +154,7 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
 export type InlineRuleDeclaration<
   TValue extends any = any,
   TParams extends any[] = any[],
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
-    | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition>,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = boolean,
 > = (value: Maybe<TValue>, ...args: UnwrapRegleUniversalParams<TParams>) => TReturn;
 
 /**

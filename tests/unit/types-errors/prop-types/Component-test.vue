@@ -17,6 +17,8 @@ import type { useCustomRegle } from './prop-types.config';
 
 type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
+type test = RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'myCustomRule'>;
+
 const props = defineProps<{
   unknownField: RegleFieldStatus;
   booleanField: RegleFieldStatus<boolean | undefined>;
@@ -76,7 +78,7 @@ expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength.$params).toEqualT
 
 //-
 expectTypeOf(props.enforcedCustomRulesField.$rules.myCustomRule).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, any[], RegleRuleMetadataDefinition>
+  RegleRuleStatus<string | undefined, [], boolean>
 >();
 </script>
 

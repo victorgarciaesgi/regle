@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint packages/**",
     "lint:fix": "eslint packages/** --fix",
-    "typecheck": "pnpm run -r --parallel --filter='@regle/*' typecheck",
+    "typecheck": "pnpm run -r --parallel --filter='@regle/*' typecheck && pnpm run -r --filter='ui-vue3' typecheck",
     "build": "pnpm run --filter='@regle/core' build && pnpm run -r --parallel --filter='@regle/*' --filter='!@regle/core' build",
     "build:dev": "pnpm run --filter='@regle/core' build:dev && pnpm run -r --parallel --filter='@regle/*' --filter='!@regle/core' build:dev",
     "build:sourcemaps": "pnpm run --filter='@regle/core' build:sourcemaps && pnpm run -r --parallel --filter='@regle/*' --filter='!@regle/core' build:sourcemaps",

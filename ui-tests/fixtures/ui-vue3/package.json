@@ -7,7 +7,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit --project ./tsconfig.app.json"
   },
   "dependencies": {
     "@regle/core": "workspace:*",

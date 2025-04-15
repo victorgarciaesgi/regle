@@ -44,6 +44,6 @@ const props = defineProps<{
 }>();
 
 const isRequired = computed(() => {
-  return props.field.$rules.required?.$active ?? false;
+  return props.field.$isRequired;
 });
 </script>

@@ -5,6 +5,8 @@ export type CustomRulesDeclarationTree = {
   [x: string]: RegleRuleRawInput<any, any[], boolean, any> | undefined;
 };
 
-export type AllRulesDeclarations = CustomRulesDeclarationTree & {
+export type DefaultValidatorsTree = {
   [K in keyof DefaultValidators]: RegleRuleRawInput<any, any[], boolean, any> | undefined;
 };
+
+export type AllRulesDeclarations = CustomRulesDeclarationTree & DefaultValidatorsTree;
