@@ -17,8 +17,6 @@ import type { useCustomRegle } from './prop-types.config';
 
 type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
-type test = RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'myCustomRule'>;
-
 const props = defineProps<{
   unknownField: RegleFieldStatus;
   booleanField: RegleFieldStatus<boolean | undefined>;

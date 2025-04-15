@@ -53,15 +53,6 @@ export type GuessMetadataFromRules<
   TMeta = ExtractMetadata<ExtractMetaDataFromRules<T>>,
 > = TMeta extends EmptyObject ? boolean : TMeta;
 
-type test = ExtractMetaDataFromRules<
-  [
-    (value: any) => {
-      $valid: true;
-      foo: string;
-    },
-  ]
->;
-
 type CreateFn<T extends any[]> = (...args: T) => any;
 
 type FilterTuple<T extends any[]> = T extends [infer F, ...infer R]
