@@ -500,10 +500,8 @@ export function createReactiveFieldStatus({
 
     if (!fromParent) {
       if (options?.toInitialState) {
-        $unwatch();
         state.value = cloneDeep(initialState);
       } else if (options?.toState) {
-        $unwatch();
         let newInitialState: unknown;
         if (typeof options?.toState === 'function') {
           newInitialState = options?.toState();
@@ -535,10 +533,6 @@ export function createReactiveFieldStatus({
       Object.values($rules.value).forEach((rule) => {
         return rule.$parse();
       });
-    }
-
-    if (!fromParent) {
-      createReactiveRulesResult();
     }
   }
 

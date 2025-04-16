@@ -15,7 +15,7 @@ describe('.$reset', () => {
 
     shouldBeInvalidField(vm.r$.$fields.email);
 
-    vm.r$.$fields.email.$touch();
+    vm.r$.$fields.email.$validate();
     await nextTick();
 
     shouldBeErrorField(vm.r$.$fields.email);
@@ -23,6 +23,16 @@ describe('.$reset', () => {
     vm.r$.$fields.email.$reset();
 
     shouldBeInvalidField(vm.r$.$fields.email);
+
+    vm.r$.$value.email = 'foo@free.fr';
+    await nextTick();
+
+    shouldBeValidField(vm.r$.$fields.email);
+
+    vm.r$.$fields.email.$reset();
+    await nextTick();
+
+    shouldBePristineField(vm.r$.$fields.email);
   });
 
   it('should update the $dirty state to false, only on the current property', async () => {
@@ -87,6 +97,16 @@ describe('.$reset', () => {
 
     await nextTick();
 
+    vm.r$.$validate();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$);
+
+    vm.r$.$reset();
+    await nextTick();
+
+    shouldBeInvalidField(vm.r$);
+
     vm.r$.$value = {
       nested: {
         collection: [{ name: 'eee' }],
@@ -100,6 +120,7 @@ describe('.$reset', () => {
     await nextTick();
 
     shouldBeValidField(vm.r$.$fields.contacts);
+    shouldBeValidField(vm.r$);
 
     vm.r$.$reset();
     await nextTick();
