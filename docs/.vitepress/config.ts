@@ -40,7 +40,7 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 const Nav: DefaultTheme.NavItem[] = [
   { text: 'Getting Started', link: '/introduction/' },
   { text: 'Core concepts', items: CoreConcepts },
-  { text: 'Playground', link: '/examples/playground' },
+  { text: 'Playground', link: 'https://play.reglejs.dev' },
 ];
 
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -81,10 +81,6 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 ];
 
 const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
-  {
-    text: 'Playground',
-    link: '/examples/playground',
-  },
   {
     text: 'Complete',
     items: [

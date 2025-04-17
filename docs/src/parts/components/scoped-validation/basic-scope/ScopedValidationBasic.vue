@@ -12,7 +12,7 @@
       <button @click="showChild2 = !showChild2">Toggle email</button>
       <button @click="reset">Reset</button>
       <button class="primary" @click="r$.$validate">Submit</button>
-      <code class="status" :status="r$.$correct"></code>
+      <code class="status" :status="!r$.$invalid"></code>
     </div>
   </div>
   <br />

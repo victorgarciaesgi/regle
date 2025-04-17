@@ -8,7 +8,7 @@
       />
 
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <code class="status" :status="r$.$correct"></code>
+      <code class="status" :status="!r$.$invalid"></code>
     </div>
 
     <div class="password-strength" :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">
