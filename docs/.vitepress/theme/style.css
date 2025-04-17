@@ -133,11 +133,3 @@
  * Give example pages more space to show the Stackblitz iframe embed,
  * we don't need the TOC there anyway.
  * -------------------------------------------------------------------------- */
-
-.container:has(.vp-doc[class*="_examples_"]) > div.aside {
-    display: none;
-}
-
-div.content > .content-container:has(.vp-doc[class*="_examples_"]) {
-    max-width: 100%;
-}

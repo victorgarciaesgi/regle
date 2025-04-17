@@ -2,6 +2,7 @@
 sidebar: false
 editLink: false
 outline: false
+aside: false
 ---
 
 <script setup>
