@@ -32,7 +32,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 
 ### Playground
 
-<a target='_blank' href="https://play.reglejs.dev"><img width="170" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/vue-sfc-play.png" /></a>
+<a target='_blank' href="https://play.reglejs.dev"><img width="170" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-playground-button.svg" /></a>
 
 | Simple demo  | Advanced Demo |
 | ------------- | ------------- |
