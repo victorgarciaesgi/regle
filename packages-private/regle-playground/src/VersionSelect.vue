@@ -21,30 +21,7 @@ async function fetchVersions(): Promise<string[]> {
   const res = await fetch(`https://data.jsdelivr.com/v1/package/npm/${props.pkg}`);
   const { versions } = (await res.json()) as { versions: string[] };
 
-  if (props.pkg === '@regle/core') {
-    // if the latest version is a pre-release, list all current pre-releases
-    // otherwise filter out pre-releases
-    let isInPreRelease = versions[0].includes('-');
-    const filteredVersions: string[] = [];
-    for (const v of versions) {
-      if (v.includes('-')) {
-        if (isInPreRelease) {
-          filteredVersions.push(v);
-        }
-      } else {
-        filteredVersions.push(v);
-        isInPreRelease = false;
-      }
-      if (filteredVersions.length >= 30) {
-        break;
-      }
-    }
-    return filteredVersions;
-  } else if (props.pkg === 'vue') {
-    return versions
-      .filter((v) => v.startsWith('3.') && !v.includes('-alpha') && !v.includes('-beta') && !v.includes('-rc'))
-      .slice(0, 30);
-  } else if (props.pkg === 'typescript') {
+  if (props.pkg === 'typescript') {
     return versions.filter((v) => !v.includes('dev') && !v.includes('insiders'));
   }
   return versions;

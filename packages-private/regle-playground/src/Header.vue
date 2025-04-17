@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { downloadProject } from './download/download';
-import { inject, ref } from 'vue';
 import Sun from './icons/Sun.vue';
 import Moon from './icons/Moon.vue';
 import Share from './icons/Share.vue';
@@ -63,9 +61,6 @@ function toggleDark() {
       </button>
       <button title="Copy sharable URL" class="share" @click="copyLink">
         <Share />
-      </button>
-      <button title="Download project files" class="download" @click="downloadProject(store)">
-        <Download />
       </button>
       <a
         href="https://github.com/vuejs/pinia/tree/v3/packages/online-playground"
