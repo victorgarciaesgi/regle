@@ -22,7 +22,6 @@ if (hash.startsWith('__DEV__')) {
 
 const store = useStore({}, hash);
 
-// enable experimental features
 const sfcOptions: SFCOptions = {
   script: {
     inlineTemplate: !useDevMode.value,
