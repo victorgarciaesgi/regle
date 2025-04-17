@@ -49,7 +49,6 @@ if (!hash) {
   });
 
   store.setFiles({
-    // gets the tsconfig and import map
     ...store.getFiles(),
     'App.vue': AppVue,
     'tsconfig.json': `
