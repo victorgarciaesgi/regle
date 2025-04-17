@@ -40,26 +40,18 @@
           "production": "./dist/regle-rules.min.mjs",
           "development": "./dist/regle-rules.mjs",
           "default": "./dist/regle-rules.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-rules.min.cjs",
-          "development": "./dist/regle-rules.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-rules.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-rules.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-rules.mjs",
   "module": "./dist/regle-rules.mjs",
   "types": "./dist/regle-rules.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],

@@ -47,26 +47,18 @@
           "production": "./dist/regle-core.min.mjs",
           "development": "./dist/regle-core.mjs",
           "default": "./dist/regle-core.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-core.min.cjs",
-          "development": "./dist/regle-core.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-core.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-core.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-core.mjs",
   "module": "./dist/regle-core.mjs",
   "types": "./dist/regle-core.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],

@@ -60,26 +60,18 @@
           "production": "./dist/regle-schemas.min.mjs",
           "development": "./dist/regle-schemas.mjs",
           "default": "./dist/regle-schemas.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-schemas.min.cjs",
-          "development": "./dist/regle-schemas.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-schemas.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-schemas.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-schemas.mjs",
   "module": "./dist/regle-schemas.mjs",
   "types": "./dist/regle-schemas.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],
