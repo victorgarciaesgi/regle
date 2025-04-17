@@ -16,11 +16,9 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
+    "@types/node": "catalog:",
     "@vue/reactivity": "catalog:",
-    "@vue/test-utils": "2.4.6",
-    "bumpp": "10.1.0",
-    "changelogithub": "13.13.0",
-    "cross-env": "7.0.3",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
@@ -28,7 +26,7 @@
     "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vitest": "3.0.9",
+    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
