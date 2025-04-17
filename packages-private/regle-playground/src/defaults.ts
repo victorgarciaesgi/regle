@@ -27,28 +27,27 @@ async function submit() {
 </script>
 
 <template>
-  <h2>Hello Regle</h2>
+  <h2>Hello Regle!</h2>
 
-  <label>Name</label><br/>
-  <input v-model="r$.$value.name" placeholder="Type your name" />
-  <ul style='font-size: 12px; color: red'>
-    <li v-for="error of r$.$errors.name" :key="error">
-      {{error}}
-    </li>
-  </ul>
+    <label>Name</label><br/>
+    <input v-model="r$.$value.name" placeholder="Type your name" />
+    <ul style='font-size: 12px; color: red'>
+      <li v-for="error of r$.$errors.name" :key="error">
+        {{error}}
+      </li>
+    </ul>
 
-  <label>Email (optional)</label><br/>
-  <input v-model="r$.$value.email" placeholder="Type your email" />
-  <ul style='font-size: 12px; color: red'>
-    <li v-for="error of r$.$errors.email" :key="error">
-      {{error}}
-    </li>
-  </ul>
+    <label>Email (optional)</label><br/>
+    <input v-model="r$.$value.email" placeholder="Type your email" />
+    <ul style='font-size: 12px; color: red'>
+      <li v-for="error of r$.$errors.email" :key="error">
+        {{error}}
+      </li>
+    </ul>
 
-  <button @click="submit">Submit</button>
-  <button @click="r$.$reset()">Reset</button>
-  <button @click="r$.$reset({toInitialState: true})">Restart</button>
-  <code class="status"> Form status {{!r$.$invalid ? '✅' : '❌'}}</code>
+    <button @click="submit">Submit</button>
+    <button @click="r$.$reset()">Reset</button>
+    <button @click="r$.$reset({toInitialState: true})">Restart</button>
+    <code class="status"> Form status {{!r$.$invalid ? '✅' : '❌'}}</code>
 </template>
-
 `.trimStart();

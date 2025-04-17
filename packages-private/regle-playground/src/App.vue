@@ -44,12 +44,15 @@ if (!hash) {
       '@regle/core': 'https://www.unpkg.com/@regle/core@latest/dist/regle-core.min.mjs',
       '@regle/rules': 'https://www.unpkg.com/@regle/rules@latest/dist/regle-rules.min.mjs',
       '@regle/schemas': 'https://www.unpkg.com/@regle/schemas@latest/dist/regle-schemas.min.mjs',
+      zod: 'https://cdn.jsdelivr.net/npm/zod@3.24.3/+esm',
+      valibot: 'https://cdn.jsdelivr.net/npm/valibot@1.0.0/+esm',
     },
   });
 
   store.setFiles({
     ...store.getFiles(),
     'App.vue': AppVue,
+
     'tsconfig.json': `
       {
         "compilerOptions": {

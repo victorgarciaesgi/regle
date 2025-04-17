@@ -82,6 +82,15 @@ onMounted(() => {
   margin-left: 4px;
 }
 
+.versions .active a {
+  color: var(--green);
+}
+
+.active-version .number {
+  color: var(--green);
+  margin-left: 4px;
+}
+
 .active-version::after {
   content: '';
   width: 0;

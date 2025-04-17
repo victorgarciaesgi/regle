@@ -21,7 +21,7 @@ hero:
       link: /core-concepts
     - theme: alt
       text: ▶ Play with it
-      link: /examples/playground
+      link: https://play.reglejs.dev
 
 features:
   - icon: 

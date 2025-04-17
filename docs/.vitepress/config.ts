@@ -44,7 +44,7 @@ const Nav: (DefaultTheme.NavItem | DefaultTheme.NavItemChildren)[] = [
   {
     text: 'Resources',
     items: [
-      { items: [{ text: 'Playground', link: '/examples/playground' }] },
+      { items: [{ text: 'Playground', link: 'https://play.reglejs.dev' }] },
       {
         items: [
           {
