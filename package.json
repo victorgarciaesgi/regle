@@ -27,7 +27,9 @@
     "ui-tests:test": "playwright test --reporter=junit",
     "docs:dev": "pnpm run --filter='docs' dev",
     "docs:build": "pnpm run build && pnpm run --filter='docs' build",
-    "docs:preview": "pnpm run --filter='docs' preview"
+    "docs:preview": "pnpm run --filter='docs' preview",
+    "repl:dev": "pnpm run --filter='regle-playground' dev",
+    "repl:build": "pnpm run build && pnpm run --filter='regle-playground' build"
   },
   "devDependencies": {
     "@pinia/testing": "1.0.0",
