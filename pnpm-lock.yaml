@@ -269,15 +269,6 @@ importers:
 
   packages-private/regle-playground:
     dependencies:
-      '@regle/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@regle/rules':
-        specifier: workspace:*
-        version: link:../../packages/rules
-      '@regle/schemas':
-        specifier: workspace:*
-        version: link:../../packages/schemas
       '@vue/repl':
         specifier: 4.5.1
         version: 4.5.1
