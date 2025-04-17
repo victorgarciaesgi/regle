@@ -38,13 +38,22 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
 ];
 
-const Nav: DefaultTheme.NavItem[] = [
+const Nav: (DefaultTheme.NavItem | DefaultTheme.NavItemChildren)[] = [
   { text: 'Getting Started', link: '/introduction/' },
   { text: 'Core concepts', items: CoreConcepts },
-  { text: 'Playground', link: '/examples/playground' },
   {
-    text: 'Blog',
-    link: '/blog',
+    text: 'Resources',
+    items: [
+      { items: [{ text: 'Playground', link: '/examples/playground' }] },
+      {
+        items: [
+          {
+            text: 'Blog',
+            link: '/blog',
+          },
+        ],
+      },
+    ],
   },
   {
     text: `v${version}`,
