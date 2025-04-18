@@ -28,8 +28,8 @@ This version solves **10** issues/enhancement, and will provide more flexibily a
 
 ### 🚀 Features
 
-- `InferSafeOutput` type to infer safe form values
 - Variants and discriminated variants support
+- `InferSafeOutput` type to infer safe form values
 - Allow rules with optional parameters to be used without function execution
 - Symbol option in alphaNum and alpha rules
 - Support Zod 4
@@ -46,15 +46,15 @@ This version solves **10** issues/enhancement, and will provide more flexibily a
 
 ## 📋 New features details 
 
+
+### Variants and discriminated variants support
+
 -
 
 ### `InferSafeOutput` type to infer safe form values
 
 -
 
-### Variants and discriminated variants support
-
--
 
 ### Allow rules with optional parameters to be used without function execution
 
