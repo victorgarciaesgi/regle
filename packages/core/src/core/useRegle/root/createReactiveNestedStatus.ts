@@ -291,7 +291,9 @@ export function createReactiveNestedStatus({
         });
         if (fields.length) {
           return fields.every(([_, statusOrField]) => {
-            if (isFieldStatus(statusOrField)) {
+            if (commonArgs.schemaMode) {
+              return statusOrField.$correct;
+            } else if (isFieldStatus(statusOrField)) {
               if ('required' in statusOrField.$rules && statusOrField.$rules.required.$active) {
                 return statusOrField?.$correct;
               }

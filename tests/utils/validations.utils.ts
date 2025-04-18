@@ -12,7 +12,7 @@ type PossibleFields =
   | SuperCompatibleRegleFieldStatus
   | SuperCompatibleRegleCollectionStatus;
 
-export function shouldBePristineField(field?: PossibleFields) {
+export function shouldBePristineField(field?: PossibleFields, shouldBeCorrect = false) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
@@ -20,7 +20,7 @@ export function shouldBePristineField(field?: PossibleFields) {
   if (field && '$pending' in field) {
     expect(field?.$pending).toBe(false);
   }
-  expect(field?.$correct).toBe(false);
+  expect(field?.$correct).toBe(shouldBeCorrect);
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$errors).toStrictEqual([]);
   }
