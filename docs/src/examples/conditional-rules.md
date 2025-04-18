@@ -1,5 +1,6 @@
 ---
 title: Conditional Rules
+aside: false
 ---
 
 # Conditional Rules Demo

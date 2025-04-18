@@ -1,5 +1,6 @@
 ---
 title: Advanced demo
+aside: false
 ---
 
 # Advanced demo

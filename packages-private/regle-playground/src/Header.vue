@@ -41,11 +41,7 @@ function toggleDark() {
       </a>
     </h1>
     <div class="links">
-      <VersionSelect v-model="store.typescriptVersion" pkg="typescript">
-        <template #label>
-          <img src="/logo-ts.svg" alt="TypeScript" class="version-logo" />
-        </template>
-      </VersionSelect>
+      <VersionSelect v-model="store.typescriptVersion" pkg="typescript" label="Typescript"> </VersionSelect>
 
       <button
         title="Toggle development production mode"
@@ -62,12 +58,7 @@ function toggleDark() {
       <button title="Copy sharable URL" class="share" @click="copyLink">
         <Share />
       </button>
-      <a
-        href="https://github.com/vuejs/pinia/tree/v3/packages/online-playground"
-        target="_blank"
-        title="View on GitHub"
-        class="github"
-      >
+      <a href="https://github.com/victorgarciaesgi/regle" target="_blank" title="View on GitHub" class="github">
         <GitHub />
       </a>
     </div>
@@ -119,7 +110,7 @@ h1 {
 }
 
 h1 a {
-  color: var(--color-branding);
+  color: #fff;
   text-decoration: none;
 }
 
