@@ -291,7 +291,14 @@ export function createReactiveNestedStatus({
         });
         if (fields.length) {
           return fields.every(([_, statusOrField]) => {
-            return statusOrField?.$correct || (statusOrField.$anyDirty && !statusOrField.$invalid);
+            if (isFieldStatus(statusOrField)) {
+              if ('required' in statusOrField.$rules && statusOrField.$rules.required.$active) {
+                return statusOrField?.$correct;
+              }
+              return !statusOrField.$invalid;
+            }
+
+            return statusOrField?.$correct;
           });
         }
         return false;
