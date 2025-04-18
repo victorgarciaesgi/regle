@@ -50,16 +50,24 @@ The following exports will become globally available in your Nuxt application:
 
 - `@regle/core`
   - useRegle 
+  - inferRules
   - createRule
   - defineRegleConfig
-  - inferRules
+  - extendRegleConfig
+  - createVariant
+  - narrowVariant
+  - useScopedRegle
+  - useCollectScope
+  
 - `@regle/rules` Note: Built-in rules are not auto-injected to minimize the risk of name conflicts.
   - withAsync
   - withMessage
   - withParams
   - withTooltip
+  
 - `@regle/schemas` (if present)
   - useRegleSchema
   - inferSchema
   - withDeps
+  - defineRegleSchemaConfig
 

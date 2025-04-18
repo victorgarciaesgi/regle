@@ -11,7 +11,7 @@ import type {
 /**
  * The and operator combines multiple rules and validates successfully only if all provided rules are valid.
  */
-export function and<TRules extends FormRuleDeclaration<any, any>[]>(
+export function and<const TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
   ExtractValueFromRules<TRules>[number],

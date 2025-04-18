@@ -1,45 +1,25 @@
-import type { DeepReactiveState, MismatchInfo, NoInferLegacy, PrimitiveTypes } from '@regle/core';
+import type { DeepReactiveState, NoInferLegacy } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
-import { type ComputedRef, type MaybeRef, type UnwrapNestedRefs } from 'vue';
+import { type ComputedRef, type MaybeRef } from 'vue';
 
 export interface inferSchemaFn {
-  <
-    TState extends Record<string, any>,
-    TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
-    TValid = UnwrapNestedRefs<TState> extends PartialDeep<
-      StandardSchemaV1.InferInput<TSchema>,
-      { recurseIntoArrays: true }
-    >
-      ? {}
-      : MismatchInfo<
-          UnwrapNestedRefs<TState>,
-          PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
-        >,
-  >(
-    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
-    rulesFactory: TSchema
-  ): NoInferLegacy<TSchema>;
-  <
-    TState extends PrimitiveTypes,
-    TSchema extends StandardSchemaV1 & TValid,
-    TValid = TState extends StandardSchemaV1.InferInput<TSchema>
-      ? {}
-      : MismatchInfo<TState, StandardSchemaV1.InferInput<TSchema>>,
-  >(
-    state: MaybeRef<TState>,
-    rulesFactory: TSchema
+  <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
+    state:
+      | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
+      | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
+    rulesFactory: MaybeRef<TSchema>
   ): NoInferLegacy<TSchema>;
 }
 
 export function createInferSchemaHelper(): inferSchemaFn {
-  function inferRules(
+  function inferSchema(
     state: Record<string, any>,
     rulesFactory: Record<string, any> | (() => Record<string, any>) | ComputedRef<Record<string, any>>
   ) {
     return rulesFactory;
   }
-  return inferRules as any;
+  return inferSchema as any;
 }
 
 /**

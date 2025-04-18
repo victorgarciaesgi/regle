@@ -1,8 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "exactOptionalPropertyTypes": true
-  },
+  "compilerOptions": {},
   "include": [
     "./**/*",
     "./.vitepress/**/*.ts",

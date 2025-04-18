@@ -11,7 +11,7 @@ export function createUseScopedRegleComposable<
 ): {
   useScopedRegle: TCustomRegle;
 } {
-  const scopedUseRegle = customUseRegle ?? useRegle;
+  const scopedUseRegle: useRegleFn<any, any> = customUseRegle ?? useRegle;
 
   const useScopedRegle: TCustomRegle = ((
     state: Record<string, unknown>,
@@ -29,7 +29,7 @@ export function createUseScopedRegleComposable<
       return `instance-${$id.value}`;
     });
 
-    const { r$ } = scopedUseRegle(state, rulesFactory, restOptions) as unknown as Regle;
+    const { r$ } = scopedUseRegle(state, rulesFactory, restOptions);
 
     register();
 

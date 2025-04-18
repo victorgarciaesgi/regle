@@ -38,12 +38,18 @@ export function isValidatorRulesDef(rules: Ref<$InternalFormPropertyTypes>): rul
   return !!rules.value && isObject(rules.value);
 }
 
-export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any> {
+export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[]> {
   return isObject(rule) && '_validator' in rule;
 }
 
 export function isFormRuleDefinition(rule: Ref<unknown>): rule is Ref<RegleRuleDefinition<any, any>> {
-  return !(typeof rule.value === 'function');
+  if (typeof rule.value === 'function') {
+    if ('_validator' in rule.value) {
+      return true;
+    }
+    return false;
+  }
+  return true;
 }
 
 export function isFormInline(rule: Ref<unknown>): rule is Ref<InlineRuleDeclaration<any, any[], any>> {

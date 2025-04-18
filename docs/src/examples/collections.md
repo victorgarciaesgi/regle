@@ -1,5 +1,6 @@
 ---
 title: Collections
+aside: false
 ---
 
 # Collections Demo

@@ -1,5 +1,6 @@
 ---
 title: Server Validation
+aside: false
 ---
 
 # Server Validation Demo

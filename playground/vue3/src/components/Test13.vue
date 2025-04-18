@@ -1,38 +1,49 @@
-<template>
-  <main>
-    <code>r$.$errors</code>
-    <JSONViewer :data="r$.$errors" />
-
-    <code>flatErrors(r$.$errors)</code>
-    ⬇️
-    <JSONViewer :data="flatErrors(r$.$errors)" />
-
-    <code>flatErrors(r$.$errors, {includePath: true})</code>
-    ⬇️
-    <JSONViewer :data="flatErrors(r$.$errors, { includePath: true })" />
-    <button type="button" @click="r$.$validate">Submit</button>
-  </main>
-</template>
-
 <script setup lang="ts">
-import { flatErrors, useRegle } from '@regle/core';
-import { email, minLength, required } from '@regle/rules';
-import JSONViewer from './JSONViewer.vue';
+import { ref } from 'vue';
+import { useRegle } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { name: '', level0: { email: 'bar' }, collection: [{ foo: '' }] },
-  {
-    name: { required, minLength: minLength(5) },
-    level0: {
-      email: { email },
-    },
-    collection: {
-      $each: {
-        foo: {
-          required,
-        },
-      },
-    },
+const state = ref({ name: '', email: '' });
+
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  email: { email },
+});
+
+async function submit() {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
+  } else {
+    console.warn('Errors: ', r$.$errors);
   }
-);
+}
 </script>
+
+<template>
+  <h2>Hello Regle</h2>
+
+  <label>Name</label><br />
+  <input v-model="r$.$value.name" placeholder="Type your name" />
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.name" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <label>Email (optional)</label><br />
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.email" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <button @click="submit">Submit</button>
+  <button @click="r$.$reset()">Reset</button>
+  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
+  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+</template>

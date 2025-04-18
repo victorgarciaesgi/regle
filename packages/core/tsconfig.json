@@ -5,4 +5,7 @@
     "./src/reset.d.ts",
     "./tests/**/*"
   ],
+  "exclude": [
+    "./dist/**/*"
+  ]
 }

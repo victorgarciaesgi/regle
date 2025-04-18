@@ -48,3 +48,31 @@ async function submit() {
   }
 }
 ```
+
+<br/>
+
+### `InferSafeOutput`
+
+You can also staticly infer the safe output from any `r$` instance.
+
+
+```ts twoslash
+import { ref, type Ref, computed } from 'vue';
+import { required } from '@regle/rules';
+// ---cut---
+import { useRegle, InferSafeOutput } from '@regle/core';
+type Form = {
+  firstName?: string;
+  lastName?: string;
+}
+
+const form: Ref<Form> = ref({ firstName: '', lastName: '' })
+
+const { r$ } = useRegle(form, {
+  lastName: { required },
+});
+
+type FormRequest = InferSafeOutput<typeof r$>;
+//    ^?
+```
+

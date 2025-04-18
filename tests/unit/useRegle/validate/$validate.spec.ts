@@ -1,6 +1,6 @@
+import { useRegle, type InferSafeOutput, type MaybeOutput } from '@regle/core';
+import { required } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { useRegle, type MaybeOutput } from '@regle/core';
-import { email, required } from '@regle/rules';
 
 function simpleNestedStateWithMixedValidation() {
   interface Form {
@@ -67,5 +67,22 @@ describe('$validate', () => {
         }[];
       }>();
     }
+
+    // InferSafeOutput type
+
+    expectTypeOf<InferSafeOutput<typeof vm.r$>>().toEqualTypeOf<{
+      email: string;
+      date?: Date | undefined;
+      user: {
+        lastName?: string | undefined;
+        firstName: string;
+      };
+      contacts: {
+        name: string;
+      }[];
+      collection: {
+        name: string;
+      }[];
+    }>();
   });
 });

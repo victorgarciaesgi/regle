@@ -6,6 +6,7 @@ import type { CommonComparationOptions } from '@regle/core';
 
 describe('or validator', () => {
   it('should not validate no functions', () => {
+    // @ts-expect-error
     const result = or();
 
     expect(result.exec(undefined)).toBe(false);
@@ -43,13 +44,13 @@ describe('or validator', () => {
   });
 
   it('should validate inline function', () => {
-    const result = or((value) => ({ $valid: true, foo: 'bar' }), required);
+    const result = or((value: unknown) => ({ $valid: true, foo: 'bar' }), required);
     expect(result.exec(undefined)).toBe(true);
     expect(result.exec('fof')).toBe(true);
   });
 
   it('should validate async function', async () => {
-    const result = or(async (value) => {
+    const result = or(async (value: unknown) => {
       await timeout(100);
       return false;
     }, required);
@@ -58,7 +59,8 @@ describe('or validator', () => {
   });
 
   it('should have correct return types', () => {
-    expectTypeOf(or()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
+    // @ts-expect-error
+    or();
     expectTypeOf(or(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
     expectTypeOf(or(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
@@ -69,7 +71,5 @@ describe('or validator', () => {
         unknown
       >
     >();
-
-    expectTypeOf(or()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
   });
 });

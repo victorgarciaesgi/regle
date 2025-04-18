@@ -78,5 +78,5 @@ export function createRule<
       return staticProcessors as any;
     }
   }
-  throw new Error('Validator must be a function');
+  throw new Error('[createRule] validator must be a function');
 }

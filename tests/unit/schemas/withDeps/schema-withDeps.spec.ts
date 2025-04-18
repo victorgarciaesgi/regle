@@ -1,8 +1,14 @@
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
 import { valibotWithDepsFixture } from './fixtures/valibot.fixture';
+import { zodWithDepsFixture } from './fixtures/zod.fixture';
+import { zod4WithDepsFixture } from './fixtures/zod4.fixture';
 
-describe.each([['valibot', valibotWithDepsFixture]])('schemas (%s) - withDeps', async (name, regleSchema) => {
+describe.each([
+  ['valibot', valibotWithDepsFixture],
+  ['zod', zodWithDepsFixture],
+  ['zod4', zod4WithDepsFixture],
+])('schemas (%s) - withDeps', async (name, regleSchema) => {
   beforeEach(() => {
     vi.useFakeTimers();
   });

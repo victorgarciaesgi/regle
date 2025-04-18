@@ -37,7 +37,7 @@ it('zod - collections should have the correct type', () => {
   expectTypeOf(r$.$fields.collection).toEqualTypeOf<
     RegleSchemaCollectionStatus<
       z.infer<typeof childSchema>,
-      z.infer<typeof childSchema>[] | [],
+      z.infer<typeof childSchema>[],
       RegleShortcutDefinition<any>
     >
   >;

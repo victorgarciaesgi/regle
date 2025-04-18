@@ -13,6 +13,10 @@ describe('macAddress validator', () => {
     expect(macAddress().exec('')).toBe(true);
   });
 
+  it('should validate empty string', () => {
+    expect(macAddress.exec('')).toBe(true);
+  });
+
   it('should not validate number', () => {
     expect(macAddress().exec(112233445566 as any)).toBe(false);
   });
@@ -20,6 +24,11 @@ describe('macAddress validator', () => {
   it('should validate zero mac', () => {
     expect(macAddress().exec('00:00:00:00:00:00')).toBe(true);
     expect(macAddress().exec('00:00:00:00:00:00:00:00')).toBe(true);
+  });
+
+  it('should validate zero mac', () => {
+    expect(macAddress.exec('00:00:00:00:00:00')).toBe(true);
+    expect(macAddress.exec('00:00:00:00:00:00:00:00')).toBe(true);
   });
 
   it('should validate correct mac', () => {

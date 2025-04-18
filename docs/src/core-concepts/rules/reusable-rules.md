@@ -101,10 +101,11 @@ export const myValidator = createRule({
 The parameters detection also works with optional and spread parameters
 
 ```ts twoslash
+// @noErrors
 import { createRule, type Maybe } from '@regle/core';
 // ---cut---
 export const myValidator = createRule({
-  validator: (value: Maybe<string>, optionalArg?: number, ...anyOtherArg: string[]) => {
+  validator: (value: Maybe<string>, optionalArg?: number, otherOptional?: string) => {
     return true;
   },
   message: ({ $params: [optionalArg, ...anyOtherArg] }) => {
@@ -112,9 +113,16 @@ export const myValidator = createRule({
   }
 });
 
-myValidator()
-myValidator(5)
-myValidator(5, 'foo', 'bar');
+const {r$} = useRegle({foo: ''}, {
+  foo: {
+    // Can be used inline if first parameter is optional
+    myValidator,
+    // or
+    myValidator: myValidator(5),
+    // or
+    myValidator: myValidator(5, 'foo');
+  }
+})
 ```
 
 

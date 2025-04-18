@@ -39,12 +39,12 @@ describe('$pending', () => {
   it('sets `$pending` to `true`, when async validators are used and are being resolved', async () => {
     const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
 
-    shouldBePristineField(vm.r$);
+    shouldBePristineField(vm.r$, true);
 
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    shouldBePristineField(vm.r$);
+    shouldBePristineField(vm.r$, true);
 
     vm.r$.$value.level0 = 1;
     await vi.advanceTimersByTimeAsync(200);

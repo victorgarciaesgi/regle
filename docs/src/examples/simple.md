@@ -1,5 +1,6 @@
 ---
 title: Simple demo
+aside: false
 ---
 
 # Simple demo

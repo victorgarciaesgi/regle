@@ -1,5 +1,6 @@
 ---
 title: Custom Rules
+aside: false
 ---
 
 # Custom Rules Demo

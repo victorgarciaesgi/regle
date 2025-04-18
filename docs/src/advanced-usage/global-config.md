@@ -111,3 +111,38 @@ import { withMessage, minLength, required } from '@regle/rules';
 
 export const { useRegle, inferRules } = defineRegleConfig({/* */})
 ```
+
+
+## Extend global config
+
+It's also possible to add additional config to an already created custom `useRegle`.
+
+With `extendRegleConfig`, you can recreate a custom one with a existing composable as an input.
+
+```ts twoslash
+// @noErrors
+import { defineRegleConfig, extendRegleConfig, createRule } from '@regle/core';
+import { withMessage, required } from '@regle/rules';
+
+
+const { useRegle: useCustomRegle } = defineRegleConfig({
+  rules: () => ({
+    customRule: withMessage(required, 'Custom rule'),
+  })
+})
+
+const {useRegle: useExtendedRegle} = extendRegleConfig(useCustomRegle, {
+  rules: () => ({
+    customRuleExtended: withMessage(required, 'Custom rule 2'),
+  })
+})
+
+
+useExtendedRegle({name: ''}, {
+  name: {
+    custom
+    //    ^|
+  }
+})
+
+```

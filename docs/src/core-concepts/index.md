@@ -61,11 +61,46 @@ The second parameter of `useRegle` is the rules declaration, you can declare a t
 
 Each property can then declare a record of validation rules to define its `$invalid` state.
 
+Rules can be declared in different ways:
+
+:::code-group
+```ts [Inline]
+// The rule object will not react to computed changes
+useRegle({ name: ''}, {
+  name: { required }
+})
+```
+
+```ts [Getter]
+// The rules can now detect computed properties inside the object
+useRegle({name: ''}, () => ({
+  name: { required }
+}))
+```
+
+```ts [Computed]
+import { inferRules } from '@regle/core';
+const state = ref({name: ''});
+
+/** It's recommanded to use inferRules to 
+ *  keep autocompletion and typecheck */
+const rules = computed(() => inferRules(state, {
+  name: { required }
+}))
+
+useRegle(state, rules);
+```
+:::
+
+
 Regle provide a list of default rules that you can use from `@regle/rules`.
 
 You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
 <br/>
+
+
+
 
 ``` vue twoslash [App.vue]
 <script setup lang='ts'>

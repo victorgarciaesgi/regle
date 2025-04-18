@@ -1,5 +1,5 @@
 import { useRegle } from '@regle/core';
-import { required, requiredIf } from '@regle/rules';
+import { email, minLength, required, requiredIf } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 
@@ -11,12 +11,16 @@ function regleFixture() {
     condition1,
     condition2,
     ...useRegle(
-      { nested: { name: '', noRules: '', dynamic: '' } },
+      {
+        nested: { name: '', noRules: '', dynamic: '' },
+        nested2: { name: '', email: '' },
+      },
       {
         nested: {
           name: { required },
           dynamic: { required: requiredIf(condition1), required2: requiredIf(condition2) },
         },
+        nested2: { name: { required, minLength: minLength(4) }, email: { email } },
       }
     ),
   };
@@ -61,5 +65,22 @@ describe('$correct validation property', () => {
     expect(vm.r$.$fields.nested.$fields.name.$correct).toBe(true);
     expect(vm.r$.$fields.nested.$fields.noRules.$correct).toBe(false);
     expect(vm.r$.$fields.nested.$fields.dynamic.$correct).toBe(false);
+
+    // Nested 2
+
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.$fields.nested2.$correct).toBe(false);
+    expect(vm.r$.$fields.nested2.$fields.name.$correct).toBe(false);
+    expect(vm.r$.$fields.nested2.$fields.email.$correct).toBe(false);
+
+    vm.r$.$value.nested2.name = 'ehjeifhzfezf';
+    await vm.$nextTick();
+
+    expect(vm.r$.$fields.nested2.$correct).toBe(true);
+    expect(vm.r$.$fields.nested2.$fields.name.$correct).toBe(true);
+    expect(vm.r$.$fields.nested2.$fields.email.$correct).toBe(false);
+
+    expect(vm.r$.$correct).toBe(true);
   });
 });

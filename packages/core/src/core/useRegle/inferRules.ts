@@ -1,34 +1,30 @@
 import { type ComputedRef, type MaybeRef } from 'vue';
-import type {
-  AllRulesDeclarations,
-  DeepReactiveState,
-  isDeepExact,
-  ReglePartialRuleTree,
-  RegleRuleDecl,
-} from '../../types';
-import type { MismatchInfo, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { AllRulesDeclarations, DeepReactiveState, ReglePartialRuleTree, RegleRuleDecl } from '../../types';
+import type { isDeepExact, MaybeInput, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { MismatchInfo } from 'expect-type';
 
 export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>> {
   <
-    TState extends Record<string, any>,
-    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules> & TValid,
-    TValid = isDeepExact<
-      NoInferLegacy<TRules>,
-      ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
-    > extends true
+    TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
+    TRules extends ReglePartialRuleTree<
+      Unwrap<TState extends Record<string, any> ? TState : {}>,
+      Partial<AllRulesDeclarations> & TCustomRules
+    > &
+      TValid,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
+    TValid = isDeepExact<NoInferLegacy<TRules>, Unwrap<TState extends Record<string, any> ? TState : {}>> extends true
       ? {}
       : MismatchInfo<
           NoInferLegacy<TRules>,
-          ReglePartialRuleTree<Unwrap<TState>, Partial<AllRulesDeclarations> & TCustomRules>
+          ReglePartialRuleTree<
+            Unwrap<TState extends Record<string, any> ? TState : {}>,
+            Partial<AllRulesDeclarations> & TCustomRules
+          >
         >,
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
-    rulesFactory: TRules
-  ): NoInferLegacy<TRules>;
-  <TState extends PrimitiveTypes, TRules extends RegleRuleDecl>(
-    state: MaybeRef<TState>,
-    rulesFactory: TRules
-  ): NoInferLegacy<TRules>;
+    state: MaybeRef<TState> | DeepReactiveState<TState>,
+    rulesFactory: TState extends MaybeInput<PrimitiveTypes> ? TDecl : TState extends Record<string, any> ? TRules : {}
+  ): NonNullable<TState> extends PrimitiveTypes ? TDecl : TRules;
 }
 
 export function createInferRuleHelper<

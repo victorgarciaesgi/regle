@@ -1,5 +1,6 @@
 ---
 title: Required Indicators
+aside: false
 ---
 
 # Required Indicators Demo

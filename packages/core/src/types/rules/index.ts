@@ -6,3 +6,4 @@ export * from './rule.errors.types';
 export * from './rule.internal.types';
 export * from './rule.params.types';
 export * from './rule.status.types';
+export * from './compatibility.rules';

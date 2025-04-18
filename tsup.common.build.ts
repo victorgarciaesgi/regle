@@ -4,9 +4,7 @@ export function outExtension(isMin = false): Options['outExtension'] | undefined
   return ({ format }) => {
     let output;
     const min = isMin ? '.min' : '';
-    if (format === 'cjs') {
-      output = `${min}.cjs`;
-    } else if (format === 'esm') {
+    if (format === 'esm') {
       output = `${min}.mjs`;
     } else {
       output = `.browser${min}.js`;
@@ -18,7 +16,7 @@ export function outExtension(isMin = false): Options['outExtension'] | undefined
 }
 
 export const defaultOptions: Options = {
-  format: ['esm', 'cjs'],
+  format: ['esm'],
   dts: {
     resolve: true,
   },

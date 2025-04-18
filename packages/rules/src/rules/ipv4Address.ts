@@ -22,8 +22,8 @@ function nibbleValid(nibble: string) {
 /**
  * Validates IPv4 addresses in dotted decimal notation 127.0.0.1.
  */
-export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
-  type: 'ipAddress',
+export const ipv4Address: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
+  type: 'ipv4Address',
   validator(value: Maybe<string>) {
     if (isEmpty(value)) {
       return true;
@@ -36,5 +36,5 @@ export const ipAddress: RegleRuleDefinition<string, [], false, boolean, string> 
     const nibbles = value.split('.');
     return nibbles.length === 4 && nibbles.every(nibbleValid);
   },
-  message: 'The value is not a valid IP address',
+  message: 'The value is not a valid IPv4 address',
 });

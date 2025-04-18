@@ -1,5 +1,5 @@
 import type { RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
-import { defineRegleConfig, useRegle } from '@regle/core';
+import { defineRegleConfig, inferRules, useRegle } from '@regle/core';
 import { checked, email, required } from '@regle/rules';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import { ruleMockIsEven } from './rules.fixtures';
@@ -271,9 +271,6 @@ export function simpleNestedStateWithComputedValidation() {
     },
   });
 
-  // TODO inferRules function util
-  // All type utils
-  // Change doc
   const rules = computed(
     () =>
       ({
@@ -297,6 +294,30 @@ export function simpleNestedStateWithComputedValidation() {
           },
         },
       }) satisfies ReglePartialRuleTree<UnwrapRef<typeof form>>
+  );
+
+  const rules2 = computed(() =>
+    inferRules(form, {
+      email: { required: required, email: email },
+      user: {
+        ...(form.value.userRequired && {
+          firstName: { required },
+          lastName: { required },
+        }),
+      },
+      contacts: {
+        $each: {
+          name: { required },
+        },
+      },
+      nested: {
+        collection: {
+          $each: {
+            name: { required },
+          },
+        },
+      },
+    })
   );
 
   return useRegle(form, rules);

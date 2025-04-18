@@ -1,10 +1,14 @@
 import type { Regle, RegleSingleField } from '@regle/core';
-import type { RegleSchema } from '@regle/schemas';
+import type { RegleSchema, RegleSingleFieldSchema } from '@regle/schemas';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
 export function createRegleComponent<
-  T extends Regle<any, any, any, any> | RegleSingleField<any, any> | RegleSchema<{}, {}, any>,
+  T extends
+    | Regle<any, any, any, any>
+    | RegleSingleField<any, any>
+    | RegleSchema<{}, {}, any>
+    | RegleSingleFieldSchema<any, any, any>,
 >(regleComposable: () => T) {
   return mount(
     defineComponent({

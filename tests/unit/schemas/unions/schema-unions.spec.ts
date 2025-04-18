@@ -10,10 +10,12 @@ import {
 } from '../../../utils/validations.utils';
 import { MyEnum, valibotUnionsFixture } from './fixtures/valibot.fixture';
 import { zodUnionsFixture } from './fixtures/zod.fixture';
+import { zod4UnionsFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotUnionsFixture],
   ['zod', zodUnionsFixture],
+  // ['zod4', zod4UnionsFixture],
 ])('schemas (%s) - unions types', (name, regleSchema) => {
   beforeEach(() => {
     vi.useFakeTimers();
