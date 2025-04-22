@@ -35,6 +35,7 @@ export type SuperCompatibleRegleRuleStatus = Omit<
   | '$fieldError'
   | '$unwatch'
   | '$watch'
+  | '$maybePending'
 >;
 
 type SuperCompatibleRegleCommonStatus = Omit<RegleCommonStatus, '$pending'> & {

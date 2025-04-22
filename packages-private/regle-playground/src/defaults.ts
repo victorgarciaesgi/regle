@@ -47,7 +47,7 @@ async function submit() {
 
     <button @click="submit">Submit</button>
     <button @click="r$.$reset()">Reset</button>
-    <button @click="r$.$reset({toInitialState: true})">Restart</button>
-    <code class="status"> Form status {{!r$.$invalid ? '✅' : '❌'}}</code>
+    <button @click="r$.$reset({toState: {name: '', email: ''}})">Restart</button>
+    <code class="status"> Form status {{r$.$correct ? '✅' : '❌'}}</code>
 </template>
 `.trimStart();

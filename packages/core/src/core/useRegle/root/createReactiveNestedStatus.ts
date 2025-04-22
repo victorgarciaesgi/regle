@@ -297,7 +297,7 @@ export function createReactiveNestedStatus({
               if ('required' in statusOrField.$rules && statusOrField.$rules.required.$active) {
                 return statusOrField?.$correct;
               }
-              return !statusOrField.$invalid;
+              return !statusOrField.$invalid && !statusOrField.$pending;
             }
 
             return statusOrField?.$correct;

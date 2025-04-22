@@ -307,7 +307,7 @@ export function createReactiveFieldStatus({
           return false;
         } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
           return Object.entries($rules.value).some(([_, ruleResult]) => {
-            return !ruleResult.$valid;
+            return !(ruleResult.$valid && !ruleResult.$maybePending);
           });
         }
         return false;
@@ -327,7 +327,7 @@ export function createReactiveFieldStatus({
           return false;
         } else if ($inactive.value) {
           return false;
-        } else if ($dirty.value && !isEmpty(state.value) && !$validating.value) {
+        } else if ($dirty.value && !isEmpty(state.value) && !$validating.value && !$pending.value) {
           if (schemaMode) {
             return !schemaErrors?.value?.length;
           } else {
