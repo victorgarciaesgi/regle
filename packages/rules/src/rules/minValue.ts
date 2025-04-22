@@ -33,9 +33,9 @@ export const minValue: RegleRuleWithParamsDefinition<
   message: ({ $params: [count, options] }) => {
     const { allowEqual = true } = options ?? {};
     if (allowEqual) {
-      return `Value must be greater than or equal to ${count}`;
+      return `The value must be greater than or equal to ${count}`;
     } else {
-      return `Value must be greater than ${count}`;
+      return `The value must be greater than ${count}`;
     }
   },
 });

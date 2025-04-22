@@ -38,6 +38,6 @@ export const maxLength: RegleRuleWithParamsDefinition<
     if (Array.isArray($value)) {
       return `This list should have maximum ${count} items`;
     }
-    return `The maximum length allowed is ${count}`;
+    return `The value length should not exceed ${count}`;
   },
 });

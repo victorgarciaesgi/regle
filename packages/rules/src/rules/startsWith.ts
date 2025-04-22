@@ -16,6 +16,6 @@ export const startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<stri
     return true;
   },
   message({ $params: [part] }) {
-    return `Field must end with ${part}`;
+    return `The value must end with ${part}`;
   },
 });

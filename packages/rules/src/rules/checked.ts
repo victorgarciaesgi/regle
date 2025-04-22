@@ -13,5 +13,5 @@ export const checked: RegleRuleDefinition<boolean, [], false, boolean, boolean> 
     }
     return true;
   },
-  message: 'This field must be checked',
+  message: 'The value must be checked',
 });

@@ -25,6 +25,6 @@ export const exactLength: RegleRuleWithParamsDefinition<
     return true;
   },
   message: ({ $params: [count] }) => {
-    return `This field should be exactly ${count} characters long`;
+    return `The value should be exactly ${count} characters long`;
   },
 });

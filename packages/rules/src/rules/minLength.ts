@@ -37,8 +37,8 @@ export const minLength: RegleRuleWithParamsDefinition<
   },
   message: ({ $value, $params: [count] }) => {
     if (Array.isArray($value)) {
-      return `This list should have at least ${count} items`;
+      return `The list should have at least ${count} items`;
     }
-    return `This field should be at least ${count} characters long`;
+    return `The value length should be at least ${count}`;
   },
 });

@@ -21,7 +21,7 @@ export function oneOf<const TValues extends [string | number, ...(string | numbe
       },
       [params]
     ),
-    ({ $params: [options] }) => `Value should be one of those options: ${options.join(', ')}.`
+    ({ $params: [options] }) => `The value should be one of those options: ${options.join(', ')}.`
   );
 
   return rule as any;

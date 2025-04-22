@@ -16,5 +16,5 @@ export const email: RegleRuleDefinition<string, [], false, boolean, string> = cr
     }
     return matchRegex(value, emailRegex);
   },
-  message: 'Value must be an valid email address',
+  message: 'The value must be an valid email address',
 });

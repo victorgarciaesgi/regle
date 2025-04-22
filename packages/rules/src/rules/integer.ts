@@ -15,5 +15,5 @@ export const integer: RegleRuleDefinition<string | number, [], false, boolean, s
     }
     return matchRegex(value, integerRegex);
   },
-  message: 'Value must be an integer',
+  message: 'The value must be an integer',
 });

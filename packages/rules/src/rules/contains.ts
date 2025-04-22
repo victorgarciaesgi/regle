@@ -16,6 +16,6 @@ export const contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string
     return true;
   },
   message({ $params: [part] }) {
-    return `Field must contain ${part}`;
+    return `The value must contain ${part}`;
   },
 });

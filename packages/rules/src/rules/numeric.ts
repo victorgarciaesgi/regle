@@ -15,5 +15,5 @@ export const numeric: RegleRuleDefinition<string | number, [], false, boolean, s
     }
     return matchRegex(value, numericRegex);
   },
-  message: 'This field must be numeric',
+  message: 'The value must be numeric',
 });

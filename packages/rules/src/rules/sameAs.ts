@@ -15,6 +15,6 @@ export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, ot
       return value === target;
     },
     message({ $params: [_, otherName] }) {
-      return `Value must be equal to the ${otherName} value`;
+      return `The value must be equal to the ${otherName} value`;
     },
   });

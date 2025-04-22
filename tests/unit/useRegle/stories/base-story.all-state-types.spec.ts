@@ -109,7 +109,7 @@ describe.each([
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual(['Custom error']);
-    expect(vm.r$.$errors.level0Boolean).toStrictEqual(['This field must be checked']);
+    expect(vm.r$.$errors.level0Boolean).toStrictEqual(['The value must be checked']);
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
     shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
