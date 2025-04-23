@@ -23,8 +23,24 @@ import type {
 import { isRuleDef } from './useRegle/guards';
 
 /**
+ * Declare variations of state that depends on one value
  *
  * Autocomplete may not work here because of https://github.com/microsoft/TypeScript/issues/49547
+ *
+ * ```ts
+ *  // ⚠️ Use getter syntax for your rules () => {} or a computed one
+ *    const {r$} = useRegle(state, () => {
+ *      const variant = createVariant(state, 'type', [
+ *        {type: { literal: literal('EMAIL')}, email: { required, email }},
+ *        {type: { literal: literal('GITHUB')}, username: { required }},
+ *        {type: { required }},
+ *      ]);
+ *
+ *      return {
+ *        ...variant.value,
+ *      };
+ *    })
+ * ```
  */
 export function createVariant<
   TForm extends Record<string, any>,
@@ -66,6 +82,15 @@ export function createVariant<
   return computedRules as any;
 }
 
+/**
+ * Narrow a nested variant field to a discriminated value
+ *
+ * ```ts
+ * if (narrowVariant(r$.$fields, 'type', 'EMAIL')) {
+ *    r$.$fields.email.$value = 'foo';
+ * }
+ * ```
+ */
 export function narrowVariant<
   TRoot extends {
     [x: string]: unknown;
@@ -88,6 +113,15 @@ export function narrowVariant<
   );
 }
 
+/**
+ * Narrow a nested variant root to a reactive reference
+ *
+ * ```vue
+ * <script setup lang="ts">
+ *   const variantR$ = variantToRef(r$, 'type', 'EMAIL');
+ * </script>
+ * ```
+ */
 export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
@@ -114,7 +148,7 @@ export function variantToRef<
         returnedRef.value = undefined;
       }
     },
-    {}
+    { immediate: true }
   );
 
   return returnedRef as any;

@@ -15,7 +15,7 @@ import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validatio
 
 describe('createVariant', () => {
   //- Given
-  function createRootVariantRegle() {
+  function createRootVariantRegle(initialValue?: 'ONE' | 'TWO' | undefined) {
     type FormVariant = {
       firstName?: string;
     } & (
@@ -24,7 +24,7 @@ describe('createVariant', () => {
       | { type?: undefined }
     );
 
-    const state = ref<FormVariant>({ firstName: '' });
+    const state = ref<FormVariant>({ firstName: '', type: initialValue as any });
 
     const { r$ } = useRegle(state, () => {
       const variant = createVariant(state, 'type', [
@@ -379,5 +379,11 @@ describe('createVariant', () => {
         >
       >();
     }
+  });
+
+  it('should invoke variantToRef directly', () => {
+    const { vm } = createRegleComponent(() => createRootVariantRegle('ONE'));
+
+    expect(vm.invariantRefOne).toBeDefined();
   });
 });
