@@ -1,6 +1,7 @@
 ---
 title: Announcing Regle 1.1
 description: Introducing newest version of Regle with some exiting new features
+ogImage: /regle-1.1-og.png
 author:
   name: Victor Garcia
 date: 2025-04-15
@@ -24,6 +25,12 @@ Regle has been on `1.0` for 1 month now and have reached
 - **100k npm downloads**
 
 A big thanks to anyone using Regle in the early stages, helping me find and fix edge cases and add more useful features.
+
+<ins>For those who are discovering this library with this blog post</ins>, Regle is a type safe and headless form validation library made for Vue.
+
+It's entirely data-driven, allowing the validation logic to mirror your data structure, enabling a clear separation between the UI and validation logic.
+
+I consider it the successor of **Vuelidate**.
 
 
 ## ▶️ Regle playground

@@ -225,23 +225,31 @@ export default defineConfig({
 
     const pageTitle = pageData.frontmatter?.title ?? siteConfig.site?.title;
     const pageDescription = pageData.frontmatter?.description ?? siteConfig.site?.description;
+    const definedOgImage = pageData.frontmatter.ogImage as string | undefined;
 
     head.push(['meta', { property: 'og:title', content: pageTitle }]);
 
     if (relativePath !== '') {
-      const satoriImagePath = await generateSatoriBanner({
-        name: relativePath,
-        title: pageTitle,
-        description: pageDescription,
-        bread: [],
-      });
+      let ogImageUrl: string;
 
-      assets.push(`/${satoriImagePath}`);
+      if (definedOgImage) {
+        ogImageUrl = `https://reglejs.dev${definedOgImage}`;
+      } else {
+        const satoriImagePath = await generateSatoriBanner({
+          name: relativePath,
+          title: pageTitle,
+          description: pageDescription,
+          bread: [],
+        });
 
-      head.push(['meta', { property: 'description', content: pageDescription }]);
-      head.push(['meta', { property: 'og:description', content: pageDescription }]);
+        assets.push(`/${satoriImagePath}`);
 
-      const ogImageUrl = `https://reglejs.dev/${satoriImagePath}`;
+        head.push(['meta', { property: 'description', content: pageDescription }]);
+        head.push(['meta', { property: 'og:description', content: pageDescription }]);
+
+        ogImageUrl = `https://reglejs.dev/${satoriImagePath}`;
+      }
+
       head.push([
         'meta',
         {
