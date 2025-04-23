@@ -230,3 +230,5 @@ Regle supported ESM & CJS builds, but after reading [Antfu's article on shipping
 - Rule validation message are not uniform [#90](https://github.com/victorgarciaesgi/regle/issues/90)
 - `useRegle` typing bug when using rules defined in ref [#94](https://github.com/victorgarciaesgi/regle/issues/94)
 
+
+[Check the full changelog here](https://github.com/victorgarciaesgi/regle/releases/tag/v1.1.0)
