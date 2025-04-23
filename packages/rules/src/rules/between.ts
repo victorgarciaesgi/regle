@@ -1,7 +1,7 @@
 import { isFilled, toNumber, isNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 /**
  * Checks if a number is in specified bounds. min and max are both inclusive.
@@ -11,12 +11,12 @@ import type { CommonComparationOptions } from '@regle/core';
  */
 export const between: RegleRuleWithParamsDefinition<
   number,
-  [min: number, max: number, options?: CommonComparationOptions],
+  [min: number, max: number, options?: CommonComparisonOptions],
   false,
   boolean
 > = createRule({
   type: 'between',
-  validator: (value: Maybe<number>, min: number, max: number, options?: CommonComparationOptions) => {
+  validator: (value: Maybe<number>, min: number, max: number, options?: CommonComparisonOptions) => {
     const { allowEqual = true } = options ?? {};
 
     if (isFilled(value) && isFilled(min) && isFilled(max)) {

@@ -1,9 +1,9 @@
 {
   "name": "@regle/rules",
-  "version": "1.0.9",
+  "version": "1.1.0-beta.6",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit",
     "build": "tsup",
     "build:dev": "tsup --config=tsup.dev.ts",
     "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
@@ -16,19 +16,17 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
+    "@types/node": "catalog:",
     "@vue/reactivity": "catalog:",
-    "@vue/test-utils": "2.4.6",
-    "bumpp": "10.1.0",
-    "changelogithub": "13.13.0",
-    "cross-env": "7.0.3",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vitest": "3.0.9",
+    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
@@ -42,26 +40,18 @@
           "production": "./dist/regle-rules.min.mjs",
           "development": "./dist/regle-rules.mjs",
           "default": "./dist/regle-rules.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-rules.min.cjs",
-          "development": "./dist/regle-rules.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-rules.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-rules.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-rules.mjs",
   "module": "./dist/regle-rules.mjs",
   "types": "./dist/regle-rules.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],

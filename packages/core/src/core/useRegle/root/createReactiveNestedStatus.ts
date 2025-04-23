@@ -228,7 +228,7 @@ export function createReactiveNestedStatus({
           $unwatch();
           createReactiveFieldsStatus();
         },
-        { deep: true, flush: 'post' }
+        { deep: true, flush: 'pre' }
       );
 
       define$WatchExternalErrors();
@@ -291,7 +291,16 @@ export function createReactiveNestedStatus({
         });
         if (fields.length) {
           return fields.every(([_, statusOrField]) => {
-            return statusOrField?.$correct || (statusOrField.$anyDirty && !statusOrField.$invalid);
+            if (commonArgs.schemaMode) {
+              return statusOrField.$correct;
+            } else if (isFieldStatus(statusOrField)) {
+              if ('required' in statusOrField.$rules && statusOrField.$rules.required.$active) {
+                return statusOrField?.$correct;
+              }
+              return !statusOrField.$invalid && !statusOrField.$pending;
+            }
+
+            return statusOrField?.$correct;
           });
         }
         return false;

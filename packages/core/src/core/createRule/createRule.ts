@@ -8,9 +8,6 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * It will automatically detect if the rule is async
  *
- * @typeParam TValue - The input value the rule should receive
- * @typeParam TParams - Tuple declaration of the rule parameters (if any)
- *
  *
  * @param definition - The rule processors object
  *
@@ -78,5 +75,5 @@ export function createRule<
       return staticProcessors as any;
     }
   }
-  throw new Error('Validator must be a function');
+  throw new Error('[createRule] validator must be a function');
 }

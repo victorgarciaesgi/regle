@@ -38,6 +38,7 @@
         >Reset All</button
       >
       <button class="primary" type="button" @click="submit">Submit</button>
+      <code class="status" :status="r$.$correct"></code>
     </div>
   </div>
 </template>

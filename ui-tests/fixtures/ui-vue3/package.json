@@ -7,7 +7,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit --project ./tsconfig.app.json"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
@@ -17,21 +17,20 @@
     "pinia": "catalog:",
     "sass": "1.86.0",
     "vue": "catalog:",
-    "vue-router": "^4.5.0"
+    "vue-router": "catalog:"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
-    "@types/node": "^22.13.13",
+    "@types/node": "catalog:",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
     "npm-run-all2": "^7.0.2",
     "postcss": "^8.5.3",
-    "prettier": "3.5.3",
+    "prettier": "catalog:",
     "tailwindcss": "^3.4.17",
     "typescript": "catalog:",
     "vite": "^6.2.3",
-    "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "catalog:"
   }
 }

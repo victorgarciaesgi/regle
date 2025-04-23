@@ -1,7 +1,7 @@
 import type { RegleRuleDefinition } from '@regle/core';
 import { minLength, required } from '../../rules';
 import { not } from '../not';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('not validator', () => {
   it('should not validate with true function', () => {
@@ -36,7 +36,7 @@ describe('not validator', () => {
     expectTypeOf(not(minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         string | any[] | Record<PropertyKey, any>

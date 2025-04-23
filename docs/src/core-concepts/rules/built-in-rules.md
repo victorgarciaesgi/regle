@@ -38,29 +38,44 @@ This allow to have rules even if the field is not required.
 
 ## `alpha`
 
+_**Params**_
+  - `allowSymbols?: MaybeRefOrGetter<boolean>`
+
 Allows only alphabetic characters.
 
 ```ts twoslash
+// @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
 import { alpha } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
-  name: { alpha },
+  name: { 
+    alpha,
+    // or
+    alpha: alpha({ allowSymbols: true }),
+  },
 })
 ```
 
 ## `alphaNum`
 
+_**Params**_
+  - `allowSymbols?: MaybeRefOrGetter<boolean>`
+
 Allows only alphanumeric characters.
 
 ```ts twoslash
+// @noErrors
 import {useRegle} from '@regle/core';
 // ---cut---
 import { alphaNum } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
-  name: { alphaNum },
+  name: { 
+    alphaNum,
+    // or
+    alphaNum: alphaNum({ allowSymbols: true }),
 })
 ```
 
@@ -244,8 +259,8 @@ Requires the input value to have a strict specified length, inclusive. Works wit
 ```ts twoslash
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
-// ---cut---
 // @noErrors
+// ---cut---
 import { exactLength } from '@regle/rules';
 
 const exactValue = ref(6);
@@ -267,7 +282,7 @@ _**Params**_
 
 Requires a field to have a strict numeric value.
 
-```ts
+```ts twoslash
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
 // ---cut---
@@ -300,17 +315,17 @@ const { r$ } = useRegle({ count: 0 }, {
 ```
 
 
-## `ipAddress`
+## `ipv4Address`
 
 Validates IPv4 addresses in dotted decimal notation *127.0.0.1*.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
 // ---cut---
-import { ipAddress } from '@regle/rules';
+import { ipv4Address } from '@regle/rules';
 
 const { r$ } = useRegle({ address: '' }, {
-  address: { ipAddress },
+  address: { ipv4Address },
 })
 ```
 
@@ -324,6 +339,7 @@ _**Params**_
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
 ```ts twoslash
+// @noErrors
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
 // ---cut---
@@ -333,7 +349,9 @@ const maxCount = ref(6);
 
 const { r$ } = useRegle({ address: '' }, {
   address: {
-    macAddress: macAddress(),
+    macAddress,
+    // or
+    macAddress: macAddress('-')
   },
 })
 ```
@@ -509,7 +527,7 @@ const { r$ } = useRegle({ aliment: 'Fish' }, {
 ## `regex`
 
 _**Params**_
-- `...regexps: [MaybeRefOrGetter<RegExp | RegExp[]>]`
+- `regexps: MaybeRefOrGetter<RegExp | RegExp[]>`
 
 Checks if the value matches one or more regular expressions.
 

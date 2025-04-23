@@ -10,6 +10,8 @@ import type {
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { FieldRegleBehaviourOptions } from '../core';
+import type { MaybeRefOrGetter } from 'vue';
+type IsLiteral<T> = string extends T ? false : true;
 
 /**
  * Returned typed of rules created with `createRule`
@@ -30,6 +32,7 @@ export interface RegleRuleDefinition<
   active: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean;
   tooltip: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
   type?: string;
+  _value?: IsLiteral<TValue> extends true ? TValue : any;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
 }
 
@@ -48,27 +51,45 @@ export interface $InternalRegleRuleDefinition extends RegleInternalRuleDefs<any,
 /**
  * Rules with params created with `createRules` are callable while being customizable
  */
-export interface RegleRuleWithParamsDefinition<
+export type RegleRuleWithParamsDefinition<
   TValue extends any = any,
-  TParams extends any[] = [],
+  TParams extends any[] = never,
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
   TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
-> extends RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata>,
-    RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> {
-  (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata>;
-}
+> = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
+  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
+    (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata>;
+  } & (TParams extends [param?: any, ...any[]]
+    ? {
+        exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+      }
+    : {});
+
+export type RegleRuleWithParamsDefinitionInput<
+  TValue extends any = any,
+  TParams extends any[] = never,
+  TAsync extends boolean = false,
+  TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+> = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
+  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> &
+  (TParams extends [param?: any, ...any[]]
+    ? {
+        exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+      }
+    : {});
 
 export type RegleRuleMetadataExtended = {
   $valid: boolean;
   [x: string]: any;
 };
 
-export type UnwrapRuleTree<T extends { [x: string]: RegleRuleRaw<any> | undefined }> = {
+export type UnwrapRuleTree<T extends { [x: string]: RegleRuleRawInput<any, any[], any, any> | undefined }> = {
   [K in keyof T]: UnwrapRuleWithParams<T[K]>;
 };
 
-export type UnwrapRuleWithParams<T extends RegleRuleRaw<any, any, any, any> | undefined> =
+export type UnwrapRuleWithParams<T extends RegleRuleRawInput<any, any[], any, any> | undefined> =
   T extends RegleRuleWithParamsDefinition<infer TValue, infer TParams, infer TAsync, infer TMetadata>
     ? RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
     : T;
@@ -92,7 +113,7 @@ type DefaultMetadataProperties = DefaultMetadataPropertiesCommon & {
  */
 export type RegleRuleMetadataConsumer<
   TValue extends any,
-  TParams extends any[] = never,
+  TParams extends [...any[]] = never,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
 > = { $value: Maybe<TValue> } & DefaultMetadataProperties &
   (TParams extends never
@@ -110,7 +131,7 @@ export type RegleRuleMetadataConsumer<
  * Will be used to consumme metadata on related helpers and rule status
  */
 export type PossibleRegleRuleMetadataConsumer<TValue> = { $value: Maybe<TValue> } & DefaultMetadataProperties & {
-    $params?: any[];
+    $params?: [...any[]];
   };
 
 /**
@@ -127,13 +148,27 @@ export type $InternalRegleRuleMetadataConsumer = DefaultMetadataProperties & {
  */
 export type RegleRuleRaw<
   TValue extends any = any,
-  TParams extends any[] = [],
+  TParams extends [...any[]] = [...any[]],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = boolean,
 > =
   | RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>
   | RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetaData>;
 
+export type RegleRuleRawInput<
+  TValue extends any = any,
+  TParams extends [...any[]] = [...any[]],
+  TAsync extends boolean = boolean,
+  TMetaData extends RegleRuleMetadataDefinition = boolean,
+> = Omit<
+  | RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>
+  | RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetaData>,
+  'message' | 'tooltip' | 'active'
+> & {
+  message: any;
+  active?: any;
+  tooltip?: any;
+};
 /**
  * Process the type of a created rule with `createRule`.
  * For a rule with params it will return a function

@@ -8,7 +8,7 @@ import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
 import { withParams } from '../withParams';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({
@@ -114,16 +114,25 @@ describe('withMessage helper', () => {
     >();
 
     useRegle(
+      { name: '' },
+      {
+        name: {
+          required: withMessage((value) => true, ''),
+        },
+      }
+    );
+
+    useRegle(
       { firstName: '' },
       {
         firstName: {
           required: withMessage(
             (value) => {
-              expectTypeOf(value).toExtend<Maybe<string>>();
+              expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
               return true;
             },
             ({ $value }) => {
-              expectTypeOf($value).toExtend<Maybe<string>>();
+              expectTypeOf($value).toEqualTypeOf<Maybe<string>>();
               return '';
             }
           ),
@@ -217,7 +226,7 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         string | any[] | Record<PropertyKey, any>
@@ -232,7 +241,7 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         string | any[] | Record<PropertyKey, any>
@@ -245,7 +254,7 @@ describe('withMessage helper', () => {
     expectTypeOf(message).toEqualTypeOf<
       RegleRuleWithParamsDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean
       >

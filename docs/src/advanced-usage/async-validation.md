@@ -39,8 +39,8 @@ In the same way of an inline rule, your validator function must be using `async 
 
 ```ts
 const myAsyncRule = createRule({
-  validator(value: Maybe<string>) {
-      if (isFilled(value)) {
+  async validator(value: Maybe<string>) {
+    if (isFilled(value)) {
       return await someStuff();
     }
     return true;

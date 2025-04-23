@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.0.9",
+  "version": "1.1.0-beta.6",
   "description": "Headless form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -21,22 +21,19 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "22.13.13",
+    "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
-    "@vue/test-utils": "2.4.6",
-    "bumpp": "10.1.0",
-    "changelogithub": "13.13.0",
-    "cross-env": "7.0.3",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
-    "expect-type": "1.2.0",
+    "expect-type": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vitest": "3.0.9",
+    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
@@ -50,26 +47,18 @@
           "production": "./dist/regle-core.min.mjs",
           "development": "./dist/regle-core.mjs",
           "default": "./dist/regle-core.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-core.min.cjs",
-          "development": "./dist/regle-core.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-core.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-core.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-core.mjs",
   "module": "./dist/regle-core.mjs",
   "types": "./dist/regle-core.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],

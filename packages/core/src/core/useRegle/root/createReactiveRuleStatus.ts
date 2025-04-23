@@ -61,6 +61,7 @@ export function createReactiveRuleStatus({
   let $unwatchState: WatchStopHandle;
 
   const $haveAsync = ref(false);
+  const $maybePending = ref(false);
 
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
 
@@ -254,6 +255,7 @@ export function createReactiveRuleStatus({
       $validating.value = true;
 
       let ruleResult = false;
+      $maybePending.value = true;
 
       if (isRuleDef(rule.value) && rule.value._async) {
         ruleResult = await $computeAsyncDebounce();
@@ -282,6 +284,7 @@ export function createReactiveRuleStatus({
       return false;
     } finally {
       $validating.value = false;
+      $maybePending.value = false;
     }
   }
 
@@ -306,6 +309,7 @@ export function createReactiveRuleStatus({
     $valid,
     $metadata,
     $haveAsync,
+    $maybePending,
     $validating,
     $parse,
     $unwatch,

@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 import type {
-  CommonComparationOptions,
+  CommonComparisonOptions,
   InferRegleShortcuts,
-  Maybe,
+  MaybeOutput,
   RegleEnforceCustomRequiredRules,
   RegleEnforceRequiredRules,
   RegleFieldStatus,
@@ -35,16 +35,16 @@ const props = defineProps<{
 // -
 
 expectTypeOf(props.unknownField.$rules).toEqualTypeOf<{
-  readonly [x: string]: RegleRuleStatus<any, any[] | [], any>;
+  readonly [x: string]: RegleRuleStatus<any, any[], any>;
 }>();
 expectTypeOf(props.unknownField.$value).toEqualTypeOf<any>();
 
 // -
 
 expectTypeOf(props.booleanField.$rules).toEqualTypeOf<{
-  readonly [x: string]: RegleRuleStatus<boolean | undefined, any[] | [], any>;
+  readonly [x: string]: RegleRuleStatus<boolean | undefined, any[], any>;
 }>();
-expectTypeOf(props.booleanField.$value).toEqualTypeOf<Maybe<boolean | undefined>>();
+expectTypeOf(props.booleanField.$value).toEqualTypeOf<MaybeOutput<boolean | undefined>>();
 
 //-
 
@@ -56,7 +56,7 @@ expectTypeOf(props.stringNumberField.$rules).toEqualTypeOf<
       readonly [x: string]: RegleRuleStatus<number | undefined, any[] | [], any>;
     }
 >();
-expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<Maybe<string | number>>();
+expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<MaybeOutput<string | number>>();
 
 //-
 expectTypeOf(props.customStringField.$test).toEqualTypeOf<boolean>();
@@ -68,15 +68,15 @@ expectTypeOf(props.enforcedRulesField.$rules.required).toEqualTypeOf<
 
 //-
 expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, [count: number, options?: CommonComparationOptions | undefined], boolean>
+  RegleRuleStatus<string | undefined, [count: number, options?: CommonComparisonOptions | undefined], boolean>
 >();
 expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength.$params).toEqualTypeOf<
-  [count: number, options?: CommonComparationOptions | undefined]
+  [count: number, options?: CommonComparisonOptions | undefined]
 >();
 
 //-
 expectTypeOf(props.enforcedCustomRulesField.$rules.myCustomRule).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, []>
+  RegleRuleStatus<string | undefined, [], boolean>
 >();
 </script>
 

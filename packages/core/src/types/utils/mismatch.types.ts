@@ -1,52 +1,28 @@
-import type { And, Extends, IsAny, IsNever, IsUnknown, Not, StrictEqualUsingBranding, UsefulKeys } from 'expect-type';
+import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from '../rules';
+import type { ArrayElement } from './Array.types';
+import type { JoinDiscriminatedUnions } from './object.types';
 
-/**
- * Borrowed from vitest
- */
-export type PrintType<T> =
-  IsUnknown<T> extends true
-    ? 'unknown'
-    : IsNever<T> extends true
-      ? 'never'
-      : IsAny<T> extends true
-        ? never
-        : boolean extends T
-          ? 'boolean'
-          : T extends boolean
-            ? `literal boolean: ${T}`
-            : string extends T
-              ? 'string'
-              : T extends string
-                ? `literal string: ${T}`
-                : number extends T
-                  ? 'number'
-                  : T extends number
-                    ? `literal number: ${T}`
-                    : bigint extends T
-                      ? 'bigint'
-                      : T extends bigint
-                        ? `literal bigint: ${T}`
-                        : T extends null
-                          ? 'null'
-                          : T extends undefined
-                            ? 'undefined'
-                            : T extends (...args: any[]) => any
-                              ? 'function'
-                              : '...';
+export type isDeepExact<TRules, TTree> = {
+  [K in keyof TRules]-?: CheckDeepExact<
+    NonNullable<TRules[K]>,
+    K extends keyof JoinDiscriminatedUnions<TTree> ? NonNullable<JoinDiscriminatedUnions<TTree>[K]> : never
+  >;
+}[keyof TRules] extends true
+  ? true
+  : false;
 
-/**
- * Borrowed from vitest
- */
-export type MismatchInfo<Actual, Expected> =
-  And<[Extends<PrintType<Actual>, '...'>, Not<IsAny<Actual>>]> extends true
-    ? And<[Extends<any[], Actual>, Extends<any[], Expected>]> extends true
-      ? Array<MismatchInfo<Extract<Actual, any[]>[number], Extract<Expected, any[]>[number]>>
-      : {
-          [K in UsefulKeys<Actual> | UsefulKeys<Expected>]: MismatchInfo<
-            K extends keyof Actual ? Actual[K] : never,
-            K extends keyof Expected ? Expected[K] : never
-          >;
-        }
-    : StrictEqualUsingBranding<Actual, Expected> extends true
-      ? Actual
-      : `[Regle error] The parent property does not match the form schema`;
+type CheckDeepExact<TRules, TTree> = [TTree] extends [never]
+  ? false
+  : TRules extends RegleCollectionRuleDecl
+    ? TTree extends Array<any>
+      ? isDeepExact<NonNullable<TRules['$each']>, JoinDiscriminatedUnions<NonNullable<ArrayElement<TTree>>>>
+      : TRules extends RegleRuleDecl
+        ? true
+        : TRules extends ReglePartialRuleTree<any>
+          ? isDeepExact<TRules, TTree>
+          : false
+    : TRules extends RegleRuleDecl
+      ? true
+      : TRules extends ReglePartialRuleTree<any>
+        ? isDeepExact<TRules, TTree>
+        : false;

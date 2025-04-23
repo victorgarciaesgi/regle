@@ -1,11 +1,12 @@
 import type { MaybeRef, Ref } from 'vue';
 import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
-import type { ArrayElement, Maybe, MaybeGetter, Unwrap } from '../utils';
+import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinition,
+  RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
 
@@ -42,8 +43,8 @@ export type RegleComputedRules<
       : Partial<AllRulesDeclarations>
     : TCustomRules,
 > = {
-  [TKey in keyof TState]?: RegleFormPropertyType<
-    TState[TKey],
+  [TKey in keyof JoinDiscriminatedUnions<TState>]?: RegleFormPropertyType<
+    JoinDiscriminatedUnions<TState>[TKey],
     TCustom extends Partial<AllRulesDeclarations> ? TCustom : {}
   >;
 };
@@ -99,9 +100,9 @@ export type RegleRuleDecl<
     infer TParams
   >
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
-    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any, any, any>
-      ? FormRuleDeclaration<TValue, any>
-      : FormRuleDeclaration<TValue, any> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
+      ? FormRuleDeclaration<TValue, any[]>
+      : FormRuleDeclaration<TValue, any[]> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
 };
 
 /**
@@ -153,9 +154,7 @@ export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
 export type InlineRuleDeclaration<
   TValue extends any = any,
   TParams extends any[] = any[],
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
-    | RegleRuleMetadataDefinition
-    | Promise<RegleRuleMetadataDefinition>,
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = boolean,
 > = (value: Maybe<TValue>, ...args: UnwrapRegleUniversalParams<TParams>) => TReturn;
 
 /**
@@ -168,11 +167,15 @@ export type $InternalInlineRuleDeclaration = (value: Maybe<any>, ...args: any[])
  * Regroup inline and registered rules
  * */
 export type FormRuleDeclaration<
-  TValue extends any,
-  TParams extends any[],
+  TValue extends any = unknown,
+  TParams extends any[] = any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> =
     | RegleRuleMetadataDefinition
     | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
-> = InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+> =
+  | InlineRuleDeclaration<TValue, TParams, TReturn>
+  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+  | RegleRuleWithParamsDefinitionInput<TValue, [param?: any], TAsync, TMetadata>
+  | RegleRuleWithParamsDefinitionInput<TValue, [param?: any, ...any[]], TAsync, TMetadata>;

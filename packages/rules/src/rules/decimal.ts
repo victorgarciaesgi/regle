@@ -15,5 +15,5 @@ export const decimal: RegleRuleDefinition<string | number, [], false, boolean, s
     }
     return matchRegex(value, decimalRegex);
   },
-  message: 'Value must be decimal',
+  message: 'The value must be decimal',
 });

@@ -3,11 +3,13 @@ import { shouldBeErrorField, shouldBeInvalidField, shouldBeValidField } from '..
 import { arkTypeSingleFieldFixture } from './fixtures/arktype.fixture';
 import { valibotSingleFieldFixture } from './fixtures/valibot.fixture';
 import { zodSingleFieldFixture } from './fixtures/zod.fixture';
+import { zod4SingleFieldFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotSingleFieldFixture],
   ['zod', zodSingleFieldFixture],
   ['arktype', arkTypeSingleFieldFixture],
+  ['zod4', zod4SingleFieldFixture],
 ])('single field schema (%s) ', async (name, regleSchema) => {
   it('should behave like a object state', async () => {
     const { vm } = createRegleComponent(regleSchema);

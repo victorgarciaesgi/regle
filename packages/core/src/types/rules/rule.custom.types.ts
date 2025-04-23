@@ -1,10 +1,12 @@
 import type { DefaultValidators } from '../../core/defaultValidators';
-import type { RegleRuleRaw } from './rule.definition.type';
+import type { RegleRuleRawInput } from './rule.definition.type';
 
 export type CustomRulesDeclarationTree = {
-  [x: string]: RegleRuleRaw<any, any, boolean, any> | undefined;
+  [x: string]: RegleRuleRawInput<any, any[], boolean, any> | undefined;
 };
 
-export type AllRulesDeclarations = CustomRulesDeclarationTree & {
-  [K in keyof DefaultValidators]: RegleRuleRaw<any, any, boolean, any> | undefined;
+export type DefaultValidatorsTree = {
+  [K in keyof DefaultValidators]: RegleRuleRawInput<any, any[], boolean, any> | undefined;
 };
+
+export type AllRulesDeclarations = CustomRulesDeclarationTree & DefaultValidatorsTree;

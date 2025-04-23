@@ -1,6 +1,6 @@
 import type { EnumLike, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
-export interface CommonComparationOptions {
+export interface CommonComparisonOptions {
   /**
    * Change the behaviour of the rule to check only if the value is equal in addition to be strictly superior or inferior
    * @default true
@@ -8,9 +8,17 @@ export interface CommonComparationOptions {
   allowEqual?: boolean;
 }
 
+export interface CommonAlphaOptions {
+  /**
+   * Allow symbols in alphabetical-like rules (like "_")
+   * @default true
+   */
+  allowSymbols?: boolean;
+}
+
 export type DefaultValidators = {
-  alpha: RegleRuleDefinition<string>;
-  alphaNum: RegleRuleDefinition<string | number>;
+  alpha: RegleRuleWithParamsDefinition<string, [options?: CommonAlphaOptions | undefined]>;
+  alphaNum: RegleRuleWithParamsDefinition<string | number, [options?: CommonAlphaOptions | undefined]>;
   between: RegleRuleWithParamsDefinition<number, [min: Maybe<number>, max: Maybe<number>]>;
   checked: RegleRuleDefinition<boolean, [], false, boolean, boolean>;
   contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
@@ -57,24 +65,25 @@ export type DefaultValidators = {
     false,
     boolean
   >;
-
+  exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-  ipAddress: RegleRuleDefinition<string, [], false, boolean, string>;
+  ipv4Address: RegleRuleDefinition<string, [], false, boolean, string>;
+  literal: RegleRuleDefinition<string | number, [literal: string | number], false, boolean, string | number>;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
   maxLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
-    [count: number, options?: CommonComparationOptions],
+    [count: number, options?: CommonComparisonOptions],
     false,
     boolean
   >;
-  maxValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparationOptions], false, boolean>;
+  maxValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparisonOptions], false, boolean>;
   minLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
-    [count: number, options?: CommonComparationOptions],
+    [count: number, options?: CommonComparisonOptions],
     false,
     boolean
   >;
-  minValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparationOptions], false, boolean>;
+  minValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparisonOptions], false, boolean>;
   nativeEnum: RegleRuleDefinition<string | number, [enumLike: EnumLike], false, boolean, string | number>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;
@@ -82,6 +91,5 @@ export type DefaultValidators = {
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
-  exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

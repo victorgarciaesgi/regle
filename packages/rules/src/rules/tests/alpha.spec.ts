@@ -25,6 +25,14 @@ describe('alpha exec', () => {
     expect(alpha.exec('abcdefghijklmnopqrstuvwxyz')).toBe(true);
   });
 
+  it('should validate english letters', () => {
+    expect(alpha.exec('abcdefgh_ijklmnopqr_stuvwxyz')).toBe(false);
+  });
+
+  it('should validate english letters', () => {
+    expect(alpha({ allowSymbols: true }).exec('abcdefgh_ijklmnopqr_stuvwxyz')).toBe(true);
+  });
+
   it('should validate english letters uppercase', () => {
     expect(alpha.exec('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).toBe(true);
   });

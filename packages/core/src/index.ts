@@ -1,6 +1,7 @@
 export {
   createRule,
   defineRegleConfig,
+  extendRegleConfig,
   inferRules,
   unwrapRuleParameters,
   useRegle,
@@ -10,8 +11,12 @@ export {
   useCollectScope,
   useScopedRegle,
   flatErrors,
+  createVariant,
+  narrowVariant,
+  variantToRef,
   type MergedRegles,
-  type CommonComparationOptions,
+  type CommonComparisonOptions,
+  type CommonAlphaOptions,
 } from './core';
 export { InternalRuleType } from './types';
 export type {
@@ -77,7 +82,6 @@ export type {
   $InternalRegleStatus,
   JoinDiscriminatedUnions,
   DeepReactiveState,
-  MismatchInfo,
   SuperCompatibleRegleRoot,
   SuperCompatibleRegleStatus,
   SuperCompatibleRegleResult,
@@ -87,4 +91,8 @@ export type {
   SuperCompatibleRegleCollectionStatus,
   ScopedInstancesRecord,
   ScopedInstancesRecordLike,
+  InferSafeOutput,
+  MaybeVariantStatus,
+  NarrowVariant,
+  DefaultValidatorsTree,
 } from './types';

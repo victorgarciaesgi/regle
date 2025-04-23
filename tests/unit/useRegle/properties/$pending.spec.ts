@@ -14,17 +14,21 @@ function nesteAsyncObjectWithRefsValidation() {
     collection: [{ child: 0 }],
   });
 
-  return useRegle(form, {
-    level0: { ruleEvenAsync: ruleMockIsEvenAsync() },
-    level1: {
-      child: { ruleEven: ruleMockIsEvenAsync() },
-    },
-    collection: {
-      $each: {
-        child: { ruleEvenAsync: ruleMockIsEvenAsync(2000) },
+  return useRegle(
+    form,
+    {
+      level0: { ruleEvenAsync: ruleMockIsEvenAsync() },
+      level1: {
+        child: { ruleEven: ruleMockIsEvenAsync() },
+      },
+      collection: {
+        $each: {
+          child: { ruleEvenAsync: ruleMockIsEvenAsync(2000) },
+        },
       },
     },
-  });
+    { lazy: true }
+  );
 }
 
 describe('$pending', () => {
@@ -38,13 +42,14 @@ describe('$pending', () => {
 
   it('sets `$pending` to `true`, when async validators are used and are being resolved', async () => {
     const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+    await nextTick();
 
-    shouldBePristineField(vm.r$);
+    shouldBePristineField(vm.r$, true);
 
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    shouldBePristineField(vm.r$);
+    shouldBePristineField(vm.r$, true);
 
     vm.r$.$value.level0 = 1;
     await vi.advanceTimersByTimeAsync(200);
@@ -103,22 +108,45 @@ describe('$pending', () => {
     expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Custom error']);
   });
 
-  // it('propagates `$pending` from a collection child', async () => {
-  //   const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+  it('propagates should make a boolean shift when editing a async rule', async () => {
+    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
 
-  //   vm.r$.$value.collection[0].child = 1;
-  //   await vi.advanceTimersByTimeAsync(200);
-  //   await nextTick();
+    expect(vm.r$.$correct).toBe(true);
 
-  //   expect(vm.r$.$fields.collection.$each[0].$pending).toBe(true);
-  //   expect(vm.r$.$fields.collection.$pending).toBe(true);
+    vm.r$.$value.level1.child = 1;
+    await nextTick();
+    expect(vm.r$.$correct).toBe(false);
 
-  //   vi.advanceTimersByTime(2000);
-  //   await flushPromises();
+    await vi.advanceTimersByTimeAsync(200);
 
-  //   shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.child);
-  //   expect(vm.r$.$fields.collection.$each[0].$fields.child.$errors).toStrictEqual(['Custom error']);
-  // });
+    expect(vm.r$.$fields.level1.$fields.child.$pending).toBe(true);
+    expect(vm.r$.$fields.level1.$pending).toBe(true);
+    expect(vm.r$.$correct).toBe(false);
+
+    vi.advanceTimersByTime(1000);
+    await flushPromises();
+
+    shouldBeErrorField(vm.r$.$fields.level1);
+    shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
+    expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Custom error']);
+  });
+
+  it('propagates `$pending` from a collection child', async () => {
+    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+
+    vm.r$.$value.collection[0].child = 1;
+    await vi.advanceTimersByTimeAsync(200);
+    await nextTick();
+
+    expect(vm.r$.$fields.collection.$each[0].$pending).toBe(true);
+    expect(vm.r$.$fields.collection.$pending).toBe(true);
+
+    vi.advanceTimersByTime(2000);
+    await flushPromises();
+
+    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.child);
+    expect(vm.r$.$fields.collection.$each[0].$fields.child.$errors).toStrictEqual(['Custom error']);
+  });
 
   it('sets `$pending` to false, when the last async invocation resolves', () => {});
 });

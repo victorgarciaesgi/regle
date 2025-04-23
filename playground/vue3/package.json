@@ -15,11 +15,11 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "arktype": "2.1.12",
-    "pinia": "3.0.1",
-    "valibot": "1.0.0",
+    "arktype": "catalog:",
+    "pinia": "catalog:",
+    "valibot": "catalog:",
     "vue": "catalog:",
-    "zod": "3.24.2"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.1.10",
@@ -35,7 +35,7 @@
     "npm-run-all2": "^7.0.2",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "type-fest": "4.38.0",
+    "type-fest": "catalog:",
     "typescript": "catalog:",
     "vite": "^6.2.3",
     "vue-eslint-parser": "catalog:",

@@ -1,16 +1,17 @@
 import { isFilled, isNumber, getSize } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 /**
  * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
  *
  * @param min - the minimum value
+ * @param options - comparision options
  */
 export const minLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
-  [count: number, options?: CommonComparationOptions],
+  [count: number, options?: CommonComparisonOptions],
   false,
   boolean
 > = createRule({
@@ -18,7 +19,7 @@ export const minLength: RegleRuleWithParamsDefinition<
   validator: (
     value: Maybe<string | Record<PropertyKey, any> | any[]>,
     count: number,
-    options?: CommonComparationOptions
+    options?: CommonComparisonOptions
   ) => {
     const { allowEqual = true } = options ?? {};
 
@@ -37,8 +38,8 @@ export const minLength: RegleRuleWithParamsDefinition<
   },
   message: ({ $value, $params: [count] }) => {
     if (Array.isArray($value)) {
-      return `This list should have at least ${count} items`;
+      return `The list should have at least ${count} items`;
     }
-    return `This field should be at least ${count} characters long`;
+    return `The value length should be at least ${count}`;
   },
 });

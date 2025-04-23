@@ -2,11 +2,13 @@ import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';
 import { valibotGlobalConfigFixture } from './fixtures/valibot.fixture';
 import { zodGlobalConfigFixture } from './fixtures/zod.fixture';
+import { zod4GlobalConfigFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotGlobalConfigFixture],
   ['zod', zodGlobalConfigFixture],
-])('schemas (%s) - defineRegleSchemaConfig rules for Valibot', (name, regleSchema) => {
+  ['zod4', zod4GlobalConfigFixture],
+])('schemas (%s) - defineRegleSchemaConfig rules', (name, regleSchema) => {
   it('should display global errors instead of rule-defined error', async () => {
     const { vm } = createRegleComponent(regleSchema);
 

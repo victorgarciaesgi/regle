@@ -9,6 +9,7 @@
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button type="button" @click="r$.$validate">Validate</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <code class="status" :status="r$.$correct"></code>
     </div>
     <span v-if="r$.$fields.email.$pending" class="pending-text"> Checking... </span>
     <ul v-if="r$.$errors.email.length">

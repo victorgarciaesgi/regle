@@ -2,10 +2,11 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../rules';
 import { and } from '../and';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('and validator', () => {
   it('should not validate no functions', () => {
+    // @ts-expect-error
     const result = and();
 
     expect(result.exec(undefined)).toBe(false);
@@ -43,13 +44,13 @@ describe('and validator', () => {
   });
 
   it('should validate inline function', () => {
-    const result = and((value) => ({ $valid: true, foo: 'bar' }), required);
+    const result = and((value: unknown) => ({ $valid: true, foo: 'bar' }), required);
     expect(result.exec(undefined)).toBe(false);
     expect(result.exec('fof')).toBe(true);
   });
 
   it('should validate async function', async () => {
-    const result = and(async (value) => {
+    const result = and(async (value: unknown) => {
       await timeout(100);
       return false;
     }, required);
@@ -59,18 +60,18 @@ describe('and validator', () => {
 
   it('should have correct return types', () => {
     const test = and(required, email, minLength(6));
-    expectTypeOf(and()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
+
+    // @ts-expect-error at least one argument
+    and();
     expectTypeOf(and(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
     expectTypeOf(and(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         unknown
       >
     >();
-
-    expectTypeOf(and()).toEqualTypeOf<RegleRuleDefinition<never, [], false, boolean, never>>();
   });
 });

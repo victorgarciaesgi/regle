@@ -2,54 +2,34 @@ import type {
   DeepMaybeRef,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
-  Maybe,
-  MismatchInfo,
   PrimitiveTypes,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
   ReglePartialRuleTree,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
-  Unwrap,
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
-import type { MaybeRef, MaybeRefOrGetter, Raw, Ref, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSingleFieldSchema } from '../types';
 
 export interface useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> {
-  /**
-   * Primitive parameter
-   * */
-  <TState extends Maybe<PrimitiveTypes>, TRules extends StandardSchemaV1<TState>>(
-    state: MaybeRef<TState>,
-    rulesFactory: MaybeRefOrGetter<TRules>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>>
-  ): RegleSingleFieldSchema<TState, TRules, TShortcuts>;
-  /**
-   * Object parameter
-   * */
-  <
-    TState extends Record<string, any>,
-    TSchema extends StandardSchemaV1<Record<string, any>> & TValid,
-    TValid = StandardSchemaV1.InferInput<TSchema> extends PartialDeep<
-      UnwrapNestedRefs<TState>,
-      { recurseIntoArrays: true }
-    >
-      ? {}
-      : MismatchInfo<
-          UnwrapNestedRefs<TState>,
-          PartialDeep<StandardSchemaV1.InferInput<TSchema>, { recurseIntoArrays: true }>
-        >,
-  >(
-    state: MaybeRef<TState> | DeepReactiveState<TState>,
-    schema: MaybeRef<TSchema>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<UnwrapNestedRefs<TState>, {}, never>
-  ): RegleSchema<UnwrapNestedRefs<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>;
+  <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
+    state:
+      | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
+      | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
+    rulesFactory: MaybeRef<TSchema>
+  ): NonNullable<TState> extends PrimitiveTypes
+    ? RegleSingleFieldSchema<NonNullable<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>
+    : RegleSchema<
+        UnwrapNestedRefs<NonNullable<TState>>,
+        UnwrapNestedRefs<NonNullable<StandardSchemaV1.InferInput<TSchema>>>,
+        TShortcuts
+      >;
 }
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(

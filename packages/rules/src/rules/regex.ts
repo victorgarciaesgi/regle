@@ -15,5 +15,5 @@ export const regex: RegleRuleWithParamsDefinition<string | number, [regexp: RegE
       }
       return true;
     },
-    message: 'This field does not match the required pattern',
+    message: 'The value does not match the required pattern',
   });

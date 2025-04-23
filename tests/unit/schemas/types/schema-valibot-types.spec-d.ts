@@ -38,12 +38,12 @@ it('valibot (%s) - collections should have the correct type', () => {
     collection: v.array(childSchema),
     test: v.string(),
   });
-  const { r$ } = useRegleSchema({} as Partial<v.InferInput<typeof schema>>, schema);
+  const { r$ } = useRegleSchema({} as v.InferInput<typeof schema>, schema);
 
   expectTypeOf(r$.$fields.collection).toEqualTypeOf<
     RegleSchemaCollectionStatus<
       v.InferInput<typeof childSchema>,
-      v.InferInput<typeof childSchema>[] | [],
+      v.InferInput<typeof childSchema>[],
       RegleShortcutDefinition<any>
     >
   >;

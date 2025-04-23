@@ -84,6 +84,8 @@ Using schema libraries uses a different mechanism than the core "rules" one. Reg
 
 - `$validate` (only at root)
 - `$pending` (only at root)
+
+One other limitation is you won't have access to any children `$rules`, so checking if a field is required with `$fields.xx.$rules.required.active` is not possible with schemas.
 :::
 
 

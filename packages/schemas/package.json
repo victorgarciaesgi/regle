@@ -1,6 +1,6 @@
 {
   "name": "@regle/schemas",
-  "version": "1.0.9",
+  "version": "1.1.0-beta.6",
   "description": "Schemas adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -16,8 +16,9 @@
     "@standard-schema/spec": "1.0.0"
   },
   "peerDependencies": {
-    "valibot": "^1.0.0-beta.11",
-    "zod": "^3.24.0"
+    "valibot": "^1.0.0",
+    "zod": "^3.24.0",
+    "arktype": "^2.1.0"
   },
   "peerDependenciesMeta": {
     "valibot": {
@@ -25,17 +26,17 @@
     },
     "zod": {
       "optional": true
+    },
+    "arktype": {
+      "optional": true
     }
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "22.13.13",
+    "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
-    "@vue/test-utils": "2.4.6",
-    "bumpp": "10.1.0",
-    "changelogithub": "13.13.0",
-    "cross-env": "7.0.3",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
@@ -43,12 +44,12 @@
     "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "valibot": "1.0.0",
-    "vitest": "3.0.9",
+    "valibot": "catalog:",
+    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:",
-    "zod": "3.24.2"
+    "zod": "catalog:"
   },
   "type": "module",
   "exports": {
@@ -59,26 +60,18 @@
           "production": "./dist/regle-schemas.min.mjs",
           "development": "./dist/regle-schemas.mjs",
           "default": "./dist/regle-schemas.mjs"
-        },
-        "require": {
-          "production": "./dist/regle-schemas.min.cjs",
-          "development": "./dist/regle-schemas.cjs",
-          "default": "./index.js"
         }
       },
-      "import": "./dist/regle-schemas.mjs",
-      "require": "./index.js"
+      "import": "./dist/regle-schemas.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "index.js",
+  "main": "./dist/regle-schemas.mjs",
   "module": "./dist/regle-schemas.mjs",
   "types": "./dist/regle-schemas.d.ts",
   "files": [
     "dist",
-    "index.js",
-    "index.cjs",
     "LICENSE",
     "README.md"
   ],

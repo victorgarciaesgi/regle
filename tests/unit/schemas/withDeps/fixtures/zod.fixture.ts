@@ -2,7 +2,7 @@ import { useRegleSchema, withDeps } from '@regle/schemas';
 import { computed, reactive } from 'vue';
 import { z } from 'zod';
 
-function zodWithDepsFixture() {
+export function zodWithDepsFixture() {
   const form = reactive({
     field1: '',
     nested: {

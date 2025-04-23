@@ -2,7 +2,7 @@ import { createRule, type RegleRuleDefinition, type RegleRuleWithParamsDefinitio
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
-    assert.throw(() => createRule({} as any), 'Validator must be a function');
+    assert.throw(() => createRule({} as any), '[createRule] validator must be a function');
   });
 
   it('should create a rule definition without parameters', () => {

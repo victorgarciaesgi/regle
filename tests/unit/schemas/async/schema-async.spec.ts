@@ -3,10 +3,12 @@ import { nextTick } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { valibotAsyncSchemaFixture } from './fixtures/valibot.fixture';
 import { zodAsyncSchemaFixture } from './fixtures/zod.fixture';
+import { zod4AsyncSchemaFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotAsyncSchemaFixture],
   ['zod', zodAsyncSchemaFixture],
+  ['zod4', zod4AsyncSchemaFixture],
 ])('schema (%s) - useRegleSchema with async rules and Object refs', async (name, regleSchema) => {
   beforeAll(() => {
     vi.useFakeTimers();
@@ -45,10 +47,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
+    expect(vm.r$.$fields.level0Async?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1?.$fields.child?.$correct).toBe(false);
+    expect(vm.r$.$fields.level1?.$fields.level2?.$fields.childAsync?.$correct).toBe(false);
   });
 
   it('should error on initial submit', async () => {
@@ -96,7 +98,7 @@ describe.each([
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
-    expect(vm.r$.$fields.level0Async.$dirty).toBe(true);
+    expect(vm.r$.$fields.level0Async?.$dirty).toBe(true);
     expect(vm.r$.$error).toBe(true);
     expect(vm.r$.$fields.level0Async.$error).toBe(true);
     expect(vm.r$.$pending).toBe(false);
