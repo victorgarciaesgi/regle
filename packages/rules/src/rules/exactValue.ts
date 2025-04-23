@@ -2,6 +2,9 @@ import { isFilled, isNumber, toNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
 
+/**
+ * Requires a field to have a strict numeric value.
+ */
 export const exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> = createRule({
   type: 'exactValue',
   validator: (value: Maybe<number>, count: number) => {

@@ -8,9 +8,6 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  *
  * It will automatically detect if the rule is async
  *
- * @typeParam TValue - The input value the rule should receive
- * @typeParam TParams - Tuple declaration of the rule parameters (if any)
- *
  *
  * @param definition - The rule processors object
  *

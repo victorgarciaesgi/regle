@@ -8,7 +8,7 @@ import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
 import { withParams } from '../withParams';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({
@@ -226,7 +226,7 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         string | any[] | Record<PropertyKey, any>
@@ -241,7 +241,7 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         string | any[] | Record<PropertyKey, any>
@@ -254,7 +254,7 @@ describe('withMessage helper', () => {
     expectTypeOf(message).toEqualTypeOf<
       RegleRuleWithParamsDefinition<
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean
       >

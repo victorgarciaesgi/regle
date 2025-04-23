@@ -2,7 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../rules';
 import { or } from '../or';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('or validator', () => {
   it('should not validate no functions', () => {
@@ -65,7 +65,7 @@ describe('or validator', () => {
     expectTypeOf(or(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         unknown

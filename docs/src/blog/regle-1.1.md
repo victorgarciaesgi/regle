@@ -10,66 +10,223 @@ sidebar: false
 
 # Announcing Regle `1.1` 🎉 
 
---(include playground screeshot)
+<br/>
 
-I'm happy to announce that a new big release of Regle is out, brining exiting new features and bug fixes!
+![regle 1.1](/regle-1.1-article.png)
 
-Regle has been on `1.0` for 1 month now, have reach **123** stars ⭐️ and **100k downloads**.
+<br/>
 
-After working and fighting with generic types, I can present the new minor version of Regle: `1.1.0`.
 
-This version solves **10** issues/enhancement, and will provide more flexibily and safety in its types.
+I'm happy to announce that a new minor release of Regle is out, bringing exciting new features.
 
-## Here is a quick glance at what changed
+Regle has been on `1.0` for 1 month now and have reached
+- **124** stars ⭐️
+- **100k npm downloads**
 
-### 🚨 Breaking Changes
+A big thanks to anyone using Regle in the early stages, helping me find and fix edge cases and add more useful features.
 
-- Rename ipAddress rule to ipv4Address
-
-### 🚀 Features
-
-- Variants and discriminated variants support
-- `InferSafeOutput` type to infer safe form values
-- Allow rules with optional parameters to be used without function execution
-- Symbol option in alphaNum and alpha rules
-- Support Zod 4
-- Possibility to extend already created useRegle from defineRegleConfig with `extendRegleConfig`
-- Dropped CommonJS support
-
-### 🐞 Bug Fixes
-
-- StackBlitz template isn't easily clonable
-- useRegle typing bug when using rules defined in ref
 
 ## ▶️ Regle playground
 
+A Regle online playground is now available at https://play.reglejs.dev !  
+It provides the same features as the Vue playground while being focused on Regle.
 
-## 📋 New features details 
+It will make it easier to prototype or to report bugs.
 
-
-### Variants and discriminated variants support
-
--
-
-### `InferSafeOutput` type to infer safe form values
-
--
+![regle playground](/regle-playground.png)
 
 
-### Allow rules with optional parameters to be used without function execution
+## 🔃 Variants and discriminated unions support
 
--
+Your form may not be linear, and have multiple fields that depends on a condition or a toggle.
+It can be complex and become a mess when trying to organise your types around it.
 
-### Symbol option in alphaNum and alpha rules
+Regle variants offer a way to simply declare and use this discriminated unions, while keeping all fields correctly types and also runtime safe.
 
--
 
-### Support Zod 4
+```vue twoslash
+<template>
+    <div v-if="narrowVariant(r$.$fields, 'type', 'EMAIL')">
+      <!-- `email` is a known field only in this block -->
+      <input v-model="r$.$fields.email.$value" placeholder='Email'/>
+      <Errors :errors="r$.$fields.email.$errors"/>
+    </div>
+    
+    <div v-else-if="narrowVariant(r$.$fields, 'type', 'GITHUB')">
+      <!-- `username` is a known field only in this block -->
+      <input v-model="r$.$fields.username.$value" placeholder='Email'/>
+      <Errors :errors="r$.$fields.username.$errors"/>
+    </div>
 
--
+</template>
 
-### Possibility to extend already created useRegle from defineRegleConfig with `extendRegleConfig`
+<script setup lang='ts'>
+import {ref} from 'vue';
+import { literal, required, email } from '@regle/rules';
+type FormStateLoginType = 
+| {type: 'EMAIL', email: string} 
+| {type: 'GITHUB', username: string} 
+| {type?: undefined}
 
--
+type FormState = {
+  firstName?: string;
+  lastName?: string;
+} & FormStateLoginType
 
-### Dropped CommonJS support
+// ---cut---
+import { useRegle, createVariant, narrowVariant } from '@regle/core';
+
+const state = ref<FormState>({})
+
+const {r$} = useRegle(state, () => {
+
+  const variant = createVariant(state, 'type', [
+    {type: { literal: literal('EMAIL')}, email: { required, email }},
+    {type: { literal: literal('GITHUB')}, username: { required }},
+    {type: { required }},
+  ]);
+
+  return {
+    firstName: { required },
+    ...variant.value,
+  };
+})
+
+</script>
+```
+
+Check out the [documentation for variants](/advanced-usage/variants)
+
+## ✅ `InferSafeOutput` type to infer safe form values
+
+Like Zod's `Infer` utility, Regle now provide its own shortcut for extracting safe output from any `r$` instance.
+
+```ts twoslash
+import { ref, type Ref, computed } from 'vue';
+import { required } from '@regle/rules';
+// ---cut---
+import { useRegle, InferSafeOutput } from '@regle/core';
+
+const { r$ } = useRegle({ firstName: '', lastName: '' }, {
+  lastName: { required },
+});
+
+type FormRequest = InferSafeOutput<typeof r$>;
+//    ^?
+
+
+```
+
+<br/>
+<br/>
+<br/>
+
+## 🦸 Support Zod 4 <span data-title="zod"></span> 
+
+[Zod 4 is currently in beta](https://v4.zod.dev/v4), and Regle officialy supports it.
+
+Some bugs on Zod side may persists, but breaking changes are minimal.  
+Nothing is to change on Regle side.
+
+## 📞 Allow rules with optional parameters to be used without function call
+
+This is a thing that was bugging me for a while: *rules* that add an optional parameter still had to be used by a function call.
+
+Ex: 
+
+```ts
+import { macAddress } from '@regle/rules';
+
+const { r$ } = useRegle({address: ''}, {
+  address: {
+    macAddress: macAddress()
+  }
+})
+```
+
+This also applies to custom rules and it was not convenient.
+
+With this update, when the option of a rule is optional, the rule can be used without calling it.
+
+```ts
+import { macAddress } from '@regle/rules';
+
+const { r$ } = useRegle({address: ''}, {
+  address: {
+    // Can now be written inline
+    macAddress,
+    // But can still can be called with arguments
+    macAddress: macAddress('::')
+  }
+})
+```
+
+
+
+## 👯‍♀️ Possibility to extend already created useRegle from defineRegleConfig with `extendRegleConfig`
+
+
+If you have a shared custom `useRegle`, you may want to add even more rules or shortcuts to it. This was not possible with `defineRegleConfig`.
+
+`@regle/core` now exports a new helper called `extendRegleConfig`.
+
+```ts
+import { extendRegleConfig } from '@regle/core';
+
+const { useRegle: useExtendedRegle } = extendRegleConfig(useCustomRegle, {
+  rules: () => ({
+    customRuleExtended: withMessage(required, 'Custom rule 2'),
+  })
+})
+```
+
+Check out the [docs here](/advanced-usage/global-config#extend-global-config)
+
+
+## 🔣 allowSymbol option in `alphaNum` and `alpha` rules
+
+Allowing rules with optional parameters to be used without function call was motivated by the fact that I had to add options to `alpha` and `alphaNum`, but would require a breaking changes in declaration.
+
+Both rules have now optionals options, including `allowSymbols`.
+
+
+```ts
+import { alpha, alphaNum } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { 
+    alpha: alpha({ allowSymbols: true }),
+    alphaNum: alphaNum({ allowSymbols: true }),
+})
+
+```
+
+## 👴 Dropped CommonJS support
+
+Regle supported ESM & CJS builds, but after reading [Antfu's article on shipping ESM only](https://antfu.me/posts/move-on-to-esm-only), I decided to remove CJS support.
+
+
+
+
+## Full details
+
+### 🚨 Breaking Changes
+
+- Rename `ipAddress` rule to `ipv4Address` [#91](https://github.com/victorgarciaesgi/regle/issues/91)
+
+### 🚀 Features
+
+- `InferSafeOutput` type to infer safe form values
+- Variants and discriminated unions support [#82](https://github.com/victorgarciaesgi/regle/issues/86)
+- Allow rules with optional parameters to be used without function execution [#96](https://github.com/victorgarciaesgi/regle/issues/96)
+- Zod 4 support
+- Dropped CommonJS support
+- Possibility to extend already created useRegle from defineRegleConfig with `extendRegleConfig` [#83](https://github.com/victorgarciaesgi/regle/issues/83)
+- Symbol option in `alphaNum` and `alpha` rules [#89](https://github.com/victorgarciaesgi/regle/issues/89)
+
+### 🐞 Bug Fixes
+
+- StackBlitz template isn't easily clonable [#93](https://github.com/victorgarciaesgi/regle/issues/93)
+- Rule validation message are not uniform [#90](https://github.com/victorgarciaesgi/regle/issues/90)
+- `useRegle` typing bug when using rules defined in ref [#94](https://github.com/victorgarciaesgi/regle/issues/94)
+

@@ -30,7 +30,7 @@ describe('alpha exec', () => {
   });
 
   it('should validate english letters', () => {
-    expect(alpha(true).exec('abcdefgh_ijklmnopqr_stuvwxyz')).toBe(true);
+    expect(alpha({ allowSymbols: true }).exec('abcdefgh_ijklmnopqr_stuvwxyz')).toBe(true);
   });
 
   it('should validate english letters uppercase', () => {

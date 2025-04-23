@@ -2,7 +2,6 @@
 import Sun from './icons/Sun.vue';
 import Moon from './icons/Moon.vue';
 import Share from './icons/Share.vue';
-import Download from './icons/Download.vue';
 import GitHub from './icons/GitHub.vue';
 import type { ReplStore } from '@vue/repl';
 import VersionSelect from './VersionSelect.vue';
@@ -110,7 +109,10 @@ h1 {
 }
 
 h1 a {
-  color: #fff;
+  color: transparent;
+  background-image: linear-gradient(90deg, #1aedaa, #00bb7f);
+  background-clip: text;
+  -webkit-background-clip: text;
   text-decoration: none;
 }
 

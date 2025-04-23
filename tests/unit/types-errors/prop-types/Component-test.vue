@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type {
-  CommonComparationOptions,
+  CommonComparisonOptions,
   InferRegleShortcuts,
   MaybeOutput,
   RegleEnforceCustomRequiredRules,
@@ -68,10 +68,10 @@ expectTypeOf(props.enforcedRulesField.$rules.required).toEqualTypeOf<
 
 //-
 expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, [count: number, options?: CommonComparationOptions | undefined], boolean>
+  RegleRuleStatus<string | undefined, [count: number, options?: CommonComparisonOptions | undefined], boolean>
 >();
 expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength.$params).toEqualTypeOf<
-  [count: number, options?: CommonComparationOptions | undefined]
+  [count: number, options?: CommonComparisonOptions | undefined]
 >();
 
 //-

@@ -56,7 +56,7 @@ const {r$} = useRegle(state, () => {
   const variant = createVariant(state, 'type', [
     {type: { literal: literal('EMAIL')}, email: { required, email }},
     {type: { literal: literal('GITHUB')}, username: { required }},
-    {type: { required}},
+    {type: { required }},
   ]);
 
 

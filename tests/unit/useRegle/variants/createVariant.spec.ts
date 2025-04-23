@@ -3,7 +3,7 @@ import {
   narrowVariant,
   variantToRef,
   useRegle,
-  type CommonComparationOptions,
+  type CommonComparisonOptions,
   type RegleFieldStatus,
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
@@ -119,7 +119,7 @@ describe('createVariant', () => {
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
               number,
-              [count: number, options?: CommonComparationOptions | undefined],
+              [count: number, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
               number
@@ -292,7 +292,7 @@ describe('createVariant', () => {
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
               number,
-              [count: number, options?: CommonComparationOptions | undefined],
+              [count: number, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
               number
@@ -316,7 +316,7 @@ describe('createVariant', () => {
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
               number,
-              [count: number, options?: CommonComparationOptions | undefined],
+              [count: number, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
               number

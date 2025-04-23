@@ -61,6 +61,13 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
             : SafeFieldProperty<Data, TRules>;
     };
 
+/**
+ * Infer safe output from any `r$` instance
+ *
+ * ```ts
+ * type FormRequest = InferSafeOutput<typeof r$>;
+ * ```
+ */
 export type InferSafeOutput<
   TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
 > =

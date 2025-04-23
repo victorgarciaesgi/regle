@@ -1,16 +1,17 @@
 import { isFilled, isNumber, getSize } from '../helpers';
 import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 /**
  * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
  *
  * @param max - the maximum length
+ * @param options - comparision options
  */
 export const maxLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
-  [count: number, options?: CommonComparationOptions],
+  [count: number, options?: CommonComparisonOptions],
   false,
   boolean
 > = createRule({
@@ -18,7 +19,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
   validator: (
     value: Maybe<string | Record<PropertyKey, any> | any[]>,
     count: number,
-    options?: CommonComparationOptions
+    options?: CommonComparisonOptions
   ) => {
     const { allowEqual = true } = options ?? {};
     if (isFilled(value, false) && isFilled(count)) {

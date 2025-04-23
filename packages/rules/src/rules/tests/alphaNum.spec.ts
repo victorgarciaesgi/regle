@@ -30,7 +30,7 @@ describe('alphaNum validator', () => {
   });
 
   it('should validate english letters', () => {
-    expect(alphaNum(true).exec('abcxyz_ABCXYZ')).toBe(true);
+    expect(alphaNum({ allowSymbols: true }).exec('abcxyz_ABCXYZ')).toBe(true);
   });
 
   it('should validate alphaNum', () => {

@@ -15,7 +15,8 @@ export {
   narrowVariant,
   variantToRef,
   type MergedRegles,
-  type CommonComparationOptions,
+  type CommonComparisonOptions,
+  type CommonAlphaOptions,
 } from './core';
 export { InternalRuleType } from './types';
 export type {

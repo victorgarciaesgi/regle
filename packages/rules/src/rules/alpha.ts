@@ -1,4 +1,4 @@
-import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition, CommonAlphaOptions } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
 
@@ -7,20 +7,22 @@ const alphaSymbolRegex = /^[\w.]+$/;
 
 /**
  * Allows only alphabetic characters.
+ *
+ * @param [options] - Alpha rules options
  * */
 export const alpha: RegleRuleWithParamsDefinition<
   string,
-  [allowSymbols?: boolean | undefined],
+  [options?: CommonAlphaOptions | undefined],
   false,
   boolean,
   string
 > = createRule({
   type: 'alpha',
-  validator(value: Maybe<string>, allowSymbols?: boolean) {
+  validator(value: Maybe<string>, options?: CommonAlphaOptions) {
     if (isEmpty(value)) {
       return true;
     }
-    if (allowSymbols) {
+    if (options?.allowSymbols) {
       return matchRegex(value, alphaSymbolRegex);
     }
     return matchRegex(value, alphaRegex);

@@ -53,7 +53,7 @@ const { r$ } = useRegle({ name: '' }, {
   name: { 
     alpha,
     // or
-    alpha: alpha(true),
+    alpha: alpha({ allowSymbols: true }),
   },
 })
 ```
@@ -75,7 +75,7 @@ const { r$ } = useRegle({ name: '' }, {
   name: { 
     alphaNum,
     // or
-    alphaNum: alphaNum(true),
+    alphaNum: alphaNum({ allowSymbols: true }),
 })
 ```
 
@@ -259,8 +259,8 @@ Requires the input value to have a strict specified length, inclusive. Works wit
 ```ts twoslash
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
-// ---cut---
 // @noErrors
+// ---cut---
 import { exactLength } from '@regle/rules';
 
 const exactValue = ref(6);
@@ -282,7 +282,7 @@ _**Params**_
 
 Requires a field to have a strict numeric value.
 
-```ts
+```ts twoslash
 import {ref} from 'vue';
 import {useRegle} from '@regle/core';
 // ---cut---
@@ -527,7 +527,7 @@ const { r$ } = useRegle({ aliment: 'Fish' }, {
 ## `regex`
 
 _**Params**_
-- `...regexps: [MaybeRefOrGetter<RegExp | RegExp[]>]`
+- `regexps: MaybeRefOrGetter<RegExp | RegExp[]>`
 
 Checks if the value matches one or more regular expressions.
 

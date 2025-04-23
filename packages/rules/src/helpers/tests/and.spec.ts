@@ -2,7 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { timeout } from '../../../../../tests/utils';
 import { email, minLength, required } from '../../rules';
 import { and } from '../and';
-import type { CommonComparationOptions } from '@regle/core';
+import type { CommonComparisonOptions } from '@regle/core';
 
 describe('and validator', () => {
   it('should not validate no functions', () => {
@@ -67,7 +67,7 @@ describe('and validator', () => {
     expectTypeOf(and(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
-        [count: number, options?: CommonComparationOptions | undefined],
+        [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         unknown
