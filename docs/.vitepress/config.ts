@@ -293,10 +293,10 @@ export default defineConfig({
         return `{
           "@context":"http://schema.org",
           "@type":"WebSite",
-          "url":"https:\/\/reglejs.dev\/",
+          "url":"https://reglejs.dev/",
           "inLanguage":"en",
-          "description":"Headless model-based form validation library for Vue.js",
-          "name":"${pageData.title}"
+          "description":"Headless form validation library for Vue.js",
+          "name":"Regle"
         }`;
       } else {
         return `{
@@ -309,7 +309,8 @@ export default defineConfig({
               "@id":"${canonicalUrl}"
             },
             "keywords":"regle, vue, forms, typescript",
-            "url":"${canonicalUrl}"
+            "url":"https://reglejs.dev/",
+            "name": "Regle"
           }`;
       }
     }
