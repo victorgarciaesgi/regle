@@ -8,7 +8,32 @@ import UsingMetadataCreateRule from '../parts/components/metadata/UsingMetadataC
 
 # Rules metadata
 
-Rule validator functions can return more than just a boolean. This additional data can be utilized by your `message` handler, `active` handler, or any other part of your application that has access to regle.
+Rule validator functions can return more than just a boolean. It can return any object as long as it returns an object containing at least `$valid: boolean`.  
+
+This additional data can be utilized by your `message` handler, `active` handler, or any other part of your application that has access to the regle instance.
+
+
+```ts twoslash
+// @noErrors
+import {withMessage} from '@regle/rules';
+import {useRegle} from '@regle/core';
+
+const inlineRule = withMessage((value: unknown) => {
+  return {  
+    $valid: true,
+    myCustomMetadata: 100
+  }
+}, ({myCustomMetadata}) => `Hello ${myCustomMetadata}`)
+//                                      ^?
+
+
+const { r$ } = useRegle({name: ''}, {
+  name: {inlineRule}
+})
+
+r$.$fields.name.$rules.inlineRule.$metadata.
+//                                          ^|
+```
 
 ## Using metadata in `createRule`
 

@@ -305,7 +305,7 @@ export type RegleRuleStatus<
   /** Returns the current path of the rule (used internally for tracking) */
   readonly $path: string;
   /** Contains the metadata returned by the validator function. */
-  readonly $metadata: TMetadata;
+  readonly $metadata: TMetadata extends boolean ? TMetadata : Omit<TMetadata, '$valid'>;
   /** Run the rule validator and compute its properties like $message and $active */
   $parse(): Promise<boolean>;
   /** Reset the $valid, $metadata and $pending states */

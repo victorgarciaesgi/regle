@@ -409,7 +409,7 @@ const { r$ } = useRegle(form, {
 
 ## Metadata
 
-Like in inline rules, you can return any data from your validator function as long as it returns at least `$valid: boolean`
+Like in inline rules, you can return any data from your validator function as long as it returns  an object containing at least `$valid: boolean`.
 
 It can be useful for returning computed data from the validator, or in async function to process api result, or api errors.
 

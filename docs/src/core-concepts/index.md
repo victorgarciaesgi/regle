@@ -22,6 +22,11 @@ const { r$ } = useRegle(/* state */ , /* rules */ , /* modifiers */);
 </script>
 ```
 
+:::tip
+Regle is only compatible with the [Composition API](https://fr.vuejs.org/guide/extras/composition-api-faq).
+
+There is no plan to support the Option or Class API.
+:::
 
 ## State
 
@@ -37,22 +42,22 @@ The state can be:
 If you pass a reactive state, you have the flexibility to bind your model either to the original state or to the state proxy returned by useRegle.
 
 ```ts
-const {r$} = useRegle({name: ''}, /* rules */)
+const { r$ } = useRegle({ name: '' }, /* rules */)
 ```
 
 ```ts
-const state = ref({name: ''});
-const {r$} = useRegle(state, /* rules */)
+const state = ref({ name: '' });
+const { r$ } = useRegle(state, /* rules */)
 ```
 
 ```ts
-const state = reactive({name: ''});
-const {r$} = useRegle(state, /* rules */)
+const state = reactive({ name: '' });
+const { r$ } = useRegle(state, /* rules */)
 ```
 
 ```ts
-const state = {name: ref('')}
-const {r$} = useRegle(state, /* rules */)
+const state = { name: ref('') }
+const { r$ } = useRegle(state, /* rules */)
 ```
 
 ## Rules
@@ -66,29 +71,31 @@ Rules can be declared in different ways:
 :::code-group
 ```ts [Inline]
 // The rule object will not react to computed changes
-useRegle({ name: ''}, {
+useRegle({ name: '' }, {
   name: { required }
 })
 ```
 
 ```ts [Getter]
 // The rules can now detect computed properties inside the object
-useRegle({name: ''}, () => ({
+useRegle({ name: '' }, () => ({
   name: { required }
 }))
 ```
 
 ```ts [Computed]
 import { inferRules } from '@regle/core';
+
 const state = ref({name: ''});
 
-/** It's recommanded to use inferRules to 
- *  keep autocompletion and typecheck */
-const rules = computed(() => inferRules(state, {
-  name: { required }
-}))
+/** It's recommanded to use inferRules to keep autocompletion and typecheck */
+const rules = computed(() => {
+  return inferRules(state, {
+    name: { required }
+  })
+})
 
-useRegle(state, rules);
+const { r$ } = useRegle(state, rules);
 ```
 :::
 

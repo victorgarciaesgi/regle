@@ -41,6 +41,33 @@ Helpers which have been renamed:
   - Parameters are automatically unwrapped when using `createRule`
 
 
+## Displaying errors
+
+
+Vuelidate:
+```vue
+<template> 
+  <p 
+    v-for="error of v$.name.$errors"
+    :key="error.$uid" 
+  >
+      {{error.$message}}
+  </p>
+</template>
+```
+
+Regle: 
+```vue
+<template>
+  <p
+    v-for="(error, index) of r$.$errors.name"
+    :key="index"
+  >
+      {{ error }} 
+  </p>
+</template>
+```
+
 ### `withMessage`
 
 Order of parameters are swapped

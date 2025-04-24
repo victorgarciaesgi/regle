@@ -155,8 +155,8 @@ This utility can take multiple regular expressions as arguments. It checks the i
 import { createRule, type Maybe } from '@regle/core';
 import { isFilled, matchRegex } from '@regle/rules';
 
-const rule = createRule({
-  validator(value: Maybe<string>, ...regexps: RegExp[]) {
+const regex = createRule({
+  validator(value: Maybe<string>, regexps: RegExp[]) {
     if (isFilled(value)) {
       return matchRegex(value, ...regexps);
     }
