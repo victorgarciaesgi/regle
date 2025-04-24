@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /*.md$
+Sitemap: https://reglejs.dev/sitemap.xml

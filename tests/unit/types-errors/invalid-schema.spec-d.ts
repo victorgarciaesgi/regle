@@ -107,6 +107,6 @@ describe('useRegle should throw errors for invalid rule schema', () => {
 
   it('Known rules with inline validator returning metadata ✅', () => {
     const { r$ } = useRegle({ name: '' }, { name: { required: (value) => ({ $valid: true, customMeta: 'bar' }) } });
-    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ $valid: true; customMeta: string }>();
+    expectTypeOf(r$.$fields.name.$rules.required.$metadata).toEqualTypeOf<{ customMeta: string }>();
   });
 });
