@@ -43,6 +43,30 @@ Result:
 <CustomMessages/>
 
 
+### i18n
+
+You can also use any i18n library directly inside the config.
+
+```ts
+import { defineRegleConfig } from '@regle/core';
+import { withMessage, minLength, required } from '@regle/rules';
+import { useI18n } from 'vue-i18n';
+
+const { useRegle: useCustomRegle } = defineRegleConfig({
+  rules: () => {
+    const { t } = useI18n()
+
+    return {
+      required: withMessage(required, t('general.required')),
+      minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
+        return t('general.minLength', {max});
+      })
+    }
+  }
+})
+```
+
+
 ## Declare new rules
 
 While `useRegle` allows you to use any rule key, adding custom rules to the global configuration provides autocompletion and type checking. This improves maintainability and consistency across your application.

@@ -4,6 +4,7 @@ title: Displaying errors
 
 <script setup>
 import QuickUsage from '../parts/components/QuickUsage.vue';
+import QuickUsageCustom from '../parts/components/QuickUsageCustom.vue';
 import DisplayingErrors from '../parts/components/DisplayingErrors.vue';
 </script>
 
@@ -25,6 +26,55 @@ Result:
 <QuickUsage />
 
 
+## Display custom error messages
+
+To display custom error messages, you can use the [withMessage](/core-concepts/rules/rule-wrappers#withmessage) helper.   
+You have access to additional data like paramaters or rule status to write your message.
+
+:::tip
+If you have to write a lot of forms in your apps, consider using [defineRegleConfig](/advanced-usage/global-config#replace-built-in-rules-messages) instead.
+:::
+
+``` vue twoslash [App.vue]
+<script setup lang='ts'>
+import { useRegle } from '@regle/core';
+import { required, minLength, email, withMessage } from '@regle/rules';
+
+const { r$ } = useRegle({ email: '' }, {
+  email: { 
+    required: withMessage(required, 'Missing value'), 
+    email: withMessage(email, 'Try a valid email?'), 
+    minLength: withMessage(minLength(4), ({$params: [min]}) => `It needs ${min} characters`)}
+})
+</script>
+```
+
+<QuickUsageCustom/>
+
+
+## i18n and translations
+
+Regle is library agnostic so you can use any i18n library freely, and there is nothing specific to configure, it will just work out of the box.
+
+```vue
+<script setup lang='ts'>
+import { useRegle } from '@regle/core';
+import { required, minLength, email, withMessage } from '@regle/rules';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
+
+const { r$ } = useRegle({ email: '' }, {
+  email: { 
+    required: withMessage(required, t('general.required')), 
+    email: withMessage(email, t('general.email')), 
+    minLength: withMessage(minLength(4), ({$params: [min]}) => t(`general.minLength`, {min}))}
+})
+</script>
+
+```
+
+
 ## Applying an error and valid class
 
 <!-- @include: @/parts/DisplayingErrors.md -->
@@ -32,6 +82,7 @@ Result:
 Result:
 
 <DisplayingErrors />
+
 
 
 ## Display flat errors
