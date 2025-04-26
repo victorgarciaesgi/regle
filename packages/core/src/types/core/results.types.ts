@@ -102,15 +102,17 @@ export type DeepSafeFormState<
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends RegleRuleDecl<any, any>
-    ? NonNullable<TRule['required']> extends TRule['required']
-      ? true
-      : TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
-        ? Params extends never[]
-          ? true
+    ? [unknown] extends TRule['required']
+      ? NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any>
+        ? true
+        : false
+      : NonNullable<TRule['required']> extends TRule['required']
+        ? TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+          ? Params extends never[]
+            ? true
+            : false
           : false
-        : NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any>
-          ? true
-          : false
+        : false
     : false;
 
 type ObjectHaveAtLeastOneRequiredField<
