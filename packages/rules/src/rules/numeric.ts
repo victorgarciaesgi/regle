@@ -7,7 +7,7 @@ const numericRegex = /^\d*(\.\d+)?$/;
 /**
  * Allows only numeric values (including numeric strings).
  */
-export const numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number> = createRule({
+export const numeric: RegleRuleDefinition<string | number, [], false, boolean, number> = createRule({
   type: 'numeric',
   validator(value: Maybe<string | number>) {
     if (isEmpty(value)) {

@@ -13,7 +13,8 @@ export const maxValue: RegleRuleWithParamsDefinition<
   number,
   [count: number, options?: CommonComparisonOptions],
   false,
-  boolean
+  boolean,
+  number
 > = createRule({
   type: 'maxValue',
   validator: (value: Maybe<number>, count: number, options?: CommonComparisonOptions) => {

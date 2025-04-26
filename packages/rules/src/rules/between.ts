@@ -13,7 +13,8 @@ export const between: RegleRuleWithParamsDefinition<
   number,
   [min: number, max: number, options?: CommonComparisonOptions],
   false,
-  boolean
+  boolean,
+  number
 > = createRule({
   type: 'between',
   validator: (value: Maybe<number>, min: number, max: number, options?: CommonComparisonOptions) => {

@@ -7,28 +7,33 @@ import { isEmpty } from '../helpers';
  *
  * @param separator - the custom separator
  */
-export const macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean> =
-  createRule({
-    type: 'macAddress',
-    validator(value: Maybe<string>, separator = ':') {
-      if (isEmpty(value)) {
-        return true;
-      }
+export const macAddress: RegleRuleWithParamsDefinition<
+  string,
+  [separator?: string | undefined],
+  false,
+  boolean,
+  string
+> = createRule({
+  type: 'macAddress',
+  validator(value: Maybe<string>, separator = ':') {
+    if (isEmpty(value)) {
+      return true;
+    }
 
-      if (typeof value !== 'string') {
-        return false;
-      }
+    if (typeof value !== 'string') {
+      return false;
+    }
 
-      const parts =
-        typeof separator === 'string' && separator !== ''
-          ? value.split(separator)
-          : value.length === 12 || value.length === 16
-            ? value.match(/.{2}/g)
-            : null;
+    const parts =
+      typeof separator === 'string' && separator !== ''
+        ? value.split(separator)
+        : value.length === 12 || value.length === 16
+          ? value.match(/.{2}/g)
+          : null;
 
-      return parts !== null && (parts.length === 6 || parts.length === 8) && parts.every(hexValid);
-    },
-    message: 'The value is not a valid MAC Address',
-  });
+    return parts !== null && (parts.length === 6 || parts.length === 8) && parts.every(hexValid);
+  },
+  message: 'The value is not a valid MAC Address',
+});
 
 const hexValid = (hex: string) => hex.toLowerCase().match(/^[0-9a-f]{2}$/);

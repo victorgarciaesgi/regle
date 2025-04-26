@@ -95,4 +95,6 @@ export type {
   MaybeVariantStatus,
   NarrowVariant,
   DefaultValidatorsTree,
+  InferInput,
+  RegleUnknownRulesTree,
 } from './types';

@@ -15,6 +15,7 @@ export const alpha: RegleRuleWithParamsDefinition<
   [options?: CommonAlphaOptions | undefined],
   false,
   boolean,
+  string,
   string
 > = createRule({
   type: 'alpha',

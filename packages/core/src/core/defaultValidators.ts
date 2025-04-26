@@ -90,6 +90,7 @@ export type DefaultValidators = {
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
+  type: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };
