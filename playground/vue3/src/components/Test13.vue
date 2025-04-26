@@ -1,9 +1,26 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
+import {
+  useRegle,
+  type InferInput,
+  type RegleUnknownRulesTree,
+  type ReglePartialRuleTree,
+  type RegleRuleDefinition,
+} from '@regle/core';
+import { required, minLength, email, numeric, type } from '@regle/rules';
 
 const state = ref({ name: '', email: '' });
+
+const rules = {
+  name: { required, minLength: minLength(4) },
+  email: { email },
+  count: { numeric, type: type<Date>() },
+  collection: {
+    $each: {
+      firstName: { numeric },
+    },
+  },
+} satisfies RegleUnknownRulesTree;
 
 const { r$ } = useRegle(state, {
   name: { required, minLength: minLength(4) },

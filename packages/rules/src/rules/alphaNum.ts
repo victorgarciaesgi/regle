@@ -15,7 +15,7 @@ export const alphaNum: RegleRuleWithParamsDefinition<
   [options?: CommonAlphaOptions | undefined],
   false,
   boolean,
-  string | number
+  string
 > = createRule({
   type: 'alphaNum',
   validator(value: Maybe<string | number>, options?: CommonAlphaOptions) {

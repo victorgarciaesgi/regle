@@ -7,15 +7,16 @@ import { isFilled } from '../helpers';
  *
  * @private part - the value the field must start with
  */
-export const startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
-  type: 'startsWith',
-  validator(value: Maybe<string>, part: Maybe<string>) {
-    if (isFilled(value) && isFilled(part)) {
-      return value.startsWith(part);
-    }
-    return true;
-  },
-  message({ $params: [part] }) {
-    return `The value must end with ${part}`;
-  },
-});
+export const startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean, string> =
+  createRule({
+    type: 'startsWith',
+    validator(value: Maybe<string>, part: Maybe<string>) {
+      if (isFilled(value) && isFilled(part)) {
+        return value.startsWith(part);
+      }
+      return true;
+    },
+    message({ $params: [part] }) {
+      return `The value must end with ${part}`;
+    },
+  });

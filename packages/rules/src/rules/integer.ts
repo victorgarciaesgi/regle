@@ -7,7 +7,7 @@ const integerRegex = /(^[0-9]*$)|(^-[0-9]+$)/;
 /**
  * Allows only integers (positive and negative).
  */
-export const integer: RegleRuleDefinition<string | number, [], false, boolean, string | number> = createRule({
+export const integer: RegleRuleDefinition<string | number, [], false, boolean, number> = createRule({
   type: 'integer',
   validator(value: Maybe<number | string>) {
     if (isEmpty(value)) {

@@ -13,7 +13,8 @@ export const minValue: RegleRuleWithParamsDefinition<
   number,
   [count: number, options?: CommonComparisonOptions],
   false,
-  boolean
+  boolean,
+  number
 > = createRule({
   type: 'minValue',
   validator: (value: Maybe<number>, count: number, options?: CommonComparisonOptions) => {

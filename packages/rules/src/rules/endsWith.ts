@@ -7,15 +7,16 @@ import { isFilled } from '../helpers';
  *
  * @param part - the value the field must end with
  */
-export const endsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
-  type: 'endsWith',
-  validator(value: Maybe<string>, part: Maybe<string>) {
-    if (isFilled(value) && isFilled(part)) {
-      return value.endsWith(part);
-    }
-    return true;
-  },
-  message({ $params: [part] }) {
-    return `The value must end with ${part}`;
-  },
-});
+export const endsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean, string> =
+  createRule({
+    type: 'endsWith',
+    validator(value: Maybe<string>, part: Maybe<string>) {
+      if (isFilled(value) && isFilled(part)) {
+        return value.endsWith(part);
+      }
+      return true;
+    },
+    message({ $params: [part] }) {
+      return `The value must end with ${part}`;
+    },
+  });

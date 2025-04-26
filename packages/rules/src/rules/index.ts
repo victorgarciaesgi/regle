@@ -32,3 +32,4 @@ export * from './regex';
 export * from './oneOf';
 export * from './nativeEnum';
 export * from './literal';
+export * from './type';

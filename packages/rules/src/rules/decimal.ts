@@ -7,7 +7,7 @@ const decimalRegex = /^[-]?\d*(\.\d+)?$/;
 /**
  * Allows positive and negative decimal numbers.
  */
-export const decimal: RegleRuleDefinition<string | number, [], false, boolean, string | number> = createRule({
+export const decimal: RegleRuleDefinition<string | number, [], false, boolean, number> = createRule({
   type: 'decimal',
   validator(value: Maybe<number | string>) {
     if (isEmpty(value)) {
