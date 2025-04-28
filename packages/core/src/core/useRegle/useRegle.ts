@@ -1,5 +1,5 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, ref } from 'vue';
+import { computed, isRef, ref, watchEffect, watch } from 'vue';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
@@ -59,7 +59,7 @@ export interface useRegleFn<
     rulesFactory: TState extends MaybeInput<PrimitiveTypes>
       ? MaybeRefOrGetter<TDecl>
       : TState extends Record<string, any>
-        ? MaybeRefOrGetter<TRules>
+        ? MaybeRef<TRules> | ((...args: any[]) => TRules)
         : {},
     options?: TState extends MaybeInput<PrimitiveTypes>
       ? Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
@@ -103,13 +103,26 @@ export function createUseRegleComposable<
 
   function useRegle(
     state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
-    rulesFactory: Record<string, any> | (() => Record<string, any>) | ComputedRef<Record<string, any>>,
+    rulesFactory: Record<string, any> | ((...args: any[]) => Record<string, any>) | ComputedRef<Record<string, any>>,
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>
   ): Regle<Record<string, any>, Record<string, any>, any, any> {
-    const scopeRules = isRef(rulesFactory)
+    const definedRules = isRef(rulesFactory)
       ? rulesFactory
-      : computed((typeof rulesFactory === 'function' ? rulesFactory : () => rulesFactory) as any);
+      : typeof rulesFactory === 'function'
+        ? undefined
+        : computed(() => rulesFactory);
+
+    const watchableRulesGetters = ref<Record<string, any>>();
+
+    const scopeRules = computed(() => {
+      if (definedRules?.value) {
+        return definedRules.value;
+      } else if (watchableRulesGetters.value) {
+        return watchableRulesGetters.value;
+      }
+      return {};
+    });
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
@@ -117,6 +130,12 @@ export function createUseRegleComposable<
     } as any;
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any> | PrimitiveTypes>;
+
+    if (typeof rulesFactory === 'function') {
+      watchEffect(() => {
+        watchableRulesGetters.value = rulesFactory(processedState);
+      });
+    }
 
     const initialState = ref(
       isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)

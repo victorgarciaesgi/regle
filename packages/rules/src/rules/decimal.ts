@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { matchRegex, isEmpty } from '../helpers';
 
@@ -7,9 +7,15 @@ const decimalRegex = /^[-]?\d*(\.\d+)?$/;
 /**
  * Allows positive and negative decimal numbers.
  */
-export const decimal: RegleRuleDefinition<string | number, [], false, boolean, number> = createRule({
+export const decimal: RegleRuleDefinition<
+  string | number,
+  [],
+  false,
+  boolean,
+  MaybeInput<number | undefined>
+> = createRule({
   type: 'decimal',
-  validator(value: Maybe<number | string>) {
+  validator(value: MaybeInput<number | string>) {
     if (isEmpty(value)) {
       return true;
     }

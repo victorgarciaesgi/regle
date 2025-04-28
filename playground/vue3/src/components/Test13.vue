@@ -1,92 +1,53 @@
 <script setup lang="ts">
-import { computed, ref, type Ref } from 'vue';
-import {
-  useRegle,
-  type InferInput,
-  type RegleUnknownRulesTree,
-  type ReglePartialRuleTree,
-  type RegleRuleDefinition,
-  createVariant,
-  refine,
-  narrowVariant,
-} from '@regle/core';
-import { required, minLength, email, numeric, type, literal, minValue, sameAs } from '@regle/rules';
+import { createVariant, defineRules, narrowVariant, refineRules, useRegle, type InferInput } from '@regle/core';
+import { email, literal, minLength, minValue, numeric, required, sameAs, type } from '@regle/rules';
+import { computed, ref } from 'vue';
 
-const rules = refine(
-  {
-    firstName: { required },
-    oneValue: { type: type<number>() },
-    twoValue: { type: type<number>() },
-  },
-  (state) => {
-    const variant = createVariant(state as unknown as Ref<{ type: any }>, 'type', [
-      { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
-      { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
-      { type: { required } },
-    ]);
-    return {
-      ...variant.value,
-    };
-  }
-);
+const defaultRules = defineRules({
+  firstName: { required },
+  password: { required, type: type<string>() },
+  type: { required, type: type<'ONE' | 'TWO'>() },
+});
 
-const state2 = ref<InferInput<typeof rules>>();
+const rules = refineRules(defaultRules, (state) => {
+  const variant = createVariant(state, 'type', [
+    { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
+    { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
+  ]);
 
-const { r$: r$2 } = useRegle(state2, rules);
+  console.log(state);
 
-type foo = keyof typeof r$2.$fields;
-
-if (narrowVariant(r$2.$fields, 'type', 'ONE')) {
-}
-
-const rules2 = computed(() => {
   return {
-    password: { required },
-    confirmPassword: { required, sameAs: sameAs(() => state3.value.password) },
+    confirmPassword: { required, type: type<string>(), sameAs: sameAs(() => state.value.password) },
+    ...variant.value,
   };
 });
-const state3 = ref<InferInput<typeof rules2>>({ password: '', confirmPassword: '' });
 
-const state = ref({ email: '', name: '' });
+const state = ref<InferInput<typeof rules>>({});
 
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: { email },
-});
-
-async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
-}
+const { r$ } = useRegle(state, rules);
 </script>
 
 <template>
   <h2>Hello Regle</h2>
 
   <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
+  <input v-model="r$.$value.password" placeholder="Type your password" />
   <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
+    <li v-for="error of r$.$errors.password" :key="error">
       {{ error }}
     </li>
   </ul>
 
   <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <input v-model="r$.$value.confirmPassword" placeholder="Type your confirmPassword" />
   <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.email" :key="error">
+    <li v-for="error of r$.$errors.confirmPassword" :key="error">
       {{ error }}
     </li>
   </ul>
 
-  <button @click="submit">Submit</button>
+  <!-- <button @click="submit">Submit</button> -->
   <button @click="r$.$reset()">Reset</button>
   <button @click="r$.$reset({ toInitialState: true })">Restart</button>
   <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>

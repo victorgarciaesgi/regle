@@ -8,13 +8,13 @@ import { isEmpty } from '../helpers';
 export const sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean> =
   createRule({
     type: 'sameAs',
-    validator(value: unknown, target: unknown, otherName = 'other') {
+    validator(value: unknown, target: unknown, otherName?: string) {
       if (isEmpty(value)) {
         return true;
       }
       return value === target;
     },
-    message({ $params: [_, otherName] }) {
+    message({ $params: [_, otherName = 'other'] }) {
       return `The value must be equal to the ${otherName} value`;
     },
   });

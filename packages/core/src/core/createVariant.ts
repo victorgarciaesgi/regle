@@ -15,6 +15,7 @@ import type {
   DeepReactiveState,
   JoinDiscriminatedUnions,
   LazyJoinDiscriminatedUnions,
+  MaybeInput,
   RegleCollectionStatus,
   RegleFieldStatus,
   RegleStatus,
@@ -105,7 +106,10 @@ export function narrowVariant<
   root: TRoot,
   discriminantKey: TKey,
   discriminantValue: TValue
-): root is Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }> {
+): root is Extract<
+  TRoot,
+  { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+> {
   return (
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&

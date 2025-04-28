@@ -10,7 +10,7 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { LazyJoinDiscriminatedUnions, TupleToPlainObj } from '../utils';
+import type { LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
 export type NarrowVariant<
@@ -47,6 +47,7 @@ type ProcessChildrenFields<
 > = {
   [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
+        // Defined keys
         [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
           FindCorrespondingVariant<
             UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
@@ -76,6 +77,7 @@ type ProcessChildrenFields<
           TShortcuts
         >;
       } & {
+        // Maybe undefined keys
         [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
           FindCorrespondingVariant<
             UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
@@ -128,7 +130,14 @@ type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> =
   : {
       [TVal in NonNullable<T[TKey]>]: {
         [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
-          literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, TVal, string | number>;
+          literal?: RegleRuleDefinition<
+            MaybeInput<TVal>,
+            [literal: TVal],
+            false,
+            boolean,
+            MaybeInput<TVal>,
+            string | number
+          >;
         };
       };
     };
