@@ -19,6 +19,7 @@ export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}> =
   | ((value: Ref<V>, index: number) => T & TAdd);
 
 export type Unwrap<T extends MaybeRef<Record<string, any>>> = T extends Ref ? UnwrapRef<T> : UnwrapNestedRefs<T>;
+export type UnwrapSimple<T extends MaybeRef<Record<string, any>>> = T extends Ref ? UnwrapRef<T> : T;
 
 export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends ((
   value: Ref<any>,

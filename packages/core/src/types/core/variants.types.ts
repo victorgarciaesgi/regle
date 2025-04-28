@@ -117,13 +117,21 @@ type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends
     : FindCorrespondingVariant<TState, R>
   : [];
 
-type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
-  [TVal in NonNullable<T[TKey]>]: {
-    [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
-      literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, string | number>;
+type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = unknown extends T[TKey]
+  ? {
+      [x: string]: {
+        [K in TKey]-?: Omit<RegleRuleDecl<any, Partial<AllRulesDeclarations>>, 'literal'> & {
+          literal?: RegleRuleDefinition<any, [literal: any], false, boolean, any, string | number>;
+        };
+      };
+    }
+  : {
+      [TVal in NonNullable<T[TKey]>]: {
+        [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
+          literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, TVal, string | number>;
+        };
+      };
     };
-  };
-};
 
 type RequiredForm<T extends Record<string, any>, TKey extends keyof T> = Omit<ReglePartialRuleTree<T>, TKey> &
   PossibleLiteralTypes<T, TKey>[keyof PossibleLiteralTypes<T, TKey>];

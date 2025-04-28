@@ -14,6 +14,7 @@ export {
   createVariant,
   narrowVariant,
   variantToRef,
+  refine,
   type MergedRegles,
   type CommonComparisonOptions,
   type CommonAlphaOptions,
