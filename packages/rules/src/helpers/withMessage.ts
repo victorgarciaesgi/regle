@@ -108,8 +108,8 @@ export function withMessage(
       executedRule._message_patched = true;
       return executedRule;
     }
-    return newRule;
+    return newRule as RegleRuleWithParamsDefinition;
   } else {
-    return newRule;
+    return newRule as RegleRuleDefinition;
   }
 }
