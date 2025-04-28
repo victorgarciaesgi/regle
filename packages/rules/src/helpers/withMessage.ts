@@ -103,9 +103,12 @@ export function withMessage(
   newRule._message_patched = true;
 
   if (typeof newRule === 'function') {
-    const executedRule = newRule(...newParams);
-    executedRule._message_patched = true;
-    return executedRule;
+    if (_params != null) {
+      const executedRule = newRule(...newParams);
+      executedRule._message_patched = true;
+      return executedRule;
+    }
+    return newRule;
   } else {
     return newRule;
   }
