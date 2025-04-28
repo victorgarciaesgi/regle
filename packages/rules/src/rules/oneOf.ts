@@ -7,7 +7,7 @@ import { isFilled, withMessage, withParams } from '../helpers';
  */
 export function oneOf<const TValues extends [string | number, ...(string | number)[]]>(
   options: MaybeRefOrGetter<[...TValues]>
-): RegleRuleDefinition<TValues[number], [options: TValues], false, boolean, string | number> {
+): RegleRuleDefinition<TValues[number], [options: TValues], false, boolean, string | number, string | number> {
   const params = computed<[string | number, ...(string | number)[]]>(() => toValue(options));
 
   const rule = withMessage(

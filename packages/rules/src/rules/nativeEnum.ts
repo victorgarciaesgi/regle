@@ -21,7 +21,7 @@ function getValidEnumValues(obj: any) {
  */
 export function nativeEnum<T extends EnumLike>(
   enumLike: T
-): RegleRuleDefinition<T[keyof T], [enumLike: T], false, boolean, string | number> {
+): RegleRuleDefinition<T[keyof T], [enumLike: T], false, boolean, string | number, string | number> {
   const params = computed<EnumLike>(() => toValue(enumLike));
 
   const rule = withMessage(

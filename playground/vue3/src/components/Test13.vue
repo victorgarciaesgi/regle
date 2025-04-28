@@ -1,26 +1,53 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import {
   useRegle,
   type InferInput,
   type RegleUnknownRulesTree,
   type ReglePartialRuleTree,
   type RegleRuleDefinition,
+  createVariant,
+  refine,
+  narrowVariant,
 } from '@regle/core';
-import { required, minLength, email, numeric, type } from '@regle/rules';
+import { required, minLength, email, numeric, type, literal, minValue, sameAs } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
-
-const rules = {
-  name: { required, minLength: minLength(4) },
-  email: { email },
-  count: { numeric, type: type<Date>() },
-  collection: {
-    $each: {
-      firstName: { numeric },
-    },
+const rules = refine(
+  {
+    firstName: { required },
+    oneValue: { type: type<number>() },
+    twoValue: { type: type<number>() },
   },
-} satisfies RegleUnknownRulesTree;
+  (state) => {
+    const variant = createVariant(state as unknown as Ref<{ type: any }>, 'type', [
+      { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
+      { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
+      { type: { required } },
+    ]);
+    return {
+      ...variant.value,
+    };
+  }
+);
+
+const state2 = ref<InferInput<typeof rules>>();
+
+const { r$: r$2 } = useRegle(state2, rules);
+
+type foo = keyof typeof r$2.$fields;
+
+if (narrowVariant(r$2.$fields, 'type', 'ONE')) {
+}
+
+const rules2 = computed(() => {
+  return {
+    password: { required },
+    confirmPassword: { required, sameAs: sameAs(() => state3.value.password) },
+  };
+});
+const state3 = ref<InferInput<typeof rules2>>({ password: '', confirmPassword: '' });
+
+const state = ref({ email: '', name: '' });
 
 const { r$ } = useRegle(state, {
   name: { required, minLength: minLength(4) },

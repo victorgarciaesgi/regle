@@ -23,6 +23,10 @@ describe('nativeEnum validator', () => {
     expect(nativeEnum(Position).exec(Position.One)).toBe(true);
   });
 
+  it('should validate the valid number', () => {
+    expect(nativeEnum(Position).exec('foo')).toBe(false);
+  });
+
   it('should validate undefined value', () => {
     expect(nativeEnum(Position).exec(undefined)).toBe(true);
   });
