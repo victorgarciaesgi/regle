@@ -1,4 +1,4 @@
-import type { Maybe, RegleRuleWithParamsDefinition, CommonAlphaOptions } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition, CommonAlphaOptions } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
 
@@ -15,11 +15,11 @@ export const alpha: RegleRuleWithParamsDefinition<
   [options?: CommonAlphaOptions | undefined],
   false,
   boolean,
-  string,
+  MaybeInput<string>,
   string
 > = createRule({
   type: 'alpha',
-  validator(value: Maybe<string>, options?: CommonAlphaOptions) {
+  validator(value: MaybeInput<string>, options?: CommonAlphaOptions) {
     if (isEmpty(value)) {
       return true;
     }

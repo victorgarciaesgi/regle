@@ -1,4 +1,4 @@
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 
@@ -12,10 +12,10 @@ export const macAddress: RegleRuleWithParamsDefinition<
   [separator?: string | undefined],
   false,
   boolean,
-  string
+  MaybeInput<string>
 > = createRule({
   type: 'macAddress',
-  validator(value: Maybe<string>, separator = ':') {
+  validator(value: MaybeInput<string>, separator = ':') {
     if (isEmpty(value)) {
       return true;
     }

@@ -1,5 +1,5 @@
 import { isFilled, toDate, isDate } from '../helpers';
-import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
 
@@ -10,7 +10,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  */
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,
-  [before: Maybe<string | Date>],
+  [before: MaybeInput<string | Date>],
   false,
   | true
   | {
@@ -20,10 +20,11 @@ export const dateBefore: RegleRuleWithParamsDefinition<
   | {
       $valid: false;
       error: 'value-or-paramater-not-a-date';
-    }
+    },
+  MaybeInput<string | Date>
 > = createRule({
   type: 'dateBefore',
-  validator: (value: Maybe<Date | string>, before: Maybe<Date | string>) => {
+  validator: (value: MaybeInput<Date | string>, before: MaybeInput<Date | string>) => {
     if (isFilled(value) && isFilled(before)) {
       if (isDate(value) && isDate(before)) {
         const result = toDate(value).getTime() < toDate(before).getTime();

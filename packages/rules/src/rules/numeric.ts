@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
 
@@ -7,9 +7,15 @@ const numericRegex = /^\d*(\.\d+)?$/;
 /**
  * Allows only numeric values (including numeric strings).
  */
-export const numeric: RegleRuleDefinition<string | number, [], false, boolean, number> = createRule({
+export const numeric: RegleRuleDefinition<
+  string | number,
+  [],
+  false,
+  boolean,
+  MaybeInput<string | number>
+> = createRule({
   type: 'numeric',
-  validator(value: Maybe<string | number>) {
+  validator(value: MaybeInput<string | number>) {
     if (isEmpty(value)) {
       return true;
     }

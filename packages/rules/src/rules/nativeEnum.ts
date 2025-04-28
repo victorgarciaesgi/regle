@@ -1,5 +1,5 @@
-import type { Maybe, RegleRuleDefinition } from '@regle/core';
-import { computed, toValue, type MaybeRefOrGetter } from 'vue';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
+import { computed, toValue } from 'vue';
 import { isEmpty, isFilled, withMessage, withParams } from '../helpers';
 
 export type EnumLike = {
@@ -21,7 +21,7 @@ function getValidEnumValues(obj: any) {
  */
 export function nativeEnum<T extends EnumLike>(
   enumLike: T
-): RegleRuleDefinition<T[keyof T], [enumLike: T], false, boolean, string | number, string | number> {
+): RegleRuleDefinition<MaybeInput<T[keyof T]>, [enumLike: T], false, boolean, MaybeInput<T[keyof T]>, string | number> {
   const params = computed<EnumLike>(() => toValue(enumLike));
 
   const rule = withMessage(
