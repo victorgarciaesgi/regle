@@ -1,5 +1,5 @@
 import { isFilled, isDate, toDate } from '../helpers';
-import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition, CommonComparisonOptions } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
 
@@ -10,7 +10,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  */
 export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,
-  [after: Maybe<string | Date>],
+  [after: Maybe<string | Date>, options?: CommonComparisonOptions],
   false,
   | true
   | {
@@ -23,10 +23,17 @@ export const dateAfter: RegleRuleWithParamsDefinition<
     }
 > = createRule({
   type: 'dateAfter',
-  validator: (value: Maybe<Date | string>, after: Maybe<Date | string>) => {
+  validator: (
+    value: Maybe<Date | string>,
+    after: Maybe<Date | string>,
+    options?: CommonComparisonOptions
+  ) => {
+    const { allowEqual = false } = options ?? {};
     if (isFilled(value) && isFilled(after)) {
       if (isDate(value) && isDate(after)) {
-        const result = toDate(value).getTime() > toDate(after).getTime();
+        const result = allowEqual
+          ? toDate(value).getTime() >= toDate(after).getTime()
+          : toDate(value).getTime() > toDate(after).getTime();
         if (result) {
           return true;
         }
