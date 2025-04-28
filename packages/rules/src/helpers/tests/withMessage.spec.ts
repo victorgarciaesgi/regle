@@ -17,7 +17,10 @@ describe('withMessage helper', () => {
         email: '',
         firstName: '',
         lastName: '',
+        testOverride: '',
       });
+
+      const overridenRule = withMessage(minLength, ({ $params: [min] }) => `Test override: ${min}`);
 
       return useRegle(form, () => ({
         email: {
@@ -38,6 +41,9 @@ describe('withMessage helper', () => {
             }),
             'Required async'
           ),
+        },
+        testOverride: {
+          foo: overridenRule(6),
         },
       }));
     },
@@ -64,6 +70,12 @@ describe('withMessage helper', () => {
     expect(valid).toBe(false);
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$errors.firstName).toStrictEqual(['Required']);
+  });
+
+  it('should handle overriden rules with params', async () => {
+    vm.r$.$value.testOverride = 'foo';
+    await nextTick();
+    expect(vm.r$.$fields.testOverride.$errors).toStrictEqual(['Test override: 6']);
   });
 
   it('should return errors when submitting with incorrect values', async () => {
