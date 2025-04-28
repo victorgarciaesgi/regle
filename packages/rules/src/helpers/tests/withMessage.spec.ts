@@ -93,6 +93,14 @@ describe('withMessage helper', () => {
     expect(vm.r$.$errors.lastName).toStrictEqual(['Required async']);
   });
 
+  it('should create a rule factory when passed a rule factory', async () => {
+    const customMinLength = withMessage(minLength, ({ $params: [count] }) => {
+      return `Must be min: ${count}`;
+    });
+
+    expect(typeof customMinLength).toStrictEqual('function');
+  });
+
   it('should have correct types', () => {
     // Correct return type with a built-in rule
     expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
