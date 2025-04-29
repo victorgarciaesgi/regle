@@ -15,14 +15,20 @@ It's heavily inspired by Vuelidate.
 
 ## 🎮 Play with it
 
-| Simple demo  | Advanced Demo |
-| ------------- | ------------- |
-| [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
+| Playground | Simple demo  | Advanced Demo |
+| ------------- | ------------- | ------------- |
+| <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
 ## 🧰 Features
-- ✅ 100% type inference
-- 📖 Model based validation
-- 🪗 Extensible
-- 🛒 Collection validation
-- 🦸‍♂️ [Zod](https://zod.dev/) support
-- 🤖 [Valibot](https://valibot.dev/) support
+
+- ☁️ Headless
+- ✅ Type safety
+- 🧮 Model based
+- 🧰 Modular
+- 🔄 Async validation
+- 🌐 Plug any i18n library
+- 📗 Vuelidate comptible API
+- Standard Schemas spec support
+  - 🦸‍♂️ [Zod](https://zod.dev/)
+  - 🤖 [Valibot](https://valibot.dev/)
+  - 🚢 [ArkType](https://arktype.io)  🚧
