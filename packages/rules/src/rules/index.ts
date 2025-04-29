@@ -13,6 +13,7 @@ export * from './minLength';
 export * from './minValue';
 export * from './exactValue';
 export * from './exactLength';
+export * from './hexadecimal';
 export * from './numeric';
 export * from './required';
 export * from './requiredUnless';

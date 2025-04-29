@@ -309,6 +309,20 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+## `hexadecimal`
+
+Validates hexadecimal values.
+
+```ts twoslash
+import { useRegle } from '@regle/core';
+// ---cut---
+import { hexadecimal } from '@regle/rules';
+
+const { r$ } = useRegle({ hexadecimal: '' }, {
+  hexadecimal: { hexadecimal },
+})
+```
+
 ## `integer`
 
 Allows only integers (positive and negative).
