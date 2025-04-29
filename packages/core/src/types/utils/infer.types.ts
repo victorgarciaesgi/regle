@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
-import type { ExtractFromGetter, Prettify, UnwrapSimple } from './misc.types';
+import type { ExtractFromGetter, MaybeInput, Prettify, UnwrapSimple } from './misc.types';
 import type { IsUnion } from 'type-fest/source/internal';
 import type { UnionToTuple } from 'type-fest';
 
@@ -53,7 +53,9 @@ type FilterRulesWithSingleType<TRules extends RegleRuleDecl<any, any>> = {
   [K in keyof TRules as TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input>
     ? unknown extends Input
       ? never
-      : K
+      : IsUnion<NonNullable<Input>> extends true
+        ? never
+        : K
     : never]: TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input>
     ? IsUnion<NonNullable<Input>> extends true
       ? unknown

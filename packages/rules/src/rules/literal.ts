@@ -1,6 +1,6 @@
 import type { MaybeInput, RegleRuleDefinition } from '@regle/core';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
-import { withMessage, withParams } from '../helpers';
+import { isFilled, withMessage, withParams } from '../helpers';
 
 /**
  * Allow only one possible literal value
@@ -13,7 +13,10 @@ export function literal<const TValue extends string | number>(
   const rule = withMessage(
     withParams(
       (value: MaybeInput<string | number>, literal) => {
-        return literal === value;
+        if (isFilled(value) && isFilled(literal)) {
+          return literal === value;
+        }
+        return true;
       },
       [params]
     ),

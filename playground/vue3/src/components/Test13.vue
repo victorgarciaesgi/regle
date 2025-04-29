@@ -15,14 +15,22 @@ const rules = refineRules(
       { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
     ]);
 
-    console.log(state);
-
     return {
-      confirmPassword: { required, type: type<string>(), sameAs: sameAs(() => state.value.password) },
+      confirmPassword: { required, sameAs: sameAs(() => state.value.password) },
       ...variant.value,
     };
   }
 );
+
+const rules2 = defineRules({
+  firstName: { required },
+  count: { numeric },
+  password: { required, type: type<string>() },
+});
+
+const model = ref<InferInput<typeof rules2>>({});
+
+const { r$: r2 } = useRegle(model, rules2);
 
 const state = ref<InferInput<typeof rules>>({});
 
