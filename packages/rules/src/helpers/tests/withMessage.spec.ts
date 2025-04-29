@@ -229,7 +229,7 @@ describe('withMessage helper', () => {
     );
 
     withMessage(dateBefore(new Date()), ({ error }) => {
-      expectTypeOf(error).toEqualTypeOf<'date-not-before' | 'value-or-paramater-not-a-date' | undefined>();
+      expectTypeOf(error).toEqualTypeOf<'date-not-before' | 'value-or-parameter-not-a-date' | undefined>();
       return '';
     });
 
