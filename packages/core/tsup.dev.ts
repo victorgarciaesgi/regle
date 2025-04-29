@@ -5,9 +5,11 @@ import { outExtension } from '../../tsup.common.build';
 const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
-  dts: true,
+  dts: false,
   clean: false,
   external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
+  ignoreWatch: ['dist/**'],
+  sourcemap: false,
 };
 
 export default defineConfig([

@@ -1,5 +1,5 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, ref, watchEffect, watch } from 'vue';
+import { computed, isRef, ref, watchEffect, watch, shallowRef, triggerRef } from 'vue';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
@@ -113,17 +113,6 @@ export function createUseRegleComposable<
         ? undefined
         : computed(() => rulesFactory);
 
-    const watchableRulesGetters = ref<Record<string, any>>();
-
-    const scopeRules = computed(() => {
-      if (definedRules?.value) {
-        return definedRules.value;
-      } else if (watchableRulesGetters.value) {
-        return watchableRulesGetters.value;
-      }
-      return {};
-    });
-
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
       ...options,
@@ -131,9 +120,12 @@ export function createUseRegleComposable<
 
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any> | PrimitiveTypes>;
 
+    const watchableRulesGetters = shallowRef<Record<string, any> | null>(definedRules ?? {});
+
     if (typeof rulesFactory === 'function') {
       watchEffect(() => {
         watchableRulesGetters.value = rulesFactory(processedState);
+        triggerRef(watchableRulesGetters);
       });
     }
 
@@ -142,7 +134,7 @@ export function createUseRegleComposable<
     );
 
     const regle = useRootStorage({
-      scopeRules: scopeRules as ComputedRef<$InternalReglePartialRuleTree>,
+      scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,
       state: processedState,
       options: resolvedOptions,
       initialState,

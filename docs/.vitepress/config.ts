@@ -91,7 +91,7 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
-    text: 'Typing props',
+    text: 'Typing component props',
     link: '/typescript/typing-props',
   },
   {

@@ -109,6 +109,7 @@ describe('createVariant', () => {
       expect(vm.r$.$fields.twoName).toBe(undefined);
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.twoValue).toBe(undefined);
+
       shouldBeErrorField(vm.r$.$fields.oneValue);
 
       expectTypeOf(vm.r$.$fields.oneValue).toEqualTypeOf<

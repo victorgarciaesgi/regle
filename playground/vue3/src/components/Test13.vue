@@ -2,17 +2,19 @@
 import { createVariant, defineRules, narrowVariant, refineRules, useRegle, type InferInput } from '@regle/core';
 import { email, literal, minLength, minValue, numeric, required, sameAs, type } from '@regle/rules';
 import { computed, ref } from 'vue';
+import Errors from './Errors.vue';
 
 const rules = refineRules(
   {
     firstName: { required },
     password: { required, type: type<string>() },
-    type: { required, type: type<'ONE' | 'TWO'>() },
+    type: { type: type<'ONE' | 'TWO' | undefined>() },
   },
   (state) => {
     const variant = createVariant(state, 'type', [
       { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
       { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
+      { type: { required, type: type<undefined>() } },
     ]);
 
     return {
@@ -22,42 +24,27 @@ const rules = refineRules(
   }
 );
 
-const rules2 = defineRules({
-  firstName: { required },
-  count: { numeric },
-  password: { required, type: type<string>() },
-});
-
-const model = ref<InferInput<typeof rules2>>({});
-
-const { r$: r2 } = useRegle(model, rules2);
-
 const state = ref<InferInput<typeof rules>>({});
 
 const { r$ } = useRegle(state, rules);
 </script>
 
 <template>
-  <h2>Hello Regle</h2>
+  <select v-model="r$.$fields.type.$value">
+    <option disabled value="">Account type</option>
+    <option value="ONE">One</option>
+    <option value="TWO">Two</option>
+  </select>
 
-  <label>Name</label><br />
-  <input v-model="r$.$value.password" placeholder="Type your password" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.password" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+  <div v-if="narrowVariant(r$.$fields, 'type', 'ONE')">
+    <!-- `email` is now a known field in this block -->
+    <input v-model="r$.$fields.oneValue.$value" placeholder="oneValue" />
+    <Errors :errors="r$.$fields.oneValue.$errors" />
+  </div>
 
-  <label>Email (optional)</label><br />
-  <input v-model="r$.$value.confirmPassword" placeholder="Type your confirmPassword" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.confirmPassword" :key="error">
-      {{ error }}
-    </li>
-  </ul>
-
-  <!-- <button @click="submit">Submit</button> -->
-  <button @click="r$.$reset()">Reset</button>
-  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+  <div v-else-if="narrowVariant(r$.$fields, 'type', 'TWO')">
+    <!-- `username` is now a known field in this block -->
+    <!-- <input v-model="r$.$fields.twoValue.$value" placeholder="twoValue" />
+    <Errors :errors="r$.$fields.twoValue.$errors" /> -->
+  </div>
 </template>

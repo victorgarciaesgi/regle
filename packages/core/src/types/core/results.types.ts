@@ -15,6 +15,7 @@ import type {
   ExtractFromGetter,
   JoinDiscriminatedUnions,
   Maybe,
+  MaybeInput,
   MaybeOutput,
   Prettify,
 } from '../utils';
@@ -91,11 +92,15 @@ export type DeepSafeFormState<
           {
             [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
               ? K
-              : never]?: SafeProperty<TState[K], TRules[K]>;
+              : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
+              ? MaybeOutput<M>
+              : SafeProperty<TState[K], TRules[K]>;
           } & {
             [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
               ? never
-              : K]-?: NonNullable<SafeProperty<TState[K], TRules[K]>>;
+              : K]-?: unknown extends SafeProperty<TState[K], TRules[K]>
+              ? unknown
+              : NonNullable<SafeProperty<TState[K], TRules[K]>>;
           }
         >
       : TState;
@@ -139,7 +144,7 @@ type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends
       : true
     : true;
 
-export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = [unknown] extends [TState]
+export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = unknown extends TState
   ? unknown
   : TRule extends RegleCollectionRuleDecl<any, any>
     ? TState extends Array<infer U extends Record<string, any>>

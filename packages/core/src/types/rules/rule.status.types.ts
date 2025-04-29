@@ -123,7 +123,7 @@ export type InferRegleStatusType<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
-> = [TState[TKey]] extends [undefined]
+> = [TState[TKey]] extends [undefined | null]
   ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
   : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
@@ -138,14 +138,18 @@ export type InferRegleStatusType<
         ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
         : NonNullable<TState[TKey]> extends Date | File
           ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-          : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-            ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
-            : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+          : unknown extends TState[TKey]
+            ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+            : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
+              ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+              : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
       : NonNullable<TState[TKey]> extends Date | File
         ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-        : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-          ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
-          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
+        : unknown extends TState[TKey]
+          ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+          : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
+            ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+            : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
 
 /**
  * @internal

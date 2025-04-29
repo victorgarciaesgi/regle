@@ -1,8 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "dist/**"
-  ],
   "prettier.configPath": ".prettierrc",
   "references.preferredLocation": "peek",
   "window.title": "Regle",

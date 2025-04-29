@@ -38,5 +38,5 @@ export function refineRules<
   rules: TRules,
   refinement: (state: Ref<InferInput<TRules>>) => TRefinement
 ): (state: Ref<InferInput<TRules>>) => Merge<TRules, TRefinement> {
-  return (state) => merge(rules, refinement(state)) as any;
+  return (state) => merge({ ...rules }, refinement(state)) as any;
 }
