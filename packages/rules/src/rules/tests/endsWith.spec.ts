@@ -17,7 +17,7 @@ describe('endsWith validator', () => {
     expect(endsWith('any').exec(undefined)).toBe(true);
   });
 
-  it('should validate a value containing paremeter', () => {
+  it('should validate a value containing parameter', () => {
     expect(endsWith('st').exec('first')).toBe(true);
   });
 });

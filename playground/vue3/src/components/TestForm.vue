@@ -6,7 +6,7 @@
     <br />
     <button @click="r$.$validate">validate</button>
 
-    <button @click="isOpen = !isOpen">Assing new value</button>
+    <button @click="isOpen = !isOpen">Assign new value</button>
     <button @click="r$.$reset()">Reset</button>
     <button
       @click="
