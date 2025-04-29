@@ -22,7 +22,7 @@ export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
 type GetMaybeObjectValue<O extends Record<string, any>, K extends string> = K extends keyof O ? O[K] : undefined;
 
 /**
- * Combine all unions values to be able to get even the normally "never" values, act as an intersection type
+ * Combine all union values to be able to get even the normally "never" values, act as an intersection type
  */
 type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> = T extends [
   infer F extends Record<string, any>,
@@ -43,14 +43,14 @@ type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> 
   : [];
 
 /**
- * Get all possible keys from an union, even the ones present only on one union
+ * Get all possible keys from a union, even the ones present only on one union
  */
 type RetrieveUnionUnknownKeysOf<T extends readonly any[]> = T extends [infer F, ...infer R]
   ? [keyof F, ...RetrieveUnionUnknownKeysOf<R>]
   : [];
 
 /**
- * Transforms an union and apply undefined values to non-present keys to support intersection
+ * Transforms a union and apply undefined values to non-present keys to support intersection
  */
 type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
   NonNullable<UnionToTuple<TUnion>>,
@@ -58,7 +58,7 @@ type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
 >[number];
 
 /**
- * Combine all members of an union type, merging types for each keys, and keeping loose types
+ * Combine all members of a union type, merging types for each key, and keeping loose types
  */
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
   isRecordLiteral<TUnion> extends true

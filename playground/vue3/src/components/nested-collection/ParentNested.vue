@@ -23,9 +23,9 @@
 
     <hr />
     <label>Local Input (not using scoped): </label>
-    <input v-model="independantR$.$value.local" placeholder="Local" />
+    <input v-model="independentR$.$value.local" placeholder="Local" />
     <ul>
-      <li v-for="error of independantR$.$errors.local" :key="error">
+      <li v-for="error of independentR$.$errors.local" :key="error">
         {{ error }}
       </li>
     </ul>
@@ -45,7 +45,7 @@ const { r$ } = useCollectScope('foo');
 
 const show = ref(false);
 
-const { r$: independantR$ } = useRegle(
+const { r$: independentR$ } = useRegle(
   { local: '' },
   {
     local: { minLength: minLength(4) },

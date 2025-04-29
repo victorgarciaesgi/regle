@@ -3,7 +3,7 @@ import { withMessage, withParams, withTooltip } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 
-function metadateRules() {
+function metadataRules() {
   const externalDep = ref('external');
 
   const inlineMetadataRule = withTooltip(
@@ -64,7 +64,7 @@ function metadateRules() {
 
 describe('metadata', () => {
   it('correctly return metadata for validator and active handlers', async () => {
-    const { vm } = createRegleComponent(metadateRules);
+    const { vm } = createRegleComponent(metadataRules);
 
     vm.r$.$touch();
     await vm.$nextTick();

@@ -20,7 +20,7 @@ export interface RegleBehaviourOptions {
    */
   lazy?: boolean | undefined;
   /**
-   * Automaticaly set the dirty set without the need of `$value` or `$touch`
+   * Automatically set the dirty set without the need of `$value` or `$touch`
    * @default true
    *
    * @default false if rewardEarly is true
@@ -33,7 +33,7 @@ export interface RegleBehaviourOptions {
    */
   rewardEarly?: boolean | undefined;
   /**
-   * Define wether or not the external errors should be cleared when updating a field
+   * Define whether the external errors should be cleared when updating a field
    * @default true
    *
    */
@@ -77,32 +77,32 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
 
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
   /**
-   * Allow you to customize the properties of every single field
+   * Allow you to customize the properties for every field
    */
   fields?: ShortcutCommonFn<RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>>;
   /**
-   * Allow you to customize the properties of every parent of a nested object
+   * Allow you to customize the properties for every parent of a nested object
    */
   nested?: ShortcutCommonFn<
     RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>>
   >;
   /**
-   * Allow you to customize the properties of every parent of a collection
+   * Allow you to customize the properties for every parent of a collection
    */
   collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
 };
 
 export type $InternalRegleShortcutDefinition = {
   /**
-   * Allow you to customize the properties of every single field
+   * Allow you to customize the properties for every field
    */
   fields?: ShortcutCommonFn<Record<string, any>>;
   /**
-   * Allow you to customize the properties of every parent of a nested object
+   * Allow you to customize the properties for every parent of a nested object
    */
   nested?: ShortcutCommonFn<$InternalRegleStatus>;
   /**
-   * Allow you to customize the properties of every parent of a collection
+   * Allow you to customize the properties for every parent of a collection
    */
   collections?: ShortcutCommonFn<$InternalRegleCollectionStatus>;
 };

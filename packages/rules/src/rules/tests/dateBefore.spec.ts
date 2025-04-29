@@ -41,7 +41,7 @@ describe('dateBefore validator', () => {
     expect(dateBefore(new Date(2013)).exec(new Date(2014))).toBe(false);
   });
 
-  it('should not validate an identic date', () => {
+  it('should not validate an identical date', () => {
     expect(dateBefore(new Date(2013)).exec(new Date(2013))).toBe(false);
   });
 });

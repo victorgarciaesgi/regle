@@ -30,7 +30,7 @@ const { r$ } = useRegle({ email: '' }, {
 
 <br/>
 
-From `r$` , you can build any UI around your forms fields, like displaying error messages, handling **dirty** fields, reseting and validating values etc...
+From `r$` , you can build any UI around your forms fields, like displaying error messages, handling **dirty** fields, resetting and validating values etc...
 
 
 ## Complete example
