@@ -19,7 +19,7 @@ export const dateBefore: RegleRuleWithParamsDefinition<
     }
   | {
       $valid: false;
-      error: 'value-or-paramater-not-a-date';
+      error: 'value-or-parameter-not-a-date';
     }
 > = createRule({
   type: 'dateBefore',
@@ -32,12 +32,12 @@ export const dateBefore: RegleRuleWithParamsDefinition<
         }
         return { $valid: false, error: 'date-not-before' as const };
       }
-      return { $valid: false, error: 'value-or-paramater-not-a-date' as const };
+      return { $valid: false, error: 'value-or-parameter-not-a-date' as const };
     }
     return true;
   },
   message: ({ $params: [before], error }) => {
-    if (error === 'value-or-paramater-not-a-date') {
+    if (error === 'value-or-parameter-not-a-date') {
       return 'The values must be dates';
     }
 

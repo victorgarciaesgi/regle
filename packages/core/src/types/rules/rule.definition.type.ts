@@ -109,7 +109,7 @@ type DefaultMetadataProperties = DefaultMetadataPropertiesCommon & {
 };
 
 /**
- * Will be used to consumme metadata on related helpers and rule status
+ * Will be used to consume metadata on related helpers and rule status
  */
 export type RegleRuleMetadataConsumer<
   TValue extends any,
@@ -128,7 +128,7 @@ export type RegleRuleMetadataConsumer<
     : {});
 
 /**
- * Will be used to consumme metadata on related helpers and rule status
+ * Will be used to consume metadata on related helpers and rule status
  */
 export type PossibleRegleRuleMetadataConsumer<TValue> = { $value: Maybe<TValue> } & DefaultMetadataProperties & {
     $params?: [...any[]];
@@ -170,7 +170,7 @@ export type RegleRuleRawInput<
   tooltip?: any;
 };
 /**
- * Process the type of a created rule with `createRule`.
+ * Process the type of created rule with `createRule`.
  * For a rule with params it will return a function
  * Otherwise it will return the rule definition
  */

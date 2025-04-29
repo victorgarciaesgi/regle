@@ -132,7 +132,7 @@ Each scope can collect a specific namespace. Giving a namespace name will collec
 
 The namespace can be reactive, so it will update every time it changes.
 
-In this exemple, only the components using the same scope and same namespace will be collected.
+In this example, only the components using the same scope and namespace will be collected.
 
 :::code-group
 ```vue twoslash [Parent.vue]
@@ -241,7 +241,7 @@ const { useScopedRegle, useCollectScope } = createScopedUseRegle({customStore: m
 
 `useScopedRegle` also returns two methods: `dispose` and `register`.
 
-You can then programmaticaly handle if your component is collected from inside.
+You can then programmatically handle if your component is collected from inside.
 
 ```vue twoslash
 <script setup lang='ts'>

@@ -149,7 +149,7 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
   );
 }
 
-export function nesteObjectWithRefsValidation(): ReturnRegleType {
+export function nestedObjectWithRefsValidation(): ReturnRegleType {
   const form = {
     level0: ref(0),
     level0Boolean: null as boolean | null,

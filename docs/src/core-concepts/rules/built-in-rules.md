@@ -474,7 +474,7 @@ const { r$ } = useRegle({ count: 0 }, {
 
 ## `nativeEnum`
 
-Validate against a native Typescript enum value. Similiar to Zod's `nativeEnum`
+Validate against a native Typescript enum value. Similar to Zod's `nativeEnum`
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
@@ -660,4 +660,3 @@ const { r$ } = useRegle({ bestUrl: '' }, {
   bestUrl: { url },
 })
 ```
-

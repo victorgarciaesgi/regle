@@ -19,7 +19,7 @@ Optional
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
   - Pinia  `2.2.5+`
 
-Schema libraires: [Docs](/integrations/schemas-libraries)
+Schema libraries: [Docs](/integrations/schemas-libraries)
 
 - [Zod](https://zod.dev/) <span data-title="zod"></span> `3.24+`. 
 - [Valibot](https://valibot.dev/) <span data-title="valibot"></span> `1+`.

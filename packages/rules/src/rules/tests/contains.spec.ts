@@ -17,7 +17,7 @@ describe('contains validator', () => {
     expect(contains('any').exec(undefined)).toBe(true);
   });
 
-  it('should validate a value containing paremeter', () => {
+  it('should validate a value containing parameter', () => {
     expect(contains('ir').exec('first')).toBe(true);
   });
 });

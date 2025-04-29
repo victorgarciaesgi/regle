@@ -72,7 +72,7 @@ describe('createRule', () => {
     expect(rule.exec('fooo')).toBe(false);
   });
 
-  it('should recognize mutliple parameters with default', async () => {
+  it('should recognize multiple parameters with default', async () => {
     const rule = createRule({
       validator(value, param = false, param2 = true) {
         return true;
@@ -89,7 +89,7 @@ describe('createRule', () => {
     >();
   });
 
-  it('should recognize mutliple parameters with spread', async () => {
+  it('should recognize multiple parameters with spread', async () => {
     const rule = createRule({
       validator(value, ...params: boolean[]) {
         return true;

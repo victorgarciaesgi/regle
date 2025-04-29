@@ -1,7 +1,7 @@
 import { oneOf } from '../oneOf';
 
 describe('oneOf validator', () => {
-  it('should not validate unvalid value', () => {
+  it('should not validate invalid value', () => {
     expect(oneOf(['One', 'Two']).exec(5)).toBe(false);
   });
 
