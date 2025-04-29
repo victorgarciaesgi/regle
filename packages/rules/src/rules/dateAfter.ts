@@ -19,7 +19,7 @@ export const dateAfter: RegleRuleWithParamsDefinition<
     }
   | {
       $valid: false;
-      error: 'value-or-paramater-not-a-date';
+      error: 'value-or-parameter-not-a-date';
     }
 > = createRule({
   type: 'dateAfter',
@@ -32,12 +32,12 @@ export const dateAfter: RegleRuleWithParamsDefinition<
         }
         return { $valid: false, error: 'date-not-after' as const };
       }
-      return { $valid: false, error: 'value-or-paramater-not-a-date' as const };
+      return { $valid: false, error: 'value-or-parameter-not-a-date' as const };
     }
     return true;
   },
   message: ({ $params: [after], error }) => {
-    if (error === 'value-or-paramater-not-a-date') {
+    if (error === 'value-or-parameter-not-a-date') {
       return 'The values must be dates';
     }
     return `The date must be after ${formatLocaleDate(after)}`;

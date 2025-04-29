@@ -7,7 +7,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * Requires a field to have a specified minimum numeric value.
  *
  * @param count - the minimum count
- * @param options - comparision options
+ * @param options - comparison options
  */
 export const minValue: RegleRuleWithParamsDefinition<
   number,

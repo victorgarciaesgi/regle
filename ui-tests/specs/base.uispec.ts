@@ -39,7 +39,7 @@ test('it should render the page correctly', async ({ index }) => {
   expect(await index.page.$('[data-testid=project-0-url] .errors')).toBeNull();
 
   await expect(index.page.locator('[data-testid=password] .tooltips')).toContainText(
-    `At least one owercase letter (a-z)At least one uppercase letter (A-Z)At least one symbol ($€@&..)At least one number (0-9)At least 8 characters`
+    `At least one lowercase letter (a-z)At least one uppercase letter (A-Z)At least one symbol ($€@&..)At least one number (0-9)At least 8 characters`
   );
   await expect(index.page.locator('[data-testid=confirmPassword] .errors')).toContainText(
     'You need to provide a value'

@@ -130,7 +130,7 @@ type FormRequest = InferSafeOutput<typeof r$>;
 
 ## 🦸 Support Zod 4 <span data-title="zod"></span> 
 
-[Zod 4 is currently in beta](https://v4.zod.dev/v4), and Regle officialy supports it.
+[Zod 4 is currently in beta](https://v4.zod.dev/v4), and Regle officially supports it.
 
 Some bugs on Zod side may persists, but breaking changes are minimal.  
 Nothing is to change on Regle side.

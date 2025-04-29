@@ -142,7 +142,7 @@ const { r$ } = useRegle(state, {
 
 If you’ve used Vuelidate before, useRegle behaves similarly to `v$`.
 
-`r$` is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+`r$` is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
 
 You can find all the [available properties here](/core-concepts/validation-properties)
 
@@ -161,4 +161,3 @@ r$.$fields.
 </script>
 
 ```
-

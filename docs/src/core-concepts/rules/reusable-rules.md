@@ -207,7 +207,7 @@ useRegle(state, rules);
 
 The `active` property option is a field that will provide the rule an `on/off` behaviour.
 
-Some rules have conditionnal validation properties, such as `requiredIf` or any rule using `applyIf`.
+Some rules have conditional validation properties, such as `requiredIf` or any rule using `applyIf`.
 This property allows you to declare the active state of the rule.
 
 It will then be exposed in the `$active` rule property and be used to reflect the validation to your user.

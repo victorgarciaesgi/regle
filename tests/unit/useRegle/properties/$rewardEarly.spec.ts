@@ -111,7 +111,7 @@ describe('$rewardEarly', () => {
       shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
     });
 
-    function nesteAsyncObjectWithRefsValidation() {
+    function nestedAsyncObjectWithRefsValidation() {
       const form = ref({
         level0: 0,
         level1: {
@@ -140,7 +140,7 @@ describe('$rewardEarly', () => {
     describe('async', () => {
       it('sets state as normal, stops validating upon success', async () => {
         vi.useFakeTimers();
-        const { vm } = createRegleComponent(nesteAsyncObjectWithRefsValidation);
+        const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(0);
         vm.r$.$fields.level0.$validate();
         await vi.advanceTimersByTimeAsync(1200);

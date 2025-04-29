@@ -33,7 +33,7 @@ export type DefaultValidators = {
       }
     | {
         $valid: false;
-        error: 'value-or-paramater-not-a-date';
+        error: 'value-or-parameter-not-a-date';
       }
   >;
   dateBefore: RegleRuleWithParamsDefinition<
@@ -47,7 +47,7 @@ export type DefaultValidators = {
       }
     | {
         $valid: false;
-        error: 'value-or-paramater-not-a-date';
+        error: 'value-or-parameter-not-a-date';
       }
   >;
   dateBetween: RegleRuleWithParamsDefinition<

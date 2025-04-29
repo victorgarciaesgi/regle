@@ -27,7 +27,7 @@ function regleFixture() {
 }
 
 describe('$correct validation property', () => {
-  it('should compyted the $correct property correctly', async () => {
+  it('should computed the $correct property correctly', async () => {
     const { vm } = createRegleComponent(regleFixture);
 
     expect(vm.r$.$fields.nested.$correct).toBe(false);
