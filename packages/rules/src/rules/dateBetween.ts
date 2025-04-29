@@ -23,7 +23,7 @@ export const dateBetween: RegleRuleWithParamsDefinition<
     after: Maybe<Date | string>,
     options?: CommonComparisonOptions
   ) => {
-    const { allowEqual = false } = options ?? {};
+    const { allowEqual = true } = options ?? {};
     if (isDate(value) && isDate(before) && isDate(after)) {
       if (allowEqual) {
         return toDate(value).getTime() >= toDate(before).getTime() &&

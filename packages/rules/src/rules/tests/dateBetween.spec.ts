@@ -30,12 +30,14 @@ describe('dateBetween validator', () => {
   });
 
   it('should not validate an identical date', () => {
-    expect(dateBetween(new Date(2013), new Date(2015)).exec(new Date(2013))).toBe(false);
-  });
-
-  it('should validate an identical date with allowEqual', () => {
-    const rule = dateBetween(new Date(2013), new Date(2015), { allowEqual: true });
+    const rule = dateBetween(new Date(2013), new Date(2015));
     expect(rule.exec(new Date(2013))).toBe(true);
     expect(rule.exec(new Date(2015))).toBe(true);
+  });
+
+  it('should not validate an identical date without allowEqual', () => {
+    const rule = dateBetween(new Date(2013), new Date(2015), { allowEqual: false });
+    expect(rule.exec(new Date(2013))).toBe(false);
+    expect(rule.exec(new Date(2015))).toBe(false);
   });
 });

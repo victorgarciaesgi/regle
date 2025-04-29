@@ -29,7 +29,7 @@ export const dateAfter: RegleRuleWithParamsDefinition<
     after: Maybe<Date | string>,
     options?: CommonComparisonOptions
   ) => {
-    const { allowEqual = false } = options ?? {};
+    const { allowEqual = true } = options ?? {};
     if (isFilled(value) && isFilled(after)) {
       if (isDate(value) && isDate(after)) {
         const result = allowEqual
