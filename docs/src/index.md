@@ -34,9 +34,9 @@ features:
      alt: model-based icon 
     title:  Model based
     details: You can focus on your validations, not on your DOM.
-  - title: Extensible
-    icon: 🪗
-    details: Extend validation schema with your own properties.
+  - title: Modular
+    icon: 🧰
+    details: Extend validation schema and rules.
   - title: Standard Schema support
     icon: 
       src: /standard-schema.svg
