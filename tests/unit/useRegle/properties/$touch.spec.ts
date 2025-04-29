@@ -46,7 +46,7 @@ describe('.$touch', () => {
     expect(vm.r$.$fields.user.$fields.lastName.$dirty).toBe(true);
   });
 
-  it('should not update the `$dirty` state on the property it wasnt used on', async () => {
+  it("should not update the `$dirty` state on the property it wasn't used on", async () => {
     const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
 
     expect(vm.r$.$fields.email.$invalid).toBe(true);

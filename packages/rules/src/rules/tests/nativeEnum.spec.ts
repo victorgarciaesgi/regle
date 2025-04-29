@@ -11,7 +11,7 @@ const Position = {
 } as const;
 
 describe('nativeEnum validator', () => {
-  it('should not validate unvalid value', () => {
+  it('should not validate invalid value', () => {
     expect(nativeEnum(Food).exec(5)).toBe(false);
   });
 

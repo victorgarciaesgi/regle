@@ -29,7 +29,7 @@ describe('dateAfter validator', () => {
     expect(dateAfter(new Date(2013)).exec(new Date(2012))).toBe(false);
   });
 
-  it('should not validate an identic date', () => {
+  it('should not validate an identical date', () => {
     expect(dateAfter(new Date(2013)).exec(new Date(2013))).toBe(false);
   });
 });

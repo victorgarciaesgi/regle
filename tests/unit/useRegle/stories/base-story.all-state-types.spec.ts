@@ -4,7 +4,7 @@ import {
   nestedReactiveWithRefsValidation,
   nestedRefObjectValidation,
   nestedRefObjectValidationComputed,
-  nesteObjectWithRefsValidation,
+  nestedObjectWithRefsValidation,
 } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
@@ -19,7 +19,7 @@ describe.each([
   ['ref', nestedRefObjectValidation],
   ['ref state with computed rules', nestedRefObjectValidationComputed],
   ['reactive with ref', nestedReactiveWithRefsValidation],
-  ['object with refs state', nesteObjectWithRefsValidation],
+  ['object with refs state', nestedObjectWithRefsValidation],
 ])('useRegle with %s', async (title, regle) => {
   beforeEach(() => {
     vi.useFakeTimers();

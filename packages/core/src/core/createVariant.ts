@@ -48,15 +48,15 @@ export function createVariant<
   TVariants extends VariantTuple<JoinDiscriminatedUnions<TForm>, TDiscriminant>,
 >(
   root: MaybeRefOrGetter<TForm> | DeepReactiveState<TForm>,
-  disciminantKey: TDiscriminant,
+  discriminantKey: TDiscriminant,
   variants: [...TVariants]
 ): Ref<TVariants[number]> {
-  const watchableRoot = computed(() => (toValue(root) as JoinDiscriminatedUnions<TForm>)[disciminantKey]);
+  const watchableRoot = computed(() => (toValue(root) as JoinDiscriminatedUnions<TForm>)[discriminantKey]);
 
   const computedRules = computed(() => {
     const selectedVariant = variants.find((variant) => {
-      if ((variant as any)[disciminantKey] && 'literal' in (variant as any)[disciminantKey]) {
-        const literalRule = variant[disciminantKey]['literal'];
+      if ((variant as any)[discriminantKey] && 'literal' in (variant as any)[discriminantKey]) {
+        const literalRule = variant[discriminantKey]['literal'];
         if (isRuleDef(literalRule)) {
           return unref(literalRule._params?.[0]) === watchableRoot.value;
         }
@@ -68,7 +68,7 @@ export function createVariant<
     } else {
       const anyDiscriminantRules = variants.find(
         (variant) =>
-          isObject(variant[disciminantKey]) && !Object.keys(variant[disciminantKey]).some((key) => key === 'literal')
+          isObject(variant[discriminantKey]) && !Object.keys(variant[discriminantKey]).some((key) => key === 'literal')
       );
 
       if (anyDiscriminantRules) {
