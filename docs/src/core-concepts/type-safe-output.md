@@ -53,7 +53,7 @@ async function submit() {
 
 ### `InferSafeOutput`
 
-You can also staticly infer the safe output from any `r$` instance.
+You can also statically infer the safe output from any `r$` instance.
 
 
 ```ts twoslash

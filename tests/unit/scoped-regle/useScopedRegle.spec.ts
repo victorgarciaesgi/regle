@@ -293,7 +293,7 @@ describe('useScopedRegle', () => {
     });
   }
 
-  it('should be emtpy', () => {
+  it('should be empty', () => {
     expect(true).toBe(true);
   });
 });

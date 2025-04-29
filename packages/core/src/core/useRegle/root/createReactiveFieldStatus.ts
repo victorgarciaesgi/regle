@@ -598,7 +598,7 @@ export function createReactiveFieldStatus({
       return state.value;
     }
     if (filterNullishValues) {
-      // Differenciate untouched empty values from dirty empty ones
+      // Differentiate untouched empty values from dirty empty ones
       return { _null: true };
     }
     return null;

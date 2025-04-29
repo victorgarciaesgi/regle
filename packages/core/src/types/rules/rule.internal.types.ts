@@ -3,7 +3,7 @@ import type { PossibleRegleRuleMetadataConsumer, RegleRuleMetadataDefinition } f
 import type { RegleUniversalParams } from './rule.params.types';
 
 /**
- * Internal definition of the rule, can be used to reset or patch the rule
+ * Internal definition of the rule, this can be used to reset or patch the rule
  */
 export interface RegleInternalRuleDefs<
   TValue extends any = any,
