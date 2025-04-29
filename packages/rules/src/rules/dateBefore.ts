@@ -7,6 +7,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  * Checks if the date is before the given parameter.
  *
  * @param before - the date to compare to
+ * @param options - comparison options
  */
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,

@@ -75,4 +75,3 @@ const { r$ } = useRegle(form, {
 type FormRequest = InferSafeOutput<typeof r$>;
 //    ^?
 ```
-

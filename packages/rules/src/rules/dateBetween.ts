@@ -8,6 +8,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  *
  * @param before - the minimum limit
  * @param after - the maximum limit
+ * @param options - comparison options
  */
 export const dateBetween: RegleRuleWithParamsDefinition<
   string | Date,
