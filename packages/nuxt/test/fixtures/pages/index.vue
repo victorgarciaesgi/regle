@@ -46,7 +46,7 @@
                 <option disabled value="undefined" selected>Select an event</option>
                 <option value="Corporate">Corporate event</option>
                 <option value="Wedding">Wedding</option>
-                <option value="Borthday">Birthday</option>
+                <option value="Birthday">Birthday</option>
                 <option value="Other">Other</option>
               </select>
               <FieldError :errors="r$.$fields.eventType.$errors" />

@@ -5,7 +5,7 @@
 # Regle
 
 
-Regle \ʁɛɡl\ (French word for 'rule' ) is a Typescript-first model-based validation library for Vue 3.
+Regle \ʁɛɡl\ (French word for 'rule') is a Typescript-first model-based validation library for Vue 3.
 It's heavily inspired by Vuelidate.
 
 
@@ -37,4 +37,3 @@ npx nuxi module add regle
 - 🦸‍♂️ [Zod](https://zod.dev/) support
 - 🤖 [Valibot](https://valibot.dev/) support
 - 🪶 Light(~7kb gzip) and 0 dependencies
-

@@ -22,7 +22,7 @@ export function createUseScopedRegleComposable<
 
     const computedNamespace = computed(() => toValue(namespace));
 
-    // Keep order while avoiding conflits of ids
+    // Keep order while avoiding conflicting ids
     const $id = ref(`${Object.keys(instances.value).length + 1}-${randomId()}`);
 
     const instanceName = computed(() => {

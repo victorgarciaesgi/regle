@@ -5,7 +5,7 @@ import { isFilled } from '../helpers';
 /**
  * Checks if the string starts with the specified substring.
  *
- * @private part - the vlaue the field must start with
+ * @private part - the value the field must start with
  */
 export const startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
   type: 'startsWith',

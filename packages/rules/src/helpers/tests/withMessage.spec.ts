@@ -72,7 +72,7 @@ describe('withMessage helper', () => {
     expect(vm.r$.$errors.firstName).toStrictEqual(['Required']);
   });
 
-  it('should handle overriden rules with params', async () => {
+  it('should handle overridden rules with params', async () => {
     vm.r$.$value.testOverride = 'foo';
     await nextTick();
     expect(vm.r$.$fields.testOverride.$errors).toStrictEqual(['Test override: 6']);
@@ -163,7 +163,7 @@ describe('withMessage helper', () => {
     // @ts-expect-error no message argument ❌
     withMessage((value) => true);
 
-    // @ts-expect-error incorrrect return type ❌
+    // @ts-expect-error incorrect return type ❌
     withMessage((value) => {}, 'Message');
 
     // Correct type with async value returning metadata

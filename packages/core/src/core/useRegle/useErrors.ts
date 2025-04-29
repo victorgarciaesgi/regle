@@ -50,7 +50,7 @@ function isCollectionError(errors: $InternalRegleErrors): errors is $InternalReg
 }
 
 /**
- * Converts an nested $errors object to a flat array of string errors
+ * Converts a nested $errors object to a flat array of string errors
  *
  * Can also flatten to an array containing the path of each error with the options.includePath
  */
