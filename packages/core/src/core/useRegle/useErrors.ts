@@ -78,17 +78,17 @@ export function flatErrors(
     const selfErrors = includePath
       ? (errors.$self?.map((err) => ({ error: err, path: '' })) ?? [])
       : (errors.$self ?? []);
-    const eachErrors = errors.$each?.map((err) => interateErrors(err, includePath)) ?? [];
+    const eachErrors = errors.$each?.map((err) => iterateErrors(err, includePath)) ?? [];
     return selfErrors?.concat(eachErrors.flat());
   } else {
     // Nested errors
     return Object.entries(errors)
-      .map(([key, value]) => interateErrors(value, includePath, [key]))
+      .map(([key, value]) => iterateErrors(value, includePath, [key]))
       .flat();
   }
 }
 
-function interateErrors(
+function iterateErrors(
   errors: $InternalRegleErrors,
   includePath = false,
   _path?: string[]
@@ -112,12 +112,12 @@ function interateErrors(
       ? (errors.$self?.map((err) => ({ error: err, path: path.join('.') })) ?? [])
       : (errors.$self ?? []);
     const eachErrors =
-      errors.$each?.map((err, index) => interateErrors(err, includePath, path?.concat(index.toString()))) ?? [];
+      errors.$each?.map((err, index) => iterateErrors(err, includePath, path?.concat(index.toString()))) ?? [];
     return selfErrors?.concat(eachErrors.flat());
   } else {
     // Nested errors
     return Object.entries(errors)
-      .map(([key, value]) => interateErrors(value, includePath, path?.concat(key)))
+      .map(([key, value]) => iterateErrors(value, includePath, path?.concat(key)))
       .flat();
   }
 }

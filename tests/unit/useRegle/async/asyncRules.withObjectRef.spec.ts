@@ -4,7 +4,7 @@ import { ruleMockIsEvenAsync, ruleMockIsEven, ruleMockIsFooAsync } from '../../.
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
 
-function nesteAsyncObjectWithRefsValidation() {
+function nestedAsyncObjectWithRefsValidation() {
   const form = {
     level0Async: ref(0),
     level1: {
@@ -35,7 +35,7 @@ describe('useRegle with async rules and Object refs', async () => {
     vi.useRealTimers();
   });
 
-  const { vm } = createRegleComponent(nesteAsyncObjectWithRefsValidation);
+  const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
   it('should have a initial state', () => {
     expect(vm.r$.$errors).toStrictEqual({

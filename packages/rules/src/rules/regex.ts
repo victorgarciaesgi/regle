@@ -10,8 +10,8 @@ export const regex: RegleRuleWithParamsDefinition<string | number, [regexp: RegE
     type: 'regex',
     validator(value: Maybe<string | number>, regexp: RegExp | RegExp[]) {
       if (isFilled(value)) {
-        const filteredRegxp = Array.isArray(regexp) ? regexp : [regexp];
-        return matchRegex(value, ...filteredRegxp);
+        const filteredRegexp = Array.isArray(regexp) ? regexp : [regexp];
+        return matchRegex(value, ...filteredRegexp);
       }
       return true;
     },

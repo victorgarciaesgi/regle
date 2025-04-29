@@ -20,7 +20,7 @@ describe('withMessage helper', () => {
         testOverride: '',
       });
 
-      const overridenRule = withMessage(minLength, ({ $params: [min] }) => `Test override: ${min}`);
+      const overriddenRule = withMessage(minLength, ({ $params: [min] }) => `Test override: ${min}`);
 
       return useRegle(form, () => ({
         email: {
@@ -43,7 +43,7 @@ describe('withMessage helper', () => {
           ),
         },
         testOverride: {
-          foo: overridenRule(6),
+          foo: overriddenRule(6),
         },
       }));
     },
