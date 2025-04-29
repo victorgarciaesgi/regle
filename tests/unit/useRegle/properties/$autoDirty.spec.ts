@@ -165,7 +165,7 @@ describe.each([
   });
 
   it('should not re-run validators when a dependency changes`', async () => {
-    function simpleDepencyCase() {
+    function simpleDependencyCase() {
       const form = ref({ password: '', confirm: '' });
 
       return useRegle(
@@ -179,7 +179,7 @@ describe.each([
         }
       );
     }
-    const { vm } = await createRegleComponent(simpleDepencyCase);
+    const { vm } = await createRegleComponent(simpleDependencyCase);
 
     shouldBePristineField(vm.r$.$fields.password);
     shouldBePristineField(vm.r$.$fields.confirm);

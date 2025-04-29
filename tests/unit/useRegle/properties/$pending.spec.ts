@@ -5,7 +5,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
 import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
 
-function nesteAsyncObjectWithRefsValidation() {
+function nestedAsyncObjectWithRefsValidation() {
   const form = ref({
     level0: 0,
     level1: {
@@ -41,7 +41,7 @@ describe('$pending', () => {
   });
 
   it('sets `$pending` to `true`, when async validators are used and are being resolved', async () => {
-    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
     await nextTick();
 
     shouldBePristineField(vm.r$, true);
@@ -91,7 +91,7 @@ describe('$pending', () => {
   });
 
   it('propagates `$pending` up to the top most parent', async () => {
-    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     vm.r$.$value.level1.child = 1;
     await vi.advanceTimersByTimeAsync(200);
@@ -109,7 +109,7 @@ describe('$pending', () => {
   });
 
   it('propagates should make a boolean shift when editing a async rule', async () => {
-    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     expect(vm.r$.$correct).toBe(true);
 
@@ -132,7 +132,7 @@ describe('$pending', () => {
   });
 
   it('propagates `$pending` from a collection child', async () => {
-    const { vm } = await createRegleComponent(nesteAsyncObjectWithRefsValidation);
+    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     vm.r$.$value.collection[0].child = 1;
     await vi.advanceTimersByTimeAsync(200);

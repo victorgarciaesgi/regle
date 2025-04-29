@@ -7,7 +7,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * Requires a field to have a specified maximum numeric value.
  *
  * @param max - the maximum value
- * @param options - comparision options
+ * @param options - comparison options
  */
 export const maxValue: RegleRuleWithParamsDefinition<
   number,

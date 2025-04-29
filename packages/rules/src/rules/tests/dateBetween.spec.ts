@@ -29,7 +29,7 @@ describe('dateBetween validator', () => {
     expect(dateBetween(new Date(2013), new Date(2015)).exec(new Date(2012))).toBe(false);
   });
 
-  it('should not validate an identic date', () => {
+  it('should not validate an identical date', () => {
     expect(dateBetween(new Date(2013), new Date(2015)).exec(new Date(2013))).toBe(false);
   });
 });
