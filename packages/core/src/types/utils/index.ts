@@ -4,3 +4,4 @@ export * from './groups';
 export * from './props.types';
 export * from './mismatch.types';
 export * from './object.types';
+export * from './infer.types';

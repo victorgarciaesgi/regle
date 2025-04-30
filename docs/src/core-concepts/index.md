@@ -104,6 +104,13 @@ Regle provide a list of default rules that you can use from `@regle/rules`.
 
 You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
+
+:::tip
+
+If you prefer to have a rules-first way of typing your state (like schema libraries), you can check [how to do it here](/typescript/infer-state-from-rules)
+
+:::
+
 <br/>
 
 

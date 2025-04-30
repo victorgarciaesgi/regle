@@ -91,12 +91,16 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
-    text: 'Typing props',
+    text: 'Typing component props',
     link: '/typescript/typing-props',
   },
   {
-    text: 'Typing rules',
+    text: 'Rules definitions',
     link: '/typescript/typing-rules',
+  },
+  {
+    text: 'Infer state from rules',
+    link: '/typescript/infer-state-from-rules',
   },
 ];
 
