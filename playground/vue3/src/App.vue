@@ -4,7 +4,8 @@
   <!-- <ZodForm /> -->
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
-  <Test13 />
+  <!-- <Test13 /> -->
+  <Test12 />
   <!-- <Parent /> -->
   <!-- <ParentNested /> -->
 </template>
@@ -21,4 +22,5 @@ import { useRegle } from '@regle/core';
 import { required, minLength, email } from '@regle/rules';
 import Parent from './components/tests-pinia/Parent.vue';
 import ParentNested from './components/nested-collection/ParentNested.vue';
+import Test12 from './components/Test12.vue';
 </script>
