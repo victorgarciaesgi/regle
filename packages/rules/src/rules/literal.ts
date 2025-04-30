@@ -1,4 +1,4 @@
-import type { Maybe, RegleRuleDefinition } from '@regle/core';
+import type { MaybeInput, RegleRuleDefinition } from '@regle/core';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import { isFilled, withMessage, withParams } from '../helpers';
 
@@ -7,13 +7,16 @@ import { isFilled, withMessage, withParams } from '../helpers';
  */
 export function literal<const TValue extends string | number>(
   literal: MaybeRefOrGetter<TValue>
-): RegleRuleDefinition<TValue, [literal: TValue], false, boolean, string | number> {
+): RegleRuleDefinition<TValue, [literal: TValue], false, boolean, MaybeInput<TValue>, string | number> {
   const params = computed<string | number>(() => toValue(literal));
 
   const rule = withMessage(
     withParams(
-      (value: Maybe<string | number>, literal) => {
-        return literal === value;
+      (value: MaybeInput<string | number>, literal) => {
+        if (isFilled(value) && isFilled(literal)) {
+          return literal === value;
+        }
+        return true;
       },
       [params]
     ),

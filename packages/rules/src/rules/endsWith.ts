@@ -1,4 +1,4 @@
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
@@ -7,9 +7,15 @@ import { isFilled } from '../helpers';
  *
  * @param part - the value the field must end with
  */
-export const endsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
+export const endsWith: RegleRuleWithParamsDefinition<
+  string,
+  [part: MaybeInput<string>],
+  false,
+  boolean,
+  MaybeInput<string>
+> = createRule({
   type: 'endsWith',
-  validator(value: Maybe<string>, part: Maybe<string>) {
+  validator(value: MaybeInput<string>, part: MaybeInput<string>) {
     if (isFilled(value) && isFilled(part)) {
       return value.endsWith(part);
     }

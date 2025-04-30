@@ -1,6 +1,7 @@
 import {
   computed,
   isRef,
+  nextTick,
   ref,
   toRef,
   toValue,
@@ -15,6 +16,7 @@ import type {
   DeepReactiveState,
   JoinDiscriminatedUnions,
   LazyJoinDiscriminatedUnions,
+  MaybeInput,
   RegleCollectionStatus,
   RegleFieldStatus,
   RegleStatus,
@@ -105,7 +107,10 @@ export function narrowVariant<
   root: TRoot,
   discriminantKey: TKey,
   discriminantValue: TValue
-): root is Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }> {
+): root is Extract<
+  TRoot,
+  { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+> {
   return (
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&
@@ -141,14 +146,16 @@ export function variantToRef<
 
   watch(
     fromRoot,
-    () => {
+    async () => {
+      // avoid premature load of wrong rules resulting in a false positive
+      await nextTick();
       if (narrowVariant(fromRoot.value, discriminantKey, discriminantValue)) {
         returnedRef.value = fromRoot.value;
       } else {
         returnedRef.value = undefined;
       }
     },
-    { immediate: true }
+    { immediate: true, flush: 'pre' }
   );
 
   return returnedRef as any;
