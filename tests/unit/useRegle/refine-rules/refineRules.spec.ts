@@ -11,7 +11,7 @@ import {
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
 } from '@regle/core';
-import { literal, minLength, minValue, numeric, required, sameAs, string, type } from '@regle/rules';
+import { literal, minLength, minValue, number, numeric, required, sameAs, string, type } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';
@@ -20,18 +20,44 @@ describe('refineRules', () => {
   function simpleRefinedRulesState() {
     const rules = refineRules(
       {
-        firstName: { required, string },
+        count: { number },
+        firstName: { string },
         lastName: { required, string },
         password: { required, string, minLength: minLength(4) },
       },
       (state) => {
         return {
+          firstName: { required, minLength: minLength(() => state.value.count) },
           confirmPassword: { required, sameAs: sameAs(() => state.value.password) },
         };
       }
     );
 
     const state = ref<InferInput<typeof rules>>({});
+
+    expectTypeOf<ReturnType<typeof rules>['confirmPassword']>().toEqualTypeOf<{
+      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+      sameAs: RegleRuleDefinition<
+        unknown,
+        [target: MaybeInput<string>, otherName?: string | undefined],
+        false,
+        boolean,
+        MaybeInput<string>,
+        unknown
+      >;
+    }>();
+
+    expectTypeOf<ReturnType<typeof rules>['firstName']>().toEqualTypeOf<{
+      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+      minLength: RegleRuleDefinition<
+        string | any[] | Record<PropertyKey, any>,
+        [count: number, options?: CommonComparisonOptions | undefined],
+        false,
+        boolean,
+        unknown,
+        string | any[] | Record<PropertyKey, any>
+      >;
+    }>();
 
     return useRegle(state, rules);
   }
@@ -110,8 +136,6 @@ describe('refineRules', () => {
       expectTypeOf(data.oneName).toEqualTypeOf<MaybeOutput<string>>();
       expectTypeOf(data.twoName).toEqualTypeOf<MaybeOutput<string>>();
     }
-
-    vm.r$.$fields.type;
 
     expect(vm.r$.$error).toBe(true);
     shouldBeErrorField(vm.r$.$fields.type);
