@@ -1,17 +1,9 @@
 import { useRegle } from '@regle/core';
 import { flushPromises } from '@vue/test-utils';
 import { ref } from 'vue';
-import {
-  mockedValidations,
-  nestedReactiveObjectValidation,
-  ruleMockIsEvenAsync,
-} from '../../../fixtures';
+import { mockedValidations, nestedReactiveObjectValidation, ruleMockIsEvenAsync } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import {
-  shouldBeErrorField,
-  shouldBePristineField,
-  shouldBeValidField,
-} from '../../../utils/validations.utils';
+import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
 
 describe('$rewardEarly', () => {
   beforeEach(() => {
@@ -20,7 +12,7 @@ describe('$rewardEarly', () => {
 
   describe('sync', () => {
     it('does not validate, until manually called', async () => {
-      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation(false, true));
+      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation({ rewardEarly: true }));
 
       shouldBePristineField(vm.r$.$fields.level0);
       shouldBePristineField(vm.r$.$fields.level1.$fields.child);
@@ -55,7 +47,7 @@ describe('$rewardEarly', () => {
     });
 
     it('sets state as normal, stops validating upon success', async () => {
-      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation(false, true));
+      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation({ rewardEarly: true }));
 
       vm.r$.$value.level0 = 3;
       await vm.$nextTick();
@@ -82,7 +74,7 @@ describe('$rewardEarly', () => {
     });
 
     it('works with nested objects', async () => {
-      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation(false, true));
+      const { vm } = createRegleComponent(() => nestedReactiveObjectValidation({ rewardEarly: true }));
 
       vm.r$.$validate();
       await vm.$nextTick();
@@ -133,7 +125,7 @@ describe('$rewardEarly', () => {
             },
           },
         },
-        { autoDirty: false, rewardEarly: true }
+        { rewardEarly: true }
       );
     }
 

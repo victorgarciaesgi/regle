@@ -50,6 +50,7 @@ export function createReactiveFieldStatus({
     $lazy: ComputedRef<boolean | undefined>;
     $rewardEarly: ComputedRef<boolean | undefined>;
     $autoDirty: ComputedRef<boolean | undefined>;
+    $silent: ComputedRef<boolean | undefined>;
     $clearExternalErrorsOnChange: ComputedRef<boolean | undefined>;
     $errors: ComputedRef<string[]>;
     $silentErrors: ComputedRef<string[]>;
@@ -98,7 +99,7 @@ export function createReactiveFieldStatus({
               ruleKey,
               createReactiveRuleStatus({
                 modifiers: {
-                  $autoDirty: scopeState.$autoDirty,
+                  $silent: scopeState.$silent,
                   $rewardEarly: scopeState.$rewardEarly,
                 },
                 customMessages,
@@ -123,7 +124,7 @@ export function createReactiveFieldStatus({
     if (storeResult?.valid != null) {
       scopeState.$dirty.value = storage.getDirtyState(path);
       if (
-        (scopeState.$dirty.value && scopeState.$autoDirty.value) ||
+        (scopeState.$dirty.value && !scopeState.$silent.value) ||
         (scopeState.$rewardEarly.value && scopeState.$error.value)
       ) {
         $commit();
@@ -203,13 +204,21 @@ export function createReactiveFieldStatus({
         return true;
       });
 
+      const $silent = computed<boolean | undefined>(() => {
+        if ($rewardEarly.value) {
+          return true;
+        } else if ($localOptions.value.$silent != null) {
+          return $localOptions.value.$silent;
+        } else if (unref(options.silent) != null) {
+          return unref(options.silent);
+        } else return false;
+      });
+
       const $autoDirty = computed<boolean | undefined>(() => {
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
         } else if (unref(options.autoDirty) != null) {
           return unref(options.autoDirty);
-        } else if ($rewardEarly.value) {
-          return false;
         }
         return true;
       });
@@ -285,7 +294,7 @@ export function createReactiveFieldStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        if (!$autoDirty.value) {
+        if ($silent.value) {
           return !($invalid.value || $pending.value);
         }
         return $anyDirty.value && !($invalid.value || $pending.value);
@@ -410,6 +419,7 @@ export function createReactiveFieldStatus({
         $silentErrors,
         $rewardEarly,
         $autoDirty,
+        $silent,
         $clearExternalErrorsOnChange,
         $anyDirty,
         $edited,
@@ -461,7 +471,7 @@ export function createReactiveFieldStatus({
     $unwatchState = watch(
       state,
       () => {
-        if (scopeState.$autoDirty.value) {
+        if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
           if (!scopeState.$dirty.value) {
             scopeState.$dirty.value = true;
           }
@@ -470,7 +480,7 @@ export function createReactiveFieldStatus({
         if (rulesDef.value instanceof Function) {
           createReactiveRulesResult();
         }
-        if (scopeState.$autoDirty.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
+        if (!scopeState.$silent.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
           $commit();
         }
         if (scopeState.$rewardEarly.value !== true && scopeState.$clearExternalErrorsOnChange.value) {
@@ -529,7 +539,7 @@ export function createReactiveFieldStatus({
       });
     }
 
-    if (!scopeState.$lazy.value && scopeState.$autoDirty.value) {
+    if (!scopeState.$lazy.value && !scopeState.$silent.value) {
       Object.values($rules.value).forEach((rule) => {
         return rule.$parse();
       });
@@ -542,7 +552,7 @@ export function createReactiveFieldStatus({
     }
 
     if (withConditions && runCommit) {
-      if (scopeState.$autoDirty.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
+      if (!scopeState.$silent.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
         $commit();
       }
     } else if (runCommit) {
@@ -565,7 +575,7 @@ export function createReactiveFieldStatus({
 
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
-      } else if (scopeState.$autoDirty.value && scopeState.$dirty.value && !scopeState.$pending.value) {
+      } else if (!scopeState.$silent.value && scopeState.$dirty.value && !scopeState.$pending.value) {
         return { valid: !scopeState.$error.value, data };
       }
       if (schemaMode) {
@@ -610,7 +620,7 @@ export function createReactiveFieldStatus({
     }
   }
 
-  if (!scopeState.$lazy.value && !scopeState.$dirty.value && scopeState.$autoDirty.value) {
+  if (!scopeState.$lazy.value && !scopeState.$dirty.value && !scopeState.$silent.value) {
     $commit();
   }
 
