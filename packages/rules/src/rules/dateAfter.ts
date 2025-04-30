@@ -1,5 +1,5 @@
 import { isFilled, isDate, toDate } from '../helpers';
-import type { Maybe, RegleRuleWithParamsDefinition, CommonComparisonOptions } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition, CommonComparisonOptions } from '@regle/core';
 import { createRule } from '@regle/core';
 import { formatLocaleDate } from '../utils/getLocale.util';
 
@@ -11,7 +11,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  */
 export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,
-  [after: Maybe<string | Date>, options?: CommonComparisonOptions],
+  [after: MaybeInput<string | Date>, options?: CommonComparisonOptions],
   false,
   | true
   | {
@@ -21,12 +21,13 @@ export const dateAfter: RegleRuleWithParamsDefinition<
   | {
       $valid: false;
       error: 'value-or-parameter-not-a-date';
-    }
+    },
+  MaybeInput<string | Date>
 > = createRule({
   type: 'dateAfter',
   validator: (
-    value: Maybe<Date | string>,
-    after: Maybe<Date | string>,
+    value: MaybeInput<Date | string>,
+    after: MaybeInput<Date | string>,
     options?: CommonComparisonOptions
   ) => {
     const { allowEqual = true } = options ?? {};
