@@ -116,6 +116,7 @@ import { withMessage, minLength, required } from '@regle/rules';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   modifiers: {
     autoDirty: false,
+    silent: true,
     lazy: true,
     rewardEarly: true
   }
