@@ -24,7 +24,7 @@ export type DefaultValidators = {
   contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
   dateAfter: RegleRuleWithParamsDefinition<
     string | Date,
-    [after: Maybe<string | Date>],
+    [after: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -38,7 +38,7 @@ export type DefaultValidators = {
   >;
   dateBefore: RegleRuleWithParamsDefinition<
     string | Date,
-    [before: Maybe<string | Date>],
+    [before: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -52,7 +52,7 @@ export type DefaultValidators = {
   >;
   dateBetween: RegleRuleWithParamsDefinition<
     string | Date,
-    [before: Maybe<string | Date>, after: Maybe<string | Date>],
+    [before: Maybe<string | Date>, after: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     boolean
   >;
