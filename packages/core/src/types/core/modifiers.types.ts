@@ -20,13 +20,20 @@ export interface RegleBehaviourOptions {
    */
   lazy?: boolean | undefined;
   /**
-   * Automatically set the dirty set without the need of `$value` or `$touch`
+   * Automatically set the dirty set without the need of `$value` or `$touch`.
    * @default true
    *
-   * @default false if rewardEarly is true
-
    */
   autoDirty?: boolean | undefined;
+  /**
+   * Only update error status when calling `$validate`.
+   * Will not display errors as you type
+   * @default false
+   *
+   * @default true if rewardEarly is true
+   *
+   */
+  silent?: boolean | undefined;
   /**
    * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
    * @default false

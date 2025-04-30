@@ -128,7 +128,7 @@ const { r$ } = useRegle({ fullName: 'Hello' } as Form, {
     ),
   },
   acceptTC: {
-    $autoDirty: false,
+    $rewardEarly: true,
     required: withMessage(and(required, checked), 'You must accept the terms and conditions'),
   },
   eventFile: { required },
