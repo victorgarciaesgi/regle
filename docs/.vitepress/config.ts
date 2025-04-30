@@ -95,8 +95,12 @@ const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[
     link: '/typescript/typing-props',
   },
   {
-    text: 'Typing rules',
+    text: 'Rules definitions',
     link: '/typescript/typing-rules',
+  },
+  {
+    text: 'Infer state from rules',
+    link: '/typescript/infer-state-from-rules',
   },
 ];
 

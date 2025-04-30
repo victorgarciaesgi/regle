@@ -382,9 +382,12 @@ describe('createVariant', () => {
     }
   });
 
-  it('should invoke variantToRef directly', () => {
+  it('should invoke variantToRef directly', async () => {
     const { vm } = createRegleComponent(() => createRootVariantRegle('ONE'));
 
+    await vm.$nextTick();
+
     expect(vm.invariantRefOne).toBeDefined();
+    expect(vm.invariantRefOne?.oneValue).toBeDefined();
   });
 });
