@@ -107,6 +107,23 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+## `boolean`
+
+Requires a value to be a native boolean type. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { boolean } from '@regle/rules';
+
+const rules = {
+  checkbox: { boolean },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
 ## `checked`
 
 Requires a boolean value to be `true`. This is useful for checkbox inputs.
@@ -138,6 +155,24 @@ const { r$ } = useRegle({ bestLib: '' }, {
     contains: contains('regle')
   },
 })
+```
+
+## `date`
+
+Requires a value to be a native Date constructor. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+
+// ---cut---
+import { date } from '@regle/rules';
+
+const rules = {
+  birthday: { date },
+}
+
+const state = ref<InferInput<typeof rules>>({});
 ```
 
 
@@ -516,6 +551,24 @@ const { r$ } = useRegle({ type: '' }, {
 })
 ```
 
+## `number`
+
+Requires a value to be a native number type. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+
+// ---cut---
+import { number } from '@regle/rules';
+
+const rules = {
+  count: { number },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
 ## `numeric`
 
 Allows only numeric values (including numeric strings).
@@ -670,6 +723,41 @@ const { r$ } = useRegle({ bestLib: '' }, {
     startsWith: startsWith('regle')
   },
 })
+```
+
+## `string`
+
+Requires a value to be a native string type. Mainly used for typing
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { string } from '@regle/rules';
+
+const rules = {
+  firstName: { string },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
+## `type`
+
+Define the input type of a rule. No runtime validation.   
+Override any input type set by other rules.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { type } from '@regle/rules';
+
+const rules = {
+  firstName: { type: type<string>() },
+}
+
+const state = ref<InferInput<typeof rules>>({});
 ```
 
 
