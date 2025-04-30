@@ -144,18 +144,22 @@ const { r$ } = useRegle({ bestLib: '' }, {
 ## `dateAfter`
 _**Params**_
  - `after: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date is after the given parameter.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateAfter } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateAfter: dateAfter(new Date())
+    dateAfter: dateAfter(new Date()),
+    // or
+    dateAfter: dateAfter(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -164,18 +168,22 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 ## `dateBefore`
 _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date is before the given parameter.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateBefore } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBefore: dateBefore(new Date())
+    dateBefore: dateBefore(new Date()),
+    // or
+    dateBefore: dateBefore(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -185,18 +193,22 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
  - `after: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date falls between the specified bounds.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateBetween } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1))
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1)),
+    // or
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: false }),
   },
 })
 ```
