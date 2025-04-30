@@ -152,6 +152,7 @@ Checks if the date is after the given parameter.
 ```ts twoslash
 import {useRegle} from '@regle/core';
 // ---cut---
+// @noErrors
 import { dateAfter } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
@@ -175,6 +176,7 @@ Checks if the date is before the given parameter.
 ```ts twoslash
 import {useRegle} from '@regle/core';
 // ---cut---
+// @noErrors
 import { dateBefore } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
@@ -199,6 +201,7 @@ Checks if the date falls between the specified bounds.
 ```ts twoslash
 import {useRegle} from '@regle/core';
 // ---cut---
+// @noErrors
 import { dateBetween } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
