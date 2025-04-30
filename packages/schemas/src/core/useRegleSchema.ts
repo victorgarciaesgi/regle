@@ -40,6 +40,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     autoDirty: options?.autoDirty,
     lazy: options?.lazy,
     rewardEarly: options?.rewardEarly,
+    silent: options?.silent,
     clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 

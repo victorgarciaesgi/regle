@@ -322,17 +322,17 @@ export function createReactiveNestedStatus({
         return false;
       });
 
-      const $autoDirty = computed<boolean | undefined>(() => {
-        if (unref(commonArgs.options.autoDirty) != null) {
-          return unref(commonArgs.options.autoDirty);
+      const $silent = computed<boolean | undefined>(() => {
+        if (unref(commonArgs.options.silent) != null) {
+          return unref(commonArgs.options.silent);
         } else if ($rewardEarly.value) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       });
 
       const $ready = computed<boolean>(() => {
-        if (!$autoDirty.value) {
+        if ($silent.value) {
           return !($invalid.value || $pending.value);
         }
         return $anyDirty.value && !($invalid.value || $pending.value);

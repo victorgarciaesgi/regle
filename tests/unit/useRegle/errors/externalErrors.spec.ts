@@ -228,7 +228,7 @@ describe('external errors', () => {
     expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
   });
 
-  it('should behave correctly when autoDirty is set to false', async () => {
+  it('should behave correctly when silent is set to true', async () => {
     vi.useFakeTimers();
 
     function nestedExternalErrorsWithRulesAutoDirty() {
@@ -262,7 +262,7 @@ describe('external errors', () => {
 
       return {
         externalErrors,
-        ...useRegle(form, rules, { externalErrors, autoDirty: false }),
+        ...useRegle(form, rules, { externalErrors, silent: true }),
       };
     }
 

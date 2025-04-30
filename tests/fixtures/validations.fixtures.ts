@@ -8,7 +8,7 @@ export type { RefSymbol } from '@vue/reactivity';
 
 type ReturnRegleType = ReturnType<typeof nestedReactiveObjectValidation>;
 
-export function nestedReactiveObjectValidation(autoDirty = true, rewardEarly = false) {
+export function nestedReactiveObjectValidation({ autoDirty = true, silent = false, rewardEarly = false } = {}) {
   const form = reactive({
     level0: 0,
     level0Boolean: null as boolean | null,
@@ -39,6 +39,7 @@ export function nestedReactiveObjectValidation(autoDirty = true, rewardEarly = f
     },
     {
       autoDirty,
+      silent,
       rewardEarly,
     }
   );
@@ -193,7 +194,7 @@ export function computedValidationsObjectWithRefs(): any {
   return { form: { conditional, number }, ...useRegle({ number, conditional }, validations) };
 }
 
-export function simpleNestedStateWithMixedValidation(autoDirty = true, rewardEarly = false) {
+export function simpleNestedStateWithMixedValidation({ autoDirty = true, silent = false, rewardEarly = false } = {}) {
   const form = ref({
     email: '',
     user: {
@@ -223,15 +224,16 @@ export function simpleNestedStateWithMixedValidation(autoDirty = true, rewardEar
           },
         },
       }),
-      { autoDirty, rewardEarly }
+      { autoDirty, rewardEarly, silent }
     ),
   };
 }
 
-export function simpleNestedStateWithMixedValidationAndGlobalConfig(autoDirty = true) {
+export function simpleNestedStateWithMixedValidationAndGlobalConfig({ autoDirty = true, silent = false } = {}) {
   const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
     modifiers: {
       autoDirty,
+      silent,
     },
   });
   const form = ref({
