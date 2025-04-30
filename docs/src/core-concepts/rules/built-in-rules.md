@@ -158,7 +158,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
     dateAfter: dateAfter(new Date()),
     // or
-    dateAfter: dateAfter(new Date(), { allowEqual: true }),
+    dateAfter: dateAfter(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -181,7 +181,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
     dateBefore: dateBefore(new Date()),
     // or
-    dateBefore: dateBefore(new Date(), { allowEqual: true }),
+    dateBefore: dateBefore(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -205,7 +205,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
     dateBetween: dateBetween(new Date(), new Date(2030, 3, 1)),
     // or
-    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: true }),
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: false }),
   },
 })
 ```
