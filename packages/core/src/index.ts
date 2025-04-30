@@ -14,6 +14,8 @@ export {
   createVariant,
   narrowVariant,
   variantToRef,
+  defineRules,
+  refineRules,
   type MergedRegles,
   type CommonComparisonOptions,
   type CommonAlphaOptions,
@@ -96,4 +98,6 @@ export type {
   MaybeVariantStatus,
   NarrowVariant,
   DefaultValidatorsTree,
+  InferInput,
+  RegleUnknownRulesTree,
 } from './types';

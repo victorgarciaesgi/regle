@@ -5,3 +5,4 @@ export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions } f
 export { mergeRegles, type MergedRegles } from './mergeRegles';
 export { createScopedUseRegle, useCollectScope, useScopedRegle } from './createScopedUseRegle';
 export { createVariant, narrowVariant, variantToRef } from './createVariant';
+export { defineRules, refineRules } from './refineRules';

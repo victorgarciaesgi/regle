@@ -15,6 +15,7 @@ import type {
   ExtractFromGetter,
   JoinDiscriminatedUnions,
   Maybe,
+  MaybeInput,
   MaybeOutput,
   Prettify,
 } from '../utils';
@@ -91,11 +92,15 @@ export type DeepSafeFormState<
           {
             [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
               ? K
-              : never]?: SafeProperty<TState[K], TRules[K]>;
+              : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
+              ? MaybeOutput<M>
+              : SafeProperty<TState[K], TRules[K]>;
           } & {
             [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
               ? never
-              : K]-?: NonNullable<SafeProperty<TState[K], TRules[K]>>;
+              : K]-?: unknown extends SafeProperty<TState[K], TRules[K]>
+              ? unknown
+              : NonNullable<SafeProperty<TState[K], TRules[K]>>;
           }
         >
       : TState;
@@ -103,11 +108,11 @@ export type DeepSafeFormState<
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends RegleRuleDecl<any, any>
     ? [unknown] extends TRule['required']
-      ? NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any>
+      ? NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
         ? true
         : false
       : NonNullable<TRule['required']> extends TRule['required']
-        ? TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any>
+        ? TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any, any>
           ? Params extends never[]
             ? true
             : false
@@ -139,7 +144,7 @@ type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends
       : true
     : true;
 
-export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = [unknown] extends [TState]
+export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = unknown extends TState
   ? unknown
   : TRule extends RegleCollectionRuleDecl<any, any>
     ? TState extends Array<infer U extends Record<string, any>>
