@@ -1,4 +1,5 @@
 import { sameAs } from '../sameAs';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 
 describe('sameAs validator', () => {
   it('should not validate different values', () => {
@@ -20,4 +21,17 @@ describe('sameAs validator', () => {
   it('should validate identical values', () => {
     expect(sameAs('first').exec('first')).toBe(true);
   });
+
+  const sameAsRule = sameAs(() => 'foo');
+
+  expectTypeOf(sameAsRule).toEqualTypeOf<
+    RegleRuleDefinition<
+      unknown,
+      [target: string, otherName?: string | undefined],
+      false,
+      boolean,
+      MaybeInput<string>,
+      unknown
+    >
+  >();
 });

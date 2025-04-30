@@ -14,7 +14,7 @@ import type { UnwrapRegleUniversalParams } from './rule.params.types';
  * @public
  */
 export type ReglePartialRuleTree<
-  TForm extends Record<string, any>,
+  TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
@@ -28,6 +28,13 @@ export type RegleRuleTree<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+};
+
+/**
+ * @public
+ */
+export type RegleUnknownRulesTree = {
+  [x: string]: RegleRuleDecl | RegleCollectionRuleDecl | RegleUnknownRulesTree;
 };
 
 /**
@@ -126,19 +133,21 @@ export type RegleCollectionRuleDecl<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | ({
-      $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>,
-        RegleCollectionRuleDeclKeyProperty
-      >;
+      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
     } & RegleRuleDecl<NonNullable<TValue>, TCustomRules>)
   | ({
-      $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>,
-        RegleCollectionRuleDeclKeyProperty
-      >;
+      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
     } & FieldRegleBehaviourOptions);
+
+/** @public */
+export type RegleCollectionEachRules<
+  TValue = any[],
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+> = MaybeGetter<
+  RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+  ArrayElement<TValue>,
+  RegleCollectionRuleDeclKeyProperty
+>;
 
 /**
  * @internal

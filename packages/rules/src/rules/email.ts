@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
 
@@ -8,9 +8,9 @@ const emailRegex =
 /**
  * Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
  */
-export const email: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
+export const email: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'email',
-  validator(value: Maybe<string>) {
+  validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {
       return true;
     }
