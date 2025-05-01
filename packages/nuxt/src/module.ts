@@ -1,6 +1,11 @@
-import { defineNuxtModule, addImportsSources } from '@nuxt/kit';
-
-export interface ModuleOptions {}
+import { defineNuxtModule, addImportsSources, addImports, resolvePath, addTemplate, createResolver } from '@nuxt/kit';
+import path from 'path';
+export interface ModuleOptions {
+  /**
+   * Path to your setupFile, it needs to return a useRegle composable
+   */
+  setupFile: string;
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -8,39 +13,89 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'regle',
   },
   defaults: {},
-  async setup(_options, _nuxt) {
-    addImportsSources({
-      from: '@regle/core',
-      imports: [
-        'useRegle',
-        'createRule',
-        'defineRegleConfig',
-        'inferRules',
-        'extendRegleConfig',
-        'createVariant',
-        'narrowVariant',
-        'useScopedRegle',
-        'useCollectScope',
-      ] as Array<keyof typeof import('@regle/core')>,
-    });
+  async setup(options, nuxt) {
+    const { resolve } = createResolver(import.meta.url);
+    if (options.setupFile) {
+      try {
+        const setupFilePath = await resolvePath(options.setupFile);
+        if (setupFilePath) {
+          const dotNuxtFolder = resolve(`${nuxt.options.rootDir}/.nuxt`);
 
-    addImportsSources({
-      from: '@regle/rules',
-      imports: ['withAsync', 'withMessage', 'withParams', 'withTooltip'] as Array<keyof typeof import('@regle/rules')>,
-    });
+          const relativePath = path.relative(dotNuxtFolder, setupFilePath);
 
-    try {
-      const regleSchema = await import('@regle/schemas');
-      if (regleSchema) {
-        addImportsSources({
-          from: '@regle/schemas',
-          imports: ['useRegleSchema', 'inferSchema', 'withDeps', 'defineRegleSchemaConfig'] as Array<
-            keyof typeof import('@regle/schemas')
-          >,
-        });
+          const setupFilePathWithoutExtension = path.join(
+            path.dirname(relativePath),
+            path.basename(relativePath, path.extname(relativePath))
+          );
+
+          const template = addTemplate({
+            filename: 'regle-exports.ts',
+            write: true,
+            getContents: () => `import ReglePlugin from "${setupFilePathWithoutExtension}";
+export const {inferRules, useRegle, useCollectScope, useScopedRegle} = ReglePlugin`,
+          });
+
+          const exportsNames = ['inferRules', 'useRegle', 'useCollectScope', 'useScopedRegle'];
+          exportsNames.forEach((name) => addImports({ name, as: name, from: template.dst }));
+
+          addImportsSources({
+            from: '@regle/core',
+            imports: [
+              'createRule',
+              'defineRegleConfig',
+              'extendRegleConfig',
+              'createVariant',
+              'narrowVariant',
+            ] as Array<keyof typeof import('@regle/core')>,
+          });
+
+          await addDefaultImportSources();
+        } else {
+          console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`);
+        }
+      } catch (e) {
+        console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`);
       }
-    } catch (e) {
-      // do nothing
+    } else {
+      addImportsSources({
+        from: '@regle/core',
+        imports: [
+          'useRegle',
+          'createRule',
+          'defineRegleConfig',
+          'inferRules',
+          'extendRegleConfig',
+          'createVariant',
+          'narrowVariant',
+          'useScopedRegle',
+          'useCollectScope',
+        ] as Array<keyof typeof import('@regle/core')>,
+      });
+
+      await addDefaultImportSources();
+    }
+
+    async function addDefaultImportSources() {
+      addImportsSources({
+        from: '@regle/rules',
+        imports: ['withAsync', 'withMessage', 'withParams', 'withTooltip'] as Array<
+          keyof typeof import('@regle/rules')
+        >,
+      });
+
+      try {
+        const regleSchema = await import('@regle/schemas');
+        if (regleSchema) {
+          addImportsSources({
+            from: '@regle/schemas',
+            imports: ['useRegleSchema', 'inferSchema', 'withDeps', 'defineRegleSchemaConfig'] as Array<
+              keyof typeof import('@regle/schemas')
+            >,
+          });
+        }
+      } catch (e) {
+        // do nothing
+      }
     }
   },
 });

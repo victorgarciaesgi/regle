@@ -8,6 +8,10 @@
     ".": {
       "types": "./dist/types.d.mts",
       "import": "./dist/module.mjs"
+    },
+    "./setup": {
+      "types": "./dist/runtime/defineRegleNuxtPlugin.d.ts",
+      "import": "./dist/runtime/defineRegleNuxtPlugin.js"
     }
   },
   "main": "./dist/module.mjs",
