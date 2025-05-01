@@ -44,9 +44,66 @@ export default defineNuxtConfig({
 })
 ```
 
-### Auto imports
+## `setupFile`
 
-The following exports will become globally available in your Nuxt application:
+The Regle Nuxt module allow you to define a global configuration plugin to provide all your forms with the same translations, options and custom rules.
+
+
+:::code-group
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['@regle/nuxt'],
+  regle: {
+    setupFile: '~/regle-config.ts'
+  }
+})
+```
+
+```ts [regle-config.ts]
+import { defineRegleNuxtPlugin } from '@regle/nuxt/setup';
+import { defineRegleConfig } from '@regle/core';
+import { required, withMessage } from '@regle/rules';
+
+export default defineRegleNuxtPlugin(() => {
+  return defineRegleConfig({
+    rules: () => {
+      const {t} = useI18n();
+
+      return {
+        required: withMessage(required, t('general.required')),
+        customRule: myCustomRule,
+      }
+    },
+  });
+});
+
+```
+:::
+
+
+This will inject custom `useRegle` `inferRules` `useCollectScope` `useScopedRegle` to your auto-imports.
+
+Each of this composable is loaded with the custom types and your custom translations.
+
+
+```vue [app.vue]
+<script setup lang="ts">
+import { useRegle } from '#imports';
+import { required, minLength, email } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '', email: '' }, {
+  name: { required, minLength: minLength(4) },
+  email: { email },
+});
+
+</script>
+```
+
+## No options
+
+
+If no setup file is provided, the following auto-imports will be added to your app.
 
 - `@regle/core`
   - useRegle 

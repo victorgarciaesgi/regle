@@ -19,6 +19,8 @@ export {
   type MergedRegles,
   type CommonComparisonOptions,
   type CommonAlphaOptions,
+  type useRegleFn,
+  type inferRulesFn,
 } from './core';
 export { InternalRuleType } from './types';
 export type {
