@@ -575,6 +575,9 @@ importers:
       '@regle/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@regle/nuxt':
+        specifier: workspace:*
+        version: link:../../packages/nuxt
       '@regle/rules':
         specifier: workspace:*
         version: link:../../packages/rules
