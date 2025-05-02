@@ -15,20 +15,33 @@ import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
-import type { $InternalRegleResult, RegleSchema, RegleSchemaMode, RegleSingleFieldSchema } from '../types';
+import type { $InternalRegleResult, RegleSchema, RegleSingleFieldSchema } from '../types';
 
-export interface useRegleSchemaFn<TShortcuts extends RegleShortcutDefinition<any> = never> {
+export interface useRegleSchemaFn<
+  TShortcuts extends RegleShortcutDefinition<any> = never,
+  TAdditionalReturnProperties extends Record<string, any> = {},
+  TAdditionalOptions extends Record<string, any> = {},
+> {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
     state:
       | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
       | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
-    rulesFactory: MaybeRef<TSchema>
+    rulesFactory: MaybeRef<TSchema>,
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
+      TAdditionalOptions
   ): NonNullable<TState> extends PrimitiveTypes
-    ? RegleSingleFieldSchema<NonNullable<TState>, StandardSchemaV1.InferInput<TSchema>, TShortcuts>
+    ? RegleSingleFieldSchema<
+        NonNullable<TState>,
+        StandardSchemaV1.InferInput<TSchema>,
+        TShortcuts,
+        TAdditionalReturnProperties
+      >
     : RegleSchema<
         UnwrapNestedRefs<NonNullable<TState>>,
         UnwrapNestedRefs<NonNullable<StandardSchemaV1.InferInput<TSchema>>>,
-        TShortcuts
+        TShortcuts,
+        TAdditionalReturnProperties
       >;
 }
 
@@ -47,8 +60,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
   function useRegleSchema(
     state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
     schema: MaybeRef<StandardSchemaV1>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Record<string, any>, {}, never> & { mode?: RegleSchemaMode }
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>
   ): RegleSchema<Record<string, any>, StandardSchemaV1> {
     const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
 

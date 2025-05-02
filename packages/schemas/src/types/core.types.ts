@@ -12,24 +12,26 @@ import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
 
-export interface RegleSchema<
+export type RegleSchema<
   TState extends Record<string, any>,
   TSchema extends Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
-> {
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
   /**
    * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleSchemaStatus<TState, TSchema, TShortcuts, true>>;
-}
+} & TAdditionalReturnProperties;
 
-export interface RegleSingleFieldSchema<
+export type RegleSingleFieldSchema<
   TState extends Maybe<PrimitiveTypes>,
   TSchema extends unknown,
   TShortcuts extends RegleShortcutDefinition = {},
-> {
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
   /**
    * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
@@ -41,7 +43,7 @@ export interface RegleSingleFieldSchema<
       $validate: () => Promise<RegleSchemaResult<TSchema>>;
     }
   >;
-}
+} & TAdditionalReturnProperties;
 
 export type RegleSchemaResult<TSchema extends unknown> =
   | { valid: false; data: PartialDeep<TSchema> }
