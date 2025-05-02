@@ -21,6 +21,7 @@ export {
   type CommonAlphaOptions,
   type useRegleFn,
   type inferRulesFn,
+  type MergedScopedRegles,
 } from './core';
 export { InternalRuleType } from './types';
 export type {

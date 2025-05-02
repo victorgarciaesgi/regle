@@ -1,4 +1,12 @@
-export { useRegleSchema, withDeps, defineRegleSchemaConfig, inferSchema } from './core';
+export {
+  useRegleSchema,
+  withDeps,
+  defineRegleSchemaConfig,
+  inferSchema,
+  createScopedUseRegleSchema,
+  useCollectSchemaScope,
+  useScopedRegleSchema,
+} from './core';
 export type {
   InferRegleSchemaStatusType,
   RegleSchema,
