@@ -11,8 +11,8 @@
 html.dark {
   --vp-c-bg: #191a19;
   --vp-c-bg-alt: #131514;
-  --border-gradient: radial-gradient(ellipse at top, #048d62, transparent),
-    radial-gradient(ellipse at bottom, black, transparent);
+  --border-gradient:
+    radial-gradient(ellipse at top, #048d62, transparent), radial-gradient(ellipse at bottom, black, transparent);
   --vp-home-hero-image-background-image: linear-gradient(-45deg, var(--vp-c-brand-1) 50%, var(--vp-c-brand-2) 50%);
 }
 
@@ -251,6 +251,14 @@ main strong {
 
   .button-list {
     margin-top: 10px;
+
+    &.inline {
+      display: inline-block;
+
+      @media (min-width: 640px) {
+        margin-left: 10px;
+      }
+    }
   }
 
   button {
@@ -363,9 +371,18 @@ h2 + h2 {
   //   margin: 16px -16px;
   //   border-radius: 8px;
   // }
-  .vp-code-group .tabs {
-    margin-left: -16px;
-    margin-right: -16px;
+  .vp-code-group,
+  .vp-code-block-title {
+    .tabs,
+    .vp-code-block-title-bar {
+      margin-left: -16px;
+      margin-right: -16px;
+    }
+  }
+
+  .vp-doc div[class*='language-'] {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
   }
 }
 

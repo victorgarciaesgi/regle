@@ -6,9 +6,11 @@
         :class="{ valid: r$.$fields.email.$correct, error: r$.$fields.email.$error }"
         placeholder="Type your email"
       />
-      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <button class="primary" type="button" @click="r$.$validate">Submit</button>
-      <code class="status" :status="r$.$correct"></code>
+      <div class="button-list inline">
+        <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
+        <button class="primary" type="button" @click="r$.$validate">Submit</button>
+        <code class="status" :status="r$.$correct"></code>
+      </div>
     </div>
 
     <ul v-if="r$.$errors.email.length">
