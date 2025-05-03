@@ -27,7 +27,7 @@ It's heavily inspired by Vuelidate.
 - 🧰 Modular
 - 🔄 Async validation
 - 🌐 Plug any i18n library
-- 📗 Vuelidate compatible API
+- 📗 Vuelidate like API
 - Standard Schemas spec support
   - 🦸‍♂️ [Zod](https://zod.dev/)
   - 🤖 [Valibot](https://valibot.dev/)

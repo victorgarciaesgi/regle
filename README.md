@@ -43,7 +43,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 - 🧰 Modular
 - 🔄 Async validation
 - 🌐 Plug any i18n library
-- 📗 Vuelidate compatible API
+- 📗 Vuelidate like API
 - Standard Schemas spec support
   - 🦸‍♂️ [Zod](https://zod.dev/)
   - 🤖 [Valibot](https://valibot.dev/)
