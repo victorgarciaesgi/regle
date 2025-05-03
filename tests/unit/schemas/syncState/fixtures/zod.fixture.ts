@@ -1,8 +1,13 @@
+import { useRegleSchema, type RegleSchemaBehaviourOptions } from '@regle/schemas';
 import { z } from 'zod';
 
-export const zodTransformSchema = z.object({
-  noChange: z.string(),
-  withDefault: z.string().min(1).default('default value'),
-  withCatch: z.string().catch('catch'),
-  withTransform: z.string().transform((value) => `transform: ${value}`),
-});
+export function zodRegleTransform(options?: RegleSchemaBehaviourOptions) {
+  const zodTransformSchema = z.object({
+    noChange: z.string(),
+    withDefault: z.string().min(1).default('default value'),
+    withCatch: z.string().catch('catch'),
+    withTransform: z.string().transform((value) => `transform: ${value}`),
+  });
+
+  return useRegleSchema({} as z.infer<typeof zodTransformSchema>, zodTransformSchema, options);
+}
