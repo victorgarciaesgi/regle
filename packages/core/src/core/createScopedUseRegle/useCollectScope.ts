@@ -1,22 +1,33 @@
 import { computed, reactive, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { ScopedInstancesRecord } from '../../types';
-import { mergeRegles, type MergedScopedRegles } from '../mergeRegles';
+import type { RegleRoot, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
+import { mergeRegles, type MergedRegles, type MergedScopedRegles } from '../mergeRegles';
 
-export function createUseCollectScope(instances: Ref<ScopedInstancesRecord>): {
-  useCollectScope<TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(): {
-    r$: MergedScopedRegles<TValue>;
-  };
-} {
-  function useCollectScope<TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
-    namespace?: MaybeRefOrGetter<string>
-  ): {
-    r$: MergedScopedRegles<TValue>;
+export type useCollectScopeFn<TNamedScoped extends boolean = false> = TNamedScoped extends true
+  ? <const TValue extends Record<string, Record<string, any>>>(
+      namespace?: MaybeRefOrGetter<string>
+    ) => {
+      r$: MergedRegles<{
+        [K in keyof TValue]: RegleRoot<TValue[K]>;
+      }>;
+    }
+  : <TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
+      namespace?: MaybeRefOrGetter<string>
+    ) => {
+      r$: MergedScopedRegles<TValue>;
+    };
+
+export function createUseCollectScope<TNamedScoped extends boolean = false>(
+  instances: Ref<ScopedInstancesRecord>,
+  options: { asRecord?: TNamedScoped }
+): { useCollectScope: useCollectScopeFn<TNamedScoped> } {
+  function useCollectScope(namespace?: MaybeRefOrGetter<string>): {
+    r$: MergedScopedRegles<Record<string, unknown>[]> | MergedRegles<Record<string, SuperCompatibleRegleRoot>>;
   } {
     const computedNamespace = computed(() => toValue(namespace));
 
     setEmptyNamespace();
 
-    const r$ = ref<MergedScopedRegles>(collectRegles(instances.value));
+    const r$ = ref<MergedScopedRegles | MergedRegles<any>>(collectRegles(instances.value));
 
     const regle = reactive({ r$ });
 
@@ -39,14 +50,14 @@ export function createUseCollectScope(instances: Ref<ScopedInstancesRecord>): {
     function collectRegles(r$Instances: ScopedInstancesRecord) {
       if (computedNamespace.value) {
         const namespaceInstances = r$Instances[computedNamespace.value] ?? {};
-        return mergeRegles(namespaceInstances, true);
+        return mergeRegles(namespaceInstances, !options.asRecord);
       } else {
-        return mergeRegles(r$Instances['~~global'] ?? {}, true);
+        return mergeRegles(r$Instances['~~global'] ?? {}, !options.asRecord);
       }
     }
 
     return { r$: regle.r$ as any };
   }
 
-  return { useCollectScope };
+  return { useCollectScope: useCollectScope as any };
 }
