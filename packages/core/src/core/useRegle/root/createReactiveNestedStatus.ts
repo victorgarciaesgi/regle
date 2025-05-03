@@ -52,6 +52,8 @@ export function createReactiveNestedStatus({
   interface ScopeState extends CommonResolverScopedState {
     $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
+    $autoDirty: ComputedRef<boolean>;
+    $silent: ComputedRef<boolean>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
@@ -210,10 +212,12 @@ export function createReactiveNestedStatus({
     $unwatchState = watch(
       state,
       () => {
-        // Do not watch deep to only track mutation on the object itself on not its children
-        $unwatch();
-        createReactiveFieldsStatus();
-        $touch(true, true);
+        if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+          // Do not watch deep to only track mutation on the object itself on not its children
+          $unwatch();
+          createReactiveFieldsStatus();
+          $touch(true, true);
+        }
       },
       { flush: 'sync' }
     );
@@ -322,13 +326,20 @@ export function createReactiveNestedStatus({
         return false;
       });
 
-      const $silent = computed<boolean | undefined>(() => {
+      const $silent = computed<boolean>(() => {
         if (unref(commonArgs.options.silent) != null) {
           return unref(commonArgs.options.silent);
         } else if ($rewardEarly.value) {
           return true;
         }
         return false;
+      });
+
+      const $autoDirty = computed<boolean>(() => {
+        if (unref(commonArgs.options.autoDirty) != null) {
+          return unref(commonArgs.options.autoDirty);
+        }
+        return true;
       });
 
       const $ready = computed<boolean>(() => {
@@ -472,6 +483,8 @@ export function createReactiveNestedStatus({
         $edited,
         $anyEdited,
         $localPending,
+        $autoDirty,
+        $silent,
       } satisfies ScopeState;
     })!;
   }

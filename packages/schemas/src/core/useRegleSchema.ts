@@ -12,10 +12,10 @@ import type {
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
-import type { MaybeRef, Raw, Ref, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, Raw, Ref, UnwrapNestedRefs, WatchHandle } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
-import type { $InternalRegleResult, RegleSchema, RegleSingleFieldSchema } from '../types';
+import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 
 export interface useRegleSchemaFn<
   TShortcuts extends RegleShortcutDefinition<any> = never,
@@ -27,8 +27,11 @@ export interface useRegleSchemaFn<
       | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
       | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
     rulesFactory: MaybeRef<TSchema>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-      LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
+    options?: Omit<
+      Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
+      'validationGroups' | 'lazy' | 'rewardEarly' | 'silent'
+    > &
+      RegleSchemaBehaviourOptions &
       TAdditionalOptions
   ): NonNullable<TState> extends PrimitiveTypes
     ? RegleSingleFieldSchema<
@@ -53,22 +56,25 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     autoDirty: options?.autoDirty,
     lazy: options?.lazy,
     rewardEarly: options?.rewardEarly,
-    silent: options?.silent,
     clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
   };
 
   function useRegleSchema(
     state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
     schema: MaybeRef<StandardSchemaV1>,
-    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>
+    options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+      LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
+      RegleSchemaBehaviourOptions
   ): RegleSchema<Record<string, any>, StandardSchemaV1> {
-    const convertedRules = ref<ReglePartialRuleTree<any, any>>({});
-
     const computedSchema = computed(() => unref(schema));
+
+    const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};
+
+    const { onUpdate: syncOnUpdate = false, onValidate: syncOnValidate = false } = syncState;
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
       ...globalOptions,
-      ...options,
+      ...defaultOptions,
     } as any;
 
     const isSingleField = computed(() => !isObject(processedState.value));
@@ -113,7 +119,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       return output;
     }
 
-    async function computeErrors() {
+    async function computeErrors(isValidate = false) {
       let result = computedSchema.value['~standard'].validate(processedState.value);
       if (result instanceof Promise) {
         result = await result;
@@ -123,14 +129,28 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       } else {
         customErrors.value = issuesToRegleErrors(result);
       }
+      if (!result.issues) {
+        if ((isValidate && syncOnValidate) || (!isValidate && syncOnUpdate)) {
+          unWatchState?.();
+          processedState.value = result.value as any;
+          defineWatchState();
+        }
+      }
       return result;
     }
 
-    watch([processedState, computedSchema], computeErrors, { deep: true, immediate: true });
+    let unWatchState: WatchHandle;
+
+    function defineWatchState() {
+      unWatchState = watch([processedState, computedSchema], () => computeErrors(), { deep: true });
+    }
+
+    defineWatchState();
+    computeErrors();
 
     onValidate = async () => {
       try {
-        const result = await computeErrors();
+        const result = await computeErrors(true);
 
         return {
           valid: !result.issues?.length,
@@ -142,7 +162,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     };
 
     const regle = useRootStorage({
-      scopeRules: convertedRules as any,
+      scopeRules: computed(() => ({})),
       state: processedState,
       options: resolvedOptions,
       schemaErrors: customErrors,
