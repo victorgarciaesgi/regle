@@ -5,9 +5,9 @@
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
   <!-- <Test13 /> -->
-  <Test12 />
+  <!-- <Test12 /> -->
   <!-- <Parent /> -->
-  <!-- <ParentNested /> -->
+  <ParentNested />
 </template>
 
 <script setup lang="ts">

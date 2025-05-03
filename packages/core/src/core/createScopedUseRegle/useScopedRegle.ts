@@ -3,6 +3,14 @@ import type { AllRulesDeclarations, Regle, ScopedInstancesRecord, SuperCompatibl
 import { randomId, tryOnScopeDispose } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
 
+export type UseScopedRegleOptions<TAsRecord extends boolean> = {
+  namespace?: MaybeRefOrGetter<string>;
+} & (TAsRecord extends true
+  ? {
+      scopeKey: string;
+    }
+  : {});
+
 export function createUseScopedRegleComposable<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<AllRulesDeclarations>>,
 >(
@@ -16,9 +24,11 @@ export function createUseScopedRegleComposable<
   const useScopedRegle: TCustomRegle = ((
     state: Record<string, unknown>,
     rulesFactory: MaybeRefOrGetter<{}>,
-    options?: { namespace?: MaybeRefOrGetter<string> } & Record<string, any>
+    options?: UseScopedRegleOptions<boolean> & Record<string, any>
   ) => {
-    const { namespace, ...restOptions } = options ?? {};
+    const { namespace, scopeKey, ...restOptions } = options ?? {};
+
+    scopedUseRegle.__config ??= {};
 
     const computedNamespace = computed(() => toValue(namespace));
 
@@ -26,7 +36,7 @@ export function createUseScopedRegleComposable<
     const $id = ref(`${Object.keys(instances.value).length + 1}-${randomId()}`);
 
     const instanceName = computed(() => {
-      return `instance-${$id.value}`;
+      return options?.scopeKey ?? `instance-${$id.value}`;
     });
 
     const { r$ } = scopedUseRegle(state, rulesFactory, restOptions);
