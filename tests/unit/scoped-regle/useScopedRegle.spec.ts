@@ -291,6 +291,47 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
       expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
     });
+
+    it('should handle the `asRecord` option', async () => {
+      expect(wrapper.vm.scope5R$.$dirty).toBe(false);
+      expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
+      expect(wrapper.vm.scope5R$.$invalid).toBe(false);
+      expect(wrapper.vm.scope5R$.$correct).toBe(false);
+      expect(wrapper.vm.scope5R$.$error).toBe(false);
+      expect(wrapper.vm.scope5R$.$edited).toBe(false);
+      expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
+      expect(wrapper.vm.scope5R$.$instances).toStrictEqual({});
+      expect(wrapper.vm.scope5R$.$errors).toStrictEqual({});
+      expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({});
+      expect(wrapper.vm.scope5R$.$value).toStrictEqual({});
+
+      wrapper.vm.showScope5 = true;
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.scope5R$.$dirty).toBe(false);
+      expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
+      expect(wrapper.vm.scope5R$.$invalid).toBe(true);
+      expect(wrapper.vm.scope5R$.$correct).toBe(false);
+      expect(wrapper.vm.scope5R$.$error).toBe(false);
+      expect(wrapper.vm.scope5R$.$edited).toBe(false);
+      expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
+      expect(Object.keys(wrapper.vm.scope5R$.$instances)).toHaveLength(1);
+      expect(wrapper.vm.scope5R$.$errors).toStrictEqual({
+        scope5: {
+          scope5Record: [],
+        },
+      });
+      expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({
+        scope5: { scope5Record: ['This field is required'] },
+      });
+      expect(wrapper.vm.scope5R$.$value).toStrictEqual({
+        scope5: {
+          scope5Record: '',
+        },
+      });
+
+      expect(wrapper.vm.scope5R$.$value.scope5.scope5Record).toBe('');
+    });
   }
 
   it('should be empty', () => {
