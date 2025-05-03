@@ -15,4 +15,5 @@ export type {
   RegleSchemaResult,
   RegleSchemaStatus,
   RegleSingleFieldSchema,
+  RegleSchemaBehaviourOptions,
 } from './types';
