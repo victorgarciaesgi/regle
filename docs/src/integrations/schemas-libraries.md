@@ -4,6 +4,7 @@ title: Schemas libraries
 
 <script setup>
 import QuickUsage from '../parts/components/zod/QuickUsage.vue';
+import ZodSyncState from '../parts/components/zod/ZodSyncState.vue';
 import ComputedSchema from '../parts/components/zod/ComputedSchema.vue';
 </script>
 
@@ -15,9 +16,9 @@ This means any Standard Schema compliant RPC library can be used with Regle.
 
 Official list of supported libraries:
 
-- [Zod](https://zod.dev/) <span data-title="zod"></span> `3.24+`. 
-- [Valibot](https://valibot.dev/) <span data-title="valibot"></span> `1+`.
-- [ArkType](https://arktype.io/) <span data-title="arktype"></span>  `2+`
+- Zod [docs](https://zod.dev/) <span data-title="zod"></span> `3.24+`. 
+- Valibot [docs](https://valibot.dev/) <span data-title="valibot"></span> `1+`.
+- ArkType [docs](https://arktype.io/) <span data-title="arktype"></span>  `2+`
 - Any library following the [Standard Schema Spec](https://standardschema.dev/) 
 
 ::: code-group
@@ -169,6 +170,56 @@ const { r$ } = useRegleSchema(form, schema);
 :::
 
 <ComputedSchema />
+
+
+## `syncState`
+
+By default, Regle doesn't allow any transforms on the state. 
+
+Modifiers like `default`, `catch` or `transform` will not impact the validation.
+
+If you want to allow the schema to update your form state you can use the `syncState` option.  
+The state will only be pacthed is the parse is successful.
+
+```ts
+type RegleSchemaBehaviourOptions = {
+  syncState?: {
+    /**
+     * Applies every transform on every update to the state
+     */
+    onUpdate?: boolean;
+    /**
+     * Applies every transform only when calling `$validate`
+     */
+    onValidate?: boolean;
+  };
+};
+
+```
+
+Usage:
+
+```vue twoslash {13}
+<script setup lang="ts">
+import { ref } from 'vue';
+// ---cut---
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
+
+const state = ref({ firstName: '', lastName: '' });
+
+const { r$ } = useRegleSchema(
+  state,
+  z.object({
+    firstName: z.string().min(1).catch('Victor'),
+    lastName: z.string().transform((value) => `Transformed ${value}`),
+  }),
+  { syncState: { onValidate: true } }
+);
+</script>
+```
+
+<ZodSyncState/>
 
 
 ## Type safe output
