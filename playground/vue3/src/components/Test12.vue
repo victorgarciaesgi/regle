@@ -1,34 +1,31 @@
 <script setup lang="ts">
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
 import { ref } from 'vue';
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+const data = ref({});
+const valid = ref(null);
 
-const { r$ } = useRegle(
-  state,
-  {
-    name: { required, minLength: minLength(4) },
-    email: { email },
-  },
-  { autoDirty: false }
+const { r$ } = useRegleSchema(
+  { name: '', emptystring: null },
+  z.object({
+    name: z.string().min(1),
+    emptystring: z.string().catch('empty'),
+  }),
+  { syncState: { onValidate: true }, autoDirty: false }
 );
 
 async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
+  const result = await r$.$validate();
+  data.value = result.data;
+  valid.value = result.valid;
 }
 </script>
 
 <template>
-  <h2>Hello Regle!</h2>
+  <div>Valid: {{ valid }}</div>
+
+  <pre>{{ data }}</pre>
 
   <label>Name</label><br />
   <input v-model="r$.$value.name" placeholder="Type your name" />
@@ -37,9 +34,6 @@ async function submit() {
       {{ error }}
     </li>
   </ul>
-
-  <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
   <ul style="font-size: 12px; color: red">
     <li v-for="error of r$.$errors.email" :key="error">
       {{ error }}
@@ -47,7 +41,4 @@ async function submit() {
   </ul>
 
   <button @click="submit">Submit</button>
-  <button @click="r$.$reset()">Reset</button>
-  <button @click="r$.$reset({ toState: { name: '', email: '' } })">Restart</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
 </template>

@@ -29,7 +29,7 @@ describe('nested validations', () => {
     });
   }
 
-  it('should behave correctly with nested arrays', async () => {
+  it.only('should behave correctly with nested arrays', async () => {
     const { vm } = createRegleComponent(nestedCollectionRules);
 
     shouldBeInvalidField(vm.r$.$fields.level0);
