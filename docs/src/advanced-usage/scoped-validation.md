@@ -234,8 +234,102 @@ import { createScopedUseRegle, type ScopedInstancesRecordLike } from '@regle/cor
 const myCustomStore = ref<ScopedInstancesRecordLike>({});
 
 const { useScopedRegle, useCollectScope } = createScopedUseRegle({customStore: myCustomStore});
-
 ```
+
+## Collect instances in a Record
+
+By default collected instances are stored in a readonly array.
+
+If you want to store your nested instances in a record it's possible with the `asRecord` option.
+
+This will **require** every nested `useScopeRegle` to provide a parameter `scopeKey`.
+
+:::code-group
+
+```ts twoslash [scoped-config.ts]
+import { createScopedUseRegle } from '@regle/core';
+
+export const { 
+  useScopedRegle: useScopedRegleItem, 
+  useCollectScope: useCollectScopeRecord 
+} = createScopedUseRegle({ asRecord: true });
+```
+```vue twoslash [Parent.vue]
+<script setup lang="ts">
+import { createScopedUseRegle } from '@regle/core';
+const { 
+  useScopedRegle: useScopedRegleItem, 
+  useCollectScope: useCollectScopeRecord 
+} = createScopedUseRegle({ asRecord: true });
+// ---cut---
+// @noErrors
+import { useCollectScopeRecord } from './scoped-config';
+import Child1 from './Child1.vue';
+import Child2 from './Child2.vue';
+
+const { r$ } = useCollectScopeRecord<{
+    child1: {firstName: string},
+    child2: {email: string},
+  }>();
+
+console.log(r$.$value.child1.firstName);
+</script>
+```
+
+```vue twoslash [Child1.vue]
+<template>
+  <input v-model="r$.$value.firstName" placeholder="Type your firstname" />
+  <ul>
+    <li v-for="error of r$.$errors.firstName" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+</template>
+
+<script setup lang="ts">
+    import { required } from '@regle/rules';
+  const { 
+    useScopedRegle: useScopedRegleItem, 
+    useCollectScope: useCollectScopeRecord 
+  } = createScopedUseRegle({ asRecord: true });
+// ---cut---
+// @noErrors
+  import { useScopedRegleItem } from './scoped-config';
+
+  const { r$ } = useScopedRegleItem(
+    { firstName: '' }, 
+    { firstName: { required } }
+    { scopeKey: 'child1' }
+  );
+</script>
+```
+
+```vue twoslash [Child2.vue]
+<template>
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <ul>
+    <li v-for="error of r$.$errors.email" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+</template>
+
+<script setup lang="ts">
+  import { required, email } from '@regle/rules';
+  const { 
+    useScopedRegle: useScopedRegleItem, 
+    useCollectScope: useCollectScopeRecord 
+  } = createScopedUseRegle({ asRecord: true });
+// ---cut---
+// @noErrors
+  import { useScopedRegleItem } from './scoped-config';
+
+const { r$ } = useScopedRegleItem({ email: '' }, 
+  { email: { required, email } }, 
+  { scopeKey: 'child2' });
+</script>
+```
+:::
 
 ## Manually dispose or register a scope entry
 
