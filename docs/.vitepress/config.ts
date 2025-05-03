@@ -5,6 +5,7 @@ import { groupIconMdPlugin, groupIconVitePlugin, localIconLoader } from 'vitepre
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { generateSatoriBanner } from './satori-banner';
 import { version } from '../../package.json';
+import llmstxt from 'vitepress-plugin-llms';
 
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
@@ -366,6 +367,7 @@ export default defineConfig({
   vite: {
     plugins: [
       vueJsx(),
+      llmstxt(),
       groupIconVitePlugin({
         customIcon: {
           pinia:
