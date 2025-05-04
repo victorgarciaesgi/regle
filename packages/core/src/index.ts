@@ -22,6 +22,9 @@ export {
   type useRegleFn,
   type inferRulesFn,
   type MergedScopedRegles,
+  type CreateScopedUseRegleOptions,
+  type UseScopedRegleOptions,
+  type useCollectScopeFn,
 } from './core';
 export { InternalRuleType } from './types';
 export type {
@@ -102,4 +105,5 @@ export type {
   DefaultValidatorsTree,
   InferInput,
   RegleUnknownRulesTree,
+  HaveAnyRequiredProps,
 } from './types';

@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import ParentCollector from './fixtures/ParentCollector.vue';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../packages/core/src/utils';
+import { useScope5Regle } from './fixtures/scoped-config';
 
 describe('useScopedRegle', () => {
   // Weird test bug to resolve with Vue 3.4
@@ -331,6 +332,13 @@ describe('useScopedRegle', () => {
       });
 
       expect(wrapper.vm.scope5R$.$value.scope5.scope5Record).toBe('');
+
+      // @ts-expect-error no 3rd argument
+      useScope5Regle({}, {});
+      // @ts-expect-error no `scopeKey` option
+      useScope5Regle({}, {}, {});
+      // ✅
+      useScope5Regle({}, {}, { scopeKey: 'foo' });
     });
   }
 

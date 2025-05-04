@@ -13,6 +13,6 @@ export const { useCollectScope: useScope3Validations, useScopedRegle: useScoped3
   customUseRegle: useRegle,
 });
 
-export const { useCollectScope: useScope5Validations, useScopedRegle: useScope53Regle } = createScopedUseRegle({
+export const { useCollectScope: useScope5Validations, useScopedRegle: useScope5Regle } = createScopedUseRegle({
   asRecord: true,
 });

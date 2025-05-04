@@ -5,7 +5,7 @@ import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
 import { createUseScopedRegleComposable, type UseScopedRegleOptions } from './useScopedRegle';
 
-export type CreateScopedUseRegleOption<TCustomRegle extends useRegleFn<any, any>, TAsRecord extends boolean> = {
+export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any>, TAsRecord extends boolean> = {
   /**
    * Inject a global configuration to the exported composables to keep your translations and typings
    */
@@ -25,9 +25,14 @@ export function createScopedUseRegle<
   TAsRecord extends boolean = false,
   TReturnedRegle extends useRegleFn<any, any, any, any> = TCustomRegle extends useRegleFn<infer A, infer B>
     ? useRegleFn<A, B, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>
-    : useRegleFn<Partial<AllRulesDeclarations>>,
+    : useRegleFn<
+        Partial<AllRulesDeclarations>,
+        any,
+        { dispose: () => void; register: () => void },
+        UseScopedRegleOptions<TAsRecord>
+      >,
 >(
-  options?: CreateScopedUseRegleOption<TCustomRegle, TAsRecord>
+  options?: CreateScopedUseRegleOptions<TCustomRegle, TAsRecord>
 ): {
   useScopedRegle: TReturnedRegle;
   useCollectScope: useCollectScopeFn<TAsRecord>;
