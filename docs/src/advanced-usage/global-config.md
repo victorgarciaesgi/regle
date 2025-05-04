@@ -43,6 +43,11 @@ Result:
 <CustomMessages/>
 
 
+:::tip
+If you use Nuxt, check out the [Nuxt module](/integrations/nuxt) for a even better DX.  
+It provides a way to add your custom global config to your auto-imports.
+:::
+
 ### i18n
 
 You can also use any i18n library directly inside the config.
