@@ -48,3 +48,9 @@ Formkit and VueForms is centered around DOM components.
 Regle is headless and data-driven, so you can work with your state anywhere you want.
 
 Working exclusively with a data-driven model enables stronger type safety and a better developer experience.
+
+## Formwerk
+
+From Formwerk website: `[Formwerk] is ideal for those building internal UI design systems or UI libraries intended for other developers.`.
+The focus is not on validation, but on building a scalable UI around the form fields, so it differs completly in usage.
+Formwerk also offers the same feature to validate forms using Standard Schema Spec (Zod, Valibot, Arktype)
