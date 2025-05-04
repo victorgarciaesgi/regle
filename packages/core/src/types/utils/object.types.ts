@@ -16,6 +16,21 @@ export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
   [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? never : K]?: TObject[K];
 };
 
+type MergePropsIntoRequiredBooleans<TObject extends Record<string, any>> = {
+  [K in keyof TObject]-?: TObject[K] extends NonNullable<TObject[K]> ? true : false;
+}[keyof TObject];
+
+/**
+ * Ensure that if at least one prop is required, the "prop" object will be required too
+ */
+export type HaveAnyRequiredProps<TObject extends Record<string, any>> = [TObject] extends [never]
+  ? false
+  : TObject extends Record<string, any>
+    ? MergePropsIntoRequiredBooleans<TObject> extends false
+      ? false
+      : true
+    : false;
+
 /**
  * Get item value from object, otherwise fallback to undefined. Avoid TS to not be able to infer keys not present on all unions
  */
