@@ -7,9 +7,9 @@ description: Write your validations in the Zod way
 
 Regle is state first, that means that you write your rules depending on the state structure, that's the model based way that Vuelidate introduced.
 
-With Schema libraries like Zod or Valibot, it's the contrary: the state type depends on the schema output.
+With Schema libraries like Zod or Valibot, it's the opposite: the state type depends on the schema output.
 
-This mental model may differ to some people, the good new is Regle allow to work both ways!
+This mental model may differ to some people, the good news is Regle support both ways.
 
 ## `InferInput`
 
