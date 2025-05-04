@@ -205,3 +205,20 @@ describe.each([
     shouldBeValidField(vm.r$.$fields.confirm);
   });
 });
+
+describe('$silent default', () => {
+  function defaultDataRegle() {
+    return useRegle({} as { firstName?: string }, {}, { silent: true });
+  }
+
+  it('should correctly define new $fields from data when silent is true', async () => {
+    const { vm } = createRegleComponent(defaultDataRegle);
+
+    expect(vm.r$.$fields).toStrictEqual({});
+
+    vm.r$.$value = { firstName: 'foo' };
+    await vm.$nextTick();
+
+    shouldBePristineField(vm.r$.$fields.firstName);
+  });
+});
