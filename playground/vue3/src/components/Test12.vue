@@ -1,37 +1,30 @@
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod';
-import { ref } from 'vue';
+import { useRegle } from '@regle/core';
+import { onMounted, ref } from 'vue';
 
-const data = ref({});
-const valid = ref(false);
+const data = ref<{ email?: string }>({});
 
-const { r$ } = useRegleSchema(
-  { name: '', emptystring: null },
-  z.object({
-    name: z.string().min(1),
-    emptystring: z.string().catch('empty'),
-  }),
-  { syncState: { onUpdate: true }, autoDirty: false }
-);
+const { r$ } = useRegle(data, {}, { autoDirty: false });
+
+onMounted(() => {
+  setTimeout(() => {
+    r$.$value = { email: 'foo' };
+  }, 1000);
+});
 
 async function submit() {
   const result = await r$.$validate();
   data.value = result.data;
-  valid.value = result.valid;
 }
 </script>
 
 <template>
-  <div>Valid: {{ valid }}</div>
-
-  <pre>{{ data }}</pre>
-  <pre>{{ r$.$value }}</pre>
+  <pre>{{ r$.$fields.email }}</pre>
 
   <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
+  <input v-model="r$.$value.email" placeholder="Type your email" />
   <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
+    <li v-for="error of r$.$errors.email" :key="error">
       {{ error }}
     </li>
   </ul>
