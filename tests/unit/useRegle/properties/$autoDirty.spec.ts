@@ -1,4 +1,4 @@
-import { nextTick, ref } from 'vue';
+import { nextTick } from 'vue';
 import {
   simpleNestedStateWithMixedValidation,
   simpleNestedStateWithMixedValidationAndGlobalConfig,
@@ -8,11 +8,9 @@ import {
   shouldBeErrorField,
   shouldBeInvalidField,
   shouldBePristineField,
-  shouldBeUnRuledCorrectField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 import { useRegle } from '@regle/core';
-import { required, withParams } from '@regle/rules';
 
 describe.each([
   ['local modifier', () => simpleNestedStateWithMixedValidation({ autoDirty: false })],
@@ -65,5 +63,22 @@ describe.each([
     vm.r$.$value.email = 'bar@free.fr';
     await nextTick();
     shouldBeValidField(vm.r$.$fields.email);
+  });
+});
+
+describe('$autoDirty default', () => {
+  function defaultDataRegle() {
+    return useRegle({} as { firstName?: string }, {}, { autoDirty: false });
+  }
+
+  it('should correctly define new $fields from data when autoDirty is false', async () => {
+    const { vm } = createRegleComponent(defaultDataRegle);
+
+    expect(vm.r$.$fields).toStrictEqual({});
+
+    vm.r$.$value = { firstName: 'foo' };
+    await vm.$nextTick();
+
+    shouldBePristineField(vm.r$.$fields.firstName);
   });
 });

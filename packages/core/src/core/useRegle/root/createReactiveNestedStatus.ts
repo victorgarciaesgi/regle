@@ -212,10 +212,10 @@ export function createReactiveNestedStatus({
     $unwatchState = watch(
       state,
       () => {
+        $unwatch();
+        createReactiveFieldsStatus();
         if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
           // Do not watch deep to only track mutation on the object itself on not its children
-          $unwatch();
-          createReactiveFieldsStatus();
           $touch(true, true);
         }
       },
