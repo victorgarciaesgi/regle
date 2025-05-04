@@ -19,6 +19,7 @@ import type {
 } from '../../types';
 import type {
   DeepMaybeRef,
+  HaveAnyRequiredProps,
   isDeepExact,
   JoinDiscriminatedUnions,
   Maybe,
@@ -29,6 +30,25 @@ import type {
 } from '../../types/utils';
 import { useRootStorage } from './root';
 import type { MismatchInfo } from 'expect-type';
+
+export type useRegleFnOptions<
+  TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
+  TRules extends ReglePartialRuleTree<
+    Unwrap<TState extends Record<string, any> ? TState : {}>,
+    Partial<AllRulesDeclarations>
+  >,
+  TAdditionalOptions extends Record<string, any>,
+  TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
+> =
+  TState extends MaybeInput<PrimitiveTypes>
+    ? Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
+    : Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+        LocalRegleBehaviourOptions<
+          JoinDiscriminatedUnions<TState extends Record<string, any> ? Unwrap<TState> : {}>,
+          TState extends Record<string, any> ? TRules : {},
+          TValidationGroups
+        > &
+        TAdditionalOptions;
 
 export interface useRegleFn<
   TCustomRules extends Partial<AllRulesDeclarations>,
@@ -55,21 +75,17 @@ export interface useRegleFn<
           NoInferLegacy<TRules>
         >,
   >(
-    state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
-    rulesFactory: TState extends MaybeInput<PrimitiveTypes>
-      ? MaybeRefOrGetter<TDecl>
-      : TState extends Record<string, any>
-        ? MaybeRef<TRules> | ((...args: any[]) => TRules)
-        : {},
-    options?: TState extends MaybeInput<PrimitiveTypes>
-      ? Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
-      : Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-          LocalRegleBehaviourOptions<
-            JoinDiscriminatedUnions<TState extends Record<string, any> ? Unwrap<TState> : {}>,
-            TState extends Record<string, any> ? TRules : {},
-            TValidationGroups
-          > &
-          TAdditionalOptions
+    ...params: [
+      state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
+      rulesFactory: TState extends MaybeInput<PrimitiveTypes>
+        ? MaybeRefOrGetter<TDecl>
+        : TState extends Record<string, any>
+          ? MaybeRef<TRules> | ((...args: any[]) => TRules)
+          : {},
+      ...(HaveAnyRequiredProps<useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>> extends true
+        ? [options: useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>]
+        : [options?: useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>]),
+    ]
   ): NonNullable<TState> extends PrimitiveTypes
     ? RegleSingleField<NonNullable<TState>, TDecl, TShortcuts, TAdditionalReturnProperties>
     : Regle<

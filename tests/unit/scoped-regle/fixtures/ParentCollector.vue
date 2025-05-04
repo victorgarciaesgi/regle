@@ -17,7 +17,7 @@
   </div>
 
   <div v-if="showScope5">
-    <Scope5asRecord :scope="scopeNamespace" />
+    <Scope5asRecord />
   </div>
 </template>
 

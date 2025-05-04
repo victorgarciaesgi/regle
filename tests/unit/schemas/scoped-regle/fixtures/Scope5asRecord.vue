@@ -3,8 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
 import { useScope5Regle } from './scoped-config';
+import { z } from 'zod';
 
-const { r$ } = useScope5Regle({ scope5Record: '' }, { scope5Record: { required: required } }, { scopeKey: 'scope5' });
+const { r$ } = useScope5Regle({ scope5Record: '' }, z.object({ scope5Record: z.string().min(1) }), {
+  scopeKey: 'scope5',
+});
 </script>
