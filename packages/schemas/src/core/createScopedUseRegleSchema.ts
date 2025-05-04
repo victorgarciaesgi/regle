@@ -1,7 +1,17 @@
-import type { ScopedInstancesRecordLike, useCollectScope, MergedScopedRegles } from '@regle/core';
-import { createScopedUseRegle } from '@regle/core';
+import type { useCollectScope, MergedScopedRegles, UseScopedRegleOptions, useCollectScopeFn } from '@regle/core';
+import { createScopedUseRegle, type CreateScopedUseRegleOptions } from '@regle/core';
 import { useRegleSchema, type useRegleSchemaFn } from './useRegleSchema';
 import type { MaybeRefOrGetter, Ref } from 'vue';
+
+type CreateScopedUseRegleSchemaOptions<
+  TCustomRegle extends useRegleSchemaFn<any, any>,
+  TAsRecord extends boolean,
+> = Omit<CreateScopedUseRegleOptions<any, TAsRecord>, 'customUseRegle'> & {
+  /**
+   * Inject a global configuration to the exported composables to keep your translations and typings
+   */
+  customUseRegle?: TCustomRegle;
+};
 
 export const { useCollectScope: useCollectSchemaScope, useScopedRegle: useScopedRegleSchema } = createScopedUseRegle({
   customUseRegle: useRegleSchema as any,
@@ -9,20 +19,16 @@ export const { useCollectScope: useCollectSchemaScope, useScopedRegle: useScoped
 
 export const createScopedUseRegleSchema = <
   TCustomRegle extends useRegleSchemaFn = useRegleSchemaFn,
-  TReturnedRegle extends useRegleSchemaFn = TCustomRegle extends useRegleSchemaFn<infer S>
-    ? useRegleSchemaFn<S, { dispose: () => void; register: () => void }, { namespace?: MaybeRefOrGetter<string> }>
-    : useRegleSchemaFn,
->(options?: {
-  customUseRegle?: TCustomRegle;
-  customStore?: Ref<ScopedInstancesRecordLike>;
-}): {
+  TAsRecord extends boolean = false,
+  TReturnedRegle extends useRegleSchemaFn<any, any, any> = TCustomRegle extends useRegleSchemaFn<infer S>
+    ? useRegleSchemaFn<S, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>
+    : useRegleSchemaFn<any, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>,
+>(
+  options?: CreateScopedUseRegleSchemaOptions<TCustomRegle, TAsRecord>
+): {
   useScopedRegle: TReturnedRegle;
-  useCollectScope<TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
-    namespace?: MaybeRefOrGetter<string>
-  ): {
-    r$: MergedScopedRegles<TValue>;
-  };
+  useCollectScope: useCollectScopeFn<TAsRecord>;
 } => {
-  const { customStore, customUseRegle = useRegleSchema } = options ?? {};
-  return createScopedUseRegle({ customStore, customUseRegle } as any) as any;
+  const { customStore, customUseRegle = useRegleSchema, asRecord = false } = options ?? {};
+  return createScopedUseRegle({ customStore, customUseRegle, asRecord } as any) as any;
 };

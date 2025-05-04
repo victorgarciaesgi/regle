@@ -1,6 +1,7 @@
 import type {
   DeepMaybeRef,
   DeepReactiveState,
+  HaveAnyRequiredProps,
   LocalRegleBehaviourOptions,
   PrimitiveTypes,
   RegleBehaviourOptions,
@@ -17,22 +18,27 @@ import { computed, isRef, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 
+export type useRegleSchemaFnOptions<TAdditionalOptions extends Record<string, any>> = Omit<
+  Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
+  'validationGroups' | 'lazy' | 'rewardEarly' | 'silent'
+> &
+  RegleSchemaBehaviourOptions &
+  TAdditionalOptions;
 export interface useRegleSchemaFn<
   TShortcuts extends RegleShortcutDefinition<any> = never,
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
 > {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
-    state:
-      | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
-      | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
-    rulesFactory: MaybeRef<TSchema>,
-    options?: Omit<
-      Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
-      'validationGroups' | 'lazy' | 'rewardEarly' | 'silent'
-    > &
-      RegleSchemaBehaviourOptions &
-      TAdditionalOptions
+    ...params: [
+      state:
+        | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
+        | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
+      rulesFactory: MaybeRef<TSchema>,
+      ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TAdditionalOptions>> extends true
+        ? [options: useRegleSchemaFnOptions<TAdditionalOptions>]
+        : [options?: useRegleSchemaFnOptions<TAdditionalOptions>]),
+    ]
   ): NonNullable<TState> extends PrimitiveTypes
     ? RegleSingleFieldSchema<
         NonNullable<TState>,
