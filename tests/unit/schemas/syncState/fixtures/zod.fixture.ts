@@ -9,5 +9,9 @@ export function zodRegleTransform(options?: RegleSchemaBehaviourOptions) {
     withTransform: z.string().transform((value) => `transform: ${value}`),
   });
 
-  return useRegleSchema({} as z.infer<typeof zodTransformSchema>, zodTransformSchema, options);
+  return useRegleSchema(
+    { noValidationValue: 'foo' } as unknown as z.infer<typeof zodTransformSchema>,
+    zodTransformSchema,
+    options
+  );
 }
