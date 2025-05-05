@@ -15,7 +15,7 @@ import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs, WatchHandle } from 'vue';
 import { computed, isRef, ref, unref, watch } from 'vue';
-import { cloneDeep, getDotPath, isObject, setObjectError } from '../../../shared';
+import { cloneDeep, getDotPath, isObject, merge, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 
 export type useRegleSchemaFnOptions<TAdditionalOptions extends Record<string, any>> = Omit<
@@ -138,7 +138,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       if (!result.issues) {
         if ((isValidate && syncOnValidate) || (!isValidate && syncOnUpdate)) {
           unWatchState?.();
-          processedState.value = result.value as any;
+          if (isObject(processedState.value)) {
+            processedState.value = merge(processedState.value, result.value as any);
+          } else {
+            processedState.value = result.value as any;
+          }
           defineWatchState();
         }
       }
