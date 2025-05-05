@@ -77,7 +77,7 @@ const Nav: (DefaultTheme.NavItem | DefaultTheme.NavItemChildren)[] = [
 
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
-    text: 'Collections',
+    text: 'Validating arrays',
     link: '/advanced-usage/collections',
   },
   { text: 'Usage with Pinia', link: '/advanced-usage/usage-with-pinia' },

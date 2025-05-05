@@ -1,5 +1,5 @@
 ---
-title: Collections - Declaring rules
+title: Working with arrays - Declaring rules
 description: API usage of $each
 ---
 
@@ -9,7 +9,7 @@ import AccessingCurrentItemState from '../parts/components/collections/Accessing
 import ValidatingArray from '../parts/components/collections/ValidatingArray.vue';
 </script>
 
-# Collections
+# Validating arrays
 
 ## Declaring rules for collections
 
@@ -28,7 +28,7 @@ import { useRegle } from '@regle/core';
 import { ref } from 'vue';
 import { required } from '@regle/rules';
 // ---cut---
-const form = ref<{ collection: Array<{ name: string }> }>({
+const form = ref<{ collection: { name: string }[] }>({
   collection: []
 })
 
@@ -79,7 +79,7 @@ import { required } from '@regle/rules';
 //---cut---
 import { useRegle } from '@regle/core';
 
-const form = ref<{ collection: Array<{ name: string }> }>({
+const form = ref<{ collection: { name: string }[] }>({
   collection: [{ name: '' }],
 });
 
