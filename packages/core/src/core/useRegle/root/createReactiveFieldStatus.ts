@@ -47,11 +47,11 @@ export function createReactiveFieldStatus({
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   interface ScopeReturnState extends CommonResolverScopedState {
     $debounce: ComputedRef<number | undefined>;
-    $lazy: ComputedRef<boolean | undefined>;
-    $rewardEarly: ComputedRef<boolean | undefined>;
-    $autoDirty: ComputedRef<boolean | undefined>;
-    $silent: ComputedRef<boolean | undefined>;
-    $clearExternalErrorsOnChange: ComputedRef<boolean | undefined>;
+    $lazy: ComputedRef<boolean>;
+    $rewardEarly: ComputedRef<boolean>;
+    $autoDirty: ComputedRef<boolean>;
+    $silent: ComputedRef<boolean>;
+    $clearExternalErrorsOnChange: ComputedRef<boolean>;
     $errors: ComputedRef<string[]>;
     $silentErrors: ComputedRef<string[]>;
     $tooltips: ComputedRef<string[]>;
@@ -177,7 +177,7 @@ export function createReactiveFieldStatus({
         return $localOptions.value.$debounce;
       });
 
-      const $lazy = computed<boolean | undefined>(() => {
+      const $lazy = computed<boolean>(() => {
         if ($localOptions.value.$lazy != null) {
           return $localOptions.value.$lazy;
         } else if (unref(options.lazy) != null) {
@@ -186,7 +186,7 @@ export function createReactiveFieldStatus({
         return false;
       });
 
-      const $rewardEarly = computed<boolean | undefined>(() => {
+      const $rewardEarly = computed<boolean>(() => {
         if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
         } else if (unref(options.rewardEarly) != null) {
@@ -195,7 +195,7 @@ export function createReactiveFieldStatus({
         return false;
       });
 
-      const $clearExternalErrorsOnChange = computed<boolean | undefined>(() => {
+      const $clearExternalErrorsOnChange = computed<boolean>(() => {
         if ($localOptions.value.$clearExternalErrorsOnChange != null) {
           return $localOptions.value.$clearExternalErrorsOnChange;
         } else if (unref(options.clearExternalErrorsOnChange) != null) {
@@ -204,7 +204,7 @@ export function createReactiveFieldStatus({
         return true;
       });
 
-      const $silent = computed<boolean | undefined>(() => {
+      const $silent = computed<boolean>(() => {
         if ($rewardEarly.value) {
           return true;
         } else if ($localOptions.value.$silent != null) {
@@ -214,7 +214,7 @@ export function createReactiveFieldStatus({
         } else return false;
       });
 
-      const $autoDirty = computed<boolean | undefined>(() => {
+      const $autoDirty = computed<boolean>(() => {
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
         } else if (unref(options.autoDirty) != null) {
@@ -539,7 +539,7 @@ export function createReactiveFieldStatus({
       });
     }
 
-    if (!scopeState.$lazy.value && !scopeState.$silent.value) {
+    if (!scopeState.$lazy.value && !scopeState.$silent.value && !fromParent) {
       Object.values($rules.value).forEach((rule) => {
         return rule.$parse();
       });
