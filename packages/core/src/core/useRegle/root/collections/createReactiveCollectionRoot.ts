@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty } from '../../../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
@@ -9,6 +9,7 @@ import type {
   $InternalRegleResult,
   $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
+  FieldRegleBehaviourOptions,
   RegleShortcutDefinition,
   ResetOptions,
   ResolvedRegleBehaviourOptions,
@@ -58,6 +59,9 @@ export function createReactiveCollectionStatus({
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<RegleShortcutDefinition['collections']>;
     $silentValue: ComputedRef<any>;
+    $rewardEarly: ComputedRef<boolean>;
+    $silent: ComputedRef<boolean>;
+    $autoDirty: ComputedRef<boolean>;
   }
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
@@ -77,7 +81,10 @@ export function createReactiveCollectionStatus({
   const $id = ref<string>() as Ref<string>;
   const $value = ref(state.value);
 
-  let $unwatchState: WatchStopHandle;
+  const $localOptions = ref({}) as Ref<FieldRegleBehaviourOptions>;
+
+  let $unwatchState: WatchStopHandle | undefined;
+  let $unwatchDirty: WatchStopHandle | undefined;
 
   const $selfStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
@@ -101,6 +108,9 @@ export function createReactiveCollectionStatus({
   $watch();
 
   function createStatus() {
+    $localOptions.value = Object.fromEntries(
+      Object.entries(rulesDef.value).filter(([ruleKey]) => ruleKey.startsWith('$'))
+    );
     if (typeof state.value === 'object') {
       if (state.value != null && !state.value?.$id && state.value !== null) {
         $id.value = randomId();
@@ -249,6 +259,17 @@ export function createReactiveCollectionStatus({
       },
       { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'pre' }
     );
+
+    $unwatchDirty = watch(
+      state,
+      () => {
+        if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+          // Do not watch deep to only track mutation on the object itself on not its children
+          $touch(false, true);
+        }
+      },
+      { flush: 'pre' }
+    );
   }
 
   function $watch() {
@@ -258,7 +279,8 @@ export function createReactiveCollectionStatus({
       const $silentValue = computed({
         get: () => state.value,
         set(value) {
-          $unwatchState();
+          $unwatchState?.();
+          $unwatchDirty?.();
           state.value = value;
           define$watchState();
         },
@@ -356,6 +378,33 @@ export function createReactiveCollectionStatus({
         } satisfies $InternalRegleCollectionErrors;
       });
 
+      const $rewardEarly = computed<boolean>(() => {
+        if ($localOptions.value.$rewardEarly != null) {
+          return $localOptions.value.$rewardEarly;
+        } else if (unref(options.rewardEarly) != null) {
+          return unref(options.rewardEarly);
+        }
+        return false;
+      });
+      const $silent = computed<boolean>(() => {
+        if ($rewardEarly.value) {
+          return true;
+        } else if ($localOptions.value.$silent != null) {
+          return $localOptions.value.$silent;
+        } else if (unref(options.silent) != null) {
+          return unref(options.silent);
+        } else return false;
+      });
+
+      const $autoDirty = computed<boolean>(() => {
+        if ($localOptions.value.$autoDirty != null) {
+          return $localOptions.value.$autoDirty;
+        } else if (unref(options.autoDirty) != null) {
+          return unref(options.autoDirty);
+        }
+        return true;
+      });
+
       const $name = computed(() => fieldName);
 
       function processShortcuts() {
@@ -414,6 +463,9 @@ export function createReactiveCollectionStatus({
         $silentValue,
         $edited,
         $anyEdited,
+        $rewardEarly,
+        $silent,
+        $autoDirty,
       } satisfies ScopeReturnState;
     })!;
 
@@ -425,9 +477,7 @@ export function createReactiveCollectionStatus({
   }
 
   function $unwatch() {
-    if ($unwatchState) {
-      $unwatchState();
-    }
+    $unwatchState?.();
     if ($selfStatus.value) {
       $selfStatus.value.$unwatch();
     }

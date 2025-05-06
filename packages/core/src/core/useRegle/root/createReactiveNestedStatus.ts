@@ -50,6 +50,7 @@ export function createReactiveNestedStatus({
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   interface ScopeState extends CommonResolverScopedState {
+    $value: ComputedRef<any>;
     $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
     $autoDirty: ComputedRef<boolean>;
@@ -209,18 +210,14 @@ export function createReactiveNestedStatus({
   }
 
   function define$watchState() {
-    $unwatchState = watch(
-      state,
-      () => {
-        $unwatch();
-        createReactiveFieldsStatus();
-        if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
-          // Do not watch deep to only track mutation on the object itself on not its children
-          $touch(true, true);
-        }
-      },
-      { flush: 'sync' }
-    );
+    $unwatchState = watch(state, () => {
+      $unwatch();
+      createReactiveFieldsStatus();
+      if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+        // Do not watch deep to only track mutation on the object itself on not its children
+        $touch(false, true);
+      }
+    });
   }
 
   function $watch() {
@@ -253,6 +250,18 @@ export function createReactiveNestedStatus({
     define$watchState();
 
     scopeState = scope.run(() => {
+      const $value = computed({
+        get: () => state.value,
+        set(value) {
+          $unwatch();
+          state.value = value;
+          createReactiveFieldsStatus();
+          if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+            // Do not watch deep to only track mutation on the object itself on not its children
+            $touch(false, true);
+          }
+        },
+      });
       const $silentValue = computed({
         get: () => state.value,
         set(value) {
@@ -485,6 +494,7 @@ export function createReactiveNestedStatus({
         $localPending,
         $autoDirty,
         $silent,
+        $value,
       } satisfies ScopeState;
     })!;
   }
@@ -621,7 +631,6 @@ export function createReactiveNestedStatus({
     ...restScopeState,
     ...$shortcuts,
     $fields,
-    $value: state,
     $reset,
     $touch,
     $validate,

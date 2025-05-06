@@ -119,6 +119,9 @@ describe('.$reset', () => {
 
     await nextTick();
 
+    expect(vm.r$.$fields.email.$dirty).toBe(true);
+    expect(vm.r$.$fields.contacts.$each[0].$dirty).toBe(true);
+
     shouldBeValidField(vm.r$.$fields.contacts);
     shouldBeValidField(vm.r$);
 
