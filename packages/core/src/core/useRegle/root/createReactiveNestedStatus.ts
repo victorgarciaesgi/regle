@@ -510,6 +510,7 @@ export function createReactiveNestedStatus({
 
     if (!fromParent) {
       if (options?.toInitialState) {
+        console.log(initialState.value);
         state.value = cloneDeep({ ...(initialState.value ?? {}) });
       } else if (options?.toState) {
         let newInitialState: Record<string, unknown>;
@@ -521,6 +522,7 @@ export function createReactiveNestedStatus({
         initialState.value = cloneDeep(newInitialState);
         state.value = cloneDeep(newInitialState);
       } else {
+        console.log('foo');
         initialState.value = cloneDeep(state.value);
       }
     }

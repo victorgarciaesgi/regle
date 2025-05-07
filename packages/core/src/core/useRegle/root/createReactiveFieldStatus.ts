@@ -500,7 +500,7 @@ export function createReactiveFieldStatus({
 
     if (!fromParent) {
       if (options?.toInitialState) {
-        state.value = cloneDeep(initialState);
+        state.value = cloneDeep(initialState.value);
       } else if (options?.toState) {
         let newInitialState: unknown;
         if (typeof options?.toState === 'function') {

@@ -100,5 +100,25 @@ describe('r$.$reset to initial state', () => {
       contacts: [{ name: 'contact1' }],
       nestedArrays: [],
     });
+
+    vm.r$.$reset({ toInitialState: true });
+
+    await nextTick();
+
+    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.$fields.user);
+    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
+    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
+    shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
+
+    expect(vm.r$.$value).toStrictEqual({
+      email: 'hello',
+      user: {
+        firstName: 'foo',
+        lastName: 'bar',
+      },
+      contacts: [{ name: 'contact1' }],
+      nestedArrays: [],
+    });
   });
 });

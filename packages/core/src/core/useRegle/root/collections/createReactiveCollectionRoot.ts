@@ -477,7 +477,7 @@ export function createReactiveCollectionStatus({
       $clearExternalErrors();
     }
 
-    $selfStatus.value.$reset();
+    $selfStatus.value.$reset(options, fromParent);
     $eachStatus.value.forEach(($each) => {
       $each.$reset(options, true);
     });
