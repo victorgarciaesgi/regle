@@ -1,5 +1,6 @@
 ---
 title: Nuxt
+description: Enhance the Regle experience with the Nuxt module
 ---
 
 
@@ -82,12 +83,15 @@ export default defineRegleNuxtPlugin(() => {
 :::
 
 
-This will inject custom `useRegle` `inferRules` `useCollectScope` `useScopedRegle` to your auto-imports.
+This will inject the fellowing composables to your auto-imports and `#imports`, loaded with your custom error messages and rules: 
 
-Each of this composable is loaded with the custom types and your custom translations.
+- `useRegle` 
+- `inferRules` 
+- `useCollectScope` 
+- `useScopedRegle` 
 
 
-```vue [app.vue]
+```vue [app.vue] {2}
 <script setup lang="ts">
 import { useRegle } from '#imports';
 import { required, minLength, email } from '@regle/rules';

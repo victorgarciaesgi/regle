@@ -1,7 +1,7 @@
 ---
 title: Announcing Regle 1.1
 description: Introducing newest version of Regle with some exiting new features
-ogImage: /regle-1.1-og.png
+ogImage: /blog/regle-1.1-features.png
 author:
   name: Victor Garcia
 date: 2025-04-15
@@ -13,7 +13,7 @@ sidebar: false
 
 <br/>
 
-![regle 1.1](/regle-1.1-article.png)
+![regle 1.1](/blog/regle-1.1-banner.png)
 
 <br/>
 
