@@ -194,7 +194,6 @@ type RegleSchemaBehaviourOptions = {
     onValidate?: boolean;
   };
 };
-
 ```
 
 Usage:
