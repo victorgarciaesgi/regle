@@ -203,3 +203,25 @@ Unfortunetly, my implementation of `autoDirty` was wrong. It was a different beh
 This updates introduce a breaking change, changing `autoDirty` to only affect the `$dirty` state.
 
 The old behaviour is migrated to a new modifier: `silent`.
+
+
+## Full details
+
+### 🚨 Breaking Changes
+
+- Fixed spelling errors in docs and rule metadata by [@jeremyworboys](https://github.com/jeremyworboys) in [#110](https://github.com/victorgarciaesgi/regle/issues/110 )
+- Replaced `autoDirty` with `silent`, `autoDirty` now match Vuelidate behaviour in [#67](https://github.com/victorgarciaesgi/regle/issues/67)
+- `dateBefore`, `dateAfter` and `dateBetween` now allow equals by default
+
+### 🚀 Features
+
+- Add hexadecimal rule by [@jeremyworboys](https://github.com/jeremyworboys) in [#111](https://github.com/victorgarciaesgi/regle/issues/111) 
+- Add comparison options date rules by [@jeremyworboys](https://github.com/jeremyworboys) in [#109](https://github.com/victorgarciaesgi/regle/issues/109)
+- Rules first typing: `InferInput` type and `refineRules` helper by @victorgarciaesgi in [#112](https://github.com/victorgarciaesgi/regle/issues/112 )
+- `setupFile` option in Nuxt module #117 by @victorgarciaesgi in [#117](https://github.com/victorgarciaesgi/regle/issues/117)
+- Support scoped validation in `@regle/schemas` #115 by @victorgarciaesgi in [#115](https://github.com/victorgarciaesgi/regle/issues/115 )
+- `syncState` options to apply schema transforms and default to state in `@regle/schemas` [#114](https://github.com/victorgarciaesgi/regle/issues/114) and [#120](https://github.com/victorgarciaesgi/regle/issues)
+- `asRecord` option to support named keys in `useCollectScope` [#105](https://github.com/victorgarciaesgi/regle/issues/105)
+
+
+Big thanks to a new contributor [@jeremyworboys](https://github.com/jeremyworboys) who submitted 3 great PRs!
