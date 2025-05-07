@@ -90,6 +90,11 @@ const props = defineProps<{
 :::
 
 
+:::tip
+`InferRegleRoot` also works with `@regle/schemas`
+:::
+
+
 
 ## Typing a field prop
 

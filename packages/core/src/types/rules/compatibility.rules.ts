@@ -7,6 +7,10 @@ import type {
   RegleValidationGroupOutput,
 } from '..';
 
+export interface SuperCompatibleRegle {
+  r$: SuperCompatibleRegleRoot;
+}
+
 /** Supports both core Regle and schemas Regle for Zod/Valibot */
 export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
   $groups?: { [x: string]: RegleValidationGroupOutput };

@@ -1,14 +1,17 @@
 import type { DefaultValidators } from '../../core';
 import type { useRegleFn } from '../../core/useRegle';
 import type { Regle } from '../core';
-import type { AllRulesDeclarations, DefaultValidatorsTree, UnwrapRuleTree, UnwrapRuleWithParams } from '../rules';
-import type { Prettify } from './misc.types';
+import type {
+  AllRulesDeclarations,
+  DefaultValidatorsTree,
+  SuperCompatibleRegle,
+  UnwrapRuleTree,
+  UnwrapRuleWithParams,
+} from '../rules';
 
-export type InferRegleRoot<T extends (...args: any[]) => Regle<any, any, any, any>> = T extends (
-  ...args: any[]
-) => infer U
-  ? U extends Regle<any, any, any, any>
-    ? Prettify<U['r$']>
+export type InferRegleRoot<T extends (...args: any[]) => SuperCompatibleRegle> = T extends (...args: any[]) => infer U
+  ? U extends SuperCompatibleRegle
+    ? U['r$']
     : never
   : never;
 

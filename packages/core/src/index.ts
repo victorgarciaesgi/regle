@@ -82,6 +82,7 @@ export type {
   $InternalRegleStatus,
   JoinDiscriminatedUnions,
   DeepReactiveState,
+  SuperCompatibleRegle,
   SuperCompatibleRegleRoot,
   SuperCompatibleRegleStatus,
   SuperCompatibleRegleResult,
