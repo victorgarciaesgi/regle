@@ -21,7 +21,7 @@ interface CreateReactiveRuleStatusOptions {
   rule: Ref<$InternalInlineRuleDeclaration | $InternalRegleRuleDefinition>;
   modifiers: {
     $rewardEarly: ComputedRef<boolean | undefined>;
-    $autoDirty: ComputedRef<boolean | undefined>;
+    $silent: ComputedRef<boolean | undefined>;
   };
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
@@ -196,7 +196,7 @@ export function createReactiveRuleStatus({
     })!;
 
     $unwatchState = watch(scopeState?.$params, () => {
-      if (modifiers.$autoDirty.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
+      if (!modifiers.$silent.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
         $parse();
       }
     });

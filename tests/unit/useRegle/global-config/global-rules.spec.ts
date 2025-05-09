@@ -69,7 +69,7 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
 
-    // Ensure types are infered well
+    // Ensure types are inferred well
     defineRegleConfig({
       rules: () => ({
         minValue: withMessage(minValue, ({ $params: [min] }) => {

@@ -2,7 +2,7 @@ import { computed, isRef, toRef, toValue, unref, type MaybeRefOrGetter } from 'v
 
 /**
  * Returns a clean list of parameters
- * Removing Ref and executing function to return the unwraped value
+ * Removing Ref and executing function to return the unwrapped value
  */
 export function unwrapRuleParameters<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   try {
@@ -14,7 +14,7 @@ export function unwrapRuleParameters<TParams extends any[]>(params: MaybeRefOrGe
 
 /**
  * Returns a clean list of parameters
- * Removing Ref and executing function to return the unwraped value
+ * Removing Ref and executing function to return the unwrapped value
  */
 export function createReactiveParams<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   return params.map((param) => {
@@ -28,7 +28,7 @@ export function createReactiveParams<TParams extends any[]>(params: MaybeRefOrGe
 }
 
 /**
- * Due to `function.length` not returning default parameters, it need to parse the func.toString()
+ * Due to `function.length` not returning default parameters, it needed to parse the func.toString()
  */
 export function getFunctionParametersLength(func: Function): number {
   const funcStr = func.toString();

@@ -6,7 +6,7 @@ import { passwordStrength, type DiversityType, type Options } from 'check-passwo
 
 const diversityTypes: DiversityType[] = ['lowercase', 'uppercase', 'symbol', 'number'];
 const diversityMessages: Record<DiversityType, string> = {
-  lowercase: 'At least one owercase letter (a-z)',
+  lowercase: 'At least one lowercase letter (a-z)',
   uppercase: 'At least one uppercase letter (A-Z)',
   number: 'At least one number (0-9)',
   symbol: 'At least one symbol ($€@&..)',

@@ -107,6 +107,23 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+## `boolean`
+
+Requires a value to be a native boolean type. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { boolean } from '@regle/rules';
+
+const rules = {
+  checkbox: { boolean },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
 ## `checked`
 
 Requires a boolean value to be `true`. This is useful for checkbox inputs.
@@ -140,22 +157,44 @@ const { r$ } = useRegle({ bestLib: '' }, {
 })
 ```
 
+## `date`
+
+Requires a value to be a native Date constructor. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+
+// ---cut---
+import { date } from '@regle/rules';
+
+const rules = {
+  birthday: { date },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
 
 ## `dateAfter`
 _**Params**_
  - `after: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date is after the given parameter.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateAfter } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateAfter: dateAfter(new Date())
+    dateAfter: dateAfter(new Date()),
+    // or
+    dateAfter: dateAfter(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -164,18 +203,22 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 ## `dateBefore`
 _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date is before the given parameter.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateBefore } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBefore: dateBefore(new Date())
+    dateBefore: dateBefore(new Date()),
+    // or
+    dateBefore: dateBefore(new Date(), { allowEqual: false }),
   },
 })
 ```
@@ -185,18 +228,22 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
  - `after: Ref<string | Date> | string | Date | () => string | Date`
+ - `options?: {allowEqual?: boolean}`
 
 
 Checks if the date falls between the specified bounds.
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
+// @noErrors
 // ---cut---
 import { dateBetween } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1))
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1)),
+    // or
+    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: false }),
   },
 })
 ```
@@ -297,6 +344,20 @@ const { r$ } = useRegle({ count: 0 }, {
     exactValue: exactValue(exactCount),
     exactValue: exactValue(() => exactCount.value)
   },
+})
+```
+
+## `hexadecimal`
+
+Validates hexadecimal values.
+
+```ts twoslash
+import { useRegle } from '@regle/core';
+// ---cut---
+import { hexadecimal } from '@regle/rules';
+
+const { r$ } = useRegle({ hexadecimal: '' }, {
+  hexadecimal: { hexadecimal },
 })
 ```
 
@@ -474,7 +535,7 @@ const { r$ } = useRegle({ count: 0 }, {
 
 ## `nativeEnum`
 
-Validate against a native Typescript enum value. Similiar to Zod's `nativeEnum`
+Validate against a native Typescript enum value. Similar to Zod's `nativeEnum`
 
 ```ts twoslash
 import {useRegle} from '@regle/core';
@@ -488,6 +549,24 @@ enum Foo {
 const { r$ } = useRegle({ type: '' }, {
   type: { nativeEnum: nativeEnum(Foo) },
 })
+```
+
+## `number`
+
+Requires a value to be a native number type. Mainly used for typing.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+
+// ---cut---
+import { number } from '@regle/rules';
+
+const rules = {
+  count: { number },
+}
+
+const state = ref<InferInput<typeof rules>>({});
 ```
 
 ## `numeric`
@@ -646,6 +725,41 @@ const { r$ } = useRegle({ bestLib: '' }, {
 })
 ```
 
+## `string`
+
+Requires a value to be a native string type. Mainly used for typing
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { string } from '@regle/rules';
+
+const rules = {
+  firstName: { string },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
+## `type`
+
+Define the input type of a rule. No runtime validation.   
+Override any input type set by other rules.
+
+```ts twoslash
+import {useRegle, type InferInput} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+import { type } from '@regle/rules';
+
+const rules = {
+  firstName: { type: type<string>() },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
 
 ## `url`
 
@@ -660,4 +774,3 @@ const { r$ } = useRegle({ bestUrl: '' }, {
   bestUrl: { url },
 })
 ```
-

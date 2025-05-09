@@ -9,12 +9,12 @@ title: Async validations
 
 # Async validation
 
-A common pattern in forms is to asynchronously check for a value on the serveride.
-Async rules can perform this tasks, and they update the `$pending` state whenever invoked.
+A common pattern in forms is to asynchronously check for a value on the server side.
+Async rules can perform these tasks, and they update the `$pending` state whenever invoked.
 
 
 :::tip
-By default, all async rules will have a debounce of `200ms`. It can be overriden with the `$debounce` modifier.
+By default, all async rules will be debounced by `200ms`. It can be overriden with the `$debounce` modifier.
 :::
 
 ## Inline Async rule
@@ -30,7 +30,7 @@ const myAsyncRule = async (value: Maybe<number>) => {
 }
 ```
 
-If your rule doesn't use `async await` syntax, but still returns a `Promise`, you have to use the `withAsync` helper when using your rule in your form. Otherwise Regle can't know it's an async rule.
+If your rule doesn't use `async await` syntax, but still returns a `Promise`, you have to use the `withAsync` helper when using your rule in your form. Otherwise, Regle can't know it's an async rule.
 
 
 ## Async using `createRule`
@@ -56,7 +56,7 @@ Every time you update the `$value` of the field using an async rule, the `$pendi
 This can be used to display a loading icon and a custom message indicating that an operation is taking time.
 
 
-## Full exemple
+## Full example
 
 ```vue twoslash [App.vue]
 <template>

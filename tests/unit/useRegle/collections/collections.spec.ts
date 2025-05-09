@@ -181,7 +181,7 @@ describe('collections validations', () => {
     expectTypeOf(vm.r$.$errors.level0.$each[0]?.name).toEqualTypeOf<string[]>();
   });
 
-  it("Array of files should't be considered a collection", async () => {
+  it("Array of files shouldn't be considered a collection", async () => {
     function regleComposable() {
       const form = ref({
         files: [] as File[],

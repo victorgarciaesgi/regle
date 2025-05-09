@@ -14,9 +14,17 @@ export {
   createVariant,
   narrowVariant,
   variantToRef,
+  defineRules,
+  refineRules,
   type MergedRegles,
   type CommonComparisonOptions,
   type CommonAlphaOptions,
+  type useRegleFn,
+  type inferRulesFn,
+  type MergedScopedRegles,
+  type CreateScopedUseRegleOptions,
+  type UseScopedRegleOptions,
+  type useCollectScopeFn,
 } from './core';
 export { InternalRuleType } from './types';
 export type {
@@ -96,4 +104,7 @@ export type {
   MaybeVariantStatus,
   NarrowVariant,
   DefaultValidatorsTree,
+  InferInput,
+  RegleUnknownRulesTree,
+  HaveAnyRequiredProps,
 } from './types';

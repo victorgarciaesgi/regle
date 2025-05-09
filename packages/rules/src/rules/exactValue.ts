@@ -1,13 +1,19 @@
 import { isFilled, isNumber, toNumber } from '../helpers';
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 
 /**
  * Requires a field to have a strict numeric value.
  */
-export const exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean> = createRule({
+export const exactValue: RegleRuleWithParamsDefinition<
+  number,
+  [count: number],
+  false,
+  boolean,
+  MaybeInput<number>
+> = createRule({
   type: 'exactValue',
-  validator: (value: Maybe<number>, count: number) => {
+  validator: (value: MaybeInput<number>, count: number) => {
     if (isFilled(value) && isFilled(count)) {
       if (isNumber(count) && !isNaN(toNumber(value))) {
         return toNumber(value) === count;

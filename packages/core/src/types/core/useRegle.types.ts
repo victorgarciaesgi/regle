@@ -18,7 +18,7 @@ export type Regle<
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
   /**
-   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
@@ -32,7 +32,7 @@ export type RegleSingleField<
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
   /**
-   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */

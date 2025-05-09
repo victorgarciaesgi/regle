@@ -1,7 +1,8 @@
 import { oneOf } from '../oneOf';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 
 describe('oneOf validator', () => {
-  it('should not validate unvalid value', () => {
+  it('should not validate invalid value', () => {
     expect(oneOf(['One', 'Two']).exec(5)).toBe(false);
   });
 
@@ -24,4 +25,16 @@ describe('oneOf validator', () => {
   it('should validate undefined option', () => {
     expect(oneOf(undefined as any).exec(5)).toBe(true);
   });
+
+  const oneOfRule = oneOf(['One', 'Two']);
+  expectTypeOf(oneOfRule).toEqualTypeOf<
+    RegleRuleDefinition<
+      'One' | 'Two',
+      [options: ['One', 'Two']],
+      false,
+      boolean,
+      MaybeInput<'One' | 'Two'>,
+      string | number
+    >
+  >();
 });

@@ -1,4 +1,4 @@
 export * from './useRegle';
-export { inferRules } from './inferRules';
+export { inferRules, type inferRulesFn } from './inferRules';
 export { useRootStorage } from './root';
 export { flatErrors } from './useErrors';

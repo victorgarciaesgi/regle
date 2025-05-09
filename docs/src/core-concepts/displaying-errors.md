@@ -29,7 +29,7 @@ Result:
 ## Display custom error messages
 
 To display custom error messages, you can use the [withMessage](/core-concepts/rules/rule-wrappers#withmessage) helper.   
-You have access to additional data like paramaters or rule status to write your message.
+You have access to additional data like parameters or rule status to write your message.
 
 :::tip
 If you have to write a lot of forms in your apps, consider using [defineRegleConfig](/advanced-usage/global-config#replace-built-in-rules-messages) instead.

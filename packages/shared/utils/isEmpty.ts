@@ -1,4 +1,5 @@
 import type { EmptyObject } from 'type-fest';
+import { isFile } from './isFile';
 
 /**
  * This is the inverse of isFilled. It will check if the value is in any way empty (including arrays and objects)
@@ -19,7 +20,7 @@ export function isEmpty(
   if (value instanceof Date) {
     // invalid date won't pass
     return isNaN(value.getTime());
-  } else if (value.constructor.name == 'File' || value.constructor.name == 'FileList') {
+  } else if (isFile(value)) {
     // empty files won't pass
     return (value as File).size <= 0;
   } else if (Array.isArray(value)) {

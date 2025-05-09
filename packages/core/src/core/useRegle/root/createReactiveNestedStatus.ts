@@ -50,8 +50,11 @@ export function createReactiveNestedStatus({
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   interface ScopeState extends CommonResolverScopedState {
+    $value: ComputedRef<any>;
     $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
+    $autoDirty: ComputedRef<boolean>;
+    $silent: ComputedRef<boolean>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
@@ -207,16 +210,14 @@ export function createReactiveNestedStatus({
   }
 
   function define$watchState() {
-    $unwatchState = watch(
-      state,
-      () => {
+    $unwatchState = watch(state, () => {
+      $unwatch();
+      createReactiveFieldsStatus();
+      if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
         // Do not watch deep to only track mutation on the object itself on not its children
-        $unwatch();
-        createReactiveFieldsStatus();
-        $touch(true, true);
-      },
-      { flush: 'sync' }
-    );
+        $touch(false, true);
+      }
+    });
   }
 
   function $watch() {
@@ -249,6 +250,18 @@ export function createReactiveNestedStatus({
     define$watchState();
 
     scopeState = scope.run(() => {
+      const $value = computed({
+        get: () => state.value,
+        set(value) {
+          $unwatch();
+          state.value = value;
+          createReactiveFieldsStatus();
+          if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+            // Do not watch deep to only track mutation on the object itself on not its children
+            $touch(false, true);
+          }
+        },
+      });
       const $silentValue = computed({
         get: () => state.value,
         set(value) {
@@ -322,17 +335,24 @@ export function createReactiveNestedStatus({
         return false;
       });
 
-      const $autoDirty = computed<boolean | undefined>(() => {
+      const $silent = computed<boolean>(() => {
+        if (unref(commonArgs.options.silent) != null) {
+          return unref(commonArgs.options.silent);
+        } else if ($rewardEarly.value) {
+          return true;
+        }
+        return false;
+      });
+
+      const $autoDirty = computed<boolean>(() => {
         if (unref(commonArgs.options.autoDirty) != null) {
           return unref(commonArgs.options.autoDirty);
-        } else if ($rewardEarly.value) {
-          return false;
         }
         return true;
       });
 
       const $ready = computed<boolean>(() => {
-        if (!$autoDirty.value) {
+        if ($silent.value) {
           return !($invalid.value || $pending.value);
         }
         return $anyDirty.value && !($invalid.value || $pending.value);
@@ -472,6 +492,9 @@ export function createReactiveNestedStatus({
         $edited,
         $anyEdited,
         $localPending,
+        $autoDirty,
+        $silent,
+        $value,
       } satisfies ScopeState;
     })!;
   }
@@ -608,7 +631,6 @@ export function createReactiveNestedStatus({
     ...restScopeState,
     ...$shortcuts,
     $fields,
-    $value: state,
     $reset,
     $touch,
     $validate,

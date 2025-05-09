@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import { RegleRuleSymbol } from '../../../../shared';
 import {
   InternalRuleType,
@@ -76,7 +77,7 @@ export function defineRuleProcessors(
     },
   };
 
-  const processors = {
+  const processors = markRaw({
     ...defaultProcessors,
     _validator: definition.validator as any,
     _message: definition.message,
@@ -88,7 +89,7 @@ export function defineRuleProcessors(
     _async: isAsync,
     _params: createReactiveParams<never>(params),
     _brand: RegleRuleSymbol,
-  };
+  });
 
   return processors;
 }

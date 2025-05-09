@@ -18,7 +18,7 @@ export type MergedRegles<
   RegleCommonStatus,
   '$value' | '$silentValue' | '$errors' | '$silentErrors' | '$name' | '$unwatch' | '$watch'
 > & {
-  /** Dictionnay of merged Regle instances and their properties  */
+  /** Map of merged Regle instances and their properties  */
   readonly $instances: { [K in keyof TRegles]: TRegles[K] };
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: TValue;

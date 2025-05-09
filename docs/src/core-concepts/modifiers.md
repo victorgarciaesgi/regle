@@ -29,7 +29,17 @@ __Type__: `boolean`
 
 __Default__: `true`
 
-Automatically tracks changes in the state for all nested rules. If set to `false`, you must manually call `$touch` or `$validate` to mark fields as dirty and display errors.
+Automatically set the dirty set without the need of `$value` or `$touch`.
+
+### `silent`
+
+__Type__: `boolean`
+
+__Default__: `false`
+
+Regle Automatically tracks changes in the state for all nested rules. If set to `true`, you must manually call `$touch` or `$validate` to display errors.
+
+
 
 ### `lazy`
 
@@ -170,7 +180,7 @@ const { r$ } = useRegle({ name: '' }, {
 <br><br>
 
 
-`$autoDirty` `$lazy` and `$rewardEarly` work the same as the deep modifiers.
+`$autoDirty` `$lazy`, `$silent` and `$rewardEarly` work the same as the deep modifiers.
 
 ### `$debounce`
 Type: `number` (ms)
@@ -180,3 +190,27 @@ This let you declare the number of milliseconds the rule needs to wait before ex
 :::tip
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
 :::
+
+
+## Array specific modifiers
+
+This modifiers are only impacting Array collections.
+
+```ts twoslash
+// @noErrors
+import { useRegle } from '@regle/core';
+// ---cut---
+const { r$ } = useRegle({ collection: [] }, {
+  collection: { $deep }
+//                   ^|    
+})
+```
+
+### `$deepCompare`
+Type: `boolean`
+
+Default: `false`
+
+Allow deep compare of array children to compute the `$edited` property.
+
+It's disabled by default for performance reasons.

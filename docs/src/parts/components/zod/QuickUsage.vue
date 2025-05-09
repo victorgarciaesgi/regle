@@ -23,20 +23,6 @@
 <script setup lang="ts">
 import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
-import { type } from 'arktype';
-
-const schema = type({
-  'firstName?': 'string',
-  lastName: 'string > 3',
-}).narrow((data, ctx) => {
-  if (data.firstName !== data.lastName) {
-    return true;
-  }
-  return ctx.reject({
-    expected: 'different to firstName',
-    path: ['lastName'],
-  });
-});
 
 const { r$ } = useRegleSchema(
   { name: '' },

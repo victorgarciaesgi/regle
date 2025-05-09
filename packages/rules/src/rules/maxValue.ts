@@ -1,5 +1,5 @@
 import { isFilled, isNumber, toNumber } from '../helpers';
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
 
@@ -7,16 +7,17 @@ import type { CommonComparisonOptions } from '@regle/core';
  * Requires a field to have a specified maximum numeric value.
  *
  * @param max - the maximum value
- * @param options - comparision options
+ * @param options - comparison options
  */
 export const maxValue: RegleRuleWithParamsDefinition<
   number,
   [count: number, options?: CommonComparisonOptions],
   false,
-  boolean
+  boolean,
+  MaybeInput<number>
 > = createRule({
   type: 'maxValue',
-  validator: (value: Maybe<number>, count: number, options?: CommonComparisonOptions) => {
+  validator: (value: MaybeInput<number>, count: number, options?: CommonComparisonOptions) => {
     const { allowEqual = true } = options ?? {};
     if (isFilled(value) && isFilled(count)) {
       if (isNumber(count) && !isNaN(toNumber(value))) {

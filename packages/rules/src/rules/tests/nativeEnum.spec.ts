@@ -1,4 +1,5 @@
 import { nativeEnum } from '../nativeEnum';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 
 const Food = {
   Meat: 'Meat',
@@ -11,7 +12,7 @@ const Position = {
 } as const;
 
 describe('nativeEnum validator', () => {
-  it('should not validate unvalid value', () => {
+  it('should not validate invalid value', () => {
     expect(nativeEnum(Food).exec(5)).toBe(false);
   });
 
@@ -23,6 +24,10 @@ describe('nativeEnum validator', () => {
     expect(nativeEnum(Position).exec(Position.One)).toBe(true);
   });
 
+  it('should validate the valid number', () => {
+    expect(nativeEnum(Position).exec('foo')).toBe(false);
+  });
+
   it('should validate undefined value', () => {
     expect(nativeEnum(Position).exec(undefined)).toBe(true);
   });
@@ -30,4 +35,21 @@ describe('nativeEnum validator', () => {
   it('should validate undefined option', () => {
     expect(nativeEnum(undefined as any).exec(5)).toBe(true);
   });
+
+  const nativeEnumRule = nativeEnum(Food);
+  expectTypeOf(nativeEnumRule).toEqualTypeOf<
+    RegleRuleDefinition<
+      MaybeInput<'Meat' | 'Fish'>,
+      [
+        enumLike: {
+          readonly Meat: 'Meat';
+          readonly Fish: 'Fish';
+        },
+      ],
+      false,
+      boolean,
+      MaybeInput<'Meat' | 'Fish'>,
+      string | number
+    >
+  >();
 });

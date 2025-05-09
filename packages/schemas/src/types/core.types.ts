@@ -12,26 +12,28 @@ import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
 
-export interface RegleSchema<
+export type RegleSchema<
   TState extends Record<string, any>,
   TSchema extends Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
-> {
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
   /**
-   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<RegleSchemaStatus<TState, TSchema, TShortcuts, true>>;
-}
+} & TAdditionalReturnProperties;
 
-export interface RegleSingleFieldSchema<
+export type RegleSingleFieldSchema<
   TState extends Maybe<PrimitiveTypes>,
   TSchema extends unknown,
   TShortcuts extends RegleShortcutDefinition = {},
-> {
+  TAdditionalReturnProperties extends Record<string, any> = {},
+> = {
   /**
-   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+   * r$ is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
@@ -41,7 +43,7 @@ export interface RegleSingleFieldSchema<
       $validate: () => Promise<RegleSchemaResult<TSchema>>;
     }
   >;
-}
+} & TAdditionalReturnProperties;
 
 export type RegleSchemaResult<TSchema extends unknown> =
   | { valid: false; data: PartialDeep<TSchema> }
@@ -158,7 +160,7 @@ export type RegleSchemaCollectionStatus<
   TState extends any[],
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleSchemaFieldStatus<TSchema, TState, TShortcuts>, '$errors' | '$silentErrors' | '$validate'> & {
-  /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
+  /** Collection of status for every item in your collection. Each item will be a field you can access or iterate to display your elements. */
   readonly $each: Array<InferRegleSchemaStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $self: RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
@@ -168,7 +170,7 @@ export type RegleSchemaCollectionStatus<
   readonly $errors: RegleCollectionErrors<TSchema>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: RegleCollectionErrors<TSchema>;
-  /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
+  /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}

@@ -1,15 +1,21 @@
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
 /**
  * Checks if the string starts with the specified substring.
  *
- * @private part - the vlaue the field must start with
+ * @private part - the value the field must start with
  */
-export const startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean> = createRule({
+export const startsWith: RegleRuleWithParamsDefinition<
+  string,
+  [part: MaybeInput<string>],
+  false,
+  boolean,
+  MaybeInput<string>
+> = createRule({
   type: 'startsWith',
-  validator(value: Maybe<string>, part: Maybe<string>) {
+  validator(value: MaybeInput<string>, part: MaybeInput<string>) {
     if (isFilled(value) && isFilled(part)) {
       return value.startsWith(part);
     }

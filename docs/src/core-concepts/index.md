@@ -104,6 +104,13 @@ Regle provide a list of default rules that you can use from `@regle/rules`.
 
 You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
 
+
+:::tip
+
+If you prefer to have a rules-first way of typing your state (like schema libraries), you can check [how to do it here](/typescript/infer-state-from-rules)
+
+:::
+
 <br/>
 
 
@@ -142,7 +149,7 @@ const { r$ } = useRegle(state, {
 
 If you’ve used Vuelidate before, useRegle behaves similarly to `v$`.
 
-`r$` is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display informations.
+`r$` is a reactive object containing the values, errors, dirty state and all the necessary validations properties you'll need to display information.
 
 You can find all the [available properties here](/core-concepts/validation-properties)
 
@@ -161,4 +168,3 @@ r$.$fields.
 </script>
 
 ```
-

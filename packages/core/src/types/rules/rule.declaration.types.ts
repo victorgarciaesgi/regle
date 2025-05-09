@@ -1,5 +1,10 @@
 import type { MaybeRef, Ref } from 'vue';
-import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
+import type {
+  CollectionRegleBehaviourOptions,
+  DeepReactiveState,
+  FieldRegleBehaviourOptions,
+  Regle,
+} from '../../types/core';
 import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
@@ -14,7 +19,7 @@ import type { UnwrapRegleUniversalParams } from './rule.params.types';
  * @public
  */
 export type ReglePartialRuleTree<
-  TForm extends Record<string, any>,
+  TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
@@ -28,6 +33,13 @@ export type RegleRuleTree<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+};
+
+/**
+ * @public
+ */
+export type RegleUnknownRulesTree = {
+  [x: string]: RegleRuleDecl | RegleCollectionRuleDecl | RegleUnknownRulesTree;
 };
 
 /**
@@ -94,7 +106,8 @@ export type $InternalFormPropertyTypes =
 export type RegleRuleDecl<
   TValue extends any = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
-> = FieldRegleBehaviourOptions & {
+  TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions,
+> = TOptions & {
   [TKey in keyof TCustomRules]?: NonNullable<TCustomRules[TKey]> extends RegleRuleWithParamsDefinition<
     any,
     infer TParams
@@ -102,14 +115,16 @@ export type RegleRuleDecl<
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
     : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
       ? FormRuleDeclaration<TValue, any[]>
-      : FormRuleDeclaration<TValue, any[]> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+      : FormRuleDeclaration<TValue, any[]> | TOptions[keyof TOptions];
 };
 
 /**
  * @internal
  * @reference {@link RegleRuleDecl}
  */
-export type $InternalRegleRuleDecl = FieldRegleBehaviourOptions & Record<string, FormRuleDeclaration<any, any>>;
+export type $InternalRegleRuleDecl = FieldRegleBehaviourOptions &
+  CollectionRegleBehaviourOptions &
+  Record<string, FormRuleDeclaration<any, any>>;
 
 /**
  * @public
@@ -126,19 +141,21 @@ export type RegleCollectionRuleDecl<
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
   | ({
-      $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>,
-        RegleCollectionRuleDeclKeyProperty
-      >;
-    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules>)
+      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
+    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions>)
   | ({
-      $each?: MaybeGetter<
-        RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
-        ArrayElement<TValue>,
-        RegleCollectionRuleDeclKeyProperty
-      >;
-    } & FieldRegleBehaviourOptions);
+      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
+    } & CollectionRegleBehaviourOptions);
+
+/** @public */
+export type RegleCollectionEachRules<
+  TValue = any[],
+  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+> = MaybeGetter<
+  RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
+  ArrayElement<TValue>,
+  RegleCollectionRuleDeclKeyProperty
+>;
 
 /**
  * @internal

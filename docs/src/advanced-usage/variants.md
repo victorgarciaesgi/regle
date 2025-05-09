@@ -71,13 +71,13 @@ const {r$} = useRegle(state, () => {
 
 ## `narrowVariant`
 
-In your form, you'll need to use type narrowing to access your fields status somehow. 
+In your form, you'll need to use type narrowing to access your field status somehow. 
 
 For this you'll have to discriminate the `$fields` depending on value. As the status uses deeply nested properties, this will not be possible with a standard guard `if (value === "EMAIL")`.
 
 In your template or script, you can use Regle's `narrowVariant` helper to narrow the fields to the value.
 
-Let's take the previous exemple again:
+Let's take the previous example again:
 
 ```vue twoslash
 <template>
@@ -220,7 +220,7 @@ const {r$} = useExample();
 
 A use case is also to have a narrowed **Ref** ready to be used and isn't tied to a block scope. Like in the root of a script setup component where you're sure only one variant is possible.
 
-Having a `variantToRef` helper prevent you from creating custom `computed` methods, which would make you lose the `v-model` compabilities of the `.$value`.
+Having a `variantToRef` helper prevents you from creating custom `computed` methods, which would make you lose the `v-model` compatibilities of the `.$value`.
 
 The **ref** will be reactive and already typed as the variant you defined, while still needing to be checked for nullish.
 

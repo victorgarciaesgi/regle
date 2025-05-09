@@ -1,4 +1,4 @@
-import type { RegleRuleDefinition, Maybe } from '@regle/core';
+import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 
@@ -22,9 +22,9 @@ function nibbleValid(nibble: string) {
 /**
  * Validates IPv4 addresses in dotted decimal notation 127.0.0.1.
  */
-export const ipv4Address: RegleRuleDefinition<string, [], false, boolean, string> = createRule({
+export const ipv4Address: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'ipv4Address',
-  validator(value: Maybe<string>) {
+  validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {
       return true;
     }

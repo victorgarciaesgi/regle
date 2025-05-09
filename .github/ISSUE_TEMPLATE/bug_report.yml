@@ -39,7 +39,7 @@ body:
   - type: textarea
     id: other-info
     attributes:
-      label: Environnement informations
+      label: Environment information
       description: Versions of your packages
       value: |
         - `@regle/x` version:

@@ -16,13 +16,28 @@ export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
   [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? never : K]?: TObject[K];
 };
 
+type MergePropsIntoRequiredBooleans<TObject extends Record<string, any>> = {
+  [K in keyof TObject]-?: TObject[K] extends NonNullable<TObject[K]> ? true : false;
+}[keyof TObject];
+
+/**
+ * Ensure that if at least one prop is required, the "prop" object will be required too
+ */
+export type HaveAnyRequiredProps<TObject extends Record<string, any>> = [TObject] extends [never]
+  ? false
+  : TObject extends Record<string, any>
+    ? MergePropsIntoRequiredBooleans<TObject> extends false
+      ? false
+      : true
+    : false;
+
 /**
  * Get item value from object, otherwise fallback to undefined. Avoid TS to not be able to infer keys not present on all unions
  */
 type GetMaybeObjectValue<O extends Record<string, any>, K extends string> = K extends keyof O ? O[K] : undefined;
 
 /**
- * Combine all unions values to be able to get even the normally "never" values, act as an intersection type
+ * Combine all union values to be able to get even the normally "never" values, act as an intersection type
  */
 type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> = T extends [
   infer F extends Record<string, any>,
@@ -43,14 +58,14 @@ type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> 
   : [];
 
 /**
- * Get all possible keys from an union, even the ones present only on one union
+ * Get all possible keys from a union, even the ones present only on one union
  */
 type RetrieveUnionUnknownKeysOf<T extends readonly any[]> = T extends [infer F, ...infer R]
   ? [keyof F, ...RetrieveUnionUnknownKeysOf<R>]
   : [];
 
 /**
- * Transforms an union and apply undefined values to non-present keys to support intersection
+ * Transforms a union and apply undefined values to non-present keys to support intersection
  */
 type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
   NonNullable<UnionToTuple<TUnion>>,
@@ -58,7 +73,7 @@ type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
 >[number];
 
 /**
- * Combine all members of an union type, merging types for each keys, and keeping loose types
+ * Combine all members of a union type, merging types for each key, and keeping loose types
  */
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
   isRecordLiteral<TUnion> extends true

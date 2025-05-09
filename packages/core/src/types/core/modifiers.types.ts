@@ -20,20 +20,27 @@ export interface RegleBehaviourOptions {
    */
   lazy?: boolean | undefined;
   /**
-   * Automaticaly set the dirty set without the need of `$value` or `$touch`
+   * Automatically set the dirty set without the need of `$value` or `$touch`.
    * @default true
    *
-   * @default false if rewardEarly is true
-
    */
   autoDirty?: boolean | undefined;
+  /**
+   * Only update error status when calling `$validate`.
+   * Will not display errors as you type
+   * @default false
+   *
+   * @default true if rewardEarly is true
+   *
+   */
+  silent?: boolean | undefined;
   /**
    * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
    * @default false
    */
   rewardEarly?: boolean | undefined;
   /**
-   * Define wether or not the external errors should be cleared when updating a field
+   * Define whether the external errors should be cleared when updating a field
    * @default true
    *
    */
@@ -68,6 +75,17 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
   $debounce?: number;
 };
 
+export type CollectionRegleBehaviourOptions = FieldRegleBehaviourOptions & {
+  /**
+   * Allow deep compare of array children to compute the `$edited` property
+   *
+   * Disabled by default for performance
+   *
+   * @default false
+   * */
+  $deepCompare?: boolean;
+};
+
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
   LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>>;
 
@@ -77,32 +95,32 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
 
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
   /**
-   * Allow you to customize the properties of every single field
+   * Allow you to customize the properties for every field
    */
   fields?: ShortcutCommonFn<RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>>;
   /**
-   * Allow you to customize the properties of every parent of a nested object
+   * Allow you to customize the properties for every parent of a nested object
    */
   nested?: ShortcutCommonFn<
     RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>>
   >;
   /**
-   * Allow you to customize the properties of every parent of a collection
+   * Allow you to customize the properties for every parent of a collection
    */
   collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
 };
 
 export type $InternalRegleShortcutDefinition = {
   /**
-   * Allow you to customize the properties of every single field
+   * Allow you to customize the properties for every field
    */
   fields?: ShortcutCommonFn<Record<string, any>>;
   /**
-   * Allow you to customize the properties of every parent of a nested object
+   * Allow you to customize the properties for every parent of a nested object
    */
   nested?: ShortcutCommonFn<$InternalRegleStatus>;
   /**
-   * Allow you to customize the properties of every parent of a collection
+   * Allow you to customize the properties for every parent of a collection
    */
   collections?: ShortcutCommonFn<$InternalRegleCollectionStatus>;
 };

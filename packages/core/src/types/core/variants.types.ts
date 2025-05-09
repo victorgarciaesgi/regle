@@ -10,7 +10,7 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { LazyJoinDiscriminatedUnions, TupleToPlainObj } from '../utils';
+import type { LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
 export type NarrowVariant<
@@ -47,6 +47,7 @@ type ProcessChildrenFields<
 > = {
   [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
+        // Defined keys
         [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
           FindCorrespondingVariant<
             UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
@@ -76,6 +77,7 @@ type ProcessChildrenFields<
           TShortcuts
         >;
       } & {
+        // Maybe undefined keys
         [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
           FindCorrespondingVariant<
             UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never,
@@ -117,13 +119,28 @@ type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends
     : FindCorrespondingVariant<TState, R>
   : [];
 
-type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = {
-  [TVal in NonNullable<T[TKey]>]: {
-    [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
-      literal?: RegleRuleDefinition<TVal, [literal: TVal], false, boolean, string | number>;
+type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = unknown extends T[TKey]
+  ? {
+      [x: string]: {
+        [K in TKey]-?: Omit<RegleRuleDecl<any, Partial<AllRulesDeclarations>>, 'literal'> & {
+          literal?: RegleRuleDefinition<any, [literal: any], false, boolean, any, string | number>;
+        };
+      };
+    }
+  : {
+      [TVal in NonNullable<T[TKey]>]: {
+        [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
+          literal?: RegleRuleDefinition<
+            MaybeInput<TVal>,
+            [literal: TVal],
+            false,
+            boolean,
+            MaybeInput<TVal>,
+            string | number
+          >;
+        };
+      };
     };
-  };
-};
 
 type RequiredForm<T extends Record<string, any>, TKey extends keyof T> = Omit<ReglePartialRuleTree<T>, TKey> &
   PossibleLiteralTypes<T, TKey>[keyof PossibleLiteralTypes<T, TKey>];

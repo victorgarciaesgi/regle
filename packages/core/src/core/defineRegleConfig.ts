@@ -6,7 +6,7 @@ import { merge } from '../../../shared';
 
 /**
  * Define a global regle configuration, where you can:
- * - Customize buil-in rules messages
+ * - Customize built-in rules messages
  * - Add your custom rules
  * - Define global modifiers
  * - Define shortcuts

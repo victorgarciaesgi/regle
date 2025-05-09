@@ -109,6 +109,7 @@ describe('createVariant', () => {
       expect(vm.r$.$fields.twoName).toBe(undefined);
       // @ts-expect-error property should not be present here
       expect(vm.r$.$fields.twoValue).toBe(undefined);
+
       shouldBeErrorField(vm.r$.$fields.oneValue);
 
       expectTypeOf(vm.r$.$fields.oneValue).toEqualTypeOf<
@@ -381,9 +382,12 @@ describe('createVariant', () => {
     }
   });
 
-  it('should invoke variantToRef directly', () => {
+  it('should invoke variantToRef directly', async () => {
     const { vm } = createRegleComponent(() => createRootVariantRegle('ONE'));
 
+    await vm.$nextTick();
+
     expect(vm.invariantRefOne).toBeDefined();
+    expect(vm.invariantRefOne?.oneValue).toBeDefined();
   });
 });

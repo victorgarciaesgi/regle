@@ -7,7 +7,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
  *
  * @param min - the minimum value
- * @param options - comparision options
+ * @param options - comparison options
  */
 export const minLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,

@@ -14,7 +14,8 @@ import { useScopedRegle } from './config';
 
 const { r$ } = useScopedRegle(
   { countFromCompo3: 0 },
-  { countFromCompo3: { required, numeric, minValue: minValue(4) } }
+  { countFromCompo3: { required, numeric, minValue: minValue(4) } },
+  { namespace: 'foo', scopeKey: 'compo3' }
 );
 </script>
 

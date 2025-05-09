@@ -1,4 +1,4 @@
-import type { EnumLike, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type { EnumLike, Maybe, MaybeInput, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
 export interface CommonComparisonOptions {
   /**
@@ -20,11 +20,13 @@ export type DefaultValidators = {
   alpha: RegleRuleWithParamsDefinition<string, [options?: CommonAlphaOptions | undefined]>;
   alphaNum: RegleRuleWithParamsDefinition<string | number, [options?: CommonAlphaOptions | undefined]>;
   between: RegleRuleWithParamsDefinition<number, [min: Maybe<number>, max: Maybe<number>]>;
+  boolean: RegleRuleDefinition<unknown, [], false, boolean, any, unknown>;
   checked: RegleRuleDefinition<boolean, [], false, boolean, boolean>;
   contains: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
+  date: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<Date>, unknown>;
   dateAfter: RegleRuleWithParamsDefinition<
     string | Date,
-    [after: Maybe<string | Date>],
+    [after: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -33,12 +35,12 @@ export type DefaultValidators = {
       }
     | {
         $valid: false;
-        error: 'value-or-paramater-not-a-date';
+        error: 'value-or-parameter-not-a-date';
       }
   >;
   dateBefore: RegleRuleWithParamsDefinition<
     string | Date,
-    [before: Maybe<string | Date>],
+    [before: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -47,12 +49,12 @@ export type DefaultValidators = {
       }
     | {
         $valid: false;
-        error: 'value-or-paramater-not-a-date';
+        error: 'value-or-parameter-not-a-date';
       }
   >;
   dateBetween: RegleRuleWithParamsDefinition<
     string | Date,
-    [before: Maybe<string | Date>, after: Maybe<string | Date>],
+    [before: Maybe<string | Date>, after: Maybe<string | Date>, options?: CommonComparisonOptions],
     false,
     boolean
   >;
@@ -66,6 +68,7 @@ export type DefaultValidators = {
     boolean
   >;
   exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  hexadecimal: RegleRuleDefinition<string, [], false, boolean, string>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipv4Address: RegleRuleDefinition<string, [], false, boolean, string>;
   literal: RegleRuleDefinition<string | number, [literal: string | number], false, boolean, string | number>;
@@ -85,11 +88,14 @@ export type DefaultValidators = {
   >;
   minValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparisonOptions], false, boolean>;
   nativeEnum: RegleRuleDefinition<string | number, [enumLike: EnumLike], false, boolean, string | number>;
+  number: RegleRuleDefinition<unknown, [], false, boolean, any, unknown>;
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
   required: RegleRuleDefinition<unknown, []>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
+  string: RegleRuleDefinition<unknown, [], false, boolean, any, unknown>;
+  type: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
   startsWith: RegleRuleWithParamsDefinition<string, [part: Maybe<string>], false, boolean>;
   url: RegleRuleDefinition<string, [], false, boolean, string>;
 };

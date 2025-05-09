@@ -4,14 +4,14 @@ import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';
 
-function singleFieldValidion() {
+function singleFieldValidation() {
   const formState = ref<number | undefined>();
   return useRegle(formState, { required, numeric });
 }
 
 describe('useRegle should work with single field validation', () => {
   it('should behave like a object state', async () => {
-    const { vm } = createRegleComponent(singleFieldValidion);
+    const { vm } = createRegleComponent(singleFieldValidation);
 
     shouldBeInvalidField(vm.r$);
 
@@ -36,7 +36,7 @@ describe('useRegle should work with single field validation', () => {
   });
 
   it('should have the correct type when using $validate', async () => {
-    const { vm } = createRegleComponent(singleFieldValidion);
+    const { vm } = createRegleComponent(singleFieldValidation);
 
     const { data, valid } = await vm.r$.$validate();
 

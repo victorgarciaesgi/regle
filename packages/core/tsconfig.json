@@ -6,6 +6,6 @@
     "./tests/**/*"
   ],
   "exclude": [
-    "./dist/**/*"
+    "dist"
   ]
 }

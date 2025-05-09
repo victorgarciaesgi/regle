@@ -7,7 +7,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
  *
  * @param max - the maximum length
- * @param options - comparision options
+ * @param options - comparison options
  */
 export const maxLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,

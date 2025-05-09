@@ -9,18 +9,19 @@ import type {
   RegleRuleDecl,
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
-import type { FieldRegleBehaviourOptions } from '../core';
-import type { MaybeRefOrGetter } from 'vue';
+import type { CollectionRegleBehaviourOptions, FieldRegleBehaviourOptions } from '../core';
+
 type IsLiteral<T> = string extends T ? false : true;
 
 /**
  * Returned typed of rules created with `createRule`
  * */
 export interface RegleRuleDefinition<
-  TValue extends any = unknown,
+  TValue extends unknown = unknown,
   TParams extends any[] = [],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
+  TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
 > extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
@@ -52,14 +53,15 @@ export interface $InternalRegleRuleDefinition extends RegleInternalRuleDefs<any,
  * Rules with params created with `createRules` are callable while being customizable
  */
 export type RegleRuleWithParamsDefinition<
-  TValue extends any = any,
+  TValue extends unknown = unknown,
   TParams extends any[] = never,
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
 > = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
   RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
-    (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata>;
+    (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata, TInput>;
   } & (TParams extends [param?: any, ...any[]]
     ? {
         exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
@@ -109,7 +111,7 @@ type DefaultMetadataProperties = DefaultMetadataPropertiesCommon & {
 };
 
 /**
- * Will be used to consumme metadata on related helpers and rule status
+ * Will be used to consume metadata on related helpers and rule status
  */
 export type RegleRuleMetadataConsumer<
   TValue extends any,
@@ -128,7 +130,7 @@ export type RegleRuleMetadataConsumer<
     : {});
 
 /**
- * Will be used to consumme metadata on related helpers and rule status
+ * Will be used to consume metadata on related helpers and rule status
  */
 export type PossibleRegleRuleMetadataConsumer<TValue> = { $value: Maybe<TValue> } & DefaultMetadataProperties & {
     $params?: [...any[]];
@@ -170,7 +172,7 @@ export type RegleRuleRawInput<
   tooltip?: any;
 };
 /**
- * Process the type of a created rule with `createRule`.
+ * Process the type of created rule with `createRule`.
  * For a rule with params it will return a function
  * Otherwise it will return the rule definition
  */
@@ -198,9 +200,9 @@ export type RegleCollectionRuleDefinition<
   TValue = any[],
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
-  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
+  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions> & {
       $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
     })
   | ({
       $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
-    } & FieldRegleBehaviourOptions);
+    } & CollectionRegleBehaviourOptions);
