@@ -233,7 +233,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
  * @public
  */
 export interface RegleCommonStatus<TValue = any> {
-  /* Indicates whether the field is invalid. It becomes true if any associated rules return false. */
+  /** Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
   /**
    * This is not the opposite of `$invalid`. Correct is meant to display UI validation report.
@@ -244,13 +244,16 @@ export interface RegleCommonStatus<TValue = any> {
    * - Passes validation
    */
   readonly $correct: boolean;
-  /* Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the $touch and $reset methods. The $dirty flag is considered true if the current model has been touched or if all its children are dirty.*/
+  /** Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the $touch and $reset methods. The $dirty flag is considered true if the current model has been touched or if all its children are dirty.*/
   readonly $dirty: boolean;
-  /* Similar to $dirty, with one exception. The $anyDirty flag is considered true if given model was touched or any of its children are $anyDirty which means at least one descendant is $dirty. */
+  /** Similar to $dirty, with one exception. The $anyDirty flag is considered true if given model was touched or any of its children are $anyDirty which means at least one descendant is $dirty. */
   readonly $anyDirty: boolean;
-  /* Indicates whether a field has been touched and if the value is different than the initial one. */
+  /** Indicates whether a field has been touched and if the value is different than the initial one.
+   *  On nested elements and collections, it's true only if all its children are also `$edited`.
+   *  Use `$anyEdited` to check for any edited children
+   */
   readonly $edited: boolean;
-  /* Similar to $edited, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is $edited. */
+  /** Similar to $edited, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is $edited. */
   readonly $anyEdited: boolean;
   /** Indicates if any async rule for the field is currently running. Always false for synchronous rules. */
   readonly $pending: boolean;

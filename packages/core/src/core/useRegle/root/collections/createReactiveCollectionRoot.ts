@@ -91,6 +91,9 @@ export function createReactiveCollectionStatus({
 
   immediateScopeState = immediateScope.run(() => {
     const isPrimitiveArray = computed(() => {
+      if (!state.value?.length) {
+        return false;
+      }
       if (Array.isArray(state.value) && state.value.length) {
         return state.value.every((s) => typeof s !== 'object');
       } else if (rulesDef.value.$each && !(rulesDef.value.$each instanceof Function)) {

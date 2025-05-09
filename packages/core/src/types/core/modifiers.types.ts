@@ -75,6 +75,17 @@ export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOption
   $debounce?: number;
 };
 
+export type CollectionRegleBehaviourOptions = FieldRegleBehaviourOptions & {
+  /**
+   * Allow deep compare of array children to compute the `$edited` property
+   *
+   * Disabled by default for performance
+   *
+   * @default false
+   * */
+  $deepCompare?: boolean;
+};
+
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
   LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>>;
 

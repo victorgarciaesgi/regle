@@ -180,7 +180,7 @@ const { r$ } = useRegle({ name: '' }, {
 <br><br>
 
 
-`$autoDirty` `$lazy` and `$rewardEarly` work the same as the deep modifiers.
+`$autoDirty` `$lazy`, `$silent` and `$rewardEarly` work the same as the deep modifiers.
 
 ### `$debounce`
 Type: `number` (ms)
@@ -190,3 +190,27 @@ This let you declare the number of milliseconds the rule needs to wait before ex
 :::tip
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
 :::
+
+
+## Array specific modifiers
+
+This modifiers are only impacting Array collections.
+
+```ts twoslash
+// @noErrors
+import { useRegle } from '@regle/core';
+// ---cut---
+const { r$ } = useRegle({ collection: [] }, {
+  collection: { $deep }
+//                   ^|    
+})
+```
+
+### `$deepCompare`
+Type: `boolean`
+
+Default: `false`
+
+Allow deep compare of array children to compute the `$edited` property.
+
+It's disabled by default for performance reasons.

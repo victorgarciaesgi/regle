@@ -5,3 +5,5 @@ export * from './object.utils';
 export * from './isDate';
 export * from './toDate';
 export * from './debounce';
+export * from './isEqual';
+export * from './isFile';
