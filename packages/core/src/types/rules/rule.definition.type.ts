@@ -9,7 +9,7 @@ import type {
   RegleRuleDecl,
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
-import type { FieldRegleBehaviourOptions } from '../core';
+import type { CollectionRegleBehaviourOptions, FieldRegleBehaviourOptions } from '../core';
 
 type IsLiteral<T> = string extends T ? false : true;
 
@@ -200,9 +200,9 @@ export type RegleCollectionRuleDefinition<
   TValue = any[],
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > =
-  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules> & {
+  | (RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions> & {
       $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
     })
   | ({
       $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;
-    } & FieldRegleBehaviourOptions);
+    } & CollectionRegleBehaviourOptions);

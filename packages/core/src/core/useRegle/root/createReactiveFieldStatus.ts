@@ -1,11 +1,12 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, debounce, isEmpty, isObject, toDate } from '../../../../../shared';
+import { cloneDeep, debounce, isEmpty, isEqual, isFile, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
+  CollectionRegleBehaviourOptions,
   FieldRegleBehaviourOptions,
   RegleRuleDecl,
   RegleShortcutDefinition,
@@ -47,6 +48,7 @@ export function createReactiveFieldStatus({
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   interface ScopeReturnState extends CommonResolverScopedState {
     $debounce: ComputedRef<number | undefined>;
+    $deepCompare: ComputedRef<boolean | undefined>;
     $lazy: ComputedRef<boolean>;
     $rewardEarly: ComputedRef<boolean>;
     $autoDirty: ComputedRef<boolean>;
@@ -177,6 +179,13 @@ export function createReactiveFieldStatus({
         return $localOptions.value.$debounce;
       });
 
+      const $deepCompare = computed<boolean | undefined>(() => {
+        if ($localOptions.value.$deepCompare != null) {
+          return $localOptions.value.$deepCompare;
+        }
+        return false;
+      });
+
       const $lazy = computed<boolean>(() => {
         if ($localOptions.value.$lazy != null) {
           return $localOptions.value.$lazy;
@@ -269,14 +278,11 @@ export function createReactiveFieldStatus({
         if ($dirty.value) {
           if (initialState.value instanceof Date && state.value instanceof Date) {
             return toDate(initialState.value).getDate() !== toDate(state.value).getDate();
-          }
-          if (initialState.value == null) {
+          } else if (initialState.value == null) {
             // Keep empty string as the same value of undefined|null
             return !!state.value;
-          }
-          // For arrays only compare the length
-          if (Array.isArray(state.value) && Array.isArray(initialState.value)) {
-            return state.value.length !== initialState.value.length;
+          } else if (Array.isArray(state.value) && Array.isArray(initialState.value)) {
+            return !isEqual(state.value, initialState.value, $localOptions.value.$deepCompare);
           }
           return initialState.value !== state.value;
         }
@@ -413,6 +419,7 @@ export function createReactiveFieldStatus({
         $invalid,
         $correct,
         $debounce,
+        $deepCompare,
         $lazy,
         $errors,
         $ready,
@@ -498,7 +505,7 @@ export function createReactiveFieldStatus({
   }
 
   const $rules = ref({}) as Ref<Record<string, $InternalRegleRuleStatus>>;
-  const $localOptions = ref({}) as Ref<FieldRegleBehaviourOptions>;
+  const $localOptions = ref({}) as Ref<CollectionRegleBehaviourOptions>;
 
   createReactiveRulesResult();
 

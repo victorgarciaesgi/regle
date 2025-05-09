@@ -1,5 +1,10 @@
 import type { MaybeRef, Ref } from 'vue';
-import type { DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../../types/core';
+import type {
+  CollectionRegleBehaviourOptions,
+  DeepReactiveState,
+  FieldRegleBehaviourOptions,
+  Regle,
+} from '../../types/core';
 import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
@@ -101,7 +106,8 @@ export type $InternalFormPropertyTypes =
 export type RegleRuleDecl<
   TValue extends any = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
-> = FieldRegleBehaviourOptions & {
+  TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions,
+> = TOptions & {
   [TKey in keyof TCustomRules]?: NonNullable<TCustomRules[TKey]> extends RegleRuleWithParamsDefinition<
     any,
     infer TParams
@@ -109,14 +115,16 @@ export type RegleRuleDecl<
     ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
     : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
       ? FormRuleDeclaration<TValue, any[]>
-      : FormRuleDeclaration<TValue, any[]> | FieldRegleBehaviourOptions[keyof FieldRegleBehaviourOptions];
+      : FormRuleDeclaration<TValue, any[]> | TOptions[keyof TOptions];
 };
 
 /**
  * @internal
  * @reference {@link RegleRuleDecl}
  */
-export type $InternalRegleRuleDecl = FieldRegleBehaviourOptions & Record<string, FormRuleDeclaration<any, any>>;
+export type $InternalRegleRuleDecl = FieldRegleBehaviourOptions &
+  CollectionRegleBehaviourOptions &
+  Record<string, FormRuleDeclaration<any, any>>;
 
 /**
  * @public
@@ -134,10 +142,10 @@ export type RegleCollectionRuleDecl<
 > =
   | ({
       $each?: RegleCollectionEachRules<TValue, TCustomRules>;
-    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules>)
+    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions>)
   | ({
       $each?: RegleCollectionEachRules<TValue, TCustomRules>;
-    } & FieldRegleBehaviourOptions);
+    } & CollectionRegleBehaviourOptions);
 
 /** @public */
 export type RegleCollectionEachRules<
