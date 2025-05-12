@@ -1,5 +1,5 @@
 import type { IsUnion } from 'expect-type';
-import type { IsEmptyObject, PartialDeep } from 'type-fest';
+import type { IsEmptyObject, IsUnknown, PartialDeep } from 'type-fest';
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -167,7 +167,7 @@ export type RegleFieldStatus<
   TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
-> = Omit<RegleCommonStatus<TState>, '$value'> & {
+> = Omit<RegleCommonStatus<TState>, '$value' | '$silentValue'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
@@ -319,11 +319,11 @@ export type RegleRuleStatus<
   $reset(): void;
   /** Returns the original rule validator function. */
   $validator: ((
-    value: MaybeInput<TValue>,
+    value: IsUnknown<TValue> extends true ? any : MaybeInput<TValue>,
     ...args: any[]
   ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>) &
     ((
-      value: TValue,
+      value: IsUnknown<TValue> extends true ? any : TValue,
       ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
     ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>);
 } & ([TParams] extends [never[]]

@@ -687,7 +687,7 @@ importers:
         version: 2.2.10(typescript@5.8.3)
 
   tests:
-    dependencies:
+    devDependencies:
       '@pinia/testing':
         specifier: 1.0.0
         version: 1.0.0(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))
@@ -730,6 +730,9 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.3)
+      vue-component-type-helpers:
+        specifier: 2.2.10
+        version: 2.2.10
       zod:
         specifier: 'catalog:'
         version: 3.24.3
@@ -8065,6 +8068,9 @@ packages:
 
   vue-component-type-helpers@2.2.0:
     resolution: {integrity: sha512-cYrAnv2me7bPDcg9kIcGwjJiSB6Qyi08+jLDo9yuvoFQjzHiPTzML7RnkJB1+3P6KMsX/KbCD4QE3Tv/knEllw==}
+
+  vue-component-type-helpers@2.2.10:
+    resolution: {integrity: sha512-iDUO7uQK+Sab2tYuiP9D1oLujCWlhHELHMgV/cB13cuGbG4qwkLHvtfWb6FzvxrIOPDnU0oHsz2MlQjhYDeaHA==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -16793,6 +16799,8 @@ snapshots:
       ufo: 1.6.1
 
   vue-component-type-helpers@2.2.0: {}
+
+  vue-component-type-helpers@2.2.10: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.8.3)):
     dependencies:

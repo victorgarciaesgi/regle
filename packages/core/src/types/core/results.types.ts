@@ -19,6 +19,7 @@ import type {
   MaybeOutput,
   Prettify,
 } from '../utils';
+import type { IsUnknown } from 'type-fest';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
   ? {}
@@ -43,23 +44,27 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
 export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRules extends ReglePartialRuleTree<any>> =
   | {
       valid: false;
-      data: NonNullable<Data> extends Date | File
-        ? MaybeOutput<Data>
-        : NonNullable<Data> extends Array<infer U extends Record<string, any>>
-          ? PartialFormState<U>[]
-          : NonNullable<Data> extends Record<string, any>
-            ? PartialFormState<NonNullable<Data>>
-            : MaybeOutput<Data>;
+      data: IsUnknown<Data> extends true
+        ? unknown
+        : NonNullable<Data> extends Date | File
+          ? MaybeOutput<Data>
+          : NonNullable<Data> extends Array<infer U extends Record<string, any>>
+            ? PartialFormState<U>[]
+            : NonNullable<Data> extends Record<string, any>
+              ? PartialFormState<NonNullable<Data>>
+              : MaybeOutput<Data>;
     }
   | {
       valid: true;
-      data: Data extends Array<infer U extends Record<string, any>>
-        ? DeepSafeFormState<U, TRules>[]
-        : Data extends Date | File
-          ? SafeFieldProperty<Data, TRules>
-          : Data extends Record<string, any>
-            ? DeepSafeFormState<Data, TRules>
-            : SafeFieldProperty<Data, TRules>;
+      data: IsUnknown<Data> extends true
+        ? unknown
+        : Data extends Array<infer U extends Record<string, any>>
+          ? DeepSafeFormState<U, TRules>[]
+          : Data extends Date | File
+            ? SafeFieldProperty<Data, TRules>
+            : Data extends Record<string, any>
+              ? DeepSafeFormState<Data, TRules>
+              : SafeFieldProperty<Data, TRules>;
     };
 
 /**
