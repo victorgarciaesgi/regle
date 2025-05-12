@@ -19,6 +19,7 @@ type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
 const props = defineProps<{
   unknownField: RegleFieldStatus;
+  unknownExplicitField: RegleFieldStatus<unknown>;
   booleanField: RegleFieldStatus<boolean | undefined>;
   stringField: RegleFieldStatus<string | undefined>;
   stringNumberField: RegleFieldStatus<string | undefined> | RegleFieldStatus<number | undefined>;
@@ -38,6 +39,13 @@ expectTypeOf(props.unknownField.$rules).toEqualTypeOf<{
   readonly [x: string]: RegleRuleStatus<any, any[], any>;
 }>();
 expectTypeOf(props.unknownField.$value).toEqualTypeOf<any>();
+
+// -
+
+expectTypeOf(props.unknownExplicitField.$rules).toEqualTypeOf<{
+  readonly [x: string]: RegleRuleStatus<unknown, any[], any>;
+}>();
+expectTypeOf(props.unknownExplicitField.$value).toEqualTypeOf<unknown>();
 
 // -
 
