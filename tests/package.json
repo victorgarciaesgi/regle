@@ -2,11 +2,12 @@
   "name": "regle-tests",
   "private": true,
   "type": "module",
-  "dependencies": {
+  "devDependencies": {
     "@pinia/testing": "1.0.0",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
+    "vue-component-type-helpers": "2.2.10",
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
     "arktype": "catalog:",

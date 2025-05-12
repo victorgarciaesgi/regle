@@ -222,6 +222,6 @@ The old behaviour is migrated to a new modifier: `silent`.
 - Support scoped validation in `@regle/schemas` #115 by @victorgarciaesgi in [#115](https://github.com/victorgarciaesgi/regle/issues/115 )
 - `syncState` options to apply schema transforms and default to state in `@regle/schemas` [#114](https://github.com/victorgarciaesgi/regle/issues/114) and [#120](https://github.com/victorgarciaesgi/regle/issues)
 - `asRecord` option to support named keys in `useCollectScope` [#105](https://github.com/victorgarciaesgi/regle/issues/105)
-
+- Added `$deepCompare` modifier to enable `$edited` to work on array of nested objects [#122](https://github.com/victorgarciaesgi/regle/issues/122)
 
 Big thanks to a new contributor [@jeremyworboys](https://github.com/jeremyworboys) who submitted 3 great PRs!
