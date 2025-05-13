@@ -20,7 +20,7 @@ outline:
 
 Regle is beginning to gain some serious traction recently. Since I released Regle `1.1`, I've seen the number of stars and views on the documentation continualy increasing.
 
-Thanks to the <img style="display:inline; vertical-align: middle" src="https://img.shields.io/github/stars/victorgarciaesgi/regle"/> stargazers so far!
+Thanks to the <img style="display:inline; vertical-align: middle" src="https://img.shields.io/github/stars/victorgarciaesgi/regle"/> stargazers so far, and <img style="display:inline; vertical-align: middle" alt="npm download" src="https://img.shields.io/npm/dt/@regle/core.svg"/> downloads!
 
 It's really rewarding to see people use and love something you spent time on, and I hope I can reach more people.
 
@@ -225,3 +225,5 @@ The old behaviour is migrated to a new modifier: `silent`.
 - Added `$deepCompare` modifier to enable `$edited` to work on array of nested objects [#122](https://github.com/victorgarciaesgi/regle/issues/122)
 
 Big thanks to a new contributor [@jeremyworboys](https://github.com/jeremyworboys) who submitted 3 great PRs!
+
+[Check the full changelog here](https://github.com/victorgarciaesgi/regle/releases/tag/v1.2.0)
