@@ -20,7 +20,7 @@ outline:
 
 Regle is beginning to gain some serious traction recently. Since I released Regle `1.1`, I've seen the number of stars and views on the documentation continualy increasing.
 
-Thanks to the <img style="display:inline; vertical-align: middle" src="https://img.shields.io/github/stars/victorgarciaesgi/regle"/> stargazers so far, and <img style="display:inline; vertical-align: middle" alt="npm download" src="https://img.shields.io/npm/dt/@regle/core.svg"/> downloads!
+Thanks to the <a  href="https://github.com/victorgarciaesgi/regle"><img style="display:inline; vertical-align: middle" src="https://img.shields.io/github/stars/victorgarciaesgi/regle"/></a> stargazers so far, and <a  href="https://www.npmjs.com/package/@regle/core"><img style="display:inline; vertical-align: middle" alt="npm download" src="https://img.shields.io/npm/dt/@regle/core.svg"/></a> downloads!
 
 It's really rewarding to see people use and love something you spent time on, and I hope I can reach more people.
 
