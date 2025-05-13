@@ -8,7 +8,7 @@ import ZodSyncState from '../parts/components/zod/ZodSyncState.vue';
 import ComputedSchema from '../parts/components/zod/ComputedSchema.vue';
 </script>
 
-# Schemas libraries
+# Schemas libraries (Zod, Valibot, ...)
 
 Regle supports the [Standard Schema Spec](https://standardschema.dev/).
 
