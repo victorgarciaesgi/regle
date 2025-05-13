@@ -38,6 +38,7 @@ The state can be:
 - A Ref object
 - A Reactive object
 - A raw object containing nested Refs
+- A non-object Ref containing a primitive
 
 If you pass a reactive state, you have the flexibility to bind your model either to the original state or to the state proxy returned by useRegle.
 
@@ -57,6 +58,11 @@ const { r$ } = useRegle(state, /* rules */)
 
 ```ts
 const state = { name: ref('') }
+const { r$ } = useRegle(state, /* rules */)
+```
+
+```ts
+const state = ref('');
 const { r$ } = useRegle(state, /* rules */)
 ```
 
