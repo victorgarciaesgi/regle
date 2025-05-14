@@ -295,7 +295,8 @@ export default defineConfig({
 
     function getJSONLD(pageData: PageData) {
       if (pageData.relativePath === 'index.md') {
-        return `{
+        return `
+        {
           "@context":"http://schema.org",
           "@type":"WebSite",
           "url":"https://reglejs.dev/",
@@ -304,7 +305,8 @@ export default defineConfig({
           "name":"Regle"
         }`;
       } else {
-        return `{
+        return `
+        {
             "@context":"http://schema.org",
             "@type":"TechArticle",
             "headline":"${pageData.title}",
@@ -316,7 +318,7 @@ export default defineConfig({
             "keywords":"regle, vue, forms, typescript",
             "url":"https://reglejs.dev/",
             "name": "Regle"
-          }`;
+        }`;
       }
     }
 
@@ -340,6 +342,7 @@ export default defineConfig({
     ],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Regle' }],
+    ['meta', { property: 'og:logo', content: 'https://reglejs.dev/logo_main.png' }],
     [
       'meta',
       {
