@@ -78,8 +78,12 @@ type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
   isRecordLiteral<TUnion> extends true
     ? Prettify<
-        Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NormalizeUnion<TUnion>>[number]>> &
-          Pick<NormalizeUnion<TUnion>, keyof NormalizeUnion<TUnion>>
+        Partial<
+          UnionToIntersection<
+            RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
+          >
+        > &
+          Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
       >
     : TUnion;
 
