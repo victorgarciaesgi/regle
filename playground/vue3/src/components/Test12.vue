@@ -1,25 +1,16 @@
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
+import { useRegle, type RegleStatus } from '@regle/core';
+import { required } from '@regle/rules';
 import { onMounted, ref } from 'vue';
 
-const data = ref<{ email?: string }>({});
+const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required: required } } });
 
-const { r$ } = useRegle(data, {}, { autoDirty: false });
-
-onMounted(() => {
-  setTimeout(() => {
-    r$.$value = { email: 'foo' };
-  }, 1000);
-});
-
-async function submit() {
-  const result = await r$.$validate();
-  data.value = result.data;
-}
+const foo: RegleStatus<Record<string, any> | undefined> = r$.$fields.nested;
 </script>
 
 <template>
-  <pre>{{ r$.$fields.email }}</pre>
+  <span></span>
+  <!-- <pre>{{ r$.$fields.email }}</pre>
 
   <label>Name</label><br />
   <input v-model="r$.$value.email" placeholder="Type your email" />
@@ -29,5 +20,5 @@ async function submit() {
     </li>
   </ul>
 
-  <button @click="submit">Submit</button>
+  <button @click="submit">Submit</button> -->
 </template>

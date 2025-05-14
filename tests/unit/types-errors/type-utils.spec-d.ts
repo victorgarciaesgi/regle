@@ -5,8 +5,9 @@ import {
   type RegleFieldStatus,
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
+  type RegleStatus,
 } from '@regle/core';
-import { email } from '@regle/rules';
+import { email, required } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 import { z } from 'zod';
 
@@ -57,5 +58,9 @@ describe('type utils', () => {
     expectTypeOf<r$Schema['$fields']['email']>().toEqualTypeOf<
       RegleSchemaFieldStatus<string, string, RegleShortcutDefinition<any>>
     >();
+
+    const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required } } });
+
+    const foo: RegleStatus<Record<string, any> | undefined> = r$.$fields.nested;
   });
 });
