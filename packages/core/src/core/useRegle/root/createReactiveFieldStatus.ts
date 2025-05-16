@@ -62,7 +62,6 @@ export function createReactiveFieldStatus({
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
     $validating: Ref<boolean>;
     $dirty: Ref<boolean>;
-    triggerPunishment: Ref<boolean>;
     $silentValue: ComputedRef<any>;
     $inactive: ComputedRef<boolean>;
     processShortcuts: () => void;
@@ -114,6 +113,7 @@ export function createReactiveFieldStatus({
               }),
             ];
           }
+
           return [];
         })
         .filter((ruleDef): ruleDef is [string, $InternalRegleRuleStatus] => !!ruleDef.length)
@@ -156,7 +156,6 @@ export function createReactiveFieldStatus({
     }
 
     $unwatchState?.();
-    $unwatchValid?.();
     scope.stop();
     scope = effectScope();
     fieldScopes.forEach((s) => s.stop());
@@ -209,6 +208,8 @@ export function createReactiveFieldStatus({
           return $localOptions.value.$clearExternalErrorsOnChange;
         } else if (unref(options.clearExternalErrorsOnChange) != null) {
           return unref(options.clearExternalErrorsOnChange);
+        } else if ($silent.value) {
+          return false;
         }
         return true;
       });
@@ -320,10 +321,12 @@ export function createReactiveFieldStatus({
           return true;
         } else if ($inactive.value) {
           return false;
-        } else if (!$rewardEarly.value || ($rewardEarly.value && triggerPunishment.value)) {
-          return Object.entries($rules.value).some(([_, ruleResult]) => {
+        } else if (!$rewardEarly.value || $rewardEarly.value) {
+          const result = Object.entries($rules.value).some(([_, ruleResult]) => {
             return !(ruleResult.$valid && !ruleResult.$maybePending);
           });
+
+          return result;
         }
         return false;
       });
@@ -331,7 +334,7 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName);
 
       const $inactive = computed<boolean>(() => {
-        if (isEmpty($rules.value) && !schemaMode) {
+        if (Object.keys(rulesDef.value).filter(([ruleKey]) => !ruleKey.startsWith('$')).length === 0 && !schemaMode) {
           return true;
         }
         return false;
@@ -407,12 +410,6 @@ export function createReactiveFieldStatus({
 
       const $shortcuts: ToRefs<Record<string, Readonly<Ref<any>>>> = {};
 
-      watch($invalid, (value) => {
-        if (!value) {
-          triggerPunishment.value = false;
-        }
-      });
-
       return {
         $error,
         $pending,
@@ -437,7 +434,6 @@ export function createReactiveFieldStatus({
         $validating,
         $tooltips,
         $dirty,
-        triggerPunishment,
         processShortcuts,
         $silentValue,
         $inactive,
@@ -465,12 +461,6 @@ export function createReactiveFieldStatus({
       }
     );
 
-    $unwatchValid = watch(scopeState.$invalid, (invalid) => {
-      if (scopeState.$rewardEarly.value && !invalid) {
-        scopeState.triggerPunishment.value = false;
-      }
-    });
-
     $unwatchAsync = watch(scopeState.$haveAnyAsyncRule, define$commit);
   }
 
@@ -490,7 +480,7 @@ export function createReactiveFieldStatus({
         if (!scopeState.$silent.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
           $commit();
         }
-        if (scopeState.$rewardEarly.value !== true && scopeState.$clearExternalErrorsOnChange.value) {
+        if (scopeState.$clearExternalErrorsOnChange.value) {
           $clearExternalErrors();
         }
       },
@@ -512,7 +502,6 @@ export function createReactiveFieldStatus({
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     $clearExternalErrors();
     scopeState.$dirty.value = false;
-    scopeState.triggerPunishment.value = false;
     storage.setDirtyEntry(path, false);
 
     if (!fromParent) {
@@ -578,7 +567,6 @@ export function createReactiveFieldStatus({
         }
       }
       const data = state.value;
-      scopeState.triggerPunishment.value = true;
 
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
@@ -640,7 +628,6 @@ export function createReactiveFieldStatus({
     $haveAnyAsyncRule,
     $debounce,
     $lazy,
-    triggerPunishment,
     ...restScope
   } = scopeState;
 

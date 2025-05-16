@@ -41,7 +41,11 @@ export interface RegleBehaviourOptions {
   rewardEarly?: boolean | undefined;
   /**
    * Define whether the external errors should be cleared when updating a field
+   * 
+   * Default to `false` if `$silent` is set to `true`
+
    * @default true
+   *
    *
    */
   clearExternalErrorsOnChange?: boolean | undefined;

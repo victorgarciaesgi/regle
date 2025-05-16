@@ -1,4 +1,4 @@
-import { inferRules, useRegle, type RegleExternalErrorTree } from '@regle/core';
+import { inferRules, useRegle, type RegleBehaviourOptions, type RegleExternalErrorTree } from '@regle/core';
 import { required } from '@regle/rules';
 import { computed, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -107,7 +107,7 @@ describe('external errors', () => {
     });
   });
 
-  function nestedExternalErrorsWithRules() {
+  function nestedExternalErrorsWithRules(options?: RegleBehaviourOptions) {
     interface Form {
       root: string;
       nested: { name1: { name2: string } };
@@ -138,7 +138,7 @@ describe('external errors', () => {
 
     return {
       externalErrors,
-      ...useRegle(form, rules, { externalErrors }),
+      ...useRegle(form, rules, { externalErrors, ...options }),
     };
   }
   it('should behave correctly when client rules are present', async () => {
@@ -450,5 +450,124 @@ describe('external errors', () => {
 
     // ---
     vi.useRealTimers();
+  });
+
+  it('should behave correctly with clearExternalErrorsOnChange and rewardEarly', async () => {
+    const { vm } = createRegleComponent(() =>
+      nestedExternalErrorsWithRules({ clearExternalErrorsOnChange: true, rewardEarly: true })
+    );
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+
+    await vm.r$.$validate();
+    vm.externalErrors = {
+      root: ['Server Error'],
+      nested: { name1: { name2: ['Server Error'] } },
+      collection: {
+        $each: [{}, { item: ['Server Error'] }],
+      },
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.root);
+    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
+      'This field is required',
+      'Server Error',
+    ]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
+      'This field is required',
+      'Server Error',
+    ]);
+
+    vm.r$.$value.root = 'foo';
+    vm.r$.$value.nested.name1.name2 = 'foo';
+    vm.r$.$value.collection[0].item = 'foo';
+    vm.r$.$value.collection[1].item = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$.$fields.root);
+    shouldBeValidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeValidField(vm.r$.$fields.collection.$each[1].$fields.item);
+
+    expect(vm.r$.$ready).toBe(true);
+    expect(vm.r$.$correct).toBe(true);
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+  });
+
+  it('should behave correctly with clearExternalErrorsOnChange: false', async () => {
+    const { vm } = createRegleComponent(() => nestedExternalErrorsWithRules({ clearExternalErrorsOnChange: false }));
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+
+    await vm.r$.$validate();
+    vm.externalErrors = {
+      root: ['Server Error'],
+      nested: { name1: { name2: ['Server Error'] } },
+      collection: {
+        $each: [{}, { item: ['Server Error'] }],
+      },
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.root);
+    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
+      'This field is required',
+      'Server Error',
+    ]);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
+      'This field is required',
+      'Server Error',
+    ]);
+
+    vm.r$.$value.root = 'foo';
+    vm.r$.$value.nested.name1.name2 = 'foo';
+    vm.r$.$value.collection[0].item = 'foo';
+    vm.r$.$value.collection[1].item = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.$fields.root);
+    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
+    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
   });
 });

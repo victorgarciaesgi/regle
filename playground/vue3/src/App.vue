@@ -5,8 +5,8 @@
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
   <!-- <Test13 /> -->
-  <!-- <Test12 /> -->
-  <Test15></Test15>
+  <Test12 />
+  <!-- <Test15></Test15> -->
   <!-- <Parent /> -->
   <!-- <ParentNested /> -->
 </template>
