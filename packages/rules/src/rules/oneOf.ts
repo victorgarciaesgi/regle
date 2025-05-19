@@ -1,12 +1,12 @@
-import type { MaybeInput, RegleRuleDefinition } from '@regle/core';
+import type { MaybeInput, MaybeReadonly, RegleRuleDefinition } from '@regle/core';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import { isFilled, withMessage, withParams } from '../helpers';
 
 /**
  * Allow only one of the values from a fixed Array of possible entries.
  */
-export function oneOf<const TValues extends [string | number, ...(string | number)[]]>(
-  options: MaybeRefOrGetter<[...TValues]>
+export function oneOf<const TValues extends readonly [string | number, ...(string | number)[]]>(
+  options: MaybeReadonly<MaybeRefOrGetter<[...TValues]>>
 ): RegleRuleDefinition<
   TValues[number],
   [options: TValues],
@@ -15,7 +15,7 @@ export function oneOf<const TValues extends [string | number, ...(string | numbe
   MaybeInput<TValues[number]>,
   string | number
 > {
-  const params = computed<[string | number, ...(string | number)[]]>(() => toValue(options));
+  const params = computed<MaybeReadonly<[string | number, ...(string | number)[]]>>(() => toValue(options) as any);
 
   const rule = withMessage(
     withParams(

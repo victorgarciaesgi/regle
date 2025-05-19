@@ -58,6 +58,7 @@ export type {
   Maybe,
   MaybeOutput,
   MaybeInput,
+  MaybeReadonly,
   InferRegleRule,
   UnwrapRegleUniversalParams,
   FormRuleDeclaration,

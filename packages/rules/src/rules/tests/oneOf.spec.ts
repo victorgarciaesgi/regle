@@ -6,6 +6,11 @@ describe('oneOf validator', () => {
     expect(oneOf(['One', 'Two']).exec(5)).toBe(false);
   });
 
+  it('should work with readonly arrays', () => {
+    const values = ['One', 'Two'] as const;
+    expect(oneOf(values).exec(5)).toBe(false);
+  });
+
   it('should validate valid string', () => {
     expect(oneOf(['One', 'Two']).exec('Two')).toBe(true);
   });
