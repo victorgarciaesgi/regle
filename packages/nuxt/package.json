@@ -52,7 +52,6 @@
     "eslint-plugin-vue": "catalog:",
     "nuxt": "catalog:",
     "prettier": "catalog:",
-    "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "unbuild": "3.5.0",

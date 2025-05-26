@@ -4,10 +4,10 @@
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "typecheck": "vue-tsc --noEmit",
-    "build": "tsup",
-    "build:dev": "tsup --config=tsup.dev.ts",
-    "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
-    "dev": "tsup --config=tsup.dev.ts --watch",
+    "build": "tsdown",
+    "build:dev": "tsdown --config=tsdown.dev.ts",
+    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
+    "dev": "tsdown --config=tsdown.dev.ts --watch",
     "test": "vitest run"
   },
   "dependencies": {
@@ -23,7 +23,7 @@
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "prettier": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",

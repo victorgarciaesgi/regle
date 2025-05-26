@@ -34,7 +34,6 @@
     "eslint-plugin-vue": "catalog:",
     "npm-run-all2": "^7.0.2",
     "prettier": "catalog:",
-    "tsup": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vite": "^6.2.3",

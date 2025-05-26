@@ -6,12 +6,12 @@
     "@regle/core": "workspace:*",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "tsup": "catalog:"
+    "tsdown": "catalog:"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build:dev": "tsup --config=tsup.dev.ts",
-    "dev": "tsup --config=tsup.dev.ts --watch",
+    "build:dev": "tsdown --config=tsdown.dev.ts",
+    "dev": "tsdown --config=tsdown.dev.ts --watch",
     "test": "echo 'no tests'"
   }
 }

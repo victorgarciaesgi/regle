@@ -1,10 +1,10 @@
-import type { Options } from 'tsup';
+import type { Options } from 'tsdown';
 
-export function outExtension(isMin = false): Options['outExtension'] | undefined {
+export function outExtensions(isMin = false): Options['outExtensions'] | undefined {
   return ({ format }) => {
     let output;
     const min = isMin ? '.min' : '';
-    if (format === 'esm') {
+    if (format === 'es') {
       output = `${min}.mjs`;
     } else {
       output = `.browser${min}.js`;

@@ -4,10 +4,10 @@
   "description": "Headless form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsup",
-    "build:dev": "tsup --config=tsup.dev.ts",
-    "build:sourcemaps": "tsup --config=tsup.sourcemap.ts",
-    "dev": "tsup --config=tsup.dev.ts --watch",
+    "build": "tsdown",
+    "build:dev": "tsdown --config=tsdown.dev.ts",
+    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
+    "dev": "tsdown --config=tsdown.dev.ts --watch",
     "test": "echo 'no tests'"
   },
   "peerDependencies": {
@@ -30,7 +30,7 @@
     "eslint-plugin-vue": "catalog:",
     "expect-type": "catalog:",
     "prettier": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
