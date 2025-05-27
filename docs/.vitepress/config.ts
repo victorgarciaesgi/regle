@@ -144,6 +144,9 @@ const shortDescription = 'Headless model-based form validation library for Vue.j
 const longDescription =
   'Regle is a Headless form validation library made for Vue.js. Regle is about bringing type safety and great DX to forms.';
 
+const keywords =
+  'vue forms, vue form library, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form';
+
 export default defineConfig({
   title: 'Regle',
   description: shortDescription,
@@ -302,7 +305,8 @@ export default defineConfig({
           "url":"https://reglejs.dev/",
           "inLanguage":"en",
           "description":"Headless form validation library for Vue.js",
-          "name":"Regle"
+          "name":"Regle",
+          "keywords":"${keywords}",
         }`;
       } else {
         return `
@@ -315,7 +319,7 @@ export default defineConfig({
               "@type":"WebPage",
               "@id":"${canonicalUrl}"
             },
-            "keywords":"regle, vue, forms, typescript",
+            "keywords":"${keywords}",
             "url":"https://reglejs.dev/",
             "name": "Regle"
         }`;
@@ -336,8 +340,7 @@ export default defineConfig({
       'meta',
       {
         name: 'keywords',
-        content:
-          'vue forms, vue form library, vue validation library, vue forms typescript, vue model validation, vue zod, vue typescript forms, regle, reglejs, regle vue, regle vue forms, regle vue form',
+        content: keywords,
       },
     ],
     ['meta', { property: 'og:type', content: 'website' }],

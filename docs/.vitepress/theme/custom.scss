@@ -354,6 +354,11 @@ h2 .header-anchor {
   opacity: 1 !important;
 }
 
+.hidden-title {
+  opacity: 0;
+  position: absolute !important;
+}
+
 h2:has(+ h2) {
   font-size: 28px !important;
 }
