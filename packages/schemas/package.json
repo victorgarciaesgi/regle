@@ -57,18 +57,18 @@
       "types": "./dist/regle-schemas.d.ts",
       "node": {
         "import": {
-          "production": "./dist/regle-schemas.min.mjs",
-          "development": "./dist/regle-schemas.mjs",
-          "default": "./dist/regle-schemas.mjs"
+          "production": "./dist/regle-schemas.min.js",
+          "development": "./dist/regle-schemas.js",
+          "default": "./dist/regle-schemas.js"
         }
       },
-      "import": "./dist/regle-schemas.mjs"
+      "import": "./dist/regle-schemas.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "./dist/regle-schemas.mjs",
-  "module": "./dist/regle-schemas.mjs",
+  "main": "./dist/regle-schemas.js",
+  "module": "./dist/regle-schemas.js",
   "types": "./dist/regle-schemas.d.ts",
   "files": [
     "dist",

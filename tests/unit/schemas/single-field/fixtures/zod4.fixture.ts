@@ -1,6 +1,6 @@
 import { useRegleSchema } from '@regle/schemas';
 import { ref } from 'vue';
-import { z } from 'zod4';
+import { z } from 'zod/v4';
 
 export function zod4SingleFieldFixture() {
   const name = ref<number | undefined>();

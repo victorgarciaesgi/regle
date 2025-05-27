@@ -5,10 +5,11 @@ export function outExtensions(isMin = false): Options['outExtensions'] | undefin
     let output;
     const min = isMin ? '.min' : '';
     if (format === 'es') {
-      output = `${min}.mjs`;
+      output = `${min}.js`;
     } else {
       output = `.browser${min}.js`;
     }
+
     return {
       js: output,
     };

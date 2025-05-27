@@ -71,17 +71,6 @@
     "zx": "8.5.3"
   },
   "type": "module",
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "lint-staged": {
     "*.{js,mjs,json,cjs}": [
       "prettier --write"

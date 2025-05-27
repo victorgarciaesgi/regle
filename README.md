@@ -35,19 +35,21 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 | ------------- | ------------- | ------------- |
 | <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
-## 🧰 Features
+## ✨ Features
 
-- ☁️ Headless
-- ✅ Type safety
-- 🧮 Model based
-- 🧰 Modular
-- 🔄 Async validation
-- 🌐 Plug any i18n library
-- 📗 Vuelidate like API
-- Standard Schemas spec support
+- 🔌 **Headless**: Plug any UI or markup to the validation.
+- 🎯 **Type safe**: Full inference and autocompletion support.
+- 🌳 **Model based**: Your validation tree structure matches the data model.
+- 🎨 **Style Agnostic**: Works with any CSS framework or plain CSS.
+- 📦 **Modular design**: Expand Regle properties or default validation rules.
+- 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.
+- 🌐 **i18n Ready**: Works with any i18n library.
+- 📕 **Vuelidate like API**: Regle's API mimics Vuelidate's API while improving it on a lot of areas.
+- ⚡️ **SSR Ready**: Full support for Server Side Rendering environments.
+- ✅ **Alternative validation**: [Standard Schema](https://standardschema.dev/) spec validation support.
   - 🦸‍♂️ [Zod](https://zod.dev/)
   - 🤖 [Valibot](https://valibot.dev/)
-  - 🚢 [ArkType](https://arktype.io)  🚧
+  - 🚢 [ArkType](https://arktype.io)
 
 
 ## 🫶 Credits

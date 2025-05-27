@@ -1,5 +1,5 @@
 import { defineConfig, type Options } from 'tsdown';
-import { defaultOptions } from '../../tsdown.common.dev';
+import { defaultOptions } from '../../tsdown.common.build';
 import { outExtensions } from '../../tsdown.common.build';
 
 const sharedOptions: Options = {
@@ -17,6 +17,7 @@ export default defineConfig([
   {
     ...sharedOptions,
     minify: true,
+    dts: false,
     outExtensions: outExtensions(true),
   },
 ]);

@@ -1,6 +1,6 @@
 import { useRegleSchema } from '@regle/schemas';
 import { reactive } from 'vue';
-import { z } from 'zod4';
+import { z } from 'zod/v4';
 
 const GiftType = z.enum(['Cash', 'Shares'], {
   error: 'Please select an option',

@@ -1,7 +1,7 @@
 import { isFilled } from '@regle/rules';
 import { useRegleSchema } from '@regle/schemas';
 import { ref } from 'vue';
-import { z } from 'zod4';
+import { z } from 'zod/v4';
 import { timeout } from '../../../../utils';
 
 export function zod4AsyncSchemaFixture() {

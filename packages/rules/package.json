@@ -37,18 +37,18 @@
       "types": "./dist/regle-rules.d.ts",
       "node": {
         "import": {
-          "production": "./dist/regle-rules.min.mjs",
-          "development": "./dist/regle-rules.mjs",
-          "default": "./dist/regle-rules.mjs"
+          "production": "./dist/regle-rules.min.js",
+          "development": "./dist/regle-rules.js",
+          "default": "./dist/regle-rules.js"
         }
       },
-      "import": "./dist/regle-rules.mjs"
+      "import": "./dist/regle-rules.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "main": "./dist/regle-rules.mjs",
-  "module": "./dist/regle-rules.mjs",
+  "main": "./dist/regle-rules.js",
+  "module": "./dist/regle-rules.js",
   "types": "./dist/regle-rules.d.ts",
   "files": [
     "dist",

@@ -18,7 +18,6 @@
     "valibot": "1.0.0",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "zod": "catalog:",
-    "zod4": "npm:zod@next"
+    "zod": "catalog:"
   }
 }

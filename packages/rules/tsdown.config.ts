@@ -10,11 +10,11 @@ const sharedOptions: Options = {
 export default defineConfig([
   {
     ...sharedOptions,
-    outExtensions: outExtensions(),
   },
   {
     ...sharedOptions,
     minify: true,
+    dts: false,
     outExtensions: outExtensions(true),
   },
 ]);
