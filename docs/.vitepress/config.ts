@@ -306,7 +306,6 @@ export default defineConfig({
           "inLanguage":"en",
           "description":"Headless form validation library for Vue.js",
           "name":"Regle",
-          "keywords":"${keywords}",
         }`;
       } else {
         return `
@@ -319,7 +318,6 @@ export default defineConfig({
               "@type":"WebPage",
               "@id":"${canonicalUrl}"
             },
-            "keywords":"${keywords}",
             "url":"https://reglejs.dev/",
             "name": "Regle"
         }`;
