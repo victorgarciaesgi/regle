@@ -1,41 +1,29 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRegle } from '@regle/core';
+import { type } from 'arktype';
+import { useRegleSchema } from '@regle/schemas';
 import { required, minLength, email } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+const state = ref({ name: '', tags: [] });
 
-const externalErrors = ref({});
-
-const { r$ } = useRegle(
-  state,
-  {
-    email: { email },
+const tagSchema = type("'wolt' |'eat_in'").configure({
+  message: () => {
+    return 'Custom message';
   },
-  {
-    externalErrors,
-    autoDirty: true,
-    rewardEarly: true, // CHANGE THIS
-    clearExternalErrorsOnChange: true,
-    lazy: false,
-  }
-);
+});
 
-const mimicExternalData = () => {
-  setTimeout(() => {
-    externalErrors.value = {
-      name: ['Example validation issue'],
-    };
-  }, 500);
-};
+const menuSchema = type({
+  'id?': type('string'),
+  name: type('string>0').configure({
+    message: () => 'custom message',
+  }),
+  tags: type(tagSchema, '[]'),
+});
+
+const { r$ } = useRegleSchema(state, menuSchema);
 
 async function submit() {
   const { valid, data } = await r$.$validate();
-  if (valid) {
-    mimicExternalData();
-  } else {
-    alert('Invalid');
-  }
 }
 </script>
 
@@ -51,15 +39,18 @@ async function submit() {
   </ul>
 
   <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <select multiple v-model="r$.$value.tags" placeholder="Type your email">
+    <option value="wolt">Wolt</option>
+    <option value="eat_inn">Eat in</option>
+  </select>
+  {{ r$.$errors.tags }}
   <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.email" :key="error">
+    <li v-for="error of r$.$errors.tags" :key="error">
       {{ error }}
     </li>
   </ul>
 
   <button @click="submit">Submit</button>
   <button @click="r$.$reset()">Reset</button>
-  <button @click="r$.$reset({ toState: { name: '', email: '' } })">Restart</button>
   <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
 </template>

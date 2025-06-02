@@ -159,6 +159,9 @@ const { r$ } = useRegle({ name: '', email: '' }, {
 <Parent/>
 
 
+## Typing a field prop with global configuration
+
+
 ## Enforcing rules for a specific component
 
 
@@ -185,7 +188,7 @@ const props = defineProps<{
 ```
 
 
-### For a custom rule
+### For a custom configurations
 
 :::code-group
 
@@ -232,32 +235,5 @@ const props = defineProps<{
 
 :::
 
-### For custom shortcuts
 
-
-
-
-
-```vue twoslash [MyPassword.vue]
-<script setup lang="ts">
-import { computed } from 'vue';
-// @include: config
-// @noErrors
-// ---cut---
-import {
-  type RegleEnforceCustomRequiredRules,
-  type RegleFieldStatus,
-  type InferRegleShortcuts,
-} from '@regle/core';
-import type { useCustomRegle } from './config';
-
-const props = defineProps<{
-  field: RegleFieldStatus<
-    string,
-    {},
-    InferRegleShortcuts<typeof useCustomRegle>
-  >;
-}>();
-</script>
-```
 

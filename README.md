@@ -45,7 +45,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 - 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.
 - 🌐 **i18n Ready**: Works with any i18n library.
 - 📕 **Vuelidate like API**: Regle's API mimics Vuelidate's API while improving it on a lot of areas.
-- ⚡️ **SSR Ready**: Full support for Server Side Rendering environments.
+- ⚡️ **SSR Ready**: Full support for Server Side Rendering environments. <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/>
 - ✅ **Alternative validation**: [Standard Schema](https://standardschema.dev/) spec validation support.
   - 🦸‍♂️ [Zod](https://zod.dev/)
   - 🤖 [Valibot](https://valibot.dev/)

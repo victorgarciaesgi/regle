@@ -108,4 +108,7 @@ export type {
   InferInput,
   RegleUnknownRulesTree,
   HaveAnyRequiredProps,
+  RegleCustomFieldStatus,
+  RegleCustomStatus,
+  RegleCustomCollectionStatus,
 } from './types';

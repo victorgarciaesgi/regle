@@ -103,13 +103,23 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       const output = {};
       if (result.issues) {
         const errors = result.issues.map((issue) => {
-          const path =
-            issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+          let path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
           const lastItem = issue.path?.[issue.path.length - 1];
           const isArray =
             (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
             ('type' in issue ? issue.type === 'array' : false) ||
             Array.isArray(getDotPath(processedState.value, path));
+
+          const isPrimitivesArray =
+            !isArray && typeof (typeof lastItem === 'object' ? lastItem.key : lastItem) === 'number';
+
+          if (isPrimitivesArray) {
+            path =
+              issue.path
+                ?.slice(0, issue.path.length - 1)
+                ?.map((item) => (typeof item === 'object' ? item.key : item.toString()))
+                .join('.') ?? '';
+          }
 
           return {
             path: path,
@@ -130,6 +140,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       if (result instanceof Promise) {
         result = await result;
       }
+
       if (isSingleField.value) {
         customErrors.value = result.issues?.map((issue) => issue.message) ?? [];
       } else {
