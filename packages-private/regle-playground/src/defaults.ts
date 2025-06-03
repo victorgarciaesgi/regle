@@ -46,7 +46,6 @@ async function submit() {
     </ul>
 
     <button @click="submit">Submit</button>
-    <button @click="r$.$reset()">Reset</button>
     <button @click="r$.$reset({toInitialState: true})">Restart</button>
     <code class="status"> Form status {{r$.$correct ? '✅' : '❌'}}</code>
 </template>
