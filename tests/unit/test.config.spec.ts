@@ -7,7 +7,7 @@ describe('ensure test is correctly configured', () => {
       expect(version).toBe('3.4.38');
     } else {
       // To be sure the version switching works
-      expect(version).toBe('3.5.13');
+      expect(version).toBe('3.5.16');
     }
   });
 });
