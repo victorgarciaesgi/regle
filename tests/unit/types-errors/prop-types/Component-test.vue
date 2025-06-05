@@ -5,9 +5,8 @@
 <script setup lang="ts">
 import type {
   CommonComparisonOptions,
-  InferRegleShortcuts,
   MaybeOutput,
-  RegleEnforceCustomRequiredRules,
+  RegleCustomFieldStatus,
   RegleEnforceRequiredRules,
   RegleFieldStatus,
   RegleRuleMetadataDefinition,
@@ -15,22 +14,16 @@ import type {
 } from '@regle/core';
 import type { useCustomRegle } from './prop-types.config';
 
-type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
-
 const props = defineProps<{
   unknownField: RegleFieldStatus;
   unknownExplicitField: RegleFieldStatus<unknown>;
   booleanField: RegleFieldStatus<boolean | undefined>;
   stringField: RegleFieldStatus<string | undefined>;
   stringNumberField: RegleFieldStatus<string | undefined> | RegleFieldStatus<number | undefined>;
-  customStringField: RegleFieldStatus<string | undefined, any, MyShortcuts>;
+  customStringField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined>;
   enforcedRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required'>>;
   enforcedMultipleRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required' | 'minLength'>>;
-  enforcedCustomRulesField: RegleFieldStatus<
-    string | undefined,
-    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'myCustomRule'>,
-    MyShortcuts
-  >;
+  enforcedCustomRulesField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined, 'myCustomRule'>;
 }>();
 
 // -

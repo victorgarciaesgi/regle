@@ -109,6 +109,4 @@ export type {
   RegleUnknownRulesTree,
   HaveAnyRequiredProps,
   RegleCustomFieldStatus,
-  RegleCustomStatus,
-  RegleCustomCollectionStatus,
 } from './types';
