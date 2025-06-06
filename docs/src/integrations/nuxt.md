@@ -89,6 +89,7 @@ This will inject the fellowing composables to your auto-imports and `#imports`, 
 - `inferRules` 
 - `useCollectScope` 
 - `useScopedRegle` 
+- `type RegleFieldStatus`
 
 
 ```vue [app.vue] {2}
