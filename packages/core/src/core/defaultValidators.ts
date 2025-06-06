@@ -92,7 +92,7 @@ export type DefaultValidators = {
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
-  required: RegleRuleDefinition<unknown, []>;
+  required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   string: RegleRuleDefinition<unknown, [], false, boolean, any, unknown>;
   type: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;

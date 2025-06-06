@@ -20,7 +20,7 @@ const props = defineProps<{
   booleanField: RegleFieldStatus<boolean | undefined>;
   stringField: RegleFieldStatus<string | undefined>;
   stringNumberField: RegleFieldStatus<string | undefined> | RegleFieldStatus<number | undefined>;
-  customStringField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined>;
+  customStringField: RegleCustomFieldStatus<typeof useCustomRegle, string>;
   enforcedRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required'>>;
   enforcedMultipleRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required' | 'minLength'>>;
   enforcedCustomRulesField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined, 'myCustomRule'>;
@@ -61,10 +61,13 @@ expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<MaybeOutput<string | 
 
 //-
 expectTypeOf(props.customStringField.$test).toEqualTypeOf<boolean>();
+expectTypeOf(props.customStringField.$rules.myCustomRule).toEqualTypeOf<
+  RegleRuleStatus<string, [], boolean> | undefined
+>();
 
 //-
 expectTypeOf(props.enforcedRulesField.$rules.required).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, [], RegleRuleMetadataDefinition>
+  RegleRuleStatus<string | undefined, [], boolean>
 >();
 
 //-
