@@ -24,7 +24,7 @@
     "dev": "echo 'no dev build'",
     "dev:playground": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "typecheck": "nuxi typecheck playground",
+    "typecheck": "pnpm dev:prepare && vue-tsc --noEmit && nuxi typecheck test/fixtures",
     "build": "pnpm run dev:prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
@@ -42,7 +42,6 @@
     "@regle/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/devtools": "2.4.0",
     "@nuxt/eslint-config": "1.3.0",
     "@nuxt/module-builder": "1.0.1",
     "@nuxt/test-utils": "3.17.2",

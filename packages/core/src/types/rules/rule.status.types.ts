@@ -203,7 +203,7 @@ export type RegleFieldStatus<
               ? TMetadata extends Promise<infer P>
                 ? P
                 : TMetadata
-              : any
+              : boolean
         >;
       };
 } & ([TShortcuts['fields']] extends [never]

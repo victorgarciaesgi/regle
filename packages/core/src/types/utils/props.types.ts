@@ -1,19 +1,12 @@
 import type { DefaultValidators } from '../../core';
 import type { useRegleFn } from '../../core/useRegle';
 import type {
-  AllRulesDeclarations,
   DefaultValidatorsTree,
-  RegleCollectionStatus,
   RegleFieldStatus,
-  RegleFormPropertyType,
-  ReglePartialRuleTree,
-  RegleRuleTree,
-  RegleStatus,
   SuperCompatibleRegle,
   UnwrapRuleTree,
   UnwrapRuleWithParams,
 } from '../rules';
-import type { ArrayElement } from './Array.types';
 
 /**
  * Infer type of the `r$` of any function returning a regle instance
@@ -28,7 +21,7 @@ export type InferRegleRoot<T extends (...args: any[]) => SuperCompatibleRegle> =
  * Infer custom rules declared in a global configuration
  */
 export type InferRegleRules<T extends useRegleFn<any, any>> =
-  T extends useRegleFn<infer U, any> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
+  T extends useRegleFn<infer U, any> ? UnwrapRuleTree<Partial<DefaultValidators>> & UnwrapRuleTree<Partial<U>> : {};
 
 /**
  * Infer custom shortcuts declared in a global configuration
@@ -70,5 +63,9 @@ export type RegleEnforceCustomRequiredRules<
 export type RegleCustomFieldStatus<
   T extends useRegleFn<any, any>,
   TState extends unknown = any,
-  TRules extends keyof InferRegleRules<T> = keyof InferRegleRules<T>,
-> = RegleFieldStatus<TState, RegleEnforceCustomRequiredRules<T, TRules>, InferRegleShortcuts<T>>;
+  TRules extends keyof InferRegleRules<T> = never,
+> = RegleFieldStatus<
+  TState,
+  [TRules] extends [never] ? Partial<InferRegleRules<T>> : RegleEnforceCustomRequiredRules<T, TRules>,
+  InferRegleShortcuts<T>
+>;
