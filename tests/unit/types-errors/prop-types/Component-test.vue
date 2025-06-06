@@ -5,17 +5,14 @@
 <script setup lang="ts">
 import type {
   CommonComparisonOptions,
-  InferRegleShortcuts,
   MaybeOutput,
-  RegleEnforceCustomRequiredRules,
+  RegleCustomFieldStatus,
   RegleEnforceRequiredRules,
   RegleFieldStatus,
-  RegleRuleMetadataDefinition,
+  InferRegleShortcuts,
   RegleRuleStatus,
 } from '@regle/core';
 import type { useCustomRegle } from './prop-types.config';
-
-type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
 const props = defineProps<{
   unknownField: RegleFieldStatus;
@@ -23,14 +20,11 @@ const props = defineProps<{
   booleanField: RegleFieldStatus<boolean | undefined>;
   stringField: RegleFieldStatus<string | undefined>;
   stringNumberField: RegleFieldStatus<string | undefined> | RegleFieldStatus<number | undefined>;
-  customStringField: RegleFieldStatus<string | undefined, any, MyShortcuts>;
+  shortcutsField?: RegleFieldStatus<string, any, InferRegleShortcuts<typeof useCustomRegle>>;
+  customStringField: RegleCustomFieldStatus<typeof useCustomRegle, string>;
   enforcedRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required'>>;
   enforcedMultipleRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required' | 'minLength'>>;
-  enforcedCustomRulesField: RegleFieldStatus<
-    string | undefined,
-    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'myCustomRule'>,
-    MyShortcuts
-  >;
+  enforcedCustomRulesField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined, 'myCustomRule'>;
 }>();
 
 // -
@@ -68,11 +62,20 @@ expectTypeOf(props.stringNumberField.$value).toEqualTypeOf<MaybeOutput<string | 
 
 //-
 expectTypeOf(props.customStringField.$test).toEqualTypeOf<boolean>();
+expectTypeOf(props.customStringField.$isRequired).toEqualTypeOf<boolean>();
+
+expectTypeOf(props.customStringField.$rules.myCustomRule).toEqualTypeOf<
+  RegleRuleStatus<string, [], boolean> | undefined
+>();
 
 //-
 expectTypeOf(props.enforcedRulesField.$rules.required).toEqualTypeOf<
-  RegleRuleStatus<string | undefined, [], RegleRuleMetadataDefinition>
+  RegleRuleStatus<string | undefined, [], boolean>
 >();
+
+//-
+
+expectTypeOf(props.shortcutsField?.$test).toEqualTypeOf<boolean | undefined>();
 
 //-
 expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength).toEqualTypeOf<
@@ -86,6 +89,9 @@ expectTypeOf(props.enforcedMultipleRulesField.$rules.minLength.$params).toEqualT
 expectTypeOf(props.enforcedCustomRulesField.$rules.myCustomRule).toEqualTypeOf<
   RegleRuleStatus<string | undefined, [], boolean>
 >();
+
+//-
+expectTypeOf(props.enforcedCustomRulesField.$test).toEqualTypeOf<boolean>();
 </script>
 
 <style lang="scss" scoped></style>

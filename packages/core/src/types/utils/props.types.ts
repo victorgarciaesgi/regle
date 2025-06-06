@@ -1,18 +1,12 @@
 import type { DefaultValidators } from '../../core';
 import type { useRegleFn } from '../../core/useRegle';
 import type {
-  AllRulesDeclarations,
   DefaultValidatorsTree,
-  RegleCollectionStatus,
   RegleFieldStatus,
-  RegleFormPropertyType,
-  ReglePartialRuleTree,
-  RegleStatus,
   SuperCompatibleRegle,
   UnwrapRuleTree,
   UnwrapRuleWithParams,
 } from '../rules';
-import type { ArrayElement } from './Array.types';
 
 /**
  * Infer type of the `r$` of any function returning a regle instance
@@ -27,7 +21,7 @@ export type InferRegleRoot<T extends (...args: any[]) => SuperCompatibleRegle> =
  * Infer custom rules declared in a global configuration
  */
 export type InferRegleRules<T extends useRegleFn<any, any>> =
-  T extends useRegleFn<infer U, any> ? UnwrapRuleTree<Partial<U> & Partial<DefaultValidators>> : {};
+  T extends useRegleFn<infer U, any> ? UnwrapRuleTree<Partial<DefaultValidators>> & UnwrapRuleTree<Partial<U>> : {};
 
 /**
  * Infer custom shortcuts declared in a global configuration
@@ -49,8 +43,8 @@ export type RegleEnforceRequiredRules<TRules extends keyof DefaultValidators> = 
 
  */
 export type RegleEnforceCustomRequiredRules<
-  T extends Partial<AllRulesDeclarations> | useRegleFn<any, any>,
-  TRules extends T extends useRegleFn<any, any> ? keyof InferRegleRules<T> : keyof T,
+  T extends useRegleFn<any, any>,
+  TRules extends keyof InferRegleRules<T>,
 > = Omit<Partial<DefaultValidatorsTree>, TRules> & {
   [K in TRules]-?: T extends useRegleFn<any, any>
     ? K extends keyof InferRegleRules<T>
@@ -69,23 +63,9 @@ export type RegleEnforceCustomRequiredRules<
 export type RegleCustomFieldStatus<
   T extends useRegleFn<any, any>,
   TState extends unknown = any,
-  TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = InferRegleRules<T>,
-> = RegleFieldStatus<TState, TRules, InferRegleShortcuts<T>>;
-
-/**
- * Extract custom rules and custom shortcuts and apply them to a RegleFieldStatus type
- */
-export type RegleCustomStatus<
-  T extends useRegleFn<any, any>,
-  TState extends Record<string, any> | undefined = Record<string, any>,
-  TRules extends ReglePartialRuleTree<NonNullable<TState>> = InferRegleRules<T>,
-> = RegleStatus<TState, TRules, InferRegleShortcuts<T>>;
-
-/**
- * Extract custom rules and custom shortcuts and apply them to a RegleFieldStatus type
- */
-export type RegleCustomCollectionStatus<
-  T extends useRegleFn<any, any>,
-  TState extends any[] = any[],
-  TRules extends ReglePartialRuleTree<ArrayElement<TState>> = InferRegleRules<T>,
-> = RegleCollectionStatus<TState, TRules, InferRegleShortcuts<T>>;
+  TRules extends keyof InferRegleRules<T> = never,
+> = RegleFieldStatus<
+  TState,
+  [TRules] extends [never] ? Partial<InferRegleRules<T>> : RegleEnforceCustomRequiredRules<T, TRules>,
+  InferRegleShortcuts<T>
+>;

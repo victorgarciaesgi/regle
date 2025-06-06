@@ -8,6 +8,7 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
   shortcuts: {
     fields: {
       $test: () => true,
+      $isRequired: (field) => field.$rules.required?.$active ?? false,
     },
   },
 });

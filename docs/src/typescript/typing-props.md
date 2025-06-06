@@ -162,6 +162,51 @@ const { r$ } = useRegle({ name: '', email: '' }, {
 ## Typing a field prop with global configuration
 
 
+:::code-group
+
+
+```ts twoslash include config [config.ts]
+// @module: esnext
+// @filename config.ts
+import { withMessage } from '@regle/rules';
+// ---cut---
+import { defineRegleConfig } from '@regle/core';
+
+export const { useRegle: useCustomRegle } = defineRegleConfig({
+  rules: () => ({
+    strongPassword: withMessage(() => true, 'test')
+  }),
+  shortcuts: {
+    fields: {
+      $test: () => true
+    }
+  }
+});
+```
+
+```vue twoslash [MyPassword.vue]
+<script setup lang="ts">
+import { computed } from 'vue';
+// @include: config
+// @noErrors
+// ---cut---
+import {
+  type RegleEnforceCustomRequiredRules,
+  type RegleCustomFieldStatus,
+} from '@regle/core';
+import type { useCustomRegle } from './config';
+
+const props = defineProps<{
+  field: RegleCustomFieldStatus<
+    typeof useCustomRegle, string
+  >;
+}>();
+</script>
+```
+
+:::
+
+
 ## Enforcing rules for a specific component
 
 
@@ -220,14 +265,14 @@ import { computed } from 'vue';
 // ---cut---
 import {
   type RegleEnforceCustomRequiredRules,
-  type RegleFieldStatus,
+  type RegleCustomFieldStatus,
 } from '@regle/core';
 import type { useCustomRegle } from './config';
 
 const props = defineProps<{
-  field: RegleFieldStatus<
+  field: RegleCustomFieldStatus<
     string,
-    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+    'strongPassword' | 'required',
   >;
 }>();
 </script>

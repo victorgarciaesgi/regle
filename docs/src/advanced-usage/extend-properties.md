@@ -107,35 +107,7 @@ For this Regle provides a type helper that can ease the declaration of these pro
 
 :::code-group
 
-```vue twoslash [myInput.vue]
-<script lang='ts' setup>
-import { defineRegleConfig } from '@regle/core';
-export const { useRegle: useCustomRegle } = defineRegleConfig({
-  shortcuts: {
-    fields: {
-      $isRequired: (field) => field.$rules.required?.$active ?? false,
-    },
-  },
-});
-// @noErrors
-// ---cut---
-// @module: esnext
-import type { RegleFieldStatus, InferRegleShortcuts } from '@regle/core';
-import { useCustomRegle } from './config';
-
-type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
-
-const props = defineProps<{
-  field: RegleFieldStatus<string, any, MyShortcuts>;
-  placeholder: string;
-}>();
-
-props.field.$isR
-//              ^|
-</script>
-```
-
-```ts twoslash [config.ts]
+```ts twoslash include config [config.ts]
 // @module: esnext
 // @filename config.ts
 // ---cut---
@@ -143,9 +115,30 @@ import { defineRegleConfig } from '@regle/core';
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   shortcuts: {
     fields: {
-      $isRequired: (field) => field.$rules.required?.$active ?? false,
+      $test: () => true,
     },
   },
 });
 ```
+
+```vue twoslash [myInput.vue]
+<script lang='ts' setup>
+import { defineRegleConfig } from '@regle/core';
+// @include: config
+// @noErrors
+// ---cut---
+// @module: esnext
+import type { RegleCustomFieldStatus } from '@regle/core';
+import {useCustomRegle} from './config'
+
+const props = defineProps<{
+  field: RegleCustomFieldStatus<typeof useCustomRegle, string, 'required'>;
+  placeholder: string;
+}>();
+
+props.field.$test
+</script>
+```
+
+
 :::
