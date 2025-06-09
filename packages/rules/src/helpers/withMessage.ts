@@ -9,6 +9,8 @@ import type {
   RegleRuleWithParamsDefinition,
   InferRegleRule,
   NoInferLegacy,
+  UnwrapRegleUniversalParams,
+  RegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 
@@ -71,6 +73,20 @@ export function withMessage<
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+export function withMessage<
+  TValue extends any,
+  TParams extends any[],
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
+  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+>(
+  rule: (...args: any[]) => RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
+  newMessage: RegleRuleDefinitionWithMetadataProcessor<
+    TValue,
+    RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
+    string | string[]
+  >
+): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
 export function withMessage(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

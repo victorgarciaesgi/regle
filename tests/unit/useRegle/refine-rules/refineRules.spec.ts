@@ -38,12 +38,12 @@ describe('refineRules', () => {
     expectTypeOf<ReturnType<typeof rules>['confirmPassword']>().toEqualTypeOf<{
       required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
       sameAs: RegleRuleDefinition<
-        unknown,
+        MaybeInput<string>,
         [target: MaybeInput<string>, otherName?: string | undefined],
         false,
         boolean,
         MaybeInput<string>,
-        unknown
+        MaybeInput<string>
       >;
     }>();
 

@@ -3,7 +3,7 @@ import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 
 describe('sameAs validator', () => {
   it('should not validate different values', () => {
-    expect(sameAs('empty').exec('any')).toBe(false);
+    expect(sameAs('empty').exec('any' as any)).toBe(false);
   });
 
   it('should not validate undefined values', () => {
@@ -11,7 +11,7 @@ describe('sameAs validator', () => {
   });
 
   it('should not validate undefined param', () => {
-    expect(sameAs(undefined).exec('any')).toBe(false);
+    expect(sameAs(undefined).exec('any' as any)).toBe(false);
   });
 
   it('should validate undefined value', () => {
@@ -26,12 +26,12 @@ describe('sameAs validator', () => {
 
   expectTypeOf(sameAsRule).toEqualTypeOf<
     RegleRuleDefinition<
-      unknown,
+      string,
       [target: string, otherName?: string | undefined],
       false,
       boolean,
       MaybeInput<string>,
-      unknown
+      string
     >
   >();
 });

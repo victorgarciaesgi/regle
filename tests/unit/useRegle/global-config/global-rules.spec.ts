@@ -1,12 +1,15 @@
 import { defineRegleConfig, extendRegleConfig, useRegle, type Maybe, type RegleComputedRules } from '@regle/core';
 import { ref } from 'vue';
 import { ruleMockIsEven, ruleMockMetadata } from '../../../fixtures';
-import { and, applyIf, minValue, not, or, required, withMessage } from '@regle/rules';
+import { and, applyIf, minValue, not, or, required, sameAs, withMessage } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
 
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
+    sameAs: withMessage(sameAs, ({ $value, $params: [target, otherName] }) => {
+      return `Not same as ${otherName}`;
+    }),
     rule: withMessage(ruleMockIsEven, 'Patched rule'),
   }),
 });
@@ -23,6 +26,8 @@ const form = ref({
     },
     collection: [{ name: 1 as number | null }],
   },
+  password: '',
+  confirmPassword: '',
 });
 
 function nestedRefObjectValidation() {
@@ -43,6 +48,8 @@ function nestedRefObjectValidation() {
         },
       },
     },
+    password: {},
+    confirmPassword: { sameAs: sameAs(() => form.value.password, 'password') },
   }));
 }
 
@@ -68,6 +75,12 @@ describe('defineRegleConfig rules', () => {
     expect(vm.r$.$fields.withAnd.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
+
+    vm.r$.$value.password = 'foo';
+    vm.r$.$value.confirmPassword = 'foobar';
+    await vm.$nextTick();
+
+    expect(vm.r$.$fields.confirmPassword.$errors).toStrictEqual(['Not same as password']);
 
     // Ensure types are inferred well
     defineRegleConfig({

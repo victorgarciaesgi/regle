@@ -3,7 +3,7 @@ import { useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { and } from '../and';
-import { dateBefore, email, minLength, required } from '../../rules';
+import { dateBefore, email, minLength, oneOf, required, sameAs } from '../../rules';
 import { withMessage } from '../withMessage';
 import { withAsync } from '../withAsync';
 import { isFilled } from '../ruleHelpers';
@@ -269,8 +269,10 @@ describe('withMessage helper', () => {
     >();
 
     const message = withMessage(minLength, ({ $value, $params: [count] }) => {
+      expectTypeOf(count).toEqualTypeOf<number>();
       return `Minimum length is ${count}. Current length: ${$value?.length}`;
     });
+
     expectTypeOf(message).toEqualTypeOf<
       RegleRuleWithParamsDefinition<
         string | any[] | Record<PropertyKey, any>,
@@ -279,6 +281,16 @@ describe('withMessage helper', () => {
         boolean
       >
     >();
+
+    withMessage(sameAs, ({ $value, $params: [target, otherName] }) => {
+      expectTypeOf(otherName).toEqualTypeOf<string | undefined>();
+      return 'test';
+    });
+
+    withMessage(oneOf, ({ $value, $params: [options] }) => {
+      expectTypeOf(options).toEqualTypeOf<readonly [string | number, ...(string | number)[]]>();
+      return 'test';
+    });
 
     expectTypeOf(
       withMessage(

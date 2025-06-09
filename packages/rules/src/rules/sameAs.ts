@@ -3,19 +3,34 @@ import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 import type { MaybeRefOrGetter } from 'vue';
 
+interface SameAsFn {
+  <TTarget extends unknown = unknown>(
+    target: MaybeRefOrGetter<TTarget>,
+    otherName?: MaybeRefOrGetter<string>
+  ): RegleRuleDefinition<
+    TTarget,
+    [target: TTarget, otherName?: string],
+    false,
+    boolean,
+    TTarget extends MaybeInput<infer M> ? M : MaybeInput<TTarget>
+  >;
+  /** Keep this definition without generics for inference */
+  (
+    target: MaybeRefOrGetter<unknown>,
+    otherName?: MaybeRefOrGetter<string>
+  ): RegleRuleDefinition<
+    unknown,
+    [target: any, otherName?: string],
+    false,
+    boolean,
+    unknown extends MaybeInput<infer M> ? M : MaybeInput<unknown>
+  >;
+}
+
 /**
  * Checks if the value matches the specified property or ref.
  */
-export const sameAs: <const TTarget extends unknown>(
-  target: MaybeRefOrGetter<TTarget>,
-  otherName?: MaybeRefOrGetter<string>
-) => RegleRuleDefinition<
-  unknown,
-  [target: TTarget, otherName?: string],
-  false,
-  boolean,
-  TTarget extends MaybeInput<infer M> ? M : MaybeInput<TTarget>
-> = createRule({
+export const sameAs: SameAsFn = createRule({
   type: 'sameAs',
   validator(value: unknown, target: unknown, otherName?: string) {
     if (isEmpty(value)) {
