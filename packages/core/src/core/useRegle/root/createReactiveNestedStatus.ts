@@ -7,6 +7,7 @@ import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
+  $InternalRegleSchemaErrorTree,
   $InternalRegleShortcutDefinition,
   $InternalRegleStatus,
   $InternalRegleStatusType,
@@ -27,8 +28,8 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Ref<Record<string, any> | undefined>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
-  schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
-  rootSchemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  schemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
+  rootSchemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
   schemaMode: boolean | undefined;
   onValidate?: () => Promise<$InternalRegleResult>;
   validationGroups?:

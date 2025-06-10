@@ -1,34 +1,65 @@
 import { isObject } from '../../../../shared';
-import type { $InternalRegleCollectionErrors, $InternalRegleErrors, $InternalRegleFieldStatus } from '../../types';
+import type {
+  $InternalRegleCollectionErrors,
+  $InternalRegleErrors,
+  $InternalRegleFieldStatus,
+  RegleFieldIssue,
+} from '../../types';
 
-export function extractRulesErrors({
+type TempRegleFieldIssue = {
+  $property: string;
+  $rule: string;
+  $type?: string;
+  $message: string | string[];
+};
+
+export function extractRulesIssues({
   field,
   silent = false,
 }: {
   field: Pick<$InternalRegleFieldStatus, '$rules' | '$error' | '$externalErrors'> & {
-    $schemaErrors: string[] | undefined;
+    $schemaErrors: RegleFieldIssue[] | undefined;
+    fieldName: string;
   };
   silent?: boolean;
-}): string[] {
-  return Object.entries(field.$rules ?? {})
-    .map(([_, rule]) => {
-      if (silent && !rule.$valid) {
-        return rule.$message;
-      } else if (!rule.$valid && field.$error && !rule.$validating) {
-        return rule.$message;
-      }
-
+}): RegleFieldIssue[] {
+  const issues = Object.entries(field.$rules ?? {}).map(([key, rule]) => {
+    let message: string | string[] = '';
+    if (silent && !rule.$valid) {
+      message = rule.$message;
+    } else if (!rule.$valid && field.$error && !rule.$validating) {
+      message = rule.$message;
+    } else {
       return null;
-    })
-    .filter((msg): msg is string | string[] => !!msg)
-    .reduce<string[]>((acc, value) => {
-      if (typeof value === 'string') {
-        return acc?.concat([value]);
+    }
+    const issue: TempRegleFieldIssue = {
+      $message: message,
+      $property: field.fieldName,
+      $rule: key,
+      $type: rule.$type,
+    };
+    return issue;
+  });
+
+  return issues
+    .filter((msg): msg is TempRegleFieldIssue => !!msg)
+    .reduce<RegleFieldIssue[]>((acc, issue) => {
+      if (typeof issue.$message === 'string') {
+        return acc?.concat([issue as unknown as RegleFieldIssue]);
       } else {
-        return acc?.concat(value);
+        return acc?.concat(issue.$message.map((msg) => ({ ...issue, $message: msg })));
       }
     }, [])
-    .concat(field.$error ? (field.$externalErrors ?? []) : [])
+    .concat(
+      field.$error
+        ? (field.$externalErrors?.map((error) => ({
+            $message: error,
+            $property: field.fieldName,
+            $rule: 'external',
+            $type: undefined,
+          })) ?? [])
+        : []
+    )
     .concat(field.$error ? (field.$schemaErrors ?? []) : []);
 }
 
