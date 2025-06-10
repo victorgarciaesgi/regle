@@ -5,8 +5,8 @@ import type {
   LocalRegleBehaviourOptions,
   PrimitiveTypes,
   RegleBehaviourOptions,
-  RegleExternalErrorTree,
-  ReglePartialRuleTree,
+  RegleExternalSchemaErrorTree,
+  RegleFieldIssue,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '@regle/core';
@@ -90,7 +90,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     const initialState = ref(
       isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
     );
-    const customErrors = ref<Raw<RegleExternalErrorTree> | string[]>({});
+    const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
 
@@ -102,7 +102,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>) {
       const output = {};
       if (result.issues) {
-        const errors = result.issues.map((issue) => {
+        const issues = result.issues.map((issue) => {
           let path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
           const lastItem = issue.path?.[issue.path.length - 1];
           const isArray =
@@ -122,14 +122,17 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
           }
 
           return {
+            ...issue,
             path: path,
-            message: issue.message,
             isArray,
+            $property: lastItem,
+            $rule: 'schema',
+            $message: issue.message,
           };
         });
 
-        errors.forEach((error) => {
-          setObjectError(output, error.path, [error.message], error.isArray);
+        issues.forEach(({ isArray, path, ...issue }) => {
+          setObjectError(output, path, [issue], isArray);
         });
       }
       return output;
@@ -142,7 +145,13 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       }
 
       if (isSingleField.value) {
-        customErrors.value = result.issues?.map((issue) => issue.message) ?? [];
+        customErrors.value =
+          result.issues?.map((issue) => ({
+            $message: issue.message,
+            $property: issue.path?.[issue.path.length - 1]?.toString() ?? '-',
+            $rule: 'schema',
+            ...issue,
+          })) ?? [];
       } else {
         customErrors.value = issuesToRegleErrors(result);
       }

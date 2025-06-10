@@ -7,6 +7,7 @@ import type {
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
   $InternalRegleResult,
+  $InternalRegleSchemaCollectionErrors,
   $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
@@ -32,7 +33,7 @@ interface CreateReactiveCollectionStatusArgs {
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
-  schemaErrors?: ComputedRef<$InternalRegleCollectionErrors | undefined> | undefined;
+  schemaErrors?: ComputedRef<$InternalRegleSchemaCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
   shortcuts: $InternalRegleShortcutDefinition | undefined;

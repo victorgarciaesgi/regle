@@ -160,6 +160,14 @@ export type $InternalRegleStatusType =
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
 
+export interface RegleFieldIssue {
+  $property: string;
+  $rule: string;
+  $type?: string;
+  $message: string;
+  [x: string]: unknown;
+}
+
 /**
  * @public
  */
@@ -178,6 +186,10 @@ export type RegleFieldStatus<
   readonly $errors: string[];
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
+  /**
+   * Collect all metadata of validators, including the error message
+   */
+  readonly $issues: RegleFieldIssue[];
   /** Stores external errors of the current field */
   readonly $externalErrors: string[];
   /** Stores active tooltips messages of the current field */
@@ -225,6 +237,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $tooltips: string[];
   readonly $inactive: boolean;
   readonly $silentErrors: string[];
+  readonly $issues: RegleFieldIssue[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: () => Promise<$InternalRegleResult>;
 }
@@ -341,7 +354,7 @@ export type RegleRuleStatus<
  * @reference {@link RegleRuleStatus}
  */
 export interface $InternalRegleRuleStatus {
-  $type: string;
+  $type?: string;
   $message: string | string[];
   $tooltip: string | string[];
   $active: boolean;

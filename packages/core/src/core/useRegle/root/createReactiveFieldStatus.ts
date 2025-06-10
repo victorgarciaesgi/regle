@@ -7,13 +7,13 @@ import type {
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
   CollectionRegleBehaviourOptions,
-  FieldRegleBehaviourOptions,
+  RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../types';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
-import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
+import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
@@ -21,7 +21,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
   externalErrors: Ref<string[] | undefined> | undefined;
-  schemaErrors?: Ref<string[] | undefined> | undefined;
+  schemaErrors?: Ref<RegleFieldIssue[] | undefined> | undefined;
   schemaMode: boolean | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
@@ -54,6 +54,8 @@ export function createReactiveFieldStatus({
     $autoDirty: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
     $clearExternalErrorsOnChange: ComputedRef<boolean>;
+    $issues: ComputedRef<RegleFieldIssue[]>;
+    $silentIssues: ComputedRef<RegleFieldIssue[]>;
     $errors: ComputedRef<string[]>;
     $silentErrors: ComputedRef<string[]>;
     $tooltips: ComputedRef<string[]>;
@@ -252,27 +254,37 @@ export function createReactiveFieldStatus({
         return $invalid.value && !$pending.value && $dirty.value;
       });
 
-      const $errors = computed<string[]>(() => {
-        return extractRulesErrors({
+      const $issues = computed<RegleFieldIssue[]>(() => {
+        return extractRulesIssues({
           field: {
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
+            fieldName,
           },
         });
       });
 
-      const $silentErrors = computed<string[]>(() => {
-        return extractRulesErrors({
+      const $silentIssues = computed<RegleFieldIssue[]>(() => {
+        return extractRulesIssues({
           field: {
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
+            fieldName,
           },
           silent: true,
         });
+      });
+
+      const $errors = computed<string[]>(() => {
+        return $issues.value.map((issue) => issue.$message);
+      });
+
+      const $silentErrors = computed<string[]>(() => {
+        return $silentIssues.value.map((issue) => issue.$message);
       });
 
       const $edited = computed<boolean>(() => {
@@ -418,8 +430,10 @@ export function createReactiveFieldStatus({
         $debounce,
         $deepCompare,
         $lazy,
-        $errors,
         $ready,
+        $issues,
+        $silentIssues,
+        $errors,
         $silentErrors,
         $rewardEarly,
         $autoDirty,
