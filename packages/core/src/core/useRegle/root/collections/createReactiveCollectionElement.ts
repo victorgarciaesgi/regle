@@ -3,6 +3,7 @@ import { computed, toRef } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
+  $InternalRegleSchemaErrors,
   $InternalRegleStatusType,
   RegleCollectionRuleDeclKeyProperty,
 } from '../../../../types';
@@ -16,7 +17,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId | undefined>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
-  schemaErrors: ComputedRef<$InternalRegleErrors[] | string[] | undefined> | undefined;
+  schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
   schemaMode: boolean | undefined;
 }
