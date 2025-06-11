@@ -187,9 +187,13 @@ export type RegleFieldStatus<
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
   /**
-   * Collect all metadata of validators, including the error message
+   * Collect all metadata of validators, Only contains errors from properties where $dirty equals true.
    */
   readonly $issues: RegleFieldIssue[];
+  /**
+   * Collect all metadata of validators, including the error message.
+   */
+  readonly $silentIssues: RegleFieldIssue[];
   /** Stores external errors of the current field */
   readonly $externalErrors: string[];
   /** Stores active tooltips messages of the current field */
