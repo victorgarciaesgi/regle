@@ -5,9 +5,11 @@ import type {
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
+  RegleFieldIssue,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
@@ -130,6 +132,14 @@ export type RegleSchemaFieldStatus<
   TState = any,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState>, '$pending'> & {
+  /**
+   * Collect all metadata of validators, Only contains errors from properties where $dirty equals true.
+   */
+  readonly $issues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
+  /**
+   * Collect all metadata of validators, including the error message.
+   */
+  readonly $silentIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
