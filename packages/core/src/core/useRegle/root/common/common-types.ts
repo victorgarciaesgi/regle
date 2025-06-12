@@ -11,6 +11,7 @@ export type StateWithId = unknown & { $id?: string };
 export interface CommonResolverOptions {
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
+  cachePath: string;
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;

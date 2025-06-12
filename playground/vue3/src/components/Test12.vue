@@ -1,56 +1,89 @@
+<template>
+  <div class="demo-container">
+    <div class="list">
+      <div v-for="(item, index) of r$.$fields.collection.$each" :key="item.$id" class="item">
+        <div class="field">
+          <input
+            v-model="item.$value.name"
+            :class="{ valid: item.$fields.name.$correct, error: item.$fields.name.$error }"
+            placeholder="Type an item value"
+          />
+
+          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
+        </div>
+
+        <ul v-if="item.$fields.name.$errors.length">
+          <li v-for="error of item.$fields.name.$errors" :key="error">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="button-list">
+      <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
+      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem">
+        Remove random item
+      </button>
+      <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <code class="status" :status="r$.$correct"></code>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
+import { useRegle } from '@regle/core';
 import { ref } from 'vue';
-import { type } from 'arktype';
-import { useRegleSchema } from '@regle/schemas';
-import { required, minLength, email } from '@regle/rules';
+import { required } from '@regle/rules';
 
-const state = ref({ name: '', tags: [] });
+function shuffle(arr: any[], options?: any) {
+  if (!Array.isArray(arr)) {
+    throw new Error('expected an array');
+  }
 
-const tagSchema = type("'wolt' |'eat_in'").configure({
-  message: () => {
-    return 'Custom message';
+  if (arr.length < 2) {
+    return arr;
+  }
+
+  const shuffleAll = options && options.shuffleAll;
+  const result = arr.slice();
+
+  let i = arr.length,
+    rand,
+    temp;
+
+  while (--i > 0) {
+    do {
+      rand = Math.floor(Math.random() * (i + 1));
+    } while (shuffleAll && rand == i);
+
+    if (!shuffleAll || rand != i) {
+      temp = result[i];
+      result[i] = result[rand];
+      result[rand] = temp;
+    }
+  }
+
+  return result;
+}
+
+const form = ref<{ collection: Array<{ name: string }> }>({
+  collection: [{ name: '' }],
+});
+
+function removeRandomItem() {
+  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
+}
+
+const { r$ } = useRegle(form, {
+  collection: {
+    $each: {
+      name: { required },
+    },
   },
 });
-
-const menuSchema = type({
-  'id?': type('string'),
-  name: type('string>0').configure({
-    message: () => 'custom message',
-  }),
-  tags: type(tagSchema, '[]'),
-});
-
-const { r$ } = useRegleSchema(state, menuSchema);
-
-async function submit() {
-  const { valid, data } = await r$.$validate();
-}
 </script>
 
-<template>
-  <h2>Hello Regle!</h2>
-
-  <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
-      {{ error }}
-    </li>
-  </ul>
-
-  <label>Email (optional)</label><br />
-  <select multiple v-model="r$.$value.tags" placeholder="Type your email">
-    <option value="wolt">Wolt</option>
-    <option value="eat_inn">Eat in</option>
-  </select>
-  {{ r$.$errors.tags }}
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.tags" :key="error">
-      {{ error }}
-    </li>
-  </ul>
-
-  <button @click="submit">Submit</button>
-  <button @click="r$.$reset()">Reset</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
-</template>
+<style lang="scss"></style>

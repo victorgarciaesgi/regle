@@ -7,13 +7,13 @@ import type {
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
   CollectionRegleBehaviourOptions,
-  FieldRegleBehaviourOptions,
+  RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../types';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
-import { extractRulesErrors, extractRulesTooltips } from '../useErrors';
+import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 
@@ -21,7 +21,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
   externalErrors: Ref<string[] | undefined> | undefined;
-  schemaErrors?: Ref<string[] | undefined> | undefined;
+  schemaErrors?: Ref<RegleFieldIssue[] | undefined> | undefined;
   schemaMode: boolean | undefined;
   onUnwatch?: () => void;
   $isArray?: boolean;
@@ -34,6 +34,7 @@ export function createReactiveFieldStatus({
   rulesDef,
   customMessages,
   path,
+  cachePath,
   fieldName,
   storage,
   options,
@@ -54,6 +55,8 @@ export function createReactiveFieldStatus({
     $autoDirty: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
     $clearExternalErrorsOnChange: ComputedRef<boolean>;
+    $issues: ComputedRef<RegleFieldIssue[]>;
+    $silentIssues: ComputedRef<RegleFieldIssue[]>;
     $errors: ComputedRef<string[]>;
     $silentErrors: ComputedRef<string[]>;
     $tooltips: ComputedRef<string[]>;
@@ -73,7 +76,6 @@ export function createReactiveFieldStatus({
   let fieldScopes: EffectScope[] = [];
 
   let $unwatchState: WatchStopHandle;
-  let $unwatchValid: WatchStopHandle;
   let $unwatchDirty: WatchStopHandle;
   let $unwatchAsync: WatchStopHandle;
   let $unwatchRuleFieldValues: WatchStopHandle;
@@ -82,7 +84,7 @@ export function createReactiveFieldStatus({
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
-    const storeResult = storage.checkRuleDeclEntry(path, declaredRules);
+    const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
 
     $localOptions.value = Object.fromEntries(
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
@@ -107,7 +109,8 @@ export function createReactiveFieldStatus({
                 rule: ruleRef as any,
                 ruleKey,
                 state,
-                path,
+                path: path,
+                cachePath: cachePath,
                 storage,
                 $debounce: $localOptions.value.$debounce,
               }),
@@ -124,7 +127,7 @@ export function createReactiveFieldStatus({
     define$commit();
 
     if (storeResult?.valid != null) {
-      scopeState.$dirty.value = storage.getDirtyState(path);
+      scopeState.$dirty.value = storage.getDirtyState(cachePath);
       if (
         (scopeState.$dirty.value && !scopeState.$silent.value) ||
         (scopeState.$rewardEarly.value && scopeState.$error.value)
@@ -133,7 +136,7 @@ export function createReactiveFieldStatus({
       }
     }
 
-    storage.addRuleDeclEntry(path, declaredRules);
+    storage.addRuleDeclEntry(cachePath, declaredRules);
   }
 
   function define$commit() {
@@ -152,7 +155,7 @@ export function createReactiveFieldStatus({
     $unwatchDirty();
     $unwatchRuleFieldValues?.();
     if (scopeState.$dirty.value) {
-      storage.setDirtyEntry(path, scopeState.$dirty.value);
+      storage.setDirtyEntry(cachePath, scopeState.$dirty.value);
     }
 
     $unwatchState?.();
@@ -252,27 +255,37 @@ export function createReactiveFieldStatus({
         return $invalid.value && !$pending.value && $dirty.value;
       });
 
-      const $errors = computed<string[]>(() => {
-        return extractRulesErrors({
+      const $issues = computed<RegleFieldIssue[]>(() => {
+        return extractRulesIssues({
           field: {
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
+            fieldName,
           },
         });
       });
 
-      const $silentErrors = computed<string[]>(() => {
-        return extractRulesErrors({
+      const $silentIssues = computed<RegleFieldIssue[]>(() => {
+        return extractRulesIssues({
           field: {
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
+            fieldName,
           },
           silent: true,
         });
+      });
+
+      const $errors = computed<string[]>(() => {
+        return $issues.value.map((issue) => issue.$message);
+      });
+
+      const $silentErrors = computed<string[]>(() => {
+        return $silentIssues.value.map((issue) => issue.$message);
       });
 
       const $edited = computed<boolean>(() => {
@@ -418,8 +431,10 @@ export function createReactiveFieldStatus({
         $debounce,
         $deepCompare,
         $lazy,
-        $errors,
         $ready,
+        $issues,
+        $silentIssues,
+        $errors,
         $silentErrors,
         $rewardEarly,
         $autoDirty,
@@ -443,7 +458,7 @@ export function createReactiveFieldStatus({
     define$watchState();
 
     $unwatchDirty = watch(scopeState.$dirty, (newDirty) => {
-      storage.setDirtyEntry(path, newDirty);
+      storage.setDirtyEntry(cachePath, newDirty);
       Object.values($rules.value).forEach((rule) => {
         rule.$fieldDirty = newDirty;
       });
@@ -502,7 +517,7 @@ export function createReactiveFieldStatus({
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     $clearExternalErrors();
     scopeState.$dirty.value = false;
-    storage.setDirtyEntry(path, false);
+    storage.setDirtyEntry(cachePath, false);
 
     if (!fromParent) {
       if (options?.toInitialState) {
@@ -637,6 +652,7 @@ export function createReactiveFieldStatus({
     $value: state,
     $rules: $rules,
     ...$shortcuts,
+    $path: path,
     $reset,
     $touch,
     $validate,

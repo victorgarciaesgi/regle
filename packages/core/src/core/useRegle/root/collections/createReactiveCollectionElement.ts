@@ -3,6 +3,7 @@ import { computed, toRef } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
+  $InternalRegleSchemaErrors,
   $InternalRegleStatusType,
   RegleCollectionRuleDeclKeyProperty,
 } from '../../../../types';
@@ -16,7 +17,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId | undefined>;
   rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
-  schemaErrors: ComputedRef<$InternalRegleErrors[] | string[] | undefined> | undefined;
+  schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
   schemaMode: boolean | undefined;
 }
@@ -24,6 +25,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
 export function createCollectionElement({
   $id,
   path,
+  cachePath,
   index,
   options,
   storage,
@@ -38,7 +40,8 @@ export function createCollectionElement({
   schemaMode,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = rules.$key ? rules.$key : randomId();
-  let $path = `${path}.${String($fieldId)}`;
+  let $cachePath = `${path}.${String($fieldId)}`;
+  let $path = `${path}.${index}`;
 
   if (typeof stateValue.value === 'object' && stateValue.value != null) {
     if (!stateValue.value.$id) {
@@ -51,7 +54,7 @@ export function createCollectionElement({
         },
       });
     } else {
-      $path = `${path}.${stateValue.value.$id}`;
+      $cachePath = `${path}.${stateValue.value.$id}`;
     }
   }
 
@@ -63,6 +66,7 @@ export function createCollectionElement({
     rulesDef: toRef(() => rules),
     customMessages,
     path: $path,
+    cachePath: $cachePath,
     storage,
     options,
     externalErrors: $externalErrors,

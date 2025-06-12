@@ -266,6 +266,7 @@ describe.each([
     expect(vm.r$.$fields.level0Boolean.$dirty).toBe(false);
     expect(vm.r$.$ready).toBe(false);
 
+    expect(vm.r$.$fields.level1.$fields.collection.$anyDirty).toBe(false);
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);
     expect(vm.r$.$error).toBe(false);

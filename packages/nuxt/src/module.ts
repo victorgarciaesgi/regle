@@ -31,11 +31,20 @@ export default defineNuxtModule<ModuleOptions>({
           const template = addTemplate({
             filename: 'regle-exports.ts',
             write: true,
-            getContents: () => `import ReglePlugin from "${setupFilePathWithoutExtension}";
-export const {inferRules, useRegle, useCollectScope, useScopedRegle} = ReglePlugin`,
+            getContents: () => `
+import type { InferRegleRules, RegleCustomFieldStatus } from '@regle/core';
+import ReglePlugin from "${setupFilePathWithoutExtension}";
+export const { inferRules, useRegle, useCollectScope, useScopedRegle } = ReglePlugin;
+
+export type RegleFieldStatus<
+  TState extends unknown = any,
+  TRules extends keyof InferRegleRules<typeof useRegle> = keyof InferRegleRules<typeof useRegle>,
+> = RegleCustomFieldStatus<typeof useRegle, TState, TRules>;
+
+`,
           });
 
-          const exportsNames = ['inferRules', 'useRegle', 'useCollectScope', 'useScopedRegle'];
+          const exportsNames = ['inferRules', 'useRegle', 'useCollectScope', 'useScopedRegle', 'RegleFieldStatus'];
           exportsNames.forEach((name) => addImports({ name, as: name, from: template.dst }));
 
           addImportsSources({

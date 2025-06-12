@@ -1,5 +1,6 @@
 import type { MaybeRef } from 'vue';
 import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
+import type { RegleFieldIssue } from './rule.status.types';
 
 export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
@@ -15,32 +16,47 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
   >;
 };
 
+export type RegleExternalSchemaErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+    true,
+    true
+  >;
+};
+
 export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
+  TIssue extends boolean = false,
 > =
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
       ? TExternal extends false
         ? RegleCollectionErrors<U>
         : RegleExternalCollectionErrors<U>
-      : string[]
+      : TIssue extends true
+        ? RegleFieldIssue[]
+        : string[]
     : NonNullable<TState> extends Date | File
-      ? string[]
+      ? TIssue extends true
+        ? RegleFieldIssue[]
+        : string[]
       : NonNullable<TState> extends Record<string, any>
         ? TExternal extends false
           ? RegleErrorTree<TState>
           : RegleExternalErrorTree<TState>
-        : string[];
+        : TIssue extends true
+          ? RegleFieldIssue[]
+          : string[];
 
-export type RegleCollectionErrors<TState extends Record<string, any>> = {
+export type RegleCollectionErrors<TState extends Record<string, any>, TIssue extends boolean = false> = {
   readonly $self: string[];
-  readonly $each: RegleValidationErrors<TState, false>[];
+  readonly $each: RegleValidationErrors<TState, false, TIssue>[];
 };
 
-export type RegleExternalCollectionErrors<TState extends Record<string, any>> = {
+export type RegleExternalCollectionErrors<TState extends Record<string, any>, TIssue extends boolean = false> = {
   readonly $self?: string[];
-  readonly $each?: RegleValidationErrors<TState, true>[];
+  readonly $each?: RegleValidationErrors<TState, true, TIssue>[];
 };
 
 /** @internal */
@@ -53,7 +69,24 @@ export type $InternalRegleErrorTree = {
   [x: string]: $InternalRegleErrors;
 };
 
+export type $InternalRegleErrors = $InternalRegleCollectionErrors | string[] | $InternalRegleErrorTree;
+
+// -- Schemas
+
+export type $InternalRegleSchemaErrorTree = {
+  [x: string]: $InternalRegleSchemaErrors;
+};
+
+export type $InternalRegleSchemaCollectionErrors = {
+  readonly $self?: RegleFieldIssue[];
+  readonly $each?: $InternalRegleSchemaErrors[];
+};
+
 /**
  * @internal
  */
-export type $InternalRegleErrors = $InternalRegleCollectionErrors | string[] | $InternalRegleErrorTree;
+
+export type $InternalRegleSchemaErrors =
+  | $InternalRegleCollectionErrors
+  | RegleFieldIssue[]
+  | $InternalRegleSchemaErrorTree;

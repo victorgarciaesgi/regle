@@ -5,9 +5,11 @@ import type {
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
+  RegleFieldIssue,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
@@ -136,6 +138,14 @@ export type RegleSchemaFieldStatus<
   readonly $errors: string[];
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
+  /**
+   * Collect all metadata of validators, Only contains errors from properties where $dirty equals true.
+   */
+  readonly $issues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
+  /**
+   * Collect all metadata of validators, including the error message.
+   */
+  readonly $silentIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   readonly $externalErrors?: string[];
   /** Represents the inactive status. Is true when this state have empty rules */

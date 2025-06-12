@@ -46,6 +46,7 @@ export interface RegleRuleCore<
   active?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   type?: string;
+  async?: boolean;
 }
 
 /**
@@ -58,6 +59,7 @@ export interface $InternalRegleRuleInit {
   active?: boolean | ((metadata: $InternalRegleRuleMetadataConsumer) => boolean);
   tooltip?: string | string[] | ((metadata: $InternalRegleRuleMetadataConsumer) => string | string[]);
   type?: string;
+  async?: boolean;
 }
 
 export type RegleRuleTypeReturn<TValue, TParams extends [...any[]]> = {

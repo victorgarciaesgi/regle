@@ -7,6 +7,7 @@ import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
+  $InternalRegleSchemaErrorTree,
   $InternalRegleShortcutDefinition,
   $InternalRegleStatus,
   $InternalRegleStatusType,
@@ -27,8 +28,8 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Ref<Record<string, any> | undefined>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
-  schemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
-  rootSchemaErrors?: Ref<Partial<$InternalRegleErrorTree> | undefined>;
+  schemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
+  rootSchemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
   schemaMode: boolean | undefined;
   onValidate?: () => Promise<$InternalRegleResult>;
   validationGroups?:
@@ -40,6 +41,7 @@ export function createReactiveNestedStatus({
   rulesDef,
   state,
   path = '',
+  cachePath,
   rootRules,
   externalErrors,
   schemaErrors,
@@ -93,6 +95,7 @@ export function createReactiveNestedStatus({
                 state: stateRef,
                 rulesDef: statePropRulesRef,
                 path: path ? `${path}.${statePropKey}` : statePropKey,
+                cachePath: cachePath ? `${cachePath}.${statePropKey}` : statePropKey,
                 externalErrors: $externalErrors,
                 schemaErrors: $schemaErrors,
                 initialState: initialStateRef,
@@ -113,12 +116,14 @@ export function createReactiveNestedStatus({
           const $externalErrors = toRef(externalErrors?.value ?? {}, key);
           const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
+
           return [
             key,
             createReactiveChildrenStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
+              cachePath: cachePath ? `${cachePath}.${key}` : key,
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
@@ -135,6 +140,7 @@ export function createReactiveNestedStatus({
         const $externalErrors = toRef(externalErrors?.value ?? {}, key);
         const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
         const initialStateRef = toRef(initialState?.value ?? {}, key);
+        const computedPath = path ? `${path}.${key}` : key;
 
         return [
           key,
@@ -142,6 +148,7 @@ export function createReactiveNestedStatus({
             state: stateRef,
             rulesDef: computed(() => ({})),
             path: path ? `${path}.${key}` : key,
+            cachePath: cachePath ? `${cachePath}.${key}` : key,
             externalErrors: $externalErrors,
             schemaErrors: $schemaErrors,
             initialState: initialStateRef,
@@ -170,6 +177,7 @@ export function createReactiveNestedStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
               path: path ? `${path}.${key}` : key,
+              cachePath: cachePath ? `${cachePath}.${key}` : key,
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
@@ -414,6 +422,7 @@ export function createReactiveNestedStatus({
                 result.value = value(
                   reactive({
                     $dirty,
+                    $path: path,
                     $value: state as any,
                     $silentValue: $silentValue as any,
                     $error,
@@ -630,6 +639,7 @@ export function createReactiveNestedStatus({
   return reactive({
     ...restScopeState,
     ...$shortcuts,
+    $path: path,
     $fields,
     $reset,
     $touch,

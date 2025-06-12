@@ -108,7 +108,7 @@ export const myValidator = createRule({
   validator: (value: Maybe<string>, optionalArg?: number, otherOptional?: string) => {
     return true;
   },
-  message: ({ $params: [optionalArg, ...anyOtherArg] }) => {
+  message: ({ $params: [optionalArg, otherOptional] }) => {
     return 'This field is invalid';
   }
 });

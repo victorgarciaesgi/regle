@@ -160,6 +160,14 @@ export type $InternalRegleStatusType =
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
 
+export interface RegleFieldIssue {
+  $property: string;
+  $rule: string;
+  $type?: string;
+  $message: string;
+  [x: string]: unknown;
+}
+
 /**
  * @public
  */
@@ -178,6 +186,14 @@ export type RegleFieldStatus<
   readonly $errors: string[];
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
+  /**
+   * Collect all metadata of validators, Only contains metadata from properties where $dirty equals true.
+   */
+  readonly $issues: RegleFieldIssue[];
+  /**
+   * Collect all metadata of validators, including the error message.
+   */
+  readonly $silentIssues: RegleFieldIssue[];
   /** Stores external errors of the current field */
   readonly $externalErrors: string[];
   /** Stores active tooltips messages of the current field */
@@ -203,7 +219,7 @@ export type RegleFieldStatus<
               ? TMetadata extends Promise<infer P>
                 ? P
                 : TMetadata
-              : any
+              : boolean
         >;
       };
 } & ([TShortcuts['fields']] extends [never]
@@ -225,6 +241,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $tooltips: string[];
   readonly $inactive: boolean;
   readonly $silentErrors: string[];
+  readonly $issues: RegleFieldIssue[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: () => Promise<$InternalRegleResult>;
 }
@@ -263,6 +280,8 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $ready: boolean;
   /** Return the current key name of the field. */
   readonly $name: string;
+  /** Returns the current path of the rule (used internally for tracking) */
+  readonly $path: string;
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
@@ -341,7 +360,7 @@ export type RegleRuleStatus<
  * @reference {@link RegleRuleStatus}
  */
 export interface $InternalRegleRuleStatus {
-  $type: string;
+  $type?: string;
   $message: string | string[];
   $tooltip: string | string[];
   $active: boolean;
