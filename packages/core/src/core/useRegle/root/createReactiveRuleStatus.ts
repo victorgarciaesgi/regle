@@ -25,6 +25,7 @@ interface CreateReactiveRuleStatusOptions {
   };
   customMessages: CustomRulesDeclarationTree | undefined;
   path: string;
+  cachePath: string;
   storage: RegleStorage;
   $debounce?: number;
 }
@@ -35,6 +36,7 @@ export function createReactiveRuleStatus({
   ruleKey,
   state,
   path,
+  cachePath,
   storage,
   $debounce,
   modifiers,
@@ -63,7 +65,7 @@ export function createReactiveRuleStatus({
   const $haveAsync = ref(false);
   const $maybePending = ref(false);
 
-  const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${path}.${ruleKey}`);
+  const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${cachePath}.${ruleKey}`);
 
   function $watch() {
     scope = effectScope();

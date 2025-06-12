@@ -187,7 +187,7 @@ export type RegleFieldStatus<
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: string[];
   /**
-   * Collect all metadata of validators, Only contains errors from properties where $dirty equals true.
+   * Collect all metadata of validators, Only contains metadata from properties where $dirty equals true.
    */
   readonly $issues: RegleFieldIssue[];
   /**
@@ -280,6 +280,8 @@ export interface RegleCommonStatus<TValue = any> {
   readonly $ready: boolean;
   /** Return the current key name of the field. */
   readonly $name: string;
+  /** Returns the current path of the rule (used internally for tracking) */
+  readonly $path: string;
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
