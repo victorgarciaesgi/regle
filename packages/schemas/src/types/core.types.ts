@@ -132,6 +132,12 @@ export type RegleSchemaFieldStatus<
   TState = any,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState>, '$pending'> & {
+  /** Collection of all the error messages, collected for all children properties and nested forms.
+   *
+   * Only contains errors from properties where $dirty equals true. */
+  readonly $errors: string[];
+  /** Collection of all the error messages, collected for all children properties and nested forms.  */
+  readonly $silentErrors: string[];
   /**
    * Collect all metadata of validators, Only contains errors from properties where $dirty equals true.
    */
@@ -140,12 +146,6 @@ export type RegleSchemaFieldStatus<
    * Collect all metadata of validators, including the error message.
    */
   readonly $silentIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
-  /** Collection of all the error messages, collected for all children properties and nested forms.
-   *
-   * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: string[];
-  /** Collection of all the error messages, collected for all children properties and nested forms.  */
-  readonly $silentErrors: string[];
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   readonly $externalErrors?: string[];
   /** Represents the inactive status. Is true when this state have empty rules */

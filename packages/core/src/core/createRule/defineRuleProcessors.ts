@@ -13,9 +13,9 @@ export function defineRuleProcessors(
   definition: $InternalRegleRuleInit,
   ...params: any[]
 ): $InternalRegleRuleDefinition {
-  const { validator, type } = definition;
+  const { validator, type, async } = definition;
 
-  const isAsync = type === InternalRuleType.Async || validator.constructor.name === 'AsyncFunction';
+  const isAsync = async || type === InternalRuleType.Async || validator.constructor.name === 'AsyncFunction';
 
   const defaultProcessors = {
     validator(value: any, ...args: any[]) {
@@ -79,6 +79,7 @@ export function defineRuleProcessors(
 
   const processors = markRaw({
     ...defaultProcessors,
+    type,
     _validator: definition.validator as any,
     _message: definition.message,
     _active: definition.active,
