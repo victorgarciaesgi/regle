@@ -153,6 +153,7 @@ export function createReactiveCollectionStatus({
           const element = createCollectionElement({
             $id: $id.value,
             path,
+            cachePath: path,
             customMessages,
             rules: unwrapped ?? {},
             stateValue: toRef(() => value),
@@ -182,6 +183,7 @@ export function createReactiveCollectionStatus({
       rulesDef,
       customMessages,
       path,
+      cachePath: path,
       storage,
       options,
       externalErrors: toRef(externalErrors?.value ?? {}, `$self`),
@@ -220,6 +222,7 @@ export function createReactiveCollectionStatus({
             const element = createCollectionElement({
               $id: $id.value,
               path,
+              cachePath: path,
               customMessages,
               rules: unwrapped ?? {},
               stateValue: currentValue,
@@ -424,6 +427,7 @@ export function createReactiveCollectionStatus({
                   reactive({
                     $dirty,
                     $error,
+                    $path: path,
                     $silentValue: $silentValue as any,
                     $pending,
                     $invalid,
@@ -596,6 +600,7 @@ export function createReactiveCollectionStatus({
     $self: $selfStatus,
     ...restScopeState,
     ...$shortcuts,
+    $path: path,
     $each: $eachStatus,
     $value: state,
     $validate,

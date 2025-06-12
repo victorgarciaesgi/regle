@@ -34,6 +34,7 @@ export function createReactiveFieldStatus({
   rulesDef,
   customMessages,
   path,
+  cachePath,
   fieldName,
   storage,
   options,
@@ -75,7 +76,6 @@ export function createReactiveFieldStatus({
   let fieldScopes: EffectScope[] = [];
 
   let $unwatchState: WatchStopHandle;
-  let $unwatchValid: WatchStopHandle;
   let $unwatchDirty: WatchStopHandle;
   let $unwatchAsync: WatchStopHandle;
   let $unwatchRuleFieldValues: WatchStopHandle;
@@ -84,7 +84,7 @@ export function createReactiveFieldStatus({
 
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
-    const storeResult = storage.checkRuleDeclEntry(path, declaredRules);
+    const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
 
     $localOptions.value = Object.fromEntries(
       Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
@@ -109,7 +109,8 @@ export function createReactiveFieldStatus({
                 rule: ruleRef as any,
                 ruleKey,
                 state,
-                path,
+                path: path,
+                cachePath: cachePath,
                 storage,
                 $debounce: $localOptions.value.$debounce,
               }),
@@ -126,7 +127,7 @@ export function createReactiveFieldStatus({
     define$commit();
 
     if (storeResult?.valid != null) {
-      scopeState.$dirty.value = storage.getDirtyState(path);
+      scopeState.$dirty.value = storage.getDirtyState(cachePath);
       if (
         (scopeState.$dirty.value && !scopeState.$silent.value) ||
         (scopeState.$rewardEarly.value && scopeState.$error.value)
@@ -135,7 +136,7 @@ export function createReactiveFieldStatus({
       }
     }
 
-    storage.addRuleDeclEntry(path, declaredRules);
+    storage.addRuleDeclEntry(cachePath, declaredRules);
   }
 
   function define$commit() {
@@ -154,7 +155,7 @@ export function createReactiveFieldStatus({
     $unwatchDirty();
     $unwatchRuleFieldValues?.();
     if (scopeState.$dirty.value) {
-      storage.setDirtyEntry(path, scopeState.$dirty.value);
+      storage.setDirtyEntry(cachePath, scopeState.$dirty.value);
     }
 
     $unwatchState?.();
@@ -457,7 +458,7 @@ export function createReactiveFieldStatus({
     define$watchState();
 
     $unwatchDirty = watch(scopeState.$dirty, (newDirty) => {
-      storage.setDirtyEntry(path, newDirty);
+      storage.setDirtyEntry(cachePath, newDirty);
       Object.values($rules.value).forEach((rule) => {
         rule.$fieldDirty = newDirty;
       });
@@ -516,7 +517,7 @@ export function createReactiveFieldStatus({
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     $clearExternalErrors();
     scopeState.$dirty.value = false;
-    storage.setDirtyEntry(path, false);
+    storage.setDirtyEntry(cachePath, false);
 
     if (!fromParent) {
       if (options?.toInitialState) {
@@ -651,6 +652,7 @@ export function createReactiveFieldStatus({
     $value: state,
     $rules: $rules,
     ...$shortcuts,
+    $path: path,
     $reset,
     $touch,
     $validate,

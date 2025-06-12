@@ -57,7 +57,6 @@ export function withAsync(
   > = '';
 
   if (typeof rule === 'function') {
-    _type = InternalRuleType.Inline;
     validator = async (value: any | null | undefined, ...params: any[]) => {
       return rule(value, ...(params as []));
     };
@@ -69,9 +68,10 @@ export function withAsync(
   }
 
   const newRule = createRule({
-    type: InternalRuleType.Async,
+    type: _type ?? InternalRuleType.Async,
     validator: validator,
     message: _message,
+    async: true,
   });
 
   newRule._params = newRule._params?.concat(_params);

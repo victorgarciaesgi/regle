@@ -25,6 +25,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
 export function createCollectionElement({
   $id,
   path,
+  cachePath,
   index,
   options,
   storage,
@@ -39,7 +40,8 @@ export function createCollectionElement({
   schemaMode,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = rules.$key ? rules.$key : randomId();
-  let $path = `${path}.${String($fieldId)}`;
+  let $cachePath = `${path}.${String($fieldId)}`;
+  let $path = `${path}.${index}`;
 
   if (typeof stateValue.value === 'object' && stateValue.value != null) {
     if (!stateValue.value.$id) {
@@ -52,7 +54,7 @@ export function createCollectionElement({
         },
       });
     } else {
-      $path = `${path}.${stateValue.value.$id}`;
+      $cachePath = `${path}.${stateValue.value.$id}`;
     }
   }
 
@@ -64,6 +66,7 @@ export function createCollectionElement({
     rulesDef: toRef(() => rules),
     customMessages,
     path: $path,
+    cachePath: $cachePath,
     storage,
     options,
     externalErrors: $externalErrors,

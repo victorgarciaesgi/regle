@@ -1,4 +1,10 @@
-import type { InferRegleRule, RegleRuleInit, RegleRuleMetadataDefinition, RegleUniversalParams } from '../../types';
+import type {
+  $InternalRegleRuleInit,
+  InferRegleRule,
+  RegleRuleInit,
+  RegleRuleMetadataDefinition,
+  RegleUniversalParams,
+} from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
 
@@ -44,9 +50,12 @@ export function createRule<
 ): InferRegleRule<TValue, TParams, TAsync, TMetadata> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
-    const staticProcessors = defineRuleProcessors(definition as any, ...fakeParams);
-
     const isAsync = definition.async ?? definition.validator.constructor.name === 'AsyncFunction';
+    const staticProcessors = defineRuleProcessors(
+      { ...definition, async: isAsync } as $InternalRegleRuleInit,
+      ...fakeParams
+    );
+
     // For validators needing a params like maxLength or requiredIf
     if (getFunctionParametersLength(definition.validator) > 1) {
       // For validators with param, return a function providing params for all the rule processors
