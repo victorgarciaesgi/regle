@@ -104,18 +104,19 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       const output = {};
       if (result.issues) {
         const issues = result.issues.map((issue) => {
-          let path = issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+          let $path =
+            issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
           const lastItem = issue.path?.[issue.path.length - 1];
+          const lastItemKey = typeof lastItem === 'object' ? lastItem.key : lastItem;
           const isArray =
             (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
             ('type' in issue ? issue.type === 'array' : false) ||
-            Array.isArray(getDotPath(processedState.value, path));
+            Array.isArray(getDotPath(processedState.value, $path));
 
-          const isPrimitivesArray =
-            !isArray && typeof (typeof lastItem === 'object' ? lastItem.key : lastItem) === 'number';
+          const isPrimitivesArray = !isArray && typeof lastItemKey === 'number';
 
           if (isPrimitivesArray) {
-            path =
+            $path =
               issue.path
                 ?.slice(0, issue.path.length - 1)
                 ?.map((item) => (typeof item === 'object' ? item.key : item.toString()))
@@ -124,16 +125,16 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
           return {
             ...issue,
-            path: path,
+            $path: $path,
             isArray,
-            $property: lastItem,
+            $property: lastItemKey,
             $rule: 'schema',
             $message: issue.message,
           };
         });
 
-        issues.forEach(({ isArray, path, ...issue }) => {
-          setObjectError(output, path, [issue], isArray);
+        issues.forEach(({ isArray, $path, ...issue }) => {
+          setObjectError(output, $path, [issue], isArray);
         });
       }
       return output;
