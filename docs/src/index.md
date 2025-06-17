@@ -17,11 +17,12 @@ hero:
       text: Get Started
       link: /introduction
     - theme: secondary
-      text: Core concepts
+      text: Learn the concepts
       link: /core-concepts
     - theme: alt
       text: ▶ Play with it
       link: https://play.reglejs.dev
+    
 
 features:
   - icon: 
