@@ -2,80 +2,117 @@
 title: useRegle
 ---
 
-# `useRegle`
+# Understanding `useRegle`
 
-`useRegle` serves as the foundation for validation logic.
+`useRegle` is the heart of Regle. It's the composable that transforms your data and validation rules into a powerful, reactive validation system.
 
-It accepts the following inputs:
+Think of it as a bridge between your form data and your validation logic. You give it your state and rules, and it gives you back everything you need.
 
-- **State:** This can be a plain object, a `ref`, a `reactive` object, or a structure containing nested refs.
-- **Rules:** These should align with the structure of your state.
-- **Modifiers:** (optional) Customize computed behaviour. [Modifiers guide](/core-concepts/modifiers)
+## The Big Picture
 
-<br/>
+Here's how `useRegle` works at a high level:
 
 ```vue [App.vue]
 <script setup lang='ts'>
 import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle(/* state */ , /* rules */ , /* modifiers */);
+const { r$ } = useRegle(
+  /* 1. Your data (state) */,
+  /* 2. Your validation rules */,
+  /* 3. Optional modifiers */
+);
+
+// r$ now contains your validation state, errors, and methods
 </script>
 ```
 
-:::tip
-Regle is only compatible with the [Composition API](https://fr.vuejs.org/guide/extras/composition-api-faq).
+Let's break down each piece:
 
-There is no plan to support the Option or Class API.
+:::tip
+Regle only works with the [Composition API](https://vuejs.org/guide/extras/composition-api-faq). There's no plan to support the Options or Class API—the Composition API's reactivity system is essential for Regle to work.
 :::
 
-## State
+## State: Your Form Data
 
-The first parameter of `useRegle` is the state. It will be targeted by your rules.
+The first parameter is your form data—the actual values users will be entering. Regle is flexible about how you define this state.
 
-The state can be:
+### Different Ways to Define State
 
-- A raw object
-- A Ref object
-- A Reactive object
-- A raw object containing nested Refs
-- A non-object Ref containing a primitive
-
-If you pass a reactive state, you have the flexibility to bind your model either to the original state or to the state proxy returned by useRegle.
-
+**Raw Object** (simplest approach):
 ```ts
-const { r$ } = useRegle({ name: '' }, /* rules */)
+const { r$ } = useRegle(
+  { name: '', email: '', age: 0 }, 
+  /* rules */
+)
 ```
 
+**Reactive Object** (when you need the state elsewhere):
 ```ts
-const state = ref({ name: '' });
-const { r$ } = useRegle(state, /* rules */)
+const formData = reactive({ name: '', email: '', age: 0 });
+const { r$ } = useRegle(formData, /* rules */)
+
+// You can bind to either formData or r$.$value
 ```
 
+**Ref Object** (for complex scenarios):
 ```ts
-const state = reactive({ name: '' });
-const { r$ } = useRegle(state, /* rules */)
+const formData = ref({ name: '', email: '', age: 0 });
+const { r$ } = useRegle(formData, /* rules */)
 ```
 
+**Mixed Refs** (when individual fields need to be refs):
 ```ts
-const state = { name: ref('') }
-const { r$ } = useRegle(state, /* rules */)
+const formData = { 
+  name: ref(''), 
+  email: ref(''), 
+  age: ref(0) 
+}
+const { r$ } = useRegle(formData, /* rules */)
 ```
 
+**Single Value** (for validating just one field):
 ```ts
-const state = ref('');
-const { r$ } = useRegle(state, /* rules */)
+const email = ref('');
+const { r$ } = useRegle(email, /* rules */)
 ```
 
-## Rules
+## Rules: Your Validation Logic
 
-The second parameter of `useRegle` is the rules declaration, you can declare a tree matching your input state. 
+The second parameter defines how your data should be validated. The beautiful thing about Regle is that your rules structure mirrors your data structure exactly.
 
-Each property can then declare a record of validation rules to define its `$invalid` state.
+### Basic Rules Declaration
 
-Rules can be declared in different ways:
+```ts
+import { required, email, minLength } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { 
+    user: { 
+      name: '', 
+      email: '' 
+    },
+    message: ''
+  },
+  {
+    user: {
+      name: { required, minLength: minLength(2) },
+      email: { required, email }
+    },
+    message: { required, minLength: minLength(10) }
+  }
+)
+```
+
+See how the rules structure matches the data structure? This makes it easy to understand and maintain.
+
+### Dynamic Rules object
+
+Sometimes your validation rules need to change based on other values or conditions. Regle handles this elegantly:
 
 :::code-group
 ```ts [Inline]
+import { useRegle } from '@regle/core';
+
 // The rule object will not react to computed changes
 useRegle({ name: '' }, {
   name: { required }
@@ -83,6 +120,8 @@ useRegle({ name: '' }, {
 ```
 
 ```ts [Getter]
+import { useRegle } from '@regle/core';
+
 // The rules can now detect computed properties inside the object
 useRegle({ name: '' }, () => ({
   name: { required }
@@ -94,7 +133,7 @@ import { inferRules } from '@regle/core';
 
 const state = ref({name: ''});
 
-/** It's recommanded to use inferRules to keep autocompletion and typecheck */
+// inferRules preserves TypeScript autocompletion
 const rules = computed(() => {
   return inferRules(state, {
     name: { required }
@@ -106,52 +145,34 @@ const { r$ } = useRegle(state, rules);
 :::
 
 
-Regle provide a list of default rules that you can use from `@regle/rules`.
+### Available Rules
 
-You can find the [list of built-in rules here](/core-concepts/rules/built-in-rules)
+Regle comes with a comprehensive set of built-in rules:
 
+```ts
+import { 
+  required, email, minLength, maxLength,
+  numeric, between, url, regex,
+  // ... and many more
+} from '@regle/rules';
+```
 
-:::tip
+Check out the [complete list of built-in rules](/core-concepts/rules/built-in-rules) to see everything available.
 
-If you prefer to have a rules-first way of typing your state (like schema libraries), you can check [how to do it here](/typescript/infer-state-from-rules)
-
+:::tip Type-First Validation
+If you prefer to define your validation schema first (like with Zod) and infer your TypeScript types from it, check out [how to infer state from rules](/typescript/infer-state-from-rules).
 :::
+
+## The stored result : `r$`
+
+When you call `useRegle`, you get back an object containing `r$`—your validation state. If you've used Vuelidate before, `r$` works similarly to `v$`.
+
+`r$` is a reactive object that contains everything you need to build your form UI:
+
 
 <br/>
 
-
-
-
-``` vue twoslash [App.vue]
-<script setup lang='ts'>
-
-import {ref} from 'vue';
-// @noErrors
-// ---cut---
-import { useRegle } from '@regle/core';
-import { required } from '@regle/rules';
-
-const state = ref({ 
-  user: { 
-    firstName: '', 
-    lastName: '' 
-  }
-  title: '', 
-})
-
-const { r$ } = useRegle(state, {
-  user: {
-    firstName: { required },
-    lastName: { required },
-  },
-  title: { m }
-  //        ^|
-})
-</script>
-
-```
-
-## `r$`
+### Common `r$` Properties
 
 If you’ve used Vuelidate before, useRegle behaves similarly to `v$`.
 
