@@ -41,39 +41,44 @@ export function extractRulesIssues({
     return issue;
   });
 
-  return issues
-    .filter((msg): msg is TempRegleFieldIssue => !!msg)
-    .reduce<RegleFieldIssue[]>((acc, issue) => {
-      if (typeof issue.$message === 'string') {
-        return acc?.concat([issue as unknown as RegleFieldIssue]);
-      } else {
-        return acc?.concat(issue.$message.map((msg) => ({ ...issue, $message: msg })));
-      }
-    }, [])
-    .concat(
-      field.$error
-        ? (field.$externalErrors?.map((error) => ({
-            $message: error,
-            $property: field.fieldName,
-            $rule: 'external',
-            $type: undefined,
-          })) ?? [])
-        : []
-    )
-    .concat(field.$error ? (field.$schemaErrors ?? []) : []);
+  const filteredIssues = issues.filter((msg): msg is TempRegleFieldIssue => !!msg);
+  const ruleIssues = filteredIssues.reduce<RegleFieldIssue[]>((acc, issue) => {
+    if (typeof issue.$message === 'string') {
+      acc.push(issue as unknown as RegleFieldIssue);
+    } else {
+      acc.push(...issue.$message.map((msg) => ({ ...issue, $message: msg })));
+    }
+    return acc;
+  }, []);
+
+  const externalIssues =
+    field.$error && field.$externalErrors
+      ? field.$externalErrors.map((error) => ({
+          $message: error,
+          $property: field.fieldName,
+          $rule: 'external',
+          $type: undefined,
+        }))
+      : [];
+
+  const schemaIssues = field.$error ? (field.$schemaErrors ?? []) : [];
+
+  return [...ruleIssues, ...externalIssues, ...schemaIssues];
 }
 
 export function extractRulesTooltips({ field }: { field: Pick<$InternalRegleFieldStatus, '$rules'> }): string[] {
-  return Object.entries(field.$rules ?? {})
-    .map(([_, rule]) => rule.$tooltip)
-    .filter((tooltip): tooltip is string | string[] => !!tooltip)
-    .reduce<string[]>((acc, value) => {
-      if (typeof value === 'string') {
-        return acc?.concat([value]);
+  const tooltips: string[] = [];
+  for (const rule of Object.values(field.$rules ?? {})) {
+    const tooltip = rule.$tooltip;
+    if (tooltip) {
+      if (typeof tooltip === 'string') {
+        tooltips.push(tooltip);
       } else {
-        return acc?.concat(value);
+        tooltips.push(...tooltip);
       }
-    }, []);
+    }
+  }
+  return tooltips;
 }
 
 function isCollectionError(errors: $InternalRegleErrors): errors is $InternalRegleCollectionErrors {

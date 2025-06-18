@@ -88,7 +88,7 @@ export function defineRuleProcessors(
     _message_patched: false,
     _tooltip_patched: false,
     _async: isAsync,
-    _params: createReactiveParams<never>(params),
+    _params: createReactiveParams(params) as any,
     _brand: RegleRuleSymbol,
   });
 

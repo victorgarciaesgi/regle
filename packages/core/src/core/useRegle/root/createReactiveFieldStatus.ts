@@ -1,6 +1,6 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, debounce, isEmpty, isEqual, isFile, isObject, toDate } from '../../../../../shared';
+import { cloneDeep, debounce, isEmpty, isEqual, isObject, toDate } from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -86,41 +86,46 @@ export function createReactiveFieldStatus({
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
     const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
 
-    $localOptions.value = Object.fromEntries(
-      Object.entries(declaredRules).filter(([ruleKey]) => ruleKey.startsWith('$'))
-    );
+    const options: Record<string, any> = {};
+    for (const key in declaredRules) {
+      if (key.startsWith('$')) {
+        options[key] = declaredRules[key];
+      }
+    }
+    $localOptions.value = options;
 
     $watch();
 
-    $rules.value = Object.fromEntries(
-      Object.entries(rulesDef.value)
-        .filter(([ruleKey]) => !ruleKey.startsWith('$'))
-        .map(([ruleKey, rule]) => {
-          if (rule) {
-            const ruleRef = toRef(() => rule);
-            return [
-              ruleKey,
-              createReactiveRuleStatus({
-                modifiers: {
-                  $silent: scopeState.$silent,
-                  $rewardEarly: scopeState.$rewardEarly,
-                },
-                customMessages,
-                rule: ruleRef as any,
-                ruleKey,
-                state,
-                path: path,
-                cachePath: cachePath,
-                storage,
-                $debounce: $localOptions.value.$debounce,
-              }),
-            ];
-          }
+    const rules = rulesDef.value;
+    const entries: [string, $InternalRegleRuleStatus][] = [];
 
-          return [];
-        })
-        .filter((ruleDef): ruleDef is [string, $InternalRegleRuleStatus] => !!ruleDef.length)
-    );
+    for (const ruleKey in rules) {
+      if (ruleKey.startsWith('$')) continue;
+
+      const rule = rules[ruleKey];
+      if (!rule) continue;
+
+      const ruleRef = toRef(() => rule);
+      entries.push([
+        ruleKey,
+        createReactiveRuleStatus({
+          modifiers: {
+            $silent: scopeState.$silent,
+            $rewardEarly: scopeState.$rewardEarly,
+          },
+          customMessages,
+          rule: ruleRef as any,
+          ruleKey,
+          state,
+          path: path,
+          cachePath: cachePath,
+          storage,
+          $debounce: $localOptions.value.$debounce,
+        }),
+      ]);
+    }
+
+    $rules.value = Object.fromEntries(entries);
 
     scopeState.processShortcuts();
 
@@ -147,9 +152,9 @@ export function createReactiveFieldStatus({
 
   function $unwatch() {
     if ($rules.value) {
-      Object.entries($rules.value).forEach(([_, rule]) => {
+      for (const rule of Object.values($rules.value)) {
         rule.$unwatch();
-      });
+      }
     }
 
     $unwatchDirty();
@@ -161,7 +166,9 @@ export function createReactiveFieldStatus({
     $unwatchState?.();
     scope.stop();
     scope = effectScope();
-    fieldScopes.forEach((s) => s.stop());
+    for (const s of fieldScopes) {
+      s.stop();
+    }
     fieldScopes = [];
     onUnwatch?.();
     $unwatchAsync?.();
@@ -169,9 +176,9 @@ export function createReactiveFieldStatus({
 
   function $watch() {
     if ($rules.value) {
-      Object.entries($rules.value).forEach(([_, rule]) => {
+      for (const rule of Object.values($rules.value)) {
         rule.$watch();
-      });
+      }
     }
     scopeState = scope.run(() => {
       const $dirty = ref(false);
@@ -237,9 +244,10 @@ export function createReactiveFieldStatus({
       });
 
       const $validating = computed(() => {
-        return Object.entries($rules.value).some(([key, ruleResult]) => {
-          return ruleResult.$validating;
-        });
+        for (const ruleResult of Object.values($rules.value)) {
+          if (ruleResult.$validating) return true;
+        }
+        return false;
       });
 
       const $silentValue = computed({
@@ -335,11 +343,7 @@ export function createReactiveFieldStatus({
         } else if ($inactive.value) {
           return false;
         } else if (!$rewardEarly.value || $rewardEarly.value) {
-          const result = Object.entries($rules.value).some(([_, ruleResult]) => {
-            return !(ruleResult.$valid && !ruleResult.$maybePending);
-          });
-
-          return result;
+          return Object.values($rules.value).some((ruleResult) => !ruleResult.$valid || ruleResult.$maybePending);
         }
         return false;
       });
@@ -347,10 +351,7 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName);
 
       const $inactive = computed<boolean>(() => {
-        if (Object.keys(rulesDef.value).filter(([ruleKey]) => !ruleKey.startsWith('$')).length === 0 && !schemaMode) {
-          return true;
-        }
-        return false;
+        return !schemaMode && !Object.keys(rulesDef.value).some((key) => !key.startsWith('$'));
       });
 
       const $correct = computed<boolean>(() => {
@@ -362,23 +363,20 @@ export function createReactiveFieldStatus({
           if (schemaMode) {
             return !schemaErrors?.value?.length;
           } else {
-            const atLeastOneActiveRule = Object.values($rules.value).some((ruleResult) => ruleResult.$active);
-            if (atLeastOneActiveRule) {
-              return Object.values($rules.value)
-                .filter((ruleResult) => ruleResult.$active)
-                .every((ruleResult) => ruleResult.$valid);
-            } else {
-              return false;
+            const rules = Object.values($rules.value);
+            for (const rule of rules) {
+              if (rule.$active) {
+                if (!rule.$valid) return false;
+              }
             }
+            return rules.some((rule) => rule.$active);
           }
         }
         return false;
       });
 
       const $haveAnyAsyncRule = computed(() => {
-        return Object.entries($rules.value).some(([key, ruleResult]) => {
-          return ruleResult.$haveAsync;
-        });
+        return Object.values($rules.value).some((rule) => rule.$haveAsync);
       });
 
       function processShortcuts() {
@@ -545,15 +543,15 @@ export function createReactiveFieldStatus({
     }
 
     if (!fromParent) {
-      Object.entries($rules.value).forEach(([_, rule]) => {
+      for (const rule of Object.values($rules.value)) {
         rule.$reset();
-      });
+      }
     }
 
     if (!scopeState.$lazy.value && !scopeState.$silent.value && !fromParent) {
-      Object.values($rules.value).forEach((rule) => {
-        return rule.$parse();
-      });
+      for (const rule of Object.values($rules.value)) {
+        rule.$parse();
+      }
     }
   }
 
@@ -593,19 +591,9 @@ export function createReactiveFieldStatus({
       } else if (isEmpty($rules.value)) {
         return { valid: true, data };
       }
-      const results = await Promise.allSettled(
-        Object.entries($rules.value).map(([key, rule]) => {
-          return rule.$parse();
-        })
-      );
+      const results = await Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()));
 
-      const validationResults = results.every((value) => {
-        if (value.status === 'fulfilled') {
-          return value.value === true;
-        } else {
-          return false;
-        }
-      });
+      const validationResults = results.every((value) => value.status === 'fulfilled' && value.value === true);
 
       return { valid: validationResults, data };
     } catch (e) {
