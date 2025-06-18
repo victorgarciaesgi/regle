@@ -3,6 +3,7 @@ import type {
   DeepReactiveState,
   HaveAnyRequiredProps,
   LocalRegleBehaviourOptions,
+  NoInferLegacy,
   PrimitiveTypes,
   RegleBehaviourOptions,
   RegleExternalErrorTree,
@@ -32,8 +33,8 @@ export interface useRegleSchemaFn<
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
     ...params: [
       state:
-        | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
-        | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
+        | MaybeRef<PartialDeep<NoInferLegacy<TState>, { recurseIntoArrays: true }>>
+        | DeepReactiveState<PartialDeep<NoInferLegacy<TState>, { recurseIntoArrays: true }>>,
       rulesFactory: MaybeRef<TSchema>,
       ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TAdditionalOptions>> extends true
         ? [options: useRegleSchemaFnOptions<TAdditionalOptions>]

@@ -1,5 +1,5 @@
 import type { UnionToIntersection, UnionToTuple } from 'type-fest';
-import type { isRecordLiteral, Prettify } from './misc.types';
+import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
 
@@ -45,11 +45,11 @@ type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> 
 ]
   ? [
       {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonNullable<GetMaybeObjectValue<F, K>>
+        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
           ? never
           : K]?: GetMaybeObjectValue<F, K>;
       } & {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonNullable<GetMaybeObjectValue<F, K>>
+        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
           ? K
           : never]: GetMaybeObjectValue<F, K>;
       },

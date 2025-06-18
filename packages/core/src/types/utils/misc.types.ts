@@ -12,6 +12,7 @@ export type MaybeInput<T = any> = T | null | undefined;
 export type MaybeOutput<T = any> = T | undefined;
 export type MaybeNull<T> = T | null;
 export type MaybeReadonly<T> = T | Readonly<T>;
+export type NonUndefined<T> = Exclude<T, undefined>;
 
 export type PromiseReturn<T> = T extends Promise<infer U> ? U : T;
 
