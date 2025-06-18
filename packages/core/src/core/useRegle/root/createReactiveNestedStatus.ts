@@ -79,33 +79,34 @@ export function createReactiveNestedStatus({
     const mapOfRulesDef = Object.entries(rulesDef.value);
 
     const scopedRulesStatus = Object.fromEntries(
-      mapOfRulesDef
-        .filter(([_, rule]) => !!rule)
-        .map(([statePropKey, statePropRules]) => {
-          if (statePropRules) {
-            const stateRef = toRef(state.value ?? {}, statePropKey);
-            const statePropRulesRef = toRef(() => statePropRules);
-            const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
-            const $schemaErrors = computed(() => schemaErrors?.value?.[statePropKey]);
-            const initialStateRef = toRef(initialState?.value ?? {}, statePropKey);
+      mapOfRulesDef.reduce(
+        (acc, [statePropKey, statePropRules]) => {
+          if (!statePropRules) return acc;
 
-            return [
-              statePropKey,
-              createReactiveChildrenStatus({
-                state: stateRef,
-                rulesDef: statePropRulesRef,
-                path: path ? `${path}.${statePropKey}` : statePropKey,
-                cachePath: cachePath ? `${cachePath}.${statePropKey}` : statePropKey,
-                externalErrors: $externalErrors,
-                schemaErrors: $schemaErrors,
-                initialState: initialStateRef,
-                fieldName: statePropKey,
-                ...commonArgs,
-              }),
-            ];
-          }
-          return [];
-        })
+          const stateRef = toRef(state.value ?? {}, statePropKey);
+          const statePropRulesRef = toRef(() => statePropRules);
+          const $externalErrors = toRef(externalErrors?.value ?? {}, statePropKey);
+          const $schemaErrors = computed(() => schemaErrors?.value?.[statePropKey]);
+          const initialStateRef = toRef(initialState?.value ?? {}, statePropKey);
+
+          acc.push([
+            statePropKey,
+            createReactiveChildrenStatus({
+              state: stateRef,
+              rulesDef: statePropRulesRef,
+              path: path ? `${path}.${statePropKey}` : statePropKey,
+              cachePath: cachePath ? `${cachePath}.${statePropKey}` : statePropKey,
+              externalErrors: $externalErrors,
+              schemaErrors: $schemaErrors,
+              initialState: initialStateRef,
+              fieldName: statePropKey,
+              ...commonArgs,
+            }),
+          ]);
+          return acc;
+        },
+        [] as [string, any][]
+      )
     );
 
     const externalRulesStatus = Object.fromEntries(
@@ -116,14 +117,16 @@ export function createReactiveNestedStatus({
           const $externalErrors = toRef(externalErrors?.value ?? {}, key);
           const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
           const initialStateRef = toRef(initialState?.value ?? {}, key);
+          const computedPath = path ? `${path}.${key}` : key;
+          const computedCachePath = cachePath ? `${cachePath}.${key}` : key;
 
           return [
             key,
             createReactiveChildrenStatus({
               state: stateRef,
               rulesDef: computed(() => ({})),
-              path: path ? `${path}.${key}` : key,
-              cachePath: cachePath ? `${cachePath}.${key}` : key,
+              path: computedPath,
+              cachePath: computedCachePath,
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
@@ -136,19 +139,24 @@ export function createReactiveNestedStatus({
 
     const schemasRulesStatus = Object.fromEntries(
       Object.entries(unref(schemaErrors) ?? {}).map(([key]) => {
+        // Pre-compute path values to avoid repeated string operations
+        const computedPath = path ? `${path}.${key}` : key;
+        const computedCachePath = cachePath ? `${cachePath}.${key}` : key;
+
+        // Create refs once and reuse
         const stateRef = toRef(state.value ?? {}, key);
         const $externalErrors = toRef(externalErrors?.value ?? {}, key);
         const $schemaErrors = computed(() => schemaErrors?.value?.[key]);
         const initialStateRef = toRef(initialState?.value ?? {}, key);
-        const computedPath = path ? `${path}.${key}` : key;
+        const emptyRulesDef = computed(() => ({}));
 
         return [
           key,
           createReactiveChildrenStatus({
             state: stateRef,
-            rulesDef: computed(() => ({})),
-            path: path ? `${path}.${key}` : key,
-            cachePath: cachePath ? `${cachePath}.${key}` : key,
+            rulesDef: emptyRulesDef,
+            path: computedPath,
+            cachePath: computedCachePath,
             externalErrors: $externalErrors,
             schemaErrors: $schemaErrors,
             initialState: initialStateRef,
@@ -280,60 +288,68 @@ export function createReactiveNestedStatus({
       });
 
       const $dirty = computed<boolean>(() => {
-        return (
-          !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).every(([_, statusOrField]) => {
-            return statusOrField?.$dirty;
-          })
-        );
+        const fields = $fields.value;
+        const fieldKeys = Object.keys(fields);
+        if (!fieldKeys.length) return false;
+
+        for (const key of fieldKeys) {
+          if (!fields[key]?.$dirty) return false;
+        }
+        return true;
       });
 
       const $anyDirty = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([_, statusOrField]) => {
-          return statusOrField?.$anyDirty;
-        });
+        const fields = $fields.value;
+        for (const key in fields) {
+          if (fields[key]?.$anyDirty) return true;
+        }
+        return false;
       });
 
       const $invalid = computed<boolean>(() => {
-        return (
-          !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).some(([_, statusOrField]) => {
-            return statusOrField?.$invalid;
-          })
-        );
+        const fields = $fields.value;
+        const entries = Object.entries(fields);
+        if (!entries.length) return false;
+
+        for (const [_, statusOrField] of entries) {
+          if (statusOrField?.$invalid) return true;
+        }
+        return false;
       });
 
       const $correct = computed<boolean>(() => {
-        const fields = Object.entries($fields.value).filter(([_, statusOrField]) => {
-          if (isFieldStatus(statusOrField)) {
-            return !statusOrField.$inactive;
+        const fields = Object.entries($fields.value).reduce<[string, any][]>((acc, [key, statusOrField]) => {
+          if (!isFieldStatus(statusOrField) || !statusOrField.$inactive) {
+            acc.push([key, statusOrField]);
           }
-          return true;
-        });
+          return acc;
+        }, []);
+
         if (fields.length) {
+          if (commonArgs.schemaMode) {
+            return fields.every(([_, statusOrField]) => statusOrField.$correct);
+          }
+
           return fields.every(([_, statusOrField]) => {
-            if (commonArgs.schemaMode) {
-              return statusOrField.$correct;
-            } else if (isFieldStatus(statusOrField)) {
-              if ('required' in statusOrField.$rules && statusOrField.$rules.required.$active) {
-                return statusOrField?.$correct;
-              }
-              return !statusOrField.$invalid && !statusOrField.$pending;
+            if (!isFieldStatus(statusOrField)) {
+              return statusOrField?.$correct;
             }
 
-            return statusOrField?.$correct;
+            const hasRequiredRule = 'required' in statusOrField.$rules && statusOrField.$rules.required.$active;
+            return hasRequiredRule ? statusOrField.$correct : !statusOrField.$invalid && !statusOrField.$pending;
           });
         }
         return false;
       });
 
       const $error = computed<boolean>(() => {
-        return (
-          !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).some(([_, statusOrField]) => {
-            return statusOrField?.$error;
-          })
-        );
+        const fields = $fields.value;
+        if (!Object.keys(fields).length) return false;
+
+        for (const key in fields) {
+          if (fields[key]?.$error) return true;
+        }
+        return false;
       });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
@@ -369,43 +385,43 @@ export function createReactiveNestedStatus({
       const $localPending = ref(false);
 
       const $pending = computed<boolean>(() => {
-        return (
-          $localPending.value ||
-          Object.entries($fields.value).some(([key, statusOrField]) => {
-            return statusOrField?.$pending;
-          })
-        );
+        if ($localPending.value) return true;
+        const fields = $fields.value;
+        for (const key in fields) {
+          if (fields[key]?.$pending) return true;
+        }
+        return false;
       });
 
       const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
-        return Object.fromEntries(
-          Object.entries($fields.value).map(([key, statusOrField]) => {
-            return [key, statusOrField?.$errors];
-          })
-        );
+        const result: Record<string, $InternalRegleErrors> = {};
+        for (const key in $fields.value) {
+          result[key] = $fields.value[key]?.$errors;
+        }
+        return result;
       });
 
       const $silentErrors = computed<Record<string, $InternalRegleErrors>>(() => {
-        return Object.fromEntries(
-          Object.entries($fields.value).map(([key, statusOrField]) => {
-            return [key, statusOrField?.$silentErrors];
-          })
-        );
+        const result: Record<string, $InternalRegleErrors> = {};
+        for (const key in $fields.value) {
+          result[key] = $fields.value[key]?.$silentErrors;
+        }
+        return result;
       });
 
       const $edited = computed<boolean>(() => {
-        return (
-          !!Object.entries($fields.value).length &&
-          Object.entries($fields.value).every(([_, statusOrField]) => {
-            return statusOrField?.$edited;
-          })
-        );
+        if (!Object.keys($fields.value).length) return false;
+        for (const key in $fields.value) {
+          if (!$fields.value[key]?.$edited) return false;
+        }
+        return true;
       });
 
       const $anyEdited = computed<boolean>(() => {
-        return Object.entries($fields.value).some(([_, statusOrField]) => {
-          return statusOrField?.$anyEdited;
-        });
+        for (const key in $fields.value) {
+          if ($fields.value[key]?.$anyEdited) return true;
+        }
+        return false;
       });
 
       const $name = computed(() => fieldName);
@@ -524,16 +540,17 @@ export function createReactiveNestedStatus({
     scopeState = {} as any;
 
     if ($fields.value) {
-      Object.entries($fields.value).forEach(([_, field]) => {
+      for (const field of Object.values($fields.value)) {
         field.$unwatch();
-      });
+      }
     }
   }
 
   function $clearExternalErrors() {
-    Object.entries($fields.value).forEach(([_, field]) => {
+    const fields = $fields.value;
+    for (const field of Object.values(fields)) {
       field.$clearExternalErrors();
-    });
+    }
   }
 
   function $reset(options?: ResetOptions<Record<string, unknown>>, fromParent?: boolean): void {
@@ -557,9 +574,9 @@ export function createReactiveNestedStatus({
       }
     }
 
-    Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$reset(options, true);
-    });
+    for (const field of Object.values($fields.value)) {
+      field.$reset(options, true);
+    }
 
     if (options?.clearExternalErrors) {
       $clearExternalErrors();
@@ -572,9 +589,9 @@ export function createReactiveNestedStatus({
   }
 
   function $touch(runCommit = true, withConditions = false): void {
-    Object.values($fields.value).forEach((statusOrField) => {
-      statusOrField.$touch(runCommit, withConditions);
-    });
+    for (const field of Object.values($fields.value)) {
+      field.$touch(runCommit, withConditions);
+    }
   }
 
   function filterNullishFields(fields: [string, unknown][]) {
@@ -613,18 +630,11 @@ export function createReactiveNestedStatus({
         const data = state.value;
 
         const results = await Promise.allSettled(
-          Object.values($fields.value).map((statusOrField) => {
-            return statusOrField.$validate();
-          })
+          Object.values($fields.value).map((statusOrField) => statusOrField.$validate())
         );
 
-        const validationResults = results.every((value) => {
-          if (value.status === 'fulfilled') {
-            return value.value.valid === true;
-          } else {
-            return false;
-          }
-        });
+        const validationResults = results.every((value) => value.status === 'fulfilled' && value?.value.valid === true);
+
         return { valid: validationResults, data };
       }
     } catch (e) {
