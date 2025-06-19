@@ -9,6 +9,14 @@ export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   >;
 };
 
+export type RegleIssuesTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
+    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+    false,
+    true
+  >;
+};
+
 export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
     JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
@@ -50,12 +58,12 @@ export type RegleValidationErrors<
           : string[];
 
 export type RegleCollectionErrors<TState extends Record<string, any>, TIssue extends boolean = false> = {
-  readonly $self: string[];
+  readonly $self: TIssue extends true ? RegleFieldIssue[] : string[];
   readonly $each: RegleValidationErrors<TState, false, TIssue>[];
 };
 
 export type RegleExternalCollectionErrors<TState extends Record<string, any>, TIssue extends boolean = false> = {
-  readonly $self?: string[];
+  readonly $self?: TIssue extends true ? RegleFieldIssue[] : string[];
   readonly $each?: RegleValidationErrors<TState, true, TIssue>[];
 };
 
@@ -70,6 +78,19 @@ export type $InternalRegleErrorTree = {
 };
 
 export type $InternalRegleErrors = $InternalRegleCollectionErrors | string[] | $InternalRegleErrorTree;
+
+// -- Issues
+
+export type $InternalRegleIssuesTree = {
+  [x: string]: $InternalRegleIssues;
+};
+
+export type $InternalRegleIssues = $InternalRegleCollectionIssues | RegleFieldIssue[] | $InternalRegleIssuesTree;
+
+export type $InternalRegleCollectionIssues = {
+  readonly $self?: RegleFieldIssue[];
+  readonly $each?: $InternalRegleIssues[];
+};
 
 // -- Schemas
 

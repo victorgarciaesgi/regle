@@ -37,6 +37,7 @@ export function extractRulesIssues({
       $property: field.fieldName,
       $rule: key,
       $type: rule.$type,
+      ...(typeof rule.$metadata === 'object' ? rule.$metadata : {}),
     };
     return issue;
   });

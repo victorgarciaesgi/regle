@@ -3,6 +3,7 @@ import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect 
 import { cloneDeep, isEmpty } from '../../../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
+  $InternalRegleCollectionIssues,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
@@ -55,6 +56,7 @@ export function createReactiveCollectionStatus({
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | undefined {
   interface ScopeReturnState extends CommonResolverScopedState {
     $dirty: ComputedRef<boolean>;
+    $issues: ComputedRef<$InternalRegleCollectionIssues>;
     $errors: ComputedRef<$InternalRegleCollectionErrors>;
     $silentErrors: ComputedRef<$InternalRegleCollectionErrors>;
     $ready: ComputedRef<boolean>;
@@ -371,6 +373,13 @@ export function createReactiveCollectionStatus({
         );
       });
 
+      const $issues = computed(() => {
+        return {
+          $self: $selfStatus.value.$issues,
+          $each: $eachStatus.value.map(($each) => $each.$issues as any),
+        } satisfies $InternalRegleCollectionIssues;
+      });
+
       const $errors = computed(() => {
         return {
           $self: $selfStatus.value.$errors,
@@ -433,8 +442,8 @@ export function createReactiveCollectionStatus({
                     $invalid,
                     $correct,
                     $errors: $errors as any,
-                    $ready,
                     $silentErrors: $silentErrors as any,
+                    $ready,
                     $anyDirty,
                     $name: $name,
                     $each: $eachStatus,
@@ -442,6 +451,7 @@ export function createReactiveCollectionStatus({
                     $value: state as any,
                     $edited,
                     $anyEdited,
+                    $issues: $issues as any,
                   })
                 );
               });
@@ -474,6 +484,7 @@ export function createReactiveCollectionStatus({
         $rewardEarly,
         $silent,
         $autoDirty,
+        $issues,
       } satisfies ScopeReturnState;
     })!;
 
