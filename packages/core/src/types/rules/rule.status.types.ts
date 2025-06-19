@@ -1,9 +1,11 @@
 import type { IsUnion } from 'expect-type';
-import type { IsEmptyObject, IsUnknown, PartialDeep } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnknown, PartialDeep } from 'type-fest';
 import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
+  $InternalRegleCollectionIssues,
   $InternalRegleErrors,
+  $InternalRegleIssues,
   $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
@@ -20,11 +22,13 @@ import type {
   RegleCollectionRuleDefinition,
   RegleErrorTree,
   RegleFormPropertyType,
+  RegleIssuesTree,
   ReglePartialRuleTree,
   RegleResult,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
+  RegleRuleMetadataExtended,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
@@ -86,9 +90,16 @@ export type RegleStatus<
       : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
   };
   /**
+   * Collection of all the issues, collected for all children properties and nested forms.
+   *
+   * Only contains issues from properties where $dirty equals true.
+   */
+  readonly $issues: RegleIssuesTree<TState>;
+  /**
    * Collection of all the error messages, collected for all children properties and nested forms.
    *
-   * Only contains errors from properties where $dirty equals true. */
+   * Only contains errors from properties where $dirty equals true.
+   * */
   readonly $errors: RegleErrorTree<TState>;
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState>;
@@ -109,6 +120,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   $fields: {
     [x: string]: $InternalRegleStatusType;
   };
+  readonly $issues: Record<string, $InternalRegleIssues>;
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
@@ -160,13 +172,42 @@ export type $InternalRegleStatusType =
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
 
-export interface RegleFieldIssue {
-  $property: string;
-  $rule: string;
-  $type?: string;
-  $message: string;
-  [x: string]: unknown;
-}
+export type RegleFieldIssue<TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = EmptyObject> = {
+  readonly $property: string;
+  readonly $type?: string;
+  readonly $message: string;
+} & (IsEmptyObject<TRules> extends true
+  ? {
+      readonly $rule: string;
+    }
+  : {
+      [K in keyof ComputeFieldRules<any, TRules>]: ComputeFieldRules<any, TRules>[K] extends {
+        $metadata: infer TMetadata;
+      }
+        ? K extends string
+          ? { readonly $rule: K } & (TMetadata extends boolean ? { readonly $rule: string } : TMetadata)
+          : { readonly $rule: string }
+        : { readonly $rule: string };
+    }[keyof ComputeFieldRules<any, TRules>]);
+
+type ComputeFieldRules<TState extends any, TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>>> =
+  IsEmptyObject<TRules> extends true
+    ? {
+        readonly [x: string]: RegleRuleStatus<TState, any[], any>;
+      }
+    : {
+        readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
+          TState,
+          TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
+          TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
+            ? TMetadata
+            : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
+              ? TMetadata extends Promise<infer P>
+                ? P
+                : TMetadata
+              : boolean
+        >;
+      };
 
 /**
  * @public
@@ -189,11 +230,11 @@ export type RegleFieldStatus<
   /**
    * Collect all metadata of validators, Only contains metadata from properties where $dirty equals true.
    */
-  readonly $issues: RegleFieldIssue[];
+  readonly $issues: RegleFieldIssue<TRules>[];
   /**
    * Collect all metadata of validators, including the error message.
    */
-  readonly $silentIssues: RegleFieldIssue[];
+  readonly $silentIssues: RegleFieldIssue<TRules>[];
   /** Stores external errors of the current field */
   readonly $externalErrors: string[];
   /** Stores active tooltips messages of the current field */
@@ -205,23 +246,7 @@ export type RegleFieldStatus<
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
-  readonly $rules: IsEmptyObject<TRules> extends true
-    ? {
-        readonly [x: string]: RegleRuleStatus<TState, any[], any>;
-      }
-    : {
-        readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
-          TState,
-          TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
-          TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
-            ? TMetadata
-            : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
-              ? TMetadata extends Promise<infer P>
-                ? P
-                : TMetadata
-              : boolean
-        >;
-      };
+  readonly $rules: ComputeFieldRules<TState, TRules>;
 } & ([TShortcuts['fields']] extends [never]
     ? {}
     : {
@@ -402,6 +427,12 @@ export type RegleCollectionStatus<
   readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $self: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
+  /**
+   * Collection of all the issues, collected for all children properties and nested forms.
+   *
+   * Only contains issues from properties where $dirty equals true.
+   */
+  readonly $issues: RegleCollectionErrors<TState, true>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -423,9 +454,10 @@ export type RegleCollectionStatus<
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus
-  extends Omit<$InternalRegleStatus, '$fields' | '$errors' | '$silentErrors'> {
+  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors'> {
   readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;
+  readonly $issues: $InternalRegleCollectionIssues;
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];

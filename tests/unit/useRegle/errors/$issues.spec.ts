@@ -18,7 +18,12 @@ function errorsRules() {
   const createRuleOneError = createRule({ validator: () => false, message: 'Error 3' });
   const createRuleMultipleError = createRule({
     type: 'modifiedType',
-    validator: () => false,
+    validator: () => {
+      return {
+        $valid: false,
+        foobar: 'hello',
+      };
+    },
     message: ['Error 3.1', 'Error 3.2', 'Error 3.3'],
   });
   const createRuleFunctionOneError = createRule({ validator: () => false, message: () => 'Error 4' });
@@ -84,14 +89,26 @@ describe('errors', () => {
       { $message: 'Error 2.1', $rule: 'ruleFunctionWithMultipleError', $type: '__inline' },
       { $message: 'Error 2.2', $rule: 'ruleFunctionWithMultipleError', $type: '__inline' },
       { $message: 'Error 3', $rule: 'createRuleOneError', $type: 'createRuleOneError' },
-      { $message: 'Error 3.1', $rule: 'createRuleMultipleError', $type: 'modifiedType' },
-      { $message: 'Error 3.2', $rule: 'createRuleMultipleError', $type: 'modifiedType' },
-      { $message: 'Error 3.3', $rule: 'createRuleMultipleError', $type: 'modifiedType' },
+      { $message: 'Error 3.1', $rule: 'createRuleMultipleError', $type: 'modifiedType', foobar: 'hello' },
+      { $message: 'Error 3.2', $rule: 'createRuleMultipleError', $type: 'modifiedType', foobar: 'hello' },
+      { $message: 'Error 3.3', $rule: 'createRuleMultipleError', $type: 'modifiedType', foobar: 'hello' },
       { $message: 'Error 4', $rule: 'createRuleFunctionOneError', $type: 'createRuleFunctionOneError' },
       { $message: 'Error 4.1', $rule: 'createRuleFunctionMultipleError', $type: 'createRuleFunctionMultipleError' },
     ];
 
+    expect(vm.r$.$fields.email.$rules.createRuleMultipleError.$metadata.foobar).toBe('hello');
+
+    vm.r$.$fields.email.$issues.map((issue) => {
+      if (issue.$rule === 'createRuleMultipleError') {
+        expect(issue.foobar).toBe('hello');
+        expectTypeOf(issue.foobar).toBeString();
+      }
+    });
+
     expect(vm.r$.$fields.email.$issues).toStrictEqual(
+      expectedIssues.map((issue) => ({ $property: 'email', ...issue }) satisfies RegleFieldIssue)
+    );
+    expect(vm.r$.$issues.email).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'email', ...issue }) satisfies RegleFieldIssue)
     );
     expect(vm.r$.$fields.user.$fields.firstName.$issues).toStrictEqual(
@@ -107,6 +124,10 @@ describe('errors', () => {
       expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
     );
     expect(vm.r$.$fields.contacts.$each[0].$fields.name.$issues).toStrictEqual(
+      expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
+    );
+
+    expect(vm.r$.$issues.contacts.$each[0].name).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
     );
 

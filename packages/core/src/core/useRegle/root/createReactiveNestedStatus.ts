@@ -5,6 +5,7 @@ import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
   $InternalRegleErrorTree,
+  $InternalRegleIssues,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
   $InternalRegleSchemaErrorTree,
@@ -57,6 +58,7 @@ export function createReactiveNestedStatus({
     $dirty: ComputedRef<boolean>;
     $autoDirty: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
+    $issues: ComputedRef<Record<string, $InternalRegleIssues>>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $ready: ComputedRef<boolean>;
@@ -393,6 +395,14 @@ export function createReactiveNestedStatus({
         return false;
       });
 
+      const $issues = computed<Record<string, $InternalRegleIssues>>(() => {
+        const result: Record<string, $InternalRegleIssues> = {};
+        for (const key in $fields.value) {
+          result[key] = $fields.value[key]?.$issues as any;
+        }
+        return result;
+      });
+
       const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
         const result: Record<string, $InternalRegleErrors> = {};
         for (const key in $fields.value) {
@@ -439,8 +449,8 @@ export function createReactiveNestedStatus({
                   reactive({
                     $dirty,
                     $path: path,
-                    $value: state as any,
-                    $silentValue: $silentValue as any,
+                    $value: state,
+                    $silentValue: $silentValue,
                     $error,
                     $pending,
                     $invalid,
@@ -448,11 +458,12 @@ export function createReactiveNestedStatus({
                     $ready,
                     $anyDirty,
                     $name,
-                    $silentErrors: $silentErrors as any,
-                    $errors: $errors as any,
+                    $silentErrors: $silentErrors,
+                    $errors: $errors,
                     $fields,
                     $edited,
                     $anyEdited,
+                    $issues,
                   })
                 );
               });
@@ -507,6 +518,7 @@ export function createReactiveNestedStatus({
         $correct,
         $error,
         $pending,
+        $issues,
         $errors,
         $silentErrors,
         $ready,
