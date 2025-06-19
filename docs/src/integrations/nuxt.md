@@ -50,7 +50,6 @@ export default defineNuxtConfig({
 The Regle Nuxt module allow you to define a global configuration plugin to provide all your forms with the same translations, options and custom rules.
 
 
-:::code-group
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -80,7 +79,6 @@ export default defineRegleNuxtPlugin(() => {
 });
 
 ```
-:::
 
 
 This will inject the fellowing composables to your auto-imports and `#imports`, loaded with your custom error messages and rules: 
