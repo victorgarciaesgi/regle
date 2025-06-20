@@ -1,8 +1,8 @@
 <template>
   <form class="demo-container">
     <div class="row">
-      <MyInput v-model="r$.$value.name" :field="r$.$fields.name" placeholder="Type your name" />
-      <MyInput v-model="r$.$value.email" :field="r$.$fields.email" placeholder="Type your email" />
+      <MyInput v-model="r$.$value.name" :field="r$.name" placeholder="Type your name" />
+      <MyInput v-model="r$.$value.email" :field="r$.email" placeholder="Type your email" />
     </div>
     <div class="button-list">
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>

@@ -52,15 +52,28 @@ describe('type utils', () => {
         RegleShortcutDefinition<any>
       >
     >();
+    expectTypeOf<r$['email']>().toEqualTypeOf<
+      RegleFieldStatus<
+        string,
+        {
+          email: RegleRuleDefinition<string, [], false, boolean, string>;
+        },
+        RegleShortcutDefinition<any>
+      >
+    >();
 
     type r$Schema = InferRegleRoot<typeof useMyFormSchema>;
 
     expectTypeOf<r$Schema['$fields']['email']>().toEqualTypeOf<
       RegleSchemaFieldStatus<string, string, RegleShortcutDefinition<any>>
     >();
+    expectTypeOf<r$Schema['email']>().toEqualTypeOf<
+      RegleSchemaFieldStatus<string, string, RegleShortcutDefinition<any>>
+    >();
 
     const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required } } });
 
     const foo: RegleStatus<Record<string, any> | undefined> = r$.$fields.nested;
+    const bar: RegleStatus<Record<string, any> | undefined> = r$.nested;
   });
 });

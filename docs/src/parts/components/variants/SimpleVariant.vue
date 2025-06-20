@@ -2,22 +2,22 @@
   <form class="demo-container">
     <div class="row">
       <div>
-        <input v-model="r$.$fields.firstName.$value" placeholder="First name" />
-        <ul v-if="r$.$fields.firstName.$errors">
-          <li v-for="error of r$.$fields.firstName.$errors" :key="error">
+        <input v-model="r$.firstName.$value" placeholder="First name" />
+        <ul v-if="r$.firstName.$errors">
+          <li v-for="error of r$.firstName.$errors" :key="error">
             {{ error }}
           </li>
         </ul>
       </div>
 
       <div>
-        <select v-model="r$.$fields.type.$value">
+        <select v-model="r$.type.$value">
           <option :value="undefined" selected>Account type</option>
           <option value="EMAIL">Email</option>
           <option value="GITHUB">Github</option>
         </select>
-        <ul v-if="r$.$fields.type.$errors">
-          <li v-for="error of r$.$fields.type.$errors" :key="error">
+        <ul v-if="r$.type.$errors">
+          <li v-for="error of r$.type.$errors" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -26,9 +26,9 @@
     <div class="row">
       <div v-if="narrowVariant(r$.$fields, 'type', 'EMAIL')">
         <!-- `email` is now a known field in this block -->
-        <input v-model="r$.$fields.email.$value" placeholder="Email" />
-        <ul v-if="r$.$fields.email.$errors">
-          <li v-for="error of r$.$fields.email.$errors" :key="error">
+        <input v-model="r$.email.$value" placeholder="Email" />
+        <ul v-if="r$.email.$errors">
+          <li v-for="error of r$.email.$errors" :key="error">
             {{ error }}
           </li>
         </ul>
@@ -36,9 +36,9 @@
 
       <div v-else-if="narrowVariant(r$.$fields, 'type', 'GITHUB')">
         <!-- `username` is now a known field in this block -->
-        <input v-model="r$.$fields.username.$value" placeholder="Github" />
-        <ul v-if="r$.$fields.username.$errors">
-          <li v-for="error of r$.$fields.username.$errors" :key="error">
+        <input v-model="r$.username.$value" placeholder="Github" />
+        <ul v-if="r$.username.$errors">
+          <li v-for="error of r$.username.$errors" :key="error">
             {{ error }}
           </li>
         </ul>

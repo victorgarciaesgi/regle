@@ -2,10 +2,11 @@ import type { MaybeRef } from 'vue';
 import type { ExtendOnlyRealRecord, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
 import type { RegleFieldIssue } from './rule.status.types';
 
-export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>> = {
+export type RegleErrorTree<TState = MaybeRef<Record<string, any> | any[]>, TIssue extends boolean = false> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
     JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    false
+    false,
+    TIssue
   >;
 };
 
@@ -40,8 +41,8 @@ export type RegleValidationErrors<
   NonNullable<TState> extends Array<infer U extends Record<string, any>>
     ? ExtendOnlyRealRecord<U> extends true
       ? TExternal extends false
-        ? RegleCollectionErrors<U>
-        : RegleExternalCollectionErrors<U>
+        ? RegleCollectionErrors<U, TIssue>
+        : RegleExternalCollectionErrors<U, TIssue>
       : TIssue extends true
         ? RegleFieldIssue[]
         : string[]
@@ -51,7 +52,7 @@ export type RegleValidationErrors<
         : string[]
       : NonNullable<TState> extends Record<string, any>
         ? TExternal extends false
-          ? RegleErrorTree<TState>
+          ? RegleErrorTree<TState, TIssue>
           : RegleExternalErrorTree<TState>
         : TIssue extends true
           ? RegleFieldIssue[]

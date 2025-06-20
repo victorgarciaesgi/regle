@@ -73,7 +73,7 @@ _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
 *optional*
 
-Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `$fields.xxx.$tooltips`. This is useful for providing additional information or guidance.
+Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `xxx.$tooltips`. This is useful for providing additional information or guidance.
 
 
 ## Reactive parameters
@@ -265,7 +265,7 @@ const { r$ } = useRegle({name: ''}, {
 
 <template>
   <label>
-    Name <span v-if="r$.$fields.name.$rules.myConditionalRule.$active">(required)</span>
+    Name <span v-if="r$.name.$rules.myConditionalRule.$active">(required)</span>
   </label>
 </template>
 
@@ -322,7 +322,7 @@ const { r$ } = useRegle({name: ''}, {
     <!-- Here we can use $active to know if the rule is enabled -->
     <input 
       v-model='form.name'
-      :placeholder='`Type your name${r$.$fields.name.$rules.required.$active ? "*": ""}`'
+      :placeholder='`Type your name${r$.name.$rules.required.$active ? "*": ""}`'
     />
 
     <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
@@ -352,7 +352,7 @@ Async rules are useful for server-side validations or computationally expensive 
     <div>
       <input
         v-model="form.email"
-        :class="{ pending: r$.$fields.email.$pending }"
+        :class="{ pending: r$.email.$pending }"
         placeholder="Type your email"
       />
 
@@ -360,7 +360,7 @@ Async rules are useful for server-side validations or computationally expensive 
       <button type="button" @click="r$.$validate">Submit</button>
     </div>
 
-    <span v-if="r$.$fields.email.$pending"> Checking... </span>
+    <span v-if="r$.email.$pending"> Checking... </span>
     
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">

@@ -53,16 +53,16 @@ Regle variants offer a way to simply declare and use this discriminated unions, 
 
 ```vue twoslash
 <template>
-    <div v-if="narrowVariant(r$.$fields, 'type', 'EMAIL')">
+    <div v-if="narrowVariant(r$, 'type', 'EMAIL')">
       <!-- `email` is a known field only in this block -->
-      <input v-model="r$.$fields.email.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.email.$errors"/>
+      <input v-model="r$.email.$value" placeholder='Email'/>
+      <Errors :errors="r$.email.$errors"/>
     </div>
     
-    <div v-else-if="narrowVariant(r$.$fields, 'type', 'GITHUB')">
+    <div v-else-if="narrowVariant(r$, 'type', 'GITHUB')">
       <!-- `username` is a known field only in this block -->
-      <input v-model="r$.$fields.username.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.username.$errors"/>
+      <input v-model="r$.username.$value" placeholder='Email'/>
+      <Errors :errors="r$.username.$errors"/>
     </div>
 
 </template>

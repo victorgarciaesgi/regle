@@ -31,8 +31,8 @@ const { r$ } = useRegle({name: ''}, {
   name: {inlineRule}
 })
 
-r$.$fields.name.$rules.inlineRule.$metadata.
-//                                          ^|
+r$.name.$rules.inlineRule.$metadata.
+//                                 ^|
 ```
 
 ## Using metadata in `createRule`
@@ -72,7 +72,7 @@ export const strongPassword = createRule({
   <div>
     <input
       v-model="r$.$value.password"
-      :class="{ valid: r$.$fields.password.$correct }"
+      :class="{ valid: r$.password.$correct }"
       placeholder="Type your password"
     />
 
@@ -81,7 +81,7 @@ export const strongPassword = createRule({
 
   <div
     class="password-strength"
-    :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">
+    :class="[`level-${r$.password.$rules.strongPassword.$metadata.result?.id}`]">
   </div>
 
   <ul v-if="r$.$errors.password.length">
@@ -90,7 +90,7 @@ export const strongPassword = createRule({
     </li>
   </ul>
 
-  <div v-else-if="r$.$fields.password.$correct" class="success">
+  <div v-else-if="r$.password.$correct" class="success">
     Your password is strong enough
   </div>
 </template>
