@@ -44,24 +44,24 @@ const { r$ } = useRegle(form, {
 
 ## Displaying collection errors
 
-For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this example, `r$.$fields.collection.$each`.
+For collections, the best way to display errors is to bind your list to the `$each` linked to your state. In this example, `r$.collection.$each`.
 
 Alternatively, you can map your errors using `r$.$errors.collection.$each`.
 
 ```vue twoslash
 <template>
   <div 
-    v-for="item of r$.$fields.collection.$each" 
+    v-for="item of r$.collection.$each" 
     :key="item.$id">
     <div>
       <input
         v-model="item.$value.name"
-        :class="{ valid: item.$fields.name.$correct }"
+        :class="{ valid: item.name.$correct }"
         placeholder="Type an item value"
       />
 
       <ul>
-        <li v-for="error of item.$fields.name.$errors" :key="error">
+        <li v-for="error of item.name.$errors" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -119,7 +119,7 @@ Sometimes, you may want to validate not only each field in every element of the 
 
 You can do this just like you would with a normal field.
 
-Errors can be displayed either using `r$.$errors.[field].$self` or `r$.$fields.[field].$self.$errors`.
+Errors can be displayed either using `r$.$errors.[field].$self` or `r$.[field].$self.$errors`.
 
 
 ```ts twoslash

@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, toRefs, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -658,7 +658,7 @@ export function createReactiveNestedStatus({
 
   const { $shortcuts, $localPending, ...restScopeState } = scopeState;
 
-  return reactive({
+  const fullStatus = reactive({
     ...restScopeState,
     ...$shortcuts,
     $path: path,
@@ -671,6 +671,20 @@ export function createReactiveNestedStatus({
     $clearExternalErrors,
     $extractDirtyFields,
   }) satisfies $InternalRegleStatus;
+
+  watchEffect(() => {
+    // Cleanup previous field properties
+    for (const key in Object.keys(fullStatus).filter((key) => !key.startsWith('$'))) {
+      delete fullStatus[key as keyof typeof fullStatus];
+    }
+    for (const field of Object.values($fields.value)) {
+      Object.assign(fullStatus, {
+        [field.$name]: field,
+      });
+    }
+  });
+
+  return fullStatus;
 }
 
 interface CreateReactiveChildrenStatus extends CommonResolverOptions {

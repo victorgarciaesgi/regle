@@ -1,4 +1,5 @@
 import type {
+  HasNamedKeys,
   JoinDiscriminatedUnions,
   Maybe,
   PrimitiveTypes,
@@ -6,6 +7,7 @@ import type {
   RegleCommonStatus,
   RegleErrorTree,
   RegleFieldIssue,
+  RegleIssuesTree,
   RegleRuleStatus,
   RegleShortcutDefinition,
 } from '@regle/core';
@@ -51,6 +53,35 @@ export type RegleSchemaResult<TSchema extends unknown> =
   | { valid: false; data: PartialDeep<TSchema> }
   | { valid: true; data: TSchema };
 
+type ProcessNestedFields<
+  TState extends Record<string, any>,
+  TSchema extends Record<string, any>,
+  TShortcuts extends RegleShortcutDefinition,
+> =
+  HasNamedKeys<TState> extends true
+    ? {
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TSchema>
+          ? InferRegleSchemaStatusType<
+              NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
+              JoinDiscriminatedUnions<TState>[TKey],
+              TShortcuts
+            >
+          : never;
+      } & {
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<TSchema>
+          ? JoinDiscriminatedUnions<TSchema>[TKey] extends NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>
+            ? TKey
+            : never
+          : never]-?: TKey extends keyof JoinDiscriminatedUnions<TSchema>
+          ? InferRegleSchemaStatusType<
+              NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
+              JoinDiscriminatedUnions<TState>[TKey],
+              TShortcuts
+            >
+          : never;
+      }
+    : {};
+
 /**
  * @public
  */
@@ -61,27 +92,11 @@ export type RegleSchemaStatus<
   IsRoot extends boolean = false,
 > = Omit<RegleCommonStatus<TState>, IsRoot extends false ? '$pending' : ''> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
-  readonly $fields: {
-    readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-      ? InferRegleSchemaStatusType<
-          NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
-          JoinDiscriminatedUnions<TState>[TKey],
-          TShortcuts
-        >
-      : never;
-  } & {
-    readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<TSchema>
-      ? JoinDiscriminatedUnions<TSchema>[TKey] extends NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>
-        ? TKey
-        : never
-      : never]-?: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-      ? InferRegleSchemaStatusType<
-          NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
-          JoinDiscriminatedUnions<TState>[TKey],
-          TShortcuts
-        >
-      : never;
-  };
+  readonly $fields: ProcessNestedFields<TState, TSchema, TShortcuts>;
+  /** Collection of all issues, collected for all children properties and nested forms.
+   *
+   * Only contains errors from properties where $dirty equals true. */
+  readonly $issues: RegleIssuesTree<TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -90,7 +105,8 @@ export type RegleSchemaStatus<
   readonly $silentErrors: RegleErrorTree<TState>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-} & (IsRoot extends true
+} & ProcessNestedFields<TState, TSchema, TShortcuts> &
+  (IsRoot extends true
     ? {
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
         $validate: () => Promise<RegleSchemaResult<TSchema>>;
@@ -174,6 +190,12 @@ export type RegleSchemaCollectionStatus<
   readonly $each: Array<InferRegleSchemaStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $self: RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
+  /**
+   * Collection of all the issues, collected for all children properties and nested forms.
+   *
+   * Only contains issues from properties where $dirty equals true.
+   */
+  readonly $issues: RegleCollectionErrors<TSchema, true>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */

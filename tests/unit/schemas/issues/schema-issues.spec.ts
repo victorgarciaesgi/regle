@@ -30,6 +30,16 @@ describe('schemas (%s) - $issues ', async () => {
         path: ['level0'],
       },
     ]);
+    expect(vm.r$.level0?.$issues).toStrictEqual([
+      {
+        $message: 'Custom error',
+        $property: 'level0',
+        $rule: 'schema',
+        code: 'custom',
+        message: 'Custom error',
+        path: ['level0'],
+      },
+    ]);
 
     expect(vm.r$.$fields.level1.$fields.child?.$issues).toStrictEqual([
       {
@@ -43,6 +53,16 @@ describe('schemas (%s) - $issues ', async () => {
     ]);
 
     expect(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name.$issues).toStrictEqual([
+      {
+        $message: 'Custom error',
+        $property: 'name',
+        $rule: 'schema',
+        code: 'custom',
+        message: 'Custom error',
+        path: ['level1', 'collection', 0, 'name'],
+      },
+    ]);
+    expect(vm.r$.level1.collection.$each[0].name.$issues).toStrictEqual([
       {
         $message: 'Custom error',
         $property: 'name',
@@ -89,6 +109,15 @@ describe('schemas (%s) - $issues ', async () => {
     );
 
     expect(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name.$issues[0]).toMatchObject(
+      expect.objectContaining({
+        $message: 'Custom error',
+        $property: 'name',
+        $rule: 'schema',
+        message: 'Custom error',
+      })
+    );
+
+    expect(vm.r$.level1.collection.$each[0].name.$issues[0]).toMatchObject(
       expect.objectContaining({
         $message: 'Custom error',
         $property: 'name',

@@ -2,8 +2,8 @@
 <template>
   <input 
     :class="{
-      error: r$.$fields.email.$error,
-      valid: r$.$fields.email.$correct
+      error: r$.email.$error,
+      valid: r$.email.$correct
     }" 
     v-model='r$.$value.email' 
     placeholder='Type your email'

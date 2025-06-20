@@ -59,6 +59,7 @@ describe('withAsync helper', () => {
 
     expect(wrapper.vm.r$.$pending).toBe(true);
     expect(wrapper.vm.r$.$fields.email.$pending).toBe(true);
+    expect(wrapper.vm.r$.email.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await nextTick();
@@ -66,7 +67,9 @@ describe('withAsync helper', () => {
 
     expect(wrapper.vm.r$.$pending).toBe(false);
     expect(wrapper.vm.r$.$fields.email.$pending).toBe(false);
+    expect(wrapper.vm.r$.email.$pending).toBe(false);
     expect(wrapper.vm.r$.$fields.email.$error).toBe(false);
+    expect(wrapper.vm.r$.email.$error).toBe(false);
   });
 
   it('should be on pending state and validate when changing dep', async () => {
@@ -79,15 +82,17 @@ describe('withAsync helper', () => {
 
     expect(wrapper.vm.r$.$pending).toBe(true);
     expect(wrapper.vm.r$.$fields.email.$pending).toBe(true);
+    expect(wrapper.vm.r$.email.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
     expect(wrapper.vm.r$.$pending).toBe(false);
     expect(wrapper.vm.r$.$fields.email.$pending).toBe(false);
-
+    expect(wrapper.vm.r$.email.$pending).toBe(false);
     expect(wrapper.vm.r$.$fields.email.$rules.error.$valid).toBe(false);
-    expect(wrapper.vm.r$.$fields.email.$error).toBe(true);
+    expect(wrapper.vm.r$.email.$rules.error.$valid).toBe(false);
+    expect(wrapper.vm.r$.email.$error).toBe(true);
     expect(wrapper.vm.r$.$errors.email).toStrictEqual(['Error']);
   });
 

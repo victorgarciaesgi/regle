@@ -1,19 +1,19 @@
 <template>
   <div class="demo-container">
     <div class="list">
-      <div v-for="(item, index) of r$.$fields.collection.$each" :key="item.$id" class="item">
+      <div v-for="(item, index) of r$.collection.$each" :key="item.$id" class="item">
         <div class="field">
           <input
             v-model="item.$value.name"
-            :class="{ valid: item.$fields.name.$correct, error: item.$fields.name.$error }"
+            :class="{ valid: item.name.$correct, error: item.name.$error }"
             placeholder="Type an item value"
           />
 
           <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
         </div>
 
-        <ul v-if="item.$fields.name.$errors.length">
-          <li v-for="error of item.$fields.name.$errors" :key="error">
+        <ul v-if="item.name.$errors.length">
+          <li v-for="error of item.name.$errors" :key="error">
             {{ error }}
           </li>
         </ul>

@@ -81,25 +81,25 @@ Let's take the previous example again:
 
 ```vue twoslash
 <template>
-    <input v-model="r$.$fields.firstName.$value" placeholder='First name'/>
-    <Errors :errors="r$.$fields.firstName.$errors"/>
+    <input v-model="r$.firstName.$value" placeholder='First name'/>
+    <Errors :errors="r$.firstName.$errors"/>
 
-    <select v-model="r$.$fields.type.$value">
+    <select v-model="r$.type.$value">
       <option disabled value="">Account type</option>
       <option value="EMAIL">Email</option>
       <option value="GITHUB">Github</option>
     </select>
 
-    <div v-if="narrowVariant(r$.$fields, 'type', 'EMAIL')">
+    <div v-if="narrowVariant(r$, 'type', 'EMAIL')">
       <!-- `email` is now a known field in this block -->
-      <input v-model="r$.$fields.email.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.email.$errors"/>
+      <input v-model="r$.email.$value" placeholder='Email'/>
+      <Errors :errors="r$.email.$errors"/>
     </div>
     
-    <div v-else-if="narrowVariant(r$.$fields, 'type', 'GITHUB')">
+    <div v-else-if="narrowVariant(r$, 'type', 'GITHUB')">
       <!-- `username` is now a known field in this block -->
-      <input v-model="r$.$fields.username.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.username.$errors"/>
+      <input v-model="r$.username.$value" placeholder='Email'/>
+      <Errors :errors="r$.username.$errors"/>
  //                                 ^? 
     </div>
 
@@ -177,25 +177,25 @@ In the component:
 
 ```vue twoslash
 <template>
-    <input v-model="r$.$fields.firstName.$value" placeholder='First name'/>
-    <Errors :errors="r$.$fields.firstName.$errors"/>
+    <input v-model="r$.firstName.$value" placeholder='First name'/>
+    <Errors :errors="r$.firstName.$errors"/>
 
-    <select v-model="r$.$fields.login.fields.type.$value">
+    <select v-model="r$.login.type.$value">
       <option disabled value="">Account type</option>
       <option value="EMAIL">Email</option>
       <option value="GITHUB">Github</option>
     </select>
 
-    <div v-if="narrowVariant(r$.$fields.login.$fields, 'type', 'EMAIL')">
+    <div v-if="narrowVariant(r$.login, 'type', 'EMAIL')">
       <!-- `email` is now a known field in this block -->
-      <input v-model="r$.$fields.login.$fields.email.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.login.$fields.email.$errors"/>
+      <input v-model="r$.login.email.$value" placeholder='Email'/>
+      <Errors :errors="r$.login.email.$errors"/>
     </div>
     
-    <div v-else-if="narrowVariant(r$.$fields.login.$fields, 'type', 'GITHUB')">
+    <div v-else-if="narrowVariant(r$.login, 'type', 'GITHUB')">
       <!-- `username` is now a known field in this block -->
-      <input v-model="r$.$fields.login.$fields.username.$value" placeholder='Email'/>
-      <Errors :errors="r$.$fields.login.$fields.username.$errors"/>
+      <input v-model="r$.login.username.$value" placeholder='Email'/>
+      <Errors :errors="r$.login.username.$errors"/>
     </div>
 
 </template>

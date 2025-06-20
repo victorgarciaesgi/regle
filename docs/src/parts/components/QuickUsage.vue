@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="r$.$value.email"
-        :class="{ valid: r$.$fields.email.$correct, error: r$.$fields.email.$error }"
+        :class="{ valid: r$.email.$correct, error: r$.email.$error }"
         placeholder="Type your email"
       />
       <div class="button-list inline">

@@ -10,7 +10,7 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
+import type { HasNamedKeys, LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
 export type NarrowVariant<
@@ -31,13 +31,18 @@ export type MaybeVariantStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > =
   IsUnion<NonNullable<TState>> extends true
-    ? Omit<RegleStatus<TState, TRules, TShortcuts>, '$fields'> & {
+    ? Omit<
+        RegleStatus<TState, TRules, TShortcuts>,
+        '$fields' | keyof RegleStatus<TState, TRules, TShortcuts>['$fields']
+      > & {
         $fields: ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<
           TState,
           TRules,
           TShortcuts
         >];
-      }
+      } & (HasNamedKeys<TState> extends true
+          ? ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<TState, TRules, TShortcuts>]
+          : {})
     : RegleStatus<TState, TRules, TShortcuts>;
 
 type ProcessChildrenFields<
