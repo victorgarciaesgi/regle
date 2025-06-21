@@ -2,9 +2,11 @@ import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
-import { defineComponent, nextTick, ref } from 'vue';
+import { version as piniaVersion } from 'pinia/package.json';
+import { defineComponent, nextTick, ref, version } from 'vue';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../packages/core/src/utils';
 
-describe('$dispose', () => {
+describe.runIf(isVueSuperiorOrEqualTo3dotFive)('$dispose', () => {
   const useStore = defineStore('store', () => {
     const { r$ } = useRegle(
       { name: 'Hello', nested: { child: '' }, collection: [{ name: '' }] },
@@ -70,7 +72,12 @@ describe('$dispose', () => {
     if (element.find('.compoA').exists()) {
       element.find('.compoA-input').setValue('Boo');
     }
-    await nextTick();
+
+    await element.vm.$nextTick();
+
+    if (element.find('.compoA').exists()) {
+      expect(element.find('input').element.value).toBe('Boo');
+    }
 
     if (element.find('.compoA').exists()) {
       expect(element.find('.compoA').text()).toBe('Boo');
