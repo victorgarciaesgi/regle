@@ -1,6 +1,6 @@
 import type { IsUnion } from 'expect-type';
-import type { EmptyObject, IsEmptyObject, IsUnknown, PartialDeep } from 'type-fest';
-import type { UnwrapNestedRefs } from 'vue';
+import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep } from 'type-fest';
+import type { Ref, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
@@ -12,6 +12,7 @@ import type {
   ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
+  HasNamedKeys,
   InlineRuleDeclaration,
   JoinDiscriminatedUnions,
   MaybeInput,
@@ -28,7 +29,6 @@ import type {
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  RegleRuleMetadataExtended,
   RegleShortcutDefinition,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
@@ -55,6 +55,40 @@ export type RegleRoot<
         };
       });
 
+type ProcessNestedFields<
+  TState extends Record<string, any> | undefined,
+  TRules extends ReglePartialRuleTree<NonNullable<TState>>,
+  TShortcuts extends RegleShortcutDefinition = {},
+  TIsFields extends boolean = false,
+> =
+  Or<HasNamedKeys<TState>, TIsFields> extends true
+    ? {
+        readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+          ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+            ? IsEmptyObject<TRules[TKey]> extends true
+              ? TKey
+              : never
+            : never
+          : TKey]: IsUnion<NonNullable<TRules[TKey]>> extends true
+          ? ExtendOnlyRealRecord<TState[TKey]> extends true
+            ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
+            : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
+          : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
+      } & {
+        readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+          ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+            ? IsEmptyObject<TRules[TKey]> extends true
+              ? never
+              : TKey
+            : TKey
+          : never]-?: IsUnion<NonNullable<TRules[TKey]>> extends true
+          ? ExtendOnlyRealRecord<TState[TKey]> extends true
+            ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
+            : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
+          : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
+      }
+    : {};
+
 /**
  * @public
  */
@@ -64,31 +98,7 @@ export type RegleStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
-  readonly $fields: {
-    readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-      ? NonNullable<TRules[TKey]> extends RegleRuleDecl
-        ? IsEmptyObject<TRules[TKey]> extends true
-          ? TKey
-          : never
-        : never
-      : TKey]: IsUnion<NonNullable<TRules[TKey]>> extends true
-      ? ExtendOnlyRealRecord<TState[TKey]> extends true
-        ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
-        : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
-      : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
-  } & {
-    readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-      ? NonNullable<TRules[TKey]> extends RegleRuleDecl
-        ? IsEmptyObject<TRules[TKey]> extends true
-          ? never
-          : TKey
-        : TKey
-      : never]-?: IsUnion<NonNullable<TRules[TKey]>> extends true
-      ? ExtendOnlyRealRecord<TState[TKey]> extends true
-        ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
-        : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
-      : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
-  };
+  readonly $fields: ProcessNestedFields<TState, TRules, TShortcuts, true>;
   /**
    * Collection of all the issues, collected for all children properties and nested forms.
    *
@@ -107,7 +117,8 @@ export type RegleStatus<
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: () => Promise<RegleResult<JoinDiscriminatedUnions<TState>, TRules>>;
-} & ([TShortcuts['nested']] extends [never]
+} & ProcessNestedFields<TState, TRules, TShortcuts> &
+  ([TShortcuts['nested']] extends [never]
     ? {}
     : {
         [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;

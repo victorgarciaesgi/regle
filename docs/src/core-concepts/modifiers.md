@@ -154,7 +154,7 @@ const { r$ } = useRegle({ email: '', user: { firstName: '' } }, {
   }
 }, {
   validationGroups: (fields) => ({
-    group1: [fields.email, fields.user.$fields.firstName]
+    group1: [fields.email, fields.user.firstName]
   })
 })
 

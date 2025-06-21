@@ -41,7 +41,7 @@ import { useCollectScope } from './config';
 import { minLength } from '@regle/rules';
 import { ref } from 'vue';
 
-const { r$ } = useCollectScope<['compo1', 'compo2']>('foo');
+const { r$ } = useCollectScope('foo');
 
 const show = ref(false);
 

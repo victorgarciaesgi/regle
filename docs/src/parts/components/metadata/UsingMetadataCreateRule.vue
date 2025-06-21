@@ -1,18 +1,13 @@
 <template>
   <div class="demo-container">
     <div>
-      <input
-        v-model="r$.$value.password"
-        :class="{ valid: r$.$fields.password.$correct }"
-        placeholder="Type your password"
-      />
+      <input v-model="r$.$value.password" :class="{ valid: r$.password.$correct }" placeholder="Type your password" />
 
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <code class="status" :status="r$.$correct"></code>
     </div>
 
-    <div class="password-strength" :class="[`level-${r$.$fields.password.$rules.strongPassword.$metadata.result?.id}`]">
-    </div>
+    <div class="password-strength" :class="[`level-${r$.password.$rules.strongPassword.$metadata.result?.id}`]"> </div>
 
     <ul v-if="r$.$errors.password.length">
       <li v-for="error of r$.$errors.password" :key="error">
@@ -20,7 +15,7 @@
       </li>
     </ul>
 
-    <div v-else-if="r$.$fields.password.$correct" class="success"> Your password is strong enough </div>
+    <div v-else-if="r$.password.$correct" class="success"> Your password is strong enough </div>
   </div>
 </template>
 

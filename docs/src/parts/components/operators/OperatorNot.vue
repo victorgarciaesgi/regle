@@ -15,7 +15,7 @@
         <input
           v-model="r$.$value.newPassword"
           type="password"
-          :class="{ error: r$.$fields.newPassword.$error }"
+          :class="{ error: r$.newPassword.$error }"
           placeholder="Type your new password"
         />
 

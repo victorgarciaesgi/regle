@@ -47,7 +47,7 @@ Every error can be accessed in the `r$` object. In either `$errors` (if the fiel
 In this case:
 
 - `r$.$errors.name`
-- `r$.$fields.name.$errors`
+- `r$.name.$errors`
 
 ### `withParams`
 
@@ -120,7 +120,7 @@ const { r$ } = useRegle({ name: '' }, {
 
 The `withTooltip` wrapper allows you to display additional messages for your field that aren’t necessarily errors. 
 
-Tooltips are aggregated and accessible via `$fields.xxx.$tooltips`.
+Tooltips are aggregated and accessible via `xxx.$tooltips`.
 
 
 ## Chaining wrappers

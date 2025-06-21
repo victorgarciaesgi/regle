@@ -47,10 +47,11 @@ describe.each([
       },
     });
 
+    expect(vm.r$.level0Async?.$correct).toBe(false);
     expect(vm.r$.$fields.level0Async?.$correct).toBe(false);
-    expect(vm.r$.$fields.level1?.$correct).toBe(false);
-    expect(vm.r$.$fields.level1?.$fields.child?.$correct).toBe(false);
-    expect(vm.r$.$fields.level1?.$fields.level2?.$fields.childAsync?.$correct).toBe(false);
+    expect(vm.r$.level1?.$correct).toBe(false);
+    expect(vm.r$.level1?.child?.$correct).toBe(false);
+    expect(vm.r$.level1?.level2?.childAsync?.$correct).toBe(false);
   });
 
   it('should error on initial submit', async () => {
@@ -75,10 +76,11 @@ describe.each([
     expect(vm.r$.$error).toBe(true);
     expect(vm.r$.$pending).toBe(false);
 
+    expect(vm.r$.level0Async.$correct).toBe(true);
     expect(vm.r$.$fields.level0Async.$correct).toBe(true);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
 
   it('should update dirty state and errors when updating form', async () => {
@@ -87,7 +89,7 @@ describe.each([
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
     // @ts-expect-error no nested $pending in schema mode
-    expect(vm.r$.$fields.level0Async.$pending).toBe(false);
+    expect(vm.r$.level0Async.$pending).toBe(false);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
@@ -98,9 +100,9 @@ describe.each([
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
-    expect(vm.r$.$fields.level0Async?.$dirty).toBe(true);
+    expect(vm.r$.level0Async?.$dirty).toBe(true);
     expect(vm.r$.$error).toBe(true);
-    expect(vm.r$.$fields.level0Async.$error).toBe(true);
+    expect(vm.r$.level0Async.$error).toBe(true);
     expect(vm.r$.$pending).toBe(false);
     expect(vm.r$.$value).toStrictEqual({
       level0Async: 1,
@@ -112,10 +114,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
+    expect(vm.r$.level0Async.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
@@ -140,12 +142,12 @@ describe.each([
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$error).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.child.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.child.$error).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(true);
+    expect(vm.r$.level1.$dirty).toBe(true);
+    expect(vm.r$.level1.$error).toBe(true);
+    expect(vm.r$.level1.child.$dirty).toBe(true);
+    expect(vm.r$.level1.child.$error).toBe(true);
+    expect(vm.r$.level1.level2.childAsync.$dirty).toBe(true);
+    expect(vm.r$.level1.level2.childAsync.$error).toBe(true);
     expect(vm.r$.$error).toBe(true);
     expect(vm.r$.$pending).toBe(false);
     expect(vm.r$.$value).toStrictEqual({
@@ -158,10 +160,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
+    expect(vm.r$.level0Async.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
 
   it('should remove errors when all values are valid', async () => {
@@ -186,12 +188,12 @@ describe.each([
 
     expect(vm.r$.$anyDirty).toBe(true);
     expect(vm.r$.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$error).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.child.$error).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$dirty).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
+    expect(vm.r$.level1.$dirty).toBe(true);
+    expect(vm.r$.level1.$error).toBe(false);
+    expect(vm.r$.level1.child.$dirty).toBe(true);
+    expect(vm.r$.level1.child.$error).toBe(false);
+    expect(vm.r$.level1.level2.childAsync.$dirty).toBe(true);
+    expect(vm.r$.level1.level2.childAsync.$error).toBe(false);
     expect(vm.r$.$error).toBe(false);
 
     expect(vm.r$.$pending).toBe(false);
@@ -205,12 +207,12 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$correct).toBe(true);
-    expect(vm.r$.$fields.level0Async.$correct).toBe(true);
-    expect(vm.r$.$fields.level1.$correct).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$error).toBe(false);
+    expect(vm.r$.level0Async.$correct).toBe(true);
+    expect(vm.r$.level0Async.$correct).toBe(true);
+    expect(vm.r$.level1.$correct).toBe(true);
+    expect(vm.r$.level1.child.$correct).toBe(true);
+    expect(vm.r$.level1.level2.childAsync.$correct).toBe(true);
+    expect(vm.r$.level1.level2.childAsync.$error).toBe(false);
 
     const [{ valid, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
 
@@ -259,9 +261,9 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.childAsync.$correct).toBe(false);
+    expect(vm.r$.level0Async.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
 });

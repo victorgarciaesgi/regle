@@ -64,7 +64,7 @@ This can be used to display a loading icon and a custom message indicating that 
     <div>
       <input
         v-model="form.email"
-        :class="{ pending: r$.$fields.email.$pending }"
+        :class="{ pending: r$.email.$pending }"
         placeholder="Type your email"
       />
 
@@ -72,7 +72,7 @@ This can be used to display a loading icon and a custom message indicating that 
       <button type="button" @click="r$.$validate">Submit</button>
     </div>
 
-    <span v-if="r$.$fields.email.$pending"> Checking... </span>
+    <span v-if="r$.email.$pending"> Checking... </span>
     
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">

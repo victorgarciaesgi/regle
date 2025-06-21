@@ -26,8 +26,8 @@ const { r$ } = useRegle(form, {
   }
 })
 
-r$.$fields.email.$rules.required.
-//                               ^|
+r$.email.$rules.required.
+//                      ^|
 </script>
 
 <template>

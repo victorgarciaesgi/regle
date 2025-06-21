@@ -110,7 +110,7 @@ Nested fields are not mixed up with other properties now.
 
 ```ts
 v$.nested.child // [!code --]
-r$.$fields.nested.$fields.child // [!code ++]
+r$.nested.child // [!code ++]
 ```
 
 ## Collections
@@ -250,7 +250,7 @@ const { r$ } = useRegle(..., { // [!code ++]
   }// [!code ++]
 }, {// [!code ++]
   validationGroups: (fields) => ({// [!code ++]
-    firstGroup: [fields.number, fields.nested.$fields.word]// [!code ++]
+    firstGroup: [fields.number, fields.nested.word]// [!code ++]
   })// [!code ++]
 })// [!code ++]
 r$.$groups.firstGroup// [!code ++]

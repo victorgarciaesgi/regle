@@ -7,7 +7,7 @@ export type useCollectScopeFn<TNamedScoped extends boolean = false> = TNamedScop
       namespace?: MaybeRefOrGetter<string>
     ) => {
       r$: MergedRegles<{
-        [K in keyof TValue]: RegleRoot<TValue[K]>;
+        [K in keyof TValue]: RegleRoot<TValue[K]> & SuperCompatibleRegleRoot;
       }>;
     }
   : <TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(

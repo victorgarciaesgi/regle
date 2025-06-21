@@ -69,11 +69,13 @@ describe('withParams helper', () => {
 
   it('should register reactive params as dependencies', async () => {
     expect(vm.r$.$fields.one.$invalid).toBe(true);
+    expect(vm.r$.one.$invalid).toBe(true);
 
     vm.condition = false;
     await vm.$nextTick();
 
     expect(vm.r$.$fields.one.$invalid).toBe(false);
+    expect(vm.r$.one.$invalid).toBe(false);
 
     vm.condition = true;
     await vm.$nextTick();
@@ -82,14 +84,17 @@ describe('withParams helper', () => {
     await vm.$nextTick();
 
     expect(vm.r$.$fields.one.$invalid).toBe(false);
+    expect(vm.r$.one.$invalid).toBe(false);
 
     // with applyIf
     expect(vm.r$.$fields.two.$invalid).toBe(true);
+    expect(vm.r$.two.$invalid).toBe(true);
 
     vm.deepNestedCondition.a.b.c.d.e.condition = false;
     await vm.$nextTick();
 
     expect(vm.r$.$fields.two.$invalid).toBe(false);
+    expect(vm.r$.two.$invalid).toBe(false);
   });
 
   it('should correctly infer types', () => {

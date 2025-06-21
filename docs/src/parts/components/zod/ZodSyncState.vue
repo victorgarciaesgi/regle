@@ -4,7 +4,7 @@
       <div class="input-container">
         <input
           v-model="r$.$value.firstName"
-          :class="{ valid: r$.$fields.firstName.$correct, error: r$.$fields.firstName.$error }"
+          :class="{ valid: r$.firstName.$correct, error: r$.firstName.$error }"
           placeholder="Type your first name"
         />
         <ul v-if="r$.$errors.firstName.length">
@@ -17,7 +17,7 @@
       <div class="input-container">
         <input
           v-model="r$.$value.lastName"
-          :class="{ valid: r$.$fields.lastName.$correct, error: r$.$fields.lastName.$error }"
+          :class="{ valid: r$.lastName.$correct, error: r$.lastName.$error }"
           placeholder="Type your last name"
         />
         <ul v-if="r$.$errors.lastName.length">

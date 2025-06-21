@@ -137,8 +137,8 @@ const props = defineProps<{
 ```vue twoslash [myForm.vue]
 <template>
   <form>
-    <MyInput v-model="r$.$value.name" :field="r$.$fields.name" placeholder="Type your name" />
-    <MyInput v-model="r$.$value.email" :field="r$.$fields.email" placeholder="Type your email" />
+    <MyInput v-model="r$.$value.name" :field="r$.name" placeholder="Type your name" />
+    <MyInput v-model="r$.$value.email" :field="r$.email" placeholder="Type your email" />
   </form>
 </template>
 

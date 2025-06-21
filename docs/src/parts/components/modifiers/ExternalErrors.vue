@@ -4,7 +4,7 @@
       <div>
         <input
           v-model="form.email"
-          :class="{ valid: r$.$fields.email.$correct, error: r$.$fields.email.$error }"
+          :class="{ valid: r$.email.$correct, error: r$.email.$error }"
           placeholder="Type your email"
         />
 
@@ -19,8 +19,8 @@
         <input
           v-model="form.name.pseudo"
           :class="{
-            valid: r$.$fields.name.$correct,
-            error: r$.$fields.name.$fields.pseudo.$error,
+            valid: r$.name.$correct,
+            error: r$.name.pseudo.$error,
           }"
           placeholder="Type your pseudo"
         />

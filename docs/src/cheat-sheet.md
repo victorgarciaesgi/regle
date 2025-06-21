@@ -29,9 +29,9 @@ const { r$ } = useRegle(
 | `r$.$correct` | Form is dirty and valid | `<button :disabled="!r$.$correct">` |
 | `r$.$invalid` | Form is invalid | `v-if="r$.$invalid"` |
 | `r$.$errors` | All error messages | `r$.$errors.email` |
-| `r$.$fields.x.$error` | Field has errors | `v-if="r$.$fields.email.$error"` |
-| `r$.$fields.x.$correct` | Field is dirty and valid | `v-if="r$.$fields.email.$correct"` |
-| `r$.$fields.x.$dirty` | Field was touched | `v-if="r$.$fields.email.$dirty"` |
+| `r$.x.$error` | Field has errors | `v-if="r$.email.$error"` |
+| `r$.x.$correct` | Field is dirty and valid | `v-if="r$.email.$correct"` |
+| `r$.x.$dirty` | Field was touched | `v-if="r$.email.$dirty"` |
 | `r$.$validate()` | Validate form | `await r$.$validate()` |
 | `r$.$reset()` | Reset form | `r$.$reset()` |
 
@@ -75,7 +75,7 @@ const rules = {
 <template>
   <div>
     <input v-model="r$.$value.email" type="email" />
-    <span v-for="error of r$.$fields.email.$errors" class="error">
+    <span v-for="error of r$.email.$errors" class="error">
       {{ error }}
     </span>
   </div>
@@ -88,8 +88,8 @@ const rules = {
   <input 
     v-model="r$.$value.email"
     :class="{
-      'error': r$.$fields.email.$error,
-      'correct': r$.$fields.email.$correct,
+      'error': r$.email.$error,
+      'correct': r$.email.$correct,
     }"
   />
 </template>
@@ -170,7 +170,7 @@ const { r$ } = useRegle(
 )
 
 // Access array validation
-r$.$fields.users.$each[0].$fields.name.$error
+r$.users.$each[0].name.$error
 ```
 
 ## Nested Objects
@@ -198,7 +198,7 @@ const { r$ } = useRegle(
 )
 
 // Access nested validation
-r$.$fields.user.$fields.profile.$fields.name.$error
+r$.user.profile.name.$error
 ```
 
 ## Global Configuration

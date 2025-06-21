@@ -30,7 +30,7 @@ describe('applyIf helper', () => {
   });
 
   it('should be valid when touching field', async () => {
-    vm.r$.$fields.email.$touch();
+    vm.r$.email.$touch();
     await nextTick();
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$error).toBe(false);
@@ -65,17 +65,17 @@ describe('applyIf helper', () => {
       }));
     });
 
-    expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([false]);
-    expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([false]);
-    expect(vm.r$.$fields.field.$rules.error.$params).toStrictEqual([3, false]);
+    expect(vm.r$.email.$rules.error.$params).toStrictEqual([false]);
+    expect(vm.r$.name.$rules.error.$params).toStrictEqual([false]);
+    expect(vm.r$.field.$rules.error.$params).toStrictEqual([3, false]);
 
-    vm.r$.$value.count = 1;
+    vm.r$.count.$value = 1;
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$rules.error.$params).toStrictEqual([true]);
-    expect(vm.r$.$fields.name.$rules.error.$params).toStrictEqual([true]);
-    expect(vm.r$.$fields.field.$rules.error.$params).toStrictEqual([3, true]);
+    expect(vm.r$.email.$rules.error.$params).toStrictEqual([true]);
+    expect(vm.r$.name.$rules.error.$params).toStrictEqual([true]);
+    expect(vm.r$.field.$rules.error.$params).toStrictEqual([3, true]);
   });
 
   it('should have correct types', () => {

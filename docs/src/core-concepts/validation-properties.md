@@ -25,8 +25,8 @@ const { r$ } = useRegle(form, {
   }
 })
 
-r$.$fields.email.$e
-//                 ^|
+r$.email.$e
+//         ^|
 </script>
 ```
 <br/>

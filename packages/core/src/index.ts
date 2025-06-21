@@ -111,4 +111,6 @@ export type {
   RegleCustomFieldStatus,
   RegleFieldIssue,
   RegleExternalSchemaErrorTree,
+  RegleIssuesTree,
+  HasNamedKeys,
 } from './types';

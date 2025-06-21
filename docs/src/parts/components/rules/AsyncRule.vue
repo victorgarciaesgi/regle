@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="form.email"
-        :class="{ valid: r$.$fields.email.$correct, pending: r$.$fields.email.$pending }"
+        :class="{ valid: r$.email.$correct, pending: r$.email.$pending }"
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
@@ -11,7 +11,7 @@
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
       <code class="status" :status="r$.$correct"></code>
     </div>
-    <span v-if="r$.$fields.email.$pending" class="pending-text"> Checking... </span>
+    <span v-if="r$.email.$pending" class="pending-text"> Checking... </span>
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}

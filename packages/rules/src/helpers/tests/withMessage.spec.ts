@@ -76,6 +76,7 @@ describe('withMessage helper', () => {
     vm.r$.$value.testOverride = 'foo';
     await nextTick();
     expect(vm.r$.$fields.testOverride.$errors).toStrictEqual(['Test override: 6']);
+    expect(vm.r$.testOverride.$errors).toStrictEqual(['Test override: 6']);
   });
 
   it('should return errors when submitting with incorrect values', async () => {

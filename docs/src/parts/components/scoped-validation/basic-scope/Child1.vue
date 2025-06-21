@@ -4,8 +4,8 @@
       <input
         v-model="r$.$value.firstName"
         :class="{
-          error: r$.$fields.firstName.$error,
-          valid: r$.$fields.firstName.$correct,
+          error: r$.firstName.$error,
+          valid: r$.firstName.$correct,
         }"
         placeholder="Type your firstname"
       />

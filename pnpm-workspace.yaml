@@ -49,7 +49,7 @@ catalog:
   expect-type: 1.2.1
   prettier: 3.5.3
   typescript: 5.8.3
-  tsdown: 0.12.7
+  tsdown: 0.12.8
   type-fest: 4.41.0
 
   # Vite

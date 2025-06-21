@@ -34,8 +34,8 @@ const { r$ } = useRegle({ name: '' }, {
   }
 })
 
-r$.$fields.name.$isRe
-//                   ^|
+r$.name.$isRe
+//          ^|
 ```
 
 
@@ -62,8 +62,8 @@ const { r$ } = useRegle({ user: {} } as { user: { firstName?: string, lastName?:
   }
 })
 
-r$.$fields.user.$is
-//                 ^|
+r$.user.$is
+//         ^|
 
 ```
 
@@ -93,8 +93,8 @@ const { r$ } = useRegle({ projects: [{ name: '' }] }, {
   }
 })
 
-r$.$fields.projects.$is
-//                     ^|
+r$.projects.$is
+//             ^|
 
 ```
 

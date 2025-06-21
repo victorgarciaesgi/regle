@@ -1,7 +1,7 @@
 <template>
   <div class="demo-container">
     <div>
-      <input v-model="r$.$value.regex" :class="{ valid: r$.$fields.regex.$correct }" placeholder="Type your regex" />
+      <input v-model="r$.$value.regex" :class="{ valid: r$.regex.$correct }" placeholder="Type your regex" />
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
       <code class="status" :status="r$.$correct"></code>

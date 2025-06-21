@@ -3,7 +3,7 @@
     <div>
       <input
         v-model="r$.$value.name"
-        :class="{ valid: r$.$fields.name.$correct, error: r$.$fields.name.$error }"
+        :class="{ valid: r$.name.$correct, error: r$.name.$error }"
         placeholder="Type your name"
       />
 
