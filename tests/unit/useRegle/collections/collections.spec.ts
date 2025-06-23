@@ -2,7 +2,12 @@ import { createRule, useRegle } from '@regle/core';
 import { isFilled, minLength, required } from '@regle/rules';
 import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { shouldBeInvalidField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
+import {
+  shouldBeErrorField,
+  shouldBeInvalidField,
+  shouldBePristineField,
+  shouldBeValidField,
+} from '../../../utils/validations.utils';
 
 describe('collections validations', () => {
   function nestedCollectionRules() {
@@ -204,5 +209,101 @@ describe('collections validations', () => {
 
     expectTypeOf(vm.r$.files.$errors).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.files).toEqualTypeOf<string[]>();
+  });
+
+  it('should track dirty state correctly', async () => {
+    function regleComposable() {
+      function shuffle(arr: any[], options?: any) {
+        if (!Array.isArray(arr)) {
+          throw new Error('expected an array');
+        }
+
+        if (arr.length < 2) {
+          return arr;
+        }
+
+        var shuffleAll = options && options.shuffleAll;
+        var result = arr.slice();
+
+        var i = arr.length,
+          rand,
+          temp;
+
+        while (--i > 0) {
+          do {
+            rand = Math.floor(Math.random() * (i + 1));
+          } while (shuffleAll && rand == i);
+
+          if (!shuffleAll || rand != i) {
+            temp = result[i];
+            result[i] = result[rand];
+            result[rand] = temp;
+          }
+        }
+
+        return result;
+      }
+
+      const form = ref<{ collection: Array<{ name: string }> }>({
+        collection: [{ name: '' }],
+      });
+
+      const { r$ } = useRegle(form, {
+        collection: {
+          $each: {
+            name: { required },
+          },
+        },
+      });
+
+      return {
+        r$,
+        shuffle,
+      };
+    }
+
+    const { vm } = createRegleComponent(regleComposable);
+
+    vm.r$.$value.collection.push({ name: '' });
+    vm.r$.$value.collection.push({ name: '' });
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeInvalidField(vm.r$.collection.$each[1]);
+    shouldBeInvalidField(vm.r$.collection.$each[2]);
+
+    vm.r$.$value.collection = vm.shuffle(vm.r$.$value.collection);
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeInvalidField(vm.r$.collection.$each[1]);
+    shouldBeInvalidField(vm.r$.collection.$each[2]);
+
+    vm.r$.collection.$each[1].$touch();
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeErrorField(vm.r$.collection.$each[1]);
+    shouldBeInvalidField(vm.r$.collection.$each[2]);
+
+    vm.r$.$value.collection.push({ name: '' });
+    vm.r$.$value.collection.push({ name: '' });
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeErrorField(vm.r$.collection.$each[1]);
+    shouldBeInvalidField(vm.r$.collection.$each[2]);
+    shouldBeInvalidField(vm.r$.collection.$each[3]);
+    shouldBeInvalidField(vm.r$.collection.$each[4]);
+
+    vm.r$.$value.collection.splice(0, 0, { name: '' });
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeInvalidField(vm.r$.collection.$each[1]);
+    shouldBeErrorField(vm.r$.collection.$each[2]);
+    shouldBeInvalidField(vm.r$.collection.$each[3]);
+    shouldBeInvalidField(vm.r$.collection.$each[4]);
+    shouldBeInvalidField(vm.r$.collection.$each[5]);
   });
 });

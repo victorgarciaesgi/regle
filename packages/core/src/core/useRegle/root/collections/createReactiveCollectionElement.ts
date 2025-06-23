@@ -40,7 +40,7 @@ export function createCollectionElement({
   schemaMode,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = rules.$key ? rules.$key : randomId();
-  let $cachePath = `${path}.${String($fieldId)}`;
+  let $cachePath = `${cachePath}.${String($fieldId)}`;
   let $path = `${path}.${index}`;
 
   if (typeof stateValue.value === 'object' && stateValue.value != null) {
@@ -54,7 +54,7 @@ export function createCollectionElement({
         },
       });
     } else {
-      $cachePath = `${path}.${stateValue.value.$id}`;
+      $cachePath = `${cachePath}.${stateValue.value.$id}`;
     }
   }
 

@@ -260,24 +260,30 @@ export function createReactiveCollectionStatus({
     $unwatchState = watch(
       state,
       () => {
-        if (state.value != null && !Object.hasOwn(state.value as any, '$id')) {
+        $unwatchDirty?.();
+        if (state.value != null && !Object.hasOwn(state.value as any, '$id') && !$id.value) {
           createStatus();
         } else {
           updateStatus();
         }
+        define$watchDirty();
       },
       { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true, flush: 'pre' }
     );
 
+    define$watchDirty();
+  }
+
+  function define$watchDirty() {
     $unwatchDirty = watch(
       state,
       () => {
         if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
           // Do not watch deep to only track mutation on the object itself on not its children
-          $touch(false, true);
+          $selfStatus.value.$touch(false, true);
         }
       },
-      { flush: 'pre' }
+      { flush: 'post' }
     );
   }
 

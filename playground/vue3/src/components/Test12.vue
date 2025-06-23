@@ -1,47 +1,89 @@
 <template>
-  <div v-if="narrowVariant(r$, 'type', 'EMAIL')">
-    <!-- `email` is a known field only in this block -->
-    <input v-model="r$.email.$value" placeholder="Email" />
-    <Errors :errors="r$.email.$errors" />
-  </div>
+  <div class="demo-container">
+    <div class="list">
+      <div v-for="(item, index) of r$.collection.$each" :key="item.$id" class="item">
+        <div class="field">
+          <input
+            v-model="item.$value.name"
+            :class="{ valid: item.name.$correct, error: item.name.$error }"
+            placeholder="Type an item value"
+          />
 
-  <div v-else-if="narrowVariant(r$, 'type', 'GITHUB')">
-    <!-- `username` is a known field only in this block -->
-    <input v-model="r$.username.$value" placeholder="Email" />
-    <Errors :errors="r$.username.$errors" />
+          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
+        </div>
+
+        <ul v-if="item.name.$errors.length">
+          <li v-for="error of item.name.$errors" :key="error">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="button-list">
+      <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
+      <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem">
+        Remove random item
+      </button>
+      <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
+      <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <code class="status" :status="r$.$correct"></code>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useRegle } from '@regle/core';
 import { ref } from 'vue';
-import { literal, required, email } from '@regle/rules';
-type FormStateLoginType =
-  | { type: 'EMAIL'; email: string }
-  | { type: 'GITHUB'; username: string }
-  | { type?: undefined };
+import { required } from '@regle/rules';
 
-type FormState = {
-  firstName?: string;
-  lastName?: string;
-} & FormStateLoginType;
+function shuffle(arr: any[], options?: any) {
+  if (!Array.isArray(arr)) {
+    throw new Error('expected an array');
+  }
 
-// ---cut---
-import { useRegle, createVariant, narrowVariant, variantToRef } from '@regle/core';
+  if (arr.length < 2) {
+    return arr;
+  }
 
-const state = ref<FormState>({});
+  const shuffleAll = options && options.shuffleAll;
+  const result = arr.slice();
 
-const { r$ } = useRegle(state, () => {
-  const variant = createVariant(state, 'type', [
-    { type: { literal: literal('EMAIL') }, email: { required, email } },
-    { type: { literal: literal('GITHUB') }, username: { required } },
-    { type: { required } },
-  ]);
+  let i = arr.length,
+    rand,
+    temp;
 
-  return {
-    firstName: { required },
-    ...variant.value,
-  };
+  while (--i > 0) {
+    do {
+      rand = Math.floor(Math.random() * (i + 1));
+    } while (shuffleAll && rand == i);
+
+    if (!shuffleAll || rand != i) {
+      temp = result[i];
+      result[i] = result[rand];
+      result[rand] = temp;
+    }
+  }
+
+  return result;
+}
+
+const form = ref<{ collection: Array<{ name: string }> }>({
+  collection: [{ name: '' }],
 });
 
-const variantRef = variantToRef(r$, 'type', 'EMAIL');
+function removeRandomItem() {
+  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
+}
+
+const { r$ } = useRegle(form, {
+  collection: {
+    $each: {
+      name: { required },
+    },
+  },
+});
 </script>
+
+<style lang="scss"></style>
