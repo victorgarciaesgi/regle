@@ -112,6 +112,11 @@ Collection of all the error messages, collected for all children properties and 
 
 Collection of all the error messages, collected for all children properties.
 
+### `$issues`
+- Type: `RegleFieldIssue[]`
+
+Collect all metadata of validators (errors, messages etc). Only contains metadata from properties where $dirty equals true.
+
 ### `$name`
 - Type: `readonly string`
 
@@ -180,7 +185,7 @@ Clears the $externalResults state back to an empty object.
 This is reactive tree containing all the declared rules of your field.
 To know more about the rule properties check the [rules properties section](/core-concepts/rules/rules-properties)
 
-### `$issues`
+### `$silentIssues`
 - Type: `RegleFieldIssue[]`
 
 Collect all metadata of validators (errors, messages etc). Only contains metadata from properties where $dirty equals true.
