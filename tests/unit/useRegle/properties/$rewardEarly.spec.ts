@@ -14,16 +14,16 @@ describe('$rewardEarly', () => {
     it('does not validate, until manually called', async () => {
       const { vm } = createRegleComponent(() => nestedReactiveObjectValidation({ rewardEarly: true }));
 
-      shouldBePristineField(vm.r$.$fields.level0);
-      shouldBePristineField(vm.r$.$fields.level1.$fields.child);
-      shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-      shouldBePristineField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+      shouldBePristineField(vm.r$.level0);
+      shouldBePristineField(vm.r$.level1.child);
+      shouldBePristineField(vm.r$.level1.level2.child);
+      shouldBePristineField(vm.r$.level1.collection.$each[0].name);
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(0);
 
       vm.r$.$value.level0 = 3;
       await vm.$nextTick();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(0);
-      shouldBePristineField(vm.r$.$fields.level0);
+      shouldBePristineField(vm.r$.level0);
 
       vm.r$.$value = {
         level0: 2,
@@ -40,10 +40,10 @@ describe('$rewardEarly', () => {
       await vm.$nextTick();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(4);
 
-      shouldBeValidField(vm.r$.$fields.level0);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.child);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+      shouldBeValidField(vm.r$.level0);
+      shouldBeValidField(vm.r$.level1.child);
+      shouldBeValidField(vm.r$.level1.level2.child);
+      shouldBeValidField(vm.r$.level1.collection.$each[0].name);
     });
 
     it('sets state as normal, stops validating upon success', async () => {
@@ -51,26 +51,26 @@ describe('$rewardEarly', () => {
 
       vm.r$.$value.level0 = 3;
       await vm.$nextTick();
-      vm.r$.$fields.level0.$validate();
+      vm.r$.level0.$validate();
       await vm.$nextTick();
 
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(1);
-      shouldBeErrorField(vm.r$.$fields.level0);
+      shouldBeErrorField(vm.r$.level0);
 
       vm.r$.$value.level0 = 5;
       await vm.$nextTick();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(2);
-      shouldBeErrorField(vm.r$.$fields.level0);
+      shouldBeErrorField(vm.r$.level0);
 
       vm.r$.$value.level0 = 2;
       await vm.$nextTick();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(3);
-      shouldBeValidField(vm.r$.$fields.level0);
+      shouldBeValidField(vm.r$.level0);
 
       vm.r$.$value.level0 = 1;
       await vm.$nextTick();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(3);
-      shouldBeValidField(vm.r$.$fields.level0);
+      shouldBeValidField(vm.r$.level0);
     });
 
     it('works with nested objects', async () => {
@@ -88,19 +88,19 @@ describe('$rewardEarly', () => {
       await vm.$nextTick();
 
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(5);
-      shouldBeValidField(vm.r$.$fields.level0);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.child);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+      shouldBeValidField(vm.r$.level0);
+      shouldBeValidField(vm.r$.level1.child);
+      shouldBeValidField(vm.r$.level1.level2.child);
+      shouldBeValidField(vm.r$.level1.collection.$each[0].name);
 
       await vm.r$.$validate();
       await vm.$nextTick();
 
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(9); // another 4 calls for the 4 items
-      shouldBeErrorField(vm.r$.$fields.level0);
-      shouldBeValidField(vm.r$.$fields.level1.$fields.child);
-      shouldBeErrorField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-      shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+      shouldBeErrorField(vm.r$.level0);
+      shouldBeValidField(vm.r$.level1.child);
+      shouldBeErrorField(vm.r$.level1.level2.child);
+      shouldBeErrorField(vm.r$.level1.collection.$each[0].name);
     });
 
     function nestedAsyncObjectWithRefsValidation() {
@@ -134,32 +134,32 @@ describe('$rewardEarly', () => {
         vi.useFakeTimers();
         const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(0);
-        vm.r$.$fields.level0.$validate();
+        vm.r$.level0.$validate();
         await vi.advanceTimersByTimeAsync(1200);
         await vm.$nextTick();
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(1);
         await flushPromises();
 
-        shouldBeValidField(vm.r$.$fields.level0);
+        shouldBeValidField(vm.r$.level0);
 
-        vm.r$.$fields.level0.$value = 3;
+        vm.r$.level0.$value = 3;
         await vm.$nextTick();
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(1);
 
-        vm.r$.$fields.level0.$validate();
+        vm.r$.level0.$validate();
         await vi.advanceTimersByTimeAsync(1200);
         await vm.$nextTick();
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(2);
         await flushPromises();
-        shouldBeErrorField(vm.r$.$fields.level0);
+        shouldBeErrorField(vm.r$.level0);
 
-        vm.r$.$fields.level0.$value = 2;
+        vm.r$.level0.$value = 2;
         await vi.advanceTimersByTimeAsync(1200);
         await vm.$nextTick();
         expect(mockedValidations.isEven).toHaveBeenCalledTimes(3);
         await flushPromises();
 
-        shouldBeValidField(vm.r$.$fields.level0);
+        shouldBeValidField(vm.r$.level0);
 
         vi.useRealTimers();
       });

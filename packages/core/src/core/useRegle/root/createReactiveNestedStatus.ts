@@ -674,7 +674,7 @@ export function createReactiveNestedStatus({
 
   watchEffect(() => {
     // Cleanup previous field properties
-    for (const key in Object.keys(fullStatus).filter((key) => !key.startsWith('$'))) {
+    for (const key of Object.keys(fullStatus).filter((key) => !key.startsWith('$'))) {
       delete fullStatus[key as keyof typeof fullStatus];
     }
     for (const field of Object.values($fields.value)) {

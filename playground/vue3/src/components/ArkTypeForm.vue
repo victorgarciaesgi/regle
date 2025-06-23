@@ -1,9 +1,9 @@
 <template>
-  <div v-for="(item, index) of r$.$fields.level1.$fields.collection.$each" :key="item.$id" class="item">
+  <div v-for="(item, index) of r$.level1.collection.$each" :key="item.$id" class="item">
     <div class="field">
       <input
         v-model.number="item.$value.name"
-        :class="{ valid: item.$fields.name.$correct, error: item.$fields.name.$error }"
+        :class="{ valid: item.name.$correct, error: item.name.$error }"
         placeholder="Type an item value"
       />
 
@@ -15,16 +15,16 @@
       >
     </div>
 
-    <ul v-if="item.$fields.name.$errors.length">
-      <li v-for="error of item.$fields.name.$errors" :key="error">
+    <ul v-if="item.name.$errors.length">
+      <li v-for="error of item.name.$errors" :key="error">
         {{ error }}
       </li>
     </ul>
   </div>
 
   Array errors:
-  <ul v-if="r$.$fields.level1.$fields.collection.$errors.$self.length">
-    <li v-for="error of r$.$fields.level1.$fields.collection.$errors.$self" :key="error">
+  <ul v-if="r$.level1.collection.$errors.$self.length">
+    <li v-for="error of r$.level1.collection.$errors.$self" :key="error">
       {{ error }}
     </li>
   </ul>

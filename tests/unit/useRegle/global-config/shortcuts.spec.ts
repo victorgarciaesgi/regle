@@ -52,16 +52,16 @@ describe('defineRegleConfig rules', () => {
   it('should display global errors instead of rule-defined error', async () => {
     const { vm } = createRegleComponent(nestedRefObjectValidation);
 
-    shouldBeInvalidField(vm.r$.$fields.level0);
-    shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBeInvalidField(vm.r$.$fields.collection.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.level0);
+    shouldBePristineField(vm.r$.level1.level2.child);
+    shouldBeInvalidField(vm.r$.collection.$each[0].name);
 
-    expect(vm.r$.$fields.level0.$isRequired).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(false);
-    expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(true);
+    expect(vm.r$.level0.$isRequired).toBe(true);
+    expect(vm.r$.level1.level2.child.$isRequired).toBe(false);
+    expect(vm.r$.collection.$each[0].name.$isRequired).toBe(true);
 
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(false);
-    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(true);
+    expect(vm.r$.level1.level2.$haveLeastOneCorrect).toBe(false);
+    expect(vm.r$.collection.$haveLeastOneInvalid).toBe(true);
 
     vm.r$.$value = {
       level0: 'foo',
@@ -75,24 +75,24 @@ describe('defineRegleConfig rules', () => {
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.level0.$isRequired).toBe(true);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(false);
-    expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(true);
+    expect(vm.r$.level0.$isRequired).toBe(true);
+    expect(vm.r$.level1.level2.child.$isRequired).toBe(false);
+    expect(vm.r$.collection.$each[0].name.$isRequired).toBe(true);
 
     // `$correct` is true is set only if the rule is active
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(false);
-    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(true);
+    expect(vm.r$.level1.level2.$haveLeastOneCorrect).toBe(false);
+    expect(vm.r$.collection.$haveLeastOneInvalid).toBe(true);
 
     vm.condition = false;
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.level0.$isRequired).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$isRequired).toBe(true);
-    expect(vm.r$.$fields.collection.$each[0].$fields.name.$isRequired).toBe(false);
+    expect(vm.r$.level0.$isRequired).toBe(false);
+    expect(vm.r$.level1.level2.child.$isRequired).toBe(true);
+    expect(vm.r$.collection.$each[0].name.$isRequired).toBe(false);
 
-    expect(vm.r$.$fields.level1.$fields.level2.$haveLeastOneCorrect).toBe(true);
-    expect(vm.r$.$fields.collection.$correct).toBe(true);
-    expect(vm.r$.$fields.collection.$each[0].$fields.name.$correct).toBe(false);
-    expect(vm.r$.$fields.collection.$haveLeastOneInvalid).toBe(false);
+    expect(vm.r$.level1.level2.$haveLeastOneCorrect).toBe(true);
+    expect(vm.r$.collection.$correct).toBe(true);
+    expect(vm.r$.collection.$each[0].name.$correct).toBe(false);
+    expect(vm.r$.collection.$haveLeastOneInvalid).toBe(false);
   });
 });

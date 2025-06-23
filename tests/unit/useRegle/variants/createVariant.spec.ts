@@ -51,18 +51,18 @@ describe('createVariant', () => {
   it('should correctly create and discriminate variants', async () => {
     const { vm } = createRegleComponent(createRootVariantRegle);
 
-    expect(vm.r$.$fields.firstName.$invalid).toBe(true);
+    expect(vm.r$.firstName.$invalid).toBe(true);
 
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.oneValue).toBe(undefined);
+    expect(vm.r$.oneValue).toBe(undefined);
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.twoValue).toBe(undefined);
+    expect(vm.r$.twoValue).toBe(undefined);
 
     // @ts-expect-error unknown key
-    narrowVariant(vm.r$.$fields, 'NOT_KNOWN', 'ONE');
+    narrowVariant(vm.r$, 'NOT_KNOWN', 'ONE');
 
     // @ts-expect-error unknown value
-    narrowVariant(vm.r$.$fields, 'type', 'NOT_ASSIGNABLE');
+    narrowVariant(vm.r$, 'type', 'NOT_ASSIGNABLE');
 
     const { valid, data } = await vm.r$.$validate();
 
@@ -76,19 +76,19 @@ describe('createVariant', () => {
     }
 
     expect(vm.r$.$error).toBe(true);
-    shouldBeErrorField(vm.r$.$fields.type);
+    shouldBeErrorField(vm.r$.type);
 
     vm.r$.$value.type = 'ONE';
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.type);
+    shouldBeValidField(vm.r$.type);
 
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'ONE')).toBe(true);
+    expect(narrowVariant(vm.r$, 'type', 'ONE')).toBe(true);
 
-    expectTypeOf(vm.r$.$fields.firstName).toEqualTypeOf<
+    expectTypeOf(vm.r$.firstName).toEqualTypeOf<
       RegleFieldStatus<
         string | undefined,
         {
@@ -98,21 +98,21 @@ describe('createVariant', () => {
       >
     >();
 
-    if (narrowVariant(vm.r$.$fields, 'type', 'ONE')) {
-      expect(vm.r$.$fields.oneName).toBe(undefined);
+    if (narrowVariant(vm.r$, 'type', 'ONE')) {
+      expect(vm.r$.oneName).toBe(undefined);
 
-      expectTypeOf(vm.r$.$fields.oneName).toEqualTypeOf<
+      expectTypeOf(vm.r$.oneName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.twoName).toBe(undefined);
+      expect(vm.r$.twoName).toBe(undefined);
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.twoValue).toBe(undefined);
+      expect(vm.r$.twoValue).toBe(undefined);
 
-      shouldBeErrorField(vm.r$.$fields.oneValue);
+      shouldBeErrorField(vm.r$.oneValue);
 
-      expectTypeOf(vm.r$.$fields.oneValue).toEqualTypeOf<
+      expectTypeOf(vm.r$.oneValue).toEqualTypeOf<
         RegleFieldStatus<
           number,
           {
@@ -137,22 +137,22 @@ describe('createVariant', () => {
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'TWO')).toBe(true);
+    expect(narrowVariant(vm.r$, 'type', 'TWO')).toBe(true);
 
-    if (narrowVariant(vm.r$.$fields, 'type', 'TWO')) {
-      expect(vm.r$.$fields.twoName).toBe(undefined);
-      expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
+    if (narrowVariant(vm.r$, 'type', 'TWO')) {
+      expect(vm.r$.twoName).toBe(undefined);
+      expectTypeOf(vm.r$.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneName).toBe(undefined);
+      expect(vm.r$.oneName).toBe(undefined);
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneValue).toBe(undefined);
+      expect(vm.r$.oneValue).toBe(undefined);
 
-      shouldBeErrorField(vm.r$.$fields.twoValue);
-      expectTypeOf(vm.r$.$fields.twoValue).toEqualTypeOf<
+      shouldBeErrorField(vm.r$.twoValue);
+      expectTypeOf(vm.r$.twoValue).toEqualTypeOf<
         RegleFieldStatus<
           number,
           {
@@ -167,10 +167,10 @@ describe('createVariant', () => {
     vm.r$.$value.type = undefined;
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'ONE')).toBe(false);
-    expect(narrowVariant(vm.r$.$fields, 'type', 'TWO')).toBe(false);
+    expect(narrowVariant(vm.r$, 'type', 'ONE')).toBe(false);
+    expect(narrowVariant(vm.r$, 'type', 'TWO')).toBe(false);
 
-    expectTypeOf(vm.r$.$fields.firstName).toEqualTypeOf<
+    expectTypeOf(vm.r$.firstName).toEqualTypeOf<
       RegleFieldStatus<
         string | undefined,
         {
@@ -212,8 +212,8 @@ describe('createVariant', () => {
       };
     });
 
-    const invariantRefOne = variantToRef(r$.$fields.nested2, 'type', 'ONE');
-    const invariantRefTwo = variantToRef(r$.$fields.nested2, 'type', 'TWO');
+    const invariantRefOne = variantToRef(r$.nested2, 'type', 'ONE');
+    const invariantRefTwo = variantToRef(r$.nested2, 'type', 'TWO');
 
     return {
       r$,
@@ -225,14 +225,14 @@ describe('createVariant', () => {
   it('should correctly create and discriminate [nested] variants', async () => {
     const { vm } = createRegleComponent(createNestedVariantRegle);
 
-    expect(vm.r$.$fields.nested2.$fields.name.$invalid).toBe(true);
+    expect(vm.r$.nested2.name.$invalid).toBe(true);
     // No rules so invalid is false
-    expect(vm.r$.$fields.nested2.$fields.definedName.$invalid).toBe(false);
+    expect(vm.r$.nested2.definedName.$invalid).toBe(false);
 
     // No value or rules
-    expect(vm.r$.$fields.nested2.$fields.maybeUndefinedName).toBe(undefined);
+    expect(vm.r$.nested2.maybeUndefinedName).toBe(undefined);
 
-    expectTypeOf(vm.r$.$fields.nested2.$fields.maybeUndefinedName).toEqualTypeOf<
+    expectTypeOf(vm.r$.nested2.maybeUndefinedName).toEqualTypeOf<
       RegleFieldStatus<string | undefined, {}, RegleShortcutDefinition<any>> | undefined
     >();
 
@@ -240,9 +240,9 @@ describe('createVariant', () => {
     expect(vm.invariantRefTwo).toBe(undefined);
 
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.nested2.$fields.oneValue).toBe(undefined);
+    expect(vm.r$.nested2.oneValue).toBe(undefined);
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.nested2.$fields.twoValue).toBe(undefined);
+    expect(vm.r$.nested2.twoValue).toBe(undefined);
 
     const { valid, data } = await vm.r$.$validate();
 
@@ -258,23 +258,23 @@ describe('createVariant', () => {
     }
 
     expect(vm.r$.$error).toBe(true);
-    shouldBeErrorField(vm.r$.$fields.nested2.$fields.type);
+    shouldBeErrorField(vm.r$.nested2.type);
 
     vm.r$.$value.nested2.type = 'ONE';
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.nested2.$fields.type);
+    shouldBeValidField(vm.r$.nested2.type);
 
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields.nested2.$fields, 'type', 'ONE')).toBe(true);
+    expect(narrowVariant(vm.r$.nested2, 'type', 'ONE')).toBe(true);
     expect(vm.invariantRefOne).toBeDefined();
 
-    if (narrowVariant(vm.r$.$fields.nested2.$fields, 'type', 'ONE') && vm.invariantRefOne) {
-      expect(vm.r$.$fields.nested2.$fields.oneName).toBe(undefined);
+    if (narrowVariant(vm.r$.nested2, 'type', 'ONE') && vm.invariantRefOne) {
+      expect(vm.r$.nested2.oneName).toBe(undefined);
 
-      expectTypeOf(vm.r$.$fields.nested2.$fields.oneName).toEqualTypeOf<
+      expectTypeOf(vm.r$.nested2.oneName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
@@ -304,12 +304,12 @@ describe('createVariant', () => {
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.nested2.$fields.twoName).toBe(undefined);
+      expect(vm.r$.nested2.twoName).toBe(undefined);
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.twoValue).toBe(undefined);
-      shouldBeErrorField(vm.r$.$fields.nested2.$fields.oneValue);
+      expect(vm.r$.twoValue).toBe(undefined);
+      shouldBeErrorField(vm.r$.nested2.oneValue);
 
-      expectTypeOf(vm.r$.$fields.nested2.$fields.oneValue).toEqualTypeOf<
+      expectTypeOf(vm.r$.nested2.oneValue).toEqualTypeOf<
         RegleFieldStatus<
           number,
           {
@@ -334,13 +334,13 @@ describe('createVariant', () => {
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO')).toBe(true);
+    expect(narrowVariant(vm.r$.nested2, 'type', 'TWO')).toBe(true);
     expect(vm.invariantRefOne).toBeUndefined();
     expect(vm.invariantRefTwo).toBeDefined();
 
-    if (narrowVariant(vm.r$.$fields.nested2.$fields, 'type', 'TWO') && vm.invariantRefTwo) {
-      expect(vm.r$.$fields.nested2.$fields.twoName).toBe(undefined);
-      expectTypeOf(vm.r$.$fields.nested2.$fields.twoName).toEqualTypeOf<
+    if (narrowVariant(vm.r$.nested2, 'type', 'TWO') && vm.invariantRefTwo) {
+      expect(vm.r$.nested2.twoName).toBe(undefined);
+      expectTypeOf(vm.r$.nested2.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
 
@@ -363,13 +363,13 @@ describe('createVariant', () => {
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneName).toBe(undefined);
+      expect(vm.r$.oneName).toBe(undefined);
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneValue).toBe(undefined);
+      expect(vm.r$.oneValue).toBe(undefined);
 
-      shouldBeErrorField(vm.r$.$fields.nested2.$fields.twoValue);
-      expectTypeOf(vm.r$.$fields.nested2.$fields.twoValue).toEqualTypeOf<
+      shouldBeErrorField(vm.r$.nested2.twoValue);
+      expectTypeOf(vm.r$.nested2.twoValue).toEqualTypeOf<
         RegleFieldStatus<
           number,
           {

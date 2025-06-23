@@ -55,30 +55,30 @@ describe('$pending', () => {
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    expect(vm.r$.$fields.level0.$pending).toBe(true);
+    expect(vm.r$.level0.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
-    shouldBeErrorField(vm.r$.$fields.level0);
-    expect(vm.r$.$fields.level0.$errors).toStrictEqual(['Custom error']);
+    shouldBeErrorField(vm.r$.level0);
+    expect(vm.r$.level0.$errors).toStrictEqual(['Custom error']);
 
     vm.r$.$value.level0 = 2;
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    expect(vm.r$.$fields.level0.$pending).toBe(true);
+    expect(vm.r$.level0.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
-    shouldBeValidField(vm.r$.$fields.level0);
-    expect(vm.r$.$fields.level0.$pending).toBe(false);
+    shouldBeValidField(vm.r$.level0);
+    expect(vm.r$.level0.$pending).toBe(false);
     expect(vm.r$.$ready).toBe(true);
 
     const [{ valid, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(2300)]);
 
-    expect(vm.r$.$fields.level0.$pending).toBe(false);
+    expect(vm.r$.level0.$pending).toBe(false);
 
     expect(valid).toBe(true);
     expect(data).toStrictEqual({
@@ -97,15 +97,15 @@ describe('$pending', () => {
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    expect(vm.r$.$fields.level1.$fields.child.$pending).toBe(true);
-    expect(vm.r$.$fields.level1.$pending).toBe(true);
+    expect(vm.r$.level1.child.$pending).toBe(true);
+    expect(vm.r$.level1.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
-    shouldBeErrorField(vm.r$.$fields.level1);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
-    expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Custom error']);
+    shouldBeErrorField(vm.r$.level1);
+    shouldBeErrorField(vm.r$.level1.child);
+    expect(vm.r$.level1.child.$errors).toStrictEqual(['Custom error']);
   });
 
   it('propagates should make a boolean shift when editing a async rule', async () => {
@@ -119,16 +119,16 @@ describe('$pending', () => {
 
     await vi.advanceTimersByTimeAsync(200);
 
-    expect(vm.r$.$fields.level1.$fields.child.$pending).toBe(true);
-    expect(vm.r$.$fields.level1.$pending).toBe(true);
+    expect(vm.r$.level1.child.$pending).toBe(true);
+    expect(vm.r$.level1.$pending).toBe(true);
     expect(vm.r$.$correct).toBe(false);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
-    shouldBeErrorField(vm.r$.$fields.level1);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
-    expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Custom error']);
+    shouldBeErrorField(vm.r$.level1);
+    shouldBeErrorField(vm.r$.level1.child);
+    expect(vm.r$.level1.child.$errors).toStrictEqual(['Custom error']);
   });
 
   it('propagates `$pending` from a collection child', async () => {
@@ -138,14 +138,14 @@ describe('$pending', () => {
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
-    expect(vm.r$.$fields.collection.$each[0].$pending).toBe(true);
-    expect(vm.r$.$fields.collection.$pending).toBe(true);
+    expect(vm.r$.collection.$each[0].$pending).toBe(true);
+    expect(vm.r$.collection.$pending).toBe(true);
 
     vi.advanceTimersByTime(2000);
     await flushPromises();
 
-    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.child);
-    expect(vm.r$.$fields.collection.$each[0].$fields.child.$errors).toStrictEqual(['Custom error']);
+    shouldBeErrorField(vm.r$.collection.$each[0].child);
+    expect(vm.r$.collection.$each[0].child.$errors).toStrictEqual(['Custom error']);
   });
 
   it('sets `$pending` to false, when the last async invocation resolves', () => {});

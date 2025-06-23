@@ -30,20 +30,20 @@ describe('$correct validation property', () => {
   it('should computed the $correct property correctly', async () => {
     const { vm } = createRegleComponent(regleFixture);
 
-    expect(vm.r$.$fields.nested.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.name.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.noRules.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.dynamic.$correct).toBe(false);
+    expect(vm.r$.nested.$correct).toBe(false);
+    expect(vm.r$.nested.name.$correct).toBe(false);
+    expect(vm.r$.nested.noRules.$correct).toBe(false);
+    expect(vm.r$.nested.dynamic.$correct).toBe(false);
 
     vm.r$.$value.nested.name = 'foo';
     vm.r$.$value.nested.noRules = 'foo';
     vm.r$.$value.nested.dynamic = 'foo';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.nested.$correct).toBe(true);
-    expect(vm.r$.$fields.nested.$fields.name.$correct).toBe(true);
-    expect(vm.r$.$fields.nested.$fields.noRules.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.dynamic.$correct).toBe(true);
+    expect(vm.r$.nested.$correct).toBe(true);
+    expect(vm.r$.nested.name.$correct).toBe(true);
+    expect(vm.r$.nested.noRules.$correct).toBe(false);
+    expect(vm.r$.nested.dynamic.$correct).toBe(true);
 
     vm.r$.$value.nested.name = '';
     vm.r$.$value.nested.noRules = '';
@@ -52,34 +52,34 @@ describe('$correct validation property', () => {
     vm.condition1 = false;
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.nested.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.name.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.noRules.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.dynamic.$correct).toBe(false);
+    expect(vm.r$.nested.$correct).toBe(false);
+    expect(vm.r$.nested.name.$correct).toBe(false);
+    expect(vm.r$.nested.noRules.$correct).toBe(false);
+    expect(vm.r$.nested.dynamic.$correct).toBe(false);
 
     vm.r$.$value.nested.name = 'foo';
     vm.r$.$value.nested.dynamic = 'foo';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.nested.$correct).toBe(true);
-    expect(vm.r$.$fields.nested.$fields.name.$correct).toBe(true);
-    expect(vm.r$.$fields.nested.$fields.noRules.$correct).toBe(false);
-    expect(vm.r$.$fields.nested.$fields.dynamic.$correct).toBe(false);
+    expect(vm.r$.nested.$correct).toBe(true);
+    expect(vm.r$.nested.name.$correct).toBe(true);
+    expect(vm.r$.nested.noRules.$correct).toBe(false);
+    expect(vm.r$.nested.dynamic.$correct).toBe(false);
 
     // Nested 2
 
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.nested2.$correct).toBe(false);
-    expect(vm.r$.$fields.nested2.$fields.name.$correct).toBe(false);
-    expect(vm.r$.$fields.nested2.$fields.email.$correct).toBe(false);
+    expect(vm.r$.nested2.$correct).toBe(false);
+    expect(vm.r$.nested2.name.$correct).toBe(false);
+    expect(vm.r$.nested2.email.$correct).toBe(false);
 
     vm.r$.$value.nested2.name = 'ehjeifhzfezf';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.nested2.$correct).toBe(true);
-    expect(vm.r$.$fields.nested2.$fields.name.$correct).toBe(true);
-    expect(vm.r$.$fields.nested2.$fields.email.$correct).toBe(false);
+    expect(vm.r$.nested2.$correct).toBe(true);
+    expect(vm.r$.nested2.name.$correct).toBe(true);
+    expect(vm.r$.nested2.email.$correct).toBe(false);
 
     expect(vm.r$.$correct).toBe(true);
   });

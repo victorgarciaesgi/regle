@@ -73,7 +73,7 @@ describe('type utils', () => {
 
     const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required } } });
 
-    const foo: RegleStatus<Record<string, any> | undefined> = r$.$fields.nested;
+    const foo: RegleStatus<Record<string, any> | undefined> = r$.nested;
     const bar: RegleStatus<Record<string, any> | undefined> = r$.nested;
   });
 });

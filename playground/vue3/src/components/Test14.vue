@@ -8,8 +8,8 @@
       <input
         type="date"
         v-model="form.foo"
-        :class="{ valid: r$.$fields.foo.$correct, error: r$.$fields.foo.$error }"
-        :placeholder="`Type your foo${r$.$fields.foo.$rules.required.$active ? '*' : ''}`"
+        :class="{ valid: r$.foo.$correct, error: r$.foo.$error }"
+        :placeholder="`Type your foo${r$.foo.$rules.required.$active ? '*' : ''}`"
       />
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
     </div>

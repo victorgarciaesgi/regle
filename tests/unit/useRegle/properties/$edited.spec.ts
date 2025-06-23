@@ -11,13 +11,13 @@ describe('$edited', () => {
     vm.r$.$value.email = 'edited';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$edited).toBe(true);
+    expect(vm.r$.email.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
 
     vm.r$.$value.email = '';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$edited).toBe(false);
+    expect(vm.r$.email.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
     // shouldn't be considered as a Date
@@ -26,19 +26,19 @@ describe('$edited', () => {
     vm.r$.$reset();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$edited).toBe(false);
+    expect(vm.r$.email.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
     vm.r$.$value.email = 'test 2';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$edited).toBe(true);
+    expect(vm.r$.email.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
 
     vm.r$.$value.email = 'test 1';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$edited).toBe(false);
+    expect(vm.r$.email.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
     // nested
@@ -46,97 +46,97 @@ describe('$edited', () => {
     vm.r$.$value.user.firstName = 'new value';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$edited).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName.$edited).toBe(true);
+    expect(vm.r$.user.$edited).toBe(false);
+    expect(vm.r$.user.firstName.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.user.$anyEdited).toBe(true);
+    expect(vm.r$.user.$anyEdited).toBe(true);
 
     vm.r$.$reset();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$edited).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName.$edited).toBe(false);
+    expect(vm.r$.user.$edited).toBe(false);
+    expect(vm.r$.user.firstName.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
-    expect(vm.r$.$fields.user.$anyEdited).toBe(false);
+    expect(vm.r$.user.$anyEdited).toBe(false);
 
     vm.r$.$value.user.firstName = 'edited';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$edited).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName.$edited).toBe(true);
+    expect(vm.r$.user.$edited).toBe(false);
+    expect(vm.r$.user.firstName.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.user.$anyEdited).toBe(true);
+    expect(vm.r$.user.$anyEdited).toBe(true);
 
     vm.r$.$value.user.firstName = 'new value';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$edited).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName.$edited).toBe(false);
+    expect(vm.r$.user.$edited).toBe(false);
+    expect(vm.r$.user.firstName.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
-    expect(vm.r$.$fields.user.$anyEdited).toBe(false);
+    expect(vm.r$.user.$anyEdited).toBe(false);
 
     // collections
 
     vm.r$.$value.contacts[0].name = 'new value';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$edited).toBe(true);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(true);
+    expect(vm.r$.contacts.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
+    expect(vm.r$.contacts.$anyEdited).toBe(true);
 
     vm.r$.$reset();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(false);
-    expect(vm.r$.$fields.contacts.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(false);
+    expect(vm.r$.contacts.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(false);
+    expect(vm.r$.contacts.$anyEdited).toBe(false);
 
     vm.r$.$value.contacts[0].name = 'edited';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$edited).toBe(true);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(true);
+    expect(vm.r$.contacts.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
+    expect(vm.r$.contacts.$anyEdited).toBe(true);
 
     vm.r$.$value.contacts.push({ name: '' });
     await vm.$nextTick();
-    vm.r$.$fields.contacts.$touch();
+    vm.r$.contacts.$touch();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$edited).toBe(false);
-    expect(vm.r$.$fields.contacts.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(true);
+    expect(vm.r$.contacts.$each[1].name.$edited).toBe(false);
+    expect(vm.r$.contacts.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
+    expect(vm.r$.contacts.$anyEdited).toBe(true);
 
     vm.r$.$reset();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(false);
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$edited).toBe(false);
-    expect(vm.r$.$fields.contacts.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[1].name.$edited).toBe(false);
+    expect(vm.r$.contacts.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(false);
+    expect(vm.r$.contacts.$anyEdited).toBe(false);
 
     vm.r$.$value.contacts[1].name = 'edited';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(false);
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(false);
+    expect(vm.r$.contacts.$each[1].name.$edited).toBe(true);
+    expect(vm.r$.contacts.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
+    expect(vm.r$.contacts.$anyEdited).toBe(true);
 
     vm.r$.$value.contacts.splice(0, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$edited).toBe(true);
-    expect(vm.r$.$fields.contacts.$edited).toBe(true);
+    expect(vm.r$.contacts.$each[0].name.$edited).toBe(true);
+    expect(vm.r$.contacts.$edited).toBe(true);
     expect(vm.r$.$anyEdited).toBe(true);
-    expect(vm.r$.$fields.contacts.$anyEdited).toBe(true);
+    expect(vm.r$.contacts.$anyEdited).toBe(true);
   });
 
   it('should correctly compare other data types', async () => {
@@ -146,20 +146,20 @@ describe('$edited', () => {
 
     const { vm } = createRegleComponent(regleWithOtherValues);
 
-    expect(vm.r$.$fields.date.$edited).toBe(false);
-    expect(vm.r$.$fields.date.$anyEdited).toBe(false);
-    expect(vm.r$.$fields.file.$edited).toBe(false);
-    expect(vm.r$.$fields.file.$anyEdited).toBe(false);
+    expect(vm.r$.date.$edited).toBe(false);
+    expect(vm.r$.date.$anyEdited).toBe(false);
+    expect(vm.r$.file.$edited).toBe(false);
+    expect(vm.r$.file.$anyEdited).toBe(false);
 
     vm.r$.$value.date = addDays(new Date(), 1);
     vm.r$.$value.file = new File([], 'file');
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.date.$edited).toBe(true);
-    expect(vm.r$.$fields.date.$anyEdited).toBe(true);
+    expect(vm.r$.date.$edited).toBe(true);
+    expect(vm.r$.date.$anyEdited).toBe(true);
 
-    expect(vm.r$.$fields.file.$edited).toBe(true);
-    expect(vm.r$.$fields.file.$anyEdited).toBe(true);
+    expect(vm.r$.file.$edited).toBe(true);
+    expect(vm.r$.file.$anyEdited).toBe(true);
   });
 
   it('should correctly compare array of primitives', async () => {
@@ -176,40 +176,40 @@ describe('$edited', () => {
 
     const { vm } = createRegleComponent(regleWithPrimitivesArray);
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('foo');
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(true);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(true);
+    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(0, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('foo');
     vm.r$.$reset();
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('bar');
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(true);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(true);
+    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(1, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
   });
 
   it('should correctly compare array of objects with $deepCompare', async () => {
@@ -227,41 +227,41 @@ describe('$edited', () => {
 
     const { vm } = createRegleComponent(regleWithDeepCompare);
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push({ id: 1, name: 'foo' });
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(true);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(true);
+    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(0, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push({ id: 1, name: 'foo' });
     vm.r$.$reset();
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push({ id: 2, name: 'foo2' });
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$self.$edited).toBe(true);
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$each[0].$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(true);
+    expect(vm.r$.collection.$self.$edited).toBe(true);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$each[0].$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(1, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.collection.$edited).toBe(false);
-    expect(vm.r$.$fields.collection.$anyEdited).toBe(false);
+    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$anyEdited).toBe(false);
   });
 });

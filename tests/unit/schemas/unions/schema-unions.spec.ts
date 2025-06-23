@@ -28,50 +28,50 @@ describe.each([
   it('should behave correctly with unions, nums, and discriminated unions', async () => {
     const { vm } = createRegleComponent(regleSchema);
 
-    shouldBeInvalidField(vm.r$.$fields.enum);
-    shouldBeInvalidField(vm.r$.$fields.nativeEnum);
-    shouldBeInvalidField(vm.r$.$fields.union);
-    shouldBeInvalidField(vm.r$.$fields.gift);
-    shouldBeInvalidField(vm.r$.$fields.date);
+    shouldBeInvalidField(vm.r$.enum);
+    shouldBeInvalidField(vm.r$.nativeEnum);
+    shouldBeInvalidField(vm.r$.union);
+    shouldBeInvalidField(vm.r$.gift);
+    shouldBeInvalidField(vm.r$.date);
 
     vm.r$.$value.enum = 'Salmon';
     vm.r$.$value.nativeEnum = MyEnum.Foo;
     vm.r$.$value.union = 6;
     vm.r$.$value.date = '1995-01-08';
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$fields.type.$value = 'Cash';
+    if (vm.r$.gift) {
+      vm.r$.gift.type.$value = 'Cash';
     }
 
     await vm.$nextTick();
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.enum);
-    shouldBeValidField(vm.r$.$fields.nativeEnum);
-    shouldBeValidField(vm.r$.$fields.union);
-    shouldBeValidField(vm.r$.$fields.date);
-    shouldBeInvalidField(vm.r$.$fields.gift);
+    shouldBeValidField(vm.r$.enum);
+    shouldBeValidField(vm.r$.nativeEnum);
+    shouldBeValidField(vm.r$.union);
+    shouldBeValidField(vm.r$.date);
+    shouldBeInvalidField(vm.r$.gift);
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$value.amount = 100;
+    if (vm.r$.gift) {
+      vm.r$.gift.$value.amount = 100;
     }
     await vm.$nextTick();
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.gift);
-    expect(vm.r$.$fields.gift?.$fields.type.$value).toBe('Cash');
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.type);
-    shouldBeValidField(vm.r$.$fields.gift?.$fields.amount);
+    shouldBeValidField(vm.r$.gift);
+    expect(vm.r$.gift?.type.$value).toBe('Cash');
+    shouldBeValidField(vm.r$.gift?.type);
+    shouldBeValidField(vm.r$.gift?.amount);
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$fields.type.$value = 'Shares';
+    if (vm.r$.gift) {
+      vm.r$.gift.type.$value = 'Shares';
     }
     await vm.$nextTick();
     await vm.$nextTick();
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$value.company = 'Regle';
-      vm.r$.$fields.gift.$value.shares = 100;
+    if (vm.r$.gift) {
+      vm.r$.gift.$value.company = 'Regle';
+      vm.r$.gift.$value.shares = 100;
     }
 
     await vm.$nextTick();
@@ -79,37 +79,37 @@ describe.each([
     await vm.$nextTick();
 
     if (isVueSuperiorOrEqualTo3dotFive) {
-      shouldBeValidField(vm.r$.$fields.gift);
+      shouldBeValidField(vm.r$.gift);
       expect(vm.r$.$value.gift?.type).toBe('Shares');
-      shouldBeValidField(vm.r$.$fields.gift?.$fields.company);
-      shouldBeValidField(vm.r$.$fields.gift?.$fields.shares);
+      shouldBeValidField(vm.r$.gift?.company);
+      shouldBeValidField(vm.r$.gift?.shares);
     }
 
     const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
-    if (vm.r$.$fields.gift) {
-      vm.r$.$fields.gift.$fields.type.$value = undefined as any;
+    if (vm.r$.gift) {
+      vm.r$.gift.type.$value = undefined as any;
     }
     await vm.$nextTick();
     await vm.$nextTick();
 
     expect(valid).toBe(true);
 
-    shouldBeErrorField(vm.r$.$fields.gift);
-    shouldBeErrorField(vm.r$.$fields.gift?.$fields.type);
+    shouldBeErrorField(vm.r$.gift);
+    shouldBeErrorField(vm.r$.gift?.type);
     expect(vm.r$.$value.gift?.type).toBe(undefined);
     // Can't remove the "valid" as we cannot know if the field is supposed to have a validation
-    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.company);
-    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.shares);
-    shouldBeUnRuledSchemaCorrectField(vm.r$.$fields.gift?.$fields.amount);
+    shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.company);
+    shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.shares);
+    shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.amount);
 
-    expectTypeOf(vm.r$.$fields.gift?.$fields.company).toEqualTypeOf<
+    expectTypeOf(vm.r$.gift?.company).toEqualTypeOf<
       RegleSchemaFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
     >();
-    expectTypeOf(vm.r$.$fields.gift?.$fields.amount).toEqualTypeOf<
+    expectTypeOf(vm.r$.gift?.amount).toEqualTypeOf<
       RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
-    expectTypeOf(vm.r$.$fields.gift?.$fields.shares).toEqualTypeOf<
+    expectTypeOf(vm.r$.gift?.shares).toEqualTypeOf<
       RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
     >();
 
@@ -122,9 +122,9 @@ describe.each([
     await vm.$nextTick();
 
     if (isVueSuperiorOrEqualTo3dotFive) {
-      shouldBeErrorField(vm.r$.$fields.enum);
-      shouldBeErrorField(vm.r$.$fields.nativeEnum);
-      shouldBeErrorField(vm.r$.$fields.union);
+      shouldBeErrorField(vm.r$.enum);
+      shouldBeErrorField(vm.r$.nativeEnum);
+      shouldBeErrorField(vm.r$.union);
     }
   });
 });

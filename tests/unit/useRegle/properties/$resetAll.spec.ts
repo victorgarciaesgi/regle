@@ -43,11 +43,11 @@ describe('r$.$reset to initial state', () => {
   it('should update the $dirty state to false and reset state to initial state', async () => {
     const { vm } = createRegleComponent(simpleNestedStateInitialState);
 
-    shouldBeInvalidField(vm.r$.$fields.email);
-    shouldBePristineField(vm.r$.$fields.user);
-    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
-    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
-    shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.email);
+    shouldBePristineField(vm.r$.user);
+    shouldBePristineField(vm.r$.user.firstName);
+    shouldBePristineField(vm.r$.user.lastName);
+    shouldBePristineField(vm.r$.contacts.$each[0].name);
 
     await nextTick();
 
@@ -67,29 +67,29 @@ describe('r$.$reset to initial state', () => {
 
     await nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.email);
-    shouldBeValidField(vm.r$.$fields.user);
-    shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeValidField(vm.r$.$fields.user.$fields.lastName);
-    shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+    shouldBeErrorField(vm.r$.email);
+    shouldBeValidField(vm.r$.user);
+    shouldBeValidField(vm.r$.user.firstName);
+    shouldBeValidField(vm.r$.user.lastName);
+    shouldBeValidField(vm.r$.contacts.$each[0].name);
 
     vm.r$.$value.email = '';
     await nextTick();
-    shouldBeUnRuledCorrectField(vm.r$.$fields.email);
+    shouldBeUnRuledCorrectField(vm.r$.email);
 
     vm.condition = true;
     await nextTick();
-    shouldBeErrorField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.email);
 
     vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.email);
-    shouldBePristineField(vm.r$.$fields.user);
-    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
-    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
-    shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.email);
+    shouldBePristineField(vm.r$.user);
+    shouldBePristineField(vm.r$.user.firstName);
+    shouldBePristineField(vm.r$.user.lastName);
+    shouldBePristineField(vm.r$.contacts.$each[0].name);
 
     expect(vm.r$.$value).toStrictEqual({
       email: 'hello',
@@ -105,11 +105,11 @@ describe('r$.$reset to initial state', () => {
 
     await nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.email);
-    shouldBePristineField(vm.r$.$fields.user);
-    shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
-    shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
-    shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.email);
+    shouldBePristineField(vm.r$.user);
+    shouldBePristineField(vm.r$.user.firstName);
+    shouldBePristineField(vm.r$.user.lastName);
+    shouldBePristineField(vm.r$.contacts.$each[0].name);
 
     expect(vm.r$.$value).toStrictEqual({
       email: 'hello',

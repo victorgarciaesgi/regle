@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; flex-flow: column wrap; width: 500px; overflow: auto">
     <input v-model="form.email" placeholder="email" />
-    <span v-if="r$.$fields.email?.$pending" style="color: orange">Loading</span>
+    <span v-if="r$.email?.$pending" style="color: orange">Loading</span>
     <ul>
       <li v-for="error of r$.$errors.email" :key="error">{{ error }}</li>
     </ul>
