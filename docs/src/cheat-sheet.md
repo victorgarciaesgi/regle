@@ -37,14 +37,32 @@ const { r$ } = useRegle(
 
 ## Common Rules
 
-```ts
+```ts twoslash
 import { 
   required, email, minLength, maxLength,
   numeric, between, url, regex,
   alphaNum, alpha, sameAs
-} from '@regle/rules'
+} from '@regle/rules';
 
-const rules = {
+// ---cut---
+import {ref} from 'vue';
+import {useRegle} from '@regle/core'
+type FormState = {
+  name?: string,
+  email?: string,
+  age?: number,
+  username?: string,
+  website?: string,
+  description?: string,
+  phone?: string,
+  password?: string,
+  confirmPassword?: string,
+}
+// ---cut---
+
+const state = ref<FormState>({})
+
+const { r$ } = useRegle(state, {
   // Basic validation
   name: { required, minLength: minLength(2) },
   email: { required, email },
@@ -62,9 +80,9 @@ const rules = {
   password: { required, minLength: minLength(8) },
   confirmPassword: { 
     required, 
-    sameAs: sameAs(() => r$.$value.password) 
+    sameAs: sameAs(() => state.value.password) 
   }
-}
+})
 ```
 
 ## Field Patterns
@@ -104,10 +122,10 @@ import {inferRules} from '@regle/core';
 const rules = computed(() => inferRules(state, {
   phone: {
     // Only validate if field has content
-    ...(r$?.$value?.phone ? {
+    ...(r$?.$value?.phone && {
       minLength: minLength(10),
       regex: regex(/^\+?[\d\s-()]+$/)
-    } : {})
+    })
   }
 }))
 ```
@@ -117,7 +135,7 @@ const rules = computed(() => inferRules(state, {
 ```ts
 import { withMessage } from '@regle/rules'
 
-const rules = {
+const { r$ } = useRegle({email: '', password: ''}, {
   email: { 
     required: withMessage(required, 'Email is required'),
     email: withMessage(email, 'Please enter a valid email address')
@@ -128,7 +146,7 @@ const rules = {
       ({ $params: [min] }) => `Password must be at least ${min} characters`
     )
   }
-}
+})
 ```
 
 
