@@ -113,7 +113,7 @@ r$.nested.child.$error // [!code ++]
 
 ## Collections
 
-[Working with collections](/advanced-usage/collections)
+See [docs for validating arrays](/advanced-usage/collections)
 
 ```ts
 const v$ = useVuelidate({ // [!code --]
@@ -138,7 +138,7 @@ const { r$ } = useRegle({ collection: [{name: ''}]}, { // [!code ++]
 
 ## Methods
 
-[Type safe output](/core-concepts/type-safe-output)
+See [docs for type safe output](/core-concepts/type-safe-output)
 
 
 ```ts
@@ -171,6 +171,10 @@ export const minLengthValidator = (value) =>
 ```
 
 You can remove it and configure it with [global config](/advanced-usage/global-config#replace-built-in-rules-messages).
+
+:::tip
+If you use Nuxt <span data-title="nuxt"></span>, check the [Nuxt module documentation](/integrations/nuxt) for even easier error message sharing.
+:::
 
 ```ts twoslash
 import { defineRegleConfig } from '@regle/core';

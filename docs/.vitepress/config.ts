@@ -119,6 +119,10 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
 
 const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
+    text: 'Cheat sheet',
+    link: '/cheat-sheet',
+  },
+  {
     text: 'Complete',
     items: [
       { text: 'Simple form example', link: '/examples/simple' },
