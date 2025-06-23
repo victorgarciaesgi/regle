@@ -22,18 +22,18 @@ describe.each([
   it('should update computed schema when forced dep changes', async () => {
     vm.r$.$value.nested.field2 = 'Hello';
     await vm.$nextTick();
-    shouldBeValidField(vm.r$.$fields.nested.$fields.field2);
+    shouldBeValidField(vm.r$.nested.field2);
 
     vm.r$.$value.field1 = 'Hello';
     await vm.$nextTick();
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.field2);
+    shouldBeErrorField(vm.r$.nested.field2);
 
     vm.r$.$value.nested.field2 = 'Foo';
     await vm.$nextTick();
-    shouldBeValidField(vm.r$.$fields.nested.$fields.field2);
+    shouldBeValidField(vm.r$.nested.field2);
 
     vm.r$.$value.field1 = 'Foo';
     await vm.$nextTick();
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.field2);
+    shouldBeErrorField(vm.r$.nested.field2);
   });
 });

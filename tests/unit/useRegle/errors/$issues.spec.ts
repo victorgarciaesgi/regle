@@ -96,34 +96,34 @@ describe('errors', () => {
       { $message: 'Error 4.1', $rule: 'createRuleFunctionMultipleError', $type: 'createRuleFunctionMultipleError' },
     ];
 
-    expect(vm.r$.$fields.email.$rules.createRuleMultipleError.$metadata.foobar).toBe('hello');
+    expect(vm.r$.email.$rules.createRuleMultipleError.$metadata.foobar).toBe('hello');
 
-    vm.r$.$fields.email.$issues.map((issue) => {
+    vm.r$.email.$issues.map((issue) => {
       if (issue.$rule === 'createRuleMultipleError') {
         expect(issue.foobar).toBe('hello');
         expectTypeOf(issue.foobar).toBeString();
       }
     });
 
-    expect(vm.r$.$fields.email.$issues).toStrictEqual(
+    expect(vm.r$.email.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'email', ...issue }) satisfies RegleFieldIssue)
     );
     expect(vm.r$.$issues.email).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'email', ...issue }) satisfies RegleFieldIssue)
     );
-    expect(vm.r$.$fields.user.$fields.firstName.$issues).toStrictEqual(
+    expect(vm.r$.user.firstName.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'firstName', ...issue }) satisfies RegleFieldIssue)
     );
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$issues).toStrictEqual(
+    expect(vm.r$.user.nested.child.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'child', ...issue }) satisfies RegleFieldIssue)
     );
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$issues).toStrictEqual(
+    expect(vm.r$.user.nested.collection.$self.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'collection', ...issue }) satisfies RegleFieldIssue)
     );
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$issues).toStrictEqual(
+    expect(vm.r$.user.nested.collection.$each[0].name.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
     );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$issues).toStrictEqual(
+    expect(vm.r$.contacts.$each[0].name.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
     );
 
@@ -136,7 +136,7 @@ describe('errors', () => {
     vm.r$.$touch();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$issues).toStrictEqual(
+    expect(vm.r$.contacts.$each[1].name.$issues).toStrictEqual(
       expectedIssues.map((issue) => ({ $property: 'name', ...issue }) satisfies RegleFieldIssue)
     );
   });

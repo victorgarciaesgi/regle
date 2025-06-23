@@ -32,15 +32,15 @@ describe('nested validations', () => {
   it('should behave correctly with nested arrays', async () => {
     const { vm } = createRegleComponent(nestedCollectionRules);
 
-    shouldBeInvalidField(vm.r$.$fields.level0);
-    shouldBeInvalidField(vm.r$.$fields.level0.$fields.level1);
-    shouldBeInvalidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
-    shouldBeInvalidField(vm.r$.$fields.testDate);
+    shouldBeInvalidField(vm.r$.level0);
+    shouldBeInvalidField(vm.r$.level0.level1);
+    shouldBeInvalidField(vm.r$.level0.level1.name);
+    shouldBeInvalidField(vm.r$.testDate);
 
     vm.r$.$value.level0.level1.name = 'Hello';
     await vm.$nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.level0);
+    shouldBeInvalidField(vm.r$.level0);
 
     vm.r$.$value = {
       level0: {
@@ -55,21 +55,21 @@ describe('nested validations', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.level0);
-    shouldBeValidField(vm.r$.$fields.level0.$fields.level1);
-    shouldBeValidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
-    shouldBeErrorField(vm.r$.$fields.testDate);
-    shouldBeErrorField(vm.r$.$fields.testFile);
+    shouldBeErrorField(vm.r$.level0);
+    shouldBeValidField(vm.r$.level0.level1);
+    shouldBeValidField(vm.r$.level0.level1.name);
+    shouldBeErrorField(vm.r$.testDate);
+    shouldBeErrorField(vm.r$.testFile);
 
     vm.r$.$reset({ toInitialState: true });
 
     await vm.$nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.level0);
-    shouldBeInvalidField(vm.r$.$fields.level0.$fields.level1);
-    shouldBeInvalidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
-    shouldBeInvalidField(vm.r$.$fields.testDate);
-    shouldBeInvalidField(vm.r$.$fields.testFile);
+    shouldBeInvalidField(vm.r$.level0);
+    shouldBeInvalidField(vm.r$.level0.level1);
+    shouldBeInvalidField(vm.r$.level0.level1.name);
+    shouldBeInvalidField(vm.r$.testDate);
+    shouldBeInvalidField(vm.r$.testFile);
 
     vm.r$.$value = {
       level0: {
@@ -83,10 +83,10 @@ describe('nested validations', () => {
     };
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.level0);
-    shouldBeValidField(vm.r$.$fields.level0.$fields.level1);
-    shouldBeValidField(vm.r$.$fields.level0.$fields.level1.$fields.name);
-    shouldBeValidField(vm.r$.$fields.testDate);
-    shouldBeValidField(vm.r$.$fields.testFile);
+    shouldBeValidField(vm.r$.level0);
+    shouldBeValidField(vm.r$.level0.level1);
+    shouldBeValidField(vm.r$.level0.level1.name);
+    shouldBeValidField(vm.r$.testDate);
+    shouldBeValidField(vm.r$.testFile);
   });
 });

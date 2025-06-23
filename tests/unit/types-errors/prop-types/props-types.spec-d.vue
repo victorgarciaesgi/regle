@@ -1,26 +1,26 @@
 <template>
   <ComponentTest
-    :unknown-field="r$.$fields.firstName"
-    :unknown-explicit-field="r$.$fields.checked"
-    :boolean-field="r$.$fields.checked"
-    :string-field="r$.$fields.firstName"
-    :string-number-field="r$.$fields.num"
-    :custom-string-field="r$2.$fields.firstName"
-    :enforced-rules-field="r$.$fields.firstName"
-    :enforced-multiple-rules-field="r$.$fields.firstName"
-    :enforced-custom-rules-field="r$2.$fields.firstName"
+    :unknown-field="r$.firstName"
+    :unknown-explicit-field="r$.checked"
+    :boolean-field="r$.checked"
+    :string-field="r$.firstName"
+    :string-number-field="r$.num"
+    :custom-string-field="r$2.firstName"
+    :enforced-rules-field="r$.firstName"
+    :enforced-multiple-rules-field="r$.firstName"
+    :enforced-custom-rules-field="r$2.firstName"
   />
   <!-- @vue-expect-error wrong props -->
-  <ComponentTest v-bind="fakeProps" :unknown-field="r$.$fields" />
+  <ComponentTest v-bind="fakeProps" :unknown-field="r$" />
 
   <!-- @vue-expect-error wrong props -->
-  <ComponentTest v-bind="fakeProps" :boolean-field="r$.$fields.firstName" />
+  <ComponentTest v-bind="fakeProps" :boolean-field="r$.firstName" />
 
   <!-- @vue-expect-error wrong props -->
-  <ComponentTest v-bind="fakeProps" :enforced-rules-field="r$.$fields.lastName" />
+  <ComponentTest v-bind="fakeProps" :enforced-rules-field="r$.lastName" />
 
   <!-- @vue-expect-error wrong props -->
-  <ComponentTest v-bind="fakeProps" :enforced-custom-rules-field="r$2.$fields.lastName" />
+  <ComponentTest v-bind="fakeProps" :enforced-custom-rules-field="r$2.lastName" />
 </template>
 
 <script setup lang="ts">

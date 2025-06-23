@@ -94,20 +94,18 @@ describe('tooltips', () => {
       'Tooltip 4.1',
     ];
 
-    expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedTooltips);
-    expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedTooltips);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedTooltips);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedTooltips);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
-      expectedTooltips
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.email.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.user.firstName.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.user.nested.child.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.user.nested.collection.$self.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.user.nested.collection.$each[0].name.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.contacts.$each[0].name.$tooltips).toStrictEqual(expectedTooltips);
 
     vm.r$.$value.contacts.push({ name: '' });
     await vm.$nextTick();
     vm.r$.$touch();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$tooltips).toStrictEqual(expectedTooltips);
+    expect(vm.r$.contacts.$each[1].name.$tooltips).toStrictEqual(expectedTooltips);
   });
 });

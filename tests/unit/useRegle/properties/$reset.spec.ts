@@ -13,83 +13,83 @@ describe('.$reset', () => {
   it('should update the $dirty state to false', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBeInvalidField(vm.r$.email);
 
-    vm.r$.$fields.email.$validate();
+    vm.r$.email.$validate();
     await nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.email);
+    shouldBeErrorField(vm.r$.email);
 
-    vm.r$.$fields.email.$reset();
+    vm.r$.email.$reset();
 
-    shouldBeInvalidField(vm.r$.$fields.email);
+    shouldBeInvalidField(vm.r$.email);
 
     vm.r$.$value.email = 'foo@free.fr';
     await nextTick();
 
-    shouldBeValidField(vm.r$.$fields.email);
+    shouldBeValidField(vm.r$.email);
 
-    vm.r$.$fields.email.$reset();
+    vm.r$.email.$reset();
     await nextTick();
 
-    shouldBePristineField(vm.r$.$fields.email);
+    shouldBePristineField(vm.r$.email);
   });
 
   it('should update the $dirty state to false, only on the current property', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.user.firstName);
+    shouldBeInvalidField(vm.r$.user.lastName);
 
-    vm.r$.$fields.user.$fields.firstName.$touch();
-    vm.r$.$fields.user.$fields.lastName.$touch();
+    vm.r$.user.firstName.$touch();
+    vm.r$.user.lastName.$touch();
 
     await nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.user.firstName);
+    shouldBeErrorField(vm.r$.user.lastName);
 
-    vm.r$.$fields.user.$fields.firstName.$reset();
+    vm.r$.user.firstName.$reset();
 
-    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.user.firstName);
+    shouldBeErrorField(vm.r$.user.lastName);
   });
 
   it('should reset even after coming back from cache', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithComputedValidation);
 
-    expect(vm.r$.$fields.user.$fields.firstName).toBeDefined();
-    expect(vm.r$.$fields.user.$fields.lastName).toBeDefined();
+    expect(vm.r$.user.firstName).toBeDefined();
+    expect(vm.r$.user.lastName).toBeDefined();
 
     vm.r$.$value.userRequired = true;
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$fields.firstName?.$dirty).toBe(false);
-    expect(vm.r$.$fields.user.$fields.lastName?.$dirty).toBe(false);
+    expect(vm.r$.user.firstName?.$dirty).toBe(false);
+    expect(vm.r$.user.lastName?.$dirty).toBe(false);
 
-    vm.r$.$fields.user.$fields.firstName?.$touch();
-    vm.r$.$fields.user.$fields.lastName?.$touch();
+    vm.r$.user.firstName?.$touch();
+    vm.r$.user.lastName?.$touch();
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.user.firstName);
+    shouldBeErrorField(vm.r$.user.lastName);
 
     vm.r$.$value.userRequired = false;
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.user.$fields.firstName).toBeDefined();
-    expect(vm.r$.$fields.user.$fields.lastName).toBeDefined();
+    expect(vm.r$.user.firstName).toBeDefined();
+    expect(vm.r$.user.lastName).toBeDefined();
 
     vm.r$.$value.userRequired = true;
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeErrorField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeErrorField(vm.r$.user.firstName);
+    shouldBeErrorField(vm.r$.user.lastName);
 
-    await Promise.all([vm.r$.$fields.user.$reset(), flushPromises()]);
+    await Promise.all([vm.r$.user.$reset(), flushPromises()]);
 
-    shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
-    shouldBeInvalidField(vm.r$.$fields.user.$fields.lastName);
+    shouldBeInvalidField(vm.r$.user.firstName);
+    shouldBeInvalidField(vm.r$.user.lastName);
   });
 
   it('should reset correctly all values inside a nested tree', async () => {
@@ -119,10 +119,10 @@ describe('.$reset', () => {
 
     await nextTick();
 
-    expect(vm.r$.$fields.email.$dirty).toBe(true);
-    expect(vm.r$.$fields.contacts.$each[0].$dirty).toBe(true);
+    expect(vm.r$.email.$dirty).toBe(true);
+    expect(vm.r$.contacts.$each[0].$dirty).toBe(true);
 
-    shouldBeValidField(vm.r$.$fields.contacts);
+    shouldBeValidField(vm.r$.contacts);
     shouldBeValidField(vm.r$);
 
     vm.r$.$reset();

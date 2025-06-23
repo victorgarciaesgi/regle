@@ -64,23 +64,20 @@ describe('defineRegleConfig rules', () => {
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.level0.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$errors).toStrictEqual([
-      'Patched min:3',
-      'Re-patched rule',
-    ]);
+    expect(vm.r$.level0.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.level1.child.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.level1.level2.child.$errors).toStrictEqual(['Patched min:3', 'Re-patched rule']);
 
-    expect(vm.r$.$fields.withApply.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.withAnd.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withApply.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withAnd.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withOr.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withNot.$errors).toStrictEqual(['Patched rule']);
 
     vm.r$.$value.password = 'foo';
     vm.r$.$value.confirmPassword = 'foobar';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.confirmPassword.$errors).toStrictEqual(['Not same as password']);
+    expect(vm.r$.confirmPassword.$errors).toStrictEqual(['Not same as password']);
 
     // Ensure types are inferred well
     defineRegleConfig({
@@ -140,16 +137,13 @@ describe('extendRegleConfig', () => {
 
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.level0.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.level1.$fields.child.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$errors).toStrictEqual([
-      'Patched min:3',
-      'Re-patched rule',
-    ]);
+    expect(vm.r$.level0.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.level1.child.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.level1.level2.child.$errors).toStrictEqual(['Patched min:3', 'Re-patched rule']);
 
-    expect(vm.r$.$fields.withApply.$errors).toStrictEqual(['Patched rule', 'Patched rule']);
-    expect(vm.r$.$fields.withAnd.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.withOr.$errors).toStrictEqual(['Patched rule']);
-    expect(vm.r$.$fields.withNot.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withApply.$errors).toStrictEqual(['Patched rule', 'Patched rule']);
+    expect(vm.r$.withAnd.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withOr.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.withNot.$errors).toStrictEqual(['Patched rule']);
   });
 });

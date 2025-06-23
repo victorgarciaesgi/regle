@@ -21,14 +21,14 @@ describe('$silentErrors', () => {
       },
     });
 
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$silentErrors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.email.$silentErrors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.user.$fields.firstName.$silentErrors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.user.$fields.lastName.$silentErrors).toStrictEqual(['This field is required']);
+    expect(vm.r$.contacts.$each[0].name.$silentErrors).toStrictEqual(['This field is required']);
+    expect(vm.r$.email.$silentErrors).toStrictEqual(['This field is required']);
+    expect(vm.r$.user.firstName.$silentErrors).toStrictEqual(['This field is required']);
+    expect(vm.r$.user.lastName.$silentErrors).toStrictEqual(['This field is required']);
 
     vm.r$.$value.email = 'foo';
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.email.$silentErrors).toStrictEqual(['The value must be an valid email address']);
+    expect(vm.r$.email.$silentErrors).toStrictEqual(['The value must be an valid email address']);
   });
 });

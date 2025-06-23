@@ -29,27 +29,27 @@ describe('collections validations', () => {
   it('should behave correctly with nested arrays', async () => {
     const { vm } = createRegleComponent(nestedCollectionRules);
 
-    shouldBeInvalidField(vm.r$.$fields.level0);
+    shouldBeInvalidField(vm.r$.level0);
 
     vm.r$.$value.level0.push({ name: '', level1: [{ name: '' }] });
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[0].name);
 
     vm.r$.$value.level0.push({ name: '', level1: [{ name: '' }] });
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[1].name);
 
     vm.r$.$value.level0[0].level1.push({ name: '' });
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[0].level1.$each[0].name);
 
     vm.r$.$value.level0[1].level1[0].name = 'foo';
     await nextTick();
-    shouldBeValidField(vm.r$.$fields.level0.$each[1].$fields.level1.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.level0.$each[1].level1.$each[0].name);
 
     vm.r$.$value.level0.splice(0, 1);
     await nextTick();
-    shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.level0.$each[0].level1.$each[0].name);
   });
 
   const requiredIfSpy = vi.fn((value: unknown, condition: boolean) => {
@@ -110,13 +110,13 @@ describe('collections validations', () => {
   it('should behave correctly with nested array callbacks', async () => {
     const { vm } = createRegleComponent(nestedCollectionRulesWithCallbacks);
 
-    shouldBePristineField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBePristineField(vm.r$.level0.$each[0].level1.$each[0].name);
     expect(requiredIfSpy).toHaveBeenCalledTimes(1);
     expect(deepNestedParamSpy).toHaveBeenCalledTimes(1);
 
     vm.r$.$value.level0.push({ name: '', level1: [{ name: '' }] });
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[1].name);
     expect(requiredIfSpy).toHaveBeenCalledTimes(2);
     expect(deepNestedParamSpy).toHaveBeenCalledTimes(2);
 
@@ -130,7 +130,7 @@ describe('collections validations', () => {
     expect(requiredIfSpy).toHaveBeenCalledTimes(5);
     expect(deepNestedParamSpy).toHaveBeenCalledTimes(3);
 
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[0].level1.$each[0].name);
   });
 
   it('should behave correctly when changing order or deleting elements', async () => {
@@ -141,11 +141,11 @@ describe('collections validations', () => {
     vm.r$.$value.level0[0].level1[0].name = 'foo';
     await nextTick();
 
-    shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.level0.$each[0].level1.$each[0].name);
 
     vm.r$.$value.level0[0].level1.push({ name: '' });
     await nextTick();
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[0].level1.$each[1].name);
 
     // Swap arrays
     const cache = vm.r$.$value.level0[0].level1[0];
@@ -153,8 +153,8 @@ describe('collections validations', () => {
     vm.r$.$value.level0[0].level1[1] = cache;
     await vm.$nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[0].$fields.name);
-    shouldBeValidField(vm.r$.$fields.level0.$each[0].$fields.level1.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.level0.$each[0].level1.$each[0].name);
+    shouldBeValidField(vm.r$.level0.$each[0].level1.$each[1].name);
   });
 
   it("shouldn't be considered collection if no $each rule is present", async () => {
@@ -173,10 +173,10 @@ describe('collections validations', () => {
 
     const { vm } = createRegleComponent(regleComposable);
 
-    expect(vm.r$.$fields.level0.$errors.$self).toStrictEqual([]);
+    expect(vm.r$.level0.$errors.$self).toStrictEqual([]);
     expect(vm.r$.$errors.level0.$self).toStrictEqual([]);
 
-    expectTypeOf(vm.r$.$fields.level0.$errors.$self).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.level0.$errors.$self).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.level0.$self).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.level0.$each[0]?.name).toEqualTypeOf<string[]>();
   });
@@ -197,12 +197,12 @@ describe('collections validations', () => {
     const { vm } = createRegleComponent(regleComposable);
 
     // @ts-expect-error This should not be considered a collection
-    expect(vm.r$.$fields.files.$each).toBeUndefined();
+    expect(vm.r$.files.$each).toBeUndefined();
 
-    expect(vm.r$.$fields.files.$errors).toStrictEqual([]);
+    expect(vm.r$.files.$errors).toStrictEqual([]);
     expect(vm.r$.$errors.files).toStrictEqual([]);
 
-    expectTypeOf(vm.r$.$fields.files.$errors).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.files.$errors).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.files).toEqualTypeOf<string[]>();
   });
 });

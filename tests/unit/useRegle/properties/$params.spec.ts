@@ -89,10 +89,10 @@ describe('$params', () => {
       const { vm } = createRegleComponent(rules);
 
       shouldBeInvalidField(vm.r$);
-      shouldBeInvalidField(vm.r$.$fields.email);
-      shouldBeInvalidField(vm.r$.$fields.user);
-      shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeInvalidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+      shouldBeInvalidField(vm.r$.email);
+      shouldBeInvalidField(vm.r$.user);
+      shouldBeInvalidField(vm.r$.user.firstName);
+      shouldBeInvalidField(vm.r$.contacts.$each[0].name);
 
       await nextTick();
 
@@ -103,15 +103,15 @@ describe('$params', () => {
       await nextTick();
 
       shouldBeCorrectNestedStatus(vm.r$);
-      shouldBeValidField(vm.r$.$fields.email);
-      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
-      shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeValidField(vm.r$.$fields.contacts);
-      shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+      shouldBeValidField(vm.r$.email);
+      shouldBeCorrectNestedStatus(vm.r$.user);
+      shouldBeValidField(vm.r$.user.firstName);
+      shouldBeValidField(vm.r$.contacts);
+      shouldBeValidField(vm.r$.contacts.$each[0].name);
 
-      expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.email.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.user.firstName.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.contacts.$each[0].name.$rules.testParams.$params).toStrictEqual([6]);
 
       vm.r$.$value.contacts.push({ name: '' });
       await nextTick();
@@ -120,43 +120,43 @@ describe('$params', () => {
       await nextTick();
 
       shouldBeErrorField(vm.r$);
-      shouldBeErrorField(vm.r$.$fields.email);
-      shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeErrorField(vm.r$.$fields.contacts.$each[0].$fields.name);
-      shouldBeInvalidField(vm.r$.$fields.contacts.$each[1].$fields.name);
+      shouldBeErrorField(vm.r$.email);
+      shouldBeErrorField(vm.r$.user.firstName);
+      shouldBeErrorField(vm.r$.contacts.$each[0].name);
+      shouldBeInvalidField(vm.r$.contacts.$each[1].name);
 
-      expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([10]);
-      expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([10]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([10]);
-      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([10]);
+      expect(vm.r$.email.$rules.testParams.$params).toStrictEqual([10]);
+      expect(vm.r$.user.firstName.$rules.testParams.$params).toStrictEqual([10]);
+      expect(vm.r$.contacts.$each[0].name.$rules.testParams.$params).toStrictEqual([10]);
+      expect(vm.r$.contacts.$each[1].name.$rules.testParams.$params).toStrictEqual([10]);
 
       vm.min = 5;
 
       await nextTick();
 
       shouldBeInvalidField(vm.r$);
-      shouldBeValidField(vm.r$.$fields.email);
-      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
-      shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeInvalidField(vm.r$.$fields.contacts);
-      shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
-      shouldBeInvalidField(vm.r$.$fields.contacts.$each[1].$fields.name);
+      shouldBeValidField(vm.r$.email);
+      shouldBeCorrectNestedStatus(vm.r$.user);
+      shouldBeValidField(vm.r$.user.firstName);
+      shouldBeInvalidField(vm.r$.contacts);
+      shouldBeValidField(vm.r$.contacts.$each[0].name);
+      shouldBeInvalidField(vm.r$.contacts.$each[1].name);
 
-      expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([5]);
-      expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([5]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([5]);
-      expect(vm.r$.$fields.contacts.$each[1].$fields.name.$rules.testParams.$params).toStrictEqual([5]);
+      expect(vm.r$.email.$rules.testParams.$params).toStrictEqual([5]);
+      expect(vm.r$.user.firstName.$rules.testParams.$params).toStrictEqual([5]);
+      expect(vm.r$.contacts.$each[0].name.$rules.testParams.$params).toStrictEqual([5]);
+      expect(vm.r$.contacts.$each[1].name.$rules.testParams.$params).toStrictEqual([5]);
 
       vm.r$.$value.contacts[1].name = 'aeeyeziyr';
       await nextTick();
 
       shouldBeCorrectNestedStatus(vm.r$);
-      shouldBeValidField(vm.r$.$fields.email);
-      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
-      shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeValidField(vm.r$.$fields.contacts);
-      shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
-      shouldBeValidField(vm.r$.$fields.contacts.$each[1].$fields.name);
+      shouldBeValidField(vm.r$.email);
+      shouldBeCorrectNestedStatus(vm.r$.user);
+      shouldBeValidField(vm.r$.user.firstName);
+      shouldBeValidField(vm.r$.contacts);
+      shouldBeValidField(vm.r$.contacts.$each[0].name);
+      shouldBeValidField(vm.r$.contacts.$each[1].name);
     });
   });
 
@@ -258,19 +258,19 @@ describe('$params', () => {
       // Expect pending to be false as field have to be dirty
       // Validators are run anyway
       expect(vm.r$.$pending).toBe(false);
-      expect(vm.r$.$fields.email.$pending).toBe(false);
-      expect(vm.r$.$fields.user.$pending).toBe(false);
-      expect(vm.r$.$fields.user.$fields.firstName.$pending).toBe(false);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$pending).toBe(false);
+      expect(vm.r$.email.$pending).toBe(false);
+      expect(vm.r$.user.$pending).toBe(false);
+      expect(vm.r$.user.firstName.$pending).toBe(false);
+      expect(vm.r$.contacts.$each[0].name.$pending).toBe(false);
 
       await vi.advanceTimersByTimeAsync(1000);
       await nextTick();
 
       shouldBeInvalidField(vm.r$);
-      shouldBeInvalidField(vm.r$.$fields.email);
-      shouldBeInvalidField(vm.r$.$fields.user);
-      shouldBeInvalidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeInvalidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+      shouldBeInvalidField(vm.r$.email);
+      shouldBeInvalidField(vm.r$.user);
+      shouldBeInvalidField(vm.r$.user.firstName);
+      shouldBeInvalidField(vm.r$.contacts.$each[0].name);
 
       vm.r$.$value.email = 'azertyuio';
       vm.r$.$value.user.firstName = 'azertyuio';
@@ -281,24 +281,24 @@ describe('$params', () => {
       await nextTick();
 
       expect(vm.r$.$pending).toBe(true);
-      expect(vm.r$.$fields.email.$pending).toBe(true);
-      expect(vm.r$.$fields.user.$pending).toBe(true);
-      expect(vm.r$.$fields.user.$fields.firstName.$pending).toBe(true);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$pending).toBe(true);
+      expect(vm.r$.email.$pending).toBe(true);
+      expect(vm.r$.user.$pending).toBe(true);
+      expect(vm.r$.user.firstName.$pending).toBe(true);
+      expect(vm.r$.contacts.$each[0].name.$pending).toBe(true);
 
       await vi.advanceTimersByTimeAsync(1000);
       await nextTick();
 
       shouldBeCorrectNestedStatus(vm.r$);
-      shouldBeValidField(vm.r$.$fields.email);
-      shouldBeCorrectNestedStatus(vm.r$.$fields.user);
-      shouldBeValidField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeValidField(vm.r$.$fields.contacts);
-      shouldBeValidField(vm.r$.$fields.contacts.$each[0].$fields.name);
+      shouldBeValidField(vm.r$.email);
+      shouldBeCorrectNestedStatus(vm.r$.user);
+      shouldBeValidField(vm.r$.user.firstName);
+      shouldBeValidField(vm.r$.contacts);
+      shouldBeValidField(vm.r$.contacts.$each[0].name);
 
-      expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([6]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.email.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.user.firstName.$rules.testParams.$params).toStrictEqual([6]);
+      expect(vm.r$.contacts.$each[0].name.$rules.testParams.$params).toStrictEqual([6]);
 
       vm.min = 20;
 
@@ -306,24 +306,24 @@ describe('$params', () => {
       await nextTick();
 
       expect(vm.r$.$pending).toBe(true);
-      expect(vm.r$.$fields.email.$pending).toBe(true);
-      expect(vm.r$.$fields.user.$pending).toBe(true);
-      expect(vm.r$.$fields.user.$fields.firstName.$pending).toBe(true);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$pending).toBe(true);
+      expect(vm.r$.email.$pending).toBe(true);
+      expect(vm.r$.user.$pending).toBe(true);
+      expect(vm.r$.user.firstName.$pending).toBe(true);
+      expect(vm.r$.contacts.$each[0].name.$pending).toBe(true);
 
       await vi.advanceTimersByTimeAsync(1000);
       await nextTick();
 
       shouldBeErrorField(vm.r$);
-      shouldBeErrorField(vm.r$.$fields.email);
-      shouldBeErrorField(vm.r$.$fields.user);
-      shouldBeErrorField(vm.r$.$fields.user.$fields.firstName);
-      shouldBeErrorField(vm.r$.$fields.contacts);
-      shouldBeErrorField(vm.r$.$fields.contacts.$each[0].$fields.name);
+      shouldBeErrorField(vm.r$.email);
+      shouldBeErrorField(vm.r$.user);
+      shouldBeErrorField(vm.r$.user.firstName);
+      shouldBeErrorField(vm.r$.contacts);
+      shouldBeErrorField(vm.r$.contacts.$each[0].name);
 
-      expect(vm.r$.$fields.email.$rules.testParams.$params).toStrictEqual([20]);
-      expect(vm.r$.$fields.user.$fields.firstName.$rules.testParams.$params).toStrictEqual([20]);
-      expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.testParams.$params).toStrictEqual([20]);
+      expect(vm.r$.email.$rules.testParams.$params).toStrictEqual([20]);
+      expect(vm.r$.user.firstName.$rules.testParams.$params).toStrictEqual([20]);
+      expect(vm.r$.contacts.$each[0].name.$rules.testParams.$params).toStrictEqual([20]);
     });
   });
 });

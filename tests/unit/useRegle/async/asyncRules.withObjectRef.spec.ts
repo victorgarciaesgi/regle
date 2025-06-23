@@ -65,7 +65,7 @@ describe('useRegle with async rules and Object refs', async () => {
     });
 
     expect(vm.r$.level0Async.$correct).toBe(false);
-    expect(vm.r$.$fields.level0Async.$correct).toBe(false);
+    expect(vm.r$.level0Async.$correct).toBe(false);
     expect(vm.r$.level1.$correct).toBe(false);
     expect(vm.r$.level1.child.$correct).toBe(false);
     expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
@@ -105,7 +105,7 @@ describe('useRegle with async rules and Object refs', async () => {
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
     expect(vm.r$.level0Async.$pending).toBe(true);
-    expect(vm.r$.$fields.level0Async.$pending).toBe(true);
+    expect(vm.r$.level0Async.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();

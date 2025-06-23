@@ -63,12 +63,12 @@ describe.each([
       },
     });
 
-    shouldBePristineField(vm.r$.$fields.level0);
-    shouldBeInvalidField(vm.r$.$fields.level0Boolean);
-    shouldBeInvalidField(vm.r$.$fields.level1);
-    shouldBeInvalidField(vm.r$.$fields.level1.$fields.child);
-    shouldBePristineField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBePristineField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+    shouldBePristineField(vm.r$.level0);
+    shouldBeInvalidField(vm.r$.level0Boolean);
+    shouldBeInvalidField(vm.r$.level1);
+    shouldBeInvalidField(vm.r$.level1.child);
+    shouldBePristineField(vm.r$.level1.level2.child);
+    shouldBePristineField(vm.r$.level1.collection.$each[0].name);
   });
 
   it('should error on initial submit', async () => {
@@ -93,12 +93,12 @@ describe.each([
     expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
-    shouldBeValidField(vm.r$.$fields.level0);
-    shouldBeErrorField(vm.r$.$fields.level0Boolean);
-    shouldBeErrorField(vm.r$.$fields.level1);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.level0);
+    shouldBeErrorField(vm.r$.level0Boolean);
+    shouldBeErrorField(vm.r$.level1);
+    shouldBeErrorField(vm.r$.level1.child);
+    shouldBeValidField(vm.r$.level1.level2.child);
+    shouldBeValidField(vm.r$.level1.collection.$each[0].name);
   });
 
   it('should update dirty state and errors when updating form', async () => {
@@ -112,16 +112,16 @@ describe.each([
     expect(vm.r$.$errors.level0Boolean).toStrictEqual(['The field must be checked']);
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
 
-    shouldBeInvalidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeInvalidField(vm.r$.level1.collection.$each[1].name);
 
-    vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name.$touch();
+    vm.r$.level1.collection.$each[1].name.$touch();
     await nextTick();
 
     expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
-    shouldBeErrorField(vm.r$.$fields.level0);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeErrorField(vm.r$.level0);
+    shouldBeErrorField(vm.r$.level1.collection.$each[1].name);
 
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: ['This field is required'] }]);
 
@@ -137,10 +137,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(true);
+    expect(vm.r$.level0.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.child.$correct).toBe(true);
   });
 
   it('should update dirty state and errors when updating nested properties', async () => {
@@ -156,10 +156,10 @@ describe.each([
     expect(vm.r$.$ready).toBe(false);
 
     shouldBeErrorField(vm.r$);
-    shouldBeErrorField(vm.r$.$fields.level1);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.child);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBeErrorField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeErrorField(vm.r$.level1);
+    shouldBeErrorField(vm.r$.level1.child);
+    shouldBeErrorField(vm.r$.level1.level2.child);
+    shouldBeErrorField(vm.r$.level1.collection.$each[1].name);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 1,
@@ -173,10 +173,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(false);
+    expect(vm.r$.level0.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.child.$correct).toBe(false);
   });
 
   it('should remove errors when all values are valid', async () => {
@@ -197,14 +197,14 @@ describe.each([
     expect(vm.r$.$ready).toBe(true);
 
     shouldBeValidField(vm.r$);
-    shouldBeValidField(vm.r$.$fields.level0);
-    shouldBeValidField(vm.r$.$fields.level0Boolean);
-    shouldBeValidField(vm.r$.$fields.level1);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.child);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.level2);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.level2.$fields.child);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
-    shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[1].$fields.name);
+    shouldBeValidField(vm.r$.level0);
+    shouldBeValidField(vm.r$.level0Boolean);
+    shouldBeValidField(vm.r$.level1);
+    shouldBeValidField(vm.r$.level1.child);
+    shouldBeValidField(vm.r$.level1.level2);
+    shouldBeValidField(vm.r$.level1.level2.child);
+    shouldBeValidField(vm.r$.level1.collection.$each[0].name);
+    shouldBeValidField(vm.r$.level1.collection.$each[1].name);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 2,
@@ -225,7 +225,7 @@ describe.each([
 
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }]);
 
-    shouldBeValidField(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name);
+    shouldBeValidField(vm.r$.level1.collection.$each[0].name);
 
     const [{ valid, data }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
@@ -263,10 +263,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0Boolean.$dirty).toBe(false);
+    expect(vm.r$.level0Boolean.$dirty).toBe(false);
     expect(vm.r$.$ready).toBe(false);
 
-    expect(vm.r$.$fields.level1.$fields.collection.$anyDirty).toBe(false);
+    expect(vm.r$.level1.collection.$anyDirty).toBe(false);
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);
     expect(vm.r$.$error).toBe(false);
@@ -283,10 +283,10 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$fields.level0.$correct).toBe(false);
-    expect(vm.r$.$fields.level0Boolean.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.child.$correct).toBe(false);
-    expect(vm.r$.$fields.level1.$fields.level2.$fields.child.$correct).toBe(false);
+    expect(vm.r$.level0.$correct).toBe(false);
+    expect(vm.r$.level0Boolean.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.child.$correct).toBe(false);
+    expect(vm.r$.level1.level2.child.$correct).toBe(false);
   });
 });

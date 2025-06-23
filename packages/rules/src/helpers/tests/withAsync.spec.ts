@@ -58,7 +58,7 @@ describe('withAsync helper', () => {
     await nextTick();
 
     expect(wrapper.vm.r$.$pending).toBe(true);
-    expect(wrapper.vm.r$.$fields.email.$pending).toBe(true);
+    expect(wrapper.vm.r$.email.$pending).toBe(true);
     expect(wrapper.vm.r$.email.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
@@ -66,9 +66,9 @@ describe('withAsync helper', () => {
     await flushPromises();
 
     expect(wrapper.vm.r$.$pending).toBe(false);
-    expect(wrapper.vm.r$.$fields.email.$pending).toBe(false);
     expect(wrapper.vm.r$.email.$pending).toBe(false);
-    expect(wrapper.vm.r$.$fields.email.$error).toBe(false);
+    expect(wrapper.vm.r$.email.$pending).toBe(false);
+    expect(wrapper.vm.r$.email.$error).toBe(false);
     expect(wrapper.vm.r$.email.$error).toBe(false);
   });
 
@@ -81,16 +81,16 @@ describe('withAsync helper', () => {
     await nextTick();
 
     expect(wrapper.vm.r$.$pending).toBe(true);
-    expect(wrapper.vm.r$.$fields.email.$pending).toBe(true);
+    expect(wrapper.vm.r$.email.$pending).toBe(true);
     expect(wrapper.vm.r$.email.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
     await flushPromises();
 
     expect(wrapper.vm.r$.$pending).toBe(false);
-    expect(wrapper.vm.r$.$fields.email.$pending).toBe(false);
     expect(wrapper.vm.r$.email.$pending).toBe(false);
-    expect(wrapper.vm.r$.$fields.email.$rules.error.$valid).toBe(false);
+    expect(wrapper.vm.r$.email.$pending).toBe(false);
+    expect(wrapper.vm.r$.email.$rules.error.$valid).toBe(false);
     expect(wrapper.vm.r$.email.$rules.error.$valid).toBe(false);
     expect(wrapper.vm.r$.email.$error).toBe(true);
     expect(wrapper.vm.r$.$errors.email).toStrictEqual(['Error']);

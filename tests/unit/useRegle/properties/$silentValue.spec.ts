@@ -16,8 +16,8 @@ it('should update the source value', async () => {
   await vm.$nextTick();
 
   shouldBeInvalidField(vm.r$);
-  shouldBeInvalidField(vm.r$.$fields.email);
-  shouldBePristineField(vm.r$.$fields.user.$fields.firstName);
-  shouldBePristineField(vm.r$.$fields.user.$fields.lastName);
-  shouldBePristineField(vm.r$.$fields.contacts.$each[0].$fields.name);
+  shouldBeInvalidField(vm.r$.email);
+  shouldBePristineField(vm.r$.user.firstName);
+  shouldBePristineField(vm.r$.user.lastName);
+  shouldBePristineField(vm.r$.contacts.$each[0].name);
 });

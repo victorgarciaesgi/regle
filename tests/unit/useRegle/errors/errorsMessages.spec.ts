@@ -90,21 +90,19 @@ describe('errors', () => {
       'Error 4.1',
     ];
 
-    expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$errors.$self).toStrictEqual(expectedErrors);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
-      expectedErrors
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.email.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.user.firstName.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.user.nested.child.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.user.nested.collection.$self.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.user.nested.collection.$errors.$self).toStrictEqual(expectedErrors);
+    expect(vm.r$.user.nested.collection.$each[0].name.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.contacts.$each[0].name.$errors).toStrictEqual(expectedErrors);
 
     vm.r$.$value.contacts.push({ name: '' });
     await vm.$nextTick();
     vm.r$.$touch();
     await vm.$nextTick();
 
-    expect(vm.r$.$fields.contacts.$each[1].$fields.name.$errors).toStrictEqual(expectedErrors);
+    expect(vm.r$.contacts.$each[1].name.$errors).toStrictEqual(expectedErrors);
   });
 });

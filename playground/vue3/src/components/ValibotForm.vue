@@ -24,7 +24,7 @@
       <option value="Shares">Shares</option>
     </select>
     <Transition mode="out-in" name="fade">
-      <div v-if="r$.$fields.gift?.$fields?.type.$error" class="text-red-500 mt-2 text-sm">
+      <div v-if="r$.gift?.$fields?.type.$error" class="text-red-500 mt-2 text-sm">
         <ul>
           <li v-for="error of r$.$errors.gift?.type" :key="error">{{ error }}</li>
         </ul>

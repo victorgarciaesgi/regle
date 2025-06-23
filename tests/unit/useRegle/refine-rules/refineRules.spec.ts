@@ -66,21 +66,21 @@ describe('refineRules', () => {
     const { vm } = createRegleComponent(simpleRefinedRulesState);
 
     shouldBeInvalidField(vm.r$);
-    shouldBeInvalidField(vm.r$.$fields.password);
-    shouldBeInvalidField(vm.r$.$fields.confirmPassword);
+    shouldBeInvalidField(vm.r$.password);
+    shouldBeInvalidField(vm.r$.confirmPassword);
 
     vm.r$.$value.password = 'foobar';
     await vm.$nextTick();
     vm.r$.$value.confirmPassword = 'bar';
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.password);
-    shouldBeErrorField(vm.r$.$fields.confirmPassword);
+    shouldBeValidField(vm.r$.password);
+    shouldBeErrorField(vm.r$.confirmPassword);
 
     vm.r$.$value.confirmPassword = 'foobar';
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.confirmPassword);
+    shouldBeValidField(vm.r$.confirmPassword);
   });
 
   function simpleVariantForm() {
@@ -113,18 +113,18 @@ describe('refineRules', () => {
   it('should work with variants', async () => {
     const { vm } = createRegleComponent(simpleVariantForm);
 
-    expect(vm.r$.$fields.firstName.$invalid).toBe(true);
+    expect(vm.r$.firstName.$invalid).toBe(true);
 
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.oneValue).toBe(undefined);
+    expect(vm.r$.oneValue).toBe(undefined);
     // @ts-expect-error unknown field
-    expect(vm.r$.$fields.twoValue).toBe(undefined);
+    expect(vm.r$.twoValue).toBe(undefined);
 
     // @ts-expect-error unknown key
-    narrowVariant(vm.r$.$fields, 'NOT_KNOWN', 'ONE');
+    narrowVariant(vm.r$, 'NOT_KNOWN', 'ONE');
 
     // @ts-expect-error unknown value
-    narrowVariant(vm.r$.$fields, 'type', 'NOT_ASSIGNABLE');
+    narrowVariant(vm.r$, 'type', 'NOT_ASSIGNABLE');
 
     const { valid, data } = await vm.r$.$validate();
 
@@ -138,19 +138,19 @@ describe('refineRules', () => {
     }
 
     expect(vm.r$.$error).toBe(true);
-    shouldBeErrorField(vm.r$.$fields.type);
+    shouldBeErrorField(vm.r$.type);
 
     vm.r$.$value.type = 'ONE';
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.type);
+    shouldBeValidField(vm.r$.type);
 
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'ONE')).toBe(true);
+    expect(narrowVariant(vm.r$, 'type', 'ONE')).toBe(true);
 
-    expectTypeOf(vm.r$.$fields.firstName).toEqualTypeOf<
+    expectTypeOf(vm.r$.firstName).toEqualTypeOf<
       RegleFieldStatus<
         unknown,
         {
@@ -160,8 +160,8 @@ describe('refineRules', () => {
       >
     >();
 
-    if (narrowVariant(vm.r$.$fields, 'type', 'ONE')) {
-      expectTypeOf(vm.r$.$fields.oneName).toEqualTypeOf<
+    if (narrowVariant(vm.r$, 'type', 'ONE')) {
+      expectTypeOf(vm.r$.oneName).toEqualTypeOf<
         RegleFieldStatus<
           MaybeInput<string>,
           {
@@ -172,13 +172,13 @@ describe('refineRules', () => {
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.twoName).toBe(undefined);
+      expect(vm.r$.twoName).toBe(undefined);
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.twoValue).toBe(undefined);
+      expect(vm.r$.twoValue).toBe(undefined);
 
-      shouldBeErrorField(vm.r$.$fields.oneValue);
+      shouldBeErrorField(vm.r$.oneValue);
 
-      expectTypeOf(vm.r$.$fields.oneValue).toEqualTypeOf<
+      expectTypeOf(vm.r$.oneValue).toEqualTypeOf<
         RegleFieldStatus<
           MaybeInput<number>,
           {
@@ -211,10 +211,10 @@ describe('refineRules', () => {
     await vm.r$.$validate();
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'TWO')).toBe(true);
+    expect(narrowVariant(vm.r$, 'type', 'TWO')).toBe(true);
 
-    if (narrowVariant(vm.r$.$fields, 'type', 'TWO')) {
-      expectTypeOf(vm.r$.$fields.twoName).toEqualTypeOf<
+    if (narrowVariant(vm.r$, 'type', 'TWO')) {
+      expectTypeOf(vm.r$.twoName).toEqualTypeOf<
         RegleFieldStatus<
           MaybeInput<string>,
           {
@@ -225,13 +225,13 @@ describe('refineRules', () => {
       >();
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneName).toBe(undefined);
+      expect(vm.r$.oneName).toBe(undefined);
 
       // @ts-expect-error property should not be present here
-      expect(vm.r$.$fields.oneValue).toBe(undefined);
+      expect(vm.r$.oneValue).toBe(undefined);
 
-      shouldBeErrorField(vm.r$.$fields.twoValue);
-      expectTypeOf(vm.r$.$fields.twoValue).toEqualTypeOf<
+      shouldBeErrorField(vm.r$.twoValue);
+      expectTypeOf(vm.r$.twoValue).toEqualTypeOf<
         RegleFieldStatus<
           MaybeInput<string | number>,
           {
@@ -253,7 +253,7 @@ describe('refineRules', () => {
     vm.r$.$value.type = undefined;
     await vm.$nextTick();
 
-    expect(narrowVariant(vm.r$.$fields, 'type', 'ONE')).toBe(false);
-    expect(narrowVariant(vm.r$.$fields, 'type', 'TWO')).toBe(false);
+    expect(narrowVariant(vm.r$, 'type', 'ONE')).toBe(false);
+    expect(narrowVariant(vm.r$, 'type', 'TWO')).toBe(false);
   });
 });

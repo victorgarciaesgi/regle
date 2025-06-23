@@ -190,8 +190,8 @@ const { r$ } = useRegle({ email: '' }, {
   email: { required }
 })
 
-r$.$fields.
-//         ^|
+r$.e
+//  ^|
 </script>
 
 ```

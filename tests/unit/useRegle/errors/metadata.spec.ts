@@ -71,35 +71,29 @@ describe('metadata', () => {
 
     const expectedMessage = ['external-external-1', 'external-external-1'];
 
-    expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
-      expectedMessage
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.email.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.firstName.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.child.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.collection.$self.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.collection.$each[0].name.$errors).toStrictEqual(expectedMessage);
+    expect(vm.r$.contacts.$each[0].name.$errors).toStrictEqual(expectedMessage);
 
     // Tooltips
-    expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedMessage);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
-      expectedMessage
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.email.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.firstName.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.child.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.collection.$self.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.user.nested.collection.$each[0].name.$tooltips).toStrictEqual(expectedMessage);
+    expect(vm.r$.contacts.$each[0].name.$tooltips).toStrictEqual(expectedMessage);
 
     // Active
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(vm.r$.$fields.email.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(vm.r$.$fields.user.$fields.firstName.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$rules.createRuleMetadataRule.$active).toBe(true);
-    expect(
-      vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$rules.createRuleMetadataRule.$active
-    ).toBe(true);
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.contacts.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.email.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.user.firstName.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.user.nested.child.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.user.nested.collection.$self.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.user.nested.collection.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(true);
+    expect(vm.r$.contacts.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(true);
 
     // Change value
     vm.externalDep = 'new';
@@ -107,36 +101,28 @@ describe('metadata', () => {
 
     const expectedMessage2 = ['new-new-1', 'new-new-1'];
 
-    expect(vm.r$.$fields.email.$errors).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.firstName.$errors).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$errors).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$errors).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$errors).toStrictEqual(
-      expectedMessage2
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.email.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.firstName.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.child.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.collection.$self.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.collection.$each[0].name.$errors).toStrictEqual(expectedMessage2);
+    expect(vm.r$.contacts.$each[0].name.$errors).toStrictEqual(expectedMessage2);
 
     // Tooltips
-    expect(vm.r$.$fields.email.$tooltips).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.firstName.$tooltips).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$tooltips).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$tooltips).toStrictEqual(expectedMessage2);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$tooltips).toStrictEqual(
-      expectedMessage2
-    );
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.email.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.firstName.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.child.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.collection.$self.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.user.nested.collection.$each[0].name.$tooltips).toStrictEqual(expectedMessage2);
+    expect(vm.r$.contacts.$each[0].name.$tooltips).toStrictEqual(expectedMessage2);
 
     // Active
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.createRuleMetadataRule.$active).toBe(false);
-    expect(vm.r$.$fields.email.$rules.createRuleMetadataRule.$active).toBe(false);
-    expect(vm.r$.$fields.user.$fields.firstName.$rules.createRuleMetadataRule.$active).toBe(false);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.child.$rules.createRuleMetadataRule.$active).toBe(false);
-    expect(vm.r$.$fields.user.$fields.nested.$fields.collection.$self.$rules.createRuleMetadataRule.$active).toBe(
-      false
-    );
-    expect(
-      vm.r$.$fields.user.$fields.nested.$fields.collection.$each[0].$fields.name.$rules.createRuleMetadataRule.$active
-    ).toBe(false);
-    expect(vm.r$.$fields.contacts.$each[0].$fields.name.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.email.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.user.firstName.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.user.nested.child.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.user.nested.collection.$self.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.user.nested.collection.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(false);
+    expect(vm.r$.contacts.$each[0].name.$rules.createRuleMetadataRule.$active).toBe(false);
   });
 });

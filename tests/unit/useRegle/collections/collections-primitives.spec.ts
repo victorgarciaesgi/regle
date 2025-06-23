@@ -20,15 +20,15 @@ describe('collections of primitives', () => {
   it('should behave correctly with primitives collection and no $each rule', async () => {
     const { vm } = createRegleComponent(primitivesCollectionsRules);
 
-    shouldBeInvalidField(vm.r$.$fields.collection);
+    shouldBeInvalidField(vm.r$.collection);
 
     vm.r$.$value.collection.push(4, 5);
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.collection);
+    shouldBeValidField(vm.r$.collection);
 
     // @ts-expect-error
-    expect(vm.r$.$fields.collection.$each).toBeUndefined();
+    expect(vm.r$.collection.$each).toBeUndefined();
     expect(vm.r$.$errors.collection).toStrictEqual([]);
   });
 });

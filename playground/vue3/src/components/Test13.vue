@@ -30,7 +30,7 @@ const { r$ } = useRegle(state, rules);
 </script>
 
 <template>
-  <select v-model="r$.$fields.type.$value">
+  <select v-model="r$.type.$value">
     <option disabled value="">Account type</option>
     <option value="ONE">One</option>
     <option value="TWO">Two</option>
@@ -38,13 +38,13 @@ const { r$ } = useRegle(state, rules);
 
   <div v-if="narrowVariant(r$.$fields, 'type', 'ONE')">
     <!-- `email` is now a known field in this block -->
-    <input v-model="r$.$fields.oneValue.$value" placeholder="oneValue" />
-    <Errors :errors="r$.$fields.oneValue.$errors" />
+    <input v-model="r$.oneValue.$value" placeholder="oneValue" />
+    <Errors :errors="r$.oneValue.$errors" />
   </div>
 
   <div v-else-if="narrowVariant(r$.$fields, 'type', 'TWO')">
     <!-- `username` is now a known field in this block -->
-    <!-- <input v-model="r$.$fields.twoValue.$value" placeholder="twoValue" />
-    <Errors :errors="r$.$fields.twoValue.$errors" /> -->
+    <!-- <input v-model="r$.twoValue.$value" placeholder="twoValue" />
+    <Errors :errors="r$.twoValue.$errors" /> -->
   </div>
 </template>

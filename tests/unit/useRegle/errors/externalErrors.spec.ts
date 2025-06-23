@@ -39,16 +39,16 @@ describe('external errors', () => {
 
     await nextTick();
 
-    shouldBeUnRuledPristineField(vm.r$.$fields.root);
-    shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeUnRuledPristineField(vm.r$.root);
+    shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$ready).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     vm.r$.$touch();
     vm.externalErrors = {
@@ -61,19 +61,19 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
-    shouldBeUnRuledCorrectField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeUnRuledCorrectField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -81,24 +81,24 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeUnRuledCorrectField(vm.r$.$fields.root);
-    shouldBeUnRuledCorrectField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeUnRuledCorrectField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeUnRuledCorrectField(vm.r$.root);
+    shouldBeUnRuledCorrectField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledCorrectField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(true);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
 
-    shouldBeUnRuledPristineField(vm.r$.$fields.root);
-    shouldBeUnRuledPristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeUnRuledPristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeUnRuledPristineField(vm.r$.root);
+    shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$value).toStrictEqual({
       root: '',
@@ -144,16 +144,16 @@ describe('external errors', () => {
   it('should behave correctly when client rules are present', async () => {
     const { vm } = createRegleComponent(nestedExternalErrorsWithRules);
 
-    shouldBeInvalidField(vm.r$.$fields.root);
-    shouldBeInvalidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeInvalidField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeInvalidField(vm.r$.root);
+    shouldBeInvalidField(vm.r$.nested.name1.name2);
+    shouldBeInvalidField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$ready).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     vm.r$.$touch();
     vm.externalErrors = {
@@ -166,24 +166,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -192,17 +186,17 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.root);
-    shouldBeValidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeValidField(vm.r$.root);
+    shouldBeValidField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(true);
     expect(vm.r$.$correct).toBe(true);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     vm.externalErrors = {
       root: ['Server Error'],
@@ -214,18 +208,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
   });
 
   it('should behave correctly when silent is set to true', async () => {
@@ -275,17 +269,17 @@ describe('external errors', () => {
 
     await nextTick();
 
-    shouldBePristineField(vm.r$.$fields.root);
-    shouldBePristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBePristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBePristineField(vm.r$.root);
+    shouldBePristineField(vm.r$.nested.name1.name2);
+    shouldBePristineField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$invalid).toBe(false);
     expect(vm.r$.$ready).toBe(true);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1200)]);
 
@@ -299,18 +293,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -319,17 +313,17 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
     vm.externalErrors = {
       root: ['Server Error'],
@@ -341,18 +335,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
     vi.useRealTimers();
   });
@@ -374,24 +368,24 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[0].item);
 
     vm.r$.$reset();
 
     await vm.$nextTick();
 
-    shouldBeInvalidField(vm.r$.$fields.root);
-    shouldBeInvalidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeInvalidField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBeInvalidField(vm.r$.root);
+    shouldBeInvalidField(vm.r$.nested.name1.name2);
+    shouldBeInvalidField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$ready).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -400,9 +394,9 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.root);
-    shouldBeValidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeValidField(vm.r$.root);
+    shouldBeValidField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(true);
     expect(vm.r$.$correct).toBe(true);
@@ -417,18 +411,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
     // --
 
@@ -436,17 +430,17 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBePristineField(vm.r$.$fields.root);
-    shouldBePristineField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBePristineField(vm.r$.$fields.collection.$each[0].$fields.item);
+    shouldBePristineField(vm.r$.root);
+    shouldBePristineField(vm.r$.nested.name1.name2);
+    shouldBePristineField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$ready).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     // ---
     vi.useRealTimers();
@@ -457,10 +451,10 @@ describe('external errors', () => {
       nestedExternalErrorsWithRules({ clearExternalErrorsOnChange: true, rewardEarly: true })
     );
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     await vm.r$.$validate();
     vm.externalErrors = {
@@ -473,24 +467,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -499,26 +487,26 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeValidField(vm.r$.$fields.root);
-    shouldBeValidField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeValidField(vm.r$.root);
+    shouldBeValidField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(true);
     expect(vm.r$.$correct).toBe(true);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
   });
 
   it('should behave correctly with clearExternalErrorsOnChange: false', async () => {
     const { vm } = createRegleComponent(() => nestedExternalErrorsWithRules({ clearExternalErrorsOnChange: false }));
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([]);
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
 
     await vm.r$.$validate();
     vm.externalErrors = {
@@ -531,24 +519,18 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual(['This field is required']);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual([
-      'This field is required',
-      'Server Error',
-    ]);
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
 
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
@@ -557,17 +539,17 @@ describe('external errors', () => {
 
     await vm.$nextTick();
 
-    shouldBeErrorField(vm.r$.$fields.root);
-    shouldBeErrorField(vm.r$.$fields.nested.$fields.name1.$fields.name2);
-    shouldBeValidField(vm.r$.$fields.collection.$each[0].$fields.item);
-    shouldBeErrorField(vm.r$.$fields.collection.$each[1].$fields.item);
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
 
     expect(vm.r$.$ready).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
-    expect(vm.r$.$fields.root.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.nested.$fields.name1.$fields.name2.$errors).toStrictEqual(['Server Error']);
-    expect(vm.r$.$fields.collection.$each[0].$fields.item.$errors).toStrictEqual([]);
-    expect(vm.r$.$fields.collection.$each[1].$fields.item.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
   });
 });

@@ -106,11 +106,9 @@ Some properties have been renamed
 
 ### Accessing nested fields
 
-Nested fields are not mixed up with other properties now.
-
 ```ts
-v$.nested.child // [!code --]
-r$.nested.child // [!code ++]
+v$.nested.child.$error // [!code --]
+r$.nested.child.$error // [!code ++]
 ```
 
 ## Collections
@@ -127,7 +125,7 @@ const v$ = useVuelidate({ // [!code --]
     }) // [!code --]
   } // [!code --]
 }, {collection: [{name: ''}]}) // [!code --]
-const { r$ } = useRegle({collection: [{name: ''}]}, { // [!code ++]
+const { r$ } = useRegle({ collection: [{name: ''}]}, { // [!code ++]
   collection: {// [!code ++]
     $each: {// [!code ++]
       name: {// [!code ++]
@@ -145,7 +143,7 @@ const { r$ } = useRegle({collection: [{name: ''}]}, { // [!code ++]
 
 ```ts
 const result = await v$.$validate(); // [!code --]
-const {valid, data} = await r$.$validate(); // [!code ++]
+const { valid, data } = await r$.$validate(); // [!code ++]
 ```
 
 ## Custom messages
@@ -172,7 +170,7 @@ export const minLengthValidator = (value) =>
   );
 ```
 
-You can remove it and do configure it with [global config](/advanced-usage/global-config#replace-built-in-rules-messages).
+You can remove it and configure it with [global config](/advanced-usage/global-config#replace-built-in-rules-messages).
 
 ```ts twoslash
 import { defineRegleConfig } from '@regle/core';
