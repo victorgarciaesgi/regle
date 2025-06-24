@@ -238,6 +238,7 @@ export function createReactiveCollectionStatus({
               fieldName,
               schemaMode,
             });
+
             if (element) {
               return element;
             }
@@ -449,6 +450,7 @@ export function createReactiveCollectionStatus({
                     $correct,
                     $errors: $errors as any,
                     $silentErrors: $silentErrors as any,
+                    $initialValue: initialState,
                     $ready,
                     $anyDirty,
                     $name: $name,
@@ -620,6 +622,7 @@ export function createReactiveCollectionStatus({
     $path: path,
     $each: $eachStatus,
     $value: state,
+    $initialValue: initialState,
     $validate,
     $unwatch,
     $watch,

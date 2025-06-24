@@ -39,7 +39,7 @@ export function createCollectionElement({
   fieldName,
   schemaMode,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
-  const $fieldId = rules.$key ? rules.$key : randomId();
+  const $fieldId = stateValue.value?.$id ?? rules.$key ?? randomId();
   let $cachePath = `${cachePath}.${String($fieldId)}`;
   let $path = `${path}.${index}`;
 
@@ -53,8 +53,6 @@ export function createCollectionElement({
           writable: false,
         },
       });
-    } else {
-      $cachePath = `${cachePath}.${stateValue.value.$id}`;
     }
   }
 
@@ -62,6 +60,7 @@ export function createCollectionElement({
   const $schemaErrors = computed(() => schemaErrors?.value?.[index]);
 
   const $status = createReactiveChildrenStatus({
+    index,
     state: stateValue,
     rulesDef: toRef(() => rules),
     customMessages,

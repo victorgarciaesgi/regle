@@ -8,6 +8,7 @@
             :class="{ valid: item.name.$correct, error: item.name.$error }"
             placeholder="Type an item value"
           />
+          {{ item.name.$dirty }}
 
           <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
         </div>
@@ -25,7 +26,7 @@
       <button :disabled="form.collection.length < 2" type="button" @click="removeRandomItem">
         Remove random item
       </button>
-      <button type="button" @click="form.collection = shuffle(form.collection)">Suffle</button>
+      <button type="button" @click="form.collection.splice(2, 0, { name: 'hihi' })">Insert</button>
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button class="primary" type="button" @click="r$.$validate">Submit</button>
       <code class="status" :status="r$.$correct"></code>
@@ -70,7 +71,7 @@ function shuffle(arr: any[], options?: any) {
 }
 
 const form = ref<{ collection: Array<{ name: string }> }>({
-  collection: [{ name: '' }],
+  collection: [{ name: '' }, { name: '' }, { name: '' }, { name: '' }],
 });
 
 function removeRandomItem() {

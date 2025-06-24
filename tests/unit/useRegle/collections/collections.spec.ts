@@ -213,7 +213,7 @@ describe('collections validations', () => {
 
   it('should track dirty state correctly', async () => {
     function regleComposable() {
-      function shuffle(arr: any[], options?: any) {
+      function swap(arr: any[]) {
         if (!Array.isArray(arr)) {
           throw new Error('expected an array');
         }
@@ -222,24 +222,11 @@ describe('collections validations', () => {
           return arr;
         }
 
-        var shuffleAll = options && options.shuffleAll;
         var result = arr.slice();
 
-        var i = arr.length,
-          rand,
-          temp;
-
-        while (--i > 0) {
-          do {
-            rand = Math.floor(Math.random() * (i + 1));
-          } while (shuffleAll && rand == i);
-
-          if (!shuffleAll || rand != i) {
-            temp = result[i];
-            result[i] = result[rand];
-            result[rand] = temp;
-          }
-        }
+        const temp = result[0];
+        result[0] = result[1];
+        result[1] = temp;
 
         return result;
       }
@@ -258,7 +245,7 @@ describe('collections validations', () => {
 
       return {
         r$,
-        shuffle,
+        swap,
       };
     }
 
@@ -272,7 +259,7 @@ describe('collections validations', () => {
     shouldBeInvalidField(vm.r$.collection.$each[1]);
     shouldBeInvalidField(vm.r$.collection.$each[2]);
 
-    vm.r$.$value.collection = vm.shuffle(vm.r$.$value.collection);
+    vm.r$.$value.collection = vm.swap(vm.r$.$value.collection);
     await vm.$nextTick();
 
     shouldBeInvalidField(vm.r$.collection.$each[0]);
@@ -296,7 +283,7 @@ describe('collections validations', () => {
     shouldBeInvalidField(vm.r$.collection.$each[3]);
     shouldBeInvalidField(vm.r$.collection.$each[4]);
 
-    vm.r$.$value.collection.splice(0, 0, { name: '' });
+    vm.r$.$value.collection.unshift({ name: '' });
     await vm.$nextTick();
 
     shouldBeInvalidField(vm.r$.collection.$each[0]);
@@ -305,5 +292,39 @@ describe('collections validations', () => {
     shouldBeInvalidField(vm.r$.collection.$each[3]);
     shouldBeInvalidField(vm.r$.collection.$each[4]);
     shouldBeInvalidField(vm.r$.collection.$each[5]);
+
+    vm.r$.$reset();
+    await vm.r$.$validate();
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.collection.$each[0]);
+    shouldBeErrorField(vm.r$.collection.$each[1]);
+    shouldBeErrorField(vm.r$.collection.$each[2]);
+    shouldBeErrorField(vm.r$.collection.$each[3]);
+    shouldBeErrorField(vm.r$.collection.$each[4]);
+    shouldBeErrorField(vm.r$.collection.$each[5]);
+
+    vm.r$.$value.collection.unshift({ name: '' });
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeErrorField(vm.r$.collection.$each[1]);
+    shouldBeErrorField(vm.r$.collection.$each[2]);
+    shouldBeErrorField(vm.r$.collection.$each[3]);
+    shouldBeErrorField(vm.r$.collection.$each[4]);
+    shouldBeErrorField(vm.r$.collection.$each[5]);
+    shouldBeErrorField(vm.r$.collection.$each[6]);
+
+    vm.r$.$value.collection.splice(2, 0, { name: '' });
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.collection.$each[0]);
+    shouldBeErrorField(vm.r$.collection.$each[1]);
+    shouldBeInvalidField(vm.r$.collection.$each[2]);
+    shouldBeErrorField(vm.r$.collection.$each[3]);
+    shouldBeErrorField(vm.r$.collection.$each[4]);
+    shouldBeErrorField(vm.r$.collection.$each[5]);
+    shouldBeErrorField(vm.r$.collection.$each[6]);
+    shouldBeErrorField(vm.r$.collection.$each[7]);
   });
 });

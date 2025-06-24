@@ -322,6 +322,10 @@ export interface RegleCommonStatus<TValue = any> {
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  /**
+   * Initial value of the field.
+   */
+  readonly $initialValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /** Marks the field and all nested properties as $dirty. */

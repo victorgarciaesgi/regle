@@ -209,7 +209,7 @@ export function createReactiveNestedStatus({
     }
   }
 
-  const $fields: Ref<Record<string, $InternalRegleStatusType>> = commonArgs.storage.getFieldsEntry(path);
+  const $fields: Ref<Record<string, $InternalRegleStatusType>> = commonArgs.storage.getFieldsEntry(cachePath);
 
   // Create reactive nested fields
   createReactiveFieldsStatus();
@@ -228,14 +228,18 @@ export function createReactiveNestedStatus({
   }
 
   function define$watchState() {
-    $unwatchState = watch(state, () => {
-      $unwatch();
-      createReactiveFieldsStatus();
-      if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
-        // Do not watch deep to only track mutation on the object itself on not its children
-        $touch(false, true);
-      }
-    });
+    $unwatchState = watch(
+      state,
+      () => {
+        $unwatch();
+        createReactiveFieldsStatus();
+        if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
+          // Do not watch deep to only track mutation on the object itself on not its children
+          $touch(false, true);
+        }
+      },
+      { flush: 'post' }
+    );
   }
 
   function $watch() {
@@ -459,6 +463,7 @@ export function createReactiveNestedStatus({
                     $anyDirty,
                     $name,
                     $silentErrors: $silentErrors,
+                    $initialValue: initialState,
                     $errors: $errors,
                     $fields,
                     $edited,
@@ -662,6 +667,7 @@ export function createReactiveNestedStatus({
     ...restScopeState,
     ...$shortcuts,
     $path: path,
+    $initialValue: initialState,
     $fields,
     $reset,
     $touch,
