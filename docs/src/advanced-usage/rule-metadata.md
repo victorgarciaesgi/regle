@@ -32,7 +32,7 @@ const { r$ } = useRegle({name: ''}, {
 })
 
 r$.name.$rules.inlineRule.$metadata.
-//                                 ^|
+//                                  ^|
 ```
 
 ## Using metadata in `createRule`
