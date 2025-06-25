@@ -118,14 +118,14 @@ const { r$ } = useRegle(state, {
 
 ```ts
 import {inferRules} from '@regle/core';
+import {requiredIf, minLength, regex} from '@regle/rules';
 
 const rules = computed(() => inferRules(state, {
   phone: {
-    // Only validate if field has content
-    ...(r$?.$value?.phone && {
-      minLength: minLength(10),
-      regex: regex(/^\+?[\d\s-()]+$/)
-    })
+    // Only required if form have no email
+    required: requiredIf(() => !r$.$value.email)
+    minLength: minLength(10),
+    regex: regex(/^\+?[\d\s-()]+$/)
   }
 }))
 ```
