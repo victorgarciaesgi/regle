@@ -80,11 +80,16 @@ A reference to the original validated model. It can be used to bind your form wi
 
 ### `$silentValue`
 - Type: `TValue` (The current property value type)
-  
 
 `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
 
 
+### `$initialValue`
+- Type: `TValue` 
+
+Initial value of the field.
+
+  
 ### `$pending`
 - Type: `readonly boolean`
 
@@ -185,10 +190,6 @@ Clears the $externalResults state back to an empty object.
 This is reactive tree containing all the declared rules of your field.
 To know more about the rule properties check the [rules properties section](/core-concepts/rules/rules-properties)
 
-### `$silentIssues`
-- Type: `RegleFieldIssue[]`
-
-Collect all metadata of validators (errors, messages etc). Only contains metadata from properties where $dirty equals true.
    
 ### `$silentIssues`
 - Type: `RegleFieldIssue[]`
