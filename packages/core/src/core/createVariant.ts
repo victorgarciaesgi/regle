@@ -88,8 +88,8 @@ export function createVariant<
  * Narrow a nested variant field to a discriminated value
  *
  * ```ts
- * if (narrowVariant(r$.$fields, 'type', 'EMAIL')) {
- *    r$.$fields.email.$value = 'foo';
+ * if (narrowVariant(r$, 'type', 'EMAIL')) {
+ *    r$.email.$value = 'foo';
  * }
  * ```
  */
