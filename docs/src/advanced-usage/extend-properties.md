@@ -23,7 +23,7 @@ import { defineRegleConfig } from '@regle/core';
 const { useRegle } = defineRegleConfig({
   shortcuts: {
     fields: {
-      $isRequired: (field) => field.$rules.required?.$active ?? true;
+      $isRequired: (field) => field.$rules.required?.$active ?? false;
     }
   }
 });
