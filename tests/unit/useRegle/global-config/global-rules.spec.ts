@@ -1,7 +1,7 @@
-import { defineRegleConfig, extendRegleConfig, useRegle, type Maybe, type RegleComputedRules } from '@regle/core';
+import { defineRegleConfig, extendRegleConfig, type Maybe } from '@regle/core';
+import { and, applyIf, minValue, not, or, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
 import { ruleMockIsEven, ruleMockMetadata } from '../../../fixtures';
-import { and, applyIf, minValue, not, or, required, sameAs, withMessage } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
 
 const { useRegle: useCustomRegle } = defineRegleConfig({
@@ -12,6 +12,11 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
     }),
     rule: withMessage(ruleMockIsEven, 'Patched rule'),
   }),
+  shortcuts: {
+    fields: {
+      $isRequired: (field) => field.$rules.required?.$active ?? false,
+    },
+  },
 });
 const form = ref({
   withApply: 1,
@@ -115,7 +120,7 @@ describe('extendRegleConfig', () => {
       withAnd: { rule: and(ruleMockIsEven, minValue(1)) },
       withOr: { rule: or(ruleMockIsEven, minValue(5)) },
       withNot: { rule: not(ruleMockIsEven) },
-      level0: { rule: ruleMockIsEven },
+      level0: { required, rule: ruleMockIsEven },
       level1: {
         child: { rule: ruleMockIsEven },
         level2: {
@@ -137,7 +142,9 @@ describe('extendRegleConfig', () => {
 
     await vm.$nextTick();
 
+    expect(vm.r$.$fields.password.$isRequired).toBe(false);
     expect(vm.r$.level0.$errors).toStrictEqual(['Patched rule']);
+    expect(vm.r$.level0.$isRequired).toBe(true);
     expect(vm.r$.level1.child.$errors).toStrictEqual(['Patched rule']);
     expect(vm.r$.level1.level2.child.$errors).toStrictEqual(['Patched min:3', 'Re-patched rule']);
 

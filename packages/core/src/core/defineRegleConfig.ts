@@ -69,11 +69,13 @@ export function extendRegleConfig<
 } {
   const rootConfig = regle.__config ?? {};
   const newRules = () => ({ ...rootConfig.rules?.(), ...rules?.() }) as TCustomRules;
-  const newModifiers = rootConfig.modifiers && modifiers ? merge(rootConfig.modifiers, modifiers) : modifiers;
-  const newShortcuts = rootConfig.shortcuts && shortcuts ? merge(rootConfig.shortcuts, shortcuts) : shortcuts;
+  const newModifiers =
+    rootConfig.modifiers && modifiers ? merge(rootConfig.modifiers, modifiers) : (rootConfig.modifiers ?? modifiers);
+  const newShortcuts =
+    rootConfig.shortcuts && shortcuts ? merge(rootConfig.shortcuts, shortcuts) : (rootConfig.shortcuts ?? shortcuts);
 
   const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>(newRules, newModifiers, newShortcuts as any);
-  useRegle.__config = { rules: newRules, modifiers: newModifiers, shortcuts: newShortcuts };
+  useRegle.__config = { rules: newRules, modifiers: newModifiers, shortcuts: newShortcuts as any };
 
   const inferRules = createInferRuleHelper<TCustomRules>();
 
