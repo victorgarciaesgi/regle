@@ -66,7 +66,7 @@ export default defineWorkspace([
       name: `Nuxt tests - Vue ${vueVersion}.x`,
       root: './packages/nuxt',
       globals: true,
-      include: ['test/**/*.{spec,test}.ts'],
+      include: ['**/*.{spec,test}.ts'],
     },
   },
 ]);
