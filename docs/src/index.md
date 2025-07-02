@@ -30,29 +30,19 @@ features:
      alt: typescript logo
     title: Type Safe
     details: Full Typescript inference and autocompletion support.
-  - icon: 🌳
+  - icon: 🧮
     title:  Model based
     details: Your validation tree structure matches the data model.
-  - title: Modular
-    icon: 📦
-    details: Expand Regle properties or default validation rules.
+  - title: SSR Ready
+    icon: 
+      src: /nuxt.svg
+      alt: Nuxt logo
+    details: Full support for Nuxt and Server Side Rendering environments.
   - title: Standard Schema support
     icon: 
       src: /standard-schema.svg
       alt: standard-schema icon
     details: Use any schema library like Zod, Valibot or ArkType to control your validations.
-  - title: Headless
-    icon: 🔌
-    details: Plug any UI or markup to the validation.
-  - title: Style Agnostic
-    icon: 🎨
-    details: Works with any CSS framework or plain CSS.
-  - title: I18n Ready
-    icon: 🌐
-    details: Works with any i18n library.
-  - title: Vuelidate like API
-    icon: 📕
-    details: Regle's API mimics Vuelidate's API while improving it.
 ---
 
 

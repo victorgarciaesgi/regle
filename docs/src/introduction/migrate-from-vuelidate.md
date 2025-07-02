@@ -138,7 +138,7 @@ const { r$ } = useRegle({ collection: [{name: ''}]}, { // [!code ++]
 
 ## Methods
 
-See [docs for type safe output](/core-concepts/type-safe-output)
+See [docs for type safe output](/typescript/type-safe-output)
 
 
 ```ts

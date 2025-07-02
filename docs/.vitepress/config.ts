@@ -35,7 +35,6 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   },
   { text: 'Validation properties', link: '/core-concepts/validation-properties' },
   { text: 'Displaying errors', link: '/core-concepts/displaying-errors' },
-  { text: 'Type safe output', link: '/core-concepts/type-safe-output' },
   { text: 'Modifiers', link: '/core-concepts/modifiers' },
 ];
 
@@ -92,6 +91,7 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
 ];
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+  { text: 'Type safe output', link: '/typescript/type-safe-output' },
   {
     text: 'Typing component props',
     link: '/typescript/typing-props',
@@ -196,13 +196,13 @@ export default defineConfig({
         collapsed: false,
       },
       {
-        text: 'Typescript',
-        items: Typescript,
+        text: 'Advanced Usage',
+        items: AdvancedUsage,
         collapsed: false,
       },
       {
-        text: 'Advanced Usage',
-        items: AdvancedUsage,
+        text: 'Typescript',
+        items: Typescript,
         collapsed: true,
       },
       {
