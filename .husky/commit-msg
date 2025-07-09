@@ -1,1 +1,1 @@
-pnpm commitlint ${1}
+corepack install && pnpm commitlint ${1}

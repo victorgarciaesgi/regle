@@ -33,7 +33,7 @@
     "repl:dev": "pnpm run --filter='regle-playground' dev",
     "repl:build": "pnpm run build && pnpm run --filter='regle-playground' build",
     "deps:upgrade": "taze --include-locked -I",
-    "prepare": "husky",
+    "prepare": "corepack install && husky",
     "commitlint": "commitlint --edit"
   },
   "devDependencies": {
@@ -55,6 +55,7 @@
     "@vue/test-utils": "2.4.6",
     "bumpp": "10.2.0",
     "changelogithub": "13.16.0",
+    "corepack": "0.33.0",
     "env-cmd": "10.1.0",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
