@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v4
+      - run: pnpm i
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
         run: pnpx commitlint --last --verbose

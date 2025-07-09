@@ -143,6 +143,9 @@ importers:
       changelogithub:
         specifier: 13.16.0
         version: 13.16.0(magicast@0.3.5)
+      corepack:
+        specifier: 0.33.0
+        version: 0.33.0
       env-cmd:
         specifier: 10.1.0
         version: 10.1.0
@@ -4702,6 +4705,11 @@ packages:
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+
+  corepack@0.33.0:
+    resolution: {integrity: sha512-XSX4BNjdwPXjUEk7/2r0vFhs1irwVncJRMyjzDel3PVKWnHQXehciX0WkvDrd1ujLLFJRe8FeZb9ASCqBtF/OA==}
+    engines: {node: ^18.17.1 || ^20.10.0 || >=22.11.0}
+    hasBin: true
 
   cosmiconfig-typescript-loader@6.1.0:
     resolution: {integrity: sha512-tJ1w35ZRUiM5FeTzT7DtYWAFFv37ZLqSRkGi2oeCK1gPhvaWjkAtfXvLmvE1pRfxxp9aQo6ba/Pvg1dKj05D4g==}
@@ -13015,6 +13023,8 @@ snapshots:
       browserslist: 4.24.4
 
   core-util-is@1.0.3: {}
+
+  corepack@0.33.0: {}
 
   cosmiconfig-typescript-loader@6.1.0(@types/node@22.15.33)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
