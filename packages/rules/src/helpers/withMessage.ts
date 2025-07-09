@@ -7,10 +7,6 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
-  InferRegleRule,
-  NoInferLegacy,
-  UnwrapRegleUniversalParams,
-  RegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 

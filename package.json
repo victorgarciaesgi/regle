@@ -6,6 +6,8 @@
   "scripts": {
     "lint": "eslint packages/**",
     "lint:fix": "eslint packages/** --fix",
+    "lint:staged": "eslint --fix",
+    "format:staged": "prettier --write",
     "typecheck": "pnpm run -r --parallel --filter='@regle/*' typecheck && pnpm run -r --filter='ui-vue3' typecheck",
     "build": "pnpm run --filter='@regle/core' build && pnpm run -r --parallel --filter='@regle/*' --filter='!@regle/core' build",
     "build:dev": "pnpm run --filter='@regle/core' build:dev && pnpm run -r --parallel --filter='@regle/*' --filter='!@regle/core' build:dev",
@@ -30,9 +32,14 @@
     "docs:preview": "pnpm run --filter='docs' preview",
     "repl:dev": "pnpm run --filter='regle-playground' dev",
     "repl:build": "pnpm run build && pnpm run --filter='regle-playground' build",
-    "deps:upgrade": "taze --include-locked -I"
+    "deps:upgrade": "taze --include-locked -I",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@commitlint/types": "19.8.1",
     "@nuxt/kit": "3.17.5",
     "@nuxt/schema": "3.17.5",
     "@pinia/testing": "1.0.2",
@@ -53,7 +60,8 @@
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "happy-dom": "17.6.3",
-    "lint-staged": "15.5.2",
+    "husky": "9.1.7",
+    "lint-staged": "16.1.2",
     "nuxt": "3.17.5",
     "pinia-2.2.5": "catalog:",
     "playwright": "1.52.0",
@@ -74,14 +82,6 @@
     "zx": "8.6.0"
   },
   "type": "module",
-  "lint-staged": {
-    "*.{js,mjs,json,cjs}": [
-      "prettier --write"
-    ],
-    "*.ts?(x)": [
-      "prettier --parser=typescript --write"
-    ]
-  },
   "publishConfig": {
     "access": "public"
   },

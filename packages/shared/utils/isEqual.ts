@@ -31,7 +31,7 @@ export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true) 
 
     for (i = length; i-- !== 0; ) {
       var key = keys[i];
-      if (isObject(a) && isObject(b)) {
+      if (isObject(a) && isObject(b) && key) {
         if (firstDeep || (!firstDeep && deep)) {
           if (!isEqual(a[key], b[key], deep, false)) {
             return false;
