@@ -222,7 +222,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'x', link: 'https://x.com/reglejs' },
+      { icon: 'x', link: 'https://x.com/desnoth_dev' },
       { icon: 'bluesky', link: 'https://bsky.app/profile/vicflix.dev' },
       { icon: 'github', link: 'https://github.com/victorgarciaesgi/regle' },
     ],
