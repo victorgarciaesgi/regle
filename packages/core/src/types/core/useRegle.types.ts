@@ -10,6 +10,16 @@ import type {
 import type { ExtendOnlyRealRecord, Maybe, PrimitiveTypes } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
+/**
+ * The main Regle type that represents a complete validation instance.
+ *
+ * @template TState - The shape of the state object being validated
+ * @template TRules - The validation rules tree for the state
+ * @template TValidationGroups - Groups of validation rules that can be run together
+ * @template TShortcuts - Custom shortcut definitions for common validation patterns
+ * @template TAdditionalReturnProperties - Additional properties to extend the return type
+ *
+ */
 export type Regle<
   TState extends Record<string, any> = EmptyObject,
   TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree> = EmptyObject,
@@ -25,6 +35,14 @@ export type Regle<
   r$: Raw<RegleRoot<TState, TRules, TValidationGroups, TShortcuts>>;
 } & TAdditionalReturnProperties;
 
+/**
+ * The type for a single field validation instance.
+ *
+ * @template TState - The type of the state value being validated
+ * @template TRules - The validation rules for the field
+ * @template TShortcuts - Custom shortcut definitions for common validation patterns
+ * @template TAdditionalReturnProperties - Additional properties to extend the return type
+ */
 export type RegleSingleField<
   TState extends Maybe<PrimitiveTypes> = any,
   TRules extends RegleRuleDecl<NonNullable<TState>> = EmptyObject,

@@ -629,7 +629,10 @@ const { r$ } = useRegle({ name: '' }, {
 
 Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+// ---cut---
+// @noErrors
 import {required} from '@regle/rules';
 
 const {r$} = useRegle({name: ''}, {
@@ -644,7 +647,11 @@ _**Params**_
 
 Requires non-empty data, only if provided data property, ref, or a function resolves to `true`.
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+// @noErrors
 import { requiredIf } from '@regle/rules';
 
 const form = ref({ name: '', condition: false });
@@ -667,7 +674,11 @@ _**Params**_
 
 Requires non-empty data, only if provided data property, ref, or a function resolves to `false`.
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+// @noErrors
 import { requiredUnless } from '@regle/rules';
 
 const form = ref({ name: '', condition: false });
@@ -691,7 +702,11 @@ _**Params**_
 
 Checks if the value matches the specified property or ref.
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+// @noErrors
 import { sameAs } from '@regle/rules';
 
 const form = ref({

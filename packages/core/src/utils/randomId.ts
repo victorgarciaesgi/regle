@@ -2,6 +2,9 @@ function uniqueIDNuxt() {
   return Math.floor(Math.random() * Date.now()).toString();
 }
 
+/**
+ * Generates a random SSR compatible ID.
+ */
 export function randomId(): string {
   if (typeof window === 'undefined') {
     return uniqueIDNuxt();

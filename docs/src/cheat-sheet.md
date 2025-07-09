@@ -1,5 +1,6 @@
 ---
 title: Cheat Sheet
+description: Quick reference for common Regle patterns and usage scenarios
 ---
 
 # Regle Cheat Sheet
@@ -8,7 +9,7 @@ Quick reference for common Regle patterns and usage scenarios.
 
 ## Basic Setup
 
-```ts
+```ts twoslash
 import { useRegle } from '@regle/core'
 import { required, email, minLength } from '@regle/rules'
 
@@ -46,7 +47,6 @@ import {
 
 // ---cut---
 import {ref} from 'vue';
-import {useRegle} from '@regle/core'
 type FormState = {
   name?: string,
   email?: string,
@@ -59,6 +59,7 @@ type FormState = {
   confirmPassword?: string,
 }
 // ---cut---
+import {useRegle} from '@regle/core';
 
 const state = ref<FormState>({})
 
@@ -116,9 +117,14 @@ const { r$ } = useRegle(state, {
 ### Optional Field with Conditional Validation
 
 
-```ts
+```ts twoslash
+import {ref} from 'vue';
+// ---cut---
+// @noErrors
 import {inferRules} from '@regle/core';
 import {requiredIf, minLength, regex} from '@regle/rules';
+
+const state = ref({phone: ''});
 
 const rules = computed(() => inferRules(state, {
   phone: {
@@ -132,7 +138,11 @@ const rules = computed(() => inferRules(state, {
 
 ## Custom Error Messages
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+import {ref} from 'vue';
+// ---cut---
+// @noErrors
 import { withMessage } from '@regle/rules'
 
 const { r$ } = useRegle({email: '', password: ''}, {
@@ -152,7 +162,14 @@ const { r$ } = useRegle({email: '', password: ''}, {
 
 ## Form Submission
 
-```ts
+```ts twoslash
+import {useRegle} from '@regle/core';
+import {required} from '@regle/rules';
+
+const {r$} = useRegle({name: ''}, {name: {required}});
+
+// ---cut---
+// @noErrors
 function handleSubmit() {
   // Validate entire form
   const {valid, data} = await r$.$validate()
@@ -174,7 +191,11 @@ function handleSubmit() {
 
 ## Collections (Arrays)
 
-```ts
+```ts twoslash
+import {required, email} from '@regle/rules';
+// ---cut---
+import {useRegle} from '@regle/core';
+
 const { r$ } = useRegle(
   { users: [{ name: '', email: '' }] },
   {
@@ -193,7 +214,11 @@ r$.users.$each[0].name.$error
 
 ## Nested Objects
 
-```ts
+```ts twoslash
+import {required, email, maxLength} from '@regle/rules';
+// ---cut---
+import {useRegle} from '@regle/core';
+
 const { r$ } = useRegle(
   { 
     user: { 
@@ -221,8 +246,10 @@ r$.user.profile.name.$error
 
 ## Global Configuration
 
-```ts
-import { defineRegleConfig } from '@regle/core'
+```ts twoslash
+import { defineRegleConfig } from '@regle/core';
+import { withMessage, required, minLength } from '@regle/rules';
+
 
 // Set up global defaults
 const { useRegle: useCustomRegle } = defineRegleConfig({
@@ -231,17 +258,16 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
     minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
       return `Minimum length is ${max}. Current length: ${$value?.length}`;
     })
-  })
+  }),
   modifiers: {
-    autoDirty: true,
-    rewardEarly: true
+    rewardEarly: true,
   }
 })
 ```
 
 ## Schema Integration (Zod)
 
-```ts
+```ts twoslash
 import { z } from 'zod'
 import { useRegleSchema } from '@regle/schemas'
 
@@ -260,8 +286,14 @@ const { r$ } = useRegleSchema({
 
 
 ### TypeScript Errors?
-```ts
-import { inferRules } from '@regle/core'
+
+```ts twoslash
+import {ref, computed} from 'vue';
+// ---cut---
+import { inferRules } from '@regle/core';
+import { required } from '@regle/rules';
+
+const state = ref({name: ''});
 
 // ✅ Use inferRules for better type inference
 const rules = computed(() => {

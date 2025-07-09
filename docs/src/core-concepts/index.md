@@ -109,7 +109,6 @@ See how the rules structure matches the data structure? This makes it easy to un
 
 Sometimes your validation rules need to change based on other values or conditions. Regle handles this elegantly:
 
-:::code-group
 ```ts [Inline]
 import { useRegle } from '@regle/core';
 
@@ -142,7 +141,6 @@ const rules = computed(() => {
 
 const { r$ } = useRegle(state, rules);
 ```
-:::
 
 
 ### Available Rules
