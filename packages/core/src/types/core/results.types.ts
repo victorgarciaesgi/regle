@@ -13,13 +13,14 @@ import type {
   ArrayElement,
   ExtendOnlyRealRecord,
   ExtractFromGetter,
+  HasNamedKeys,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
   MaybeOutput,
   Prettify,
 } from '../utils';
-import type { IsUnknown } from 'type-fest';
+import type { IsAny, IsUnknown } from 'type-fest';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
   ? {}
@@ -46,25 +47,33 @@ export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRul
       valid: false;
       data: IsUnknown<Data> extends true
         ? unknown
-        : NonNullable<Data> extends Date | File
-          ? MaybeOutput<Data>
-          : NonNullable<Data> extends Array<infer U extends Record<string, any>>
-            ? PartialFormState<U>[]
-            : NonNullable<Data> extends Record<string, any>
-              ? PartialFormState<NonNullable<Data>>
-              : MaybeOutput<Data>;
+        : IsAny<Data> extends true
+          ? unknown
+          : HasNamedKeys<Data> extends true
+            ? NonNullable<Data> extends Date | File
+              ? MaybeOutput<Data>
+              : NonNullable<Data> extends Array<infer U extends Record<string, any>>
+                ? PartialFormState<U>[]
+                : NonNullable<Data> extends Record<string, any>
+                  ? PartialFormState<NonNullable<Data>>
+                  : MaybeOutput<Data>
+            : unknown;
     }
   | {
       valid: true;
       data: IsUnknown<Data> extends true
         ? unknown
-        : Data extends Array<infer U extends Record<string, any>>
-          ? DeepSafeFormState<U, TRules>[]
-          : Data extends Date | File
-            ? SafeFieldProperty<Data, TRules>
-            : Data extends Record<string, any>
-              ? DeepSafeFormState<Data, TRules>
-              : SafeFieldProperty<Data, TRules>;
+        : IsAny<Data> extends true
+          ? unknown
+          : HasNamedKeys<Data> extends true
+            ? Data extends Array<infer U extends Record<string, any>>
+              ? DeepSafeFormState<U, TRules>[]
+              : Data extends Date | File
+                ? SafeFieldProperty<Data, TRules>
+                : Data extends Record<string, any>
+                  ? DeepSafeFormState<Data, TRules>
+                  : SafeFieldProperty<Data, TRules>
+            : unknown;
     };
 
 /**

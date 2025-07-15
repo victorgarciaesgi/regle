@@ -32,10 +32,10 @@
     }
   },
   "devDependencies": {
-    "@total-typescript/ts-reset": "0.6.1",
+    "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
-    "@typescript-eslint/eslint-plugin": "8.28.0",
-    "@typescript-eslint/parser": "8.28.0",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",

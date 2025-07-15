@@ -76,15 +76,17 @@ type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
  * Combine all members of a union type, merging types for each key, and keeping loose types
  */
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
-  isRecordLiteral<TUnion> extends true
-    ? Prettify<
-        Partial<
-          UnionToIntersection<
-            RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
-          >
-        > &
-          Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
-      >
+  HasNamedKeys<TUnion> extends true
+    ? isRecordLiteral<TUnion> extends true
+      ? Prettify<
+          Partial<
+            UnionToIntersection<
+              RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
+            >
+          > &
+            Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
+        >
+      : TUnion
     : TUnion;
 
 export type LazyJoinDiscriminatedUnions<TUnion extends unknown> =

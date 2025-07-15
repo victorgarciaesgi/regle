@@ -1,6 +1,6 @@
 import type { IsUnion } from 'expect-type';
 import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep } from 'type-fest';
-import type { Ref, UnwrapNestedRefs } from 'vue';
+import type { UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
@@ -39,7 +39,7 @@ import type {
  * @public
  */
 export type RegleRoot<
-  TState extends Record<string, any> = {},
+  TState extends Record<string, unknown> = {},
   TRules extends ReglePartialRuleTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TShortcuts extends RegleShortcutDefinition = {},
@@ -146,33 +146,36 @@ export type InferRegleStatusType<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
-> = [TState[TKey]] extends [undefined | null]
-  ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-  : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
-    ? ExtendOnlyRealRecord<U> extends true
-      ? TRule extends RegleCollectionRuleDefinition<any, any>
-        ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
-          ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
-          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-        : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
-      : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-    : TRule extends ReglePartialRuleTree<any>
-      ? NonNullable<TState[TKey]> extends Array<any>
-        ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-        : NonNullable<TState[TKey]> extends Date | File
-          ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-          : unknown extends TState[TKey]
-            ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-            : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-              ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+> =
+  HasNamedKeys<TState> extends true
+    ? [TState[TKey]] extends [undefined | null]
+      ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+      : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
+        ? ExtendOnlyRealRecord<U> extends true
+          ? TRule extends RegleCollectionRuleDefinition<any, any>
+            ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
+              ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
               : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-      : NonNullable<TState[TKey]> extends Date | File
-        ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-        : unknown extends TState[TKey]
-          ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-          : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-            ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
-            : RegleFieldStatus<TState[TKey], TRule, TShortcuts>;
+            : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
+          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+        : TRule extends ReglePartialRuleTree<any>
+          ? NonNullable<TState[TKey]> extends Array<any>
+            ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+            : NonNullable<TState[TKey]> extends Date | File
+              ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+              : unknown extends TState[TKey]
+                ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+                : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
+                  ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+                  : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+          : NonNullable<TState[TKey]> extends Date | File
+            ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+            : unknown extends TState[TKey]
+              ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+              : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
+                ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+                : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+    : RegleCommonStatus<unknown>;
 
 /**
  * @internal

@@ -22,6 +22,7 @@ catalog:
   '@vue/compiler-dom': 3.5.17
   '@vue/server-renderer': 3.5.17
 
+  # Vue 3.4
   vue-3.4: npm:vue@3.4.38
   '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
   '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
@@ -30,6 +31,7 @@ catalog:
   '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
 
+  # Vue Ecosystem
   '@vue/test-utils': 2.4.6
   vue-router: 4.5.1
   vue-tsc: 2.2.10
@@ -49,12 +51,17 @@ catalog:
   expect-type: 1.2.1
   prettier: 3.6.1
   typescript: 5.8.3
+  typescript-eslint: 8.37.0
+  '@typescript-eslint/eslint-plugin': 8.37.0
+  '@typescript-eslint/parser': 8.37.0
+  '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.12.9
   type-fest: 4.41.0
 
   # Vite
   vite: 7.0.0
   vitest: 3.2.4
+
   # Schemas libraries
   arktype: 2.1.20
   valibot: 1.1.0

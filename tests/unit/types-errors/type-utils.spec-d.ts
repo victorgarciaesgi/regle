@@ -3,12 +3,14 @@ import {
   type InferRegleRoot,
   type JoinDiscriminatedUnions,
   type RegleFieldStatus,
+  type RegleRoot,
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
   type RegleStatus,
 } from '@regle/core';
-import { email, required } from '@regle/rules';
+import { email, minLength, required } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
+import { ref } from 'vue';
 import { z } from 'zod';
 
 describe('type utils', () => {
@@ -75,5 +77,52 @@ describe('type utils', () => {
 
     const foo: RegleStatus<Record<string, any> | undefined> = r$.nested;
     const bar: RegleStatus<Record<string, any> | undefined> = r$.nested;
+  });
+
+  it('should correctly infer custom function types', () => {
+    type FormComposable = {
+      r$?: RegleRoot<Record<string, unknown>, any>;
+    };
+
+    const useForm = ({ r$ }: FormComposable = {}) => {
+      const isFieldInvalid = (fieldName: string): boolean => {
+        const fields = r$?.$fields;
+        const fieldValidation = fields?.[fieldName as keyof typeof fields];
+
+        return !!fieldValidation?.$invalid;
+      };
+
+      return {
+        isFieldInvalid,
+      };
+    };
+
+    type Form = {
+      name: string | null;
+      email: string | null;
+      address: {
+        street: string | null;
+      };
+    };
+
+    const form = ref<Form>({
+      name: '',
+      email: '',
+      address: {
+        street: '',
+      },
+    });
+
+    const { r$ } = useRegle(form, {
+      name: { required, minLength: minLength(4) },
+      email: { email },
+      address: {
+        street: {
+          required,
+        },
+      },
+    });
+
+    useForm({ r$ });
   });
 });

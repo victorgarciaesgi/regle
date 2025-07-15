@@ -1,4 +1,3 @@
-import type { IsAny } from 'type-fest';
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 
 export type Prettify<T> = T extends infer R
