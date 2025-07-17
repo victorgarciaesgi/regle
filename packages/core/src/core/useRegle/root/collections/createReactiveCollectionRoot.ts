@@ -9,35 +9,24 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleSchemaCollectionErrors,
-  $InternalRegleShortcutDefinition,
-  CustomRulesDeclarationTree,
   FieldRegleBehaviourOptions,
   RegleShortcutDefinition,
   ResetOptions,
-  ResolvedRegleBehaviourOptions,
 } from '../../../../types';
 import { randomId, unwrapGetter } from '../../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
-import type { RegleStorage } from '../../../useStorage';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
-import type { CommonResolverScopedState, StateWithId } from '../common/common-types';
+import type { CommonResolverOptions, CommonResolverScopedState, StateWithId } from '../common/common-types';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
 
-interface CreateReactiveCollectionStatusArgs {
+interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
-  customMessages: CustomRulesDeclarationTree | undefined;
-  path: string;
-  fieldName: string;
-  index?: number;
-  storage: RegleStorage;
-  options: ResolvedRegleBehaviourOptions;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
   schemaErrors?: ComputedRef<$InternalRegleSchemaCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
-  shortcuts: $InternalRegleShortcutDefinition | undefined;
 }
 
 export function createReactiveCollectionStatus({

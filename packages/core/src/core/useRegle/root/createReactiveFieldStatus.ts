@@ -330,7 +330,7 @@ export function createReactiveFieldStatus({
 
       const $pending = computed<boolean>(() => {
         if (triggerPunishment.value || !$rewardEarly.value) {
-          return Object.entries($rules.value).some(([key, ruleResult]) => {
+          return Object.entries($rules.value).some(([_, ruleResult]) => {
             return ruleResult.$pending;
           });
         }
@@ -342,10 +342,9 @@ export function createReactiveFieldStatus({
           return true;
         } else if ($inactive.value) {
           return false;
-        } else if (!$rewardEarly.value || $rewardEarly.value) {
+        } else {
           return Object.values($rules.value).some((ruleResult) => !ruleResult.$valid || ruleResult.$maybePending);
         }
-        return false;
       });
 
       const $name = computed<string>(() => fieldName);
@@ -596,7 +595,7 @@ export function createReactiveFieldStatus({
       const validationResults = results.every((value) => value.status === 'fulfilled' && value.value === true);
 
       return { valid: validationResults, data };
-    } catch (e) {
+    } catch {
       return { valid: false, data: state.value };
     }
   }
@@ -622,6 +621,7 @@ export function createReactiveFieldStatus({
     $commit();
   }
 
+  // eslint-disable @blocktypescript-eslint/no-unused-vars
   const {
     $shortcuts,
     $validating,
@@ -633,6 +633,7 @@ export function createReactiveFieldStatus({
     $lazy,
     ...restScope
   } = scopeState;
+  // eslint-enable @blocktypescript-eslint/no-unused-vars
 
   return reactive({
     ...restScope,

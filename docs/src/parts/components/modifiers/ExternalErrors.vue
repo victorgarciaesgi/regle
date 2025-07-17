@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { required } from '@regle/rules';
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import { type RegleExternalErrorTree, useRegle } from '@regle/core';
 
 const form = ref({
@@ -68,13 +68,16 @@ const { r$ } = useRegle(
   }
 );
 
-function submit() {
-  r$.$validate();
-  externalErrors.value = {
-    email: ['Email already exists'],
-    name: {
-      pseudo: ['Pseudo already exists'],
-    },
-  };
+async function submit() {
+  const { valid } = await r$.$validate();
+
+  if (valid) {
+    externalErrors.value = {
+      email: ['Email already exists'],
+      name: {
+        pseudo: ['Pseudo already exists'],
+      },
+    };
+  }
 }
 </script>

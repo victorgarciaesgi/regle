@@ -32,7 +32,11 @@ To display custom error messages, you can use the [withMessage](/core-concepts/r
 You have access to additional data like parameters or rule status to write your message.
 
 :::tip
-If you have to write a lot of forms in your apps, consider using [defineRegleConfig](/advanced-usage/global-config#replace-built-in-rules-messages) instead.
+If you fall into this case:
+- You have a lot of forms in your app
+- You want to share translations easily between your forms
+
+Consider using [defineRegleConfig](/advanced-usage/global-config#replace-built-in-rules-messages) instead.
 :::
 
 ``` vue twoslash [App.vue]

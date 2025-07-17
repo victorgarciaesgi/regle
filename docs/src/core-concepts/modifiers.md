@@ -57,58 +57,7 @@ __Type__: `RegleExternalErrorTree<State>`
 
 Pass an object, matching your error state, that holds external validation errors. These can be from a backend validations or something else.
 
-```ts twoslash
-import { required } from '@regle/rules';
-import { ref, reactive } from 'vue';
-// ---cut---
-import { type RegleExternalErrorTree, useRegle } from '@regle/core'
-
-const form = reactive({
-  email: '',
-  name: {
-    pseudo: '',
-  }
-})
-
-const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
-
-const { r$ } = useRegle(form, {
-  email: { required },
-  name: {
-    pseudo: { required }
-  }
-}, { externalErrors })
-
-function submit() {
-  r$.$validate();
-  externalErrors.value = {
-    email: ["Email already exists"],
-    name: {
-      pseudo: ["Pseudo already exists"]
-    }
-  }
-}
-```
-
-Result:
-
-<ExternalErrors/>
-
-
-:::warning
-
-If you're working with collections and server-only validations, you'll have to at least specify an empty `$each` object in the client rules to tell Regle that the array is to be treated as a collection
-
-```ts
-const { r$ } = useRegle({collection: []}, {
-  collection: {
-    $each: {}
-  },
-}, { externalErrors })
-
-```
-
-:::
+Check the [External errors](/advanced-usage/external-errors) section for more details.
 
 
 ### `rewardEarly`

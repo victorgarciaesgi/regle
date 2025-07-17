@@ -27,7 +27,7 @@ const { r$ } = useRegle(form, {
 })
 
 r$.email.$rules.required.
-//                      ^|
+//                       ^|
 </script>
 
 <template>

@@ -122,7 +122,7 @@ describe('external errors', () => {
       collection: [{ item: '' }, { item: '' }],
     });
 
-    const externalErrors = ref<RegleExternalErrorTree<Form>>({});
+    const externalErrors = ref<RegleExternalErrorTree<Form> | Record<string, string[]>>({});
 
     const rules = computed(() => {
       return inferRules(form, {
@@ -536,6 +536,178 @@ describe('external errors', () => {
     vm.r$.$value.nested.name1.name2 = 'foo';
     vm.r$.$value.collection[0].item = 'foo';
     vm.r$.$value.collection[1].item = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
+  });
+
+  // --- Dot path errors ---
+
+  it('should behave correctly when using dot path errors and when no client rule are present', async () => {
+    function nestedExternalErrorsOnly() {
+      interface Form {
+        root: string;
+        nested: { name1: { name2: string } };
+        collection: {
+          item: [{ name: string }];
+        }[];
+      }
+
+      const form = ref<Form>({
+        root: '',
+        nested: { name1: { name2: '' } },
+        collection: [{ item: [{ name: '' }] }, { item: [{ name: '' }] }],
+      });
+
+      const externalErrors = ref({});
+
+      return {
+        externalErrors,
+        ...useRegle(form, {}, { externalErrors }),
+      };
+    }
+    const { vm } = createRegleComponent(nestedExternalErrorsOnly);
+
+    await nextTick();
+
+    shouldBeUnRuledPristineField(vm.r$.root);
+    shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item.$each[0].name);
+
+    expect(vm.r$.$ready).toBe(false);
+
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$each[0].name.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$each[0].name.$errors).toStrictEqual([]);
+
+    vm.r$.$touch();
+    vm.externalErrors = {
+      root: ['Server Error'],
+      'nested.name1.name2': ['Server Error'],
+      'collection.1.item.0.name': ['Server Error'],
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
+
+    shouldBeUnRuledCorrectField(vm.r$.collection.$each[0].item.$each[0].name);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$each[0].item.$each[0].name.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$each[0].name.$errors).toStrictEqual(['Server Error']);
+
+    vm.r$.$value.root = 'foo';
+    vm.r$.$value.nested.name1.name2 = 'foo';
+    vm.r$.$value.collection[1].item[0].name = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeUnRuledCorrectField(vm.r$.root);
+    shouldBeUnRuledCorrectField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledCorrectField(vm.r$.collection.$each[1].item.$each[0].name);
+
+    expect(vm.r$.$ready).toBe(true);
+
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$each[0].name.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$each[0].name.$errors).toStrictEqual([]);
+
+    vm.r$.$reset({ toInitialState: true });
+
+    await nextTick();
+
+    shouldBeUnRuledPristineField(vm.r$.root);
+    shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
+    shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item.$each[0].name);
+
+    expect(vm.r$.$value).toStrictEqual({
+      root: '',
+      nested: { name1: { name2: '' } },
+      collection: [{ item: [{ name: '' }] }, { item: [{ name: '' }] }],
+    });
+  });
+
+  it('should work when using dot path external errors and client rules', async () => {
+    const { vm } = createRegleComponent(nestedExternalErrorsWithRules);
+
+    shouldBeInvalidField(vm.r$.root);
+    shouldBeInvalidField(vm.r$.nested.name1.name2);
+    shouldBeInvalidField(vm.r$.collection.$each[0].item);
+
+    expect(vm.r$.$ready).toBe(false);
+
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
+
+    vm.r$.$touch();
+    vm.externalErrors = {
+      root: ['Server Error'],
+      'nested.name1.name2': ['Server Error'],
+      'collection.1.item': ['Server Error'],
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[0].item);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
+
+    vm.r$.$value.root = 'foo';
+    vm.r$.$value.nested.name1.name2 = 'foo';
+    vm.r$.$value.collection[0].item = 'foo';
+    vm.r$.$value.collection[1].item = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$.root);
+    shouldBeValidField(vm.r$.nested.name1.name2);
+    shouldBeValidField(vm.r$.collection.$each[1].item);
+
+    expect(vm.r$.$ready).toBe(true);
+    expect(vm.r$.$correct).toBe(true);
+
+    expect(vm.r$.root.$errors).toStrictEqual([]);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual([]);
+
+    vm.externalErrors = {
+      root: ['Server Error'],
+      'nested.name1.name2': ['Server Error'],
+      'collection.1.item': ['Server Error'],
+    };
 
     await vm.$nextTick();
 

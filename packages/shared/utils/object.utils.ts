@@ -121,3 +121,71 @@ export function merge<TObj1 extends object = object, TObjs extends object = obje
   }
   return result;
 }
+
+/**
+ * Converts an object with dot-path keys into a nested object structure.
+ * Example:
+ *   {
+ *     "user.email": "foo",
+ *     "password": "bar",
+ *     "collection.0.name": "hello"
+ *   }
+ * becomes:
+ *   {
+ *     user: { email: "foo" },
+ *     password: "bar",
+ *     collection: [{ name: "hello" }]
+ *   }
+ */
+export function dotPathObjectToNested(obj: Record<string, any> | undefined): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+    const value = obj[key];
+    const path = key.split('.');
+    let current = result;
+
+    for (let i = 0; i < path.length; i++) {
+      const part = path[i];
+      const isLast = i === path.length - 1;
+      // Check if this part is an array index
+      const arrayIndex = part.match(/^\d+$/) ? Number(part) : null;
+
+      if (arrayIndex !== null) {
+        // This part is an array index
+
+        if (Array.isArray(current)) {
+          if (isLast) {
+            current[arrayIndex] = value;
+          } else {
+            if (typeof current[arrayIndex] !== 'object' || current[arrayIndex] === null) {
+              // Decide if next is array or object
+              const nextPart = path[i + 1];
+              current[arrayIndex] = nextPart && nextPart.match(/^\d+$/) ? { $each: [] } : {};
+            }
+            current = '$each' in current[arrayIndex] ? current[arrayIndex].$each : current[arrayIndex];
+          }
+        }
+      } else {
+        // This part is an object key
+        if (isLast) {
+          current[part] = value;
+        } else {
+          if (
+            typeof current[part] !== 'object' ||
+            current[part] === null ||
+            (Array.isArray(current[part]) && !path[i + 1].match(/^\d+$/))
+          ) {
+            // Decide if next is array or object
+            const nextPart = path[i + 1];
+            current[part] = nextPart && nextPart.match(/^\d+$/) ? { $each: [] } : {};
+          }
+          current = '$each' in current[part] ? current[part].$each : current[part];
+        }
+      }
+    }
+  }
+
+  return result;
+}
