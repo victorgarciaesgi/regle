@@ -11,7 +11,7 @@ import {
 import { email, minLength, required } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 import { ref } from 'vue';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 describe('type utils', () => {
   it('JoinDiscriminatedUnions should bind unions correclty', () => {

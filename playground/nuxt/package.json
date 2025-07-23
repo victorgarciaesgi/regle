@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@regle/core": "workspace:*",
+    "@regle/nuxt": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "@regle/nuxt": "workspace:*",
     "pinia": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"

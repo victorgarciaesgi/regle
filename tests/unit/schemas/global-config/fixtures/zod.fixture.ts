@@ -1,6 +1,6 @@
 import { defineRegleSchemaConfig } from '@regle/schemas';
 import { ref } from 'vue';
-import z from 'zod';
+import z from 'zod/v3';
 
 export function zodGlobalConfigFixture() {
   const { useRegleSchema } = defineRegleSchemaConfig({});

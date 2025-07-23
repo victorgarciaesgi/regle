@@ -1,6 +1,6 @@
 import { useRegleSchema } from '@regle/schemas';
 import { reactive } from 'vue';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export function zodRulesRefineFixture() {
   const zodSchema = z

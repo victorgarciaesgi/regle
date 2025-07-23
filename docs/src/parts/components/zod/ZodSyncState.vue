@@ -4,10 +4,10 @@
       <div class="input-container">
         <input
           v-model="r$.$value.firstName"
-          :class="{ valid: r$.firstName.$correct, error: r$.firstName.$error }"
+          :class="{ valid: r$.firstName?.$correct, error: r$.firstName?.$error }"
           placeholder="Type your first name"
         />
-        <ul v-if="r$.$errors.firstName.length">
+        <ul v-if="r$.$errors.firstName?.length">
           <li v-for="error of r$.$errors.firstName" :key="error">
             {{ error }}
           </li>

@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { useRegleSchema, withDeps } from '@regle/schemas';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { ref, computed } from 'vue';
 
 const form = ref({ firstName: '', lastName: '' });

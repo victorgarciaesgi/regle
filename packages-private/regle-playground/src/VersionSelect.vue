@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 const expanded = ref(false);
 const versions = ref<string[]>();
 
-const version = defineModel();
+const version = defineModel<string>();
 const props = defineProps<{
   pkg: string;
   label?: string;

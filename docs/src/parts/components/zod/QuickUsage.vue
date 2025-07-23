@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 const { r$ } = useRegleSchema(
   { name: '' },

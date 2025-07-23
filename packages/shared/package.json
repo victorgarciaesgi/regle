@@ -4,9 +4,9 @@
   "type": "module",
   "devDependencies": {
     "@regle/core": "workspace:*",
+    "tsdown": "catalog:",
     "type-fest": "catalog:",
-    "typescript": "catalog:",
-    "tsdown": "catalog:"
+    "typescript": "catalog:"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

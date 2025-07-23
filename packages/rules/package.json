@@ -14,9 +14,9 @@
     "@regle/core": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
-    "@types/node": "catalog:",
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint": "catalog:",

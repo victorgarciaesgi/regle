@@ -7,8 +7,22 @@ import {
   type RegleFieldStatus,
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
+  inferRules,
+  type AllRulesDeclarations,
+  type ReglePartialRuleTree,
 } from '@regle/core';
-import { literal, minValue, numeric, required } from '@regle/rules';
+import {
+  checked,
+  and,
+  applyIf,
+  literal,
+  maxLength,
+  minLength,
+  minValue,
+  numeric,
+  withMessage,
+  required,
+} from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
@@ -389,5 +403,124 @@ describe('createVariant', () => {
 
     expect(vm.invariantRefOne).toBeDefined();
     expect(vm.invariantRefOne?.oneValue).toBeDefined();
+  });
+
+  it('should expect correct typing with union types', () => {
+    type PossibleFormSchemaInput = FixedPriceQuoteFormSchema | TimeAndMaterialsQuoteFormSchema | QuoteFormSchema;
+
+    interface BaseQuoteRequest {
+      acceptedTC?: boolean;
+      title?: string;
+      vatPercent?: number;
+    }
+
+    interface QuoteFormSchema extends BaseQuoteRequest {
+      type?: undefined;
+      details: {};
+    }
+
+    interface FixedPriceQuoteFormSchema extends BaseQuoteRequest {
+      details: {
+        quoteLines: Partial<{
+          description: string;
+          quantity: number;
+          unitPrice: number;
+          totalPrice: number;
+        }>[];
+        additionalNotes?: string;
+      };
+      type: 'FIXED_PRICE';
+    }
+    interface TimeAndMaterialsQuoteFormSchema extends BaseQuoteRequest {
+      details: {
+        projectScope?: string;
+        workRate: {
+          unit?: 'HOUR' | 'DAY';
+          value?: number;
+        };
+        startDate?: Date;
+        estimatedEndDate?: Date;
+        estimatedTotalWorkAmount?: number;
+      };
+      type: 'TIME_AND_MATERIALS';
+    }
+    interface CreateQuoteStateSchema {
+      BILLING_INFORMATION?: {
+        billingInformation: {
+          firstName?: string;
+          lastName?: string;
+          workEmail?: string;
+          companyAddress: Location;
+        };
+      };
+      QUOTE_SETUP: PossibleFormSchemaInput;
+      INVITE_A_CLIENT: {
+        companyName?: string;
+        firstName?: string;
+        lastName?: string;
+        workEmail?: string;
+        country?: string;
+        phoneNumber?: string;
+      };
+    }
+
+    const quoteVariant = createVariant(() => form.value.QUOTE_SETUP, 'type', [
+      {
+        type: { literal: literal('FIXED_PRICE') },
+        details: {
+          quoteLines: {
+            required,
+            $each() {
+              return {
+                description: { required },
+                quantity: { required },
+                unitPrice: { required },
+                totalPrice: { required },
+              };
+            },
+          },
+          additionalNotes: {
+            maxLength: maxLength(100000),
+          },
+        },
+      },
+      {
+        type: { literal: literal('TIME_AND_MATERIALS') },
+        details: {
+          projectScope: {
+            required,
+          },
+        },
+      },
+      {
+        type: { required },
+      },
+    ]);
+
+    const form = ref<CreateQuoteStateSchema>({ QUOTE_SETUP: { type: 'FIXED_PRICE' } } as any);
+
+    inferRules(form, { INVITE_A_CLIENT: {} });
+    inferRules(form, {
+      QUOTE_SETUP: {
+        title: { required, minLength: minLength(1), maxLength: maxLength(200) },
+        acceptedTC: {
+          $rewardEarly: true,
+          checked: withMessage(
+            applyIf(
+              () => {
+                return false;
+              },
+              and(checked, required)
+            ),
+            'foo'
+          ),
+        },
+        vatPercent: {},
+        ...quoteVariant.value,
+      },
+      INVITE_A_CLIENT: {
+        companyName: { required },
+      },
+    });
   });
 });

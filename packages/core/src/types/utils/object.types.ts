@@ -2,6 +2,7 @@ import type { UnionToIntersection, UnionToTuple } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
+import type { IsUnion } from 'expect-type';
 
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
   ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]
@@ -109,7 +110,11 @@ export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
 
 export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };
 
-export type HasNamedKeys<T> = {
+// -- HasNamedKeys
+export type HasNamedKeys<T> =
+  IsUnion<T> extends true ? ProcessHasNamedKeys<LazyJoinDiscriminatedUnions<T>> : ProcessHasNamedKeys<T>;
+
+type ProcessHasNamedKeys<T> = {
   [K in keyof NonNullable<T>]: K extends string ? (string extends K ? never : K) : never;
 }[keyof NonNullable<T>] extends never
   ? false

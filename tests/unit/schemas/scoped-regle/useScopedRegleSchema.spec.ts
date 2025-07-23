@@ -108,7 +108,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
       expect(wrapper.vm.scope1R$.$errors).toStrictEqual([
         { scope1Data: [] },
-        { scope1Data: ['String must contain at least 1 character(s)'] },
+        { scope1Data: ['Too small: expected string to have >=1 characters'] },
       ]);
       expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: '' }]);
 

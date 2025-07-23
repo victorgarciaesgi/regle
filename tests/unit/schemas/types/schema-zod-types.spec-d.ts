@@ -1,6 +1,6 @@
 import type { RegleShortcutDefinition } from '@regle/core';
 import { useRegleSchema, type RegleSchemaCollectionStatus, type RegleSchemaFieldStatus } from '@regle/schemas';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 it('zod - intersection types should correctly infer types', () => {
   const schema = z

@@ -1,7 +1,7 @@
 import { isFilled } from '@regle/rules';
 import { useRegleSchema } from '@regle/schemas';
 import { reactive } from 'vue';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export function zodNestedRegleFixture() {
   const zodIsEven = z

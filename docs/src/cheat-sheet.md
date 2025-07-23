@@ -268,7 +268,7 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
 ## Schema Integration (Zod)
 
 ```ts twoslash
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import { useRegleSchema } from '@regle/schemas'
 
 const schema = z.object({

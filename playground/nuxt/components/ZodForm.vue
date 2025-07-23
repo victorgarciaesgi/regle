@@ -15,7 +15,7 @@
       <input v-model="input.name" placeholder="name" />
       <ul>
         <!-- TODO types for collections errors -->
-        <li v-for="error of r$.$errors.nested.$each[index].name" :key="error">
+        <li v-for="error of r$.$errors.nested?.$each[index]?.name" :key="error">
           {{ error }}
         </li>
       </ul>
@@ -37,7 +37,7 @@
 import type { RegleExternalErrorTree } from '@regle/core';
 import { useRegleSchema } from '@regle/schemas';
 import { nextTick, reactive, ref } from 'vue';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 type Form = {
   email: string;
@@ -52,7 +52,7 @@ const form = reactive<Form>({
 });
 
 async function submit() {
-  const { result, data } = await r$.$validate();
+  const { valid, data } = await r$.$validate();
 }
 
 const externalErrors = ref<RegleExternalErrorTree<Form>>({

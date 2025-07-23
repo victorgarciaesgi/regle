@@ -1,6 +1,6 @@
 import { useRegleSchema, withDeps } from '@regle/schemas';
 import { computed, reactive } from 'vue';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export function zodWithDepsFixture() {
   const form = reactive({
