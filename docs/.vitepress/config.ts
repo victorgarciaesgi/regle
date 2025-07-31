@@ -197,6 +197,11 @@ export default defineConfig({
         collapsed: false,
       },
       {
+        text: 'Integrations',
+        items: Integrations,
+        collapsed: false,
+      },
+      {
         text: 'Advanced Usage',
         items: AdvancedUsage,
         collapsed: false,
@@ -206,11 +211,7 @@ export default defineConfig({
         items: Typescript,
         collapsed: true,
       },
-      {
-        text: 'Integrations',
-        items: Integrations,
-        collapsed: true,
-      },
+
       {
         text: 'Examples',
         items: Examples,
