@@ -17,7 +17,9 @@ export default defineNuxtModule<ModuleOptions>({
     const { resolve } = createResolver(import.meta.url);
     if (options.setupFile) {
       try {
-        const setupFilePath = await resolvePath(options.setupFile);
+        const setupFilePathOS = await resolvePath(options.setupFile);
+        // Ensure the path is normalized for POSIX compatibility (https://github.com/victorgarciaesgi/regle/issues/152)
+        const setupFilePath = path.posix.normalize(setupFilePathOS.replace(/\\/g, '/'));
         if (setupFilePath) {
           const dotNuxtFolder = resolve(`${nuxt.options.rootDir}/.nuxt`);
 
@@ -63,7 +65,7 @@ export type RegleFieldStatus<
           console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`);
         }
       } catch (e) {
-        console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`);
+        console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`, e);
       }
     } else {
       addImportsSources({
