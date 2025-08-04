@@ -1,4 +1,4 @@
-import { h, nextTick, onMounted, watch } from 'vue';
+import { h, nextTick, watch } from 'vue';
 import { type Theme } from 'vitepress';
 import '@shikijs/vitepress-twoslash/style.css';
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client';
