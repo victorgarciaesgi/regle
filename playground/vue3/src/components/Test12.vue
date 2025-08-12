@@ -32,11 +32,7 @@
         </ul>
       </div>
 
-      <div
-        v-for="(item, index) of r$.collection.$each"
-        :key="item.$id"
-        class="item"
-      >
+      <div v-for="(item, index) of r$.collection.$each" :key="item.$id" class="item">
         <div class="field">
           <input
             v-model="item.$value.name"
@@ -44,13 +40,7 @@
             placeholder="Type an item value"
           />
 
-          <div
-            v-if="form.collection.length > 1"
-            class="delete"
-            @click="form.collection.splice(index, 1)"
-          >
-            🗑️
-          </div>
+          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)"> 🗑️ </div>
         </div>
 
         <ul v-if="item.name.$errors.length">
@@ -61,15 +51,8 @@
       </div>
     </div>
     <div class="button-list">
-      <button type="button" @click="r$.$clearExternalErrors">
-        Reset external Errors
-      </button>
-      <button
-        type="button"
-        @click="
-          () => r$.$reset({ toInitialState: true, clearExternalErrors: true })
-        "
-      >
+      <button type="button" @click="r$.$clearExternalErrors"> Reset external Errors </button>
+      <button type="button" @click="() => r$.$reset({ toInitialState: true, clearExternalErrors: true })">
         Reset All
       </button>
       <button class="primary" type="button" @click="submit">Submit</button>
@@ -79,9 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules'
-import { ref, reactive } from 'vue'
-import { type RegleExternalErrorTree, useRegle } from '@regle/core'
+import { required } from '@regle/rules';
+import { ref, reactive } from 'vue';
+import { type RegleExternalErrorTree, useRegle } from '@regle/core';
 
 const form = ref({
   email: '',
@@ -93,9 +76,9 @@ const form = ref({
       name: '',
     },
   ],
-})
+});
 
-const externalErrors = ref({})
+const externalErrors = ref({});
 
 const { r$ } = useRegle(
   form,
@@ -110,15 +93,15 @@ const { r$ } = useRegle(
   },
   {
     externalErrors,
-  },
-)
+  }
+);
 
 function submit() {
-  r$.$validate()
+  r$.$validate();
   externalErrors.value = {
     email: ['Email already exists'],
     'name.pseudo': ['Hello'],
     'collection.0.name': ['Ouiii'],
-  }
+  };
 }
 </script>

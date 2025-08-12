@@ -1,7 +1,5 @@
 {
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -10,12 +8,7 @@
     "jsx": "preserve",
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"]
   }
 }

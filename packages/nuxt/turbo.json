@@ -1,0 +1,10 @@
+{
+  "extends": ["../../turbo.json"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["@regle/core#build"],
+      "outputs": ["dist/**", ".nuxt/**"],
+      "outputLogs": "new-only"
+    }
+  }
+}

@@ -1,4 +1,3 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
 const appPortForTests = 9130;

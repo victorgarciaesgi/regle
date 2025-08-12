@@ -14,13 +14,13 @@ packages:
 catalog:
   '@types/node': 22.16.5
   # Vue
-  vue: 3.5.17
-  '@vue/reactivity': 3.5.17
-  '@vue/runtime-core': 3.5.17
-  '@vue/runtime-dom': 3.5.17
-  '@vue/shared': 3.5.17
-  '@vue/compiler-dom': 3.5.17
-  '@vue/server-renderer': 3.5.17
+  vue: 3.5.18
+  '@vue/reactivity': 3.5.18
+  '@vue/runtime-core': 3.5.18
+  '@vue/runtime-dom': 3.5.18
+  '@vue/shared': 3.5.18
+  '@vue/compiler-dom': 3.5.18
+  '@vue/server-renderer': 3.5.18
 
   # Vue 3.4
   vue-3.4: npm:vue@3.4.38
@@ -34,37 +34,37 @@ catalog:
   # Vue Ecosystem
   '@vue/test-utils': 2.4.6
   vue-router: 4.5.1
-  vue-tsc: 3.0.3
+  vue-tsc: 3.0.5
   vue-eslint-parser: 10.2.0
   pinia: 3.0.3
   pinia-2.2.5: npm:pinia@2.2.5
 
   # Nuxt
-  nuxt: 4.0.1
-  '@nuxt/kit': 4.0.1
-  '@nuxt/schema': 4.0.1
+  nuxt: 4.0.3
+  '@nuxt/kit': 4.0.3
+  '@nuxt/schema': 4.0.3
 
   # Devtools
-  eslint: 9.31.0
-  eslint-plugin-vue: 10.3.0
+  eslint: 9.33.0
+  eslint-plugin-vue: 10.4.0
   eslint-config-prettier: 10.1.8
   expect-type: 1.2.2
   prettier: 3.6.2
-  typescript: 5.8.3
-  typescript-eslint: 8.38.0
-  '@typescript-eslint/eslint-plugin': 8.38.0
-  '@typescript-eslint/parser': 8.38.0
+  typescript: 5.9.2
+  typescript-eslint: 8.39.1
+  '@typescript-eslint/eslint-plugin': 8.39.1
+  '@typescript-eslint/parser': 8.39.1
   '@total-typescript/ts-reset': 0.6.1
-  tsdown: 0.13.0
+  tsdown: 0.14.1
   type-fest: 4.41.0
 
   # Vite
-  vite: 7.0.5
+  vite: 7.1.2
   vitest: 3.2.4
-  '@vitejs/plugin-vue': 6.0.0
+  '@vitejs/plugin-vue': 6.0.1
   '@vitejs/plugin-vue-jsx': 5.0.1
 
   # Schemas libraries
   arktype: 2.1.20
   valibot: 1.1.0
-  zod: 4.0.5
+  zod: 4.0.17

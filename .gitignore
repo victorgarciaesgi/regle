@@ -28,6 +28,7 @@ lib
 .nuxt
 .output
 .DS_Store
+.turbo
 
 docs/.vitepress/dist
 docs/.vitepress/cache

@@ -15,8 +15,9 @@
           localizations: [],
         })
       "
-      >Add entry</button
     >
+      Add entry
+    </button>
     <br />
     <br />
     <br />

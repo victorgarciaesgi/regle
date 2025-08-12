@@ -1,5 +1,5 @@
 import { defineConfig, type Options } from 'tsdown';
-import { defaultOptions } from '../../tsdown.common.dev';
+import { defaultOptions } from '../../tsdown.common.dev.ts';
 
 const sharedOptions: Options = {
   ...defaultOptions,

@@ -11,8 +11,9 @@
         v-if="r$.$value.level1.collection.length > 1"
         class="delete"
         @click="r$.$value.level1.collection.splice(index, 1)"
-        >🗑️</div
       >
+        🗑️
+      </div>
     </div>
 
     <ul v-if="item.name.$errors.length">
@@ -29,7 +30,7 @@
     </li>
   </ul>
 
-  <button type="button" @click="r$.$value.level1.collection.push({ name: 0 })">🆕 Add item</button>
+  <button type="button" @click="r$.$value.level1.collection.push({ name: 0 })"> 🆕 Add item </button>
   <button @click="r$.$reset({ toInitialState: true })">Reset</button>
   <button @click="r$.$validate">Submit</button>
 </template>
