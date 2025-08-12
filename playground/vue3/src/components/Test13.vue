@@ -13,7 +13,10 @@ const rules = refineRules(
   (state) => {
     const variant = createVariant(state, 'type', [
       { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
-      { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
+      {
+        type: { literal: literal('ONE') },
+        oneValue: { numeric, required, minValue: minValue(4) },
+      },
       { type: { required, type: type<undefined>() } },
     ]);
 

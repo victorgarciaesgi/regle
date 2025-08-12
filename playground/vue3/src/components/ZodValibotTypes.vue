@@ -1,9 +1,5 @@
 <template>
-  <input
-    v-model="r$.$value"
-    :class="{ error: r$.$error }"
-    placeholder="Type your password"
-  />
+  <input v-model="r$.$value" :class="{ error: r$.$error }" placeholder="Type your password" />
   <ul>
     <li v-for="error of r$.$errors" :key="error">
       {{ error }}
@@ -60,11 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas'
-import * as v from 'valibot'
-import { ref } from 'vue'
-import { z, ZodSchema } from 'zod/v3'
-import type { PartialDeep } from 'type-fest'
+import { useRegleSchema } from '@regle/schemas';
+import * as v from 'valibot';
+import { ref } from 'vue';
+import { z, ZodSchema } from 'zod/v3';
+import type { PartialDeep } from 'type-fest';
 
 // const zodSchema = z
 //   .object({
@@ -197,8 +193,8 @@ import type { PartialDeep } from 'type-fest'
 //   })
 // );
 
-const name = ref('')
-const { r$ } = useRegleSchema(name, z.string().min(2))
+const name = ref('');
+const { r$ } = useRegleSchema(name, z.string().min(2));
 </script>
 
 <style lang="scss" scoped></style>

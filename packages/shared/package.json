@@ -1,5 +1,5 @@
 {
-  "name": "regle-shared",
+  "name": "@regle/shared",
   "private": true,
   "type": "module",
   "devDependencies": {
@@ -10,8 +10,9 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build:dev": "tsdown --config=tsdown.dev.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",
-    "test": "echo 'no tests'"
+    "test": "echo 'no tests'",
+    "lint": "eslint utils/**/*.ts",
+    "lint:fix": "eslint utils/**/*.ts --fix"
   }
 }

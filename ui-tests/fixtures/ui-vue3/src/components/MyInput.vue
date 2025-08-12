@@ -1,8 +1,6 @@
 <template>
   <div class="my-input input-container">
-    <label v-if="label">
-      {{ label }}<span v-if="field.$isRequired" class="required-mark">*</span>
-    </label>
+    <label v-if="label"> {{ label }}<span v-if="field.$isRequired" class="required-mark">*</span> </label>
     <input
       v-model="modelValue"
       :type
