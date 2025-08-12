@@ -5,10 +5,11 @@
   "scripts": {
     "typecheck": "vue-tsc --noEmit",
     "build": "tsdown",
-    "build:dev": "tsdown --config=tsdown.dev.ts",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
   "dependencies": {
     "@regle/core": "workspace:*"

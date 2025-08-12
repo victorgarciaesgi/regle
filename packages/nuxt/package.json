@@ -29,6 +29,7 @@
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "pnpm exec playwright install && vitest run",
     "test:watch": "vitest watch"
   },
@@ -42,8 +43,8 @@
     "@regle/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "1.7.0",
-    "@nuxt/module-builder": "1.0.1",
+    "@nuxt/eslint-config": "1.8.0",
+    "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "3.19.2",
     "@types/node": "catalog:",
     "eslint": "catalog:",
@@ -53,7 +54,7 @@
     "prettier": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "unbuild": "3.5.0",
+    "unbuild": "3.6.0",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",

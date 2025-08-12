@@ -1,20 +1,20 @@
-import { type RegleRoot } from '@regle/core'
+import { type RegleRoot } from '@regle/core';
 
 type FormComposable = {
-  r$?: RegleRoot<Record<string, any>, any, any, any>
-}
+  r$?: RegleRoot<Record<string, any>, any, any, any>;
+};
 
 const useForm = ({ r$ }: FormComposable = {}) => {
   const isFieldInvalid = (fieldName: string): boolean => {
-    const fields = r$?.$fields
-    const fieldValidation = fields?.[fieldName as keyof typeof fields]
+    const fields = r$?.$fields;
+    const fieldValidation = fields?.[fieldName as keyof typeof fields];
 
-    return !!fieldValidation?.$invalid
-  }
+    return !!fieldValidation?.$invalid;
+  };
 
   return {
     isFieldInvalid,
-  }
-}
+  };
+};
 
-export default useForm
+export default useForm;

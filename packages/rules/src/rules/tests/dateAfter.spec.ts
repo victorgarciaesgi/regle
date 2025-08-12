@@ -35,6 +35,5 @@ describe('dateAfter validator', () => {
 
   it('should not validate an identical date without allowEqual', () => {
     expect(dateAfter(new Date(2013), { allowEqual: false }).exec(new Date(2013))).toBe(false);
-
   });
 });

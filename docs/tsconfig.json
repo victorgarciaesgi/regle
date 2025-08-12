@@ -1,10 +1,5 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {},
-  "include": [
-    "./**/*",
-    "./.vitepress/**/*.ts",
-    "../postcss.config.mjs",
-    "../tailwind.config.mjs"
-  ],
+  "include": ["./**/*", "./.vitepress/**/*.ts", "../postcss.config.mjs", "../tailwind.config.mjs"]
 }

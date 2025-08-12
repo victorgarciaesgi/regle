@@ -5,10 +5,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
-    "build:dev": "tsdown --config=tsdown.dev.ts",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",
-    "test": "echo 'no tests'"
+    "test": "echo 'no tests'",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
   "peerDependencies": {
     "pinia": ">=2.2.5",

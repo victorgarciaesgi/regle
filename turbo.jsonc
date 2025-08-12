@@ -1,0 +1,72 @@
+{
+  "$schema": "https://turborepo.org/schema.v2.json",
+  "tasks": {
+    // -- Build
+    "@regle/core#build": {
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    "build": {
+      "dependsOn": ["@regle/core#build"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    "regle-playground#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    // -- Coverage build
+    "@regle/core#build:sourcemaps": {
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    "build:sourcemaps": {
+      "dependsOn": ["@regle/core#build:sourcemaps"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    // -- Dev
+    "@regle/core#dev": {
+      "persistent": true,
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "persistent": true,
+      "outputs": ["dist/**"]
+    },
+    "repl:dev": {
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    // -- Docs
+    "docs#dev": {
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".vitepress/dist/**"],
+      "outputLogs": "new-only"
+    },
+    "docs#preview": {
+      "dependsOn": ["^build"],
+      "outputs": [".vitepress/dist/**"],
+      "outputLogs": "new-only"
+    },
+    // -- Typecheck && Lint
+    "typecheck": {
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "outputs": []
+    },
+    // -- Misc
+    "turbo:postinstall": {
+      "outputLogs": "new-only"
+    }
+  }
+}
