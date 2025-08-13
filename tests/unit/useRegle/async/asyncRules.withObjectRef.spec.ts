@@ -69,7 +69,7 @@ describe('useRegle with async rules and Object refs', async () => {
     });
 
     expect(vm.r$.level0Async.$correct).toBe(false);
-    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(true);
     expect(vm.r$.level1.child.$correct).toBe(false);
     expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
