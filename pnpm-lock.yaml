@@ -611,6 +611,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.18(typescript@5.9.2)
 
   playground/nuxt:
     dependencies:

@@ -65,7 +65,13 @@
       "outputs": []
     },
     // -- Misc
+    "//#turbo:preinstall": {
+      "outputLogs": "new-only"
+    },
     "turbo:postinstall": {
+      "outputLogs": "new-only"
+    },
+    "//#turbo:postinstall": {
       "outputLogs": "new-only"
     }
   }

@@ -82,6 +82,8 @@ export function createReactiveFieldStatus({
 
   let $commit = () => {};
 
+  const $isDebouncing = ref(false);
+
   function createReactiveRulesResult() {
     const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
     const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
@@ -145,9 +147,13 @@ export function createReactiveFieldStatus({
   }
 
   function define$commit() {
-    $commit = scopeState.$debounce.value
-      ? debounce($commitHandler, (scopeState.$debounce.value ?? scopeState.$haveAnyAsyncRule) ? 100 : 0)
-      : $commitHandler;
+    if (scopeState.$debounce.value || scopeState.$haveAnyAsyncRule.value) {
+      $commit = debounce($commitHandler, scopeState.$debounce.value ?? (scopeState.$haveAnyAsyncRule ? 200 : 0), {
+        trackDebounceRef: $isDebouncing,
+      });
+    } else {
+      $commit = $commitHandler;
+    }
   }
 
   function $unwatch() {
@@ -260,7 +266,11 @@ export function createReactiveFieldStatus({
       });
 
       const $error = computed<boolean>(() => {
-        return $invalid.value && !$pending.value && $dirty.value;
+        if ($isDebouncing.value) {
+          return $invalid.value && $dirty.value;
+        } else {
+          return $invalid.value && !$pending.value && $dirty.value;
+        }
       });
 
       const $issues = computed<RegleFieldIssue[]>(() => {
@@ -357,6 +367,8 @@ export function createReactiveFieldStatus({
         if (externalErrors?.value?.length) {
           return false;
         } else if ($inactive.value) {
+          return false;
+        } else if ($isDebouncing.value) {
           return false;
         } else if ($dirty.value && !isEmpty(state.value) && !$validating.value && !$pending.value) {
           if (schemaMode) {
@@ -643,6 +655,7 @@ export function createReactiveFieldStatus({
     $rules: $rules,
     ...$shortcuts,
     $path: path,
+    $isDebouncing,
     $reset,
     $touch,
     $validate,

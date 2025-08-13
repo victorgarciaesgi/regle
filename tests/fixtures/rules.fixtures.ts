@@ -51,11 +51,11 @@ export function ruleMockIsEvenAsync(time = 1000) {
   });
 }
 
-export function ruleMockIsFooAsync() {
+export function ruleMockIsFooAsync(time = 1000) {
   return createRule({
     async validator(value: Maybe<string>) {
       if (isFilled(value)) {
-        await timeout(1000);
+        await timeout(time);
         return mockedValidations.isFoo(value);
       }
       return true;

@@ -6,7 +6,8 @@
     "@regle/core": "workspace:*",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vue": "catalog:"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

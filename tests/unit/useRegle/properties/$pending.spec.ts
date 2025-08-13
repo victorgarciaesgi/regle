@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils';
 import { useRegle } from '@regle/core';
-import { ruleMockIsEvenAsync } from '../../../fixtures';
+import { ruleMockIsEvenAsync, ruleMockIsFooAsync } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
 import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
@@ -115,6 +115,7 @@ describe('$pending', () => {
 
     vm.r$.$value.level1.child = 1;
     await nextTick();
+    expect(vm.r$.level1.child.$correct).toBe(false);
     expect(vm.r$.$correct).toBe(false);
 
     await vi.advanceTimersByTimeAsync(200);
@@ -148,5 +149,38 @@ describe('$pending', () => {
     expect(vm.r$.collection.$each[0].child.$errors).toStrictEqual(['Custom error']);
   });
 
-  it('sets `$pending` to false, when the last async invocation resolves', () => {});
+  it('should not change $error and $correct until the debounce period is finished', async () => {
+    function debounceComp() {
+      return useRegle(
+        { email: '' },
+        {
+          email: {
+            $debounce: 2000,
+            emailValid: ruleMockIsFooAsync(),
+          },
+        },
+        { lazy: true }
+      );
+    }
+
+    const { vm } = createRegleComponent(debounceComp);
+
+    vm.r$.$value.email = 'test@test.com';
+    await nextTick();
+
+    expect(vm.r$.email.$correct).toBe(false);
+    expect(vm.r$.email.$error).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(2000);
+
+    expect(vm.r$.email.$pending).toBe(true);
+    expect(vm.r$.email.$correct).toBe(false);
+    expect(vm.r$.email.$error).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(1000);
+
+    expect(vm.r$.email.$pending).toBe(false);
+    expect(vm.r$.email.$correct).toBe(false);
+    expect(vm.r$.email.$error).toBe(true);
+  });
 });

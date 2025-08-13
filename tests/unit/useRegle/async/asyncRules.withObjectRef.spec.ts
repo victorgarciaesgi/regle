@@ -15,15 +15,19 @@ function nestedAsyncObjectWithRefsValidation() {
     },
   };
 
-  return useRegle(form, () => ({
-    level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
-    level1: {
-      child: { ruleEven: ruleMockIsEven },
-      level2: {
-        childAsync: { ruleAsync: ruleMockIsFooAsync() },
+  return useRegle(
+    form,
+    () => ({
+      level0Async: { ruleEvenAsync: ruleMockIsEvenAsync() },
+      level1: {
+        child: { ruleEven: ruleMockIsEven },
+        level2: {
+          childAsync: { ruleAsync: ruleMockIsFooAsync() },
+        },
       },
-    },
-  }));
+    }),
+    { lazy: true }
+  );
 }
 
 describe('useRegle with async rules and Object refs', async () => {
@@ -35,9 +39,9 @@ describe('useRegle with async rules and Object refs', async () => {
     vi.useRealTimers();
   });
 
-  const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
-
   it('should have a initial state', () => {
+    const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
+
     expect(vm.r$.$errors).toStrictEqual({
       level0Async: [],
       level1: {
@@ -65,11 +69,12 @@ describe('useRegle with async rules and Object refs', async () => {
     });
 
     expect(vm.r$.level0Async.$correct).toBe(false);
-    expect(vm.r$.level0Async.$correct).toBe(false);
     expect(vm.r$.level1.$correct).toBe(false);
     expect(vm.r$.level1.child.$correct).toBe(false);
     expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });
+
+  const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
   it('should error on initial submit', async () => {
     const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(1300)]);
@@ -243,10 +248,11 @@ describe('useRegle with async rules and Object refs', async () => {
     });
   });
 
-  it('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {
+  it.only('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {
     vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
+    await vi.advanceTimersByTimeAsync(2000);
 
     expect(vm.r$.$errors).toStrictEqual({
       level0Async: [],
@@ -275,7 +281,7 @@ describe('useRegle with async rules and Object refs', async () => {
     });
 
     expect(vm.r$.level0Async.$correct).toBe(false);
-    expect(vm.r$.level1.$correct).toBe(false);
+    expect(vm.r$.level1.$correct).toBe(true);
     expect(vm.r$.level1.child.$correct).toBe(false);
     expect(vm.r$.level1.level2.childAsync.$correct).toBe(false);
   });

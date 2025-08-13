@@ -4,8 +4,9 @@
   "private": true,
   "description": "Headless model-based form validation library for Vue.js",
   "scripts": {
-    "prepare": "FORCE_COLOR=1 turbo run turbo:postinstall",
-    "turbo:postinstall": "corepack install && husky",
+    "pnpm:devPreinstall": "FORCE_COLOR=1 turbo run turbo:preinstall --filter=.",
+    "postinstall": "FORCE_COLOR=1 turbo run turbo:postinstall",
+    "turbo:preinstall": "corepack install && pnpx only-allow pnpm && husky",
     "release": "pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "typecheck": "turbo run typecheck",
@@ -103,6 +104,11 @@
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
   "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.14.0",
+      "onFail": "error"
+    },
     "runtime": {
       "name": "node",
       "version": "^22.14.0",

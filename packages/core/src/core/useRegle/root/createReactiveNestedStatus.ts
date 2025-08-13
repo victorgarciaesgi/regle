@@ -342,7 +342,10 @@ export function createReactiveNestedStatus({
             }
 
             const hasRequiredRule = 'required' in statusOrField.$rules && statusOrField.$rules.required.$active;
-            return hasRequiredRule ? statusOrField.$correct : !statusOrField.$invalid && !statusOrField.$pending;
+
+            return hasRequiredRule
+              ? statusOrField.$correct
+              : !statusOrField.$invalid && !statusOrField.$pending && !statusOrField.$isDebouncing;
           });
         }
         return false;
