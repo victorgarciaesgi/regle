@@ -248,7 +248,7 @@ describe('useRegle with async rules and Object refs', async () => {
     });
   });
 
-  it.only('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {
+  it('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {
     vm.r$.$reset({ toInitialState: true });
 
     await nextTick();
