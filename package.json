@@ -6,7 +6,7 @@
   "scripts": {
     "pnpm:devPreinstall": "FORCE_COLOR=1 turbo run turbo:preinstall --filter=.",
     "postinstall": "FORCE_COLOR=1 turbo run turbo:postinstall",
-    "turbo:preinstall": "corepack install && pnpx only-allow pnpm && husky",
+    "turbo:preinstall": "pnpx corepack install && pnpx only-allow pnpm && pnpx husky",
     "release": "pnpm run test && pnpm run typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "typecheck": "turbo run typecheck",
