@@ -7,3 +7,4 @@ export { matchRegex, getSize, isDate, isEmpty, isFilled, isNumber, toDate, toNum
 export { and } from './and';
 export { or } from './or';
 export { not } from './not';
+export { assignIf } from './assignIf';

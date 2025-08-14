@@ -15,7 +15,7 @@
     "run:vitest:vue-3.5": "vitest",
     "run:vitest:vue-3.4": "env-cmd -e 'vue-3.4' -- vitest",
     "unit-tests:run": "pnpm run run:vitest:vue-3.5 run && pnpm run run:vitest:vue-3.4 run",
-    "test": "pnpm run lint && pnpm run build && pnpm run typecheck && pnpm run unit-tests:run && pnpm run test:dts && pnpm run ui-tests:run",
+    "test": "pnpm run build && pnpm run lint && pnpm run typecheck && pnpm run unit-tests:run && pnpm run test:dts && pnpm run ui-tests:run",
     "test:coverage": "pnpm run build:sourcemaps && vitest run --coverage",
     "test:dev": "pnpm run run:vitest:vue-3.5",
     "test:dts": "vue-tsc --noEmit --project ./tests/tsconfig.json && pnpm run --filter='ui-vue3' typecheck",

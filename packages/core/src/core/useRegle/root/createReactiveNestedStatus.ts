@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect, isRef } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -8,6 +8,7 @@ import type {
   $InternalRegleIssues,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
+  $InternalRegleRuleDecl,
   $InternalRegleSchemaErrorTree,
   $InternalRegleShortcutDefinition,
   $InternalRegleStatus,
@@ -758,7 +759,7 @@ export function createReactiveChildrenStatus({
     }
   } else if (isValidatorRulesDef(rulesDef)) {
     return createReactiveFieldStatus({
-      rulesDef,
+      rulesDef: isRef(rulesDef.value) ? rulesDef.value : (rulesDef as Ref<$InternalRegleRuleDecl>),
       ...properties,
     });
   }

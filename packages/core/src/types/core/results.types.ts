@@ -42,7 +42,10 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
       }
     >;
 
-export type RegleResult<Data extends Record<string, any> | any[] | unknown, TRules extends ReglePartialRuleTree<any>> =
+export type RegleResult<
+  Data extends Record<string, any> | any[] | unknown,
+  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
+> =
   | {
       valid: false;
       data: IsUnknown<Data> extends true
@@ -96,7 +99,10 @@ export type $InternalRegleResult = { valid: boolean; data: any };
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<Record<string, any>, CustomRulesDeclarationTree> | undefined,
+  TRules extends
+    | ReglePartialRuleTree<Record<string, any>, CustomRulesDeclarationTree>
+    | RegleFormPropertyType<any, any>
+    | undefined,
 > = [unknown] extends [TState]
   ? {}
   : TRules extends undefined
@@ -120,13 +126,13 @@ export type DeepSafeFormState<
       : TState;
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
-  TRule extends RegleRuleDecl<any, any>
-    ? [unknown] extends TRule['required']
-      ? NonNullable<TRule['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
+  TRule extends MaybeRef<RegleRuleDecl<any, any>>
+    ? [unknown] extends UnwrapRef<TRule>['required']
+      ? NonNullable<UnwrapRef<TRule>['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
         ? true
         : false
-      : NonNullable<TRule['required']> extends TRule['required']
-        ? TRule['required'] extends RegleRuleDefinition<any, infer Params, any, any, any, any>
+      : NonNullable<UnwrapRef<TRule>['required']> extends UnwrapRef<TRule>['required']
+        ? UnwrapRef<TRule>['required'] extends RegleRuleDefinition<any, infer Params, any, any, any, any>
           ? Params extends never[]
             ? true
             : false
@@ -149,7 +155,9 @@ type ObjectHaveAtLeastOneRequiredField<
 type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends RegleCollectionRuleDecl<TState>> =
   TState extends Maybe<TState>
     ?
-        | FieldHaveRequiredRule<Omit<TRule, '$each'> extends RegleRuleDecl ? Omit<TRule, '$each'> : {}>
+        | FieldHaveRequiredRule<
+            Omit<TRule, '$each'> extends MaybeRef<RegleRuleDecl> ? Omit<UnwrapRef<TRule>, '$each'> : {}
+          >
         | ObjectHaveAtLeastOneRequiredField<
             ArrayElement<NonNullable<TState>>,
             ExtractFromGetter<TRule['$each']> extends undefined ? {} : NonNullable<ExtractFromGetter<TRule['$each']>>
@@ -170,8 +178,8 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
             NonNullable<TState> extends Record<string, any> ? JoinDiscriminatedUnions<NonNullable<TState>> : {},
             TRule
           >
-        : TRule extends RegleRuleDecl<any, any>
-          ? FieldHaveRequiredRule<TRule> extends true
+        : TRule extends MaybeRef<RegleRuleDecl<any, any>>
+          ? FieldHaveRequiredRule<UnwrapRef<TRule>> extends true
             ? TState
             : MaybeOutput<TState>
           : TState
@@ -195,8 +203,8 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
           > extends false
           ? false
           : true
-        : TRule extends RegleRuleDecl<any, any>
-          ? FieldHaveRequiredRule<TRule> extends false
+        : TRule extends MaybeRef<RegleRuleDecl<any, any>>
+          ? FieldHaveRequiredRule<UnwrapRef<TRule>> extends false
             ? false
             : true
           : false

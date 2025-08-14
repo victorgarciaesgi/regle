@@ -1,6 +1,6 @@
 import type { IsUnion } from 'expect-type';
 import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep } from 'type-fest';
-import type { UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
@@ -64,7 +64,7 @@ type ProcessNestedFields<
   Or<HasNamedKeys<TState>, TIsFields> extends true
     ? {
         readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-          ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+          ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
             ? IsEmptyObject<TRules[TKey]> extends true
               ? TKey
               : never
@@ -76,7 +76,7 @@ type ProcessNestedFields<
           : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
       } & {
         readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-          ? NonNullable<TRules[TKey]> extends RegleRuleDecl
+          ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
             ? IsEmptyObject<TRules[TKey]> extends true
               ? never
               : TKey
