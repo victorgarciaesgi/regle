@@ -33,13 +33,13 @@ r$.email.$e
 
 ## Computed properties for fields
 
-### `$​invalid`
+### `$invalid` <span style="display: none;">invalid</span>
 - Type: `readonly boolean`
 
 Indicates whether the field is invalid. It becomes `true` if any associated rules return `false`.
 
 
-### `$correct` 
+### `$correct` <span style="display: none;">correct</span>
 - Type: `readonly boolean`
   
 This is not the opposite of `$invalid`. Correct is meant to display UI validation report. 
@@ -49,80 +49,80 @@ This will be `true` only if:
 - Passes validation
 
 
-### `$dirty` 
+### `$dirty` <span style="display: none;">dirty</span>
 - Type: `readonly boolean`
   
 Indicates whether a field has been validated or interacted with by the user at least once. It's typically used to determine if a message should be displayed to the user. You can change this flag manually using the `$touch` and `$reset` methods. The `$dirty` flag is considered true if the current model has been touched or if all its children are dirty. 
 
 
-### `$anyDirty` 
+### `$anyDirty` <span style="display: none;">anyDirty</span>
 - Type: `readonly boolean`
 
 Similar to `$dirty`, with one exception. The `$anyDirty` flag is considered true if given model was touched or any of its children are `$anyDirty` which means at least one descendant is `$dirty`.
 
 
-### `$edited` 
+### `$edited` <span style="display: none;">edited</span>
 - Type: `readonly boolean`
   
 Indicates whether a field has been touched and if the value is different than the initial one.
 
 
-### `$anyEdited` 
+### `$anyEdited` <span style="display: none;">anyEdited</span>
 - Type: `readonly boolean`
 
 Similar to `$edited`, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is `$edited`.
 
 
-### `$value` 
+### `$value` <span style="display: none;">value</span>
 - Type: `TValue` (The current property value type)
 
 A reference to the original validated model. It can be used to bind your form with `v-model`.
 
-### `$silentValue` 
+### `$silentValue` <span style="display: none;">silentValue</span>
 - Type: `TValue` (The current property value type)
 
 `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
 
 
-### `$initialValue` 
+### `$initialValue` <span style="display: none;">initialValue</span>
 - Type: `TValue` 
 
 Initial value of the field.
 
   
-### `$pending` 
+### `$pending` <span style="display: none;">pending</span>
 - Type: `readonly boolean`
 
 Indicates if any async rule for the field is currently running. Always `false` for synchronous rules.
 
-### `$ready` 
+### `$ready` <span style="display: none;">ready</span>
 - Type: `readonly boolean`
 
 Indicates whether the field is ready for submission. Equivalent to `!$invalid && !$pending`.
 
 
-### `$error` 
+### `$error` <span style="display: none;">error</span>
 - Type: `readonly boolean`
 
 Convenience flag to easily decide if a message should be displayed. Equivalent to `$dirty && !$pending && $invalid`.
 
 
-### `$errors` 
+### `$errors` <span style="display: none;">errors</span>
 - Type: `readonly string[]`
 
 Collection of all the error messages, collected for all children properties and nested forms. Only contains errors from properties where $dirty equals `true`.
 
-### `$silentErrors` 
+### `$silentErrors` <span style="display: none;">silentErrors</span>
 - Type: `readonly string[]`
 
 Collection of all the error messages, collected for all children properties.
 
-### `$issues` 
+### `$issues` <span style="display: none;">issues</span>
 - Type: `RegleFieldIssue[]`
 
 Collect all metadata of validators (errors, messages etc). Only contains metadata from properties where $dirty equals true.
 
-### `$name` 
+### `$name` <span style="display: none;">name</span>
 - Type: `readonly string`
 
 Return the current key name of the field.
@@ -130,24 +130,24 @@ Return the current key name of the field.
 ## Common methods for fields
 
 
-### `$validate` 
+### `$validate` <span style="display: none;">validate</span>
 - Type: `() => Promise<false | SafeOutput<TState>>`
 
 Sets all properties as dirty, triggering all rules. 
 It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
 
-### `$extractDirtyFields` 
+### `$extractDirtyFields` <span style="display: none;">extractDirtyFields</span>
 - Type: `(filterNullishValues = true) => PartialDeep<TState>`
 
 Will return a copy of your state with only the fields that are dirty.
 By default it will filter out nullish values or objects, but you can override it with the first parameter `$extractDirtyFields(false)`.
 
-### `$touch` 
+### `$touch` <span style="display: none;">touch</span>
 - Type: `() => void`
 
 Marks the field and all nested properties as `$dirty`.
 
-### `$reset` 
+### `$reset` <span style="display: none;">reset</span>
 - Type: `(options?: ResetOptions) => void`
 
 Restore the validation status to a pristine state while keeping the current state.
@@ -175,7 +175,7 @@ type ResetOptions<TState extends unknown> = {
 };
 ```
      
-### `$clearExternalErrors` 
+### `$clearExternalErrors` <span style="display: none;">clearExternalErrors</span>
 - Type: `() => void`
 
 Clears the $externalResults state back to an empty object.
@@ -184,14 +184,14 @@ Clears the $externalResults state back to an empty object.
 
 ## Specific properties for fields
 
-### `$rules` 
+### `$rules` <span style="display: none;">rules</span>
 - Type: `Record<string, RegleRuleStatus>`
 
 This is reactive tree containing all the declared rules of your field.
 To know more about the rule properties check the [rules properties section](/core-concepts/rules/rules-properties)
 
    
-### `$silentIssues` 
+### `$silentIssues` <span style="display: none;">silentIssues</span>
 - Type: `RegleFieldIssue[]`
 
 Collect all metadata of validators (errors, messages etc).
@@ -199,7 +199,7 @@ Collect all metadata of validators (errors, messages etc).
 
 ## Specific properties for nested objects
 
-### `$fields` 
+### `$fields` <span style="display: none;">fields</span>
 - Type: `Record<string, RegleStatus | RegleFieldStatus | RegleCollectionStatus>`
 
 This represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form.
@@ -209,10 +209,10 @@ This represents all the children of your object. You can access any nested child
 - Type: `Array<string, RegleStatus>`
 
 
-### `$each` 
+  ### `$each` <span style="display: none;">each</span>
 
 This will store the status of every item in your collection. Each item will be a field you can access, or map on it to display your elements.
 
-### `$self` 
+### `$self` <span style="display: none;">self</span>
 
 Represents the status of the collection itself. You can have validation rules on the array like `minLength`, this field represents the isolated status of the collection.
