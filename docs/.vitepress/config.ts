@@ -158,6 +158,12 @@ export default defineConfig({
   description: shortDescription,
   sitemap: {
     hostname: 'https://reglejs.dev',
+    transformItems(items) {
+      return items.map((item) => ({
+        ...item,
+        url: item.url.endsWith('/') ? item.url : item.url + '/',
+      }));
+    },
   },
   lastUpdated: true,
   cleanUrls: true,
@@ -296,7 +302,7 @@ export default defineConfig({
     if (relativePath === '') {
       canonicalUrl = `https://reglejs.dev`;
     } else {
-      canonicalUrl = `https://reglejs.dev/${relativePath}`;
+      canonicalUrl = `https://reglejs.dev/${relativePath}/`;
     }
 
     pageData.frontmatter.head ??= [];
@@ -309,26 +315,29 @@ export default defineConfig({
         {
           "@context":"http://schema.org",
           "@type":"WebSite",
-          "url":"https://reglejs.dev/",
+          "url":"${canonicalUrl}",
           "inLanguage":"en",
           "description":"Headless form validation library for Vue.js",
-          "name":"Regle",
-          "keywords":"${keywords}"
+          "name":"RegleJS",
+          "alternateName": "Regle"
         }`;
       } else {
         return `
         {
             "@context":"http://schema.org",
             "@type":"TechArticle",
-            "headline":"${pageData.title}",
+            "name": "RegleJS - ${pageData.title}",
+            "alternateName": "Regle - ${pageData.title}",
+            "url":"${canonicalUrl}",
             "inLanguage":"en",
-            "mainEntityOfPage":{
-              "@type":"WebPage",
-              "@id":"${canonicalUrl}"
+            "mainEntity": {
+              "@type": "WebPage",
+              "headline": "RegleJS - ${pageData.title}",
+              "author": {
+                "@type": "Person",
+                "name": "Victor Garcia"
+              },
             },
-            "keywords":"${keywords}",
-            "url":"https://reglejs.dev/",
-            "name": "Regle"
         }`;
       }
     }
@@ -384,7 +393,7 @@ export default defineConfig({
   vite: {
     plugins: [
       vueJsx(),
-      llmstxt(),
+      // llmstxt(),
       groupIconVitePlugin({
         customIcon: {
           pinia: localIconLoader(import.meta.url, '../src/assets/pinia-logo.svg'),
