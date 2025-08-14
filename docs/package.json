@@ -29,6 +29,7 @@
     "vitepress": "1.6.4",
     "vitepress-plugin-group-icons": "1.6.2",
     "vitepress-plugin-llms": "1.7.2",
+    "vite": "catalog:",
     "vue": "catalog:",
     "zod": "catalog:"
   }

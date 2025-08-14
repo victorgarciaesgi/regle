@@ -22,7 +22,6 @@
       display: 'flex',
       flexDirection: 'column',
       maxWidth: 450,
-
       flexWrap: 'wrap',
       rowGap: 4,
       color: 'white',

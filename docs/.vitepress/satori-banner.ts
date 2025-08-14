@@ -16,6 +16,17 @@ export async function generateSatoriBanner({
   description: string;
   bread: string[];
 }) {
+  const parsedName = kebabCase(name);
+  const outputDir = path.resolve(import.meta.dirname, './dist/assets');
+  const cacheDir = path.resolve(import.meta.dirname, './assets-cache');
+
+  if (fs.existsSync(path.join(cacheDir, `og-images_${parsedName}.txt`))) {
+    const readDataCache = await fs.promises.readFile(path.join(cacheDir, `og-images_${parsedName}.txt`), 'utf-8');
+    if (readDataCache === `${name}-${title}-${description}-${bread.join('-')}`) {
+      return `assets/og-images_${parsedName}.png`;
+    }
+  }
+
   const fontBuffer = await fs.promises.readFile(path.resolve(import.meta.dirname, './theme/inter.ttf'));
 
   const convertedHtml = html`<div
@@ -43,13 +54,9 @@ export async function generateSatoriBanner({
             style="fill:#00bb7f"
           ></path>
           <path d="m249.6 325.8 33.2 62.7h80l-58-109.7z" style="fill:#fff"></path>
-        </g></svg
-      ><svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="900"
-        style="top:-30px;left:-200px;opacity:0.7;z-index:-1"
-        height="500"
-      >
+        </g>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="900" style="top:-30px;left:-200px;opacity:0.7" height="500">
         <defs>
           <filter id="f" x="-100%" y="-100%" width="400%" height="300%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="100"></feGaussianBlur>
@@ -84,12 +91,16 @@ export async function generateSatoriBanner({
     },
     shapeRendering: 2,
   });
-  const outputDir = path.resolve(__dirname, './dist/assets');
   fs.mkdirSync(outputDir, { recursive: true });
-  const parsedName = kebabCase(name);
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
   await fs.promises.writeFile(path.join(outputDir, `og-images_${parsedName}.png`), pngBuffer);
+
+  const dataCache = `${name}-${title}-${description}-${bread.join('-')}`;
+  if (!fs.existsSync(cacheDir)) {
+    fs.mkdirSync(cacheDir, { recursive: true });
+  }
+  await fs.promises.writeFile(path.join(cacheDir, `og-images_${parsedName}.txt`), dataCache);
 
   return `assets/og-images_${parsedName}.png`;
 }
