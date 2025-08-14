@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue';
+import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
 import type { ExtractFromGetter, MaybeInput, Prettify, UnwrapSimple } from './misc.types';
 import type { IsUnion } from 'type-fest/source/internal';
@@ -26,10 +26,10 @@ type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> = T
   ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any, any>
     ? InferInput<ExtractFromGetter<TRule['$each']>, TMarkMaybe>[]
     : any[]
-  : TRule extends RegleRuleDecl<any, any>
-    ? [ExtractTypeFromRules<TRule>] extends [never]
+  : TRule extends MaybeRef<RegleRuleDecl<any, any>>
+    ? [ExtractTypeFromRules<UnwrapRef<TRule>>] extends [never]
       ? unknown
-      : ExtractTypeFromRules<TRule>
+      : ExtractTypeFromRules<UnwrapRef<TRule>>
     : TRule extends ReglePartialRuleTree<any, any>
       ? InferInput<TRule, TMarkMaybe>
       : string;

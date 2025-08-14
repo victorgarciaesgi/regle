@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import type { MaybeRef, Ref } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
@@ -34,8 +34,10 @@ export function isCollectionRulesDef(
   );
 }
 
-export function isValidatorRulesDef(rules: Ref<$InternalFormPropertyTypes>): rules is Ref<$InternalRegleRuleDecl> {
-  return !!rules.value && isObject(rules.value);
+export function isValidatorRulesDef(
+  rules: MaybeRef<Ref<$InternalFormPropertyTypes>>
+): rules is Ref<MaybeRef<$InternalRegleRuleDecl>> {
+  return !!rules.value && (isObject(rules.value) || isRefObject(rules.value));
 }
 
 export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[]> {

@@ -76,25 +76,25 @@ export type RegleFormPropertyType<
   TValue = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
-  ? RegleRuleDecl<TValue, TCustomRules>
+  ? MaybeRef<RegleRuleDecl<TValue, TCustomRules>>
   : NonNullable<TValue> extends Array<any>
     ? RegleCollectionRuleDecl<TValue, TCustomRules>
     : NonNullable<TValue> extends Date
-      ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
+      ? MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
       : NonNullable<TValue> extends File
-        ? RegleRuleDecl<NonNullable<TValue>, TCustomRules>
+        ? MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
         : NonNullable<TValue> extends Ref<infer V>
           ? RegleFormPropertyType<V, TCustomRules>
           : NonNullable<TValue> extends Record<string, any>
             ? ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
-            : RegleRuleDecl<NonNullable<TValue>, TCustomRules>;
+            : MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
 
 /**
  * @internal
  * @reference {@link RegleFormPropertyType}
  */
 export type $InternalFormPropertyTypes =
-  | $InternalRegleRuleDecl
+  | MaybeRef<$InternalRegleRuleDecl>
   | $InternalRegleCollectionRuleDecl
   | $InternalReglePartialRuleTree
   | FieldRegleBehaviourOptions;
