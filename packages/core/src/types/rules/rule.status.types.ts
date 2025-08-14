@@ -281,6 +281,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $inactive: boolean;
   readonly $silentErrors: string[];
   readonly $issues: RegleFieldIssue[];
+  readonly $isDebouncing: boolean;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: () => Promise<$InternalRegleResult>;
 }

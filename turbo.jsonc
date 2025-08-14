@@ -67,6 +67,9 @@
     // -- Misc
     "turbo:postinstall": {
       "outputLogs": "new-only"
+    },
+    "//#turbo:postinstall": {
+      "outputLogs": "new-only"
     }
   }
 }

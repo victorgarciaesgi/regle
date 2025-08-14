@@ -62,7 +62,9 @@ export function createReactiveRuleStatus({
 
   let $unwatchState: WatchStopHandle;
 
-  const $haveAsync = ref(false);
+  const $haveAsync = computed(() => {
+    return isRuleDef(rule.value) && rule.value._async;
+  });
   const $maybePending = ref(false);
 
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${cachePath}.${ruleKey}`);
@@ -250,8 +252,6 @@ export function createReactiveRuleStatus({
     return ruleResult;
   }
 
-  const $computeAsyncDebounce = debounce(computeAsyncResult, $debounce ?? 200);
-
   async function $parse(): Promise<boolean> {
     try {
       $validating.value = true;
@@ -260,7 +260,7 @@ export function createReactiveRuleStatus({
       $maybePending.value = true;
 
       if (isRuleDef(rule.value) && rule.value._async) {
-        ruleResult = await $computeAsyncDebounce();
+        ruleResult = await computeAsyncResult();
       } else {
         const validator = scopeState.$validator.value;
         const resultOrPromise = validator(state.value, ...scopeState.$params.value);
