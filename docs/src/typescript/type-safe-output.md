@@ -10,7 +10,7 @@ What would be the benefit of building a validation library without a type safe o
 Inspired by the `Zod` parse output type, `Regle` will also infer your validator types to know which properties are _**guaranteed**_ to be defined.
 
 
-## `$validate` 
+## `$validate`  <span style="display: none;">$2</span>
 
 Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return an object containing the status of your form.
 
