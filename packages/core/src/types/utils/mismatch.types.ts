@@ -1,3 +1,4 @@
+import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionRuleDecl, ReglePartialRuleTree, RegleRuleDecl } from '../rules';
 import type { ArrayElement } from './Array.types';
 import type { JoinDiscriminatedUnions } from './object.types';
@@ -16,13 +17,13 @@ type CheckDeepExact<TRules, TTree> = [TTree] extends [never]
   : TRules extends RegleCollectionRuleDecl
     ? TTree extends Array<any>
       ? isDeepExact<NonNullable<TRules['$each']>, JoinDiscriminatedUnions<NonNullable<ArrayElement<TTree>>>>
-      : TRules extends RegleRuleDecl
+      : TRules extends MaybeRef<RegleRuleDecl>
         ? true
         : TRules extends ReglePartialRuleTree<any>
-          ? isDeepExact<TRules, TTree>
+          ? isDeepExact<UnwrapRef<TRules>, TTree>
           : false
-    : TRules extends RegleRuleDecl
+    : TRules extends MaybeRef<RegleRuleDecl>
       ? true
       : TRules extends ReglePartialRuleTree<any>
-        ? isDeepExact<TRules, TTree>
+        ? isDeepExact<UnwrapRef<TRules>, TTree>
         : false;

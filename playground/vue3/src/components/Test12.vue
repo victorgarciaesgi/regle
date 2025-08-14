@@ -1,24 +1,13 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import { type Maybe, useRegle } from '@regle/core';
-import { required, minLength, email, withAsync, withMessage, isFilled } from '@regle/rules';
+import { computed, ref } from 'vue';
+import { useRegle } from '@regle/core';
+import { required, minLength, email, assignIf } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+const change = ref(false);
 
-function verifyEmailAlreadyUsed(value: Maybe<string>): Promise<boolean> {
-  if (isFilled(value)) {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(value === 'test@test.com'), 1000);
-    });
-  }
-  return Promise.resolve(true);
-}
-
-const { r$ } = useRegle(state, {
-  email: {
-    // email,
-    alreadyUsed: withMessage(async (value) => await verifyEmailAlreadyUsed(value), 'Already used'),
-  },
+const { r$ } = useRegle(ref({ name: '', email: '' }), {
+  name: assignIf(change, { required, minLength: minLength(4) }),
+  email: { email },
 });
 
 async function submit() {
@@ -36,13 +25,18 @@ async function submit() {
 
 <template>
   <h2>Hello Regle!</h2>
+
+  <input type="checkbox" v-model="change" /> Change <br />
+  <label>Name</label><br />
+  <input v-model="r$.$value.name" placeholder="Type your name" />
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.name" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+
   <label>Email (optional)</label><br />
   <input v-model="r$.$value.email" placeholder="Type your email" />
-  <ul>
-    <li :style="r$.email.$pending ? 'color: orange' : ''"> Pending: {{ r$.email.$pending }} </li>
-    <li :style="r$.email.$error ? 'color: red' : ''"> Error: {{ r$.email.$error }} </li>
-    <li :style="r$.email.$correct ? 'color: green' : ''"> Correct: {{ r$.email.$correct }} </li>
-  </ul>
   <ul style="font-size: 12px; color: red">
     <li v-for="error of r$.$errors.email" :key="error">
       {{ error }}

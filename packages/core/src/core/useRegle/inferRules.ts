@@ -1,4 +1,4 @@
-import { type ComputedRef, type MaybeRef } from 'vue';
+import { type ComputedRef, type MaybeRef, type UnwrapRef } from 'vue';
 import type { AllRulesDeclarations, DeepReactiveState, ReglePartialRuleTree, RegleRuleDecl } from '../../types';
 import type { isDeepExact, MaybeInput, NoInferLegacy, PrimitiveTypes, Unwrap } from '../../types/utils';
 import type { MismatchInfo } from 'expect-type';
