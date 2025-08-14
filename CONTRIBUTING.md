@@ -6,8 +6,8 @@ Before submitting your contribution, please make sure to take a moment and read 
 
 The Regle repo is a monorepo using pnpm workspaces. The package manager used to install and link dependencies must be [pnpm](https://pnpm.io/).
 
+1. Run `npx corepack install` to install the correct package manager
 1. Run `pnpm install` in `regle`'s root folder
-
 2. Run `pnpm run build` to build all monorepo packages
 
 - after this, you can use `pnpm run dev` to rebuild packages as you modify code

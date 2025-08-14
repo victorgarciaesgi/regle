@@ -1,107 +1,55 @@
-<template>
-  <div class="demo-container">
-    <div class="row">
-      <div>
-        <input
-          v-model="form.email"
-          :class="{ valid: r$.email.$correct, error: r$.email.$error }"
-          placeholder="Type your email"
-        />
-
-        <ul v-if="r$.$errors.email.length">
-          <li v-for="error of r$.$errors.email" :key="error">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-
-      <div>
-        <input
-          v-model="form.name.pseudo"
-          :class="{
-            valid: r$.name.$correct,
-            error: r$.name.pseudo.$error,
-          }"
-          placeholder="Type your pseudo"
-        />
-
-        <ul v-if="r$.$errors.name.pseudo.length">
-          <li v-for="error of r$.$errors.name.pseudo" :key="error">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-
-      <div v-for="(item, index) of r$.collection.$each" :key="item.$id" class="item">
-        <div class="field">
-          <input
-            v-model="item.$value.name"
-            :class="{ valid: item.name.$correct, error: item.name.$error }"
-            placeholder="Type an item value"
-          />
-
-          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)"> 🗑️ </div>
-        </div>
-
-        <ul v-if="item.name.$errors.length">
-          <li v-for="error of item.name.$errors" :key="error">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="button-list">
-      <button type="button" @click="r$.$clearExternalErrors"> Reset external Errors </button>
-      <button type="button" @click="() => r$.$reset({ toInitialState: true, clearExternalErrors: true })">
-        Reset All
-      </button>
-      <button class="primary" type="button" @click="submit">Submit</button>
-      <code class="status" :status="r$.$correct"></code>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { ref, reactive } from 'vue';
-import { type RegleExternalErrorTree, useRegle } from '@regle/core';
+import { ref, watchEffect } from 'vue';
+import { type Maybe, useRegle } from '@regle/core';
+import { required, minLength, email, withAsync, withMessage, isFilled } from '@regle/rules';
 
-const form = ref({
-  email: '',
-  name: {
-    pseudo: '',
+const state = ref({ name: '', email: '' });
+
+function verifyEmailAlreadyUsed(value: Maybe<string>): Promise<boolean> {
+  if (isFilled(value)) {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(value === 'test@test.com'), 1000);
+    });
+  }
+  return Promise.resolve(true);
+}
+
+const { r$ } = useRegle(state, {
+  email: {
+    // email,
+    alreadyUsed: withMessage(async (value) => await verifyEmailAlreadyUsed(value), 'Already used'),
   },
-  collection: [
-    {
-      name: '',
-    },
-  ],
 });
 
-const externalErrors = ref({});
-
-const { r$ } = useRegle(
-  form,
-  {
-    email: { required },
-    name: { pseudo: { required } },
-    collection: {
-      $each: {
-        name: { required },
-      },
-    },
-  },
-  {
-    externalErrors,
+async function submit() {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
+  } else {
+    console.warn('Errors: ', r$.$errors);
   }
-);
-
-function submit() {
-  r$.$validate();
-  externalErrors.value = {
-    email: ['Email already exists'],
-    'name.pseudo': ['Hello'],
-    'collection.0.name': ['Ouiii'],
-  };
 }
 </script>
+
+<template>
+  <h2>Hello Regle!</h2>
+  <label>Email (optional)</label><br />
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <ul>
+    <li :style="r$.email.$pending ? 'color: orange' : ''"> Pending: {{ r$.email.$pending }} </li>
+    <li :style="r$.email.$error ? 'color: red' : ''"> Error: {{ r$.email.$error }} </li>
+    <li :style="r$.email.$correct ? 'color: green' : ''"> Correct: {{ r$.email.$correct }} </li>
+  </ul>
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.email" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <button @click="submit">Submit</button>
+  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
+  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+</template>
