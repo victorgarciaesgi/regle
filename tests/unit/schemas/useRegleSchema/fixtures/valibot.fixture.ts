@@ -11,7 +11,7 @@ export function valibotNestedRegleFixture() {
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 as number | undefined }],
+      collection: [{ name: 0, description: '' }],
     },
   });
 
@@ -32,7 +32,12 @@ export function valibotNestedRegleFixture() {
           child: v.optional(valibotIsEven),
         }),
         collection: v.pipe(
-          v.array(v.object({ name: valibotIsEven })),
+          v.array(
+            v.object({
+              name: valibotIsEven,
+              description: v.pipe(v.string(), v.minLength(4, 'This field should be at least 4 characters long')),
+            })
+          ),
           v.minLength(3, 'Array must contain at least 3 element(s)')
         ),
       }),

@@ -26,7 +26,10 @@ export function arktypeNestedRegleFixture() {
       level2: type({
         'child?': arkIsEven,
       }),
-      collection: type({ name: arkIsEven })
+      collection: type({
+        name: arkIsEven,
+        description: type('string > 4').configure({ message: () => 'This field should be at least 4 characters long' }),
+      })
         .array()
         .moreThanLength(3)
         .configure({ message: () => 'Array must contain at least 3 element(s)' }),
