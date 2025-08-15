@@ -1,3 +1,5 @@
+import { isEmpty } from './isEmpty';
+
 export function isObject(obj: unknown): obj is Record<string, any> {
   if (obj && (obj instanceof Date || obj.constructor.name == 'File' || obj.constructor.name == 'FileList')) {
     return false;
@@ -29,7 +31,12 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
     prototypeCheck(thisProp);
 
     if (!isNaN(parseInt(thisProp))) {
-      (obj.$each ??= [])[thisProp] = {};
+      if (obj.$each == undefined) {
+        obj.$each = [];
+      }
+      if (isEmpty(obj.$each[thisProp])) {
+        obj.$each[thisProp] = {};
+      }
       obj = obj.$each[thisProp];
     } else {
       if (typeof obj[thisProp] == 'undefined') {

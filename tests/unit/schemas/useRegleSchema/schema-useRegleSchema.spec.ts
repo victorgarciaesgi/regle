@@ -40,7 +40,7 @@ describe.each([
         },
         collection: {
           $self: [],
-          $each: [{ name: [] }],
+          $each: [{ name: [], description: [] }],
         },
       },
     });
@@ -56,7 +56,7 @@ describe.each([
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }],
+        collection: [{ name: 0, description: '' }],
       },
     });
 
@@ -66,6 +66,7 @@ describe.each([
     shouldBePristineField(vm.r$.level1.level2.child);
     shouldBeInvalidField(vm.r$.level1.collection.$self);
     shouldBePristineField(vm.r$.level1.collection.$each[0].name);
+    shouldBeInvalidField(vm.r$.level1.collection.$each[0].description);
   });
 
   it('should error on initial submit', async () => {
@@ -81,7 +82,7 @@ describe.each([
         },
         collection: {
           $self: ['Array must contain at least 3 element(s)'],
-          $each: [{ name: [] }],
+          $each: [{ name: [], description: ['This field should be at least 4 characters long'] }],
         },
       },
     });
@@ -99,17 +100,23 @@ describe.each([
   it('should update dirty state and errors when updating form', async () => {
     vm.r$.$value.level0 = 1;
     vm.r$.$value.level1.collection.push(
-      { name: undefined as unknown as number },
-      { name: undefined as unknown as number }
+      { name: undefined as unknown as number, description: '' },
+      { name: undefined as unknown as number, description: '' }
     );
 
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual(['Custom error']);
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
+      { name: [], description: ['This field should be at least 4 characters long'] },
+      { name: [], description: [] },
+      { name: [], description: [] },
+    ]);
 
     shouldBeInvalidField(vm.r$.level1.collection.$each[1].name);
     shouldBeInvalidField(vm.r$.level1.collection.$each[2].name);
+    shouldBeInvalidField(vm.r$.level1.collection.$each[1].description);
+    shouldBeInvalidField(vm.r$.level1.collection.$each[2].description);
 
     vm.r$.level1.collection.$touch();
     await nextTick();
@@ -120,11 +127,13 @@ describe.each([
     shouldBeErrorField(vm.r$.level0);
     shouldBeErrorField(vm.r$.level1.collection.$each[1].name);
     shouldBeErrorField(vm.r$.level1.collection.$each[2].name);
+    shouldBeErrorField(vm.r$.level1.collection.$each[1].description);
+    shouldBeErrorField(vm.r$.level1.collection.$each[2].description);
 
     expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
-      { name: [] },
-      { name: ['This field is required'] },
-      { name: ['This field is required'] },
+      { name: [], description: ['This field should be at least 4 characters long'] },
+      { name: ['This field is required'], description: ['This field should be at least 4 characters long'] },
+      { name: ['This field is required'], description: ['This field should be at least 4 characters long'] },
     ]);
 
     expect(vm.r$.$value).toStrictEqual({
@@ -134,7 +143,11 @@ describe.each([
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: undefined }, { name: undefined }],
+        collection: [
+          { name: 0, description: '' },
+          { name: undefined, description: '' },
+          { name: undefined, description: '' },
+        ],
       },
     });
 
@@ -149,6 +162,8 @@ describe.each([
     vm.r$.$value.level1.level2.child = 3;
     vm.r$.$value.level1.collection[1].name = 3;
     vm.r$.$value.level1.collection[2].name = 3;
+    vm.r$.$value.level1.collection[1].description = 'te';
+    vm.r$.$value.level1.collection[2].description = 'te';
 
     await nextTick();
 
@@ -162,6 +177,9 @@ describe.each([
     shouldBeErrorField(vm.r$.level1.child);
     shouldBeErrorField(vm.r$.level1.level2.child);
     shouldBeErrorField(vm.r$.level1.collection.$each[1].name);
+    shouldBeErrorField(vm.r$.level1.collection.$each[2].name);
+    shouldBeErrorField(vm.r$.level1.collection.$each[1].description);
+    shouldBeErrorField(vm.r$.level1.collection.$each[2].description);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 1,
@@ -170,7 +188,11 @@ describe.each([
         level2: {
           child: 3,
         },
-        collection: [{ name: 0 }, { name: 3 }, { name: 3 }],
+        collection: [
+          { name: 0, description: '' },
+          { name: 3, description: 'te' },
+          { name: 3, description: 'te' },
+        ],
       },
     });
 
@@ -186,13 +208,20 @@ describe.each([
     vm.r$.$value.level1.level2.child = 2;
     vm.r$.$value.level1.collection[1].name = 2;
     vm.r$.$value.level1.collection[2].name = 2;
+    vm.r$.$value.level1.collection[0].description = 'test';
+    vm.r$.$value.level1.collection[1].description = 'test';
+    vm.r$.$value.level1.collection[2].description = 'test';
 
     await nextTick();
 
     expect(vm.r$.$errors.level0).toStrictEqual([]);
     expect(vm.r$.$errors.level1.child).toStrictEqual([]);
     expect(vm.r$.$errors.level1.level2.child).toStrictEqual([]);
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
+      { name: [], description: [] },
+      { name: [], description: [] },
+      { name: [], description: [] },
+    ]);
 
     expect(vm.r$.$ready).toBe(true);
 
@@ -205,6 +234,9 @@ describe.each([
     shouldBeValidField(vm.r$.level1.collection.$each[0].name);
     shouldBeValidField(vm.r$.level1.collection.$each[1].name);
     shouldBeValidField(vm.r$.level1.collection.$each[2].name);
+    shouldBeValidField(vm.r$.level1.collection.$each[0].description);
+    shouldBeValidField(vm.r$.level1.collection.$each[1].description);
+    shouldBeValidField(vm.r$.level1.collection.$each[2].description);
 
     expect(vm.r$.$value).toStrictEqual({
       level0: 2,
@@ -213,7 +245,11 @@ describe.each([
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }, { name: 2 }, { name: 2 }],
+        collection: [
+          { name: 0, description: 'test' },
+          { name: 2, description: 'test' },
+          { name: 2, description: 'test' },
+        ],
       },
     });
 
@@ -222,11 +258,17 @@ describe.each([
 
     await nextTick();
 
-    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([{ name: [] }, { name: [] }]);
+    expect(vm.r$.$errors.level1.collection.$each).toStrictEqual([
+      { name: [], description: [] },
+      { name: [], description: [] },
+    ]);
 
     shouldBeValidField(vm.r$.level1.collection.$each[0].name);
+    shouldBeValidField(vm.r$.level1.collection.$each[0].description);
+    shouldBeValidField(vm.r$.level1.collection.$each[1].name);
+    shouldBeValidField(vm.r$.level1.collection.$each[1].description);
 
-    vm.r$.$value.level1.collection.push({ name: 2 });
+    vm.r$.$value.level1.collection.push({ name: 2, description: 'test' });
     await nextTick();
     vm.r$.level1.collection.$each[2].name.$touch();
 
@@ -240,7 +282,11 @@ describe.each([
         level2: {
           child: 2,
         },
-        collection: [{ name: 2 }, { name: 2 }, { name: 2 }],
+        collection: [
+          { name: 2, description: 'test' },
+          { name: 2, description: 'test' },
+          { name: 2, description: 'test' },
+        ],
       },
     });
   });
@@ -259,7 +305,7 @@ describe.each([
         },
         collection: {
           $self: [],
-          $each: [{ name: [] }],
+          $each: [{ name: [], description: [] }],
         },
       },
     });
@@ -281,7 +327,7 @@ describe.each([
         level2: {
           child: 2,
         },
-        collection: [{ name: 0 }],
+        collection: [{ name: 0, description: '' }],
       },
     });
 

@@ -26,19 +26,24 @@ export function zod4NestedRegleFixture() {
         child: zodIsEven.optional(),
       }),
       collection: z
-        .array(z.object({ name: zodIsEven }))
+        .array(
+          z.object({
+            name: zodIsEven,
+            description: z.string().min(4, { message: 'This field should be at least 4 characters long' }),
+          })
+        )
         .min(3, { message: 'Array must contain at least 3 element(s)' }),
     }),
   });
 
-  const form = reactive({
+  const form = reactive<z.infer<typeof schema>>({
     level0: 0,
     level1: {
       child: 1,
       level2: {
         child: 2,
       },
-      collection: [{ name: 0 as number | undefined }],
+      collection: [{ name: 0, description: '' }],
     },
   });
 
