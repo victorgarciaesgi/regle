@@ -219,15 +219,15 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
  * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
  * @param schema - These should align with the structure of your state.
  * @param modifiers - customize regle behaviour
- * 
+ *
  * ```ts
  * import { useRegleSchema } from '@regle/schemas';
-  import * as v from 'valibot';
-
-  const { r$ } = useRegleSchema({ name: '' }, v.object({
-    name: v.pipe(v.string(), v.minLength(3))
-  }))
+ * import * as v from 'valibot';
+ *
+ * const { r$ } = useRegleSchema({ name: '' }, v.object({
+ *   name: v.pipe(v.string(), v.minLength(3))
+ * }))
  * ```
- * Docs: {@link https://reglejs.dev/integrations/valibot#usage}
+ * Docs: {@link https://reglejs.dev/integrations/schemas-libraries}
  */
 export const useRegleSchema = createUseRegleSchemaComposable();

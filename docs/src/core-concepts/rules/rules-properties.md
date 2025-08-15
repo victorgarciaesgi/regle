@@ -45,47 +45,47 @@ r$.email.$rules.required.
 ## Computed properties for rules
 
 
-### `$valid`  <span style="display: none;">$2</span>
+### `$valid`  
 - Type: `readonly boolean`
   
 Indicates the state of validation for this validator.
 
 
-### `$pending`  <span style="display: none;">$2</span>
+### `$pending`  
 - Type: `readonly boolean`
   
 
 If the rule is async, indicates if it's currently pending. Always `false` if it's synchronous.
 
 
-### `$message`  <span style="display: none;">$2</span>
+### `$message`  
 - Type: `readonly string | string[]`
 
 Returns the computed error message or messages for the current rule.
 
 
-### `$active`  <span style="display: none;">$2</span>
+### `$active`  
 - Type: `readonly boolean`
   
 Indicates whether or not the rule is enabled (for rules like `requiredIf`)
 
-### `$metadata`  <span style="display: none;">$2</span>
+### `$metadata`  
 - Type `RegleRuleMetadataDefinition`
 
 Contains the metadata returned by the validator function.
 
 
-### `$type`  <span style="display: none;">$2</span>
+### `$type`  
 - Type: `readonly string`
 
 The name of the rule type.
 
-### `$validator`  <span style="display: none;">$2</span>
+### `$validator`  
 - Type: `readonly (value, ...metadata) => boolean | {$valid: true, [x:string]: any}`
 
 Returns the original rule validator function.
 
-### `$path`  <span style="display: none;">$2</span>
+### `$path`  
 - Type: `readonly string[]`
 
 Returns the current path of the rule (used internally for tracking)
@@ -93,12 +93,12 @@ Returns the current path of the rule (used internally for tracking)
 ## Common methods for rules
 
 
-### `$parse`  <span style="display: none;">$2</span>
+### `$parse`  
 - Type: `() => Promise<boolean>`
 
 Run the rule validator and compute its properties like `$message` and `$active`
 
-### `$reset`  <span style="display: none;">$2</span>
+### `$reset`  
 - Type: `() => void`
 
 Reset the `$valid`, `$metadata` and `$pending` states
