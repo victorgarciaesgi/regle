@@ -24,3 +24,16 @@ In any project in the `playground` folder to test new features.
 1. Run `pnpm build` in `regle`'s root folder
 2. Run `pnpm run docs:dev` to start the docs in dev mode
 3. Run `pnpm run docs:build` to ensure docs build correctly, `twoslash` can fail if not done right
+
+
+## Notes
+
+To reset online playground dependencies cache:
+
+Go to https://www.jsdelivr.com/tools/purge
+
+```
+https://cdn.jsdelivr.net/npm/@regle/core/dist
+https://cdn.jsdelivr.net/npm/@regle/rules/dist
+https://cdn.jsdelivr.net/npm/@regle/schemas/dist
+```

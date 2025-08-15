@@ -1,10 +1,18 @@
-import type { AllRulesDeclarations, RegleRuleDecl } from '@regle/core';
-import { useRegle } from '@regle/core';
+import type {
+  AllRulesDeclarations,
+  CommonComparisonOptions,
+  RegleFieldStatus,
+  RegleRuleDecl,
+  RegleRuleDefinition,
+  RegleShortcutDefinition,
+} from '@regle/core';
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue';
 import { email, minLength, required } from '../../rules';
 import { assignIf } from '../assignIf';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
+import { withMessage } from '..';
 
 describe('assignIf helper', () => {
   const testComponent = defineComponent({
@@ -198,11 +206,17 @@ describe('assignIf helper', () => {
 
   it('should have correct return type', () => {
     const condition = ref(true);
-    const rules = { required, minLength: minLength(3) };
+    const minLengthRule = minLength(3);
+    const rules = { required, minLength: minLengthRule };
 
     const result = assignIf(condition, rules);
 
-    expectTypeOf(result).toEqualTypeOf<ComputedRef<RegleRuleDecl<any, Partial<AllRulesDeclarations>>>>();
+    expectTypeOf(result).toEqualTypeOf<
+      ComputedRef<{
+        required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+        minLength: typeof minLengthRule;
+      }>
+    >();
   });
 
   it('should work with falsy conditions', async () => {
@@ -234,5 +248,32 @@ describe('assignIf helper', () => {
     vm.r$.condition.$value = true;
     await vm.$nextTick();
     expect(vm.r$.$errors.name).toStrictEqual(['This field is required']);
+  });
+
+  it('should work with defineRegleConfig', () => {
+    const { useRegle: useCustomRegle } = defineRegleConfig({
+      rules: () => ({
+        required: withMessage(required, 'This field is required'),
+        customRule: withMessage(required, 'This field is required'),
+      }),
+    });
+
+    const { r$ } = useCustomRegle({ name: '' }, () => ({
+      name: assignIf(() => true, { required, customRule: () => true }),
+    }));
+
+    expectTypeOf(r$.name).toEqualTypeOf<
+      RegleFieldStatus<
+        string,
+        ComputedRef<{
+          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          customRule: () => true;
+        }>,
+        RegleShortcutDefinition<{
+          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          customRule: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+        }>
+      >
+    >();
   });
 });

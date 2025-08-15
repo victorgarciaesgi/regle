@@ -18,14 +18,12 @@ import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 export function assignIf<
   TValue extends unknown = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
->(
-  _condition: MaybeRefOrGetter<Maybe<boolean>>,
-  rules: RegleRuleDecl<TValue, TCustomRules>
-): ComputedRef<RegleRuleDecl<TValue, TCustomRules>> {
+  TRulesDelc extends RegleRuleDecl<TValue, TCustomRules> = RegleRuleDecl<TValue, TCustomRules>,
+>(_condition: MaybeRefOrGetter<Maybe<boolean>>, rules: TRulesDelc): ComputedRef<TRulesDelc> {
   return computed(() => {
     if (toValue(_condition)) {
       return rules;
     }
-    return {};
+    return {} as TRulesDelc;
   });
 }
