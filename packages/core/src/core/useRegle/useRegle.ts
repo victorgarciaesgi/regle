@@ -1,5 +1,5 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { computed, isRef, ref, watchEffect, watch, shallowRef, triggerRef } from 'vue';
+import { computed, isRef, ref, shallowRef, triggerRef, watchEffect } from 'vue';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
@@ -11,31 +11,28 @@ import type {
   RegleBehaviourOptions,
   ReglePartialRuleTree,
   RegleRuleDecl,
-  RegleRuleTree,
   RegleShortcutDefinition,
   RegleSingleField,
   RegleValidationGroupEntry,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type {
+  DeepExact,
   DeepMaybeRef,
   HaveAnyRequiredProps,
-  isDeepExact,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
-  NoInferLegacy,
   PrimitiveTypes,
   Unwrap,
 } from '../../types/utils';
 import { useRootStorage } from './root';
-import type { MismatchInfo } from 'expect-type';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-  TRules extends ReglePartialRuleTree<
-    Unwrap<TState extends Record<string, any> ? TState : {}>,
-    Partial<AllRulesDeclarations>
+  TRules extends DeepExact<
+    TRules,
+    ReglePartialRuleTree<Unwrap<TState extends Record<string, any> ? TState : {}>, Partial<AllRulesDeclarations>>
   >,
   TAdditionalOptions extends Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
@@ -45,7 +42,7 @@ export type useRegleFnOptions<
     : Partial<DeepMaybeRef<RegleBehaviourOptions>> &
         LocalRegleBehaviourOptions<
           JoinDiscriminatedUnions<TState extends Record<string, any> ? Unwrap<TState> : {}>,
-          TState extends Record<string, any> ? TRules : {},
+          TState extends Record<string, any> ? (TRules extends Record<string, any> ? TRules : {}) : {},
           TValidationGroups
         > &
         TAdditionalOptions;
@@ -58,22 +55,15 @@ export interface useRegleFn<
 > {
   <
     TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-    TRules extends ReglePartialRuleTree<
-      Unwrap<TState extends Record<string, any> ? TState : {}>,
-      Partial<AllRulesDeclarations> & TCustomRules
-    > &
-      TValid,
+    TRules extends DeepExact<
+      TRules,
+      ReglePartialRuleTree<
+        Unwrap<TState extends Record<string, any> ? TState : {}>,
+        Partial<AllRulesDeclarations> & TCustomRules
+      >
+    >,
     TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
-    TValid = isDeepExact<NoInferLegacy<TRules>, Unwrap<TState extends Record<string, any> ? TState : {}>> extends true
-      ? {}
-      : MismatchInfo<
-          RegleRuleTree<
-            Unwrap<TState extends Record<string, any> ? TState : {}>,
-            Partial<AllRulesDeclarations> & TCustomRules
-          >,
-          NoInferLegacy<TRules>
-        >,
   >(
     ...params: [
       state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
@@ -90,7 +80,7 @@ export interface useRegleFn<
     ? RegleSingleField<NonNullable<TState>, TDecl, TShortcuts, TAdditionalReturnProperties>
     : Regle<
         TState extends Record<string, any> ? Unwrap<TState> : {},
-        TRules,
+        TRules extends Record<string, any> ? TRules : {},
         TValidationGroups,
         TShortcuts,
         TAdditionalReturnProperties
