@@ -19,6 +19,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
   schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
+  originalState: Record<string, any>;
   schemaMode: boolean | undefined;
 }
 
@@ -35,6 +36,7 @@ export function createCollectionElement({
   externalErrors,
   schemaErrors,
   initialState,
+  originalState,
   shortcuts,
   fieldName,
   schemaMode,
@@ -71,6 +73,7 @@ export function createCollectionElement({
     externalErrors: $externalErrors,
     schemaErrors: $schemaErrors,
     initialState,
+    originalState,
     shortcuts,
     fieldName,
     schemaMode,

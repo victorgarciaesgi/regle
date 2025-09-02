@@ -26,6 +26,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: Ref<unknown | undefined>;
+  originalState: unknown | undefined;
   onValidate?: () => Promise<$InternalRegleResult>;
 }
 
@@ -44,6 +45,7 @@ export function createReactiveFieldStatus({
   onUnwatch,
   $isArray,
   initialState,
+  originalState,
   shortcuts,
   onValidate,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
@@ -529,7 +531,10 @@ export function createReactiveFieldStatus({
     storage.setDirtyEntry(cachePath, false);
 
     if (!fromParent) {
-      if (options?.toInitialState) {
+      if (options?.toOriginalState) {
+        state.value = cloneDeep(originalState);
+        initialState.value = cloneDeep(originalState);
+      } else if (options?.toInitialState) {
         state.value = cloneDeep(initialState.value);
       } else if (options?.toState) {
         let newInitialState: unknown;
@@ -652,6 +657,7 @@ export function createReactiveFieldStatus({
     $externalErrors: externalErrors,
     $value: state,
     $initialValue: initialState,
+    $originalValue: originalState,
     $rules: $rules,
     ...$shortcuts,
     $path: path,

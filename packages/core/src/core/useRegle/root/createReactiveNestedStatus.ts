@@ -29,6 +29,7 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
   initialState: Ref<Record<string, any> | undefined>;
+  originalState: Record<string, any>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
   schemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
   rootSchemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
@@ -50,6 +51,7 @@ export function createReactiveNestedStatus({
   rootSchemaErrors,
   validationGroups,
   initialState,
+  originalState,
   fieldName,
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
@@ -102,6 +104,7 @@ export function createReactiveNestedStatus({
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
+              originalState,
               fieldName: statePropKey,
               ...commonArgs,
             }),
@@ -133,6 +136,7 @@ export function createReactiveNestedStatus({
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
+              originalState,
               fieldName: key,
               ...commonArgs,
             }),
@@ -163,6 +167,7 @@ export function createReactiveNestedStatus({
             externalErrors: $externalErrors,
             schemaErrors: $schemaErrors,
             initialState: initialStateRef,
+            originalState,
             fieldName: key,
             ...commonArgs,
           }),
@@ -192,6 +197,7 @@ export function createReactiveNestedStatus({
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: initialStateRef,
+              originalState,
               fieldName: key,
               ...commonArgs,
             }),
@@ -460,6 +466,7 @@ export function createReactiveNestedStatus({
                     $value: state,
                     $silentValue: $silentValue,
                     $error,
+                    $originalValue: originalState,
                     $pending,
                     $invalid,
                     $correct,
@@ -579,7 +586,10 @@ export function createReactiveNestedStatus({
     $unwatch();
 
     if (!fromParent) {
-      if (options?.toInitialState) {
+      if (options?.toOriginalState) {
+        state.value = cloneDeep({ ...originalState });
+        initialState.value = cloneDeep({ ...originalState });
+      } else if (options?.toInitialState) {
         state.value = cloneDeep({ ...(initialState.value ?? {}) });
       } else if (options?.toState) {
         let newInitialState: Record<string, unknown>;
@@ -672,6 +682,7 @@ export function createReactiveNestedStatus({
     ...$shortcuts,
     $path: path,
     $initialValue: initialState,
+    $originalValue: originalState,
     $fields,
     $reset,
     $touch,
@@ -704,6 +715,7 @@ interface CreateReactiveChildrenStatus extends CommonResolverOptions {
   schemaErrors?: ComputedRef<any | undefined>;
   schemaMode: boolean | undefined;
   initialState: Readonly<Ref<any>>;
+  originalState: any | any[];
   onValidate?: () => Promise<$InternalRegleResult>;
 }
 

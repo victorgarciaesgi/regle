@@ -143,5 +143,20 @@ describe('.$reset', () => {
       user: { firstName: 'eee', lastName: 'eee' },
       userRequired: true,
     });
+
+    vm.r$.$reset({ toOriginalState: true });
+    await nextTick();
+
+    shouldBeInvalidField(vm.r$);
+
+    expect(vm.r$.$value).toStrictEqual({
+      nested: {
+        collection: [{ name: '' }],
+      },
+      contacts: [],
+      email: '',
+      user: { firstName: '', lastName: '' },
+      userRequired: false,
+    });
   });
 });

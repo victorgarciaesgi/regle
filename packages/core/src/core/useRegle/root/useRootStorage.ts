@@ -19,6 +19,7 @@ import { dotPathObjectToNested } from '../../../../../shared';
 
 export function useRootStorage({
   initialState,
+  originalState,
   options,
   scopeRules,
   state,
@@ -32,6 +33,7 @@ export function useRootStorage({
   state: Ref<Record<string, any> | PrimitiveTypes>;
   options: ResolvedRegleBehaviourOptions;
   initialState: Ref<Record<string, any> | PrimitiveTypes>;
+  originalState: Record<string, any> | PrimitiveTypes;
   customRules?: () => CustomRulesDeclarationTree;
   shortcuts: RegleShortcutDefinition | undefined;
   schemaErrors?: Ref<any | undefined>;
@@ -93,6 +95,7 @@ export function useRootStorage({
       externalErrors: computedExternalErrors,
       validationGroups: options.validationGroups as any,
       initialState: initialState as Ref<Record<string, any>>,
+      originalState: originalState as Record<string, any>,
       shortcuts: shortcuts as $InternalRegleShortcutDefinition,
       fieldName: 'root',
       path: '',
@@ -111,6 +114,7 @@ export function useRootStorage({
       options,
       externalErrors: computedExternalErrors as any,
       initialState,
+      originalState: originalState,
       shortcuts: shortcuts as $InternalRegleShortcutDefinition,
       fieldName: 'root',
       path: '',
