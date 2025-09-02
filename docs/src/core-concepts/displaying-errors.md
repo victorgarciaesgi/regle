@@ -15,9 +15,9 @@ Regle is a headless library, allowing you to display error messages in any way y
 
 ## Showing errors messages
 
-You can display your errors by iterating though `r$.$errors.xxx`, `xxx` being the field you need to check.
+You can display your errors by iterating though `r$.xxx.$errors`, `xxx` being the field you need to check.
 
-You can also access `r$.xxx.$errors` or `r$.xxx.$silentErrors`.
+You can also access `r$.$errors.xxx` or `r$.$silentErrors.xxx`.
 
 <!-- @include: @/parts/QuickUsage.md -->
 
