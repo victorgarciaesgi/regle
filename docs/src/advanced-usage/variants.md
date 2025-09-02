@@ -145,7 +145,9 @@ The first argument of `createVariant` needs to be reactive. For nested values, u
 :::
 
 ```ts twoslash include nested-regle
-import {ref} from 'vue';
+import {ref, defineComponent} from 'vue';
+
+const Errors = defineComponent({});
 
 // @include: nested-types
 
@@ -234,6 +236,9 @@ The **ref** will be reactive and already typed as the variant you defined, while
 </template>
 
 <script setup lang='ts'>
+import { defineComponent } from 'vue';
+const Errors = defineComponent({});
+// ---cut---
 import {ref} from 'vue';
 import { defineStore, skipHydrate} from 'pinia';
 import { useRegle, createVariant} from '@regle/core';
