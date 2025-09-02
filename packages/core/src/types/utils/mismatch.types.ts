@@ -1,13 +1,6 @@
 import type { MaybeRef } from 'vue';
-import type {
-  AllRulesDeclarations,
-  RegleCollectionEachRules,
-  RegleCollectionRuleDecl,
-  RegleCollectionRuleDefinition,
-  ReglePartialRuleTree,
-  RegleRuleDecl,
-} from '../rules';
-import type { ExtendOnlyRealRecord, ExtractFromGetter, Unwrap } from './misc.types';
+import type { RegleCollectionRuleDecl, RegleRuleDecl } from '../rules';
+import type { ExtendOnlyRealRecord, ExtractFromGetter } from './misc.types';
 
 /**
 /**
@@ -26,25 +19,16 @@ export type DeepExact<TInfer, TTree> =
         : { [K in keyof TInfer as K extends keyof TTree ? never : K]: TypeError<`Unknown property: <${Coerce<K>}>`> };
 
 type ExactObject<TInfer, TTree> = {
-  [K in keyof TTree]: ExtendOnlyRealRecord<TTree[K]> extends true
-    ? NonNullable<TTree[K]> extends MaybeRef<RegleRuleDecl>
-      ? TTree[K]
-      : K extends keyof TInfer
-        ? DeepExact<TInfer[K], NonNullable<TTree[K]>>
-        : TTree[K]
+  [K in keyof TTree]: NonNullable<TTree[K]> extends Record<string, any>
+    ? ExtendOnlyRealRecord<TTree[K]> extends true
+      ? NonNullable<TTree[K]> extends MaybeRef<RegleRuleDecl>
+        ? TTree[K]
+        : K extends keyof TInfer
+          ? DeepExact<TInfer[K], NonNullable<TTree[K]>>
+          : TTree[K]
+      : TTree[K]
     : TTree[K];
 };
-
-type foo = ReglePartialRuleTree<Unwrap<{ collection: { name: string }[] }>, Partial<AllRulesDeclarations>>;
-
-type test = DeepExact<
-  {
-    collection: {
-      required: () => true;
-    };
-  },
-  ReglePartialRuleTree<Unwrap<{ collection: { name: string }[] }>, Partial<AllRulesDeclarations>>
->;
 
 type TypeError<Msg> = {
   [' TypeError']: Msg;
