@@ -16,23 +16,23 @@ import type { ExtendOnlyRealRecord, ExtractFromGetter, Unwrap } from './misc.typ
  * 
  * Used in `useRegle` and `inferRules` to enforce that the rules object matches the expected shape exactly.
  */
-export type DeepExact<T, S> =
-  NonNullable<S> extends MaybeRef<RegleRuleDecl>
-    ? S
-    : NonNullable<S> extends MaybeRef<RegleCollectionRuleDecl>
-      ? S
-      : [keyof T] extends [keyof ExtractFromGetter<S>]
-        ? ExactObject<T, S>
-        : { [K in keyof T as K extends keyof S ? never : K]: TypeError<`Unknown property: <${Coerce<K>}>`> };
+export type DeepExact<TInfer, TTree> =
+  NonNullable<TTree> extends MaybeRef<RegleRuleDecl>
+    ? TTree
+    : NonNullable<TTree> extends MaybeRef<RegleCollectionRuleDecl>
+      ? TTree
+      : [keyof TInfer] extends [keyof ExtractFromGetter<TTree>]
+        ? ExactObject<TInfer, TTree>
+        : { [K in keyof TInfer as K extends keyof TTree ? never : K]: TypeError<`Unknown property: <${Coerce<K>}>`> };
 
-type ExactObject<T, S> = {
-  [K in keyof S]: ExtendOnlyRealRecord<S[K]> extends true
-    ? NonNullable<S[K]> extends MaybeRef<RegleRuleDecl>
-      ? S[K]
-      : K extends keyof T
-        ? DeepExact<T[K], NonNullable<S[K]>>
-        : S[K]
-    : S[K];
+type ExactObject<TInfer, TTree> = {
+  [K in keyof TTree]: ExtendOnlyRealRecord<TTree[K]> extends true
+    ? NonNullable<TTree[K]> extends MaybeRef<RegleRuleDecl>
+      ? TTree[K]
+      : K extends keyof TInfer
+        ? DeepExact<TInfer[K], NonNullable<TTree[K]>>
+        : TTree[K]
+    : TTree[K];
 };
 
 type foo = ReglePartialRuleTree<Unwrap<{ collection: { name: string }[] }>, Partial<AllRulesDeclarations>>;
