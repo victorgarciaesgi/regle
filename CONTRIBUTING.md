@@ -19,14 +19,33 @@ This project uses turborepo. So you can run any command using:
 
 `pnpx turbo build --filter='@regle/core'`
 
-### Testing
+### Playground
+
+You can run a Vue 3 and Nuxt playground using:
+
+-`pnpm run play:vue3` 
+-`pnpm run play:nuxt`
+
+
+### Unit Testing
 
 1. Run
    - `pnpm run test:dev` to run runtime tests in watch mode
    - `pnpm run test:dts` to run all the typecheck tests
    - `pnpm run test` to run all the test suite
+  
+You can additionally run all TS related typechecking and type unit tests using:
+  - `pnpm run typecheck`
 
-In any project in the `playground` folder to test new features.
+### UI Testing
+
+Ui testing uses playwright. You can run the tests using:
+
+- `pnpm run ui-tests:run` to run the tests
+   - `pnpm run ui-tests:run --headed` to run the server in headed mode
+   - `pnpm run ui-tests:run --ui` to run the tests in ui mode
+- `pnpm run ui-tests:test` to run the tests and generate a report
+
 
 ### Docs
 
