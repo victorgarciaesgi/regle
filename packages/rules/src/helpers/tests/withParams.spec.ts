@@ -103,7 +103,7 @@ describe('withParams helper', () => {
       {
         name: {
           required: withParams(
-            (value, foo) => {
+            (value: Maybe<string>, foo) => {
               expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
               expectTypeOf(foo).toEqualTypeOf<number>();
               return true;
@@ -112,7 +112,7 @@ describe('withParams helper', () => {
           ),
           foo: withMessage(
             withParams(
-              (value, foo) => {
+              (value: Maybe<string>, foo) => {
                 expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
                 expectTypeOf(foo).toEqualTypeOf<number>();
                 return true;

@@ -148,7 +148,7 @@ describe('withMessage helper', () => {
       {
         firstName: {
           required: withMessage(
-            (value) => {
+            (value: Maybe<string>) => {
               expectTypeOf(value).toEqualTypeOf<Maybe<string>>();
               return true;
             },
@@ -160,6 +160,18 @@ describe('withMessage helper', () => {
         },
       }
     );
+
+    useRegle('' as string, {
+      required: withMessage(
+        (value: Maybe<string>) => {
+          return true;
+        },
+        ({ $value }) => {
+          expectTypeOf($value).toEqualTypeOf<Maybe<string>>();
+          return '';
+        }
+      ),
+    });
 
     // @ts-expect-error no message argument ❌
     withMessage((value) => true);
