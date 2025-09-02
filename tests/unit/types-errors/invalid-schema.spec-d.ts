@@ -1,4 +1,5 @@
 import { inferRules, useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
+import { required } from '@regle/rules';
 
 describe('useRegle should throw errors for invalid rule schema', () => {
   it('Empty rules OK', () => {
@@ -37,10 +38,10 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     // @ts-expect-error Known rules with inline validator NOT OK ❌
     useRegle({ name: '' }, { name: { required: () => 'foo' } });
 
-    // ✅ Known rules with inline validator with no types
+    // Known rules with inline validator with no types ✅
     useRegle({ name: '' }, { name: { required: (value) => true } });
 
-    // ✅ Any rule name
+    // Any rule name ✅
     useRegle({ name: '' }, { name: { baguette: (value) => true } });
 
     // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
@@ -55,7 +56,7 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     // @ts-expect-error Incorrect property ❌
     useRegle({ name: '' }, () => ({ incorrect: { required: () => true } }));
 
-    // ✅ correct schema with getter
+    // correct schema with getter ✅
     useRegle({ name: '' }, () => ({ name: { required: () => true } }));
 
     useRegle(
@@ -69,18 +70,58 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       name: { nested: { required: () => true }, incorrect: { required: () => false } },
     }));
 
-    // ✅ correct schema
+    // correct schema ✅
     useRegle({ name: { nested: '' } }, { name: { nested: { required: () => true, baguette: () => true } } });
+
+    // -- Collections
+
+    // correct schema ✅
+    useRegle({ collection: [{ name: '' }] }, () => ({
+      collection: {
+        required,
+      },
+    }));
+
+    // correct schema ✅
+    useRegle({ collection: [{ name: '' }] }, () => ({
+      collection: {
+        required,
+        $each: {
+          name: { required },
+        },
+      },
+    }));
+
+    // correct schema ✅
+    useRegle({ collection: [{ name: '' }] }, () => ({
+      collection: {
+        required,
+        $each: {
+          name: { required },
+        },
+        $deepCompare: true,
+      },
+    }));
+
+    // @ts-expect-error Incorrect property ❌
+    useRegle({ collection: [{ name: '' }] }, () => ({
+      collection: {
+        required,
+        $each: {
+          foo: { required },
+        },
+      },
+    }));
   });
 
   it('inferRules should report wrong types', () => {
     // @ts-expect-error Known rules with inline validator NOT OK ❌
     inferRules({ name: '' }, { name: { required: () => 'foo' } });
 
-    // ✅ Known rules with inline validator with no types
+    // Known rules with inline validator with no types ✅
     inferRules({ name: '' }, { name: { required: (value) => true } });
 
-    // ✅ Any rule name
+    // Any rule name ✅
     inferRules({ name: '' }, { name: { baguette: (value) => true } });
 
     // @ts-expect-error Known rules with invalid inline validator parameter NOT OK ❌
@@ -101,7 +142,7 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       { name: { nested: { required: () => true }, incorrect: { required: () => true } } }
     );
 
-    // ✅ correct schema
+    // correct schema ✅
     inferRules({ name: { nested: '' } }, { name: { nested: { required: () => true, baguette: () => true } } });
   });
 

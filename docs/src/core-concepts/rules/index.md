@@ -74,7 +74,7 @@ Any rule can be wrapped with the `withMessage` helper to provide error messages.
 ```ts
 const { r$ } = useRegle({name: ''}, {
   name: {
-    foo: withMessage((value) => value === "foo", "Value must be 'foo'"),
+    foo: withMessage((value: Maybe<string>) => value === "foo", "Value must be 'foo'"),
   }
 })
 ```
