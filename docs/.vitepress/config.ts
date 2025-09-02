@@ -336,7 +336,7 @@ export default defineConfig({
               "author": {
                 "@type": "Person",
                 "name": "Victor Garcia"
-              },
+              }
             }
         }`;
       }
