@@ -43,7 +43,7 @@
     "@regle/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "1.8.0",
+    "@nuxt/eslint-config": "1.9.0",
     "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "3.19.2",
     "@types/node": "catalog:",
@@ -54,7 +54,7 @@
     "prettier": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "unbuild": "3.6.0",
+    "unbuild": "3.6.1",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "catalog:",

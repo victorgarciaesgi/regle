@@ -43,7 +43,7 @@
     "@nuxt/kit": "4.0.3",
     "@nuxt/schema": "4.0.3",
     "@pinia/testing": "1.0.2",
-    "@playwright/test": "1.54.2",
+    "@playwright/test": "1.55.0",
     "@types/node": "catalog:",
     "@types/semver": "7.7.0",
     "@typescript-eslint/eslint-plugin": "catalog:",
@@ -56,24 +56,24 @@
     "bumpp": "10.2.3",
     "changelogithub": "13.16.0",
     "corepack": "0.34.0",
-    "env-cmd": "10.1.0",
+    "env-cmd": "11.0.0",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "happy-dom": "18.0.1",
     "husky": "9.1.7",
-    "lint-staged": "16.1.5",
+    "lint-staged": "16.1.6",
     "nuxt": "catalog:",
     "pinia-2.2.5": "catalog:",
-    "playwright": "1.54.2",
-    "playwright-core": "1.54.2",
+    "playwright": "1.55.0",
+    "playwright-core": "1.55.0",
     "prettier": "catalog:",
     "semver": "7.7.2",
     "std-env": "3.9.0",
-    "taze": "19.1.0",
+    "taze": "19.4.0",
     "tsdown": "catalog:",
-    "tsx": "4.20.4",
-    "turbo": "2.5.5",
+    "tsx": "4.20.5",
+    "turbo": "2.5.6",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
@@ -81,7 +81,7 @@
     "vue-3.4": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:",
-    "zx": "8.8.0"
+    "zx": "8.8.1"
   },
   "type": "module",
   "publishConfig": {
@@ -97,11 +97,11 @@
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
   "engines": {
-    "node": ">=20 < 23",
+    "node": ">=22 < 23",
     "pnpm": ">=10.14.0"
   },
   "license": "MIT",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "devEngines": {
     "runtime": {
       "name": "node",
