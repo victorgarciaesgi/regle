@@ -3,6 +3,17 @@ import { createVariant, defineRules, narrowVariant, refineRules, useRegle, type 
 import { email, literal, minLength, minValue, numeric, required, sameAs, type } from '@regle/rules';
 import { computed, ref } from 'vue';
 import Errors from './Errors.vue';
+import { type as arktypeType } from 'arktype';
+
+const MyClosedObject = arktypeType({
+  '+': 'reject',
+  onlyAllowedKey: 'string',
+});
+
+const myClosedObject = MyClosedObject({
+  onlyAllowedKey: 'hello',
+  foo: 'bar',
+});
 
 const rules = refineRules(
   {
