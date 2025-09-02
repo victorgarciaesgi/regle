@@ -91,6 +91,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     const initialState = ref(
       isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
     );
+
+    const originalState = isObject(processedState.value)
+      ? { ...cloneDeep(processedState.value) }
+      : cloneDeep(processedState.value);
+
     const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
@@ -199,6 +204,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       options: resolvedOptions,
       schemaErrors: customErrors,
       initialState,
+      originalState,
       shortcuts,
       schemaMode: true,
       onValidate,
