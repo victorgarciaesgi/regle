@@ -1,3 +1,4 @@
+import { cloneDeep } from './cloneDeep';
 import { isEmpty } from './isEmpty';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
@@ -169,7 +170,7 @@ export function dotPathObjectToNested(obj: Record<string, any> | undefined): Rec
             if (typeof current[arrayIndex] !== 'object' || current[arrayIndex] === null) {
               // Decide if next is array or object
               const nextPart = path[i + 1];
-              current[arrayIndex] = nextPart && nextPart.match(/^\d+$/) ? { $each: [] } : {};
+              current[arrayIndex] = nextPart && nextPart.match(/^\d+$/) ? { $each: [], $self: [] } : {};
             }
             current = '$each' in current[arrayIndex] ? current[arrayIndex].$each : current[arrayIndex];
           }
@@ -177,18 +178,39 @@ export function dotPathObjectToNested(obj: Record<string, any> | undefined): Rec
       } else {
         // This part is an object key
         if (isLast) {
-          current[part] = value;
+          if (Array.isArray(current[part])) {
+            let previous = current[part].slice();
+            current[part] = {};
+            current[part].$self = previous;
+          } else if (typeof current[part] === 'object' && current[part] !== null && '$each' in current[part]) {
+            current[part].$self = value;
+          } else {
+            current[part] = value;
+          }
         } else {
+          const nextPart = path[i + 1];
+
+          if (Array.isArray(current[part])) {
+            let previous = current[part].slice();
+            current[part] = { $each: [] };
+            current[part].$self = previous;
+          }
           if (
             typeof current[part] !== 'object' ||
             current[part] === null ||
-            (Array.isArray(current[part]) && !path[i + 1].match(/^\d+$/))
+            (Array.isArray(current[part]) && !nextPart.match(/^\d+$/))
           ) {
-            // Decide if next is array or object
-            const nextPart = path[i + 1];
-            current[part] = nextPart && nextPart.match(/^\d+$/) ? { $each: [] } : {};
+            if (nextPart && nextPart.match(/^\d+$/)) {
+              current[part] = { $each: [], $self: [] };
+            } else {
+              current[part] = {};
+            }
           }
-          current = '$each' in current[part] ? current[part].$each : current[part];
+          if ('$each' in current[part]) {
+            current = current[part].$each;
+          } else {
+            current = current[part];
+          }
         }
       }
     }

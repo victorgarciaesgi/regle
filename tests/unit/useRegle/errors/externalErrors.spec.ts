@@ -513,6 +513,7 @@ describe('external errors', () => {
       root: ['Server Error'],
       nested: { name1: { name2: ['Server Error'] } },
       collection: {
+        $self: ['Server Error'],
         $each: [{}, { item: ['Server Error'] }],
       },
     };
@@ -521,6 +522,7 @@ describe('external errors', () => {
 
     shouldBeErrorField(vm.r$.root);
     shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$self);
     shouldBeErrorField(vm.r$.collection.$each[0].item);
     shouldBeErrorField(vm.r$.collection.$each[1].item);
 
@@ -529,6 +531,7 @@ describe('external errors', () => {
 
     expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$self.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
 
@@ -666,6 +669,7 @@ describe('external errors', () => {
     vm.externalErrors = {
       root: ['Server Error'],
       'nested.name1.name2': ['Server Error'],
+      collection: ['Server Error'],
       'collection.1.item': ['Server Error'],
     };
 
@@ -673,6 +677,7 @@ describe('external errors', () => {
 
     shouldBeErrorField(vm.r$.root);
     shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection);
     shouldBeErrorField(vm.r$.collection.$each[0].item);
     shouldBeErrorField(vm.r$.collection.$each[1].item);
 
@@ -681,6 +686,7 @@ describe('external errors', () => {
 
     expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$errors.$self).toStrictEqual(['Server Error']);
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual(['This field is required']);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
 
@@ -707,6 +713,7 @@ describe('external errors', () => {
       root: ['Server Error'],
       'nested.name1.name2': ['Server Error'],
       'collection.1.item': ['Server Error'],
+      collection: ['Server Error 2'],
     };
 
     await vm.$nextTick();
@@ -721,7 +728,61 @@ describe('external errors', () => {
 
     expect(vm.r$.root.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.collection.$errors.$self).toStrictEqual(['Server Error 2']);
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
+  });
+
+  it('should behave correctly when using nested collection dot paths', async () => {
+    function nestedExternalErrorsOnly() {
+      interface Form {
+        base: {
+          players: [{ shoes: { id: string; name: string }[] }];
+        };
+      }
+
+      const form = ref<Form>({
+        base: { players: [{ shoes: [{ id: '', name: '' }] }] },
+      });
+
+      const externalErrors = ref({});
+
+      return {
+        externalErrors,
+        ...useRegle(form, {}, { externalErrors }),
+      };
+    }
+    const { vm } = createRegleComponent(nestedExternalErrorsOnly);
+
+    await nextTick();
+
+    shouldBeUnRuledPristineField(vm.r$.base.players.$each[0].shoes.$each[0].name);
+    shouldBeUnRuledPristineField(vm.r$.base.players.$each[0].shoes.$each[0].id);
+
+    expect(vm.r$.$ready).toBe(false);
+
+    expect(vm.r$.base.players.$each[0].shoes.$each[0].name.$errors).toStrictEqual([]);
+    expect(vm.r$.base.players.$each[0].shoes.$each[0].id.$errors).toStrictEqual([]);
+
+    vm.r$.$touch();
+    vm.externalErrors = {
+      'base.players.0.shoes': ['Server Error'],
+      'base.players.0.shoes.0.id': ['Server Error'],
+      'base.players': ['Server Error'],
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.base.players.$each[0].shoes.$self);
+
+    shouldBeUnRuledCorrectField(vm.r$.base.players.$each[0].shoes.$each[0].name);
+
+    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$correct).toBe(false);
+
+    expect(vm.r$.base.players.$self.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.base.players.$each[0].shoes.$self.$errors).toStrictEqual(['Server Error']);
+    expect(vm.r$.base.players.$each[0].shoes.$each[0].name.$errors).toStrictEqual([]);
+    expect(vm.r$.base.players.$each[0].shoes.$each[0].id.$errors).toStrictEqual(['Server Error']);
   });
 });
