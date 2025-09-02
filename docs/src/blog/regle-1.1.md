@@ -70,6 +70,11 @@ Regle variants offer a way to simply declare and use this discriminated unions, 
 <script setup lang='ts'>
 import {ref} from 'vue';
 import { literal, required, email } from '@regle/rules';
+
+import {ref, defineComponent} from 'vue';
+
+const Errors = defineComponent({});
+
 type FormStateLoginType = 
 | {type: 'EMAIL', email: string} 
 | {type: 'GITHUB', username: string} 
