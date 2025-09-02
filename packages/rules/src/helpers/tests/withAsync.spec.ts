@@ -130,7 +130,7 @@ describe('withAsync helper', () => {
         name: {
           customRule: withMessage(
             withAsync(
-              async (value, param) => {
+              async (value: Maybe<string>, param) => {
                 expectTypeOf(value).toExtend<Maybe<string>>();
                 expectTypeOf(param).toBeNumber();
                 return await someAsyncCall(param);
