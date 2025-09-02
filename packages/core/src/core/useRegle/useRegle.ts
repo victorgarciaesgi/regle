@@ -140,11 +140,16 @@ export function createUseRegleComposable<
       isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
     );
 
+    const originalState = isObject(processedState.value)
+      ? { ...cloneDeep(processedState.value) }
+      : cloneDeep(processedState.value);
+
     const regle = useRootStorage({
       scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,
       state: processedState,
       options: resolvedOptions,
       initialState,
+      originalState,
       customRules,
       shortcuts,
     });

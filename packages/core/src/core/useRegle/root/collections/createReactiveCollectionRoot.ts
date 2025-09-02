@@ -27,6 +27,7 @@ interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   schemaErrors?: ComputedRef<$InternalRegleSchemaCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
+  originalState: (unknown | undefined)[];
 }
 
 export function createReactiveCollectionStatus({
@@ -40,6 +41,7 @@ export function createReactiveCollectionStatus({
   schemaErrors,
   schemaMode,
   initialState,
+  originalState,
   shortcuts,
   fieldName,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | undefined {
@@ -154,6 +156,7 @@ export function createReactiveCollectionStatus({
             externalErrors: $externalErrors,
             schemaErrors: $schemaErrors,
             initialState: initialStateRef,
+            originalState,
             shortcuts,
             fieldName,
             schemaMode,
@@ -180,7 +183,8 @@ export function createReactiveCollectionStatus({
       externalErrors: toRef(externalErrors?.value ?? {}, `$self`),
       schemaErrors: computed(() => schemaErrors?.value?.$self),
       $isArray: true,
-      initialState: initialState,
+      initialState,
+      originalState,
       shortcuts,
       fieldName,
       schemaMode,
@@ -223,6 +227,7 @@ export function createReactiveCollectionStatus({
               externalErrors: $externalErrors,
               schemaErrors: $schemaErrors,
               initialState: toRef(initialState.value ?? [], index),
+              originalState,
               shortcuts,
               fieldName,
               schemaMode,
@@ -440,6 +445,7 @@ export function createReactiveCollectionStatus({
                     $errors: $errors as any,
                     $silentErrors: $silentErrors as any,
                     $initialValue: initialState,
+                    $originalValue: originalState,
                     $ready,
                     $anyDirty,
                     $name: $name,
@@ -523,7 +529,10 @@ export function createReactiveCollectionStatus({
     $unwatch();
 
     if (!fromParent) {
-      if (options?.toInitialState) {
+      if (options?.toOriginalState) {
+        state.value = cloneDeep(originalState) as any[];
+        initialState.value = cloneDeep(originalState);
+      } else if (options?.toInitialState) {
         state.value = cloneDeep(initialState.value) as any[];
       } else if (options?.toState) {
         let newInitialState: unknown[];
@@ -612,6 +621,7 @@ export function createReactiveCollectionStatus({
     $each: $eachStatus,
     $value: state,
     $initialValue: initialState,
+    $originalValue: originalState,
     $validate,
     $unwatch,
     $watch,

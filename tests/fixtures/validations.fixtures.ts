@@ -298,29 +298,5 @@ export function simpleNestedStateWithComputedValidation() {
       }) satisfies ReglePartialRuleTree<UnwrapRef<typeof form>>
   );
 
-  const rules2 = computed(() =>
-    inferRules(form, {
-      email: { required: required, email: email },
-      user: {
-        ...(form.value.userRequired && {
-          firstName: { required },
-          lastName: { required },
-        }),
-      },
-      contacts: {
-        $each: {
-          name: { required },
-        },
-      },
-      nested: {
-        collection: {
-          $each: {
-            name: { required },
-          },
-        },
-      },
-    })
-  );
-
   return useRegle(form, rules);
 }

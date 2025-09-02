@@ -6,7 +6,7 @@
     placeholder='Type your email'
   />
 
-  <li v-for="error of r$.$errors.email" :key='error'>
+  <li v-for="error of r$.email.$errors" :key='error'>
     {{ error }}
   </li>
 </template>
