@@ -6,6 +6,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { generateSatoriBanner } from './satori-banner';
 import { version } from '../../package.json';
 import llmstxt from 'vitepress-plugin-llms';
+import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs';
 
 const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'useRegle', link: '/core-concepts/' },
@@ -381,7 +382,7 @@ export default defineConfig({
     ],
   ],
   markdown: {
-    codeTransformers: [transformerTwoslash({}) as any],
+    codeTransformers: [transformerTwoslash({ typesCache: createFileSystemTypesCache() }) as any],
     theme: {
       dark: 'vitesse-dark',
       light: 'everforest-light',
