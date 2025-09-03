@@ -49,9 +49,8 @@ Ui testing uses playwright. You can run the tests using:
 
 ### Docs
 
-1. Run `pnpm build`
-2. Run `pnpm run docs:dev` to start the docs in dev mode
-3. Run `pnpm run docs:build` to ensure docs build correctly, `twoslash` can fail if not done right
+1. Run `pnpm run docs:dev` to start the docs in dev mode
+2. Run `pnpm run docs:build` to ensure docs build correctly, `twoslash` can fail if not done right
 
 
 ## Notes

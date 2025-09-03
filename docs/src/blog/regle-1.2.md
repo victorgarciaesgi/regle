@@ -54,9 +54,7 @@ This feature brings multiple helpers to create your state type from your rules.
 
 This type can infer a state interface from any rules object or ref.
 
-```ts twoslash
-import {ref} from 'vue';
-// ---cut---
+```ts
 import { type InferInput} from '@regle/core';
 import { required, string, numeric, type } from '@regle/rules';
 
@@ -75,9 +73,7 @@ type State = InferInput<typeof rules>;
 In Regle, rules can depend on the state, this helps declare dynamic rules without having cylcic types problems.  
 
 
-```ts twoslash
-import {ref} from 'vue';
-// ---cut---
+```ts
 import { refineRules, type InferInput} from '@regle/core';
 import { required, string, sameAs } from '@regle/rules';
 

@@ -33,7 +33,7 @@ All operators are compatible with wrappers
 The `and` operator combines multiple rules and validates successfully only if all provided rules are valid.
 
 
-```ts twoslash
+```ts
 import { useRegle } from '@regle/core';
 import { and, startsWith, endsWith, withMessage } from '@regle/rules';
 
@@ -88,7 +88,7 @@ Result:
 
 The `not` operator passes when the provided rule fails and fails when the rule passes. It can be combined with other rules.
 
-```ts twoslash
+```ts
 import { useRegle } from '@regle/core';
 import { not, required, sameAs, withMessage } from '@regle/rules';
 import { ref } from 'vue';
@@ -116,10 +116,7 @@ Result:
 
 The `applyIf` operator is similar to `requiredIf`, but it can be used with any rule. It simplifies conditional rule declarations.
 
-```ts twoslash
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-// ---cut---
+```ts
 import { minLength, applyIf } from '@regle/rules';
 
 const condition = ref(false);
@@ -140,10 +137,7 @@ The `assignIf` is a shorthand for conditional destructuring assignment.
 It allows to apply multiple rules to a field conditionally.
 
 
-```ts twoslash
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-// ---cut---
+```ts
 import { required, email, minLength, assignIf } from '@regle/rules';
 
 const condition = ref(false);

@@ -29,9 +29,7 @@ You can jump directly to the [createRule section](/core-concepts/rules/reusable-
 You can write inline rules as simple functions that receive the value being evaluated as a parameter. Use the `InlineRuleDeclaration` type helper for enhanced type safety.
 
 Simple rule
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 const { r$ } = useRegle({name: ''}, {
   name: {
     simpleRule: (value) => value === 'regle'
@@ -40,10 +38,7 @@ const { r$ } = useRegle({name: ''}, {
 ```
 
 Async rule
-``` ts twoslash
-const someAsyncCall = async () => await Promise.resolve(true);
-import {useRegle} from '@regle/core';
-// ---cut---
+``` ts
 const { r$ } = useRegle({name: ''}, {
   name: {
     asyncRule: async (value) => await someAsyncCall()
@@ -53,9 +48,7 @@ const { r$ } = useRegle({name: ''}, {
 
 Rule with metadata
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 const { r$ } = useRegle({name: ''}, {
   name: {
     metadataRule: (value) => ({

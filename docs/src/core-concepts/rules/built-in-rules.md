@@ -43,10 +43,7 @@ _**Params**_
 
 Allows only alphabetic characters.
 
-```ts twoslash
-// @noErrors
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { alpha } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
@@ -65,10 +62,7 @@ _**Params**_
 
 Allows only alphanumeric characters.
 
-```ts twoslash
-// @noErrors
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { alphaNum } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
@@ -89,11 +83,7 @@ _**Params**_
 
 Checks if a number is in specified bounds. `min` and `max` are both inclusive.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { between } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -111,10 +101,8 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Requires a value to be a native boolean type. Mainly used for typing.
 
-```ts twoslash
-import {useRegle, type InferInput} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
+```ts
+import {type InferInput} from '@regle/core';
 import { boolean } from '@regle/rules';
 
 const rules = {
@@ -128,9 +116,7 @@ const state = ref<InferInput<typeof rules>>({});
 
 Requires a boolean value to be `true`. This is useful for checkbox inputs.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { checked } from '@regle/rules';
 
 const { r$ } = useRegle({ confirm: false }, {
@@ -145,9 +131,7 @@ _**Params**_
 
 Checks if the string contains the specified substring.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { contains } from '@regle/rules';
 
 const { r$ } = useRegle({ bestLib: '' }, {
@@ -161,11 +145,8 @@ const { r$ } = useRegle({ bestLib: '' }, {
 
 Requires a value to be a native Date constructor. Mainly used for typing.
 
-```ts twoslash
-import {useRegle, type InferInput} from '@regle/core';
-import {ref} from 'vue';
-
-// ---cut---
+```ts
+import {type InferInput} from '@regle/core';
 import { date } from '@regle/rules';
 
 const rules = {
@@ -184,10 +165,7 @@ _**Params**_
 
 Checks if the date is after the given parameter.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// @noErrors
-// ---cut---
+```ts
 import { dateAfter } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
@@ -208,10 +186,7 @@ _**Params**_
 
 Checks if the date is before the given parameter.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// @noErrors
-// ---cut---
+```ts
 import { dateBefore } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
@@ -233,10 +208,7 @@ _**Params**_
 
 Checks if the date falls between the specified bounds.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// @noErrors
-// ---cut---
+```ts
 import { dateBetween } from '@regle/rules';
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {
@@ -253,9 +225,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 
 Allows positive and negative decimal numbers.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { decimal } from '@regle/rules';
 
 const { r$ } = useRegle({ price: 0 }, {
@@ -268,9 +238,7 @@ const { r$ } = useRegle({ price: 0 }, {
 
 Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { email } from '@regle/rules';
 
 const { r$ } = useRegle({ email: '' }, {
@@ -285,9 +253,7 @@ _**Params**_
 
 Checks if the string ends with the specified substring.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { endsWith } from '@regle/rules';
 
 const { r$ } = useRegle({ firstName: '' }, {
@@ -303,11 +269,7 @@ _**Params**_
 
 Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// @noErrors
-// ---cut---
+```ts
 import { exactLength } from '@regle/rules';
 
 const exactValue = ref(6);
@@ -329,11 +291,7 @@ _**Params**_
 
 Requires a field to have a strict numeric value.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { exactValue } from '@regle/rules';
 
 const exactCount = ref(6);
@@ -351,9 +309,7 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Validates hexadecimal values.
 
-```ts twoslash
-import { useRegle } from '@regle/core';
-// ---cut---
+```ts
 import { hexadecimal } from '@regle/rules';
 
 const { r$ } = useRegle({ hexadecimal: '' }, {
@@ -365,9 +321,7 @@ const { r$ } = useRegle({ hexadecimal: '' }, {
 
 Allows only integers (positive and negative).
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { integer } from '@regle/rules';
 
 const { r$ } = useRegle({ count: 0 }, {
@@ -380,9 +334,7 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Validates IPv4 addresses in dotted decimal notation *127.0.0.1*.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { ipv4Address } from '@regle/rules';
 
 const { r$ } = useRegle({ address: '' }, {
@@ -399,11 +351,8 @@ _**Params**_
 
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
-```ts twoslash
+```ts
 // @noErrors
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
 import { macAddress } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -430,11 +379,7 @@ _**Works with**_
 
 Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { maxLength } from '@regle/rules';
 
 const maxValue = ref(6);
@@ -457,11 +402,7 @@ _**Params**_
 
   Requires a field to have a specified maximum numeric value.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { maxValue } from '@regle/rules';
 
 const maxCount = ref(6);
@@ -486,11 +427,7 @@ _**Works with**_
 
 Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
 
-```ts twoslash
-import {ref} from 'vue';
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { minLength } from '@regle/rules';
 
 const minValue = ref(6);
@@ -515,11 +452,7 @@ _**Works with**_
 
 Requires a field to have a specified minimum numeric value.
 
-```ts twoslash
-import {ref} from 'vue'
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { minValue } from '@regle/rules';
 
 const minCount = ref(6);
@@ -537,9 +470,7 @@ const { r$ } = useRegle({ count: 0 }, {
 
 Validate against a native Typescript enum value. Similar to Zod's `nativeEnum`
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { nativeEnum } from '@regle/rules';
 
 enum Foo {
@@ -555,11 +486,7 @@ const { r$ } = useRegle({ type: '' }, {
 
 Requires a value to be a native number type. Mainly used for typing.
 
-```ts twoslash
-import {useRegle, type InferInput} from '@regle/core';
-import {ref} from 'vue';
-
-// ---cut---
+```ts
 import { number } from '@regle/rules';
 
 const rules = {
@@ -573,9 +500,7 @@ const state = ref<InferInput<typeof rules>>({});
 
 Allows only numeric values (including numeric strings).
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { numeric } from '@regle/rules';
 
 const { r$ } = useRegle({ count: 0 }, {
@@ -591,9 +516,7 @@ Allow only one of the values from a fixed Array of possible entries.
 _**Params**_
   - `options: MaybeRefOrGetter<Array<string | number>>`
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { oneOf } from '@regle/rules';
 
 const { r$ } = useRegle({ aliment: 'Fish' }, {
@@ -610,10 +533,7 @@ _**Params**_
 
 Checks if the value matches one or more regular expressions.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import { regex } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
@@ -629,10 +549,7 @@ const { r$ } = useRegle({ name: '' }, {
 
 Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
-// @noErrors
+```ts
 import {required} from '@regle/rules';
 
 const {r$} = useRegle({name: ''}, {
@@ -647,11 +564,7 @@ _**Params**_
 
 Requires non-empty data, only if provided data property, ref, or a function resolves to `true`.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
-// @noErrors
+```ts
 import { requiredIf } from '@regle/rules';
 
 const form = ref({ name: '', condition: false });
@@ -674,11 +587,7 @@ _**Params**_
 
 Requires non-empty data, only if provided data property, ref, or a function resolves to `false`.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
-// @noErrors
+```ts
 import { requiredUnless } from '@regle/rules';
 
 const form = ref({ name: '', condition: false });
@@ -702,11 +611,7 @@ _**Params**_
 
 Checks if the value matches the specified property or ref.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
-// @noErrors
+```ts
 import { sameAs } from '@regle/rules';
 
 const form = ref({
@@ -728,9 +633,7 @@ _**Params**_
 
 Checks if the string starts with the specified substring.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { startsWith } from '@regle/rules';
 
 const { r$ } = useRegle({ bestLib: '' }, {
@@ -744,10 +647,8 @@ const { r$ } = useRegle({ bestLib: '' }, {
 
 Requires a value to be a native string type. Mainly used for typing
 
-```ts twoslash
-import {useRegle, type InferInput} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
+```ts
+import {type InferInput} from '@regle/core';
 import { string } from '@regle/rules';
 
 const rules = {
@@ -762,10 +663,8 @@ const state = ref<InferInput<typeof rules>>({});
 Define the input type of a rule. No runtime validation.   
 Override any input type set by other rules.
 
-```ts twoslash
-import {useRegle, type InferInput} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
+```ts
+import {type InferInput} from '@regle/core';
 import { type } from '@regle/rules';
 
 const rules = {
@@ -780,9 +679,7 @@ const state = ref<InferInput<typeof rules>>({});
 
 Validates URLs.
 
-```ts twoslash
-import {useRegle} from '@regle/core';
-// ---cut---
+```ts
 import { url } from '@regle/rules';
 
 const { r$ } = useRegle({ bestUrl: '' }, {

@@ -51,7 +51,7 @@ It can be complex and become a mess when trying to organise your types around it
 Regle variants offer a way to simply declare and use this discriminated unions, while keeping all fields correctly types and also runtime safe.
 
 
-```vue twoslash
+```vue
 <template>
     <div v-if="narrowVariant(r$, 'type', 'EMAIL')">
       <!-- `email` is a known field only in this block -->
@@ -68,24 +68,6 @@ Regle variants offer a way to simply declare and use this discriminated unions, 
 </template>
 
 <script setup lang='ts'>
-import {ref} from 'vue';
-import { literal, required, email } from '@regle/rules';
-
-import {ref, defineComponent} from 'vue';
-
-const Errors = defineComponent({});
-
-type FormStateLoginType = 
-| {type: 'EMAIL', email: string} 
-| {type: 'GITHUB', username: string} 
-| {type?: undefined}
-
-type FormState = {
-  firstName?: string;
-  lastName?: string;
-} & FormStateLoginType
-
-// ---cut---
 import { useRegle, createVariant, narrowVariant } from '@regle/core';
 
 const state = ref<FormState>({})
@@ -113,10 +95,7 @@ Check out the [documentation for variants](/advanced-usage/variants)
 
 Like Zod's `Infer` utility, Regle now provide its own shortcut for extracting safe output from any `r$` instance.
 
-```ts twoslash
-import { ref, type Ref, computed } from 'vue';
-import { required } from '@regle/rules';
-// ---cut---
+```ts
 import { useRegle, InferSafeOutput } from '@regle/core';
 
 const { r$ } = useRegle({ firstName: '', lastName: '' }, {
@@ -124,7 +103,6 @@ const { r$ } = useRegle({ firstName: '', lastName: '' }, {
 });
 
 type FormRequest = InferSafeOutput<typeof r$>;
-//    ^?
 
 
 ```

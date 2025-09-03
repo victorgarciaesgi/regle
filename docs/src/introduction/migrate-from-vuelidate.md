@@ -176,7 +176,7 @@ You can remove it and configure it with [global config](/advanced-usage/global-c
 If you use Nuxt <span data-title="nuxt"></span>, check the [Nuxt module documentation](/integrations/nuxt) for even easier error message sharing.
 :::
 
-```ts twoslash
+```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required, numeric } from '@regle/rules';
 
@@ -205,11 +205,10 @@ __**Nested component**__ validation is replaced by __**Scoped validation**__.
 
 See [docs for scoped validation](/advanced-usage/scoped-validation) for more details
 
-```ts twoslash
+```ts
 // [scoped-config.ts]
 import { useScopedRegle, useCollectScope, useRegle } from '@regle/core'; // [!code ++]
 
-// @noErrors
 // Parent.vue
 const v$ = useVuelidate(); // [!code --]
 const v$ = useVuelidate({}, {}, {$scope: 'foo'}); // [!code --]

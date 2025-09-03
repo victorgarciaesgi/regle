@@ -39,7 +39,7 @@ If you fall into this case:
 Consider using [defineRegleConfig](/advanced-usage/global-config#replace-built-in-rules-messages) instead.
 :::
 
-``` vue twoslash [App.vue]
+``` vue [App.vue]
 <script setup lang='ts'>
 import { useRegle } from '@regle/core';
 import { required, minLength, email, withMessage } from '@regle/rules';
@@ -95,7 +95,7 @@ If you want to display the complete list of errors of a form, or the total count
 
 It will return an array of error strings.
 
-```ts twoslash
+```ts
 import { flatErrors, useRegle } from '@regle/core';
 import { email, minLength, required } from '@regle/rules';
 
@@ -124,7 +124,7 @@ const flattenErrors = flatErrors(r$.$errors);
 This helper also include an option to have the path of the property (compatible with lodash `get`) next to the error.
 
 
-```ts twoslash
+```ts
 import { flatErrors, useRegle } from '@regle/core';
 import { email, minLength, required } from '@regle/rules';
 
