@@ -4,12 +4,15 @@
     // -- Build
     "@regle/core#build": {
       "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!eslint.config.mjs", "src/**/*.ts", "tsdown.config.ts"]
     },
+    // @regle/nuxt specific build at `packages/nuxt/turbo.json`
     "build": {
       "dependsOn": ["@regle/core#build"],
       "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "new-only",
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!eslint.config.mjs", "src/**/*.ts", "tsdown.config.ts"]
     },
     "regle-playground#build": {
       "dependsOn": ["^build"],

@@ -18,10 +18,7 @@ It matches the structure of your form, but you can also use dot path to define t
 
 ## Basic usage
 
-```ts twoslash
-import { required } from '@regle/rules';
-import { ref, reactive } from 'vue';
-// ---cut---
+```ts
 import { type RegleExternalErrorTree, useRegle } from '@regle/core'
 
 const form = reactive({
@@ -85,10 +82,7 @@ const { r$ } = useRegle({collection: []}, {
 
 It can be handy for some backend frameworks that return errors with dot path.
 
-```ts twoslash
-import { required } from '@regle/rules';
-import { ref, reactive } from 'vue';
-// ---cut---
+```ts
 import { useRegle } from '@regle/core';
 
 const form = reactive({

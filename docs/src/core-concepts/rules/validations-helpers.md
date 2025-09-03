@@ -29,9 +29,7 @@ You can base your validator result on this.
 
 By default, it considers empty array as `false`. You can override this behaviour with the `considerEmptyArrayInvalid`
 
-```ts twoslash
-const check = (value: any) => false;
-//---cut---
+```ts
 import { createRule } from '@regle/core';
 import { isFilled } from '@regle/rules';
 
@@ -59,9 +57,7 @@ This is the inverse of `isFilled`. It will check if the value is in any way empt
 By default, it considers empty array as `true`. You can override this behaviour with the `considerEmptyArrayInvalid`
 
 
-```ts twoslash
-const check = (value: any) => false;
-//---cut---
+```ts
 import { createRule, type Maybe } from '@regle/core';
 import { isEmpty } from '@regle/rules';
 
@@ -71,7 +67,6 @@ const rule = createRule({
       return true;
     }
     return check(value);
-    //           ^?
   },
   message: 'Error'
 })
@@ -83,9 +78,7 @@ const rule = createRule({
 This is a type guard that will check if the passed value is a real `Number`.
 This also returns false for `NaN`, so this is better than `typeof value === "number"`.
 
-```ts twoslash
-const checkNumber = (value: number) => false;
-//---cut---
+```ts
 import { createRule, type Maybe } from '@regle/core';
 import { isFilled, isNumber } from '@regle/rules';
 
@@ -93,7 +86,6 @@ const rule = createRule({
   validator(value: Maybe<number | string>) {
     if (isFilled(value) && isNumber(value)) {
       return checkNumber(value);
-//                        ^?
     }
     return true;
   },
@@ -107,9 +99,7 @@ const rule = createRule({
 This is a useful helper that can check if the provided value is a Date, it is used internally for `date` rules.
 This can also check strings.
 
-```ts twoslash
-const checkDate = (value: Date) => false;
-//---cut---
+```ts
 import { createRule, type Maybe } from '@regle/core';
 import { isFilled, isDate } from '@regle/rules';
 
@@ -117,7 +107,6 @@ const rule = createRule({
   validator(value: Maybe<string | Date>) {
     if (isFilled(value) && isDate(value)) {
       return checkDate(value);
-//                        ^?
     }
     return true;
   },
@@ -132,7 +121,7 @@ const rule = createRule({
 This helper will return the length of any data type you pass.
 It works with strings, arrays, objects and numbers.
 
-```ts twoslash
+```ts
 import { createRule, type Maybe } from '@regle/core';
 import { isFilled, getSize } from '@regle/rules';
 
@@ -151,7 +140,7 @@ const rule = createRule({
 
 This utility can take multiple regular expressions as arguments. It checks the input's validity and tests it against the provided regex patterns.
 
-```ts twoslash
+```ts
 import { createRule, type Maybe } from '@regle/core';
 import { isFilled, matchRegex } from '@regle/rules';
 

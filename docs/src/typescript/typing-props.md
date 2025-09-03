@@ -105,7 +105,7 @@ Here's how you can do it:
 
 :::code-group
 
-```vue twoslash [MyInput.vue]
+```vue [MyInput.vue]
 <template>
   <div class="my-input">
     <input
@@ -134,7 +134,7 @@ const props = defineProps<{
 </script>
 ```
 
-```vue twoslash [myForm.vue]
+```vue [myForm.vue]
 <template>
   <form>
     <MyInput v-model="r$.$value.name" :field="r$.name" placeholder="Type your name" />

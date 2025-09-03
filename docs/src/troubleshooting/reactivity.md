@@ -10,14 +10,10 @@ When using `useRegle` with a getter function or a computed property, Regle autom
 
 To illustrate the issue, consider the following example:
 
-```ts twoslash
-const form = ref({
-    items: [] as {weight: number}[]
-})
-//---cut---
+```ts
 import { ref, computed } from 'vue';
 import { withMessage } from '@regle/rules';
-import {type Maybe, type RegleComputedRules} from '@regle/core';
+import { type Maybe, type RegleComputedRules } from '@regle/core';
 
 const condition = ref(false)
 
@@ -42,7 +38,7 @@ const rules = computed(() => {
 
 In the above example, the `weight` rule depends on the `condition` ref, which is not tracked by Regle because it is inside a function and Vue cannot collect the reference. To fix this, you can either use the `withParams` wrapper or use the `createRule` function which automatically tracks dependencies for you.
 
-```ts twoslash
+```ts
 import { ref } from 'vue';
 import { withParams, withMessage } from '@regle/rules';
 import { createRule, type Maybe } from '@regle/core';

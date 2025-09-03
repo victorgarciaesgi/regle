@@ -16,15 +16,13 @@ The withMessage wrapper lets you associate an error message with a rule. Pass yo
 ``` ts twoslash {5-13}
 // @noErrors
 import { useRegle, type InlineRuleDeclaration, type Maybe } from '@regle/core';
+// ---cut---
+import { withMessage } from '@regle/rules';
 
 const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
   $valid: value === 'regle',
   foo: 'bar' as const
 })) satisfies InlineRuleDeclaration;
-
-
-// ---cut---
-import { withMessage } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
   name: {
@@ -96,13 +94,7 @@ const { r$ } = useRegle({ name: '' }, {
 
 `withAsync` works like `withParams`, but is specifically designed for async rules that depend on external values.
 
-``` ts twoslash {7}
-// @noErrors
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-const someAsyncCall = async (param: string) => await Promise.resolve(true);
-
-// ---cut---
+``` ts
 import { withAsync } from '@regle/rules';
 
 const base = ref('foo');
@@ -127,7 +119,7 @@ Tooltips are aggregated and accessible via `xxx.$tooltips`.
 
 You can combine multiple wrappers to create more powerful and flexible rules while keeping everything typed correctly.
 
-``` ts twoslash {9-14}
+```ts twoslash {9-14}
 // @noErrors
 import { useRegle } from '@regle/core';
 import { ref } from 'vue';

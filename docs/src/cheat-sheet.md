@@ -9,7 +9,7 @@ Quick reference for common Regle patterns and usage scenarios.
 
 ## Basic Setup
 
-```ts twoslash
+```ts
 import { useRegle } from '@regle/core'
 import { required, email, minLength } from '@regle/rules'
 
@@ -38,7 +38,7 @@ const { r$ } = useRegle(
 
 ## Common Rules
 
-```ts twoslash
+```ts
 import { 
   required, email, minLength, maxLength,
   numeric, between, url, regex,
@@ -117,7 +117,7 @@ const { r$ } = useRegle(state, {
 ### Optional Field with Conditional Validation
 
 
-```ts twoslash
+```ts    
 import {ref} from 'vue';
 // ---cut---
 // @noErrors
@@ -138,7 +138,7 @@ const rules = computed(() => inferRules(state, {
 
 ## Custom Error Messages
 
-```ts twoslash
+```ts
 import {useRegle} from '@regle/core';
 import {ref} from 'vue';
 // ---cut---
@@ -162,7 +162,7 @@ const { r$ } = useRegle({email: '', password: ''}, {
 
 ## Form Submission
 
-```ts twoslash
+```ts
 import {useRegle} from '@regle/core';
 import {required} from '@regle/rules';
 
@@ -191,7 +191,7 @@ function handleSubmit() {
 
 ## Collections (Arrays)
 
-```ts twoslash
+```ts
 import {required, email} from '@regle/rules';
 // ---cut---
 import {useRegle} from '@regle/core';
@@ -214,7 +214,7 @@ r$.users.$each[0].name.$error
 
 ## Nested Objects
 
-```ts twoslash
+```ts
 import {required, email, maxLength} from '@regle/rules';
 // ---cut---
 import {useRegle} from '@regle/core';
@@ -246,7 +246,7 @@ r$.user.profile.name.$error
 
 ## Global Configuration
 
-```ts twoslash
+```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, required, minLength } from '@regle/rules';
 
@@ -267,7 +267,7 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
 
 ## Schema Integration (Zod)
 
-```ts twoslash
+```ts
 import { z } from 'zod/v3'
 import { useRegleSchema } from '@regle/schemas'
 
@@ -287,7 +287,7 @@ const { r$ } = useRegleSchema({
 
 ### TypeScript Errors?
 
-```ts twoslash
+```ts
 import {ref, computed} from 'vue';
 // ---cut---
 import { inferRules } from '@regle/core';

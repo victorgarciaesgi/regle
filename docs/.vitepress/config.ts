@@ -393,7 +393,7 @@ export default defineConfig({
   vite: {
     plugins: [
       vueJsx(),
-      // llmstxt(),
+      llmstxt(),
       groupIconVitePlugin({
         customIcon: {
           pinia: localIconLoader(import.meta.url, '../src/assets/pinia-logo.svg'),

@@ -46,7 +46,7 @@ Instead of using the core `useRegle`, use `useRegleSchema` export from `@regle/s
 
 
 :::code-group
-```ts twoslash [Zod]
+```ts [Zod]
 import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
 
@@ -55,7 +55,7 @@ const { r$ } = useRegleSchema({ name: '' }, z.object({
 }))
 ```
 
-```ts twoslash [Valibot]
+```ts [Valibot]
 import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
 
@@ -64,7 +64,7 @@ const { r$ } = useRegleSchema({ name: '' }, v.object({
 }))
 ```
 
-```ts twoslash [ArkType]
+```ts [ArkType]
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
 
@@ -103,7 +103,7 @@ Same way as `withParams` from `@regle/rules`, you can use the `withDeps` helper 
 
 :::code-group
 
-```ts twoslash [Zod]
+```ts [Zod]
 import { useRegleSchema, inferSchema, withDeps } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
@@ -134,7 +134,7 @@ const schema = computed(() =>
 const { r$ } = useRegleSchema(form, schema);
 
 ```
-```ts twoslash [Valibot]
+```ts [Valibot]
 import { useRegleSchema, inferSchema, withDeps} from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
@@ -198,7 +198,7 @@ type RegleSchemaBehaviourOptions = {
 
 Usage:
 
-```vue twoslash {13}
+```vue
 <script setup lang="ts">
 import { ref } from 'vue';
 // ---cut---
@@ -226,7 +226,7 @@ const { r$ } = useRegleSchema(
 Similar to the main `useRegle` composable, `r$.$validate` also returns a type-safe output using Zod type schema parser.
 
 :::code-group
-```ts twoslash [Zod]
+```ts [Zod]
 import { useRegleSchema, inferSchema } from '@regle/schemas';
 import { z } from 'zod';
 import { ref, computed } from 'vue';
@@ -251,13 +251,12 @@ async function submit() {
   const { valid, data } = await r$.$validate();
   if (valid) {
     console.log(data);
-    //            ^?
   }
 }
 
 ```
 
-```ts twoslash [Valibot]
+```ts [Valibot]
 import { useRegleSchema, inferSchema } from '@regle/schemas';
 import * as v from 'valibot';
 import { ref, computed } from 'vue';
@@ -286,13 +285,12 @@ async function submit() {
   const { valid, data } = await r$.$validate();
   if (valid) {
     console.log(data);
-    //            ^?
   }
 }
 
 ```
 
-```ts twoslash [ArkType]
+```ts [ArkType]
 import { useRegleSchema, inferSchema } from '@regle/schemas';
 import { type } from 'arktype';
 import { ref, computed } from 'vue';
@@ -325,7 +323,6 @@ async function submit() {
   const { valid, data } = await r$.$validate();
   if (valid) {
     console.log(data);
-    //            ^?
   }
 }
 ```

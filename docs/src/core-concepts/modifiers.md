@@ -15,12 +15,10 @@ Modifiers allow you to control the behavior and settings of validation rules in 
 
 Deep modifiers are specified as the third argument of the `useRegle` composable. They apply recursively to all fields within your state.
 
-```ts twoslash
-// @noErrors
-import { useRegle } from '@regle/core';
-// ---cut---
-const { r$ } = useRegle({}, {}, {""})
-//                                ^|
+```ts
+const { r$ } = useRegle({}, {}, {
+ /* modifiers */
+})
 ```
 
 ### `autoDirty`
@@ -145,13 +143,9 @@ All async rules have a default debounce of `200ms`, you can disable or modify th
 
 This modifiers are only impacting Array collections.
 
-```ts twoslash
-// @noErrors
-import { useRegle } from '@regle/core';
-// ---cut---
+```ts
 const { r$ } = useRegle({ collection: [] }, {
-  collection: { $deep }
-//                   ^|    
+  collection: { /** Deep modifiers */ }
 })
 ```
 

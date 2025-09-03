@@ -23,11 +23,7 @@ Due to a JavaScript limitation with [Primitives](https://developer.mozilla.org/e
 Primitives (Strings, Numbers etc...) are immutable, so they can't be modified to add a tracking ID (which is how Regle works for collections).
 :::
 
-```ts twoslash
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-import { required } from '@regle/rules';
-// ---cut---
+```ts
 const form = ref<{ collection: { name: string }[] }>({
   collection: []
 })
@@ -122,11 +118,7 @@ You can do this just like you would with a normal field.
 Errors can be displayed either using `r$.$errors.[field].$self` or `r$.[field].$self.$errors`.
 
 
-```ts twoslash
-//---cut---
-import { ref } from 'vue';
-import { required, minLength } from '@regle/rules';
-//---cut---
+```ts
 import { useRegle } from '@regle/core';
 
 const form = ref<{ collection: Array<{ name: string }> }>({
@@ -154,11 +146,7 @@ Result:
 In each item of your collection, you may have a validation that depends on another property of the item.
 You can access the current item's state and index by providing a function callback to `$each`.
 
-```ts twoslash
-//---cut---
-import { ref } from 'vue';
-import { required, requiredIf } from '@regle/rules';
-//---cut---
+```ts
 import { useRegle } from '@regle/core';
 
 const form = ref({
@@ -185,11 +173,7 @@ By default, Regle generates a random ID to track your items and maintain their s
 You can also provide your own key to the rule for custom tracking:
 
 
-```ts twoslash
-//---cut---
-import { ref } from 'vue';
-import { required, requiredIf } from '@regle/rules';
-//---cut---
+```ts
 import { useRegle } from '@regle/core';
 
 const form = ref({

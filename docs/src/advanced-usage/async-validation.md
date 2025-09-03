@@ -58,7 +58,7 @@ This can be used to display a loading icon and a custom message indicating that 
 
 ## Full example
 
-```vue twoslash [App.vue]
+```vue [App.vue]
 <template>
   <div class="demo-container">
     <div>
@@ -83,14 +83,6 @@ This can be used to display a loading icon and a custom message indicating that 
 </template>
 
 <script setup lang="ts">
-function randomBoolean(): boolean {
-  return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
-}
-
-function timeout(count: number) {
-  return new Promise((resolve) => setTimeout(resolve, count));
-}
-// ---cut---
 import { createRule, useRegle, type Maybe } from '@regle/core';
 import { email, isEmpty } from '@regle/rules';
 import { ref } from 'vue';

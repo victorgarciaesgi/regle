@@ -17,10 +17,7 @@ Using a Pinia store is an excellent way to avoid prop drilling with multiple pro
 ## Using regle in a Pinia store
 
 ::: code-group
-```ts twoslash include store [demo.store.ts] 
-// @module: esnext
-// @filename: demo.store.ts
-// ---cut---
+```ts [demo.store.ts] 
 import { required, minLength, email } from '@regle/rules';
 import { defineStore } from 'pinia';
 import { useRegle } from '@regle/core';
@@ -36,17 +33,13 @@ export const useDemoStore = defineStore('demo-store', () => {
 })
 ```
 
-``` vue twoslash [ComponentA.vue]
+``` vue [ComponentA.vue]
 <template>
   <input v-model='r$.$value.email' placeholder='Type your email'/>
   <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
 </template>
 
 <script setup lang='ts'>
-// @include: store
-// @noErrors
-// ---cut---
-// @module: esnext
 import { useDemoStore } from './demo.store';
 import { storeToRefs } from 'pinia';
 
@@ -56,7 +49,7 @@ const { r$ } = storeToRefs(demoStore);
 </script>
 ```
 
-``` vue twoslash [ComponentB.vue]
+``` vue [ComponentB.vue]
 <template>
   <ul>
     <li v-for="error of r$.$errors.email" :key='error'>
@@ -66,10 +59,6 @@ const { r$ } = storeToRefs(demoStore);
 </template>
 
 <script setup lang='ts'>
-// @include: store
-// @noErrors
-// ---cut---
-// @module: esnext
 import { useDemoStore } from './demo.store';
 import { storeToRefs } from 'pinia';
 

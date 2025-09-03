@@ -16,8 +16,7 @@ To create reusable rules, it’s recommended to use `createRule`. This utility s
 
 Example: Recreating a simple `required` rule
 
-```ts twoslash
-// @noErrors
+```ts
 import { createRule } from '@regle/core';
 import { isFilled } from '@regle/rules';
 
@@ -84,10 +83,9 @@ With `createRule` you can easily define a rule that will depend on external reac
 
 When declaring your validator, **Regle** will detect that your rule requires parameters and transform it into a function declaration:
 
-```ts twoslash
-// @noErrors
+```ts
 import { createRule, type Maybe } from '@regle/core';
-// ---cut---
+
 export const myValidator = createRule({
   validator: (value: Maybe<string>, arg: number) => {
     return true;
@@ -100,10 +98,9 @@ export const myValidator = createRule({
 
 The parameters detection also works with optional and spread parameters
 
-```ts twoslash
-// @noErrors
+```ts
 import { createRule, type Maybe } from '@regle/core';
-// ---cut---
+
 export const myValidator = createRule({
   validator: (value: Maybe<string>, optionalArg?: number, otherOptional?: string) => {
     return true;
@@ -137,17 +134,7 @@ So it's not advised to use it
 
 The real advantage of using `createRule` is that it automatically registers parameters as reactive dependencies. This means your rule works seamlessly with plain values, refs, or getter functions.
 
-```ts twoslash
-import {ref} from 'vue';
-import { createRule, useRegle, type Maybe } from '@regle/core';
-// ---cut---
-export const myValidator = createRule({
-  validator: (value: Maybe<string>, arg: number) => {
-    return true;
-  },
-  message: '--',
-});
-//---cut---
+```ts
 const max = ref(5);
 
 useRegle({name: ''},{
@@ -213,8 +200,7 @@ This property allows you to declare the active state of the rule.
 It will then be exposed in the `$active` rule property and be used to reflect the validation to your user.
 
 
-```ts twoslash
-// @noErrors
+```ts
 import { createRule, useRegle } from '@regle/core';
 
 const myConditionalRule = createRule({
@@ -234,23 +220,8 @@ const myConditionalRule = createRule({
 
 Usage in a component:
 
-```vue twoslash
+```vue
 <script setup lang='ts'>
-// @noErrors
-const myConditionalRule = createRule({
-  validator(value: unknown, param: string) {
-    // Params like `condition` will always be unwrapped here
-    // no need to check if it's a value, a ref or a getter function
-    if (param === "Yes") {
-      return isFilled(value);
-    }
-    return true;
-  },
-  active({ $params: [condition] }) {
-    return condition === 'Yes';
-  },
-});
-// ---cut---
 import { createRule, useRegle } from '@regle/core';
 
 const yesOrNo = ref('No');
@@ -274,35 +245,9 @@ const { r$ } = useRegle({name: ''}, {
 ### Recreating `requiredIf` rule
 
 ::: code-group
-```ts twoslash include requiredIf [requiredIf.ts]
-// @noErrors
-import { createRule, useRegle } from '@regle/core';
-import { isFilled } from '@regle/rules';
-import { ref } from 'vue';
 
-export const requiredIf = createRule({
-  validator(value: unknown, condition: boolean) {
-    // Params like `condition` will always be unwrapped here
-    // no need to check if it's a value, a ref or a getter function
-    if (condition) {
-      return isFilled(value);
-    }
-    return true;
-  },
-  message({ $params: [condition] }) {
-    return `This field is required`,
-  },
-  active({ $params: [condition] }) {
-    return condition;
-  },
-});
-```
-
-```vue twoslash {21} [Form.vue]
+```vue [Form.vue]
 <script setup lang='ts'>
-// @include: requiredIf
-import { ref } from 'vue';
-// ---cut---
 import { useRegle } from '@regle/core';
 
 const condition = ref(false);
@@ -346,7 +291,7 @@ Result:
 
 Async rules are useful for server-side validations or computationally expensive local checks. They update the `$pending` state whenever invoked.
 
-```vue twoslash [App.vue]
+```vue [App.vue]
 <template>
   <div class="demo-container">
     <div>
@@ -371,14 +316,6 @@ Async rules are useful for server-side validations or computationally expensive 
 </template>
 
 <script setup lang="ts">
-function randomBoolean(): boolean {
-  return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
-}
-
-function timeout(count: number) {
-  return new Promise((resolve) => setTimeout(resolve, count));
-}
-// ---cut---
 import { createRule, useRegle, type Maybe } from '@regle/core';
 import { email, isEmpty } from '@regle/rules';
 import { ref } from 'vue';

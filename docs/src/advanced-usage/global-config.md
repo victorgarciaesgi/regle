@@ -17,7 +17,7 @@ Each `@regle/rules` rule provides a default error message. You may may not want 
 
 `defineRegleConfig` allows you to redefine the default messages of built-in rules.
 
-```ts twoslash
+```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
@@ -114,7 +114,7 @@ const { r$ } = useCustomRegle({ name: '' }, {
 
 You can include global modifiers in your configuration to automatically apply them wherever you use the `useRegle` composable. This avoids repetitive declarations and keeps your code clean.
 
-```ts twoslash
+```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
@@ -135,7 +135,7 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
 
 For information about `inferRules`, check [Typing rules docs](/typescript/typing-rules)
 
-```ts twoslash
+```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
