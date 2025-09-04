@@ -39,14 +39,13 @@ const { r$ } = useRegle(
 ## Common Rules
 
 ```ts
+import {useRegle} from '@regle/core';
 import { 
   required, email, minLength, maxLength,
   numeric, between, url, regex,
   alphaNum, alpha, sameAs
 } from '@regle/rules';
 
-// ---cut---
-import {ref} from 'vue';
 type FormState = {
   name?: string,
   email?: string,
@@ -58,8 +57,6 @@ type FormState = {
   password?: string,
   confirmPassword?: string,
 }
-// ---cut---
-import {useRegle} from '@regle/core';
 
 const state = ref<FormState>({})
 
@@ -118,9 +115,6 @@ const { r$ } = useRegle(state, {
 
 
 ```ts    
-import {ref} from 'vue';
-// ---cut---
-// @noErrors
 import {inferRules} from '@regle/core';
 import {requiredIf, minLength, regex} from '@regle/rules';
 
@@ -140,9 +134,6 @@ const rules = computed(() => inferRules(state, {
 
 ```ts
 import {useRegle} from '@regle/core';
-import {ref} from 'vue';
-// ---cut---
-// @noErrors
 import { withMessage } from '@regle/rules'
 
 const { r$ } = useRegle({email: '', password: ''}, {
@@ -168,8 +159,6 @@ import {required} from '@regle/rules';
 
 const {r$} = useRegle({name: ''}, {name: {required}});
 
-// ---cut---
-// @noErrors
 function handleSubmit() {
   // Validate entire form
   const {valid, data} = await r$.$validate()
@@ -192,9 +181,8 @@ function handleSubmit() {
 ## Collections (Arrays)
 
 ```ts
-import {required, email} from '@regle/rules';
-// ---cut---
 import {useRegle} from '@regle/core';
+import {required, email} from '@regle/rules';
 
 const { r$ } = useRegle(
   { users: [{ name: '', email: '' }] },
@@ -215,9 +203,8 @@ r$.users.$each[0].name.$error
 ## Nested Objects
 
 ```ts
-import {required, email, maxLength} from '@regle/rules';
-// ---cut---
 import {useRegle} from '@regle/core';
+import {required, email, maxLength} from '@regle/rules';
 
 const { r$ } = useRegle(
   { 
@@ -288,8 +275,6 @@ const { r$ } = useRegleSchema({
 ### TypeScript Errors?
 
 ```ts
-import {ref, computed} from 'vue';
-// ---cut---
 import { inferRules } from '@regle/core';
 import { required } from '@regle/rules';
 
