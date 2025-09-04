@@ -50,15 +50,13 @@ const { r$ } = useRegle(state, rules);
     <option value="TWO">Two</option>
   </select>
 
-  <div v-if="narrowVariant(r$.$fields, 'type', 'ONE')">
-    <!-- `email` is now a known field in this block -->
+  <div v-if="narrowVariant(r$, 'type', 'ONE')">
     <input v-model="r$.oneValue.$value" placeholder="oneValue" />
     <Errors :errors="r$.oneValue.$errors" />
   </div>
 
-  <div v-else-if="narrowVariant(r$.$fields, 'type', 'TWO')">
-    <!-- `username` is now a known field in this block -->
-    <!-- <input v-model="r$.twoValue.$value" placeholder="twoValue" />
-    <Errors :errors="r$.twoValue.$errors" /> -->
+  <div v-else-if="narrowVariant(r$, 'type', 'TWO')">
+    <input v-model="r$.twoValue.$value" placeholder="twoValue" />
+    <Errors :errors="r$.twoValue.$errors" />
   </div>
 </template>
