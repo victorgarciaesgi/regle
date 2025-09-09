@@ -3,13 +3,12 @@ import { type } from 'arktype';
 
 export function arktypefixture() {
   const tagSchema = type("'wolt' |'eat_in'").configure({
-    message: () => {
-      return 'Custom message';
-    },
+    message: () => 'Custom message',
   });
   const menuSchema = type({
     tags: type(tagSchema, '[]'),
+    usernames: type('string[] > 0').configure({ message: () => 'Custom message' }),
   });
 
-  return useRegleSchema({ tags: [] }, menuSchema);
+  return useRegleSchema({ tags: [], usernames: [] }, menuSchema);
 }

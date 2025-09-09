@@ -49,10 +49,9 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
       return false;
     }
   }
-
   if (isArray) {
     if (!obj[lastProp]) {
-      obj[lastProp] = { ...obj[lastProp], $self: value };
+      obj[lastProp] = { $self: value };
     } else {
       obj[lastProp].$self = (obj[lastProp].$self ??= []).concat(value);
     }

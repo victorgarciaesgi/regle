@@ -21,5 +21,16 @@ describe.each([
     expect(vm.r$.tags.$error).toBe(true);
     expect(vm.r$.tags.$errors).toStrictEqual(['Custom message']);
     expect(vm.r$.tags.$errors).toStrictEqual(['Custom message']);
+
+    await vm.r$.$validate();
+
+    expect(vm.r$.usernames.$error).toBe(true);
+    expect(vm.r$.usernames.$errors).toStrictEqual(['Custom message']);
+
+    vm.r$.$value.usernames = ['foo-bar'];
+    await vm.$nextTick();
+
+    // expect(vm.r$.usernames.$error).toBe(false);
+    expect(vm.r$.usernames.$errors).toStrictEqual([]);
   });
 });
