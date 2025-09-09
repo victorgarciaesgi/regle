@@ -62,7 +62,15 @@ export function extractRulesIssues({
         }))
       : [];
 
-  const schemaIssues = field.$error ? (field.$schemaErrors ?? []) : [];
+  let schemaIssues = [];
+  if (field.$schemaErrors && field.$error) {
+    if (!Array.isArray(field.$schemaErrors) && '$self' in field.$schemaErrors) {
+      // @ts-expect-error Errors from primitives only arrays from regle schemas
+      schemaIssues = field.$schemaErrors.$self ?? [];
+    } else {
+      schemaIssues = field.$schemaErrors ?? [];
+    }
+  }
 
   return [...ruleIssues, ...externalIssues, ...schemaIssues];
 }

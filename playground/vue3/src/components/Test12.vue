@@ -1,56 +1,55 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useRegle, defineRegleConfig } from '@regle/core';
-import { required, minLength, email, assignIf, withMessage } from '@regle/rules';
+import { z } from 'zod';
+import { inferSchema, useRegleSchema } from '@regle/schemas';
+import { ref } from 'vue';
 
-const { useRegle: useCustomRegle } = defineRegleConfig({
-  rules: () => ({
-    required: withMessage(required, 'You need to provide a value'),
-    customRule: withMessage(required, 'You need to provide a value'),
-  }),
+type Form = {
+  testArray: string[];
+};
+
+const schema = z.object({
+  testArray: z.array(z.string()).min(1),
 });
 
-const state = reactive({ name: '', email: '', condition: false });
+const form = ref<Form>({
+  testArray: [],
+});
 
-const { r$ } = useCustomRegle(state, () => ({
-  name: assignIf(() => state.condition, {}),
-  email: { email },
-}));
+const regleSchema = inferSchema(form, schema);
+const { r$ } = useRegleSchema(form, regleSchema);
 
-async function submit() {
+let i = 0;
+function addItem() {
+  form.value.testArray.push('' + ++i);
+}
+
+async function handleSubmit() {
   const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
+
+  const { $errors } = r$;
+  console.log({ valid });
+
+  if (form.value.testArray.length) {
+    console.log('expected $errors.testArray.self to be empty or not exist(?)');
   } else {
-    console.warn('Errors: ', r$.$errors);
+    console.log('expected $errors.testArray.self to be present');
   }
+
+  console.log('actual $errors value', $errors);
 }
 </script>
 
 <template>
-  <h2>Hello Regle!</h2>
+  <form @submit.prevent="handleSubmit">
+    <div style="border: 1px solid">
+      <div>Items</div>
+      <div v-for="item in form.testArray" :key="item">item - #{{ item }}</div>
+    </div>
+    <button type="button" @click="addItem">addItem</button>
 
-  <input type="checkbox" v-model="state.condition" /> Enable condition <br />
-  <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+    {{ r$.testArray.$errors }}
 
-  <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.email" :key="error">
-      {{ error }}
-    </li>
-  </ul>
-
-  <button @click="submit">Submit</button>
-  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+    <div>---------</div>
+    <button type="submit">Submit</button>
+  </form>
 </template>
