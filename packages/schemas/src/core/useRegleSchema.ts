@@ -139,7 +139,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         });
 
         issues.forEach(({ isArray, $path, ...issue }) => {
-          setObjectError(output, $path, [issue], isArray);
+          // If $path is empty, this is a root/array-level error. Assign to $self for Regle collections.
+          if ($path === '') {
+            setObjectError(output, '$self', [issue], isArray);
+          } else {
+            setObjectError(output, $path, [issue], isArray);
+          }
         });
       }
       return output;
