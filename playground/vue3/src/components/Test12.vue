@@ -1,55 +1,48 @@
 <script setup lang="ts">
-import { z } from 'zod';
-import { inferSchema, useRegleSchema } from '@regle/schemas';
 import { ref } from 'vue';
+import { useRegle } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
 
-type Form = {
-  testArray: string[];
-};
+const state = ref({ name: '', email: '' });
 
-const schema = z.object({
-  testArray: z.array(z.string()).min(1),
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  email: { email },
 });
 
-const form = ref<Form>({
-  testArray: [],
-});
-
-const regleSchema = inferSchema(form, schema);
-const { r$ } = useRegleSchema(form, regleSchema);
-
-let i = 0;
-function addItem() {
-  form.value.testArray.push('' + ++i);
-}
-
-async function handleSubmit() {
+async function submit() {
   const { valid, data } = await r$.$validate();
-
-  const { $errors } = r$;
-  console.log({ valid });
-
-  if (form.value.testArray.length) {
-    console.log('expected $errors.testArray.self to be empty or not exist(?)');
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
   } else {
-    console.log('expected $errors.testArray.self to be present');
+    console.warn('Errors: ', r$.$errors);
   }
-
-  console.log('actual $errors value', $errors);
 }
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit">
-    <div style="border: 1px solid">
-      <div>Items</div>
-      <div v-for="item in form.testArray" :key="item">item - #{{ item }}</div>
-    </div>
-    <button type="button" @click="addItem">addItem</button>
+  <h2>Hello Regle!</h2>
 
-    {{ r$.testArray.$errors }}
+  <label>Name</label><br />
+  <input v-model="r$.$value.name" placeholder="Type your name" />
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.name" :key="error">
+      {{ error }}
+    </li>
+  </ul>
 
-    <div>---------</div>
-    <button type="submit">Submit</button>
-  </form>
+  <label>Email (optional)</label><br />
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <ul style="font-size: 12px; color: red">
+    <li v-for="error of r$.$errors.email" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <button @click="submit">Submit</button>
+  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
+  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
 </template>
