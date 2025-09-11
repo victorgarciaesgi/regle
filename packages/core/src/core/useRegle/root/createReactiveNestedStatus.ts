@@ -569,7 +569,7 @@ export function createReactiveNestedStatus({
 
     if ($fields.value) {
       for (const field of Object.values($fields.value)) {
-        field.$unwatch();
+        field?.$unwatch();
       }
     }
   }
@@ -699,9 +699,11 @@ export function createReactiveNestedStatus({
       delete fullStatus[key as keyof typeof fullStatus];
     }
     for (const field of Object.values($fields.value)) {
-      Object.assign(fullStatus, {
-        [field.$name]: field,
-      });
+      if (field?.$name) {
+        Object.assign(fullStatus, {
+          [field.$name]: field,
+        });
+      }
     }
   });
 
