@@ -32,7 +32,7 @@
     "deps:upgrade": "taze --include-locked -I -r",
     "commitlint": "commitlint --edit",
     "lint": "oxlint",
-    "lint:fix": "turbo run lint:fix --filter='@regle/*'",
+    "lint:fix": "oxlint --fix",
     "lint:staged": "oxlint --fix",
     "format:staged": "prettier '**/*.{js,ts,vue,json,jsonc}' --write --ignore-unknown --config ./prettier.config.mjs"
   },
