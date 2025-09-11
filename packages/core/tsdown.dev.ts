@@ -8,6 +8,7 @@ const sharedOptions: Options = {
   external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
   ignoreWatch: ['dist/**'],
   sourcemap: true,
+  watch: ['./src', '../shared/utils'],
 };
 
 export default defineConfig([

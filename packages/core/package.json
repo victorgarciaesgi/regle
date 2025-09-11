@@ -6,7 +6,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
-    "dev": "tsdown --config=tsdown.dev.ts --watch",
+    "dev": "tsdown --config=tsdown.dev.ts",
     "test": "echo 'no tests'",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"

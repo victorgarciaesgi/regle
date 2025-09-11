@@ -1,6 +1,6 @@
 import { isObject } from './object.utils';
 
-export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true) {
+export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true): boolean {
   if (a === b) return true;
 
   if (a && b && typeof a == 'object' && typeof b == 'object') {
@@ -38,7 +38,6 @@ export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true) 
           }
         }
       }
-      return true;
     }
 
     return true;

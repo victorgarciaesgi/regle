@@ -364,7 +364,6 @@ export function createReactiveCollectionStatus({
           })
         );
       });
-
       const $anyEdited = computed<boolean>(() => {
         return (
           $selfStatus.value.$anyEdited ||
