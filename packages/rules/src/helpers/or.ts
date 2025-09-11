@@ -74,7 +74,7 @@ export function or<TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDec
           if (typeof result === 'boolean') {
             return acc;
           }
-          const { $valid, ...rest } = result;
+          const { $valid: _, ...rest } = result;
           return { ...acc, ...rest };
         }, {}),
       };

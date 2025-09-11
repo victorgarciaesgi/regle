@@ -1,4 +1,4 @@
-import { computed, isRef, toRef, toValue, unref, type MaybeRefOrGetter } from 'vue';
+import { computed, isRef, toRef, toValue, type MaybeRefOrGetter } from 'vue';
 
 /**
  * Returns a clean list of parameters
@@ -7,7 +7,7 @@ import { computed, isRef, toRef, toValue, unref, type MaybeRefOrGetter } from 'v
 export function unwrapRuleParameters<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   try {
     return params.map((param) => toValue(param)) as TParams;
-  } catch (e) {
+  } catch {
     return [] as any;
   }
 }

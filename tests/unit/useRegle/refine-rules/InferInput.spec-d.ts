@@ -27,7 +27,7 @@ describe('InferInput should correctly infer state type from a rules object', () 
 
   const refRules = ref(rules);
   const computedRules = computed(() => rules);
-  const refinedRules = refineRules(rules, (state) => ({
+  const refinedRules = refineRules(rules, () => ({
     overrideRefine: { type: type<number>() },
   }));
 

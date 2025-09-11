@@ -2,7 +2,6 @@ import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
 import { valibotRulesRefineFixture } from './fixtures/valibot.fixture';
 import { zodRulesRefineFixture } from './fixtures/zod.fixture';
-import { zod4RulesRefineFixture } from './fixtures/zod4.fixture';
 
 describe.each([
   ['valibot', valibotRulesRefineFixture],

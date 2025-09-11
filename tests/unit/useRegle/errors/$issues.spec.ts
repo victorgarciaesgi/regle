@@ -1,4 +1,4 @@
-import { createRule, defineRegleConfig, useRegle, type RegleFieldIssue } from '@regle/core';
+import { createRule, useRegle, type RegleFieldIssue } from '@regle/core';
 import { withMessage } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';

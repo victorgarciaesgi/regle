@@ -1,18 +1,11 @@
-import type {
-  AllRulesDeclarations,
-  CommonComparisonOptions,
-  RegleFieldStatus,
-  RegleRuleDecl,
-  RegleRuleDefinition,
-  RegleShortcutDefinition,
-} from '@regle/core';
+import type { RegleFieldStatus, RegleRuleDefinition, RegleShortcutDefinition } from '@regle/core';
 import { defineRegleConfig, useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue';
+import { withMessage } from '..';
+import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 import { email, minLength, required } from '../../rules';
 import { assignIf } from '../assignIf';
-import { createRegleComponent } from '../../../../../tests/utils/test.utils';
-import { withMessage } from '..';
 
 describe('assignIf helper', () => {
   const testComponent = defineComponent({

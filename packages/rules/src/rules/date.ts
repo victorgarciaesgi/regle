@@ -1,6 +1,6 @@
 import type { MaybeInput, RegleRuleDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { isFilled, isNumber } from '../helpers';
+import { isFilled } from '../helpers';
 
 /**
  * Requires a value to be a native Date constructor

@@ -1,5 +1,5 @@
 import { useRegle } from '@regle/core';
-import { dateAfter, dateBefore, required } from '@regle/rules';
+import { dateAfter, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';

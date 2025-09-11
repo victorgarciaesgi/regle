@@ -69,7 +69,7 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
       $isRequired: (field) => field.$rules.required?.$active ?? false,
     },
     nested: {
-      $isEmpty: (nest) => false,
+      $isEmpty: (_nest) => false,
     },
   },
 });

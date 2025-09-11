@@ -7,29 +7,21 @@
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",
-    "test": "vitest run",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "test": "vitest run"
   },
   "dependencies": {
     "@regle/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@typescript-eslint/eslint-plugin": "catalog:",
-    "@typescript-eslint/parser": "catalog:",
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "catalog:",
-    "eslint": "catalog:",
-    "eslint-config-prettier": "catalog:",
-    "eslint-plugin-vue": "catalog:",
     "prettier": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   },
   "type": "module",

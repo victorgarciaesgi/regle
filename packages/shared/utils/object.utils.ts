@@ -1,4 +1,3 @@
-import { cloneDeep } from './cloneDeep';
 import { isEmpty } from './isEmpty';
 
 export function isObject(obj: unknown): obj is Record<string, any> {
@@ -106,8 +105,8 @@ function prototypeCheck(prop: string) {
 }
 
 export function merge<TObj1 extends object = object, TObjs extends object = object>(
-  obj1: TObj1,
-  ...objs: TObjs[]
+  _obj1: TObj1,
+  ..._objs: TObjs[]
 ): TObj1 & TObjs {
   var args = [].slice.call(arguments);
   var arg;

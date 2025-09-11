@@ -1,5 +1,4 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import { type Ref } from 'vue';
 
 /**
  *
@@ -19,7 +18,7 @@ import { type Ref } from 'vue';
  */
 export function withDeps<TSchema extends StandardSchemaV1, TParams extends unknown[] = []>(
   schema: TSchema,
-  depsArray: [...TParams]
+  _depsArray: [...TParams]
 ): TSchema {
   return schema;
 }

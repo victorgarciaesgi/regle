@@ -3,7 +3,7 @@ import { withTooltip } from '../withTooltip';
 
 describe('withTooltip', () => {
   it('should register tooltips to an inline rule', () => {
-    const inlineRule = withTooltip((value) => true, 'Hello tooltip');
+    const inlineRule = withTooltip((_value) => true, 'Hello tooltip');
     expect(inlineRule.tooltip?.({} as any)).toBe('Hello tooltip');
     expect(inlineRule._tooltip).toBe('Hello tooltip');
   });
