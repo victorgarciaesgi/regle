@@ -263,5 +263,15 @@ describe('$edited', () => {
 
     expect(vm.r$.collection.$edited).toBe(false);
     expect(vm.r$.collection.$anyEdited).toBe(false);
+
+    // Ensure every property is checked
+    vm.r$.$value.collection.push({ id: 2, name: 'foo' });
+    await vm.$nextTick();
+
+    vm.r$.$value.collection.splice(0, 1);
+    await vm.$nextTick();
+
+    expect(vm.r$.collection.$self.$edited).toBe(true);
+    expect(vm.r$.collection.$anyEdited).toBe(true);
   });
 });
