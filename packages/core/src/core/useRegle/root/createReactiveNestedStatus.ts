@@ -606,7 +606,7 @@ export function createReactiveNestedStatus({
     }
 
     for (const field of Object.values($fields.value)) {
-      field.$reset(options, true);
+      field?.$reset(options, true);
     }
 
     if (options?.clearExternalErrors) {
@@ -621,7 +621,7 @@ export function createReactiveNestedStatus({
 
   function $touch(runCommit = true, withConditions = false): void {
     for (const field of Object.values($fields.value)) {
-      field.$touch(runCommit, withConditions);
+      field?.$touch(runCommit, withConditions);
     }
   }
 
