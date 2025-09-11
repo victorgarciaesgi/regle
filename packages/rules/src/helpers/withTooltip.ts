@@ -7,7 +7,6 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
-  InferRegleRule,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 

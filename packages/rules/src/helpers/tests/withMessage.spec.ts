@@ -121,7 +121,7 @@ describe('withMessage helper', () => {
     >();
 
     // Correct return type with inline rule and metadata
-    expectTypeOf(withMessage((value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
+    expectTypeOf(withMessage((_value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
         [],
@@ -138,7 +138,7 @@ describe('withMessage helper', () => {
       { name: '' },
       {
         name: {
-          required: withMessage((value) => true, ''),
+          required: withMessage((_value) => true, ''),
         },
       }
     );
@@ -163,7 +163,7 @@ describe('withMessage helper', () => {
 
     useRegle('' as string, {
       required: withMessage(
-        (value: Maybe<string>) => {
+        (_value: Maybe<string>) => {
           return true;
         },
         ({ $value }) => {
@@ -174,13 +174,13 @@ describe('withMessage helper', () => {
     });
 
     // @ts-expect-error no message argument ❌
-    withMessage((value) => true);
+    withMessage((_value) => true);
 
     // @ts-expect-error incorrect return type ❌
-    withMessage((value) => {}, 'Message');
+    withMessage((_value) => {}, 'Message');
 
     // Correct type with async value returning metadata
-    expectTypeOf(withMessage(async (value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
+    expectTypeOf(withMessage(async (_value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
         [],
@@ -196,7 +196,7 @@ describe('withMessage helper', () => {
     // Correct type with async value returning metadata
     expectTypeOf(
       withMessage(
-        async (value) => ({ $valid: true, foo: 'bar' }),
+        async (_value) => ({ $valid: true, foo: 'bar' }),
         ({ foo, $params }) => {
           expectTypeOf(foo).toEqualTypeOf<string>();
           expectTypeOf($params).toEqualTypeOf<[]>();
@@ -208,7 +208,7 @@ describe('withMessage helper', () => {
     // Correct type with async value returning metadata
     expectTypeOf(
       withMessage(
-        (value) => ({ $valid: true, foo: 'bar' }),
+        (_value) => ({ $valid: true, foo: 'bar' }),
         ({ foo, $params }) => {
           expectTypeOf(foo).toEqualTypeOf<string>();
           expectTypeOf($params).toEqualTypeOf<[]>();
@@ -220,7 +220,7 @@ describe('withMessage helper', () => {
     // Correct type with async value returning metadata
     expectTypeOf(
       withMessage(
-        (value) => {
+        (_value) => {
           const condition: boolean = false;
           if (condition) {
             return { $valid: false, custom: 0 };
@@ -295,12 +295,12 @@ describe('withMessage helper', () => {
       >
     >();
 
-    withMessage(sameAs, ({ $value, $params: [target, otherName] }) => {
+    withMessage(sameAs, ({ $params: [_, otherName] }) => {
       expectTypeOf(otherName).toEqualTypeOf<string | undefined>();
       return 'test';
     });
 
-    withMessage(oneOf, ({ $value, $params: [options] }) => {
+    withMessage(oneOf, ({ $params: [options] }) => {
       expectTypeOf(options).toEqualTypeOf<readonly [string | number, ...(string | number)[]]>();
       return 'test';
     });
@@ -316,12 +316,9 @@ describe('withMessage helper', () => {
 
     expectTypeOf(
       withMessage(
-        withParams(
-          (value) => {
-            return true;
-          },
-          [() => true]
-        ),
+        withParams(() => {
+          return true;
+        }, [() => true]),
         'Required async'
       )
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [boolean], false, true, unknown>>();

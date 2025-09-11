@@ -1,5 +1,5 @@
 import { useRegle } from '@regle/core';
-import { minLength, numeric, required } from '@regle/rules';
+import { minLength } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';

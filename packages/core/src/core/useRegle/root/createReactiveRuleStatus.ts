@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, watch } from 'vue';
-import { debounce, isEmpty } from '../../../../../shared';
+import { isEmpty } from '../../../../../shared';
 import type {
   $InternalInlineRuleDeclaration,
   $InternalRegleRuleDefinition,
@@ -38,7 +38,6 @@ export function createReactiveRuleStatus({
   path,
   cachePath,
   storage,
-  $debounce,
   modifiers,
 }: CreateReactiveRuleStatusOptions): $InternalRegleRuleStatus {
   type ScopeState = {
@@ -243,7 +242,7 @@ export function createReactiveRuleStatus({
         ruleResult = $valid;
         $metadata.value = rest;
       }
-    } catch (e) {
+    } catch {
       ruleResult = false;
     } finally {
       $pending.value = false;
@@ -282,7 +281,7 @@ export function createReactiveRuleStatus({
       }
       $valid.value = ruleResult;
       return ruleResult;
-    } catch (e) {
+    } catch {
       return false;
     } finally {
       $validating.value = false;

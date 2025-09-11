@@ -64,12 +64,12 @@ describe('collections validations', () => {
     return true;
   });
 
-  const deepNestedParamSpy = vi.fn((params: Object) => {
+  const deepNestedParamSpy = vi.fn((_params: object) => {
     return true;
   });
 
   const deepNestedParamRule = createRule({
-    validator(value: unknown, params: Object) {
+    validator(value: unknown, params: object) {
       return deepNestedParamSpy(params);
     },
     message: 'This field is required',
@@ -98,10 +98,10 @@ describe('collections validations', () => {
 
     return useRegle(form, {
       level0: {
-        $each: (parent, index) => ({
+        $each: (parent, _index) => ({
           name: { required },
           level1: {
-            $each: (value, index) => ({
+            $each: (value, _index) => ({
               name: {
                 required: requiredIfMock(() => parent.value.name === 'required'),
                 nested: deepNestedParamRule(value),

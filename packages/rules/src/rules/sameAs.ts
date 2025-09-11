@@ -32,7 +32,7 @@ interface SameAsFn {
  */
 export const sameAs: SameAsFn = createRule({
   type: 'sameAs',
-  validator(value: unknown, target: unknown, otherName?: string) {
+  validator(value: unknown, target: unknown, _otherName?: string) {
     if (isEmpty(value)) {
       return true;
     }

@@ -8,8 +8,6 @@ import {
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
   inferRules,
-  type AllRulesDeclarations,
-  type ReglePartialRuleTree,
 } from '@regle/core';
 import {
   checked,

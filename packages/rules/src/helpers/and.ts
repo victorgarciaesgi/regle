@@ -79,7 +79,7 @@ export function and<const TRules extends [FormRuleDeclaration<any, any>, ...Form
           if (typeof result === 'boolean') {
             return acc;
           }
-          const { $valid, ...rest } = result;
+          const { $valid: _$valid, ...rest } = result;
           return { ...acc, ...rest };
         }, {}),
       };
@@ -90,7 +90,7 @@ export function and<const TRules extends [FormRuleDeclaration<any, any>, ...Form
 
   let validator: RegleRuleDefinitionProcessor;
 
-  if (!!rules.length) {
+  if (rules.length) {
     validator = isAnyRuleAsync
       ? async (value: any | null | undefined, ...params: any[]) => {
           const results = await Promise.all(computeRules(rules, value, ...params));
@@ -101,7 +101,7 @@ export function and<const TRules extends [FormRuleDeclaration<any, any>, ...Form
           return computeMetadata($rules);
         };
   } else {
-    validator = (value: any) => {
+    validator = (_value: any) => {
       return false;
     };
   }

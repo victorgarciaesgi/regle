@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["vue", "unicorn"],
+  "categories": {
+    "correctness": "off"
+  },
+  "env": {
+    "builtin": true
+  },
+  "rules": {
+    "vue/valid-define-emits": "error",
+    "vue/valid-define-props": "error",
+    "vue/no-multiple-slot-args": "warn",
+    "curly": "off",
+    "no-unexpected-multiline": "off",
+    "unicorn/empty-brace-spaces": "off",
+    "unicorn/no-nested-ternary": "off",
+    "unicorn/number-literal-case": "off"
+  },
+  "ignorePatterns": ["**/.output/", "**/dist/**/*.js", "playground/**/*", "docs/.vitepress/cache/**/*"],
+  "overrides": [
+    {
+      "files": ["**/*.ts", "*.vue", "**/*.vue", "**/*.spec.ts", "packages/**"],
+      "rules": {
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "error"]
+          }
+        ],
+        "import/default": "off",
+        "import/no-named-as-default-member": "off",
+        "promise/param-names": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/consistent-type-imports": [
+          "error",
+          {
+            "disallowTypeAnnotations": false
+          }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-unused-vars": "warn"
+      },
+      "plugins": ["import", "promise", "typescript"]
+    }
+  ]
+}

@@ -1,5 +1,3 @@
-import type { InjectionKey, Ref } from 'vue';
-
 export const AppVue = `
 <script setup lang="ts">
 import {ref} from 'vue';

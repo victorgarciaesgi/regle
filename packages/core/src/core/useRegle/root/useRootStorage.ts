@@ -1,5 +1,5 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { computed, getCurrentScope, onScopeDispose, reactive, ref, watch } from 'vue';
+import { getCurrentScope, onScopeDispose, reactive, ref, watch } from 'vue';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,

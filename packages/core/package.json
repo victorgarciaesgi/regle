@@ -7,9 +7,7 @@
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts",
-    "test": "echo 'no tests'",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "test": "echo 'no tests'"
   },
   "peerDependencies": {
     "pinia": ">=2.2.5",
@@ -23,12 +21,7 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
-    "@typescript-eslint/eslint-plugin": "catalog:",
-    "@typescript-eslint/parser": "catalog:",
     "@vue/test-utils": "catalog:",
-    "eslint": "catalog:",
-    "eslint-config-prettier": "catalog:",
-    "eslint-plugin-vue": "catalog:",
     "expect-type": "catalog:",
     "prettier": "catalog:",
     "tsdown": "catalog:",
@@ -36,7 +29,6 @@
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   },
   "type": "module",

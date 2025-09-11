@@ -1,5 +1,5 @@
 import type { RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
-import { defineRegleConfig, inferRules, useRegle } from '@regle/core';
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { checked, email, required } from '@regle/rules';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import { ruleMockIsEven } from './rules.fixtures';

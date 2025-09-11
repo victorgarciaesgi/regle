@@ -2,7 +2,6 @@ import { useRegle } from '@regle/core';
 import { email, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { shouldBeInvalidField, shouldBeValidField } from '../../../utils/validations.utils';
 
 describe('$extractDirtyFields', () => {
   function extractDirtyFieldsRegles() {

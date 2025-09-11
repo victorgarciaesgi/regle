@@ -20,7 +20,7 @@ describe('withAsync helper', () => {
             email: {
               error: withMessage(
                 withAsync(
-                  async (value) => {
+                  async (_value) => {
                     await timeout(1000);
                     return form.value.count === 0;
                   },
@@ -96,7 +96,7 @@ describe('withAsync helper', () => {
         return await new Promise<boolean>((resolve, reject) => {
           reject(false);
         });
-      } catch (e) {
+      } catch {
         return false;
       }
     });
@@ -107,7 +107,7 @@ describe('withAsync helper', () => {
   it('should have correct types', () => {
     expectTypeOf(
       withAsync(
-        async (value) => {
+        async (_value) => {
           return true as boolean;
         },
         [() => 0]
@@ -115,16 +115,16 @@ describe('withAsync helper', () => {
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [number], true, boolean, unknown>>();
 
     expectTypeOf(
-      withAsync(async (value) => {
+      withAsync(async () => {
         return true as boolean;
       })
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
 
     const base = ref(1);
 
-    const someAsyncCall = async (param: number) => await Promise.resolve(true);
+    const someAsyncCall = async (_param: number) => await Promise.resolve(true);
 
-    const { r$ } = useRegle(
+    useRegle(
       { name: '' },
       {
         name: {
@@ -144,7 +144,7 @@ describe('withAsync helper', () => {
     );
 
     withMessage(
-      withAsync(async (value, param) => ({ $valid: true, foo: 'bar' }), [() => 0]),
+      withAsync(async (_value, _param) => ({ $valid: true, foo: 'bar' }), [() => 0]),
       ({ foo, $params }) => {
         expectTypeOf(foo).toEqualTypeOf<string>();
         expectTypeOf($params).toEqualTypeOf<[number]>();

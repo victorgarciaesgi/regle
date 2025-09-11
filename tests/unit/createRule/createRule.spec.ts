@@ -74,7 +74,7 @@ describe('createRule', () => {
 
   it('should recognize multiple parameters with default', async () => {
     const rule = createRule({
-      validator(value, param = false, param2 = true) {
+      validator(_value, _param = false, _param2 = true) {
         return true;
       },
       message: '',
@@ -91,7 +91,7 @@ describe('createRule', () => {
 
   it('should recognize multiple parameters with spread', async () => {
     const rule = createRule({
-      validator(value, ...params: boolean[]) {
+      validator(_value, ..._params: boolean[]) {
         return true;
       },
       message: '',

@@ -1,5 +1,5 @@
 import { computed, getCurrentInstance, onMounted, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { AllRulesDeclarations, Regle, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
+import type { AllRulesDeclarations, Regle, ScopedInstancesRecord } from '../../types';
 import { randomId, tryOnScopeDispose } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
 
@@ -26,7 +26,7 @@ export function createUseScopedRegleComposable<
     rulesFactory: MaybeRefOrGetter<{}>,
     options?: UseScopedRegleOptions<boolean> & Record<string, any>
   ) => {
-    const { namespace, scopeKey, ...restOptions } = options ?? {};
+    const { namespace, scopeKey: _scopeKey, ...restOptions } = options ?? {};
 
     scopedUseRegle.__config ??= {};
 

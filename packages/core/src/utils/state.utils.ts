@@ -1,4 +1,4 @@
-import { effectScope, getCurrentScope, onScopeDispose, type EffectScope } from 'vue';
+import { effectScope, getCurrentScope, onScopeDispose } from 'vue';
 
 export function tryOnScopeDispose(fn: () => any) {
   if (getCurrentScope()) {

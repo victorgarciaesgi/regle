@@ -61,7 +61,7 @@ type FilterTuple<T extends any[]> = T extends [infer F, ...infer R]
     : [F, ...FilterTuple<R>]
   : [];
 
-type UnwrapTuplesRaw<T extends any[] = [], F = CreateFn<T>> = [T] extends [[]]
+export type UnwrapTuplesRaw<T extends any[] = [], F = CreateFn<T>> = [T] extends [[]]
   ? []
   : Parameters<
       F extends (...args: infer Args) => any

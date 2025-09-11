@@ -104,7 +104,7 @@ export type RegleFieldStatus<
             >,
           });
         }
-      } catch (e) {
+      } catch {
         // do nothing
       }
     }

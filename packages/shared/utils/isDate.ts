@@ -19,7 +19,7 @@ export function isDate(value: unknown): value is Date {
       possibleDate = date;
     }
     return !!possibleDate;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

@@ -1,7 +1,6 @@
-import type { useCollectScope, MergedScopedRegles, UseScopedRegleOptions, useCollectScopeFn } from '@regle/core';
+import type { UseScopedRegleOptions, useCollectScope, useCollectScopeFn } from '@regle/core';
 import { createScopedUseRegle, type CreateScopedUseRegleOptions } from '@regle/core';
 import { useRegleSchema, type useRegleSchemaFn } from './useRegleSchema';
-import type { MaybeRefOrGetter, Ref } from 'vue';
 
 type CreateScopedUseRegleSchemaOptions<
   TCustomRegle extends useRegleSchemaFn<any, any>,

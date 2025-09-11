@@ -1,4 +1,4 @@
-import { nextTick, version } from 'vue';
+import { nextTick } from 'vue';
 import {
   nestedReactiveObjectValidation,
   nestedReactiveWithRefsValidation,

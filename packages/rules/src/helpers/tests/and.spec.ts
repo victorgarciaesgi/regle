@@ -44,13 +44,13 @@ describe('and validator', () => {
   });
 
   it('should validate inline function', () => {
-    const result = and((value: unknown) => ({ $valid: true, foo: 'bar' }), required);
+    const result = and((_value: unknown) => ({ $valid: true, foo: 'bar' }), required);
     expect(result.exec(undefined)).toBe(false);
     expect(result.exec('fof')).toBe(true);
   });
 
   it('should validate async function', async () => {
-    const result = and(async (value: unknown) => {
+    const result = and(async (_value: unknown) => {
       await timeout(100);
       return false;
     }, required);
@@ -59,8 +59,6 @@ describe('and validator', () => {
   });
 
   it('should have correct return types', () => {
-    const test = and(required, email, minLength(6));
-
     // @ts-expect-error at least one argument
     and();
     expectTypeOf(and(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();

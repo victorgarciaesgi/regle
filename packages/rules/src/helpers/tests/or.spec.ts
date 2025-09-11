@@ -44,13 +44,13 @@ describe('or validator', () => {
   });
 
   it('should validate inline function', () => {
-    const result = or((value: unknown) => ({ $valid: true, foo: 'bar' }), required);
+    const result = or((_value: unknown) => ({ $valid: true, foo: 'bar' }), required);
     expect(result.exec(undefined)).toBe(true);
     expect(result.exec('fof')).toBe(true);
   });
 
   it('should validate async function', async () => {
-    const result = or(async (value: unknown) => {
+    const result = or(async (_value: unknown) => {
       await timeout(100);
       return false;
     }, required);

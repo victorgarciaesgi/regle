@@ -7,7 +7,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
-    sameAs: withMessage(sameAs, ({ $value, $params: [target, otherName] }) => {
+    sameAs: withMessage(sameAs, ({ $params: [_, otherName] }) => {
       return `Not same as ${otherName}`;
     }),
     rule: withMessage(ruleMockIsEven, 'Patched rule'),
@@ -63,7 +63,7 @@ describe('defineRegleConfig rules', () => {
     const { vm } = createRegleComponent(nestedRefObjectValidation);
 
     // @ts-expect-error
-    useCustomRegle({ foo: 0 }, { foo: { rule: (value: Maybe<string>) => true } });
+    useCustomRegle({ foo: 0 }, { foo: { rule: (_value: Maybe<string>) => true } });
 
     vm.r$.$touch();
 
@@ -110,10 +110,10 @@ describe('extendRegleConfig', () => {
     });
 
     // @ts-expect-error
-    useExtendRegle({ foo: 0 }, { foo: { extendedRule: (value: Maybe<string>) => true } });
+    useExtendRegle({ foo: 0 }, { foo: { extendedRule: (_value: Maybe<string>) => true } });
 
     // @ts-expect-error
-    useExtendRegle({ foo: 0 }, { foo: { rule: (value: Maybe<string>) => true } });
+    useExtendRegle({ foo: 0 }, { foo: { rule: (_value: Maybe<string>) => true } });
 
     return useExtendRegle(form, () => ({
       withApply: { rule: applyIf(true, ruleMockIsEven), extendedRule: applyIf(true, ruleMockIsEven) },
