@@ -9,7 +9,7 @@ import type {
   RegleRuleDecl,
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
-import type { CollectionRegleBehaviourOptions, FieldRegleBehaviourOptions } from '../core';
+import type { CollectionRegleBehaviourOptions } from '../core';
 
 type IsLiteral<T> = string extends T ? false : true;
 
@@ -21,7 +21,7 @@ export interface RegleRuleDefinition<
   TParams extends any[] = [],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
-  TInput = unknown,
+  _TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
 > extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<

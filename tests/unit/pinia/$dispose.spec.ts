@@ -2,8 +2,7 @@ import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
-import { version as piniaVersion } from 'pinia/package.json';
-import { defineComponent, nextTick, ref, version } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../packages/core/src/utils';
 
 describe.runIf(isVueSuperiorOrEqualTo3dotFive)('$dispose', () => {

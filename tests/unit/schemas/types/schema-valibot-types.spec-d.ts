@@ -1,12 +1,6 @@
 import type { RegleShortcutDefinition } from '@regle/core';
-import {
-  inferSchema,
-  useRegleSchema,
-  type RegleSchemaCollectionStatus,
-  type RegleSchemaFieldStatus,
-} from '@regle/schemas';
+import { useRegleSchema, type RegleSchemaCollectionStatus, type RegleSchemaFieldStatus } from '@regle/schemas';
 import * as v from 'valibot';
-import { computed } from 'vue';
 
 it('valibot - intersection types should correctly infer types', () => {
   const schema = v.intersect([

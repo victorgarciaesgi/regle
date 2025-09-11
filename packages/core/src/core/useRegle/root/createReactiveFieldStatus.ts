@@ -350,7 +350,7 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if (schemaErrors?.value && !Array.isArray(schemaErrors?.value) && '$self' in schemaErrors?.value) {
+        if (schemaErrors?.value && !Array.isArray(schemaErrors?.value) && '$self' in schemaErrors.value) {
           // @ts-expect-error Errors from primitives only arrays from regle schemas
           return schemaErrors?.value.$self?.length > 0;
         } else if (externalErrors?.value?.length || schemaErrors?.value?.length) {

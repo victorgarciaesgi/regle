@@ -590,7 +590,7 @@ export function createReactiveNestedStatus({
         state.value = cloneDeep({ ...originalState });
         initialState.value = cloneDeep({ ...originalState });
       } else if (options?.toInitialState) {
-        state.value = cloneDeep({ ...(initialState.value ?? {}) });
+        state.value = cloneDeep({ ...initialState.value });
       } else if (options?.toState) {
         let newInitialState: Record<string, unknown>;
         if (typeof options?.toState === 'function') {
@@ -626,7 +626,7 @@ export function createReactiveNestedStatus({
   }
 
   function filterNullishFields(fields: [string, unknown][]) {
-    return fields.filter(([key, value]) => {
+    return fields.filter(([_, value]) => {
       if (isObject(value)) {
         return !(value && typeof value === 'object' && '_null' in value) && !isEmpty(value);
       } else if (Array.isArray(value)) {
@@ -668,14 +668,14 @@ export function createReactiveNestedStatus({
 
         return { valid: validationResults, data };
       }
-    } catch (e) {
+    } catch {
       return { valid: false, data: state.value };
     } finally {
       scopeState.$localPending.value = false;
     }
   }
 
-  const { $shortcuts, $localPending, ...restScopeState } = scopeState;
+  const { $shortcuts, $localPending: _$localPending, ...restScopeState } = scopeState;
 
   const fullStatus = reactive({
     ...restScopeState,
@@ -764,7 +764,7 @@ export function createReactiveChildrenStatus({
         return { fakeState };
       })!;
 
-      const { state, ...restProperties } = properties;
+      const { state: _state, ...restProperties } = properties;
       return createReactiveNestedStatus({
         rulesDef,
         ...restProperties,

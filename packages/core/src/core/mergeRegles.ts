@@ -251,7 +251,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
         }
       });
       return { valid: validationResults, data };
-    } catch (e) {
+    } catch {
       return { valid: false, data: $value.value };
     }
   }

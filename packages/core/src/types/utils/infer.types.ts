@@ -1,6 +1,6 @@
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
-import type { ExtractFromGetter, MaybeInput, Prettify, UnwrapSimple } from './misc.types';
+import type { ExtractFromGetter, Prettify, UnwrapSimple } from './misc.types';
 import type { IsUnion } from 'type-fest/source/internal';
 import type { UnionToTuple } from 'type-fest';
 

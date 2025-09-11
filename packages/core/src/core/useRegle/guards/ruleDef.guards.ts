@@ -18,7 +18,7 @@ export function isNestedRulesDef(
     isRefObject(state) ||
     (isObject(rules.value) &&
       !isEmpty(rules.value) &&
-      !Object.entries(rules.value).some(([key, rule]) => isRuleDef(rule) || typeof rule === 'function'))
+      !Object.entries(rules.value).some(([_, rule]) => isRuleDef(rule) || typeof rule === 'function'))
   );
 }
 

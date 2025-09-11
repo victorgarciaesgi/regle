@@ -144,7 +144,7 @@ export type InferRegleSchemaStatusType<
  * @public
  */
 export type RegleSchemaFieldStatus<
-  TSchema extends unknown,
+  _TSchema extends unknown,
   TState = any,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState>, '$pending'> & {

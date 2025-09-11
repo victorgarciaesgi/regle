@@ -30,7 +30,7 @@ describe('useRegle should work with single field validation', () => {
 
     shouldBeInvalidField(vm.r$);
 
-    const { valid, data } = await vm.r$.$validate();
+    const { valid } = await vm.r$.$validate();
 
     expect(valid).toBe(false);
   });

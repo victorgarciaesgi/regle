@@ -75,7 +75,9 @@ describe('type utils', () => {
 
     const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required } } });
 
+    // oxlint-disable-next-line
     const foo: RegleStatus<Record<string, any> | undefined> = r$.nested;
+    // oxlint-disable-next-line
     const bar: RegleStatus<Record<string, any> | undefined> = r$.nested;
   });
 

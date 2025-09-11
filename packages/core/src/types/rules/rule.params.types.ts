@@ -1,4 +1,4 @@
-import type { Maybe, MaybeReadonly } from '../../types/utils';
+import type { Maybe } from '../../types/utils';
 import type { MaybeRefOrGetter } from 'vue';
 
 type CreateFn<T extends any[]> = (...args: T) => any;

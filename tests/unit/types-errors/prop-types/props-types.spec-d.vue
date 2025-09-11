@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { useRegle } from '@regle/core';
+/* oxlint-disable-next-line */
 import ComponentTest from './Component-test.vue';
 import { checked, minLength, required, sameAs } from '@regle/rules';
 import { useCustomRegle } from './prop-types.config';

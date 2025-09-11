@@ -7,6 +7,7 @@ const sharedOptions: Options = {
   dts: true,
   clean: false,
   external: ['vue', 'valibot', 'zod', '@standard-schema/spec'],
+  watch: ['./src', '../shared/utils'],
 };
 
 export default defineConfig([

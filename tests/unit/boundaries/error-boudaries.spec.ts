@@ -1,5 +1,5 @@
 import { createRule, useRegle, type Maybe } from '@regle/core';
-import { applyIf, email, required } from '@regle/rules';
+import { applyIf } from '@regle/rules';
 import { createRegleComponent } from '../../utils/test.utils';
 
 function simpleNestedStateWithMixedValidation() {
@@ -10,7 +10,7 @@ function simpleNestedStateWithMixedValidation() {
   const triggerError = null as unknown as { nested: { name: boolean } };
 
   const customErroredRule = createRule({
-    validator(value: Maybe<unknown>) {
+    validator(_value: Maybe<unknown>) {
       return triggerError.nested.name;
     },
     message() {
@@ -30,7 +30,7 @@ describe('$validate', () => {
   it('should not crash when an error is thrown into validators', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    const { valid, data } = await vm.r$.$validate();
+    await vm.r$.$validate();
 
     expect(vm.r$).toBeDefined();
   });

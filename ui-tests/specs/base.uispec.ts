@@ -1,10 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../utils/page.utils';
 
-function mapLiContain(errors: string[]) {
-  return errors.map((error) => `<li>${error}</li>`);
-}
-
 test('it should render the page correctly', async ({ index }) => {
   await index.goto();
 

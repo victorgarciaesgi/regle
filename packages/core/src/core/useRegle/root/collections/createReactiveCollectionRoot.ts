@@ -579,7 +579,7 @@ export function createReactiveCollectionStatus({
         }
       });
       return { valid: validationResults, data };
-    } catch (e) {
+    } catch {
       return { valid: false, data };
     }
   }

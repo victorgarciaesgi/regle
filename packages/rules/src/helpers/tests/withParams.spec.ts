@@ -126,13 +126,13 @@ describe('withParams helper', () => {
               return '';
             }
           ),
-          bar: withMessage((value) => true, ''),
+          bar: withMessage(() => true, ''),
         },
       }
     );
 
     withMessage(
-      withParams((value, param) => ({ $valid: true, foo: 'bar' }), [() => 0]),
+      withParams((_value, _param) => ({ $valid: true, foo: 'bar' }), [() => 0]),
       ({ foo, $params }) => {
         expectTypeOf(foo).toEqualTypeOf<string>();
         expectTypeOf($params).toEqualTypeOf<[number]>();
