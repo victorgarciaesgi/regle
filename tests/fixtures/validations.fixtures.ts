@@ -3,7 +3,7 @@ import { defineRegleConfig, useRegle } from '@regle/core';
 import { checked, email, required } from '@regle/rules';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 import { ruleMockIsEven } from './rules.fixtures';
-// eslint-disable-next-line
+// oxlint-disable-next-line
 export type { RefSymbol } from '@vue/reactivity';
 
 type ReturnRegleType = ReturnType<typeof nestedReactiveObjectValidation>;
