@@ -641,7 +641,7 @@ export function createReactiveFieldStatus({
     $commit();
   }
 
-  // eslint-disable @blocktypescript-eslint/no-unused-vars
+  // oxlint-disable typescript-eslint/no-unused-vars
   const {
     $shortcuts,
     $validating,
@@ -653,7 +653,7 @@ export function createReactiveFieldStatus({
     $lazy,
     ...restScope
   } = scopeState;
-  // eslint-enable @blocktypescript-eslint/no-unused-vars
+  // oxlint-enable typescript-eslint/no-unused-vars
 
   return reactive({
     ...restScope,
