@@ -2,6 +2,8 @@
   <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png" alt="regle cover">
 </p>
 
+<a href="https://www.buymeacoffee.com/victorgarco"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a beer&emoji=🍺&slug=victorgarco&button_colour=FFDD00&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=ffffff" /></a>
+
 # Regle
 
 
