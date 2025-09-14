@@ -22,6 +22,7 @@ function nestedRefObjectValidation() {
     }
   );
 }
+
 describe('validation groups', () => {
   it('should correctly', async () => {
     const { vm } = createRegleComponent(nestedRefObjectValidation);
@@ -59,5 +60,35 @@ describe('validation groups', () => {
     expect(vm.r$.$groups.nameAndEmail.$pending).toBe(false);
     expect(vm.r$.$groups.nameAndEmail.$errors).toStrictEqual([]);
     expect(vm.r$.$groups.nameAndEmail.$correct).toStrictEqual(true);
+  });
+
+  it('should correctly handle undefined entries', async () => {
+    function nestedRefObjectValidationWithUndefinedEntries() {
+      const form = ref<{
+        email: string;
+        name?: string;
+      }>({
+        email: '',
+        name: '',
+      });
+
+      return useRegle(
+        form,
+        {
+          email: { required, email },
+        },
+        {
+          validationGroups: (fields) => ({
+            nameAndEmail: [fields.email, fields.name],
+          }),
+        }
+      );
+    }
+
+    const { vm } = createRegleComponent(nestedRefObjectValidationWithUndefinedEntries);
+
+    await vm.$nextTick();
+
+    expect(vm.r$.$groups.nameAndEmail.$dirty).toBe(false);
   });
 });
