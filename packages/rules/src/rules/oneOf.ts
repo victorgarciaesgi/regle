@@ -1,9 +1,15 @@
-import { createRule, type MaybeInput, type MaybeReadonly, type RegleRuleDefinition } from '@regle/core';
-import { computed, toValue, type MaybeRefOrGetter } from 'vue';
-import { isFilled, withMessage, withParams } from '../helpers';
+import {
+  createRule,
+  type MaybeInput,
+  type MaybeReadonly,
+  type RegleRuleDefinition,
+  type NonEmptyTuple,
+} from '@regle/core';
+import { type MaybeRefOrGetter } from 'vue';
+import { isFilled } from '../helpers';
 
 interface OneOfFn {
-  <const TValues extends readonly [string | number, ...(string | number)[]]>(
+  <const TValues extends NonEmptyTuple<string | number> | NonEmptyTuple<string> | NonEmptyTuple<number>>(
     options: MaybeReadonly<MaybeRefOrGetter<[...TValues]>>
   ): RegleRuleDefinition<
     TValues[number],
@@ -15,7 +21,7 @@ interface OneOfFn {
   >;
   /** Keep this definition without generics for inference */
   (
-    options: MaybeReadonly<MaybeRefOrGetter<[...(readonly [string | number, ...(string | number)[]])]>>
+    options: MaybeReadonly<MaybeRefOrGetter<[...[string | number, ...(string | number)[]]]>>
   ): RegleRuleDefinition<
     string | number,
     [options: readonly [string | number, ...(string | number)[]]],

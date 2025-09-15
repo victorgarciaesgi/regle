@@ -21,3 +21,5 @@ export type IsPrimitiveArray<T extends any[] | null | undefined> =
 export type Transform$EachKeys<T extends Record<string, any>> = {
   [K in keyof T as `${string & K}$each`]: T[K];
 };
+
+export type NonEmptyTuple<T> = [T, ...T[]] | T[];

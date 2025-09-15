@@ -113,4 +113,5 @@ export type {
   RegleExternalSchemaErrorTree,
   RegleIssuesTree,
   HasNamedKeys,
+  NonEmptyTuple,
 } from './types';

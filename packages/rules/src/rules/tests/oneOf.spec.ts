@@ -42,4 +42,8 @@ describe('oneOf validator', () => {
       string | number
     >
   >();
+
+  expectTypeOf(oneOf(['One', 'Two'] as string[])).toEqualTypeOf<
+    RegleRuleDefinition<string, [options: string[]], false, boolean, MaybeInput<string>, string | number>
+  >();
 });
