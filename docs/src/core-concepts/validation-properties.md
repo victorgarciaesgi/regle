@@ -155,36 +155,37 @@ The current state is treated as the new initial state.
 
 #### Options
 
-```ts
-type ResetOptions<TState extends unknown> = {
-  /**
-   * Reset validation status and reset form state to its initial state.
-   *
-   * Initial state is different than the original state as the initial state can be mutated when using `$reset`.
-   *
-   * This serve as the base comparison state for `$edited` property.
-   *
-   * ⚠️ This doesn't work if the state is a `reactive` object.
-   */
-  toInitialState?: boolean;
-  /**
-   * Reset validation status and reset form state to its original state.
-   *
-   * Original state is the unmutated state that was passed to the form when it was initialized.
-   */
-  toOriginalState?: boolean;
-  /**
-   * Reset validation status and reset form state to the given state.
-   * Also set the new state as new initial state.
-   */
-  toState?: TState | (() => TState);
-  /**
-   * Clears the $externalErrors state back to an empty object.
-   */
-  clearExternalErrors?: boolean;
-};
-```
+
+| Option                | Type                          | Description                                                                                                                                                                                                                 |
+|-----------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `toInitialState`      | `boolean`                     | Reset validation status and reset form state to its initial state.<br><br>Initial state is different from the original state, as it can be mutated when using `$reset`. This serves as the base comparison for `$edited`.<br><br>⚠️ This doesn't work if the state is a `reactive` object. |
+| `toOriginalState`     | `boolean`                     | Reset validation status and reset form state to its original state.<br><br>Original state is the unmutated state that was passed to the form when it was initialized.                                                       |
+| `toState`             | `TState` or `() => TState`    | Reset validation status and reset form state to the given state. Also sets the new state as the new initial state.                                                                    |
+| `clearExternalErrors` | `boolean`                     | Clears the `$externalErrors` state back to an empty object.                                                                                                                           |
      
+
+Example:
+
+```ts
+r$.$reset(); // Only reset validation state
+```
+
+```ts
+r$.$reset({ toInitialState: true }); // Reset validation state and form state to initial state
+```
+
+```ts
+r$.$reset({ toOriginalState: true }); // Reset validation state and form state to original state
+```
+
+```ts
+r$.$reset({ toState: { email: 'test@test.com' } }); // Reset validation state and form state to the given state
+```
+
+```ts
+r$.$reset({ clearExternalErrors: true }); // Clear $externalErrors state
+```
+
 ### `$clearExternalErrors` 
 - Type: `() => void`
 
