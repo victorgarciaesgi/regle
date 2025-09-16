@@ -15,7 +15,9 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
    */
   customStore?: Ref<ScopedInstancesRecordLike>;
   /**
-   * Set the
+   * Collect instances in a Record instead of an array
+   *
+   * ⚠️ Each nested `useScopedRegle` must provide a parameter `scopeKey` to be collected.
    */
   asRecord?: TAsRecord;
 };

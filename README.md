@@ -15,7 +15,7 @@
     <a href="https://www.npmjs.com/package/@regle/core"><img alt="npm download" src="https://img.shields.io/npm/dt/@regle/core.svg"/></a>
 </p>
 <p align='center'>
-    <a href="https://www.buymeacoffee.com/victorgarco" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 150px !important;" ></a>
+    <a href="https://www.buymeacoffee.com/victorgarco" target="_blank"><img height="40" width="150" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 150px !important;" ></a>
 </p>
 
 # Regle

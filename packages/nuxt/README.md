@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png" alt="regle cover">
 </p>
 
-<a href="https://www.buymeacoffee.com/victorgarco" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 150px !important;" ></a>
+<a href="https://www.buymeacoffee.com/victorgarco" target="_blank"><img height="40" width="150" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 150px !important;" ></a>
 
 # Regle
 
