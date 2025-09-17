@@ -42,7 +42,7 @@ features:
     icon: 
       src: /standard-schema.svg
       alt: standard-schema icon
-    details: Use any schema library like Zod, Valibot or ArkType to control your validations.
+    details: Use any schema library like Zod, Valibot or ArkType to control your validations
 ---
 
 
