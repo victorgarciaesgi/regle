@@ -11,6 +11,8 @@ packages:
   - playground/nuxt
   - ui-tests/fixtures/ui-vue3
 
+minimumReleaseAge: 1440 # 24 hours
+
 catalog:
   '@types/node': 22.18.0
   # Vue

@@ -101,7 +101,7 @@
     "pnpm": ">=10.14.0"
   },
   "license": "MIT",
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.17.0",
   "devEngines": {
     "runtime": {
       "name": "node",
