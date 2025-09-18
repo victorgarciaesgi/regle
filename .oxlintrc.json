@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["vue", "unicorn"],
+  "plugins": ["vue", "unicorn", "eslint"],
   "categories": {
     "correctness": "off"
   },
@@ -41,7 +41,7 @@
         "@typescript-eslint/no-explicit-any": "off",
         "no-unused-vars": "warn"
       },
-      "plugins": ["import", "promise", "typescript"]
+      "plugins": ["import", "promise", "typescript", "eslint", "vue", "unicorn"]
     }
   ]
 }
