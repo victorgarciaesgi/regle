@@ -8,7 +8,6 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
   "dependencies": {
@@ -26,17 +25,12 @@
     "@tsconfig/node20": "^20.1.6",
     "@types/node": "^24.3.0",
     "@vitejs/plugin-vue": "^6.0.1",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.8.1",
-    "eslint": "catalog:",
-    "eslint-config-prettier": "catalog:",
-    "eslint-plugin-vue": "catalog:",
     "npm-run-all2": "^8.0.4",
     "prettier": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vite": "^7.1.4",
+    "vite": "7.1.4",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }

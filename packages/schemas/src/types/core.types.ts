@@ -10,10 +10,10 @@ import type {
   RegleIssuesTree,
   RegleRuleStatus,
   RegleShortcutDefinition,
+  ArrayElement,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, PartialDeep } from 'type-fest';
-import type { ArrayElement } from 'type-fest/source/internal';
 import type { Raw } from 'vue';
 
 export type RegleSchema<

@@ -17,7 +17,7 @@
     "valibot": "1.1.0",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.0.6",
+    "vue-component-type-helpers": "3.0.7",
     "zod": "catalog:"
   }
 }
