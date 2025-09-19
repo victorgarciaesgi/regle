@@ -20,7 +20,6 @@ import type {
 import type { DeepMaybeRef, InferInput, JoinDiscriminatedUnions, PrimitiveTypes, Unwrap } from '../../types/utils';
 import { isRuleDef } from './guards';
 import { useRootStorage } from './root';
-import { flatErrors } from './useErrors';
 
 function createEmptyRuleState(rules: RegleUnknownRulesTree | RegleRuleDecl): Record<string, any> | any {
   const result: Record<string, any> = {};
