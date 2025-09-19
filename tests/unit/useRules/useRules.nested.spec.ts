@@ -115,7 +115,7 @@ describe('nested validations', () => {
 
     const result = await schema['~standard'].validate({
       level0: { level1: { name: '' }, level2: '' },
-      collection: [{ name: '' }],
+      collection: [{ name: '' }, { name: 'foo' }, { name: '' }],
       testDate: new Date(),
       testFile: emptyFile,
     });
@@ -124,6 +124,7 @@ describe('nested validations', () => {
       { message: 'This field is required', path: ['level0', 'level1', 'name'] },
       { message: 'This field is required', path: ['level0', 'level2'] },
       { message: 'This field is required', path: ['collection', 0, 'name'] },
+      { message: 'This field is required', path: ['collection', 2, 'name'] },
       { message: 'The date must be before 2/1/00', path: ['testDate'] },
       { message: 'This field is required', path: ['testFile'] },
     ]);
