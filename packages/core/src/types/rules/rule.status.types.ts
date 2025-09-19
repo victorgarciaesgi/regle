@@ -1,3 +1,4 @@
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { IsUnion } from 'expect-type';
 import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
@@ -19,13 +20,15 @@ import type {
   MaybeOutput,
   MaybeVariantStatus,
   RegleCollectionErrors,
+  RegleCollectionResult,
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
+  RegleFieldResult,
   RegleFormPropertyType,
   RegleIssuesTree,
+  RegleNestedResult,
   ReglePartialRuleTree,
-  RegleResult,
   RegleRuleDecl,
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
@@ -34,6 +37,13 @@ import type {
   RegleValidationGroupOutput,
   ResetOptions,
 } from '..';
+
+export interface RegleStandardSchema<Input = unknown, Output = Input> extends StandardSchemaV1<Input, Output> {
+  readonly '~standard': Omit<StandardSchemaV1.Props<Input, Output>, 'version' | 'vendor'> & {
+    version: 1;
+    vendor: 'regle';
+  };
+}
 
 /**
  * @public
@@ -116,7 +126,15 @@ export type RegleStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<RegleResult<JoinDiscriminatedUnions<TState>, TRules>>;
+  $validate: (
+    forceValues?: JoinDiscriminatedUnions<TState> extends EmptyObject
+      ? any
+      : HasNamedKeys<JoinDiscriminatedUnions<TState>> extends true
+        ? IsUnknown<JoinDiscriminatedUnions<TState>> extends true
+          ? any
+          : JoinDiscriminatedUnions<TState>
+        : any
+  ) => Promise<RegleNestedResult<JoinDiscriminatedUnions<TState>, TRules>>;
 } & ProcessNestedFields<TState, TRules, TShortcuts> &
   ([TShortcuts['nested']] extends [never]
     ? {}
@@ -135,7 +153,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
-  $validate: () => Promise<$InternalRegleResult>;
+  $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }
 
 /**
@@ -258,7 +276,7 @@ export type RegleFieldStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<RegleResult<TState, TRules>>;
+  $validate: (forceValues?: IsUnknown<TState> extends true ? any : TState) => Promise<RegleFieldResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: ComputeFieldRules<TState, TRules>;
 } & ([TShortcuts['fields']] extends [never]
@@ -283,13 +301,13 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $issues: RegleFieldIssue[];
   readonly $isDebouncing: boolean;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
-  $validate: () => Promise<$InternalRegleResult>;
+  $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }
 
 /**
  * @public
  */
-export interface RegleCommonStatus<TValue = any> {
+export interface RegleCommonStatus<TValue = any> extends RegleStandardSchema<TValue> {
   /** Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
   /**
@@ -468,7 +486,9 @@ export type RegleCollectionStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: () => Promise<RegleResult<JoinDiscriminatedUnions<TState>, JoinDiscriminatedUnions<TRules>>>;
+  $validate: (
+    value?: JoinDiscriminatedUnions<TState>
+  ) => Promise<RegleCollectionResult<TState, JoinDiscriminatedUnions<TRules>>>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {
@@ -488,5 +508,5 @@ export interface $InternalRegleCollectionStatus
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
-  $validate: () => Promise<$InternalRegleResult>;
+  $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }

@@ -192,6 +192,8 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         return {
           valid: !result.issues?.length,
           data: processedState.value,
+          errors: {},
+          issues: {},
         };
       } catch (e) {
         return Promise.reject(e);

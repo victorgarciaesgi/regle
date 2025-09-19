@@ -12,9 +12,17 @@ export type InferInput<
   IsUnion<UnwrapSimple<TRules>> extends true
     ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
     : TMarkMaybe extends true
-      ? Prettify<{
-          [K in keyof UnwrapSimple<TRules>]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-        }>
+      ? Prettify<
+          {
+            [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+              ? K
+              : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+          } & {
+            [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+              ? never
+              : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+          }
+        >
       : Prettify<{
           [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
         }>;
