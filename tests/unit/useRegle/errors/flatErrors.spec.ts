@@ -81,8 +81,8 @@ describe('flatErrors', () => {
       { message: 'This field is required', path: ['email'] },
       { message: 'This field is required', path: ['user', 'firstName'] },
       { message: 'This field is required', path: ['user', 'nested', 'child'] },
-      { message: 'This field is required', path: ['user', 'nested', 'collection', '0', 'name'] },
-      { message: 'This field is required', path: ['contacts', '0', 'name'] },
+      { message: 'This field is required', path: ['user', 'nested', 'collection', 0, 'name'] },
+      { message: 'This field is required', path: ['contacts', 0, 'name'] },
     ]);
 
     vm.r$.$value.email = 'foo';
@@ -95,8 +95,8 @@ describe('flatErrors', () => {
       { message: 'The value length should be at least 5', path: ['email'] },
       { message: 'This field is required', path: ['user', 'firstName'] },
       { message: 'This field is required', path: ['user', 'nested', 'child'] },
-      { message: 'This field is required', path: ['user', 'nested', 'collection', '0', 'name'] },
-      { message: 'This field is required', path: ['contacts', '0', 'name'] },
+      { message: 'This field is required', path: ['user', 'nested', 'collection', 0, 'name'] },
+      { message: 'This field is required', path: ['contacts', 0, 'name'] },
     ]);
   });
 });
