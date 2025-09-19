@@ -1,17 +1,76 @@
 ---
-title: Infer state from rules
-description: Write your validations in the Zod way
+title: Standard Schema
+description: Use Regle as a Standard Schema library
 ---
 
-# Infer state from rules
+# Standard Schema
 
-Regle is state first, that means that you write your rules depending on the state structure, that's the model based way that Vuelidate introduced.
+Regle implements the [Standard Schema](https://standardschema.dev/) specification.
 
-With Schema libraries like Zod or Valibot, it's the opposite: the state type depends on the schema output.
+This means that you can use Regle on any third party package that supports the Standard Schema spec.
 
-This mental model may differ to some people, the good news is Regle support both ways.
+Regle can also use itself as a schema library when using `useRegleSchema`.
 
-## `InferInput`
+## Usage
+
+```ts
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { required }
+})
+
+const result = await r$.['~standard'].validate({ name: '' });
+
+console.log(result.issues);
+```
+
+# `useRules`
+
+`useRules` is a composable that allows you to write your rules like a schema library, without declaring a state.
+
+Under the hood, it still uses the `useRegle` composable, but it doesn't accept a state parameter, it will create a empty state from the rules.
+
+
+## Schema only usage
+
+```ts
+import { useRules } from '@regle/core';
+import { required, string } from '@regle/rules';
+
+const schema = useRules({
+  name: { string, required }
+})
+
+const result = await schema['~standard'].validate({ name: '' });
+```
+
+## Composition usage
+
+```vue
+<template>
+  <input 
+     v-model='r$.$value.email' 
+    :class="{ error: r$.email.$error }" 
+    placeholder='Type your email'
+  />
+
+  <li v-for="error of r$.email.$errors" :key='error'>
+    {{ error }}
+  </li>
+</template>
+<script setup lang="ts">
+import { useRules } from '@regle/core';
+import { required, string } from '@regle/rules';
+
+const r$ = useRules({
+  name: { string, required }
+})
+</script>
+```
+
+# `InferInput`
 
 `InferInput` is an utility type that can produce a object state from any rules object.
 

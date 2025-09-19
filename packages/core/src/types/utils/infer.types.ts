@@ -2,30 +2,34 @@ import type { IsUnion, UnionToTuple } from 'type-fest';
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
 import type { ExtractFromGetter, Prettify, UnwrapSimple } from './misc.types';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 export type InferInput<
   TRules extends
     | MaybeRef<ReglePartialRuleTree<Record<string, any>, any>>
-    | ((state: any) => ReglePartialRuleTree<Record<string, any>, any>),
+    | ((state: any) => ReglePartialRuleTree<Record<string, any>, any>)
+    | MaybeRef<StandardSchemaV1<any>>,
   TMarkMaybe extends boolean = true,
 > =
-  IsUnion<UnwrapSimple<TRules>> extends true
-    ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
-    : TMarkMaybe extends true
-      ? Prettify<
-          {
-            [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
-              ? K
-              : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-          } & {
-            [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
-              ? never
-              : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-          }
-        >
-      : Prettify<{
-          [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-        }>;
+  TRules extends MaybeRef<StandardSchemaV1<infer State>>
+    ? State
+    : IsUnion<UnwrapSimple<TRules>> extends true
+      ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
+      : TMarkMaybe extends true
+        ? Prettify<
+            {
+              [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+                ? K
+                : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+            } & {
+              [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+                ? never
+                : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+            }
+          >
+        : Prettify<{
+            [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+          }>;
 
 type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> = TRule extends {
   $each: RegleCollectionEachRules<any, any>;

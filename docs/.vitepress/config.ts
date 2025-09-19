@@ -85,6 +85,7 @@ const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildre
   { text: 'Rules metadata', link: '/advanced-usage/rule-metadata' },
   { text: 'Async validators', link: '/advanced-usage/async-validation' },
   { text: 'Global configuration', link: '/advanced-usage/global-config' },
+  { text: 'Standard Schema', link: '/advanced-usage/standard-schema' },
   { text: 'Server errors', link: '/advanced-usage/external-errors' },
   { text: 'Variants', link: '/advanced-usage/variants' },
   { text: 'Scoped validation', link: '/advanced-usage/scoped-validation' },
@@ -101,10 +102,6 @@ const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[
   {
     text: 'Rules definitions',
     link: '/typescript/typing-rules',
-  },
-  {
-    text: 'Infer state from rules',
-    link: '/typescript/infer-state-from-rules',
   },
 ];
 
