@@ -39,8 +39,8 @@ describe('InferInput should correctly infer state type from a rules object', () 
     string?: MaybeInput<string>;
     unions?: MaybeInput<string | Date>;
     overrideRefine?: MaybeInput<string | number>;
-    collection?: { name?: MaybeInput<string> }[];
-    super?: { nested?: { object?: { firstName?: MaybeInput<number | string> } } };
+    collection: { name?: MaybeInput<string> }[];
+    super: { nested: { object: { firstName?: MaybeInput<number | string> } } };
   };
 
   expectTypeOf<InferInput<typeof rules>>().toEqualTypeOf<ExpectedState>();
