@@ -1,7 +1,8 @@
-import type { $InternalRegleResult, RegleStandardSchema } from '../../../types';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
+import type { $InternalRegleResult } from '../../../types';
 import { flatErrors } from '../useErrors';
 
-export function createStandardSchema(validateFn: (value: any) => Promise<$InternalRegleResult>): RegleStandardSchema {
+export function createStandardSchema(validateFn: (value: any) => Promise<$InternalRegleResult>): StandardSchemaV1 {
   return {
     '~standard': {
       version: 1,

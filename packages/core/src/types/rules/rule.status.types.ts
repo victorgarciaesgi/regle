@@ -38,13 +38,6 @@ import type {
   ResetOptions,
 } from '..';
 
-export interface RegleStandardSchema<Input = unknown, Output = Input> extends StandardSchemaV1<Input, Output> {
-  readonly '~standard': Omit<StandardSchemaV1.Props<Input, Output>, 'version' | 'vendor'> & {
-    version: 1;
-    vendor: 'regle';
-  };
-}
-
 /**
  * @public
  */
@@ -307,7 +300,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
 /**
  * @public
  */
-export interface RegleCommonStatus<TValue = any> extends RegleStandardSchema<TValue> {
+export interface RegleCommonStatus<TValue = any> extends StandardSchemaV1<TValue> {
   /** Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
   /**
