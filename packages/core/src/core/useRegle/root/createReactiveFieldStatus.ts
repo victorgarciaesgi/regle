@@ -16,6 +16,7 @@ import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
+import { createStandardSchema } from './standard-schemas';
 
 interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
@@ -104,7 +105,7 @@ export function createReactiveFieldStatus({
     const entries: [string, $InternalRegleRuleStatus][] = [];
 
     for (const ruleKey in rules) {
-      if (ruleKey.startsWith('$')) continue;
+      if (ruleKey.startsWith('$') || ruleKey.startsWith('~')) continue;
 
       const rule = rules[ruleKey];
       if (!rule) continue;
@@ -588,14 +589,22 @@ export function createReactiveFieldStatus({
     }
   }
 
-  async function $validate(): Promise<$InternalRegleResult> {
+  async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
     try {
+      if (forceValues) {
+        state.value = forceValues;
+      }
       if (schemaMode) {
         if (onValidate) {
           $touch(false);
           return onValidate();
         } else {
-          return { valid: false, data: state.value };
+          return {
+            valid: false,
+            data: state.value,
+            errors: scopeState.$errors.value,
+            issues: scopeState.$issues.value,
+          };
         }
       }
       const data = state.value;
@@ -603,20 +612,30 @@ export function createReactiveFieldStatus({
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
       } else if (!scopeState.$silent.value && scopeState.$dirty.value && !scopeState.$pending.value) {
-        return { valid: !scopeState.$error.value, data };
+        return {
+          valid: !scopeState.$error.value,
+          data,
+          errors: scopeState.$errors.value,
+          issues: scopeState.$issues.value,
+        };
       }
       if (schemaMode) {
-        return { valid: !schemaErrors?.value?.length, data };
+        return {
+          valid: !schemaErrors?.value?.length,
+          data,
+          errors: scopeState.$errors.value,
+          issues: scopeState.$issues.value,
+        };
       } else if (isEmpty($rules.value)) {
-        return { valid: true, data };
+        return { valid: true, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
       }
       const results = await Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()));
 
       const validationResults = results.every((value) => value.status === 'fulfilled' && value.value === true);
 
-      return { valid: validationResults, data };
+      return { valid: validationResults, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
     } catch {
-      return { valid: false, data: state.value };
+      return { valid: false, data: state.value, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
     }
   }
 
@@ -672,5 +691,6 @@ export function createReactiveFieldStatus({
     $watch,
     $extractDirtyFields,
     $clearExternalErrors,
+    ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
 }

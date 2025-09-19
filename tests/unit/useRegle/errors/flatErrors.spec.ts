@@ -1,7 +1,8 @@
 import { flatErrors, useRegle } from '@regle/core';
-import { required } from '@regle/rules';
+import { email, minLength, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 function errorsRules() {
   const form = ref({
@@ -17,7 +18,7 @@ function errorsRules() {
   });
 
   return useRegle(form, {
-    email: { required },
+    email: { required, email, minLength: minLength(5) },
     user: {
       firstName: { required },
       nested: {
@@ -66,7 +67,7 @@ describe('flatErrors', () => {
     const { vm } = createRegleComponent(errorsRules);
 
     const flats = flatErrors(vm.r$.$errors, { includePath: true });
-    expectTypeOf(flats).toEqualTypeOf<{ error: string; path: string }[]>();
+    expectTypeOf(flats).toEqualTypeOf<StandardSchemaV1.Issue[]>();
 
     expect(flats).toStrictEqual([]);
 
@@ -77,11 +78,25 @@ describe('flatErrors', () => {
     expect(flats2.length).toBe(5);
 
     expect(flats2).toStrictEqual([
-      { error: 'This field is required', path: 'email' },
-      { error: 'This field is required', path: 'user.firstName' },
-      { error: 'This field is required', path: 'user.nested.child' },
-      { error: 'This field is required', path: 'user.nested.collection.0.name' },
-      { error: 'This field is required', path: 'contacts.0.name' },
+      { message: 'This field is required', path: ['email'] },
+      { message: 'This field is required', path: ['user', 'firstName'] },
+      { message: 'This field is required', path: ['user', 'nested', 'child'] },
+      { message: 'This field is required', path: ['user', 'nested', 'collection', '0', 'name'] },
+      { message: 'This field is required', path: ['contacts', '0', 'name'] },
+    ]);
+
+    vm.r$.$value.email = 'foo';
+    await vm.$nextTick();
+
+    const flats3 = flatErrors(vm.r$.$errors, { includePath: true });
+
+    expect(flats3).toStrictEqual([
+      { message: 'The value must be an valid email address', path: ['email'] },
+      { message: 'The value length should be at least 5', path: ['email'] },
+      { message: 'This field is required', path: ['user', 'firstName'] },
+      { message: 'This field is required', path: ['user', 'nested', 'child'] },
+      { message: 'This field is required', path: ['user', 'nested', 'collection', '0', 'name'] },
+      { message: 'This field is required', path: ['contacts', '0', 'name'] },
     ]);
   });
 });

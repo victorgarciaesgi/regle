@@ -23,6 +23,7 @@ import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isValidatorRules
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+import { createStandardSchema } from './standard-schemas';
 
 interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any> | undefined>;
@@ -647,15 +648,23 @@ export function createReactiveNestedStatus({
     return Object.fromEntries(dirtyFields);
   }
 
-  async function $validate(): Promise<$InternalRegleResult> {
+  async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
     try {
+      if (forceValues) {
+        state.value = forceValues;
+      }
       if (commonArgs.schemaMode) {
         if (commonArgs.onValidate) {
           $touch(false);
           scopeState.$localPending.value = true;
           return commonArgs.onValidate();
         } else {
-          return { valid: false, data: state.value };
+          return {
+            valid: false,
+            data: state.value,
+            errors: scopeState.$errors.value,
+            issues: scopeState.$issues.value,
+          };
         }
       } else {
         const data = state.value;
@@ -666,10 +675,10 @@ export function createReactiveNestedStatus({
 
         const validationResults = results.every((value) => value.status === 'fulfilled' && value?.value.valid === true);
 
-        return { valid: validationResults, data };
+        return { valid: validationResults, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
       }
     } catch {
-      return { valid: false, data: state.value };
+      return { valid: false, data: state.value, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
     } finally {
       scopeState.$localPending.value = false;
     }
@@ -691,11 +700,12 @@ export function createReactiveNestedStatus({
     $watch,
     $clearExternalErrors,
     $extractDirtyFields,
+    ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
 
   watchEffect(() => {
     // Cleanup previous field properties
-    for (const key of Object.keys(fullStatus).filter((key) => !key.startsWith('$'))) {
+    for (const key of Object.keys(fullStatus).filter((key) => !key.startsWith('$') && !key.startsWith('~'))) {
       delete fullStatus[key as keyof typeof fullStatus];
     }
     for (const field of Object.values($fields.value)) {

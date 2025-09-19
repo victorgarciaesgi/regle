@@ -1,9 +1,18 @@
+import type { EmptyObject, IsAny, IsUnknown } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
+  $InternalRegleCollectionErrors,
+  $InternalRegleCollectionIssues,
+  $InternalRegleErrorTree,
+  $InternalRegleIssuesTree,
   CustomRulesDeclarationTree,
+  RegleCollectionErrors,
   RegleCollectionRuleDecl,
+  RegleErrorTree,
+  RegleFieldIssue,
   RegleFieldStatus,
   RegleFormPropertyType,
+  RegleIssuesTree,
   ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
@@ -20,7 +29,6 @@ import type {
   MaybeOutput,
   Prettify,
 } from '../utils';
-import type { IsAny, IsUnknown } from 'type-fest';
 
 export type PartialFormState<TState extends Record<string, any>> = [unknown] extends [TState]
   ? {}
@@ -79,6 +87,48 @@ export type RegleResult<
             : unknown;
     };
 
+export type RegleNestedResult<
+  Data extends Record<string, any> | unknown,
+  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
+> = RegleResult<Data, TRules> &
+  (
+    | {
+        valid: false;
+        issues: RegleIssuesTree<Data>;
+        errors: RegleErrorTree<Data>;
+      }
+    | {
+        valid: true;
+        issues: EmptyObject;
+        errors: EmptyObject;
+      }
+  );
+
+export type RegleCollectionResult<
+  Data extends any[],
+  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
+> = RegleResult<Data, TRules> &
+  (
+    | {
+        valid: false;
+        issues: RegleCollectionErrors<Data, true>;
+        errors: RegleCollectionErrors<Data>;
+      }
+    | {
+        valid: true;
+        issues: EmptyObject;
+        errors: EmptyObject;
+      }
+  );
+
+export type RegleFieldResult<
+  Data extends any,
+  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
+> = RegleResult<Data, TRules> & {
+  issues: RegleFieldIssue<TRules>[];
+  errors: string[];
+};
+
 /**
  * Infer safe output from any `r$` instance
  *
@@ -95,7 +145,12 @@ export type InferSafeOutput<
       ? SafeFieldProperty<TState, TRules>
       : never;
 
-export type $InternalRegleResult = { valid: boolean; data: any };
+export type $InternalRegleResult = {
+  valid: boolean;
+  data: any;
+  errors: $InternalRegleErrorTree | $InternalRegleCollectionErrors | string[];
+  issues: $InternalRegleIssuesTree | $InternalRegleCollectionIssues | RegleFieldIssue[];
+};
 
 export type DeepSafeFormState<
   TState extends Record<string, any>,

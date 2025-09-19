@@ -18,6 +18,9 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "@standard-schema/spec": "1.0.0"
+  },
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
