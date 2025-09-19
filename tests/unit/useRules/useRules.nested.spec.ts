@@ -123,7 +123,7 @@ describe('nested validations', () => {
     expect(result.issues).toStrictEqual([
       { message: 'This field is required', path: ['level0', 'level1', 'name'] },
       { message: 'This field is required', path: ['level0', 'level2'] },
-      { message: 'This field is required', path: ['collection', '0', 'name'] },
+      { message: 'This field is required', path: ['collection', 0, 'name'] },
       { message: 'The date must be before 2/1/00', path: ['testDate'] },
       { message: 'This field is required', path: ['testFile'] },
     ]);
