@@ -5,6 +5,7 @@ import type {
   $InternalRegleFieldStatus,
   RegleFieldIssue,
 } from '../../types';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 type TempRegleFieldIssue = {
   $property: string;
@@ -99,21 +100,12 @@ function isCollectionError(errors: $InternalRegleErrors): errors is $InternalReg
  *
  * Can also flatten to an array containing the path of each error with the options.includePath
  */
-export function flatErrors(
-  errors: $InternalRegleErrors,
-  options: { includePath: true }
-): { error: string; path: string }[];
+export function flatErrors(errors: $InternalRegleErrors, options: { includePath: true }): StandardSchemaV1.Issue[];
 export function flatErrors(errors: $InternalRegleErrors, options?: { includePath?: false }): string[];
 export function flatErrors(
   errors: $InternalRegleErrors,
   options?: { includePath?: boolean }
-): (
-  | string
-  | {
-      error: string;
-      path: string;
-    }
-)[] {
+): (string | StandardSchemaV1.Issue)[] {
   const { includePath = false } = options ?? {};
   if (Array.isArray(errors) && errors.every((err) => !isObject(err))) {
     // Field errors (string[])
@@ -121,7 +113,7 @@ export function flatErrors(
   } else if (isCollectionError(errors)) {
     // Collections errors
     const selfErrors = includePath
-      ? (errors.$self?.map((err) => ({ error: err, path: '' })) ?? [])
+      ? (errors.$self?.map((err) => ({ message: err, path: [] }) as StandardSchemaV1.Issue) ?? [])
       : (errors.$self ?? []);
     const eachErrors = errors.$each?.map((err) => iterateErrors(err, includePath)) ?? [];
     return selfErrors?.concat(eachErrors.flat());
@@ -137,24 +129,18 @@ function iterateErrors(
   errors: $InternalRegleErrors,
   includePath = false,
   _path?: string[]
-): (
-  | string
-  | {
-      error: string;
-      path: string;
-    }
-)[] {
+): (string | StandardSchemaV1.Issue)[] {
   const path = includePath && !_path ? [] : _path;
   if (Array.isArray(errors) && errors.every((err) => !isObject(err))) {
     // Field errors (string[])
     if (includePath) {
-      return errors.map((err) => ({ error: err, path: path?.join('.') ?? '' }));
+      return errors.map((err) => ({ message: err, path: path ?? [] }));
     }
     return errors;
   } else if (isCollectionError(errors)) {
     // Collections errors
     const selfErrors = path?.length
-      ? (errors.$self?.map((err) => ({ error: err, path: path.join('.') })) ?? [])
+      ? (errors.$self?.map((err) => ({ message: err, path: path ?? [] }) as StandardSchemaV1.Issue) ?? [])
       : (errors.$self ?? []);
     const eachErrors =
       errors.$each?.map((err, index) => iterateErrors(err, includePath, path?.concat(index.toString()))) ?? [];

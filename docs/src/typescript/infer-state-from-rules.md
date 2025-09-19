@@ -45,6 +45,22 @@ type State = InferInput<typeof rules>;
 <br/>
 <br/>
 
+## `useRules`
+
+`useRules` is a composable that allows you to write your rules in a more declarative way.
+
+It works exactly like `useRegle`, but it doesn't accept a state parameter, it will create a emp from the rules.
+
+```ts twoslash
+
+import { useRules, type InferInput } from '@regle/core';
+import { required, string } from '@regle/rules';
+
+const rules = useRules({
+  name: { required, string },
+});
+```
+
 ## `refineRules`
 
 Regle is state first because in real world forms, rules can depend a state values.   

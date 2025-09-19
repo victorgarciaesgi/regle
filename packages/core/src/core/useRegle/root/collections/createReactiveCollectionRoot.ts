@@ -19,6 +19,7 @@ import { isNestedRulesStatus, isRuleDef } from '../../guards';
 import type { CommonResolverOptions, CommonResolverScopedState, StateWithId } from '../common/common-types';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createCollectionElement } from './createReactiveCollectionElement';
+import { createStandardSchema } from '../standard-schemas';
 
 interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
@@ -561,11 +562,14 @@ export function createReactiveCollectionStatus({
     }
   }
 
-  async function $validate(): Promise<$InternalRegleResult> {
+  async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
+    if (forceValues) {
+      state.value = forceValues;
+    }
     const data = state.value;
     try {
       const results = await Promise.allSettled([
-        $selfStatus.value.$validate(),
+        $selfStatus.value.$validate(forceValues),
         ...$eachStatus.value.map((status) => {
           return status.$validate();
         }),
@@ -578,9 +582,9 @@ export function createReactiveCollectionStatus({
           return false;
         }
       });
-      return { valid: validationResults, data };
+      return { valid: validationResults, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
     } catch {
-      return { valid: false, data };
+      return { valid: false, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
     }
   }
 
@@ -628,5 +632,6 @@ export function createReactiveCollectionStatus({
     $reset,
     $extractDirtyFields,
     $clearExternalErrors,
+    ...createStandardSchema($validate),
   }) satisfies $InternalRegleCollectionStatus;
 }
