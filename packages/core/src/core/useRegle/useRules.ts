@@ -20,6 +20,7 @@ import type {
 import type { DeepMaybeRef, InferInput, JoinDiscriminatedUnions, PrimitiveTypes, Unwrap } from '../../types/utils';
 import { isRuleDef } from './guards';
 import { useRootStorage } from './root';
+import { createRootRegleLogic } from './shared.rootRegle';
 
 function createEmptyRuleState(rules: RegleUnknownRulesTree | RegleRuleDecl): Record<string, any> | any {
   const result: Record<string, any> = {};
@@ -115,41 +116,16 @@ export function createUseRulesComposable<
         ? undefined
         : computed(() => rulesFactory);
 
-    const resolvedOptions: ResolvedRegleBehaviourOptions = {
-      ...globalOptions,
-      ...options,
-    } as any;
-
     const processedState = ref(createEmptyRuleState(definedRules?.value as any));
 
-    const watchableRulesGetters = shallowRef<Record<string, any> | null>(definedRules ?? {});
-
-    if (typeof rulesFactory === 'function') {
-      watchEffect(() => {
-        watchableRulesGetters.value = rulesFactory(processedState);
-        triggerRef(watchableRulesGetters);
-      });
-    }
-
-    const initialState = ref(
-      isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
-    );
-
-    const originalState = isObject(processedState.value)
-      ? { ...cloneDeep(processedState.value) }
-      : cloneDeep(processedState.value);
-
-    const regle: {
-      regle: ($InternalRegleStatusType & StandardSchemaV1<any>) | undefined;
-    } = useRootStorage({
-      scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,
+    const regle = createRootRegleLogic({
       state: processedState,
-      options: resolvedOptions,
-      initialState,
-      originalState,
+      rulesFactory: definedRules,
+      options,
+      globalOptions,
       customRules,
       shortcuts,
-    }) as any;
+    });
 
     return regle.regle as any;
   }
