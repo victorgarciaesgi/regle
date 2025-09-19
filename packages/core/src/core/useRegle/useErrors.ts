@@ -128,7 +128,7 @@ export function flatErrors(
 function iterateErrors(
   errors: $InternalRegleErrors,
   includePath = false,
-  _path?: string[]
+  _path?: PropertyKey[]
 ): (string | StandardSchemaV1.Issue)[] {
   const path = includePath && !_path ? [] : _path;
   if (Array.isArray(errors) && errors.every((err) => !isObject(err))) {
@@ -142,8 +142,7 @@ function iterateErrors(
     const selfErrors = path?.length
       ? (errors.$self?.map((err) => ({ message: err, path: path ?? [] }) as StandardSchemaV1.Issue) ?? [])
       : (errors.$self ?? []);
-    const eachErrors =
-      errors.$each?.map((err, index) => iterateErrors(err, includePath, path?.concat(index.toString()))) ?? [];
+    const eachErrors = errors.$each?.map((err, index) => iterateErrors(err, includePath, path?.concat(index))) ?? [];
     return selfErrors?.concat(eachErrors.flat());
   } else {
     // Nested errors
