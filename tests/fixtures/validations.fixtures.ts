@@ -57,6 +57,7 @@ export function nestedRefObjectValidation(): ReturnRegleType {
       collection: [{ name: 0 as number | null }],
     },
   });
+
   return useRegle(
     form,
     () =>
