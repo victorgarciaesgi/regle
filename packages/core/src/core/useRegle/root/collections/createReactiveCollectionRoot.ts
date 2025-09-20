@@ -552,10 +552,12 @@ export function createReactiveCollectionStatus({
       $clearExternalErrors();
     }
 
-    $selfStatus.value.$reset(options, fromParent);
-    $eachStatus.value.forEach(($each) => {
-      $each.$reset(options, true);
-    });
+    if (!options?.keepValidationState) {
+      $selfStatus.value.$reset(options, fromParent);
+      $eachStatus.value.forEach(($each) => {
+        $each.$reset(options, true);
+      });
+    }
 
     if (!fromParent) {
       createStatus();
