@@ -21,6 +21,7 @@
 # Regle
 
 
+
 Regle \ʁɛɡl\ (French word for 'rule' ) is a headless model-based form validation library for Vue 3.
 
 It's heavily inspired by Vuelidate and aims to replace it in modern apps.
