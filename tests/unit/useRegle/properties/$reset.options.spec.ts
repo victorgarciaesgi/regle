@@ -120,5 +120,42 @@ describe('r$.$reset to initial state', () => {
       contacts: [{ name: 'contact1' }],
       nestedArrays: [],
     });
+
+    vm.r$.$value = {
+      email: 'modified',
+      user: {
+        firstName: 'modified',
+        lastName: 'modified',
+      },
+      contacts: [{ name: 'modified' }, { name: 'modified' }],
+      nestedArrays: [{ otherArray: [] }],
+    };
+    vm.r$.$touch();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$.email);
+    shouldBeValidField(vm.r$.user);
+    shouldBeValidField(vm.r$.user.firstName);
+    shouldBeValidField(vm.r$.user.lastName);
+    shouldBeValidField(vm.r$.contacts.$each[0].name);
+
+    vm.r$.$reset({ keepValidationState: true, toOriginalState: true });
+
+    expect(vm.r$.$value).toStrictEqual({
+      email: 'hello',
+      user: {
+        firstName: 'foo',
+        lastName: 'bar',
+      },
+      contacts: [{ name: 'contact1' }],
+      nestedArrays: [],
+    });
+
+    shouldBeErrorField(vm.r$.email);
+    shouldBeValidField(vm.r$.user);
+    shouldBeValidField(vm.r$.user.firstName);
+    shouldBeValidField(vm.r$.user.lastName);
+    // Collection can't keep track of validation state for arrays as state is reset
+    shouldBePristineField(vm.r$.contacts.$each[0].name);
   });
 });

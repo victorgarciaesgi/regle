@@ -562,7 +562,7 @@ export function createReactiveFieldStatus({
       $clearExternalErrors();
     }
 
-    if (!fromParent) {
+    if (!fromParent && !options?.keepValidationState) {
       for (const rule of Object.values($rules.value)) {
         rule.$reset();
       }

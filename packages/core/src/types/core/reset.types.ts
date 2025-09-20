@@ -25,8 +25,17 @@ export type ResetOptions<TState extends unknown> = RequireOneOrNone<
     toState?: TState | (() => TState);
     /**
      * Clears the $externalErrors state back to an empty object.
+     *
+     * @default false
      */
     clearExternalErrors?: boolean;
+    /**
+     * Keep the validation state of the form ($dirty, $invalid, $pending etc..)
+     * Only useful if you only want to reset the form state.
+     *
+     * @default false
+     */
+    keepValidationState?: boolean;
   },
   'toInitialState' | 'toState'
 >;
