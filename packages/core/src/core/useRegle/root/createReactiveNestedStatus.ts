@@ -606,8 +606,10 @@ export function createReactiveNestedStatus({
       }
     }
 
-    for (const field of Object.values($fields.value)) {
-      field?.$reset(options, true);
+    if (!options?.keepValidationState) {
+      for (const field of Object.values($fields.value)) {
+        field?.$reset(options, true);
+      }
     }
 
     if (options?.clearExternalErrors) {
