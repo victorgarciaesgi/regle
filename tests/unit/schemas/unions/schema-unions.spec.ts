@@ -10,11 +10,12 @@ import {
 } from '../../../utils/validations.utils';
 import { MyEnum, valibotUnionsFixture } from './fixtures/valibot.fixture';
 import { zodUnionsFixture } from './fixtures/zod.fixture';
+import { zod4UnionsFixture } from './fixtures/zod4.fixture';
 
 describe.each([
-  ['valibot', valibotUnionsFixture],
   ['zod', zodUnionsFixture],
-  // ['zod4', zod4UnionsFixture],
+  ['valibot', valibotUnionsFixture],
+  ['zod4', zod4UnionsFixture],
 ])('schemas (%s) - unions types', (name, regleSchema) => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -25,6 +26,7 @@ describe.each([
   });
 
   it('should behave correctly with unions, nums, and discriminated unions', async () => {
+    // @ts-expect-error Invalid InferInput type on Standard Schema
     const { vm } = createRegleComponent(regleSchema);
 
     shouldBeInvalidField(vm.r$.enum);

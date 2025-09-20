@@ -131,10 +131,14 @@ Return the current key name of the field.
 
 
 ### `$validate` 
-- Type: `() => Promise<false | SafeOutput<TState>>`
+- Type: `(forceValues?: TState) => Promise<false | SafeOutput<TState>>`
 
 Sets all properties as dirty, triggering all rules. 
 It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
+
+### `forceValues` parameter
+
+The first argument is optional and can be used to assign a new state before validating. It's equivalent to use `r$.$value = x` and `r$.$validate();`.
 
 ### `$extractDirtyFields` 
 - Type: `(filterNullishValues = true) => PartialDeep<TState>`

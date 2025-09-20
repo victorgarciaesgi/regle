@@ -16,6 +16,7 @@ export {
   useRootStorage,
   useScopedRegle,
   variantToRef,
+  useRules,
   type CommonAlphaOptions,
   type CommonComparisonOptions,
   type CreateScopedUseRegleOptions,
@@ -24,6 +25,7 @@ export {
   type MergedScopedRegles,
   type useCollectScopeFn,
   type useRegleFn,
+  type useRulesFn,
   type UseScopedRegleOptions,
 } from './core';
 export { InternalRuleType } from './types';

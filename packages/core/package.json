@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.8.5",
+  "version": "1.9.0-beta.1",
   "description": "Headless form validation library for Vue 3",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,6 +17,9 @@
     "pinia": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "@standard-schema/spec": "1.0.0"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",

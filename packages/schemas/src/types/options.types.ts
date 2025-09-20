@@ -1,4 +1,4 @@
-export type $InternalRegleResult = { valid: boolean; data: any };
+export type $InternalRegleResult = { valid: boolean; data: any; errors: any; issues: any };
 
 export type RegleSchemaBehaviourOptions = {
   /**

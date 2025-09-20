@@ -1,6 +1,6 @@
 import type { Merge } from 'type-fest';
 import type { AllRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefinition } from '../types';
-import { createUseRegleComposable, type useRegleFn } from './useRegle';
+import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
 import { merge } from '../../../shared';
 
@@ -30,13 +30,16 @@ export function defineRegleConfig<
 }): {
   useRegle: useRegleFn<TCustomRules, TShortcuts>;
   inferRules: inferRulesFn<TCustomRules>;
+  useRules: useRulesFn<TCustomRules, TShortcuts>;
 } {
   const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>(rules, modifiers, shortcuts as any);
+  const useRules = createUseRulesComposable<TCustomRules, TShortcuts>(rules, modifiers, shortcuts as any);
   useRegle.__config = { rules, modifiers, shortcuts };
+  useRules.__config = { rules, modifiers, shortcuts };
 
   const inferRules = createInferRuleHelper<TCustomRules>();
 
-  return { useRegle, inferRules };
+  return { useRegle, inferRules, useRules };
 }
 
 /**

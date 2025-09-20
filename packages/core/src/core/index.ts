@@ -13,3 +13,4 @@ export {
 } from './createScopedUseRegle';
 export { createVariant, narrowVariant, variantToRef } from './createVariant';
 export { defineRules, refineRules } from './refineRules';
+export { useRules, type useRulesFn } from './useRegle/useRules';

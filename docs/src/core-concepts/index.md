@@ -158,7 +158,7 @@ import {
 Check out the [complete list of built-in rules](/core-concepts/rules/built-in-rules) to see everything available.
 
 :::tip Type-First Validation
-If you prefer to define your validation schema first (like with Zod) and infer your TypeScript types from it, check out [how to infer state from rules](/typescript/infer-state-from-rules).
+If you prefer to define your validation schema first (like with Zod) and infer your TypeScript types from it, check out [Standard Schema usage](/advanced-usage/standard-schema).
 :::
 
 ## The stored result : `r$`

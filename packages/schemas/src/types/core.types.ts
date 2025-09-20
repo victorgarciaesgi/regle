@@ -44,14 +44,16 @@ export type RegleSingleFieldSchema<
   r$: Raw<
     RegleSchemaFieldStatus<TState, TSchema, TShortcuts> & {
       /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-      $validate: () => Promise<RegleSchemaResult<TSchema>>;
+      $validate: (
+        forceValues?: TSchema extends EmptyObject ? any : HasNamedKeys<TSchema> extends true ? TSchema : any
+      ) => Promise<RegleSchemaResult<TSchema>>;
     }
   >;
 } & TAdditionalReturnProperties;
 
 export type RegleSchemaResult<TSchema extends unknown> =
-  | { valid: false; data: PartialDeep<TSchema> }
-  | { valid: true; data: TSchema };
+  | { valid: false; data: PartialDeep<TSchema>; issues: RegleIssuesTree<TSchema>; errors: RegleErrorTree<TSchema> }
+  | { valid: true; data: TSchema; issues: EmptyObject; errors: EmptyObject };
 
 type ProcessNestedFields<
   TState extends Record<string, any>,
@@ -109,7 +111,9 @@ export type RegleSchemaStatus<
   (IsRoot extends true
     ? {
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-        $validate: () => Promise<RegleSchemaResult<TSchema>>;
+        $validate: (
+          forceValues?: TSchema extends EmptyObject ? (HasNamedKeys<TSchema> extends true ? TSchema : any) : TSchema
+        ) => Promise<RegleSchemaResult<TSchema>>;
       }
     : {}) &
   ([TShortcuts['nested']] extends [never]

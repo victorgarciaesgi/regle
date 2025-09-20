@@ -7,6 +7,7 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
+    "@standard-schema/spec": "1.0.0",
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
     "arktype": "catalog:",

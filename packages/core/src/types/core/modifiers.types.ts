@@ -94,7 +94,7 @@ export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehav
   LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>>;
 
 export type ShortcutCommonFn<T extends Record<string, any>> = {
-  [x: string]: (element: OmitByType<T, Function>) => unknown;
+  [x: string]: (element: Omit<OmitByType<T, Function>, '~standard'>) => unknown;
 };
 
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {

@@ -16,7 +16,7 @@ export interface SuperCompatibleRegle {
 /** Supports both core Regle and schemas Regle for Zod/Valibot */
 export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
   $groups?: { [x: string]: RegleValidationGroupOutput };
-  $validate: () => Promise<SuperCompatibleRegleResult>;
+  $validate: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
 };
 
 export type SuperCompatibleRegleResult = $InternalRegleResult;

@@ -91,7 +91,7 @@ type State = InferInput<typeof rules>;
 
 
 :::info
-You can check the [full docs here](/typescript/infer-state-from-rules)
+You can check the [full docs here](/advanced-usage/standard-schema)
 :::
 
 
