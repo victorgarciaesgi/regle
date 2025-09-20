@@ -142,7 +142,7 @@ r$.$validate();
 
 const flattenErrors = flatErrors(r$.$errors, {includePath: true});
 //     [
-//      { error: "This field is required", path: "name" }, 
-//      { error: "Value must be an valid email address", path: "level0.email"}
+//      { error: "This field is required", path: ["name"] }, 
+//      { error: "Value must be an valid email address", path: ["level0", "email"]}
 //     ]
 ```
