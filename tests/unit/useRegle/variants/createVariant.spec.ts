@@ -291,6 +291,8 @@ describe('createVariant', () => {
       >();
 
       // Invariant
+      expectTypeOf(vm.invariantRefOne.$anyEdited).toEqualTypeOf<boolean>();
+      expectTypeOf(vm.invariantRefOne.$value.definedName).toEqualTypeOf<string>();
       expectTypeOf(vm.invariantRefOne.definedName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>>
       >();

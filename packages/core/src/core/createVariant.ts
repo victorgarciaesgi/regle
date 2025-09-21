@@ -139,7 +139,10 @@ export function variantToRef<
   root: MaybeRef<TRoot>,
   discriminantKey: TKey,
   discriminantValue: TValue
-): Ref<Extract<TRoot['$fields'], { [K in TKey]: RegleFieldStatus<TValue, any, any> }> | undefined> {
+): Ref<
+  | Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }>
+  | undefined
+> {
   const fromRoot = isRef(root) ? toRef(root.value, '$fields') : toRef(root, '$fields');
 
   const returnedRef = ref<any>();
