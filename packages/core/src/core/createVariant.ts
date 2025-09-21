@@ -20,6 +20,7 @@ import type {
   RegleCollectionStatus,
   RegleFieldStatus,
   RegleStatus,
+  SuperCompatibleRegleStatus,
   VariantTuple,
 } from '../types';
 import { isRuleDef } from './useRegle/guards';
@@ -96,6 +97,9 @@ export function createVariant<
 export function narrowVariant<
   TRoot extends {
     [x: string]: unknown;
+    $fields: {
+      [x: string]: unknown;
+    };
   },
   const TKey extends keyof TRoot,
   const TValue extends LazyJoinDiscriminatedUnions<
@@ -110,7 +114,12 @@ export function narrowVariant<
 ): root is Extract<
   TRoot,
   { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
-> {
+> & {
+  $fields: Extract<
+    TRoot['$fields'],
+    { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+  >;
+} {
   return (
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&
@@ -140,7 +149,15 @@ export function variantToRef<
   discriminantKey: TKey,
   discriminantValue: TValue
 ): Ref<
-  | Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }>
+  | (Extract<
+      TRoot,
+      { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+    > & {
+      $fields: Extract<
+        TRoot['$fields'],
+        { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+      >;
+    })
   | undefined
 > {
   const fromRoot = isRef(root) ? toRef(root.value, '$fields') : toRef(root, '$fields');
@@ -153,7 +170,7 @@ export function variantToRef<
       // avoid premature load of wrong rules resulting in a false positive
       await nextTick();
       if (narrowVariant(fromRoot.value, discriminantKey, discriminantValue)) {
-        returnedRef.value = fromRoot.value;
+        returnedRef.value = toRef(root).value;
       } else {
         returnedRef.value = undefined;
       }

@@ -354,6 +354,7 @@ describe('createVariant', () => {
 
     if (narrowVariant(vm.r$.nested2, 'type', 'TWO') && vm.invariantRefTwo) {
       expect(vm.r$.nested2.twoName).toBe(undefined);
+      expect(vm.r$.nested2.$fields.twoName).toBe(undefined);
       expectTypeOf(vm.r$.nested2.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
@@ -403,6 +404,7 @@ describe('createVariant', () => {
 
     expect(vm.invariantRefOne).toBeDefined();
     expect(vm.invariantRefOne?.oneValue).toBeDefined();
+    expect(vm.invariantRefOne?.$fields.oneValue).toBeDefined();
   });
 
   it('should expect correct typing with union types', () => {
