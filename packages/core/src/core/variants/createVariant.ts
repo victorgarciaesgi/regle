@@ -11,19 +11,17 @@ import {
   type MaybeRefOrGetter,
   type Ref,
 } from 'vue';
-import { isObject } from '../../../shared';
+import { isObject } from '../../../../shared';
 import type {
   DeepReactiveState,
   JoinDiscriminatedUnions,
   LazyJoinDiscriminatedUnions,
-  MaybeInput,
+  NarrowVariant,
   RegleCollectionStatus,
-  RegleFieldStatus,
   RegleStatus,
-  SuperCompatibleRegleStatus,
   VariantTuple,
-} from '../types';
-import { isRuleDef } from './useRegle/guards';
+} from '../../types';
+import { isRuleDef } from '../useRegle/guards';
 
 /**
  * Declare variations of state that depends on one value
@@ -107,19 +105,7 @@ export function narrowVariant<
   > extends { $value: infer V }
     ? V
     : unknown,
->(
-  root: TRoot,
-  discriminantKey: TKey,
-  discriminantValue: TValue
-): root is Extract<
-  TRoot,
-  { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
-> & {
-  $fields: Extract<
-    TRoot['$fields'],
-    { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
-  >;
-} {
+>(root: TRoot, discriminantKey: TKey, discriminantValue: TValue): root is NarrowVariant<TRoot, TKey, TValue> {
   return (
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&
@@ -147,19 +133,41 @@ export function variantToRef<
 >(
   root: MaybeRef<TRoot>,
   discriminantKey: TKey,
+  discriminantValue: TValue,
+  options: {
+    /**
+     * Assert that the variant is always defined, use with caution
+     */
+    unsafeAssertion: true;
+  }
+): Ref<NarrowVariant<TRoot, TKey, TValue>>;
+export function variantToRef<
+  TRoot extends RegleStatus<{}, any, any>,
+  const TKey extends keyof TRoot['$fields'],
+  const TValue extends LazyJoinDiscriminatedUnions<
+    Exclude<TRoot['$fields'][TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+  > extends { $value: infer V }
+    ? V
+    : unknown,
+>(
+  root: MaybeRef<TRoot>,
+  discriminantKey: TKey,
   discriminantValue: TValue
-): Ref<
-  | (Extract<
-      TRoot,
-      { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
-    > & {
-      $fields: Extract<
-        TRoot['$fields'],
-        { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
-      >;
-    })
-  | undefined
-> {
+): Ref<NarrowVariant<TRoot, TKey, TValue> | undefined>;
+export function variantToRef<
+  TRoot extends RegleStatus<{}, any, any>,
+  const TKey extends keyof TRoot['$fields'],
+  const TValue extends LazyJoinDiscriminatedUnions<
+    Exclude<TRoot['$fields'][TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+  > extends { $value: infer V }
+    ? V
+    : unknown,
+>(
+  root: MaybeRef<TRoot>,
+  discriminantKey: TKey,
+  discriminantValue: TValue,
+  _options?: { unsafeAssertion?: boolean }
+): Ref<NarrowVariant<TRoot, TKey, TValue> | undefined> {
   const fromRoot = isRef(root) ? toRef(root.value, '$fields') : toRef(root, '$fields');
 
   const returnedRef = ref<any>();

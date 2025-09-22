@@ -313,3 +313,18 @@ export const useFormStore = defineStore('form', () => {
 ```
 
 :::
+
+
+### `unsafeAssertion` option
+
+When using `variantToRef` in a component it happens that the assertion is done by the parent component, which means you know the variant assertion will always be valid in the entire component.
+
+For this case you can pass an option to assert that the variant is always defined.
+
+```ts
+import { variantToRef } from '@regle/core';
+
+const variant$ = variantToRef(r$, 'type', 'EMAIL', { unsafeAssertion: true });
+// ^ Removes the `undefined`
+
+```

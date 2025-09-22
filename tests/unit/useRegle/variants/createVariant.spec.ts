@@ -53,10 +53,15 @@ describe('createVariant', () => {
     const invariantRefOne = variantToRef(r$, 'type', 'ONE');
     const invariantRefTwo = variantToRef(r$, 'type', 'TWO');
 
+    const unsafeInvariantRefOne = variantToRef(r$, 'type', 'ONE', { unsafeAssertion: true });
+    const unsafeInvariantRefTwo = variantToRef(r$, 'type', 'TWO', { unsafeAssertion: true });
+
     return {
       r$,
       invariantRefOne,
       invariantRefTwo,
+      unsafeInvariantRefOne,
+      unsafeInvariantRefTwo,
     };
   }
 
@@ -405,6 +410,10 @@ describe('createVariant', () => {
     expect(vm.invariantRefOne).toBeDefined();
     expect(vm.invariantRefOne?.oneValue).toBeDefined();
     expect(vm.invariantRefOne?.$fields.oneValue).toBeDefined();
+    expectTypeOf(vm.invariantRefOne?.oneValue.$edited).toEqualTypeOf<boolean | undefined>();
+
+    expectTypeOf(vm.unsafeInvariantRefOne.oneValue.$edited).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.unsafeInvariantRefOne).not.toBeUndefined();
   });
 
   it('should expect correct typing with union types', () => {
