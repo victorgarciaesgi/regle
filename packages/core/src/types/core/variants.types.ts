@@ -16,6 +16,9 @@ import type { RegleShortcutDefinition } from './modifiers.types';
 export type NarrowVariant<
   TRoot extends {
     [x: string]: unknown;
+    $fields: {
+      [x: string]: unknown;
+    };
   },
   TKey extends keyof TRoot,
   TValue extends LazyJoinDiscriminatedUnions<
@@ -23,7 +26,15 @@ export type NarrowVariant<
   > extends { $value: infer V }
     ? V
     : unknown,
-> = Extract<TRoot, { [K in TKey]: RegleFieldStatus<TValue, any, any> }>;
+> = Extract<
+  TRoot,
+  { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+> & {
+  $fields: Extract<
+    TRoot['$fields'],
+    { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+  >;
+};
 
 export type MaybeVariantStatus<
   TState extends Record<string, any> | undefined = Record<string, any>,
