@@ -1,6 +1,6 @@
 {
   "name": "@regle/rules",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Collection of rules and helpers for Regle",
   "scripts": {
     "typecheck": "vue-tsc --noEmit",
