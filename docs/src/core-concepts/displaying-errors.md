@@ -121,7 +121,7 @@ const flattenErrors = flatErrors(r$.$errors);
 
 ### `includePath` option
 
-This helper also include an option to have the path of the property (compatible with lodash `get`) next to the error.
+This helper also include an option to have the path of the property and returns the issues in Standard Schema Issue format.
 
 
 ```ts
@@ -142,7 +142,7 @@ r$.$validate();
 
 const flattenErrors = flatErrors(r$.$errors, {includePath: true});
 //     [
-//      { error: "This field is required", path: ["name"] }, 
-//      { error: "Value must be an valid email address", path: ["level0", "email"]}
+  //      { message: "This field is required", path: ["name"] }, 
+  //      { message: "Value must be an valid email address", path: ["level0", "email"]}
 //     ]
 ```
