@@ -61,7 +61,7 @@ To reset online playground dependencies cache:
 Go to https://www.jsdelivr.com/tools/purge
 
 ```
-https://cdn.jsdelivr.net/npm/@regle/core/dist
-https://cdn.jsdelivr.net/npm/@regle/rules/dist
-https://cdn.jsdelivr.net/npm/@regle/schemas/dist
+https://cdn.jsdelivr.net/npm/@regle/core@latest/dist/regle-core.d.ts
+https://cdn.jsdelivr.net/npm/@regle/rules@latest/dist/regle-rules.d.ts
+https://cdn.jsdelivr.net/npm/@regle/schemas@latest/dist/regle-schemas.d.ts
 ```
