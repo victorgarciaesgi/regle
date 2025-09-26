@@ -26,14 +26,9 @@ const result = await r$.['~standard'].validate({ name: '' });
 console.log(result.issues);
 ```
 
-# `useRules`
-
-`useRules` is a composable that allows you to write your rules like a schema library, without declaring a state.
-
-Under the hood, it still uses the `useRegle` composable, but it doesn't accept a state parameter, it will create a empty state from the rules.
 
 
-## Schema only usage
+# Schema only usage
 
 ```ts
 import { useRules } from '@regle/core';
