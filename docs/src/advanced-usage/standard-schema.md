@@ -110,7 +110,7 @@ It works exactly like `useRegle`, but it doesn't accept a state parameter, it wi
 import { useRules, type InferInput } from '@regle/core';
 import { required, string } from '@regle/rules';
 
-const rules = useRules({
+const r$ = useRules({
   name: { required, string },
 });
 ```
