@@ -42,10 +42,7 @@ export type MaybeVariantStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > =
   IsUnion<NonNullable<TState>> extends true
-    ? Omit<
-        RegleStatus<TState, TRules, TShortcuts>,
-        '$fields' | keyof RegleStatus<TState, TRules, TShortcuts>['$fields']
-      > & {
+    ? Omit<RegleStatus<TState, TRules, TShortcuts>, '$fields'> & {
         $fields: ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<
           TState,
           TRules,
