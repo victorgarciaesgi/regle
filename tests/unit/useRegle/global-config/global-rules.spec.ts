@@ -88,7 +88,7 @@ describe('defineRegleConfig rules', () => {
     defineRegleConfig({
       rules: () => ({
         minValue: withMessage(minValue, ({ $params: [min] }) => {
-          expectTypeOf(min).toEqualTypeOf<number>();
+          expectTypeOf(min).toEqualTypeOf<number | string>();
           return '';
         }),
         ruleMockMetadata: withMessage(ruleMockMetadata, ({ customData }) => {

@@ -131,7 +131,7 @@ describe('refineRules', () => {
     if (valid) {
       expectTypeOf(data.firstName).toEqualTypeOf<unknown>();
       expectTypeOf(data.type).toEqualTypeOf<'ONE' | 'TWO'>();
-      expectTypeOf(data.oneValue).toEqualTypeOf<MaybeOutput<number>>();
+      expectTypeOf(data.oneValue).toEqualTypeOf<MaybeOutput<number | string>>();
       expectTypeOf(data.twoValue).toEqualTypeOf<MaybeOutput<number | string>>();
       expectTypeOf(data.oneName).toEqualTypeOf<MaybeOutput<string>>();
       expectTypeOf(data.twoName).toEqualTypeOf<MaybeOutput<string>>();
@@ -180,7 +180,7 @@ describe('refineRules', () => {
 
       expectTypeOf(vm.r$.oneValue).toEqualTypeOf<
         RegleFieldStatus<
-          MaybeInput<number>,
+          MaybeInput<number | string>,
           {
             numeric: RegleRuleDefinition<
               string | number,
@@ -192,12 +192,12 @@ describe('refineRules', () => {
             >;
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
             minValue: RegleRuleDefinition<
-              number,
-              [count: number, options?: CommonComparisonOptions | undefined],
+              string | number,
+              [count: string | number, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
-              MaybeInput<number>,
-              number
+              MaybeInput<string | number>,
+              string | number
             >;
           },
           RegleShortcutDefinition<any>

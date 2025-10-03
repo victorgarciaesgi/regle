@@ -18,10 +18,20 @@ describe('minValue validator', () => {
   });
 
   it('should not validate the string value', () => {
-    expect(minValue(5).exec('not string here' as any)).toBe(true);
+    expect(minValue(5).exec('not string here' as any)).toBe(false);
   });
 
   it('should not validate the object value', () => {
-    expect(minValue(5).exec({ hello: 'world' } as any)).toBe(true);
+    expect(minValue(5).exec({ hello: 'world' } as any)).toBe(false);
+  });
+
+  it('should work with string values', () => {
+    expect(minValue('5').exec('10')).toBe(true);
+    expect(minValue('10').exec('5')).toBe(false);
+  });
+
+  it('should not work with NaN values', () => {
+    expect(minValue('ezfzef').exec(5)).toBe(false);
+    expect(minValue(5).exec('ezfmjze')).toBe(false);
   });
 });

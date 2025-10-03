@@ -136,11 +136,11 @@ describe('createVariant', () => {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
-              number,
-              [count: number, options?: CommonComparisonOptions | undefined],
+              number | string,
+              [count: number | string, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
-              number
+              number | string
             >;
           },
           RegleShortcutDefinition<any>
@@ -311,11 +311,11 @@ describe('createVariant', () => {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
-              number,
-              [count: number, options?: CommonComparisonOptions | undefined],
+              number | string,
+              [count: number | string, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
-              number
+              number | string
             >;
           },
           RegleShortcutDefinition<any>
@@ -335,11 +335,11 @@ describe('createVariant', () => {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
             required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
             minValue: RegleRuleDefinition<
-              number,
-              [count: number, options?: CommonComparisonOptions | undefined],
+              number | string,
+              [count: number | string, options?: CommonComparisonOptions | undefined],
               false,
               boolean,
-              number
+              number | string
             >;
           },
           RegleShortcutDefinition<any>

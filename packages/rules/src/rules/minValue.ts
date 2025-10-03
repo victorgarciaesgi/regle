@@ -1,7 +1,6 @@
-import { isFilled, isNumber, toNumber } from '../helpers';
-import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
+import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import type { CommonComparisonOptions } from '@regle/core';
+import { isFilled, toNumber } from '../helpers';
 
 /**
  * Requires a field to have a specified minimum numeric value.
@@ -10,25 +9,25 @@ import type { CommonComparisonOptions } from '@regle/core';
  * @param options - comparison options
  */
 export const minValue: RegleRuleWithParamsDefinition<
-  number,
-  [count: number, options?: CommonComparisonOptions],
+  number | string,
+  [count: number | string, options?: CommonComparisonOptions],
   false,
   boolean,
-  MaybeInput<number>
+  MaybeInput<number | string>
 > = createRule({
   type: 'minValue',
-  validator: (value: MaybeInput<number>, count: number, options?: CommonComparisonOptions) => {
+  validator: (value: MaybeInput<number | string>, count: number | string, options?: CommonComparisonOptions) => {
     const { allowEqual = true } = options ?? {};
     if (isFilled(value) && isFilled(count)) {
-      if (isNumber(count) && !isNaN(toNumber(value))) {
+      if (!isNaN(toNumber(value)) && !isNaN(toNumber(count))) {
         if (allowEqual) {
-          return toNumber(value) >= count;
+          return toNumber(value) >= toNumber(count);
         } else {
-          return toNumber(value) > count;
+          return toNumber(value) > toNumber(count);
         }
       }
       console.warn(`[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
-      return true;
+      return false;
     }
     return true;
   },
