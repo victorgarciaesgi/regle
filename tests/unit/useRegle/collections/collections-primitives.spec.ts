@@ -30,5 +30,8 @@ describe('collections of primitives', () => {
     // @ts-expect-error
     expect(vm.r$.collection.$each).toBeUndefined();
     expect(vm.r$.$errors.collection).toStrictEqual([]);
+
+    expectTypeOf(vm.r$.collection.$errors).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.collection).toEqualTypeOf<string[]>();
   });
 });

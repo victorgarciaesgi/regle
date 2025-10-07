@@ -26,6 +26,10 @@ describe.each([
 
     expect(vm.r$.usernames.$error).toBe(true);
     expect(vm.r$.usernames.$errors).toStrictEqual(['Custom message']);
+    expect(vm.r$.$errors.usernames).toStrictEqual(['Custom message']);
+
+    expectTypeOf(vm.r$.usernames.$errors).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.usernames).toEqualTypeOf<string[]>();
 
     vm.r$.$value.usernames = ['foo-bar'];
     await vm.$nextTick();

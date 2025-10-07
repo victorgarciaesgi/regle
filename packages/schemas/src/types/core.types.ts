@@ -130,8 +130,10 @@ export type InferRegleSchemaStatusType<
   TState extends unknown,
   TShortcuts extends RegleShortcutDefinition = {},
 > =
-  NonNullable<TSchema> extends Array<infer A extends Record<string, any>>
-    ? RegleSchemaCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
+  NonNullable<TSchema> extends Array<infer A>
+    ? A extends Record<string, any>
+      ? RegleSchemaCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
+      : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
     : NonNullable<TState> extends Date | File
       ? RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
       : unknown extends TState
