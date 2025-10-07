@@ -4,7 +4,7 @@ import { defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
 const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
-  external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
+  external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom', '@standard-schema/spec'],
 };
 
 export default defineConfig([
