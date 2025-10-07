@@ -130,6 +130,30 @@ const rules = computed(() => inferRules(state, {
 }))
 ```
 
+
+## Single field validation
+
+```vue
+<script setup lang="ts">
+import {useRegle} from '@regle/core';
+import {required} from '@regle/rules';
+
+const {r$} = useRegle('', {required});
+// Or
+const state = ref('');
+const {r$} = useRegle(state, {required});
+
+</script>
+<template>
+  <input v-model="r$.$value" />
+  <ul v-if="r$.$errors.length">
+    <li v-for="error of r$.$errors" :key="error">
+      {{ error }}
+    </li>
+  </ul>
+</template>
+```
+
 ## Custom Error Messages
 
 ```ts
