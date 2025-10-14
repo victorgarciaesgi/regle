@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "private": true,
   "description": "Headless model-based form validation library for Vue.js",
   "scripts": {
