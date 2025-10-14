@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import type { Ref, WatchStopHandle } from 'vue';
 import { computed, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
 import type { DeepMaybeRef, LocalRegleBehaviourOptions, RegleBehaviourOptions } from '../..';
 import { cloneDeep, isObject } from '../../../../shared';
@@ -10,6 +10,7 @@ import type {
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
 import { useRootStorage } from './root';
+import { tryOnScopeDispose } from '../../utils';
 
 interface RootRegleOptions {
   state: Ref<Record<string, any> | PrimitiveTypes>;
@@ -40,10 +41,12 @@ export function createRootRegleLogic({
     ...options,
   } as any;
 
+  let unwatchRules: WatchStopHandle | undefined;
+
   const watchableRulesGetters = shallowRef<Record<string, any> | null>(definedRules ?? {});
 
   if (typeof rulesFactory === 'function') {
-    watchEffect(() => {
+    unwatchRules = watchEffect(() => {
       watchableRulesGetters.value = rulesFactory(state);
       triggerRef(watchableRulesGetters);
     });
@@ -52,6 +55,10 @@ export function createRootRegleLogic({
   const initialState = ref(isObject(state.value) ? { ...cloneDeep(state.value) } : cloneDeep(state.value));
 
   const originalState = isObject(state.value) ? { ...cloneDeep(state.value) } : cloneDeep(state.value);
+
+  tryOnScopeDispose(() => {
+    unwatchRules?.();
+  });
 
   return useRootStorage({
     scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,

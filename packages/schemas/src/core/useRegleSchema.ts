@@ -15,13 +15,13 @@ import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs, WatchHandle } from 'vue';
-import { computed, isRef, ref, unref, watch } from 'vue';
+import { computed, getCurrentScope, isRef, onScopeDispose, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, merge, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 
 export type useRegleSchemaFnOptions<TAdditionalOptions extends Record<string, any>> = Omit<
   Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
-  'validationGroups' | 'lazy' | 'rewardEarly' | 'silent'
+  'validationGroups' | 'lazy' | 'rewardEarly'
 > &
   RegleSchemaBehaviourOptions &
   TAdditionalOptions;
@@ -199,6 +199,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         return Promise.reject(e);
       }
     };
+
+    if (getCurrentScope()) {
+      onScopeDispose(() => {
+        unWatchState();
+      });
+    }
 
     const regle = useRootStorage({
       scopeRules: computed(() => ({})),

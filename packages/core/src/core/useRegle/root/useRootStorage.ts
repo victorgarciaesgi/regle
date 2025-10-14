@@ -128,6 +128,8 @@ export function useRootStorage({
   if (getCurrentScope()) {
     onScopeDispose(() => {
       regle.value?.$unwatch();
+      $unwatchComputedExternalErrors?.();
+      $unwatchExternalErrors?.();
     });
   }
 
