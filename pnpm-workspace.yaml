@@ -12,6 +12,9 @@ packages:
   - ui-tests/fixtures/ui-vue3
 
 minimumReleaseAge: 1440 # 24 hours
+minimumReleaseAgeExclude:
+  - tsdown
+  - oxlint
 
 catalog:
   '@types/node': 22.18.10
@@ -61,6 +64,6 @@ catalog:
   '@vitejs/plugin-vue-jsx': 5.1.1
 
   # Schemas libraries
-  arktype: 2.1.23
+  arktype: 2.1.22
   valibot: 1.1.0
   zod: 4.1.12
