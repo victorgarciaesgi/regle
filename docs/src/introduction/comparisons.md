@@ -8,7 +8,7 @@ title: Comparison with other form libraries
 
 ## Vuelidate
 
-Vuelidate is the primary point of comparison for Regle. As a long-time user of Vuelidate, I was inspired to create Regle after the project was discontinued.
+Regle is successor of Vuelidate. As a long-time user of Vuelidate, I was inspired to create Regle after the project was discontinued.
 
 Both libraries share a similar API and developer experience (DX), including:
 - Data-based validation
@@ -23,6 +23,8 @@ Regle builds upon these features and adds several improvements:
 - Improved API in some areas, such as rules declaration, `$each`, `validationGroups`, `$validate`
 
 ## VeeValidate
+
+Regle is a good VeeValidate alternative.
 
 VeeValidate is primarily focused on being component-centric. It now also offers Composition API helpers.
 
@@ -40,6 +42,8 @@ It doesn't take advantage of the Vue composition API enough.
 
 Tanstack forms also relies on DOM components, Regle doesn't.
 
+Regle is a more lightweight and less boilerplate alternative to Tanstack Forms.
+
 You can compare the [Regle playground](https://play.reglejs.dev) and the [Tanstack Forms Vue playground](https://tanstack.com/form/latest/docs/framework/vue/examples/simple?panel=code) to see that Regle is much more readable and uses way less code to do the same thing.
 
 ## Formkit & VueForms
@@ -48,6 +52,8 @@ Formkit and VueForms is centered around DOM components.
 Regle is headless and data-driven, so you can work with your state anywhere you want.
 
 Working exclusively with a data-driven model enables stronger type safety and a better developer experience.
+
+Regle is an alternative to Formkit and VueForms if you don't want the UI and validation to be tied.
 
 ## Formwerk
 
