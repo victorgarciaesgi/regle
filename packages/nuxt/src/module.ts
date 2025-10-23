@@ -13,7 +13,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'regle',
   },
   defaults: {},
-  async setup(options, nuxt) {
+  async setup(options) {
     const { resolve } = createResolver(import.meta.url);
     if (options.setupFile) {
       try {
@@ -21,9 +21,7 @@ export default defineNuxtModule<ModuleOptions>({
         // Ensure the path is normalized for POSIX compatibility (https://github.com/victorgarciaesgi/regle/issues/152)
         const setupFilePath = path.posix.normalize(setupFilePathOS.replace(/\\/g, '/'));
         if (setupFilePath) {
-          const dotNuxtFolder = resolve(`${nuxt.options.rootDir}/.nuxt`);
-
-          const relativePath = path.relative(dotNuxtFolder, setupFilePath);
+          const relativePath = resolve(setupFilePath);
 
           const setupFilePathWithoutExtension = path.join(
             path.dirname(relativePath),
