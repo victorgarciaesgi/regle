@@ -60,7 +60,7 @@ export default defineNuxtConfig({
 })
 ```
 
-```ts [regle-config.ts]
+```ts [app/regle-config.ts]
 import { defineRegleNuxtPlugin } from '@regle/nuxt/setup';
 import { defineRegleConfig } from '@regle/core';
 import { required, withMessage } from '@regle/rules';
