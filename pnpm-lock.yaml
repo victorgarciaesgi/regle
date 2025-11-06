@@ -223,10 +223,10 @@ importers:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../packages/core/dist
+        version: link:../packages/core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../packages/rules/dist
+        version: link:../packages/rules
       '@regle/schemas':
         specifier: workspace:*
         version: link:../packages/schemas
@@ -361,7 +361,6 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 3.1.3(typescript@5.9.3)
-    publishDirectory: dist
 
   packages/nuxt:
     dependencies:
@@ -373,10 +372,10 @@ importers:
         version: 4.1.2
       '@regle/core':
         specifier: workspace:*
-        version: link:../core/dist
+        version: link:../core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../rules/dist
+        version: link:../rules
     devDependencies:
       '@nuxt/module-builder':
         specifier: 1.0.2
@@ -420,7 +419,7 @@ importers:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../core/dist
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -452,16 +451,15 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 3.1.3(typescript@5.9.3)
-    publishDirectory: dist
 
   packages/schemas:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../core/dist
+        version: link:../core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../rules/dist
+        version: link:../rules
       '@standard-schema/spec':
         specifier: 1.0.0
         version: 1.0.0
@@ -510,7 +508,7 @@ importers:
     devDependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../core/dist
+        version: link:../core
       tsdown:
         specifier: 'catalog:'
         version: 0.15.12(@typescript/native-preview@7.0.0-dev.20251105.1)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -528,13 +526,13 @@ importers:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../../packages/core/dist
+        version: link:../../packages/core
       '@regle/nuxt':
         specifier: workspace:*
         version: link:../../packages/nuxt
       '@regle/rules':
         specifier: workspace:*
-        version: link:../../packages/rules/dist
+        version: link:../../packages/rules
       '@regle/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -562,10 +560,10 @@ importers:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../../packages/core/dist
+        version: link:../../packages/core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../../packages/rules/dist
+        version: link:../../packages/rules
       '@regle/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -632,10 +630,10 @@ importers:
         version: 1.0.2(pinia@3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3)))
       '@regle/core':
         specifier: workspace:*
-        version: link:../packages/core/dist
+        version: link:../packages/core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../packages/rules/dist
+        version: link:../packages/rules
       '@regle/schemas':
         specifier: workspace:*
         version: link:../packages/schemas
@@ -683,10 +681,10 @@ importers:
     dependencies:
       '@regle/core':
         specifier: workspace:*
-        version: link:../../../packages/core/dist
+        version: link:../../../packages/core
       '@regle/rules':
         specifier: workspace:*
-        version: link:../../../packages/rules/dist
+        version: link:../../../packages/rules
       '@regle/schemas':
         specifier: workspace:*
         version: link:../../../packages/schemas
