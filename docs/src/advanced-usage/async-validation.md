@@ -69,7 +69,7 @@ This can be used to display a loading icon and a custom message indicating that 
       />
 
       <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
-      <button type="button" @click="r$.$validate">Submit</button>
+      <button type="button" @click="r$.$validate()">Submit</button>
     </div>
 
     <span v-if="r$.email.$pending"> Checking... </span>

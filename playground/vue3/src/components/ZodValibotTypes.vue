@@ -52,7 +52,7 @@
 
   <!-- <button type="button" @click="r$.$value.collection.push({ child: '' })">🆕 Add item</button> -->
   <button @click="r$.$reset({ toInitialState: true })">Reset</button>
-  <button @click="r$.$validate">Submit</button>
+  <button @click="r$.$validate()">Submit</button>
 </template>
 
 <script setup lang="ts">

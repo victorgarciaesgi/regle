@@ -7,5 +7,5 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.experimental.useTsgo": true
+  "typescript.experimental.useTsgo": false
 }

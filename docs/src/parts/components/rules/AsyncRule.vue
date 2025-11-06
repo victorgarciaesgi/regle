@@ -7,8 +7,8 @@
         placeholder="Type your email"
       />
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <button type="button" @click="r$.$validate">Validate</button>
-      <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <button type="button" @click="r$.$validate()">Validate</button>
+      <button class="primary" type="button" @click="r$.$validate()">Submit</button>
       <code class="status" :status="r$.$correct"></code>
     </div>
     <span v-if="r$.email.$pending" class="pending-text"> Checking... </span>

@@ -9,7 +9,7 @@
     <Compo1 />
 
     <div>
-      <button @click="r$.$validate">Validate scoped components</button>
+      <button @click="r$.$validate()">Validate scoped components</button>
       <button @click="r$.$reset">Reset scoped components</button>
       <button @click="show = !show">Toggle show</button>
     </div>

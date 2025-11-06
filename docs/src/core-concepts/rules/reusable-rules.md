@@ -302,7 +302,7 @@ Async rules are useful for server-side validations or computationally expensive 
       />
 
       <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
-      <button type="button" @click="r$.$validate">Submit</button>
+      <button type="button" @click="r$.$validate()">Submit</button>
     </div>
 
     <span v-if="r$.email.$pending"> Checking... </span>

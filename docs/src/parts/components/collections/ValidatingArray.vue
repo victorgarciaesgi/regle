@@ -29,7 +29,7 @@
     <div class="button-list">
       <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
       <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <button class="primary" type="button" @click="r$.$validate">Submit</button>
+      <button class="primary" type="button" @click="r$.$validate()">Submit</button>
       <code class="status" :status="r$.$correct"></code>
     </div>
   </div>
