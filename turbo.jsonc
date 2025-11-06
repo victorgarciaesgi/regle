@@ -21,6 +21,19 @@
         "$TURBO_ROOT$/tsdown.common.build.ts"
       ]
     },
+    "build:sourcemaps": {
+      "dependsOn": ["@regle/core#build:sourcemaps"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only",
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!eslint.config.mjs",
+        "src/**/*.ts",
+        "tsdown.config.ts",
+        "$TURBO_ROOT$/tsdown.common.build.ts"
+      ]
+    },
     "regle-playground#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
@@ -31,11 +44,7 @@
       "outputs": ["dist/**"],
       "outputLogs": "new-only"
     },
-    "build:sourcemaps": {
-      "dependsOn": ["@regle/core#build:sourcemaps"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
-    },
+
     // -- Dev
     "@regle/core#dev": {
       "persistent": true,

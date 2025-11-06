@@ -59,7 +59,8 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist"
   },
   "homepage": "https://reglejs.dev/",
   "repository": {
