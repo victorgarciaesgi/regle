@@ -11,7 +11,7 @@
                 v-model="r$.$value.fullName"
                 data-testid="field-fullName"
                 type="text"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
                 placeholder="John Dupond"
               />
               <FieldError data-testid="field-fullName-errors" :errors="r$.fullName.$errors" />
@@ -21,7 +21,7 @@
               <input
                 v-model="r$.$value.email"
                 type="email"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
                 placeholder="john@example.com"
               />
               <FieldError :errors="r$.email.$errors" />
@@ -31,7 +31,7 @@
               <input
                 v-model="r$.$value.eventDate"
                 type="date"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
               />
               <FieldError :errors="r$.eventDate.$errors" />
               <ul v-if="r$.eventDate.$tooltips.length" class="text-sm text-gray-400 mt-1">
@@ -42,7 +42,7 @@
               <span class="text-gray-700">What type of event is it?</span>
               <select
                 v-model="r$.$value.eventType"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
               >
                 <option disabled value="undefined" selected>Select an event</option>
                 <option value="Corporate">Corporate event</option>
@@ -56,7 +56,7 @@
               <span class="text-gray-700">Additional details</span>
               <textarea
                 v-model="r$.$value.details"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50"
                 rows="3"
               ></textarea>
               <FieldError :errors="r$.details.$errors" />
@@ -69,7 +69,7 @@
                       v-model="r$.$value.acceptTC"
                       data-testid="acceptTC-checkbox"
                       type="checkbox"
-                      class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
+                      class="rounded-sm border-gray-300 text-indigo-600 shadow-xs focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
                     />
                     <span class="ml-2">I accept terms and conditions</span>
                   </label>
@@ -79,13 +79,13 @@
             </div>
             <div class="flex justify-between">
               <button
-                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-sm shadow"
                 @click="r$.$reset({ toInitialState: true })"
               >
                 Reset
               </button>
               <button
-                class="bg-indigo-500 text-white hover:bg-indigo-600 font-semibold py-2 px-4 rounded shadow"
+                class="bg-indigo-500 text-white hover:bg-indigo-600 font-semibold py-2 px-4 rounded-sm shadow"
                 @click="submit"
               >
                 Submit

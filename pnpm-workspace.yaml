@@ -67,3 +67,6 @@ catalog:
   arktype: 2.1.25
   valibot: 1.1.0
   zod: 4.1.12
+
+  # Front
+  tailwindcss: 4.1.16
