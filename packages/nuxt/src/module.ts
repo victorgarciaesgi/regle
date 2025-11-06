@@ -19,7 +19,8 @@ export default defineNuxtModule<ModuleOptions>({
       try {
         const setupFilePathOS = await resolvePath(options.setupFile);
         // Ensure the path is normalized for POSIX compatibility (https://github.com/victorgarciaesgi/regle/issues/152)
-        const setupFilePath = path.posix.normalize(setupFilePathOS.replace(/\\/g, '/'));
+        const setupFilePath = path.posix.normalize(setupFilePathOS.replaceAll(/\\/gi, '/'));
+        // console.log(setupFilePath);
         if (setupFilePath) {
           const relativePath = resolve(setupFilePath);
 

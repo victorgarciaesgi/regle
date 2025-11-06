@@ -15,10 +15,10 @@
     "pinia": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "valibot": "1.1.0",
+    "valibot": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.0.9",
+    "vue-component-type-helpers": "3.1.3",
     "zod": "catalog:"
   }
 }

@@ -6,7 +6,6 @@ const sharedOptions: Options = {
   entry: { 'regle-core': 'src/index.ts' },
   dts: true,
   external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
-  ignoreWatch: ['dist/**'],
   sourcemap: true,
   watch: ['./src', '../shared/utils'],
 };

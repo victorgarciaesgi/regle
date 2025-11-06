@@ -18,9 +18,7 @@ export function outExtensions(isMin = false): Options['outExtensions'] | undefin
 
 export const defaultOptions: Options = {
   format: ['esm'],
-  dts: {
-    resolve: true,
-  },
+  dts: true,
   clean: true,
   sourcemap: false,
   treeshake: true,

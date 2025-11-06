@@ -23,14 +23,15 @@
   "devDependencies": {
     "@andypf/json-viewer": "2.2.0",
     "@tsconfig/node20": "^20.1.6",
-    "@types/node": "^24.7.2",
+    "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "npm-run-all2": "^8.0.4",
     "prettier": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vite": "7.1.9",
+    "@typescript/native-preview": "latest",
+    "vite": "catalog:",
     "vue-eslint-parser": "catalog:",
     "vue-tsc": "catalog:"
   }
