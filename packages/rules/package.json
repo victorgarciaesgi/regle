@@ -49,8 +49,7 @@
     "README.md"
   ],
   "publishConfig": {
-    "access": "public",
-    "directory": "dist"
+    "access": "public"
   },
   "author": {
     "name": "Victor Garcia",
