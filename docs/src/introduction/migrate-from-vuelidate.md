@@ -90,7 +90,7 @@ const contains = (param) => // [!code --]
 
 const contains = createRule({ // [!code ++]
   validator(value: Maybe<string>, param: Maybe<string>) { // [!code ++]
-    return isEmpty(value) && value.includes(param); // [!code ++]
+    return isEmpty(value) || value.includes(param); // [!code ++]
   }, // [!code ++]
   message: ({$params: [param]}) => `Value must contain ${param}`; // [!code ++]
 }) // [!code ++]
