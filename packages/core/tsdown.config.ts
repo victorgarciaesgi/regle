@@ -8,9 +8,7 @@ const sharedOptions: Options = {
 };
 
 export default defineConfig([
-  {
-    ...sharedOptions,
-  },
+  sharedOptions,
   {
     ...sharedOptions,
     minify: true,

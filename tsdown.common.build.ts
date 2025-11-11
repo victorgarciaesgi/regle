@@ -22,4 +22,5 @@ export const defaultOptions: Options = {
   clean: true,
   sourcemap: false,
   treeshake: true,
+  outExtensions: () => ({ js: '.js' }),
 };

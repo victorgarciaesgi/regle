@@ -5,13 +5,9 @@ const sharedOptions: Options = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
   dts: true,
-  external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
+  external: ['vue', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom', '@standard-schema/spec'],
   sourcemap: true,
   watch: ['./src', '../shared/utils'],
 };
 
-export default defineConfig([
-  {
-    ...sharedOptions,
-  },
-]);
+export default defineConfig(sharedOptions);

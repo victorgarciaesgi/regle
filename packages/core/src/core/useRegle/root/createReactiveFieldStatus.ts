@@ -1,6 +1,16 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
-import { cloneDeep, debounce, isEmpty, isEqual, isObject, toDate } from '../../../../../shared';
+import {
+  abortablePromise,
+  cloneDeep,
+  debounce,
+  isEmpty,
+  isEqual,
+  isObject,
+  toDate,
+  type AbortablePromiseResult,
+  type DebouncedFunction,
+} from '../../../../../shared';
 import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
@@ -83,7 +93,8 @@ export function createReactiveFieldStatus({
   let $unwatchAsync: WatchStopHandle;
   let $unwatchRuleFieldValues: WatchStopHandle;
 
-  let $commit = () => {};
+  let $commit: DebouncedFunction<() => void> | (() => void) = () => {};
+  let $validateAbortablePromise: AbortablePromiseResult<any> | undefined;
 
   const $isDebouncing = ref(false);
 
@@ -518,10 +529,13 @@ export function createReactiveFieldStatus({
     );
   }
 
-  function $commitHandler() {
-    Object.values($rules.value).forEach((rule) => {
-      rule.$parse();
-    });
+  async function $commitHandler() {
+    try {
+      const { promise } = registerValidateAbortablePromise(
+        Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()))
+      );
+      await promise;
+    } catch {}
   }
 
   const $rules = ref({}) as Ref<Record<string, $InternalRegleRuleStatus>>;
@@ -530,6 +544,7 @@ export function createReactiveFieldStatus({
   createReactiveRulesResult();
 
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
+    abortCommit();
     $clearExternalErrors();
     scopeState.$dirty.value = false;
     storage.setDirtyEntry(cachePath, false);
@@ -575,6 +590,27 @@ export function createReactiveFieldStatus({
     }
   }
 
+  function abortCommit() {
+    if ('cancel' in $commit) {
+      $commit.cancel();
+    }
+  }
+
+  function registerValidateAbortablePromise<T>(promise: Promise<T>): AbortablePromiseResult<T> {
+    if ($validateAbortablePromise) {
+      $validateAbortablePromise.abort();
+    }
+    $validateAbortablePromise = abortablePromise(promise);
+    return $validateAbortablePromise;
+  }
+
+  function $abort() {
+    abortCommit();
+    if ($validateAbortablePromise) {
+      $validateAbortablePromise.abort();
+    }
+  }
+
   function $touch(runCommit = true, withConditions = false): void {
     if (!scopeState.$dirty.value) {
       scopeState.$dirty.value = true;
@@ -582,9 +618,11 @@ export function createReactiveFieldStatus({
 
     if (withConditions && runCommit) {
       if (!scopeState.$silent.value || (scopeState.$rewardEarly.value && scopeState.$error.value)) {
+        abortCommit();
         $commit();
       }
     } else if (runCommit) {
+      abortCommit();
       $commit();
     }
   }
@@ -611,7 +649,13 @@ export function createReactiveFieldStatus({
 
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
-      } else if (!scopeState.$silent.value && scopeState.$dirty.value && !scopeState.$pending.value) {
+      } else if (
+        !scopeState.$silent.value &&
+        scopeState.$dirty.value &&
+        !scopeState.$pending.value &&
+        !$isDebouncing.value &&
+        !scopeState.$haveAnyAsyncRule.value
+      ) {
         return {
           valid: !scopeState.$error.value,
           data,
@@ -629,7 +673,12 @@ export function createReactiveFieldStatus({
       } else if (isEmpty($rules.value)) {
         return { valid: true, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
       }
-      const results = await Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()));
+
+      $abort();
+      const { promise } = registerValidateAbortablePromise(
+        Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()))
+      );
+      const results = await promise;
 
       const validationResults = results.every((value) => value.status === 'fulfilled' && value.value === true);
 
@@ -657,7 +706,7 @@ export function createReactiveFieldStatus({
   }
 
   if (!scopeState.$lazy.value && !scopeState.$dirty.value && !scopeState.$silent.value) {
-    $commit();
+    $commitHandler();
   }
 
   // oxlint-disable typescript-eslint/no-unused-vars
@@ -691,6 +740,7 @@ export function createReactiveFieldStatus({
     $watch,
     $extractDirtyFields,
     $clearExternalErrors,
+    $abort,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
 }
