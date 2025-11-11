@@ -185,7 +185,7 @@ describe('$pending', () => {
     expect(vm.r$.email.$error).toBe(true);
   });
 
-  it.only('should abort the debounce when $validate is called', async () => {
+  it('should abort the debounce when $validate is called', async () => {
     const validateFn = vi.fn();
     function debounceComp() {
       return useRegle(
