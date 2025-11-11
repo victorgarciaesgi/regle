@@ -28,7 +28,7 @@ console.log(result.issues);
 
 
 
-# Schema only usage
+### Schema only usage
 
 ```ts
 import { useRules } from '@regle/core';
@@ -65,7 +65,7 @@ const r$ = useRules({
 </script>
 ```
 
-# `InferInput`
+### `InferInput`
 
 `InferInput` is an utility type that can produce a object state from any rules object.
 

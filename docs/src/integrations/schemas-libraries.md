@@ -200,8 +200,6 @@ Usage:
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
-// ---cut---
 import { useRegleSchema } from '@regle/schemas';
 import { z } from 'zod';
 
