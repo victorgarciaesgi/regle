@@ -104,10 +104,10 @@ function prototypeCheck(prop: string) {
   }
 }
 
-export function merge<TObj1 extends object = object, TObjs extends object = object>(
+export function merge<TObj1 extends object = object, TObjs extends [...any[]] = [...any[]]>(
   _obj1: TObj1,
-  ..._objs: TObjs[]
-): TObj1 & TObjs {
+  ..._objs: TObjs
+): TObj1 & TObjs[number] {
   var args = [].slice.call(arguments);
   var arg;
   var i = args.length;

@@ -26,7 +26,6 @@ const alias: AliasOptions = [
 
 export default defineConfig({
   test: {
-    testTimeout: 1000,
     globals: true,
     coverage: {
       provider: 'v8',
@@ -74,6 +73,7 @@ export default defineConfig({
           root: './packages/nuxt',
           testTimeout: 30000,
           include: ['**/*.{spec,test}.ts'],
+          pool: 'threads',
         },
       },
     ],

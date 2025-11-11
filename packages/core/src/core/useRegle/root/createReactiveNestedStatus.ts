@@ -650,6 +650,12 @@ export function createReactiveNestedStatus({
     return Object.fromEntries(dirtyFields);
   }
 
+  function $abort() {
+    for (const field of Object.values($fields.value)) {
+      field.$abort();
+    }
+  }
+
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
     try {
       if (forceValues) {
@@ -670,7 +676,7 @@ export function createReactiveNestedStatus({
         }
       } else {
         const data = state.value;
-
+        $abort();
         const results = await Promise.allSettled(
           Object.values($fields.value).map((statusOrField) => statusOrField.$validate())
         );
@@ -702,6 +708,7 @@ export function createReactiveNestedStatus({
     $watch,
     $clearExternalErrors,
     $extractDirtyFields,
+    $abort,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
 

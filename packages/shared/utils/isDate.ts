@@ -3,7 +3,7 @@ import { isEmpty } from './isEmpty';
 /**
  * This is a useful helper that can check if the provided value is a Date, it is used internally for date rules. This can also check strings.
  */
-export function isDate(value: unknown): value is Date {
+export function isDate(value: unknown): value is Date | string {
   if (isEmpty(value)) {
     return false;
   }
