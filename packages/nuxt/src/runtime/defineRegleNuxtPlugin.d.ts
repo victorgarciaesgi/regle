@@ -5,6 +5,7 @@ import {
   type AllRulesDeclarations,
   type RegleShortcutDefinition,
 } from '@regle/core';
+
 export declare function defineRegleNuxtPlugin<
   TCustomRules extends Partial<AllRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
