@@ -1,0 +1,43 @@
+name: Sync Next Branch
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync-next:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: git fetch origin
+
+      - name: Checkout next branch
+        run: git checkout next
+
+      - name: Rebase next onto main
+        run: |
+          if git rebase origin/main; then
+            echo "Rebase successful"
+          else
+            echo "Rebase failed - conflicts detected"
+            git rebase --abort
+            exit 1
+          fi
+
+      - name: Push changes to next
+        run: git push origin next --force-with-lease
