@@ -4,6 +4,7 @@ import { ruleMockIsEvenAsync, ruleMockIsFooAsync } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { nextTick, ref } from 'vue';
 import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '../../../utils/validations.utils';
+import { withAsync } from '@regle/rules';
 
 function nestedAsyncObjectWithRefsValidation() {
   const form = ref({
@@ -182,5 +183,36 @@ describe('$pending', () => {
     expect(vm.r$.email.$pending).toBe(false);
     expect(vm.r$.email.$correct).toBe(false);
     expect(vm.r$.email.$error).toBe(true);
+  });
+
+  it.only('should abort the debounce when $validate is called', async () => {
+    const validateFn = vi.fn();
+    function debounceComp() {
+      return useRegle(
+        { email: '' },
+        {
+          email: {
+            $debounce: 2000,
+            emailValid: withAsync(async () => {
+              await validateFn();
+              return true;
+            }),
+          },
+        },
+        {
+          lazy: true,
+        }
+      );
+    }
+
+    const { vm } = createRegleComponent(debounceComp);
+
+    vm.r$.$value.email = 'test@test.com';
+    vi.advanceTimersByTime(200);
+    vm.r$.$validate();
+
+    vi.advanceTimersByTime(2000);
+
+    expect(validateFn).toHaveBeenCalledTimes(1);
   });
 });

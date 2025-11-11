@@ -368,6 +368,7 @@ interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | 
   $unwatch(): void;
   $watch(): void;
   $reset(options?: ResetOptions<any>, fromParent?: boolean): void;
+  $abort(): void;
 }
 
 /**

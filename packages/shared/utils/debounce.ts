@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 
-interface DebouncedFunction<T extends (...args: any[]) => any | Promise<any>> {
+export interface DebouncedFunction<T extends (...args: any[]) => any | Promise<any>> {
   (...args: Parameters<T>): Promise<ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>>;
   cancel(): void;
 }
@@ -22,24 +22,37 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
         trackDebounceRef.value = false;
       }
     }
-    return new Promise((resolve) => {
+
+    return new Promise((resolve, reject) => {
       function customResolve(value: any) {
         resolve(value);
         disableDebounceRef();
       }
       clearTimeout(timeout);
       timeout = setTimeout(() => {
+        disableDebounceRef();
         timeout = undefined;
         if (!immediate) {
-          Promise.resolve(func.apply(this, [...args] as any))
-            .then(customResolve)
-            .finally(disableDebounceRef);
+          try {
+            Promise.resolve(func.apply(this, [...args] as any))
+              .then(customResolve)
+              .catch((e) => reject(e))
+              .finally(disableDebounceRef);
+          } catch (e) {
+            reject(e);
+          }
         }
       }, wait);
-      if (immediate && !timeout) {
-        Promise.resolve(func.apply(this, [...args] as any))
-          .then(customResolve)
-          .finally(disableDebounceRef);
+      if (immediate) {
+        disableDebounceRef();
+        try {
+          Promise.resolve(func.apply(this, [...args] as any))
+            .then(customResolve)
+            .catch((e) => reject(e))
+            .finally(disableDebounceRef);
+        } catch (e) {
+          reject(e);
+        }
       }
     });
   };

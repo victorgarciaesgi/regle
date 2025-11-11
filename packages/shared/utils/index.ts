@@ -7,3 +7,4 @@ export * from './toDate';
 export * from './debounce';
 export * from './isEqual';
 export * from './isFile';
+export * from './abortablePromise';

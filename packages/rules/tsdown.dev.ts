@@ -10,8 +10,4 @@ const sharedOptions: Options = {
   watch: ['./src', '../shared/utils'],
 };
 
-export default defineConfig([
-  {
-    ...sharedOptions,
-  },
-]);
+export default defineConfig(sharedOptions);

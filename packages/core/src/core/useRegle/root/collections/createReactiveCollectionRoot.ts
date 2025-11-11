@@ -564,12 +564,20 @@ export function createReactiveCollectionStatus({
     }
   }
 
+  function $abort() {
+    $selfStatus.value.$abort();
+    $eachStatus.value.forEach(($each) => {
+      $each.$abort();
+    });
+  }
+
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
     if (forceValues) {
       state.value = forceValues;
     }
     const data = state.value;
     try {
+      $abort();
       const results = await Promise.allSettled([
         $selfStatus.value.$validate(forceValues),
         ...$eachStatus.value.map((status) => {
@@ -632,6 +640,7 @@ export function createReactiveCollectionStatus({
     $watch,
     $touch,
     $reset,
+    $abort,
     $extractDirtyFields,
     $clearExternalErrors,
     ...createStandardSchema($validate),
