@@ -67,11 +67,9 @@ describe('type utils', () => {
     type r$Schema = InferRegleRoot<typeof useMyFormSchema>;
 
     expectTypeOf<r$Schema['$fields']['email']>().toEqualTypeOf<
-      RegleSchemaFieldStatus<string, string, RegleShortcutDefinition<any>>
+      RegleSchemaFieldStatus<string, RegleShortcutDefinition<any>>
     >();
-    expectTypeOf<r$Schema['email']>().toEqualTypeOf<
-      RegleSchemaFieldStatus<string, string, RegleShortcutDefinition<any>>
-    >();
+    expectTypeOf<r$Schema['email']>().toEqualTypeOf<RegleSchemaFieldStatus<string, RegleShortcutDefinition<any>>>();
 
     const { r$ } = useRegle({ nested: { name: '' } }, { nested: { name: { required } } });
 

@@ -1,6 +1,6 @@
-import type { Options } from 'tsdown';
+import type { UserConfig } from 'tsdown';
 
-export const defaultOptions: Options = {
+export const defaultOptions: UserConfig = {
   format: ['esm'],
   ignoreWatch: ['dist', '.turbo'],
   dts: true,

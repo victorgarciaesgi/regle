@@ -18,7 +18,6 @@ import type { Raw } from 'vue';
 
 export type RegleSchema<
   TState extends Record<string, any>,
-  TSchema extends Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -27,12 +26,11 @@ export type RegleSchema<
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
-  r$: Raw<RegleSchemaStatus<TState, TSchema, TShortcuts, true>>;
+  r$: Raw<RegleSchemaStatus<TState, TShortcuts, true>>;
 } & TAdditionalReturnProperties;
 
 export type RegleSingleFieldSchema<
   TState extends Maybe<PrimitiveTypes>,
-  TSchema extends unknown,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -42,11 +40,11 @@ export type RegleSingleFieldSchema<
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
   r$: Raw<
-    RegleSchemaFieldStatus<TState, TSchema, TShortcuts> & {
+    RegleSchemaFieldStatus<TState, TShortcuts> & {
       /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
       $validate: (
-        forceValues?: TSchema extends EmptyObject ? any : HasNamedKeys<TSchema> extends true ? TSchema : any
-      ) => Promise<RegleSchemaResult<TSchema>>;
+        forceValues?: TState extends EmptyObject ? any : HasNamedKeys<TState> extends true ? TState : any
+      ) => Promise<RegleSchemaResult<TState>>;
     }
   >;
 } & TAdditionalReturnProperties;
@@ -55,31 +53,19 @@ export type RegleSchemaResult<TSchema extends unknown> =
   | { valid: false; data: PartialDeep<TSchema>; issues: RegleIssuesTree<TSchema>; errors: RegleErrorTree<TSchema> }
   | { valid: true; data: TSchema; issues: EmptyObject; errors: EmptyObject };
 
-type ProcessNestedFields<
-  TState extends Record<string, any>,
-  TSchema extends Record<string, any>,
-  TShortcuts extends RegleShortcutDefinition,
-> =
+type ProcessNestedFields<TState extends Record<string, any>, TShortcuts extends RegleShortcutDefinition> =
   HasNamedKeys<TState> extends true
     ? {
-        readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-          ? InferRegleSchemaStatusType<
-              NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
-              JoinDiscriminatedUnions<TState>[TKey],
-              TShortcuts
-            >
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TState>
+          ? InferRegleSchemaStatusType<NonNullable<JoinDiscriminatedUnions<TState>[TKey]>, TShortcuts>
           : never;
       } & {
-        readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<TSchema>
-          ? JoinDiscriminatedUnions<TSchema>[TKey] extends NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>
+        readonly [TKey in keyof JoinDiscriminatedUnions<TState> as TKey extends keyof JoinDiscriminatedUnions<TState>
+          ? JoinDiscriminatedUnions<TState>[TKey] extends NonNullable<JoinDiscriminatedUnions<TState>[TKey]>
             ? TKey
             : never
-          : never]-?: TKey extends keyof JoinDiscriminatedUnions<TSchema>
-          ? InferRegleSchemaStatusType<
-              NonNullable<JoinDiscriminatedUnions<TSchema>[TKey]>,
-              JoinDiscriminatedUnions<TState>[TKey],
-              TShortcuts
-            >
+          : never]-?: TKey extends keyof JoinDiscriminatedUnions<TState>
+          ? InferRegleSchemaStatusType<NonNullable<JoinDiscriminatedUnions<TState>[TKey]>, TShortcuts>
           : never;
       }
     : {};
@@ -89,12 +75,11 @@ type ProcessNestedFields<
  */
 export type RegleSchemaStatus<
   TState extends Record<string, any> = Record<string, any>,
-  TSchema extends Record<string, any> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   IsRoot extends boolean = false,
 > = Omit<RegleCommonStatus<TState>, IsRoot extends false ? '$pending' : ''> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
-  readonly $fields: ProcessNestedFields<TState, TSchema, TShortcuts>;
+  readonly $fields: ProcessNestedFields<TState, TShortcuts>;
   /** Collection of all issues, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -107,13 +92,13 @@ export type RegleSchemaStatus<
   readonly $silentErrors: RegleErrorTree<TState>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
-} & ProcessNestedFields<TState, TSchema, TShortcuts> &
+} & ProcessNestedFields<TState, TShortcuts> &
   (IsRoot extends true
     ? {
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
         $validate: (
-          forceValues?: TSchema extends EmptyObject ? (HasNamedKeys<TSchema> extends true ? TSchema : any) : TSchema
-        ) => Promise<RegleSchemaResult<TSchema>>;
+          forceValues?: TState extends EmptyObject ? (HasNamedKeys<TState> extends true ? TState : any) : TState
+        ) => Promise<RegleSchemaResult<TState>>;
       }
     : {}) &
   ([TShortcuts['nested']] extends [never]
@@ -125,35 +110,26 @@ export type RegleSchemaStatus<
 /**
  * @public
  */
-export type InferRegleSchemaStatusType<
-  TSchema extends unknown,
-  TState extends unknown,
-  TShortcuts extends RegleShortcutDefinition = {},
-> =
-  NonNullable<TSchema> extends Array<infer A>
+export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extends RegleShortcutDefinition = {}> =
+  NonNullable<TState> extends Array<infer A>
     ? A extends Record<string, any>
-      ? RegleSchemaCollectionStatus<A, TState extends Array<any> ? TState : [], TShortcuts>
-      : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
+      ? RegleSchemaCollectionStatus<NonNullable<TState>, TShortcuts>
+      : RegleSchemaFieldStatus<TState, TShortcuts>
     : NonNullable<TState> extends Date | File
-      ? RegleSchemaFieldStatus<TSchema, TState, TShortcuts>
+      ? RegleSchemaFieldStatus<TState, TShortcuts>
       : unknown extends TState
-        ? RegleSchemaFieldStatus<TSchema extends EmptyObject ? unknown : TSchema, TState, TShortcuts>
-        : NonNullable<TSchema> extends Record<string, any>
-          ? RegleSchemaStatus<
-              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-              NonNullable<TSchema>,
-              TShortcuts
-            >
-          : RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
+        ? RegleSchemaFieldStatus<TState extends EmptyObject ? unknown : TState, TShortcuts>
+        : NonNullable<TState> extends Record<string, any>
+          ? RegleSchemaStatus<NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {}, TShortcuts>
+          : RegleSchemaFieldStatus<TState, TShortcuts>;
 
 /**
  * @public
  */
-export type RegleSchemaFieldStatus<
-  _TSchema extends unknown,
-  TState = any,
-  TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<RegleCommonStatus<TState>, '$pending'> & {
+export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcutDefinition = {}> = Omit<
+  RegleCommonStatus<TState>,
+  '$pending'
+> & {
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -187,27 +163,26 @@ export type RegleSchemaFieldStatus<
 /**
  * @public
  */
-export type RegleSchemaCollectionStatus<
-  TSchema extends Record<string, any>,
-  TState extends any[],
-  TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<RegleSchemaFieldStatus<TSchema, TState, TShortcuts>, '$errors' | '$silentErrors' | '$validate'> & {
+export type RegleSchemaCollectionStatus<TState extends any[], TShortcuts extends RegleShortcutDefinition = {}> = Omit<
+  RegleSchemaFieldStatus<TState, TShortcuts>,
+  '$errors' | '$silentErrors' | '$validate'
+> & {
   /** Collection of status for every item in your collection. Each item will be a field you can access or iterate to display your elements. */
-  readonly $each: Array<InferRegleSchemaStatusType<NonNullable<TSchema>, ArrayElement<TState>, TShortcuts>>;
+  readonly $each: Array<InferRegleSchemaStatusType<ArrayElement<TState>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
-  readonly $self: RegleSchemaFieldStatus<TSchema, TState, TShortcuts>;
+  readonly $self: RegleSchemaFieldStatus<TState, TShortcuts>;
   /**
    * Collection of all the issues, collected for all children properties and nested forms.
    *
    * Only contains issues from properties where $dirty equals true.
    */
-  readonly $issues: RegleCollectionErrors<TSchema, true>;
+  readonly $issues: RegleCollectionErrors<TState, true>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleCollectionErrors<TSchema>;
+  readonly $errors: RegleCollectionErrors<TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
-  readonly $silentErrors: RegleCollectionErrors<TSchema>;
+  readonly $silentErrors: RegleCollectionErrors<TState>;
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
 } & ([TShortcuts['collections']] extends [never]

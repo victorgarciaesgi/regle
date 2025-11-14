@@ -41,18 +41,8 @@ export interface useRegleSchemaFn<
         : [options?: useRegleSchemaFnOptions<TAdditionalOptions>]),
     ]
   ): NonNullable<TState> extends PrimitiveTypes
-    ? RegleSingleFieldSchema<
-        NonNullable<TState>,
-        StandardSchemaV1.InferInput<TSchema>,
-        TShortcuts,
-        TAdditionalReturnProperties
-      >
-    : RegleSchema<
-        UnwrapNestedRefs<NonNullable<TState>>,
-        UnwrapNestedRefs<NonNullable<StandardSchemaV1.InferInput<TSchema>>>,
-        TShortcuts,
-        TAdditionalReturnProperties
-      >;
+    ? RegleSingleFieldSchema<NonNullable<TState>, TShortcuts, TAdditionalReturnProperties>
+    : RegleSchema<UnwrapNestedRefs<NonNullable<TState>>, TShortcuts, TAdditionalReturnProperties>;
 }
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
@@ -72,7 +62,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
       RegleSchemaBehaviourOptions
-  ): RegleSchema<Record<string, any>, StandardSchemaV1> {
+  ): RegleSchema<Record<string, any>, RegleShortcutDefinition> {
     const computedSchema = computed(() => unref(schema));
 
     const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};

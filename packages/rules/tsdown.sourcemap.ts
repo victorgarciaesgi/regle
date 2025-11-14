@@ -1,7 +1,7 @@
-import { defineConfig, type Options } from 'tsdown';
+import { defineConfig, type UserConfig } from 'tsdown';
 import { defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
 
-const sharedOptions: Options = {
+const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-rules': 'src/index.ts' },
   external: ['vue', '@regle/core', '@vue/reactivity', '@vue/runtime-core', '@vue/runtime-dom'],
@@ -9,9 +9,7 @@ const sharedOptions: Options = {
 };
 
 export default defineConfig([
-  {
-    ...sharedOptions,
-  },
+  sharedOptions,
   {
     ...sharedOptions,
     minify: true,

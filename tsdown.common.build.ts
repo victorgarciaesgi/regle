@@ -1,6 +1,6 @@
-import type { Options } from 'tsdown';
+import type { UserConfig } from 'tsdown';
 
-export function outExtensions(isMin = false): Options['outExtensions'] | undefined {
+export function outExtensions(isMin = false): UserConfig['outExtensions'] | undefined {
   return ({ format }) => {
     let output;
     const min = isMin ? '.min' : '';
@@ -16,9 +16,11 @@ export function outExtensions(isMin = false): Options['outExtensions'] | undefin
   };
 }
 
-export const defaultOptions: Options = {
+export const defaultOptions: UserConfig = {
   format: ['esm'],
-  dts: true,
+  dts: {
+    resolve: true,
+  },
   clean: true,
   sourcemap: false,
   treeshake: true,

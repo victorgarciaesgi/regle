@@ -105,13 +105,13 @@ describe.each([
     shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.amount);
 
     expectTypeOf(vm.r$.gift?.company).toEqualTypeOf<
-      RegleSchemaFieldStatus<string, string | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<string, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.gift?.amount).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.gift?.shares).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, number | undefined, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

@@ -1,7 +1,7 @@
-import { defineConfig, type Options } from 'tsdown';
+import { defineConfig, type UserConfig } from 'tsdown';
 import { defaultOptions } from '../../tsdown.common.dev.ts';
 
-const sharedOptions: Options = {
+const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
   dts: true,
