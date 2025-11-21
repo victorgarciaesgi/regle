@@ -1,5 +1,5 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { computed, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
+import { computed, isRef, ref, shallowRef, toValue, triggerRef, watchEffect, type ComputedRef } from 'vue';
 import {
   registerRegleInstance,
   type DeepMaybeRef,
@@ -76,7 +76,7 @@ export function createRootRegleLogic({
   });
 
   if (process.env.NODE_ENV === 'development' && regle.regle) {
-    registerRegleInstance(regle.regle as any);
+    registerRegleInstance(regle.regle as any, { name: toValue(resolvedOptions.id) });
   }
 
   return regle;

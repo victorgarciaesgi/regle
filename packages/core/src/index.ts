@@ -28,8 +28,7 @@ export {
   type useRulesFn,
   type UseScopedRegleOptions,
 } from './core';
-export { RegleVuePlugin } from './devtools/plugin';
-export { registerRegleInstance } from './devtools/registry';
+export { RegleVuePlugin, registerRegleInstance } from './devtools';
 export { InternalRuleType } from './types';
 export type {
   $InternalRegleStatus,

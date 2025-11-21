@@ -49,6 +49,11 @@ export interface RegleBehaviourOptions {
    *
    */
   clearExternalErrorsOnChange?: boolean | undefined;
+  /**
+   * A unique identifier for the Regle instance in the devtools.
+   * @default undefined
+   */
+  id?: string | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<

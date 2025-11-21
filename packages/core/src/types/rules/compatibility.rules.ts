@@ -7,6 +7,7 @@ import type {
   RegleFieldIssue,
   RegleValidationErrors,
   RegleValidationGroupOutput,
+  ResetOptions,
 } from '..';
 
 export interface SuperCompatibleRegle {
@@ -30,6 +31,7 @@ export type SuperCompatibleRegleStatus = {
   readonly $silentErrors: Record<string, RegleValidationErrors<any, false>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate?: () => Promise<SuperCompatibleRegleResult>;
+  $reset?: (options?: ResetOptions<unknown>) => void;
   [x: string]: any;
 };
 
