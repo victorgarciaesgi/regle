@@ -6,6 +6,7 @@ import type { EnhanceAppContext } from 'vitepress';
 import 'virtual:group-icons.css';
 import { createPinia } from 'pinia';
 import DefaultTheme from 'vitepress/theme';
+import { RegleVuePlugin } from '@regle/core';
 import './style.css';
 import './custom.scss';
 
@@ -18,7 +19,7 @@ export default {
     app.use(TwoslashFloatingVue as any);
     const pinia = createPinia();
     app.use(pinia);
-
+    app.use(RegleVuePlugin);
     app.use({
       async install() {
         await nextTick();
