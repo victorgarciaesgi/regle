@@ -1,6 +1,11 @@
 import type { Ref, WatchStopHandle } from 'vue';
 import { computed, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
-import type { DeepMaybeRef, LocalRegleBehaviourOptions, RegleBehaviourOptions } from '../..';
+import {
+  registerRegleInstance,
+  type DeepMaybeRef,
+  type LocalRegleBehaviourOptions,
+  type RegleBehaviourOptions,
+} from '../..';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
@@ -60,7 +65,7 @@ export function createRootRegleLogic({
     unwatchRules?.();
   });
 
-  return useRootStorage({
+  const regle = useRootStorage({
     scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,
     state: state,
     options: resolvedOptions,
@@ -69,4 +74,10 @@ export function createRootRegleLogic({
     customRules,
     shortcuts,
   });
+
+  if (process.env.NODE_ENV === 'development' && regle.regle) {
+    registerRegleInstance(regle.regle as any);
+  }
+
+  return regle;
 }

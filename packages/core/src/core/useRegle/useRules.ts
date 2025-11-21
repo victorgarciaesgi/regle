@@ -17,6 +17,16 @@ import type {
 import type { DeepMaybeRef, InferInput, JoinDiscriminatedUnions, PrimitiveTypes, Unwrap } from '../../types/utils';
 import { isRuleDef } from './guards';
 import { createRootRegleLogic } from './shared.rootRegle';
+import { registerRegleInstance } from '../../devtools/registry';
+
+// Helper to safely register with devtools
+function registerRegleWithDevtools(regle: any, options?: any): void {
+  try {
+    registerRegleInstance(regle, { name: options?.devtoolsName });
+  } catch (e) {
+    // Silently fail if devtools aren't available
+  }
+}
 
 function createEmptyRuleState(rules: RegleUnknownRulesTree | RegleRuleDecl): Record<string, any> | any {
   const result: Record<string, any> = {};
@@ -122,6 +132,9 @@ export function createUseRulesComposable<
       customRules,
       shortcuts,
     });
+
+    // Register with devtools
+    registerRegleWithDevtools(regle.regle, options as any);
 
     return regle.regle as any;
   }

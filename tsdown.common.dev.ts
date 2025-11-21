@@ -6,4 +6,5 @@ export const defaultOptions: UserConfig = {
   dts: true,
   clean: false,
   sourcemap: true,
+  outExtensions: () => ({ js: '.js' }),
 };
