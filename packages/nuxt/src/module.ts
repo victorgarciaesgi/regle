@@ -1,4 +1,12 @@
-import { defineNuxtModule, addImportsSources, addImports, resolvePath, addTemplate, createResolver } from '@nuxt/kit';
+import {
+  defineNuxtModule,
+  addImportsSources,
+  addImports,
+  resolvePath,
+  addTemplate,
+  createResolver,
+  addPlugin,
+} from '@nuxt/kit';
 import path from 'path';
 export interface ModuleOptions {
   /**
@@ -15,6 +23,11 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {},
   async setup(options) {
     const { resolve } = createResolver(import.meta.url);
+
+    addPlugin({
+      src: resolve(path.join(__dirname, 'runtime/plugins/regle.plugin')),
+    });
+
     if (options.setupFile) {
       try {
         const setupFilePathOS = await resolvePath(options.setupFile);
