@@ -2,16 +2,21 @@ import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
 import { resolveFieldByPath } from './state-builder';
 import type { DevtoolsV6PluginAPI } from './types';
+import { parseFieldNodeId } from './utils';
+import type { DevToolsV6PluginAPIHookPayloads } from '@vue/devtools-kit';
 
 export function handleValidateAction(nodeId: string, api: DevtoolsV6PluginAPI) {
-  const isFieldNode = nodeId.includes(':field:');
+  if (nodeId.includes(':rule:')) {
+    return;
+  }
 
-  if (isFieldNode) {
-    const [instanceId, _, fieldPath] = nodeId.split(':');
+  const fieldInfo = parseFieldNodeId(nodeId);
+  if (fieldInfo) {
+    const { instanceId, fieldName } = fieldInfo;
     const instance = regleDevtoolsRegistry.get(instanceId);
 
     if (instance && instance.r$.$fields) {
-      const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldPath);
+      const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldName);
       if (fieldStatus && typeof fieldStatus.$validate === 'function') {
         fieldStatus.$validate();
       }
@@ -24,21 +29,18 @@ export function handleValidateAction(nodeId: string, api: DevtoolsV6PluginAPI) {
     }
   }
 
-  setTimeout(() => {
-    api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
-    api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
-  }, 100);
+  emitInspectorState(api);
 }
 
 export function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, resetState = false) {
-  const isFieldNode = nodeId.includes(':field:');
+  const fieldInfo = parseFieldNodeId(nodeId);
 
-  if (isFieldNode) {
-    const [instanceId, _, fieldPath] = nodeId.split(':');
+  if (fieldInfo) {
+    const { instanceId, fieldName } = fieldInfo;
     const instance = regleDevtoolsRegistry.get(instanceId);
 
     if (instance && instance.r$.$fields) {
-      const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldPath);
+      const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldName);
       if (fieldStatus && typeof fieldStatus.$reset === 'function') {
         fieldStatus.$reset({ toInitialState: resetState });
       }
@@ -51,6 +53,39 @@ export function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, rese
     }
   }
 
+  emitInspectorState(api);
+}
+
+export function handleEditInspectorState(
+  payload: DevToolsV6PluginAPIHookPayloads['editInspectorState'],
+  api: DevtoolsV6PluginAPI
+) {
+  const { nodeId, path, state } = payload;
+
+  if (!path.includes('$value')) {
+    return;
+  }
+
+  const fieldInfo = parseFieldNodeId(nodeId);
+  if (!fieldInfo) {
+    return;
+  }
+
+  const [instanceId, _, fieldPath] = nodeId.split(':');
+  const instance = regleDevtoolsRegistry.get(instanceId);
+
+  if (instance && instance.r$.$fields) {
+    const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldPath);
+
+    if (fieldStatus && '$value' in fieldStatus) {
+      fieldStatus.$value = state.value;
+    }
+  }
+
+  emitInspectorState(api);
+}
+
+function emitInspectorState(api: DevtoolsV6PluginAPI) {
   setTimeout(() => {
     api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
     api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);

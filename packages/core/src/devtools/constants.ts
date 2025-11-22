@@ -3,6 +3,10 @@ export const COLORS = {
     text: 0xffffff,
     bg: 0xef4444,
   },
+  INVALID: {
+    text: 0xffffff,
+    bg: 0xf87171,
+  },
   VALID: {
     text: 0xffffff,
     bg: 0x10b981,
@@ -16,10 +20,9 @@ export const COLORS = {
     bg: 0xfef3c7,
   },
   COMPONENT: {
-    text: 0x1f2937,
-    bg: 0xe5e7eb,
+    text: 0xffffff,
+    bg: 0x6366f1,
   },
-  TIMELINE: 0x4c51bf,
 } as const;
 
 export const PRIORITY_KEYS = {

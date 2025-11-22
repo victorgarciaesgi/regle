@@ -1,15 +1,20 @@
+import type { CustomInspectorState } from '@vue/devtools-kit';
 import { isCollectionRulesStatus, isNestedRulesStatus } from '../core/useRegle/guards';
-import type { $InternalRegleFieldStatus, $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../types';
+import type {
+  $InternalRegleFieldStatus,
+  $InternalRegleRuleStatus,
+  $InternalRegleStatusType,
+  SuperCompatibleRegleRoot,
+} from '../types';
 import { PRIORITY_KEYS } from './constants';
-import type { RegleInstance } from './registry';
-import type { FieldsDictionary, InspectorState, InspectorStateItem } from './types';
-import { getRemainingProperties, parseFieldNodeId, getPriorityProperties } from './utils';
+import type { FieldsDictionary, RegleInstance } from './types';
+import { getPriorityProperties, getRemainingProperties, parseFieldNodeId, parseRuleNodeId } from './utils';
 
 /**
  * Build state for a field node
  */
-function buildFieldState(fieldStatus: $InternalRegleFieldStatus): InspectorState {
-  const state: InspectorState = {};
+function buildFieldState(fieldStatus: $InternalRegleFieldStatus): CustomInspectorState {
+  const state: CustomInspectorState = {};
 
   // Priority properties
   const priorityProperties = getPriorityProperties(fieldStatus, PRIORITY_KEYS.FIELD);
@@ -23,30 +28,72 @@ function buildFieldState(fieldStatus: $InternalRegleFieldStatus): InspectorState
     state['Other Properties'] = remainingProperties;
   }
 
-  if (fieldStatus.$rules && typeof fieldStatus.$rules === 'object') {
-    const rulesSection: InspectorStateItem[] = [];
+  return state;
+}
 
-    Object.entries(fieldStatus.$rules).forEach(([ruleName, ruleStatus]: [string, any]) => {
-      if (ruleStatus && typeof ruleStatus === 'object') {
-        const ruleProps = getRemainingProperties(ruleStatus, []);
-        rulesSection.push({
-          key: ruleName,
-          value: ruleProps,
-          editable: false,
-        });
-      }
-    });
+/**
+ * Build state for a rule node
+ */
+function buildRuleState(ruleStatus: $InternalRegleRuleStatus): CustomInspectorState {
+  const state: CustomInspectorState = {};
 
-    if (rulesSection.length > 0) {
-      state['Rules'] = rulesSection;
-    }
+  const ruleKeys = ['$type', '$valid', '$active', '$pending', '$message', '$tooltip'];
+  const priorityProperties = getPriorityProperties(ruleStatus, ruleKeys);
+  if (priorityProperties.length > 0) {
+    state['Rule State'] = priorityProperties;
+  }
+
+  // Add params if present
+  if (ruleStatus.$params && Array.isArray(ruleStatus.$params) && ruleStatus.$params.length > 0) {
+    state['Parameters'] = [
+      {
+        key: '$params',
+        value: ruleStatus.$params,
+        editable: false,
+      },
+    ];
+  }
+
+  // Add metadata if present
+  if (ruleStatus.$metadata !== undefined && ruleStatus.$metadata !== true && ruleStatus.$metadata !== false) {
+    state['Metadata'] = [
+      {
+        key: '$metadata',
+        value: ruleStatus.$metadata,
+        editable: false,
+      },
+    ];
+  }
+
+  // Remaining properties
+  const remainingProperties = getRemainingProperties(ruleStatus, [
+    ...ruleKeys,
+    '$params',
+    '$metadata',
+    '$validator',
+    '$parse',
+    '$reset',
+    '$unwatch',
+    '$watch',
+    '$haveAsync',
+    '$validating',
+    '$fieldDirty',
+    '$fieldInvalid',
+    '$fieldPending',
+    '$fieldCorrect',
+    '$fieldError',
+    '$maybePending',
+    '$externalErrors',
+  ]);
+  if (remainingProperties.length > 0) {
+    state['Other Properties'] = remainingProperties;
   }
 
   return state;
 }
 
-function buildRootState(r$: SuperCompatibleRegleRoot): InspectorState {
-  const state: InspectorState = {};
+function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
+  const state: CustomInspectorState = {};
 
   const priorityProperties = getPriorityProperties(r$, PRIORITY_KEYS.ROOT);
   if (priorityProperties.length > 0) {
@@ -96,9 +143,25 @@ export function resolveFieldByPath(fields: FieldsDictionary, path: string): $Int
 export function buildInspectorState(
   nodeId: string,
   getInstance: (id: string) => RegleInstance | undefined
-): InspectorState | null {
-  const fieldInfo = parseFieldNodeId(nodeId);
+): CustomInspectorState | null {
+  const ruleInfo = parseRuleNodeId(nodeId);
+  if (ruleInfo) {
+    const { instanceId, fieldName, ruleName } = ruleInfo;
+    const instance = getInstance(instanceId);
 
+    if (!instance || !instance.r$.$fields) return null;
+
+    const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldName);
+    if (!fieldStatus || !('$rules' in fieldStatus)) return null;
+
+    const fieldWithRules = fieldStatus as $InternalRegleFieldStatus;
+    const ruleStatus = fieldWithRules.$rules[ruleName];
+    if (!ruleStatus) return null;
+
+    return buildRuleState(ruleStatus);
+  }
+
+  const fieldInfo = parseFieldNodeId(nodeId);
   if (fieldInfo) {
     const { instanceId, fieldName } = fieldInfo;
     const instance = getInstance(instanceId);
@@ -109,10 +172,10 @@ export function buildInspectorState(
     if (!fieldStatus) return null;
 
     return buildFieldState(fieldStatus as any);
-  } else {
-    const instance = getInstance(nodeId);
-    if (!instance) return null;
-
-    return buildRootState(instance.r$);
   }
+
+  const instance = getInstance(nodeId);
+  if (!instance) return null;
+
+  return buildRootState(instance.r$);
 }

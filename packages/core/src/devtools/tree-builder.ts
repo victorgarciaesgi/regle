@@ -1,9 +1,15 @@
-import { isCollectionRulesStatus, isNestedRulesStatus } from '../core/useRegle/guards';
-import type { $InternalRegleCollectionStatus, $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../types';
+import type { CustomInspectorNode, InspectorNodeTag } from '@vue/devtools-kit';
+import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from '../core/useRegle/guards';
+import type {
+  $InternalRegleCollectionStatus,
+  $InternalRegleFieldStatus,
+  $InternalRegleRuleStatus,
+  $InternalRegleStatusType,
+  SuperCompatibleRegleRoot,
+} from '../types';
 import { COLORS } from './constants';
-import type { RegleInstance } from './registry';
-import type { FieldsDictionary, InspectorNodeTag, InspectorTreeNode } from './types';
-import { createFieldNodeId } from './utils';
+import type { FieldsDictionary, RegleInstance } from './types';
+import { createFieldNodeId, createRuleNodeId } from './utils';
 
 function buildNodeTags(
   fieldOrR$: $InternalRegleStatusType | SuperCompatibleRegleRoot,
@@ -33,7 +39,7 @@ function buildNodeTags(
     });
   }
 
-  if (!('$fields' in fieldOrR$) && fieldOrR$.$dirty) {
+  if (fieldOrR$.$dirty) {
     tags.push({
       label: 'dirty',
       textColor: COLORS.DIRTY.text,
@@ -52,12 +58,73 @@ function buildNodeTags(
   return tags;
 }
 
+function buildRuleTags(rule: $InternalRegleRuleStatus): InspectorNodeTag[] {
+  const tags: InspectorNodeTag[] = [];
+
+  if (!rule.$active) {
+    tags.push({
+      label: 'inactive',
+      textColor: 0x9ca3af,
+      backgroundColor: 0xf3f4f6,
+    });
+  } else if (!rule.$valid) {
+    tags.push({
+      label: 'invalid',
+      textColor: COLORS.INVALID.text,
+      backgroundColor: COLORS.INVALID.bg,
+    });
+  } else if (rule.$valid) {
+    tags.push({
+      label: 'valid',
+      textColor: COLORS.VALID.text,
+      backgroundColor: COLORS.VALID.bg,
+    });
+  }
+
+  if (rule.$pending) {
+    tags.push({
+      label: 'pending',
+      textColor: COLORS.PENDING.text,
+      backgroundColor: COLORS.PENDING.bg,
+    });
+  }
+
+  return tags;
+}
+
+function buildRuleNodes(
+  fieldStatus: $InternalRegleFieldStatus,
+  instanceId: string,
+  fieldPath: string
+): CustomInspectorNode[] {
+  const children: CustomInspectorNode[] = [];
+
+  if (!fieldStatus.$rules || typeof fieldStatus.$rules !== 'object') {
+    return children;
+  }
+
+  Object.entries(fieldStatus.$rules).forEach(([ruleName, ruleStatus]) => {
+    if (ruleStatus && typeof ruleStatus === 'object') {
+      const ruleTags = buildRuleTags(ruleStatus);
+
+      children.push({
+        id: createRuleNodeId(instanceId, fieldPath, ruleName),
+        label: ruleName,
+        tags: ruleTags,
+        children: [],
+      });
+    }
+  });
+
+  return children;
+}
+
 function buildCollectionItemNodes(
   fieldStatus: $InternalRegleCollectionStatus,
   instanceId: string,
   fieldPath: string
-): InspectorTreeNode[] {
-  const children: InspectorTreeNode[] = [];
+): CustomInspectorNode[] {
+  const children: CustomInspectorNode[] = [];
 
   if (!fieldStatus.$each || !Array.isArray(fieldStatus.$each)) {
     return children;
@@ -67,10 +134,12 @@ function buildCollectionItemNodes(
     if (item && typeof item === 'object') {
       const itemTags = buildNodeTags(item);
       const itemPath = `${fieldPath}[${index}]`;
-      let itemChildren: InspectorTreeNode[] = [];
+      let itemChildren: CustomInspectorNode[] = [];
 
       if (isNestedRulesStatus(item)) {
         itemChildren = buildNestedFieldNodes(item.$fields, instanceId, itemPath);
+      } else if (isFieldStatus(item)) {
+        itemChildren = buildRuleNodes(item, instanceId, itemPath);
       }
 
       children.push({
@@ -85,20 +154,26 @@ function buildCollectionItemNodes(
   return children;
 }
 
-function buildNestedFieldNodes(fields: FieldsDictionary, instanceId: string, parentPath: string): InspectorTreeNode[] {
-  const children: InspectorTreeNode[] = [];
+function buildNestedFieldNodes(
+  fields: FieldsDictionary,
+  instanceId: string,
+  parentPath: string
+): CustomInspectorNode[] {
+  const children: CustomInspectorNode[] = [];
 
   Object.entries(fields).forEach(([fieldName, fieldStatus]) => {
     if (fieldStatus && typeof fieldStatus === 'object') {
       const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
       const fieldTags = buildNodeTags(fieldStatus);
 
-      let fieldChildren: InspectorTreeNode[] = [];
+      let fieldChildren: CustomInspectorNode[] = [];
 
       if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldPath);
       } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldPath);
+      } else if (isFieldStatus(fieldStatus)) {
+        fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldPath);
       }
 
       children.push({
@@ -113,8 +188,15 @@ function buildNestedFieldNodes(fields: FieldsDictionary, instanceId: string, par
   return children;
 }
 
-function buildRootChildrenNodes(r$: SuperCompatibleRegleRoot, instanceId: string): InspectorTreeNode[] {
-  const children: InspectorTreeNode[] = [];
+function buildRootChildrenNodes(
+  r$: SuperCompatibleRegleRoot | $InternalRegleFieldStatus,
+  instanceId: string
+): CustomInspectorNode[] {
+  const children: CustomInspectorNode[] = [];
+
+  if (isFieldStatus(r$)) {
+    return buildRuleNodes(r$, instanceId, 'root');
+  }
 
   if (!r$.$fields || typeof r$.$fields !== 'object') {
     return children;
@@ -123,12 +205,14 @@ function buildRootChildrenNodes(r$: SuperCompatibleRegleRoot, instanceId: string
   Object.entries(r$.$fields).forEach(([fieldName, fieldStatus]: [string, $InternalRegleStatusType]) => {
     if (fieldStatus && typeof fieldStatus === 'object') {
       const fieldTags = buildNodeTags(fieldStatus);
-      let fieldChildren: InspectorTreeNode[] = [];
+      let fieldChildren: CustomInspectorNode[] = [];
 
       if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldName);
       } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldName);
+      } else if (isFieldStatus(fieldStatus)) {
+        fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldName);
       }
 
       children.push({
@@ -143,8 +227,8 @@ function buildRootChildrenNodes(r$: SuperCompatibleRegleRoot, instanceId: string
   return children;
 }
 
-export function buildInspectorTree(instances: RegleInstance[]): InspectorTreeNode[] {
-  return instances.map((instance) => {
+export function buildInspectorTree(instances: RegleInstance[], filter?: string): CustomInspectorNode[] {
+  const nodes: CustomInspectorNode[] = instances.map((instance) => {
     const { r$, id, name, componentName } = instance;
     const tags = buildNodeTags(r$, componentName);
     const children = buildRootChildrenNodes(r$, id);
@@ -156,4 +240,31 @@ export function buildInspectorTree(instances: RegleInstance[]): InspectorTreeNod
       children,
     };
   });
+
+  if (!filter || filter.trim() === '') {
+    return nodes;
+  }
+
+  return filterInspectorTree(nodes, filter);
+}
+
+function filterInspectorTree(nodes: CustomInspectorNode[], filter: string): CustomInspectorNode[] {
+  const lowerFilter = filter.toLowerCase();
+  const filtered: CustomInspectorNode[] = [];
+
+  for (const node of nodes) {
+    const labelMatches = node.label.toLowerCase().includes(lowerFilter);
+    const tagMatches = node.tags?.some((tag) => tag.label.toLowerCase().includes(lowerFilter)) ?? false;
+
+    const filteredChildren = node.children ? filterInspectorTree(node.children, filter) : [];
+
+    if (labelMatches || tagMatches || filteredChildren.length > 0) {
+      filtered.push({
+        ...node,
+        children: filteredChildren.length > 0 ? filteredChildren : node.children,
+      });
+    }
+  }
+
+  return filtered;
 }

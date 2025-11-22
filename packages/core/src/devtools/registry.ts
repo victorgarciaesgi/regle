@@ -1,15 +1,7 @@
 import { getCurrentInstance, reactive, watch, type WatchStopHandle } from 'vue';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
-
-export interface RegleInstance {
-  id: string;
-  name: string;
-  r$: SuperCompatibleRegleRoot;
-  componentName?: string;
-}
-
-type DevtoolsNotifyCallback = () => void;
+import type { DevtoolsNotifyCallback, RegleInstance } from './types';
 
 class RegleDevtoolsRegistry {
   private instances: Map<string, RegleInstance> = reactive(new Map());
@@ -96,13 +88,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
   });
 }
 
-export function watchRegleInstance(
-  id: string,
-  r$: SuperCompatibleRegleRoot,
-  onChange: () => void
-): WatchStopHandle | undefined {
-  if (typeof window === 'undefined') return;
-
+export function watchRegleInstance(id: string, r$: SuperCompatibleRegleRoot, onChange: () => void): WatchStopHandle {
   const stopHandle = watch(() => r$, onChange, { deep: true, flush: 'post' });
 
   regleDevtoolsRegistry.addWatcher(id, stopHandle);

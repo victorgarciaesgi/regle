@@ -1,10 +1,10 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import type { App } from 'vue';
-import { COLORS, INSPECTOR_IDS } from './constants';
+import { handleEditInspectorState, handleResetAction, handleValidateAction } from './actions';
+import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry, watchRegleInstance } from './registry';
 import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
-import { handleResetAction, handleValidateAction } from './actions';
 import type { DevtoolsV6PluginAPI } from './types';
 
 export function createDevtools(app: App) {
@@ -22,8 +22,10 @@ export function createDevtools(app: App) {
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,
         label: 'Regle',
+        noSelectionText: 'No instance selected',
         icon: 'rule',
-        treeFilterPlaceholder: 'Search Regle instances...',
+        treeFilterPlaceholder: 'Filter',
+        stateFilterPlaceholder: 'Filter validation status',
         nodeActions: [
           {
             icon: 'check_circle',
@@ -49,18 +51,12 @@ export function createDevtools(app: App) {
         ],
       });
 
-      api.addTimelineLayer({
-        id: INSPECTOR_IDS.TIMELINE,
-        label: 'Regle Events',
-        color: COLORS.TIMELINE,
-      });
-
       setupInstanceWatchers(api);
 
       api.on.getInspectorTree((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
           const instances = regleDevtoolsRegistry.getAll();
-          payload.rootNodes = buildInspectorTree(instances);
+          payload.rootNodes = buildInspectorTree(instances, payload.filter);
         }
       });
 
@@ -71,6 +67,12 @@ export function createDevtools(app: App) {
           if (state) {
             payload.state = state;
           }
+        }
+      });
+
+      api.on.editInspectorState((payload) => {
+        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
+          handleEditInspectorState(payload, api);
         }
       });
     }
@@ -88,10 +90,12 @@ function setupInstanceWatchers(api: DevtoolsV6PluginAPI) {
 
       if (watchedInstances.has(id)) return;
 
-      watchRegleInstance(id, r$, () => {
+      const stopHandle = watchRegleInstance(id, r$, () => {
         api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
         api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
       });
+
+      regleDevtoolsRegistry.addWatcher(id, stopHandle);
 
       watchedInstances.add(id);
     });
