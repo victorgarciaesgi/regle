@@ -1,5 +1,5 @@
-import { getCurrentInstance, reactive, watch, type Raw, type WatchStopHandle } from 'vue';
-import type { RegleRoot, SuperCompatibleRegleRoot } from '../types';
+import { getCurrentInstance, reactive, watch, type WatchStopHandle } from 'vue';
+import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 
 export interface RegleInstance {
@@ -25,10 +25,9 @@ class RegleDevtoolsRegistry {
       id,
       name,
       r$,
-      componentName: options?.componentName,
+      componentName: options?.componentName ? `<${options.componentName}>` : undefined,
     });
 
-    // Notify devtools about the new instance
     this.notifyDevtools();
 
     return id;
@@ -37,14 +36,12 @@ class RegleDevtoolsRegistry {
   unregister(id: string): void {
     this.instances.delete(id);
 
-    // Stop watching this instance
     const watcher = this.watchers.get(id);
     if (watcher) {
       watcher();
       this.watchers.delete(id);
     }
 
-    // Notify devtools about the removal
     this.notifyDevtools();
   }
 
@@ -57,7 +54,6 @@ class RegleDevtoolsRegistry {
   }
 
   clear(): void {
-    // Stop all watchers
     this.watchers.forEach((stop) => stop());
     this.watchers.clear();
 
@@ -65,17 +61,14 @@ class RegleDevtoolsRegistry {
     this.notifyDevtools();
   }
 
-  // Register a callback to be called when instances change
   onInstancesChange(callback: DevtoolsNotifyCallback): () => void {
     this.notifyCallbacks.add(callback);
 
-    // Return unsubscribe function
     return () => {
       this.notifyCallbacks.delete(callback);
     };
   }
 
-  // Add a watcher for an instance
   addWatcher(id: string, stopHandle: WatchStopHandle): void {
     this.watchers.set(id, stopHandle);
   }
@@ -87,14 +80,9 @@ class RegleDevtoolsRegistry {
 
 export const regleDevtoolsRegistry = new RegleDevtoolsRegistry();
 
-/**
- * Register a Regle instance with the devtools
- * This is called automatically when useRegle is used
- */
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
   if (typeof window === 'undefined') return;
 
-  // Try to get component name from the current Vue instance
   const instance = getCurrentInstance();
   const componentName = instance?.type?.name || instance?.type?.__name;
 
@@ -103,43 +91,19 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
     componentName,
   });
 
-  // Cleanup when component is unmounted
   tryOnScopeDispose(() => {
     regleDevtoolsRegistry.unregister(id);
   });
 }
 
-/**
- * Set up a watcher for a specific instance
- * This is used internally by the devtools
- */
 export function watchRegleInstance(
   id: string,
-  r$: Raw<RegleRoot<any, any, any, any>>,
+  r$: SuperCompatibleRegleRoot,
   onChange: () => void
 ): WatchStopHandle | undefined {
   if (typeof window === 'undefined') return;
 
-  const stopHandle = watch(
-    () => ({
-      // Watch key validation states
-      invalid: r$.$invalid,
-      dirty: r$.$dirty,
-      anyDirty: r$.$anyDirty,
-      error: r$.$error,
-      pending: r$.$pending,
-      ready: r$.$ready,
-      valid: r$.$valid,
-      // Watch for field changes
-      fieldsKeys: r$.$fields ? Object.keys(r$.$fields) : [],
-      // Deep watch fields for changes
-      fieldsState: r$.$fields ? JSON.stringify(r$.$fields) : '',
-    }),
-    () => {
-      onChange();
-    },
-    { deep: true, flush: 'post' }
-  );
+  const stopHandle = watch(() => r$, onChange, { deep: true, flush: 'post' });
 
   regleDevtoolsRegistry.addWatcher(id, stopHandle);
 
