@@ -1,4 +1,3 @@
-// Tag colors
 export const COLORS = {
   ERROR: {
     text: 0xffffff,
@@ -23,13 +22,11 @@ export const COLORS = {
   TIMELINE: 0x4c51bf,
 } as const;
 
-// Priority properties to show first
 export const PRIORITY_KEYS = {
   ROOT: ['$invalid', '$dirty', '$error', '$pending', '$valid', '$ready'],
   FIELD: ['$value', '$invalid', '$dirty', '$error', '$pending', '$errors'],
 } as const;
 
-// Inspector IDs
 export const INSPECTOR_IDS = {
   INSPECTOR: 'regle-inspector',
   TIMELINE: 'regle-timeline',

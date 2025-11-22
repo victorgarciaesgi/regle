@@ -1,34 +1,43 @@
-import type { SuperCompatibleRegleRoot } from '../types';
+import { isCollectionRulesStatus, isNestedRulesStatus } from '../core/useRegle/guards';
+import type { $InternalRegleCollectionStatus, $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../types';
 import { COLORS } from './constants';
 import type { RegleInstance } from './registry';
-import type { InspectorNodeTag, InspectorTreeNode } from './types';
+import type { FieldsDictionary, InspectorNodeTag, InspectorTreeNode } from './types';
 import { createFieldNodeId } from './utils';
 
-/**
- * Build tags for a root instance based on validation state
- */
-function buildRootInstanceTags(r$: SuperCompatibleRegleRoot, componentName?: string): InspectorNodeTag[] {
+function buildNodeTags(
+  fieldOrR$: $InternalRegleStatusType | SuperCompatibleRegleRoot,
+  componentName?: string
+): InspectorNodeTag[] {
   const tags: InspectorNodeTag[] = [];
-  const isValid = !r$.$invalid;
-  const hasErrors = r$.$error;
 
-  if (hasErrors) {
+  if (fieldOrR$.$error) {
     tags.push({
       label: 'error',
       textColor: COLORS.ERROR.text,
       backgroundColor: COLORS.ERROR.bg,
     });
-  } else if (isValid && r$.$dirty) {
+  } else if (fieldOrR$.$correct) {
     tags.push({
-      label: 'valid',
+      label: 'correct',
       textColor: COLORS.VALID.text,
       backgroundColor: COLORS.VALID.bg,
     });
-  } else if (r$.$pending) {
+  }
+
+  if (fieldOrR$.$pending) {
     tags.push({
       label: 'pending',
       textColor: COLORS.PENDING.text,
       backgroundColor: COLORS.PENDING.bg,
+    });
+  }
+
+  if (!('$fields' in fieldOrR$) && fieldOrR$.$dirty) {
+    tags.push({
+      label: 'dirty',
+      textColor: COLORS.DIRTY.text,
+      backgroundColor: COLORS.DIRTY.bg,
     });
   }
 
@@ -43,72 +52,24 @@ function buildRootInstanceTags(r$: SuperCompatibleRegleRoot, componentName?: str
   return tags;
 }
 
-/**
- * Build tags for a field based on validation state
- */
-function buildFieldTags(fieldStatus: any): InspectorNodeTag[] {
-  const tags: InspectorNodeTag[] = [];
-
-  if (fieldStatus.$error) {
-    tags.push({
-      label: 'error',
-      textColor: COLORS.ERROR.text,
-      backgroundColor: COLORS.ERROR.bg,
-    });
-  } else if (!fieldStatus.$invalid && fieldStatus.$dirty) {
-    tags.push({
-      label: 'valid',
-      textColor: COLORS.VALID.text,
-      backgroundColor: COLORS.VALID.bg,
-    });
-  }
-
-  if (fieldStatus.$pending) {
-    tags.push({
-      label: 'pending',
-      textColor: COLORS.PENDING.text,
-      backgroundColor: COLORS.PENDING.bg,
-    });
-  }
-
-  if (fieldStatus.$dirty) {
-    tags.push({
-      label: 'dirty',
-      textColor: COLORS.DIRTY.text,
-      backgroundColor: COLORS.DIRTY.bg,
-    });
-  }
-
-  return tags;
-}
-
-/**
- * Check if a field is a collection (array)
- */
-function isCollection(fieldStatus: any): boolean {
-  return fieldStatus && typeof fieldStatus === 'object' && '$each' in fieldStatus;
-}
-
-/**
- * Build child nodes for collection items
- */
-function buildCollectionItemNodes(fieldStatus: any, instanceId: string, fieldPath: string): InspectorTreeNode[] {
+function buildCollectionItemNodes(
+  fieldStatus: $InternalRegleCollectionStatus,
+  instanceId: string,
+  fieldPath: string
+): InspectorTreeNode[] {
   const children: InspectorTreeNode[] = [];
 
   if (!fieldStatus.$each || !Array.isArray(fieldStatus.$each)) {
     return children;
   }
 
-  fieldStatus.$each.forEach((item: any, index: number) => {
+  fieldStatus.$each.forEach((item, index) => {
     if (item && typeof item === 'object') {
-      const itemTags = buildFieldTags(item);
+      const itemTags = buildNodeTags(item);
       const itemPath = `${fieldPath}[${index}]`;
-
-      // Check if item has nested fields
-      const hasNestedFields = item.$fields && typeof item.$fields === 'object';
       let itemChildren: InspectorTreeNode[] = [];
 
-      if (hasNestedFields) {
+      if (isNestedRulesStatus(item)) {
         itemChildren = buildNestedFieldNodes(item.$fields, instanceId, itemPath);
       }
 
@@ -124,25 +85,19 @@ function buildCollectionItemNodes(fieldStatus: any, instanceId: string, fieldPat
   return children;
 }
 
-/**
- * Build child nodes for nested fields
- */
-function buildNestedFieldNodes(fields: any, instanceId: string, parentPath: string): InspectorTreeNode[] {
+function buildNestedFieldNodes(fields: FieldsDictionary, instanceId: string, parentPath: string): InspectorTreeNode[] {
   const children: InspectorTreeNode[] = [];
 
-  Object.entries(fields).forEach(([fieldName, fieldStatus]: [string, any]) => {
+  Object.entries(fields).forEach(([fieldName, fieldStatus]) => {
     if (fieldStatus && typeof fieldStatus === 'object') {
       const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
-      const fieldTags = buildFieldTags(fieldStatus);
+      const fieldTags = buildNodeTags(fieldStatus);
 
       let fieldChildren: InspectorTreeNode[] = [];
 
-      // Check if this field is a collection
-      if (isCollection(fieldStatus)) {
+      if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldPath);
-      }
-      // Check if this field has nested fields
-      else if (fieldStatus.$fields && typeof fieldStatus.$fields === 'object') {
+      } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldPath);
       }
 
@@ -158,27 +113,21 @@ function buildNestedFieldNodes(fields: any, instanceId: string, parentPath: stri
   return children;
 }
 
-/**
- * Build child nodes for fields
- */
-function buildFieldNodes(r$: SuperCompatibleRegleRoot, instanceId: string): InspectorTreeNode[] {
+function buildRootChildrenNodes(r$: SuperCompatibleRegleRoot, instanceId: string): InspectorTreeNode[] {
   const children: InspectorTreeNode[] = [];
 
   if (!r$.$fields || typeof r$.$fields !== 'object') {
     return children;
   }
 
-  Object.entries(r$.$fields).forEach(([fieldName, fieldStatus]: [string, any]) => {
+  Object.entries(r$.$fields).forEach(([fieldName, fieldStatus]: [string, $InternalRegleStatusType]) => {
     if (fieldStatus && typeof fieldStatus === 'object') {
-      const fieldTags = buildFieldTags(fieldStatus);
+      const fieldTags = buildNodeTags(fieldStatus);
       let fieldChildren: InspectorTreeNode[] = [];
 
-      // Check if this field is a collection
-      if (isCollection(fieldStatus)) {
+      if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldName);
-      }
-      // Check if this field has nested fields
-      else if (fieldStatus.$fields && typeof fieldStatus.$fields === 'object') {
+      } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldName);
       }
 
@@ -194,20 +143,17 @@ function buildFieldNodes(r$: SuperCompatibleRegleRoot, instanceId: string): Insp
   return children;
 }
 
-/**
- * Build the inspector tree from all Regle instances
- */
 export function buildInspectorTree(instances: RegleInstance[]): InspectorTreeNode[] {
   return instances.map((instance) => {
     const { r$, id, name, componentName } = instance;
-    const tags = buildRootInstanceTags(r$, componentName);
-    const children = buildFieldNodes(r$, id);
+    const tags = buildNodeTags(r$, componentName);
+    const children = buildRootChildrenNodes(r$, id);
 
     return {
       id,
       label: name,
       tags,
-      children: children.length > 0 ? children : undefined,
+      children,
     };
   });
 }

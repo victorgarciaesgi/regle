@@ -363,7 +363,7 @@ export interface RegleCommonStatus<TValue = any> extends StandardSchemaV1<TValue
   $clearExternalErrors(): void;
 }
 
-interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
+export interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
   $touch(runCommit?: boolean, withConditions?: boolean): void;
   $unwatch(): void;
   $watch(): void;
