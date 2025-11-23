@@ -1,6 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { IsUnion } from 'expect-type';
-import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep, IsUnion } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,

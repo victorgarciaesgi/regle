@@ -25,9 +25,9 @@
     "dev:playground": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "typecheck": "pnpm dev:prepare && vue-tsc --noEmit && nuxi typecheck test/fixtures",
-    "build": "pnpm run dev:prepare && nuxt-module-build build",
+    "build": "nuxt-module-build prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run dev:prepare && nuxt-module-build build",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
+    "dev:prepare": "nuxt-module-build build && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
     "test": "pnpm exec playwright install && vitest run",
     "test:watch": "vitest watch"
   },

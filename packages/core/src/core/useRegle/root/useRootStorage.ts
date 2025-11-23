@@ -1,5 +1,5 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { getCurrentScope, onScopeDispose, reactive, ref, watch } from 'vue';
+import { getCurrentScope, onScopeDispose, reactive, ref, toValue, watch } from 'vue';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
@@ -16,6 +16,7 @@ import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 import { dotPathObjectToNested } from '../../../../../shared';
+import { registerRegleInstance } from '../../../devtools';
 
 export function useRootStorage({
   initialState,
@@ -131,6 +132,10 @@ export function useRootStorage({
       $unwatchComputedExternalErrors?.();
       $unwatchExternalErrors?.();
     });
+  }
+
+  if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
+    registerRegleInstance(regle.value as any, { name: toValue(options.id) });
   }
 
   return reactive({ regle });

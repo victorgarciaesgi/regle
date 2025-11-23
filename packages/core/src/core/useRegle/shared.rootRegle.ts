@@ -1,11 +1,6 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { computed, isRef, ref, shallowRef, toValue, triggerRef, watchEffect, type ComputedRef } from 'vue';
-import {
-  registerRegleInstance,
-  type DeepMaybeRef,
-  type LocalRegleBehaviourOptions,
-  type RegleBehaviourOptions,
-} from '../..';
+import { computed, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
+import { type DeepMaybeRef, type LocalRegleBehaviourOptions, type RegleBehaviourOptions } from '../..';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
@@ -14,8 +9,8 @@ import type {
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
-import { useRootStorage } from './root';
 import { tryOnScopeDispose } from '../../utils';
+import { useRootStorage } from './root';
 
 interface RootRegleOptions {
   state: Ref<Record<string, any> | PrimitiveTypes>;
@@ -74,10 +69,6 @@ export function createRootRegleLogic({
     customRules,
     shortcuts,
   });
-
-  if (process.env.NODE_ENV === 'development' && regle.regle) {
-    registerRegleInstance(regle.regle as any, { name: toValue(resolvedOptions.id) });
-  }
 
   return regle;
 }

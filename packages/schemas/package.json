@@ -48,14 +48,9 @@
   "exports": {
     ".": {
       "types": "./dist/regle-schemas.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/regle-schemas.min.js",
-          "development": "./dist/regle-schemas.js",
-          "default": "./dist/regle-schemas.js"
-        }
-      },
-      "import": "./dist/regle-schemas.js"
+      "production": "./dist/regle-schemas.min.js",
+      "development": "./dist/regle-schemas.js",
+      "default": "./dist/regle-schemas.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"

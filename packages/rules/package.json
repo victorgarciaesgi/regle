@@ -28,14 +28,9 @@
   "exports": {
     ".": {
       "types": "./dist/regle-rules.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/regle-rules.min.js",
-          "development": "./dist/regle-rules.js",
-          "default": "./dist/regle-rules.js"
-        }
-      },
-      "import": "./dist/regle-rules.js"
+      "production": "./dist/regle-rules.min.js",
+      "development": "./dist/regle-rules.js",
+      "default": "./dist/regle-rules.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"

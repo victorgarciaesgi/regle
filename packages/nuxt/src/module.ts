@@ -25,7 +25,8 @@ export default defineNuxtModule<ModuleOptions>({
     const { resolve } = createResolver(import.meta.url);
 
     addPlugin({
-      src: resolve(path.join(__dirname, 'runtime/plugins/regle.plugin')),
+      src: resolve('runtime/plugins/regle.plugin.js'),
+      mode: 'client',
     });
 
     if (options.setupFile) {
