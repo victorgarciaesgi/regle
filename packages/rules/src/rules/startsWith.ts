@@ -22,6 +22,6 @@ export const startsWith: RegleRuleWithParamsDefinition<
     return true;
   },
   message({ $params: [part] }) {
-    return `The value must end with ${part}`;
+    return `The value must start with ${part}`;
   },
 });
