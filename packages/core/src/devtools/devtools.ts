@@ -5,7 +5,8 @@ import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry, watchRegleInstance } from './registry';
 import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
-import type { DevtoolsV6PluginAPI } from './types';
+import type { DevtoolsComponentInstance, DevtoolsV6PluginAPI } from './types';
+import { parseFieldNodeId } from './utils';
 
 export function createDevtools(app: App) {
   setupDevtoolsPlugin(
@@ -52,8 +53,11 @@ export function createDevtools(app: App) {
       });
 
       setupInstanceWatchers(api);
+      let componentInstances: DevtoolsComponentInstance[] = [];
+      let selectedNodeId: string | null = null;
 
-      api.on.getInspectorTree((payload) => {
+      api.on.getInspectorTree(async (payload) => {
+        api.unhighlightElement();
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
           const instances = regleDevtoolsRegistry.getAll();
           const nodes = buildInspectorTree(instances, payload.filter);
@@ -62,12 +66,28 @@ export function createDevtools(app: App) {
           } else {
             payload.rootNodes = [{ id: 'empty-regles', label: 'No Regles instances found', children: [] }];
           }
+
+          componentInstances = await api.getComponentInstances(app);
         }
       });
 
       api.on.getInspectorState((payload) => {
+        api.unhighlightElement();
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
           const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
+
+          const instance = componentInstances.find((instance) => {
+            const [componentName] = payload.nodeId.split('#');
+            return instance.uid.toString() === componentName;
+          });
+
+          if (instance?.uid && selectedNodeId !== payload.nodeId) {
+            selectedNodeId = payload.nodeId;
+            const fieldInfo = parseFieldNodeId(payload.nodeId);
+            if (!fieldInfo) {
+              api.highlightElement(instance);
+            }
+          }
 
           if (state) {
             payload.state = state;

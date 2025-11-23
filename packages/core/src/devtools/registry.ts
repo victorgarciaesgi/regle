@@ -10,8 +10,11 @@ function useRegleDevtoolsRegistry() {
   let idCounter = 0;
   const notifyCallbacks = shallowRef(new Set<DevtoolsNotifyCallback>());
 
-  function register(r$: SuperCompatibleRegleRoot, options?: { name?: string; componentName?: string }): string {
-    const id = `regle-${++idCounter}`;
+  function register(
+    r$: SuperCompatibleRegleRoot,
+    options?: { name?: string; componentName?: string; uid?: number }
+  ): string {
+    const id = `${options?.uid?.toString() ?? 'regle'}#${++idCounter}`;
     const name = options?.name || `Regle #${idCounter}`;
 
     instances.value.set(id, {
@@ -93,6 +96,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
   const id = regleDevtoolsRegistry.register(r$, {
     name: options?.name,
     componentName,
+    uid: instance?.uid,
   });
 
   tryOnScopeDispose(() => {

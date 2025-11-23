@@ -45,6 +45,12 @@ function buildNodeTags(
       textColor: COLORS.DIRTY.text,
       backgroundColor: COLORS.DIRTY.bg,
     });
+  } else if ('$rules' in fieldOrR$) {
+    tags.push({
+      label: 'pristine',
+      textColor: COLORS.PRISTINE.text,
+      backgroundColor: COLORS.PRISTINE.bg,
+    });
   }
 
   if (componentName) {

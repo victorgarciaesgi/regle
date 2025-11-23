@@ -18,6 +18,7 @@ import type {
   MaybeInput,
   MaybeOutput,
   MaybeVariantStatus,
+  RegleBehaviourOptions,
   RegleCollectionErrors,
   RegleCollectionResult,
   RegleCollectionRuleDecl,
@@ -35,6 +36,7 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
+  ResolvedRegleBehaviourOptions,
 } from '..';
 
 /**
@@ -146,6 +148,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
+  '~modifiers'?: RegleBehaviourOptions;
 }
 
 /**
