@@ -1,5 +1,6 @@
 import { defineConfig, type UserConfig } from 'tsdown';
 import { defaultOptions } from '../../tsdown.common.build.ts';
+import { replacePlugin } from 'rolldown/plugins';
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
@@ -13,6 +14,15 @@ const sharedOptions: UserConfig = {
     '@vue/devtools-api',
   ],
   sourcemap: true,
+  treeshake: {
+    moduleSideEffects: false,
+    annotations: true,
+  },
+  plugins: [
+    replacePlugin({
+      __USE_DEVTOOLS__: 'false',
+    }),
+  ],
 };
 
 export default defineConfig(sharedOptions);

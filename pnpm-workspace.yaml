@@ -58,9 +58,9 @@ catalog:
   type-fest: 5.2.0
 
   # Vite
-  vite: 7.1.10
-  vitest: 4.0.6
-  '@vitejs/plugin-vue': 6.0.1
+  vite: 7.2.4
+  vitest: 4.0.13
+  '@vitejs/plugin-vue': 6.0.2
   '@vitejs/plugin-vue-jsx': 5.1.1
 
   # Schemas libraries

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
-import type { AliasOptions } from 'vite';
 import { fileURLToPath } from 'node:url';
+import type { AliasOptions } from 'vite';
 
 const vueVersion = (process.env.VUE_VERSION as '3.4' | '3.5') ?? '3.5';
 
@@ -18,7 +18,7 @@ const alias: AliasOptions = [
         },
       ]
     : []),
-  ...(process.env.TEST_DEBUG
+  ...(process.env.TEST_TRACE
     ? [
         {
           find: /^@regle\/(.*?)$/,
@@ -37,7 +37,18 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['packages/*/src/**'],
-      exclude: ['**/*/index.ts', '**/types/**', '**/dist/**/*', '**/*.d.ts', '**/*.spec.ts', 'packages/nuxt/dist/**'],
+      exclude: [
+        '**/*/index.ts',
+        '**/types/**',
+        '**/dist/**/*',
+        '**/*.d.ts',
+        '**/*.spec.ts',
+        'packages/nuxt/src/module.ts',
+        'packages/nuxt/src/runtime/plugins/regle.plugin.js',
+        'packages/nuxt/dist/**',
+        'packages/core/src/devtools/**',
+        'packages/core/src/plugin.ts',
+      ],
     },
     projects: [
       {
