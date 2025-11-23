@@ -60,6 +60,7 @@ function buildRuleState(ruleStatus: $InternalRegleRuleStatus): CustomInspectorSt
       {
         key: '$metadata',
         value: ruleStatus.$metadata,
+        objectType: 'reactive',
         editable: false,
       },
     ];
@@ -70,11 +71,6 @@ function buildRuleState(ruleStatus: $InternalRegleRuleStatus): CustomInspectorSt
     ...ruleKeys,
     '$params',
     '$metadata',
-    '$validator',
-    '$parse',
-    '$reset',
-    '$unwatch',
-    '$watch',
     '$haveAsync',
     '$validating',
     '$fieldDirty',
@@ -105,6 +101,13 @@ function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
     state['Other Properties'] = remainingProperties;
   }
 
+  if (r$['~modifiers']) {
+    state['Modifiers'] = Object.entries(r$['~modifiers']).map(([key, value]) => ({
+      key,
+      value,
+      editable: false,
+    }));
+  }
   return state;
 }
 

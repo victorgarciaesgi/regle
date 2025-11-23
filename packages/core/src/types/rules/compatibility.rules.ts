@@ -3,6 +3,7 @@ import type {
   $InternalRegleCollectionIssues,
   $InternalRegleResult,
   $InternalRegleRuleStatus,
+  RegleBehaviourOptions,
   RegleCommonStatus,
   RegleFieldIssue,
   RegleValidationErrors,
@@ -18,6 +19,7 @@ export interface SuperCompatibleRegle {
 export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
   $groups?: { [x: string]: RegleValidationGroupOutput };
   $validate: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
+  '~modifiers'?: RegleBehaviourOptions;
 };
 
 export type SuperCompatibleRegleResult = $InternalRegleResult;

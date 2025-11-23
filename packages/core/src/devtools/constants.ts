@@ -5,7 +5,7 @@ export const COLORS = {
   },
   INVALID: {
     text: 0xffffff,
-    bg: 0xf87171,
+    bg: 0xff8c00,
   },
   VALID: {
     text: 0xffffff,
@@ -22,6 +22,10 @@ export const COLORS = {
   COMPONENT: {
     text: 0xffffff,
     bg: 0x6366f1,
+  },
+  PRISTINE: {
+    text: 0x1f2937,
+    bg: 0xffffff,
   },
 } as const;
 

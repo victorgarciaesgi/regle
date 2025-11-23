@@ -13,6 +13,7 @@ import type {
   $InternalRegleShortcutDefinition,
   $InternalRegleStatus,
   $InternalRegleStatusType,
+  RegleBehaviourOptions,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
@@ -69,6 +70,7 @@ export function createReactiveNestedStatus({
     $shortcuts: ToRefs<$InternalRegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
     $localPending: Ref<boolean>;
+    $modifiers: ComputedRef<RegleBehaviourOptions>;
   }
   let scope = effectScope();
   let scopeState!: ScopeState;
@@ -451,6 +453,17 @@ export function createReactiveNestedStatus({
 
       const $name = computed(() => fieldName);
 
+      const $modifiers = computed<RegleBehaviourOptions>(() => {
+        return {
+          autoDirty: $autoDirty.value,
+          lazy: unref(commonArgs.options.lazy) ?? false,
+          rewardEarly: $rewardEarly.value,
+          silent: $silent.value,
+          clearExternalErrorsOnChange: unref(commonArgs.options.clearExternalErrorsOnChange) ?? false,
+          id: unref(commonArgs.options.id),
+        };
+      });
+
       function processShortcuts() {
         if (commonArgs.shortcuts?.nested) {
           Object.entries(commonArgs.shortcuts.nested).forEach(([key, value]) => {
@@ -481,6 +494,7 @@ export function createReactiveNestedStatus({
                     $edited,
                     $anyEdited,
                     $issues,
+                    '~modifiers': unref(commonArgs.options),
                   })
                 );
               });
@@ -549,6 +563,7 @@ export function createReactiveNestedStatus({
         $autoDirty,
         $silent,
         $value,
+        $modifiers,
       } satisfies ScopeState;
     })!;
   }
@@ -709,6 +724,7 @@ export function createReactiveNestedStatus({
     $clearExternalErrors,
     $extractDirtyFields,
     $abort,
+    ...(!!rootRules ? { '~modifiers': scopeState.$modifiers } : {}),
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
 

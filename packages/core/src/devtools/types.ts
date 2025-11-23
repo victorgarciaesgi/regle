@@ -3,6 +3,12 @@ import type { $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../type
 
 export type DevtoolsV6PluginAPI = Parameters<PluginSetupFunction>[0];
 
+export interface DevtoolsComponentInstance {
+  uid: number;
+  name: string;
+  componentName: string;
+}
+
 export type FieldsDictionary = {
   [x: string]: $InternalRegleStatusType;
 };
