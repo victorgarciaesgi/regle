@@ -24,7 +24,6 @@ import type {
   Unwrap,
 } from '../../types/utils';
 import { createRootRegleLogic } from './shared.rootRegle';
-import { registerRegleInstance } from '../../devtools/registry';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,

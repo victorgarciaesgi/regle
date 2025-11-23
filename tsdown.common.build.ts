@@ -18,11 +18,14 @@ export function outExtensions(isMin = false): UserConfig['outExtensions'] | unde
 
 export const defaultOptions: UserConfig = {
   format: ['esm'],
-  dts: {
-    resolve: true,
-  },
+  dts: true,
   clean: true,
   sourcemap: false,
   treeshake: true,
   outExtensions: () => ({ js: '.js' }),
+  inputOptions(inputOptions) {
+    inputOptions.experimental ??= {};
+    inputOptions.experimental.attachDebugInfo = 'none';
+    return inputOptions;
+  },
 };

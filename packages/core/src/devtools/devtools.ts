@@ -56,7 +56,12 @@ export function createDevtools(app: App) {
       api.on.getInspectorTree((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
           const instances = regleDevtoolsRegistry.getAll();
-          payload.rootNodes = buildInspectorTree(instances, payload.filter);
+          const nodes = buildInspectorTree(instances, payload.filter);
+          if (nodes.length > 0) {
+            payload.rootNodes = nodes;
+          } else {
+            payload.rootNodes = [{ id: 'empty-regles', label: 'No Regles instances found', children: [] }];
+          }
         }
       });
 
@@ -66,6 +71,8 @@ export function createDevtools(app: App) {
 
           if (state) {
             payload.state = state;
+          } else {
+            payload.state = {};
           }
         }
       });
@@ -105,13 +112,19 @@ function setupInstanceWatchers(api: DevtoolsV6PluginAPI) {
 
   regleDevtoolsRegistry.onInstancesChange(() => {
     const currentIds = new Set(regleDevtoolsRegistry.getAll().map((i) => i.id));
+
+    // Remove watchers for instances that no longer exist
     for (const id of watchedInstances) {
       if (!currentIds.has(id)) {
         watchedInstances.delete(id);
       }
     }
 
+    // Update the inspector tree (this will show empty tree if no instances)
     api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
+
+    // Also refresh the inspector state to clear any stale state
+    api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
 
     setupWatchers();
   });

@@ -1,76 +1,88 @@
-import { getCurrentInstance, reactive, watch, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, shallowRef, watch, type WatchStopHandle } from 'vue';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import type { DevtoolsNotifyCallback, RegleInstance } from './types';
 
-class RegleDevtoolsRegistry {
-  private instances: Map<string, RegleInstance> = reactive(new Map());
-  private watchers: Map<string, WatchStopHandle> = new Map();
-  private idCounter = 0;
-  private notifyCallbacks: Set<DevtoolsNotifyCallback> = new Set();
+/*#__PURE__*/
+function useRegleDevtoolsRegistry() {
+  const instances = shallowRef(new Map<string, RegleInstance>());
+  const watchers = shallowRef(new Map<string, WatchStopHandle>());
+  let idCounter = 0;
+  const notifyCallbacks = shallowRef(new Set<DevtoolsNotifyCallback>());
 
-  register(r$: SuperCompatibleRegleRoot, options?: { name?: string; componentName?: string }): string {
-    const id = `regle-${++this.idCounter}`;
-    const name = options?.name || `Regle #${this.idCounter}`;
+  function register(r$: SuperCompatibleRegleRoot, options?: { name?: string; componentName?: string }): string {
+    const id = `regle-${++idCounter}`;
+    const name = options?.name || `Regle #${idCounter}`;
 
-    this.instances.set(id, {
+    instances.value.set(id, {
       id,
       name,
       r$,
       componentName: options?.componentName ? `<${options.componentName}>` : undefined,
     });
 
-    this.notifyDevtools();
+    notifyDevtools();
 
     return id;
   }
 
-  unregister(id: string): void {
-    this.instances.delete(id);
+  function unregister(id: string): void {
+    instances.value.delete(id);
 
-    const watcher = this.watchers.get(id);
+    const watcher = watchers.value.get(id);
     if (watcher) {
       watcher();
-      this.watchers.delete(id);
+      watchers.value.delete(id);
     }
 
-    this.notifyDevtools();
+    notifyDevtools();
   }
 
-  getAll(): RegleInstance[] {
-    return Array.from(this.instances.values());
+  function getAll(): RegleInstance[] {
+    return Array.from(instances.value.values());
   }
 
-  get(id: string): RegleInstance | undefined {
-    return this.instances.get(id);
+  function get(id: string): RegleInstance | undefined {
+    return instances.value.get(id);
   }
 
-  clear(): void {
-    this.watchers.forEach((stop) => stop());
-    this.watchers.clear();
+  function clear(): void {
+    watchers.value.forEach((stop) => stop());
+    watchers.value.clear();
 
-    this.instances.clear();
-    this.notifyDevtools();
+    instances.value.clear();
+    notifyDevtools();
   }
 
-  onInstancesChange(callback: DevtoolsNotifyCallback): () => void {
-    this.notifyCallbacks.add(callback);
+  function onInstancesChange(callback: DevtoolsNotifyCallback): () => void {
+    notifyCallbacks.value.add(callback);
 
     return () => {
-      this.notifyCallbacks.delete(callback);
+      notifyCallbacks.value.delete(callback);
     };
   }
 
-  addWatcher(id: string, stopHandle: WatchStopHandle): void {
-    this.watchers.set(id, stopHandle);
+  function addWatcher(id: string, stopHandle: WatchStopHandle): void {
+    watchers.value.set(id, stopHandle);
   }
 
-  private notifyDevtools(): void {
-    this.notifyCallbacks.forEach((callback) => callback());
+  function notifyDevtools(): void {
+    notifyCallbacks.value.forEach((callback) => callback());
   }
+
+  return {
+    register,
+    unregister,
+    getAll,
+    get,
+    clear,
+    onInstancesChange,
+    addWatcher,
+  };
 }
 
-export const regleDevtoolsRegistry = new RegleDevtoolsRegistry();
+/*#__PURE__*/
+export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
   if (typeof window === 'undefined') return;

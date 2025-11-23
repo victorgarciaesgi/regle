@@ -18,13 +18,20 @@ const alias: AliasOptions = [
         },
       ]
     : []),
-  {
-    find: /^@regle\/(.*?)$/,
-    replacement: fileURLToPath(new URL('./packages/$1/src', import.meta.url)),
-  },
+  ...(process.env.TEST_DEBUG
+    ? [
+        {
+          find: /^@regle\/(.*?)$/,
+          replacement: fileURLToPath(new URL('./packages/$1/src', import.meta.url)),
+        },
+      ]
+    : []),
 ];
 
 export default defineConfig({
+  define: {
+    __USE_DEVTOOLS__: false,
+  },
   test: {
     globals: true,
     coverage: {

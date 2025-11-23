@@ -21,16 +21,17 @@
   "dependencies": {
     "@standard-schema/spec": "1.0.0",
     "@vue/devtools-api": "7.7.7",
-    "@vue/devtools-kit": "7.7.7"
+    "expect-type": "catalog:",
+    "type-fest": "catalog:"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@vue/test-utils": "catalog:",
     "expect-type": "catalog:",
+    "@vue/devtools-kit": "7.7.7",
     "prettier": "catalog:",
     "tsdown": "catalog:",
-    "type-fest": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
@@ -40,14 +41,9 @@
   "exports": {
     ".": {
       "types": "./dist/regle-core.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/regle-core.min.js",
-          "development": "./dist/regle-core.js",
-          "default": "./dist/regle-core.js"
-        }
-      },
-      "import": "./dist/regle-core.js"
+      "production": "./dist/regle-core.min.js",
+      "development": "./dist/regle-core.js",
+      "default": "./dist/regle-core.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"

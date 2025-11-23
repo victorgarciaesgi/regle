@@ -1,10 +1,5 @@
 import type { MaybeRef, Ref } from 'vue';
-import type {
-  CollectionRegleBehaviourOptions,
-  DeepReactiveState,
-  FieldRegleBehaviourOptions,
-  Regle,
-} from '../../types/core';
+import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
 import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
