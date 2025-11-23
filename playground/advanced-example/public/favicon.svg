@@ -1,0 +1,22 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 501 501" width="501" height="501">
+	<title>logo-reglejs-favicon-svg (1)-svg</title>
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="m94.36 93.69h312.92v312.92h-312.92z"/>
+		</clipPath>
+	</defs>
+	<style>
+		.s0 { fill: #00bb7f } 
+		.s1 { fill: #ffffff } 
+		.s2 { fill: #3c3c43 } 
+	</style>
+	<path id="Forme 1" class="s0" d="m70 0h361c38.7 0 70 31.3 70 70v361c0 38.7-31.3 70-70 70h-361c-38.7 0-70-31.3-70-70v-361c0-38.7 31.3-70 70-70z"/>
+	<g id="Clip-Path: Clip-Path" clip-path="url(#cp1)">
+		<g id="Clip-Path">
+			<g>
+				<path class="s1" d="m147 110l155.1 24.6c45.2 7.1 60.4 70.6 24.3 101.4l-179.4 152.8v-84.5l127.3-108.3-127.3-18z"/>
+				<path class="s2" d="m249.6 325.8l33.2 62.7h80l-58-109.7z"/>
+			</g>
+		</g>
+	</g>
+</svg>

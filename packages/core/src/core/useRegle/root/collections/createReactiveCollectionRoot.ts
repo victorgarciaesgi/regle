@@ -9,7 +9,7 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleSchemaCollectionErrors,
-  FieldRegleBehaviourOptions,
+  CollectionRegleBehaviourOptions,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../../types';
@@ -18,8 +18,8 @@ import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compar
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
 import type { CommonResolverOptions, CommonResolverScopedState, StateWithId } from '../common/common-types';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
-import { createCollectionElement } from './createReactiveCollectionElement';
 import { createStandardSchema } from '../standard-schemas';
+import { createCollectionElement } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
@@ -57,6 +57,7 @@ export function createReactiveCollectionStatus({
     $rewardEarly: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
     $autoDirty: ComputedRef<boolean>;
+    $modifiers: ComputedRef<CollectionRegleBehaviourOptions>;
   }
   interface ImmediateScopeReturnState {
     isPrimitiveArray: ComputedRef<boolean>;
@@ -76,7 +77,7 @@ export function createReactiveCollectionStatus({
   const $id = ref<string>() as Ref<string>;
   const $value = ref(state.value);
 
-  const $localOptions = ref({}) as Ref<FieldRegleBehaviourOptions>;
+  const $localOptions = ref({}) as Ref<CollectionRegleBehaviourOptions>;
 
   let $unwatchState: WatchStopHandle | undefined;
   let $unwatchDirty: WatchStopHandle | undefined;
@@ -403,6 +404,7 @@ export function createReactiveCollectionStatus({
         }
         return false;
       });
+
       const $silent = computed<boolean>(() => {
         if ($rewardEarly.value) {
           return true;
@@ -423,6 +425,17 @@ export function createReactiveCollectionStatus({
       });
 
       const $name = computed(() => fieldName);
+
+      const $modifiers = computed<CollectionRegleBehaviourOptions>(() => {
+        return {
+          $deepCompare: $localOptions.value.$deepCompare ?? false,
+          $lazy: $localOptions.value.$lazy ?? false,
+          $rewardEarly: $rewardEarly.value,
+          $autoDirty: $autoDirty.value,
+          $silent: $silent.value,
+          $clearExternalErrorsOnChange: $localOptions.value.$clearExternalErrorsOnChange ?? false,
+        };
+      });
 
       function processShortcuts() {
         if (shortcuts?.collections) {
@@ -488,6 +501,7 @@ export function createReactiveCollectionStatus({
         $silent,
         $autoDirty,
         $issues,
+        $modifiers,
       } satisfies ScopeReturnState;
     })!;
 
@@ -643,6 +657,7 @@ export function createReactiveCollectionStatus({
     $abort,
     $extractDirtyFields,
     $clearExternalErrors,
+    '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleCollectionStatus;
 }

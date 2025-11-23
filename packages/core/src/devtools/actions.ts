@@ -32,7 +32,7 @@ export function handleValidateAction(nodeId: string, api: DevtoolsV6PluginAPI) {
   emitInspectorState(api);
 }
 
-export function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, resetState = false) {
+export async function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, resetState = false) {
   const fieldInfo = parseFieldNodeId(nodeId);
 
   if (fieldInfo) {
@@ -42,24 +42,19 @@ export function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, rese
     if (instance && instance.r$.$fields) {
       const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldName);
       if (fieldStatus && typeof fieldStatus.$reset === 'function') {
-        fieldStatus.$reset({ toInitialState: resetState });
+        fieldStatus.$reset({ toOriginalState: resetState });
       }
     }
   } else {
     const instance = regleDevtoolsRegistry.get(nodeId);
 
     if (instance && typeof instance.r$.$reset === 'function') {
-      instance.r$.$reset({ toInitialState: resetState });
+      instance.r$.$reset({ toOriginalState: resetState });
     }
   }
-
-  emitInspectorState(api);
 }
 
-export function handleEditInspectorState(
-  payload: DevToolsV6PluginAPIHookPayloads['editInspectorState'],
-  api: DevtoolsV6PluginAPI
-) {
+export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayloads['editInspectorState']) {
   const { nodeId, path, state } = payload;
 
   if (!path.includes('$value')) {
@@ -81,13 +76,9 @@ export function handleEditInspectorState(
       fieldStatus.$value = state.value;
     }
   }
-
-  emitInspectorState(api);
 }
 
-function emitInspectorState(api: DevtoolsV6PluginAPI) {
-  setTimeout(() => {
-    api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
-    api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
-  }, 100);
+export async function emitInspectorState(api: DevtoolsV6PluginAPI) {
+  api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
+  api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
 }

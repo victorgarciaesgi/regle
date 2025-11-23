@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep, IsUnion } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, PartialDeep } from 'type-fest';
 import type { MaybeRef, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -9,6 +9,7 @@ import type {
   $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
+  CollectionRegleBehaviourOptions,
   ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
@@ -36,7 +37,6 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
-  ResolvedRegleBehaviourOptions,
 } from '..';
 
 /**
@@ -146,9 +146,9 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly $issues: Record<string, $InternalRegleIssues>;
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
+  readonly '~modifiers'?: RegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
-  '~modifiers'?: RegleBehaviourOptions;
 }
 
 /**
@@ -295,6 +295,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $silentErrors: string[];
   readonly $issues: RegleFieldIssue[];
   readonly $isDebouncing: boolean;
+  readonly '~modifiers'?: FieldRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }
@@ -496,13 +497,14 @@ export type RegleCollectionStatus<
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus
-  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors'> {
+  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers'> {
   readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;
   readonly $issues: $InternalRegleCollectionIssues;
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  readonly '~modifiers'?: CollectionRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }

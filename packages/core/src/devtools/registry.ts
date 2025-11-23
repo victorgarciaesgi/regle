@@ -1,14 +1,19 @@
 import { getCurrentInstance, shallowRef, watch, type WatchStopHandle } from 'vue';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
-import type { DevtoolsNotifyCallback, RegleInstance } from './types';
+import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
+import { emitInspectorState } from './actions';
 
 /*#__PURE__*/
 function useRegleDevtoolsRegistry() {
+  const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
   const instances = shallowRef(new Map<string, RegleInstance>());
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
   let idCounter = 0;
-  const notifyCallbacks = shallowRef(new Set<DevtoolsNotifyCallback>());
+
+  function setApi(api: DevtoolsV6PluginAPI): void {
+    devtoolsApi.value = api;
+  }
 
   function register(
     r$: SuperCompatibleRegleRoot,
@@ -24,9 +29,23 @@ function useRegleDevtoolsRegistry() {
       componentName: options?.componentName ? `<${options.componentName}>` : undefined,
     });
 
+    const stopHandle = watch(
+      () => r$,
+      () => notifyDevtools(),
+      { deep: true, flush: 'post' }
+    );
+
+    regleDevtoolsRegistry.addWatcher(id, stopHandle);
+
     notifyDevtools();
 
     return id;
+  }
+
+  function notifyDevtools(): void {
+    if (devtoolsApi.value) {
+      emitInspectorState(devtoolsApi.value);
+    }
   }
 
   function unregister(id: string): void {
@@ -57,20 +76,8 @@ function useRegleDevtoolsRegistry() {
     notifyDevtools();
   }
 
-  function onInstancesChange(callback: DevtoolsNotifyCallback): () => void {
-    notifyCallbacks.value.add(callback);
-
-    return () => {
-      notifyCallbacks.value.delete(callback);
-    };
-  }
-
   function addWatcher(id: string, stopHandle: WatchStopHandle): void {
     watchers.value.set(id, stopHandle);
-  }
-
-  function notifyDevtools(): void {
-    notifyCallbacks.value.forEach((callback) => callback());
   }
 
   return {
@@ -79,14 +86,18 @@ function useRegleDevtoolsRegistry() {
     getAll,
     get,
     clear,
-    onInstancesChange,
     addWatcher,
+    setApi,
+    notifyDevtools,
   };
 }
 
 /*#__PURE__*/
 export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 
+/**
+ * To be used by `useRegle` composable.
+ */
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
   if (typeof window === 'undefined') return;
 
@@ -102,12 +113,4 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
   tryOnScopeDispose(() => {
     regleDevtoolsRegistry.unregister(id);
   });
-}
-
-export function watchRegleInstance(id: string, r$: SuperCompatibleRegleRoot, onChange: () => void): WatchStopHandle {
-  const stopHandle = watch(() => r$, onChange, { deep: true, flush: 'post' });
-
-  regleDevtoolsRegistry.addWatcher(id, stopHandle);
-
-  return stopHandle;
 }

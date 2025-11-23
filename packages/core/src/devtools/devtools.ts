@@ -2,10 +2,10 @@ import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import type { App } from 'vue';
 import { handleEditInspectorState, handleResetAction, handleValidateAction } from './actions';
 import { INSPECTOR_IDS } from './constants';
-import { regleDevtoolsRegistry, watchRegleInstance } from './registry';
+import { regleDevtoolsRegistry } from './registry';
 import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
-import type { DevtoolsComponentInstance, DevtoolsV6PluginAPI } from './types';
+import type { DevtoolsComponentInstance } from './types';
 import { parseFieldNodeId } from './utils';
 
 export function createDevtools(app: App) {
@@ -16,10 +16,12 @@ export function createDevtools(app: App) {
       logo: 'https://reglejs.dev/logo_main.png',
       packageName: '@regle/core',
       homepage: 'https://reglejs.dev',
-      componentStateTypes: [],
+      componentStateTypes: ['Regles'],
       app,
     },
     (api) => {
+      regleDevtoolsRegistry.setApi(api);
+
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,
         label: 'Regle',
@@ -30,21 +32,21 @@ export function createDevtools(app: App) {
         nodeActions: [
           {
             icon: 'check_circle',
-            tooltip: 'Validate (with `$validate`)',
+            tooltip: 'Validate',
             action: (nodeId) => {
               handleValidateAction(nodeId, api);
             },
           },
           {
             icon: 'refresh',
-            tooltip: 'Reset validation state (with `$reset`)',
+            tooltip: 'Reset validation state',
             action: (nodeId) => {
               handleResetAction(nodeId, api);
             },
           },
           {
             icon: 'restore',
-            tooltip: 'Restore to initial state (with `$reset`)',
+            tooltip: 'Restore to original state',
             action: (nodeId) => {
               handleResetAction(nodeId, api, true);
             },
@@ -52,7 +54,7 @@ export function createDevtools(app: App) {
         ],
       });
 
-      setupInstanceWatchers(api);
+      regleDevtoolsRegistry.notifyDevtools();
       let componentInstances: DevtoolsComponentInstance[] = [];
       let selectedNodeId: string | null = null;
 
@@ -99,53 +101,9 @@ export function createDevtools(app: App) {
 
       api.on.editInspectorState((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          handleEditInspectorState(payload, api);
+          handleEditInspectorState(payload);
         }
       });
     }
   );
-}
-
-function setupInstanceWatchers(api: DevtoolsV6PluginAPI) {
-  const watchedInstances = new Set<string>();
-
-  const setupWatchers = () => {
-    const instances = regleDevtoolsRegistry.getAll();
-
-    instances.forEach((instance) => {
-      const { r$, id } = instance;
-
-      if (watchedInstances.has(id)) return;
-
-      const stopHandle = watchRegleInstance(id, r$, () => {
-        api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
-        api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
-      });
-
-      regleDevtoolsRegistry.addWatcher(id, stopHandle);
-
-      watchedInstances.add(id);
-    });
-  };
-
-  setupWatchers();
-
-  regleDevtoolsRegistry.onInstancesChange(() => {
-    const currentIds = new Set(regleDevtoolsRegistry.getAll().map((i) => i.id));
-
-    // Remove watchers for instances that no longer exist
-    for (const id of watchedInstances) {
-      if (!currentIds.has(id)) {
-        watchedInstances.delete(id);
-      }
-    }
-
-    // Update the inspector tree (this will show empty tree if no instances)
-    api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
-
-    // Also refresh the inspector state to clear any stale state
-    api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
-
-    setupWatchers();
-  });
 }

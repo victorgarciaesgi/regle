@@ -1,0 +1,30 @@
+{
+  "name": "regle-advanced-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@regle/core": "workspace:*",
+    "@regle/rules": "workspace:*",
+    "check-password-strength": "3.0.0",
+    "pinia": "catalog:",
+    "sass": "1.89.2",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "0.5.10",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/tsconfig": "0.8.1",
+    "autoprefixer": "10.4.21",
+    "postcss": "8.5.6",
+    "tailwindcss": "3.4.17",
+    "vite": "catalog:"
+  }
+}

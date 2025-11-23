@@ -28,6 +28,14 @@ function buildFieldState(fieldStatus: $InternalRegleFieldStatus): CustomInspecto
     state['Other Properties'] = remainingProperties;
   }
 
+  if (fieldStatus['~modifiers']) {
+    state['Modifiers'] = Object.entries(fieldStatus['~modifiers']).map(([key, value]) => ({
+      key,
+      value,
+      editable: false,
+    }));
+  }
+
   return state;
 }
 
@@ -130,7 +138,9 @@ export function resolveFieldByPath(fields: FieldsDictionary, path: string): $Int
         return null;
       }
     } else {
-      if (isNestedRulesStatus(current) && current.$fields && current.$fields[segment]) {
+      if (isCollectionRulesStatus(current) && current.$self && current.$self) {
+        current = current.$self;
+      } else if (isNestedRulesStatus(current) && current.$fields && current.$fields[segment]) {
         current = current.$fields[segment];
       } else if (current[segment]) {
         current = current[segment];

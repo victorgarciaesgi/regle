@@ -10,6 +10,7 @@ import type {
 import { COLORS } from './constants';
 import type { FieldsDictionary, RegleInstance } from './types';
 import { createFieldNodeId, createRuleNodeId } from './utils';
+import { isEmpty } from '../../../shared';
 
 function buildNodeTags(
   fieldOrR$: $InternalRegleStatusType | SuperCompatibleRegleRoot,
@@ -157,6 +158,18 @@ function buildCollectionItemNodes(
     }
   });
 
+  if (fieldStatus.$self && typeof fieldStatus.$self === 'object' && !isEmpty(fieldStatus.$self.$rules)) {
+    const itemTags = buildNodeTags(fieldStatus.$self);
+    const itemPath = `${fieldPath}[$self]`;
+
+    children.unshift({
+      id: createFieldNodeId(instanceId, itemPath),
+      label: '$self',
+      tags: itemTags,
+      children: buildRuleNodes(fieldStatus.$self, instanceId, itemPath),
+    });
+  }
+
   return children;
 }
 
@@ -171,11 +184,17 @@ function buildNestedFieldNodes(
     if (fieldStatus && typeof fieldStatus === 'object') {
       const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
       const fieldTags = buildNodeTags(fieldStatus);
+      let isCollection = false;
+      let isEmptyCollection = false;
 
       let fieldChildren: CustomInspectorNode[] = [];
 
       if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldPath);
+        isCollection = true;
+        if (fieldChildren.length === 0) {
+          isEmptyCollection = true;
+        }
       } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldPath);
       } else if (isFieldStatus(fieldStatus)) {
@@ -184,7 +203,7 @@ function buildNestedFieldNodes(
 
       children.push({
         id: createFieldNodeId(instanceId, fieldPath),
-        label: `${fieldName}`,
+        label: `${isCollection ? `${fieldName}[${fieldChildren.length}]` : fieldName}${isEmptyCollection ? ' (empty)' : ''}`,
         tags: fieldTags,
         children: fieldChildren,
       });
@@ -212,9 +231,11 @@ function buildRootChildrenNodes(
     if (fieldStatus && typeof fieldStatus === 'object') {
       const fieldTags = buildNodeTags(fieldStatus);
       let fieldChildren: CustomInspectorNode[] = [];
+      let isCollection = false;
 
       if (isCollectionRulesStatus(fieldStatus)) {
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldName);
+        isCollection = true;
       } else if (isNestedRulesStatus(fieldStatus)) {
         fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldName);
       } else if (isFieldStatus(fieldStatus)) {
@@ -223,7 +244,7 @@ function buildRootChildrenNodes(
 
       children.push({
         id: createFieldNodeId(instanceId, fieldName),
-        label: fieldName,
+        label: `${isCollection ? `${fieldName}[${fieldChildren.length}]` : fieldName}`,
         tags: fieldTags,
         children: fieldChildren,
       });

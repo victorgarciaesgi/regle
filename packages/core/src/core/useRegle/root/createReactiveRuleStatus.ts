@@ -104,39 +104,49 @@ export function createReactiveRuleStatus({
       }));
 
       const $active = computed<boolean>(() => {
-        if (isFormRuleDefinition(rule)) {
-          if (typeof rule.value.active === 'function') {
-            return rule.value.active($defaultMetadata.value);
+        try {
+          if (isFormRuleDefinition(rule)) {
+            if (typeof rule.value.active === 'function') {
+              return rule.value.active($defaultMetadata.value);
+            } else {
+              return !!rule.value.active;
+            }
           } else {
-            return !!rule.value.active;
+            return true;
           }
-        } else {
+        } catch (e) {
+          console.error(`Error in "active" function for "${path}.${ruleKey}" rule`, { cause: e });
           return true;
         }
       });
 
       function computeRuleProcessor(key: 'message' | 'tooltip'): string | string[] {
-        let result: string | string[] = '';
-        const customProcessor = customMessages ? customMessages[ruleKey]?.[key] : undefined;
+        try {
+          let result: string | string[] = '';
+          const customProcessor = customMessages ? customMessages[ruleKey]?.[key] : undefined;
 
-        if (customProcessor) {
-          if (typeof customProcessor === 'function') {
-            result = customProcessor($defaultMetadata.value);
-          } else {
-            result = customProcessor;
-          }
-        }
-        if (isFormRuleDefinition(rule)) {
-          const patchedKey = `_${key}_patched` as const;
-          if (!(customProcessor && !rule.value[patchedKey])) {
-            if (typeof rule.value[key] === 'function') {
-              result = rule.value[key]($defaultMetadata.value);
+          if (customProcessor) {
+            if (typeof customProcessor === 'function') {
+              result = customProcessor($defaultMetadata.value);
             } else {
-              result = rule.value[key] ?? '';
+              result = customProcessor;
             }
           }
+          if (isFormRuleDefinition(rule)) {
+            const patchedKey = `_${key}_patched` as const;
+            if (!(customProcessor && !rule.value[patchedKey])) {
+              if (typeof rule.value[key] === 'function') {
+                result = rule.value[key]($defaultMetadata.value);
+              } else {
+                result = rule.value[key] ?? '';
+              }
+            }
+          }
+          return result;
+        } catch (e) {
+          console.error(`Error in "${key}" function for "${path}.${ruleKey}" rule`, { cause: e });
+          return '';
         }
-        return result;
       }
 
       const $message = computed<string | string[]>(() => {

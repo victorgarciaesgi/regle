@@ -40,5 +40,6 @@ export const PRIORITY_KEYS = {
 
 export const INSPECTOR_IDS = {
   INSPECTOR: 'regle-inspector',
+  COMPONENTS: 'components',
   TIMELINE: 'regle-timeline',
 } as const;
