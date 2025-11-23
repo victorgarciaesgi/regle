@@ -70,8 +70,8 @@ function buildRuleTags(rule: $InternalRegleRuleStatus): InspectorNodeTag[] {
   if (!rule.$active) {
     tags.push({
       label: 'inactive',
-      textColor: 0x9ca3af,
-      backgroundColor: 0xf3f4f6,
+      textColor: COLORS.INACTIVE.text,
+      backgroundColor: COLORS.INACTIVE.bg,
     });
   } else if (!rule.$valid) {
     tags.push({
@@ -115,7 +115,7 @@ function buildRuleNodes(
 
       children.push({
         id: createRuleNodeId(instanceId, fieldPath, ruleName),
-        label: ruleName,
+        label: `⚙️ ${ruleName}`,
         tags: ruleTags,
         children: [],
       });
@@ -184,7 +184,7 @@ function buildNestedFieldNodes(
 
       children.push({
         id: createFieldNodeId(instanceId, fieldPath),
-        label: fieldName,
+        label: `${fieldName}`,
         tags: fieldTags,
         children: fieldChildren,
       });

@@ -24,8 +24,12 @@ export const COLORS = {
     bg: 0x6366f1,
   },
   PRISTINE: {
-    text: 0x1f2937,
+    text: 0x111827,
     bg: 0xffffff,
+  },
+  INACTIVE: {
+    text: 0x000000,
+    bg: 0xb0b6be,
   },
 } as const;
 
