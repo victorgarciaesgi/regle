@@ -234,9 +234,11 @@ function buildNestedFieldNodes(
         fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldPath);
       }
 
+      const filteredChildren = fieldChildren.filter((child) => child.label !== '$self');
+
       children.push({
         id: createFieldNodeId(instanceId, fieldPath),
-        label: `${isCollection ? `${fieldName}[${fieldChildren.length}]` : fieldName}${isEmptyCollection ? ' (empty)' : ''}`,
+        label: `${isCollection ? `${fieldName}[${filteredChildren.length}]` : fieldName}${isEmptyCollection ? ' (empty)' : ''}`,
         tags: fieldTags,
         children: fieldChildren,
       });
