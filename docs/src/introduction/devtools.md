@@ -73,7 +73,7 @@ const { r$ } = useRegle({ name: '' }, {
 
 ## Devtools demo
 
-You can go in any of the [Stablitz exemples](/examples) and open the devtools by clicking on the <span data-title="vue"></span> "Open Devtools" button in the bottom middle of the page.
+You can go in any of the [Stablitz exemples](/examples/index) and open the devtools by clicking on the <span data-title="vue"></span> "Open Devtools" button in the bottom middle of the page.
 
 ### Vite Devtools Integration
 
@@ -86,4 +86,4 @@ You should see the Regle panel show up automatically in the Vite devtools if you
 
 You will see the Regle icon showing in the devtools. Just click on it!
 
-<img src="/screenshots/vite-devtools-regle.png" alt="Vite Devtools with Regle panel" width="100"/>
+<img src="/screenshots/vite-devtools-regle.png" alt="Vite Devtools with Regle panel" />
