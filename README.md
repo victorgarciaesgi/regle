@@ -43,7 +43,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 - 🔌 **Headless**: Plug any UI or markup to the validation.
 - 🎯 **Type safe**: Full inference and autocompletion support.
 - 🌳 **Model based**: Your validation tree structure matches the data model.
-- 🔍 **Devtools**: Built-in devtools for easy debugging and testing.
+- 🔍 **Devtools**: Built-in Vue devtools extention for easy debugging and testing.
 - 🎨 **Style Agnostic**: Works with any CSS framework or plain CSS.
 - 📦 **Modular design**: Expand Regle properties or default validation rules.
 - 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.
