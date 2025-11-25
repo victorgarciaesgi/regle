@@ -111,14 +111,16 @@ export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
   if (typeof window === 'undefined') return;
 
-  const regleVersion: string | undefined = inject(regleSymbol);
+  if (__USE_DEVTOOLS__) {
+    const regleVersion: string | undefined = inject(regleSymbol);
 
-  if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value) {
-    regleDevtoolsRegistry.loggedWarning.value = true;
-    console.warn(
-      `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
-    );
-    return;
+    if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value) {
+      regleDevtoolsRegistry.loggedWarning.value = true;
+      console.warn(
+        `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
+      );
+      return;
+    }
   }
 
   const instance = getCurrentInstance();
