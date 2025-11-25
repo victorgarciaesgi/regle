@@ -8,17 +8,24 @@ import type {
   $InternalRegleStatusType,
   RegleCollectionErrors,
   RegleExternalErrorTree,
+  SuperCompatibleRegleRoot,
 } from '../../../types';
 
-export function isNestedRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleStatus {
+export function isNestedRulesStatus(
+  rule: $InternalRegleStatusType | SuperCompatibleRegleRoot
+): rule is $InternalRegleStatus {
   return isObject(rule) && '$fields' in rule;
 }
 
-export function isCollectionRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleCollectionStatus {
+export function isCollectionRulesStatus(
+  rule: $InternalRegleStatusType | SuperCompatibleRegleRoot
+): rule is $InternalRegleCollectionStatus {
   return !!rule && '$each' in rule;
 }
 
-export function isFieldStatus(rule: $InternalRegleStatusType): rule is $InternalRegleFieldStatus {
+export function isFieldStatus(
+  rule: $InternalRegleStatusType | SuperCompatibleRegleRoot
+): rule is $InternalRegleFieldStatus {
   return !!rule && '$rules' in rule;
 }
 

@@ -1,22 +1,21 @@
 import { defineConfig, type UserConfig } from 'tsdown';
-import { defaultExternals, defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
+import { defaultExternals, defaultOptions } from '../../tsdown.common.build.ts';
+import { replacePlugin } from 'rolldown/plugins';
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
-  external: defaultExternals,
+  external: [...defaultExternals, '@vue/devtools-api'],
   sourcemap: true,
+  treeshake: {
+    moduleSideEffects: false,
+    annotations: true,
+  },
+  plugins: [
+    replacePlugin({
+      __USE_DEVTOOLS__: 'false',
+    }),
+  ],
 };
 
-export default defineConfig([
-  {
-    ...sharedOptions,
-    outExtensions: outExtensions(),
-  },
-  {
-    ...sharedOptions,
-    minify: true,
-    dts: false,
-    outExtensions: outExtensions(true),
-  },
-]);
+export default defineConfig(sharedOptions);

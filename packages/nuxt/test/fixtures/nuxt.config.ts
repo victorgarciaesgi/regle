@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   ssr: true,
-  modules: ['../../src/module'],
+  modules: ['@regle/nuxt'],
   compatibilityDate: '2024-12-08',
   experimental: {
     externalVue: false,

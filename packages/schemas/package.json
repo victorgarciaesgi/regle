@@ -1,6 +1,6 @@
 {
   "name": "@regle/schemas",
-  "version": "1.10.2",
+  "version": "1.11.0-beta.7",
   "description": "Schemas adapter for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -49,14 +49,9 @@
   "exports": {
     ".": {
       "types": "./dist/regle-schemas.d.ts",
-      "node": {
-        "import": {
-          "production": "./dist/regle-schemas.min.js",
-          "development": "./dist/regle-schemas.js",
-          "default": "./dist/regle-schemas.js"
-        }
-      },
-      "import": "./dist/regle-schemas.js"
+      "production": "./dist/regle-schemas.min.js",
+      "development": "./dist/regle-schemas.js",
+      "default": "./dist/regle-schemas.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"

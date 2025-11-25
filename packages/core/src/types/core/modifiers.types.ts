@@ -41,12 +41,10 @@ export interface RegleBehaviourOptions {
   rewardEarly?: boolean | undefined;
   /**
    * Define whether the external errors should be cleared when updating a field
-   * 
+   *
    * Default to `false` if `$silent` is set to `true`
-
+   *
    * @default true
-   *
-   *
    */
   clearExternalErrorsOnChange?: boolean | undefined;
 }
@@ -56,8 +54,32 @@ export interface LocalRegleBehaviourOptions<
   TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
 > {
+  /**
+   * A dictionary of external errors to be injected into the field statuses.
+   *
+   * Useful for integrating errors from a backend or other validation sources.
+   * External errors can be assigned using a reactive object or a Ref, and will be merged into the `$externalErrors` and `$errors` properties for each field.
+   *
+   * More details: https://reglejs.dev/advanced-usage/external-errors
+   */
   externalErrors?: Ref<RegleExternalErrorTree<Unwrap<TState>> | Record<string, string[]>>;
+  /**
+   * Allows you to group fields for custom collective validation logic.
+   *
+   * The `validationGroups` option lets you define logical groupings of fields within your form that should be validated or checked together.
+   * This can be used, for example, to easily determine if a subset of your form (e.g. an "address" group or a set of "contact information" fields) are all valid or share a collective error state.
+   *
+   * The function receives the `$fields` object and must return an object where each key is a group name and the value is an array of RegleStatus or RegleFieldStatus instances representing the grouped fields.
+   * These groups can then be referenced using `$validationGroups.<groupName>` to access their combined validation state (e.g. `$invalid`, `$error`, `$errors`, etc).
+   *
+   * More details: https://reglejs.dev/core-concepts/modifiers#validationgroups
+   */
   validationGroups?: (fields: RegleStatus<TState, TRules>['$fields']) => TValidationGroups;
+  /**
+   * A unique identifier for the Regle instance in the devtools.
+   * @default undefined
+   */
+  id?: string | undefined;
 }
 
 export type RegleValidationGroupEntry = RegleFieldStatus<any, any> | undefined;
