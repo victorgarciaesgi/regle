@@ -9,6 +9,7 @@ import type {
   $InternalRegleResult,
   AllRulesDeclarations,
   ArrayElement,
+  CollectionRegleBehaviourOptions,
   ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
@@ -18,6 +19,7 @@ import type {
   MaybeInput,
   MaybeOutput,
   MaybeVariantStatus,
+  RegleBehaviourOptions,
   RegleCollectionErrors,
   RegleCollectionResult,
   RegleCollectionRuleDecl,
@@ -144,6 +146,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly $issues: Record<string, $InternalRegleIssues>;
   readonly $errors: Record<string, $InternalRegleErrors>;
   readonly $silentErrors: Record<string, $InternalRegleErrors>;
+  readonly '~modifiers'?: RegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }
@@ -292,6 +295,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $silentErrors: string[];
   readonly $issues: RegleFieldIssue[];
   readonly $isDebouncing: boolean;
+  readonly '~modifiers'?: FieldRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }
@@ -362,7 +366,7 @@ export interface RegleCommonStatus<TValue = any> extends StandardSchemaV1<TValue
   $clearExternalErrors(): void;
 }
 
-interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
+export interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
   $touch(runCommit?: boolean, withConditions?: boolean): void;
   $unwatch(): void;
   $watch(): void;
@@ -493,13 +497,14 @@ export type RegleCollectionStatus<
  * @reference {@link RegleCollectionStatus}
  */
 export interface $InternalRegleCollectionStatus
-  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors'> {
+  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers'> {
   readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;
   readonly $issues: $InternalRegleCollectionIssues;
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  readonly '~modifiers'?: CollectionRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
 }

@@ -3,10 +3,12 @@ import type {
   $InternalRegleCollectionIssues,
   $InternalRegleResult,
   $InternalRegleRuleStatus,
+  RegleBehaviourOptions,
   RegleCommonStatus,
   RegleFieldIssue,
   RegleValidationErrors,
   RegleValidationGroupOutput,
+  ResetOptions,
 } from '..';
 
 export interface SuperCompatibleRegle {
@@ -17,6 +19,7 @@ export interface SuperCompatibleRegle {
 export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
   $groups?: { [x: string]: RegleValidationGroupOutput };
   $validate: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
+  '~modifiers'?: RegleBehaviourOptions;
 };
 
 export type SuperCompatibleRegleResult = $InternalRegleResult;
@@ -30,6 +33,7 @@ export type SuperCompatibleRegleStatus = {
   readonly $silentErrors: Record<string, RegleValidationErrors<any, false>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate?: () => Promise<SuperCompatibleRegleResult>;
+  $reset: (options?: ResetOptions<unknown>) => void;
   [x: string]: any;
 };
 

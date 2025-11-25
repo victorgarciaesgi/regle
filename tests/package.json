@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@pinia/testing": "1.0.2",
+    "@pinia/testing": "1.0.3",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
@@ -18,7 +18,7 @@
     "valibot": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.1.3",
+    "vue-component-type-helpers": "3.1.5",
     "zod": "catalog:"
   }
 }

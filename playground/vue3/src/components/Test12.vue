@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { narrowVariant } from '@regle/core';
-import { useRegleSchema } from '@regle/schemas';
-import * as v from 'valibot';
-import { ref } from 'vue';
+import { narrowVariant } from '@regle/core'
+import { useRegleSchema } from '@regle/schemas'
+import * as v from 'valibot'
+import { ref } from 'vue'
 
 const variantSchema = v.object({
   items: v.array(
@@ -15,19 +15,19 @@ const variantSchema = v.object({
         type: v.literal('image'),
         url: v.string(),
       }),
-    ])
+    ]),
   ),
-});
+})
 
 const state = ref<{ items: { type: 'text'; text: string }[] }>({
   items: [{ type: 'text', text: 'foo' }],
-});
-const { r$ } = useRegleSchema(state, variantSchema);
+})
+const { r$ } = useRegleSchema(state, variantSchema)
 
-const first = r$.items.$each[0];
+const first = r$.items.$each[0]
 
 if (narrowVariant(first, 'type', 'text')) {
-  first.text.$anyDirty;
+  first.text.$anyDirty
 }
 </script>
 

@@ -23,6 +23,11 @@ export const defaultOptions: UserConfig = {
   sourcemap: false,
   treeshake: true,
   outExtensions: () => ({ js: '.js' }),
+  inputOptions(inputOptions) {
+    inputOptions.experimental ??= {};
+    inputOptions.experimental.attachDebugInfo = 'none';
+    return inputOptions;
+  },
 };
 
 export const defaultExternals = [

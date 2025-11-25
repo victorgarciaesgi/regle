@@ -112,10 +112,17 @@ export function useStorage() {
         // $lazy, $autoDirty etc..
       } else if (typeof newRuleElement === 'boolean') {
         return false;
-      } else if (!newRuleElement._params) return true;
-      else {
+      } else if (typeof newRuleElement === 'string') {
+        return false;
+      } else if (!newRuleElement._params) {
+        return true;
+      } else {
         return newRuleElement._params?.every((paramKey, index) => {
-          if (typeof storedRuleElement === 'number' || typeof storedRuleElement === 'boolean') {
+          if (
+            typeof storedRuleElement === 'number' ||
+            typeof storedRuleElement === 'boolean' ||
+            typeof storedRuleElement === 'string'
+          ) {
             return true;
           } else {
             const storedParams = unwrapRuleParameters(storedRuleElement._params as any[]);

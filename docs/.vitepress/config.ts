@@ -46,7 +46,12 @@ const Nav: (DefaultTheme.NavItem | DefaultTheme.NavItemChildren)[] = [
     text: 'Resources',
     items: [
       { items: [{ text: 'Playground', link: 'https://play.reglejs.dev' }] },
-      { items: [{ text: 'Cheat Sheet', link: '/cheat-sheet' }] },
+      {
+        items: [
+          { text: 'Cheat Sheet', link: '/cheat-sheet' },
+          { text: 'Examples', link: '/examples' },
+        ],
+      },
       {
         items: [
           {
@@ -190,6 +195,7 @@ export default defineConfig({
         items: [
           { text: 'Introduction', link: '/introduction/' },
           { text: 'Installation', link: '/introduction/installation' },
+          { text: 'Devtools', link: '/introduction/devtools' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
           { text: 'Migrate from Vuelidate', link: '/introduction/migrate-from-vuelidate' },
         ],

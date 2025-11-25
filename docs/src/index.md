@@ -30,9 +30,11 @@ features:
      alt: typescript logo
     title: Type Safe
     details: Full Typescript inference and autocompletion support.
-  - icon: 🧮
-    title:  Model based
-    details: Your validation tree structure matches the data model.
+  - icon: 
+      src: /vue-devtools-logo.svg
+      alt: vue-devtools logo
+    title: Vue Devtools support
+    details: Devtools extension for debugging validations tree.
   - title: SSR Ready
     icon: 
       src: /nuxt.svg

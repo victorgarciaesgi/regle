@@ -17,6 +17,7 @@ import type {
   $InternalRegleRuleDecl,
   $InternalRegleRuleStatus,
   CollectionRegleBehaviourOptions,
+  FieldRegleBehaviourOptions,
   RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
@@ -27,6 +28,8 @@ import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { createStandardSchema } from './standard-schemas';
+
+const DEFAULT_DEBOUNCE_TIME = 200;
 
 interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
@@ -61,7 +64,7 @@ export function createReactiveFieldStatus({
   onValidate,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   interface ScopeReturnState extends CommonResolverScopedState {
-    $debounce: ComputedRef<number | undefined>;
+    $debounce: ComputedRef<number>;
     $deepCompare: ComputedRef<boolean | undefined>;
     $lazy: ComputedRef<boolean>;
     $rewardEarly: ComputedRef<boolean>;
@@ -80,6 +83,7 @@ export function createReactiveFieldStatus({
     $dirty: Ref<boolean>;
     $silentValue: ComputedRef<any>;
     $inactive: ComputedRef<boolean>;
+    $modifiers: ComputedRef<FieldRegleBehaviourOptions>;
     processShortcuts: () => void;
   }
 
@@ -161,8 +165,8 @@ export function createReactiveFieldStatus({
   }
 
   function define$commit() {
-    if (scopeState.$debounce.value || scopeState.$haveAnyAsyncRule.value) {
-      $commit = debounce($commitHandler, scopeState.$debounce.value ?? (scopeState.$haveAnyAsyncRule ? 200 : 0), {
+    if (scopeState.$debounce.value > 0) {
+      $commit = debounce($commitHandler, scopeState.$debounce.value, {
         trackDebounceRef: $isDebouncing,
       });
     } else {
@@ -203,9 +207,17 @@ export function createReactiveFieldStatus({
     scopeState = scope.run(() => {
       const $dirty = ref(false);
       const triggerPunishment = ref(false);
+
       const $anyDirty = computed<boolean>(() => $dirty.value);
-      const $debounce = computed<number | undefined>(() => {
-        return $localOptions.value.$debounce;
+
+      const $debounce = computed<number>(() => {
+        if ($localOptions.value.$debounce != null) {
+          return $localOptions.value.$debounce;
+        }
+        if (scopeState.$haveAnyAsyncRule.value) {
+          return DEFAULT_DEBOUNCE_TIME;
+        }
+        return 0;
       });
 
       const $deepCompare = computed<boolean | undefined>(() => {
@@ -407,6 +419,17 @@ export function createReactiveFieldStatus({
         return Object.values($rules.value).some((rule) => rule.$haveAsync);
       });
 
+      const $modifiers = computed<FieldRegleBehaviourOptions>(() => {
+        return {
+          $debounce: $debounce.value,
+          $lazy: $lazy.value,
+          $rewardEarly: $rewardEarly.value,
+          $autoDirty: $autoDirty.value,
+          $silent: $silent.value,
+          $clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+        };
+      });
+
       function processShortcuts() {
         if (shortcuts?.fields) {
           Object.entries(shortcuts.fields).forEach(([key, value]) => {
@@ -478,6 +501,7 @@ export function createReactiveFieldStatus({
         processShortcuts,
         $silentValue,
         $inactive,
+        $modifiers,
       } satisfies ScopeReturnState;
     })!;
 
@@ -741,6 +765,7 @@ export function createReactiveFieldStatus({
     $extractDirtyFields,
     $clearExternalErrors,
     $abort,
+    '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
 }

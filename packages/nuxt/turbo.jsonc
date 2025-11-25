@@ -1,0 +1,15 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".nuxt/**"],
+      "outputLogs": "new-only"
+    },
+    "build:sourcemaps": {
+      "dependsOn": ["^build:sourcemaps"],
+      "outputs": ["dist/**", ".nuxt/**"],
+      "outputLogs": "new-only"
+    }
+  }
+}
