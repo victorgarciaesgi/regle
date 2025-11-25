@@ -86,4 +86,4 @@ You should see the Regle panel show up automatically in the Vite devtools if you
 
 You will see the Regle icon showing in the devtools. Just click on it!
 
-<img src="/screenshots/vite-devtools-panel.png" alt="Vite Devtools with Regle panel" width="100"/>
+<img src="/screenshots/vite-devtools-regle.png" alt="Vite Devtools with Regle panel" width="100"/>
