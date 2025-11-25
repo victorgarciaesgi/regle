@@ -38,7 +38,7 @@ Regle devtools can inspect every variation of `useRegle`:
 You can inspect every nested properties and rules of the `r$` instance.
 
 :::warning
-Rules inspection is not available for `useRegleSchema`
+Rules details inspection is not available for `useRegleSchema`
 :::
 
 ### Actions
@@ -51,8 +51,6 @@ You can perform actions on the `r$` instance by clicking on the actions buttons 
 - Validate: Validate the `r$` instance (with `$validate` method)
 - Reset validation state: Reset the validation state of the `r$` instance (with `$reset` method)
 - Restore to original state: Restore the `r$` instance to the original state (with `$reset` method)
-
-
 
 
 ## Providing custom `r$` ids to devtools
