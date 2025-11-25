@@ -1,9 +1,10 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import '@vue/repl/style.css';
-import { RegleVuePlugin } from '@regle/core';
 
-const app = createApp(App);
+// @ts-expect-error Custom window property
+window.VUE_DEVTOOLS_CONFIG = {
+  defaultSelectedAppId: 'repl',
+};
 
-app.use(RegleVuePlugin);
-app.mount('#app');
+createApp(App).mount('#app');

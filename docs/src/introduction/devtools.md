@@ -54,6 +54,7 @@ You can perform actions on the `r$` instance by clicking on the actions buttons 
 
 
 
+
 ## Providing custom `r$` ids to devtools
 
 By default, the devtools will use a generic name to display the `r$` instance. 
@@ -69,3 +70,20 @@ const { r$ } = useRegle({ name: '' }, {
   id: 'my-form'
 });
 ```
+
+## Devtools demo
+
+You can go in any of the [Stablitz exemples](/examples) and open the devtools by clicking on the <span data-title="vue"></span> "Open Devtools" button in the bottom middle of the page.
+
+### Vite Devtools Integration
+
+Regle devtools also integrate cleanly with [Vite](https://vitejs.dev/) when you're running your app in development mode.
+
+You should see the Regle panel show up automatically in the Vite devtools if you've installed the plugin correctly.
+
+<img src="/screenshots/vite-devtools.png" alt="Vite Devtools with Regle panel" width="100"/>
+
+
+You will see the Regle icon showing in the devtools. Just click on it!
+
+<img src="/screenshots/vite-devtools-panel.png" alt="Vite Devtools with Regle panel" width="100"/>

@@ -43,6 +43,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 - 🔌 **Headless**: Plug any UI or markup to the validation.
 - 🎯 **Type safe**: Full inference and autocompletion support.
 - 🌳 **Model based**: Your validation tree structure matches the data model.
+- 🔍 **Devtools**: Built-in devtools for easy debugging and testing.
 - 🎨 **Style Agnostic**: Works with any CSS framework or plain CSS.
 - 📦 **Modular design**: Expand Regle properties or default validation rules.
 - 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.
@@ -55,11 +56,16 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
   - 🚢 [ArkType](https://arktype.io)
 
 
-## 🫶 Credits
+## Devtools
 
-- [Johannes Lacourly](https://www.behance.net/johanneslaf7dc) for designing logo and banners 🪄
-- [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
-- [Vuelidate](https://vuelidate-next.netlify.app) Which I loved and used for 8 years, and is my main inspiration for creating Regle
+Regle comes with a built-in Vue devtools extension for easy debugging and testing.
+
+![Regle Devtools Screenshot](https://reglejs.dev/screenshots/devtools.png)
+
+
+> 📝 For more details, see the [Devtools documentation](https://reglejs.dev/introduction/devtools).
+
+
 
 
 ## Basic example
@@ -111,6 +117,13 @@ yarn add @regle/core @regle/rules
 # or
 npm install @regle/core @regle/rules
 ```
+
+
+## 🫶 Credits
+
+- [Johannes Lacourly](https://www.behance.net/johanneslaf7dc) for designing logo and banners 🪄
+- [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
+- [Vuelidate](https://vuelidate-next.netlify.app) Which I loved and used for 8 years, and is my main inspiration for creating Regle
 
 
 

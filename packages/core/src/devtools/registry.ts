@@ -3,7 +3,7 @@ import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 import { emitInspectorState } from './actions';
-import { regleRegistrySymbol, regleSymbol } from '../constants';
+import { regleSymbol } from '../constants';
 
 /*#__PURE__*/
 function useRegleDevtoolsRegistry() {
@@ -49,19 +49,6 @@ function useRegleDevtoolsRegistry() {
     notifyDevtools();
 
     return id;
-  }
-
-  function injectIframeRegistry(instance: RegleInstance): void {
-    instances.value.set(instance.id, instance);
-    const stopHandle = watch(
-      () => instance.r$,
-      () => notifyDevtools(),
-      { deep: true, flush: 'post' }
-    );
-
-    regleDevtoolsRegistry.addWatcher(instance.id, stopHandle);
-
-    notifyDevtools();
   }
 
   function notifyDevtools(): void {
@@ -111,7 +98,6 @@ function useRegleDevtoolsRegistry() {
     addWatcher,
     setApi,
     notifyDevtools,
-    injectIframeRegistry,
     loggedWarning,
   };
 }
@@ -136,9 +122,6 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
   }
 
   const instance = getCurrentInstance();
-  if (instance) {
-    instance.appContext.provides[regleRegistrySymbol] = regleDevtoolsRegistry;
-  }
   const componentName = instance?.type?.name || instance?.type?.__name;
   // Find the file path of the component (if available)
   let filePath: string | undefined;

@@ -7,9 +7,8 @@ import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
 import type { DevtoolsComponentInstance } from './types';
 import { parseFieldNodeId } from './utils';
-import { regleRegistrySymbol } from '../constants';
 
-export function createDevtools(app: App, isIframe = false) {
+export function createDevtools(app: App) {
   setupDevtoolsPlugin(
     {
       id: 'regle-devtools',
@@ -22,16 +21,6 @@ export function createDevtools(app: App, isIframe = false) {
     },
     (api) => {
       regleDevtoolsRegistry.setApi(api);
-
-      if (isIframe) {
-        const symbols = Object.getOwnPropertySymbols(app._context.provides);
-        const iframeApp = symbols.find((symbol) => symbol.description === regleRegistrySymbol.description);
-        if (iframeApp) {
-          for (const instance of app._context.provides[iframeApp].getAll()) {
-            regleDevtoolsRegistry.injectIframeRegistry(instance);
-          }
-        }
-      }
 
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,

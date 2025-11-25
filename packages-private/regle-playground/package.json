@@ -8,9 +8,7 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "catalog:",
-    "@regle/core": "workspace:*",
-    "@regle/rules": "workspace:*",
+    "@vitejs/plugin-vue": "6.0.2",
     "execa": "9.6.0",
     "vite": "catalog:"
   },
