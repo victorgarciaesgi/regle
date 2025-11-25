@@ -11,11 +11,15 @@ import type {
   SuperCompatibleRegleRoot,
 } from '../../../types';
 
-export function isNestedRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleStatus {
+export function isNestedRulesStatus(
+  rule: $InternalRegleStatusType | SuperCompatibleRegleRoot
+): rule is $InternalRegleStatus {
   return isObject(rule) && '$fields' in rule;
 }
 
-export function isCollectionRulesStatus(rule: $InternalRegleStatusType): rule is $InternalRegleCollectionStatus {
+export function isCollectionRulesStatus(
+  rule: $InternalRegleStatusType | SuperCompatibleRegleRoot
+): rule is $InternalRegleCollectionStatus {
   return !!rule && '$each' in rule;
 }
 

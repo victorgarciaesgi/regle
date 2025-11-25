@@ -1,15 +1,18 @@
-import { getCurrentInstance, shallowRef, watch, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 import { emitInspectorState } from './actions';
+import { regleRegistrySymbol, regleSymbol } from '../constants';
 
 /*#__PURE__*/
 function useRegleDevtoolsRegistry() {
+  const loggedWarning = ref(false);
   const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
   const instances = shallowRef(new Map<string, RegleInstance>());
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
-  let idCounter = 0;
+  const idCounters = shallowRef(new Map<string, number>());
+  const looseIdCounter = ref(0);
 
   function setApi(api: DevtoolsV6PluginAPI): void {
     devtoolsApi.value = api;
@@ -17,16 +20,22 @@ function useRegleDevtoolsRegistry() {
 
   function register(
     r$: SuperCompatibleRegleRoot,
-    options?: { name?: string; componentName?: string; uid?: number }
+    options?: { name?: string; componentName?: string; uid?: number; filePath?: string }
   ): string {
-    const id = `${options?.uid?.toString() ?? 'regle'}#${++idCounter}`;
-    const name = options?.name || `Regle #${idCounter}`;
+    const idPath = options?.filePath ?? 'loose';
+    const existingCounter = idCounters.value.get(idPath);
+    const perComponentCounter = existingCounter ? existingCounter + 1 : 1;
+    idCounters.value.set(idPath, perComponentCounter);
+
+    const id = `${options?.uid?.toString() ?? 'regle'}#${++looseIdCounter.value}`;
+    const name = `${'r$'} #${options?.name ?? perComponentCounter}`;
 
     instances.value.set(id, {
       id,
       name,
       r$,
       componentName: options?.componentName ? `<${options.componentName}>` : undefined,
+      filePath: options?.filePath,
     });
 
     const stopHandle = watch(
@@ -40,6 +49,19 @@ function useRegleDevtoolsRegistry() {
     notifyDevtools();
 
     return id;
+  }
+
+  function injectIframeRegistry(instance: RegleInstance): void {
+    instances.value.set(instance.id, instance);
+    const stopHandle = watch(
+      () => instance.r$,
+      () => notifyDevtools(),
+      { deep: true, flush: 'post' }
+    );
+
+    regleDevtoolsRegistry.addWatcher(instance.id, stopHandle);
+
+    notifyDevtools();
   }
 
   function notifyDevtools(): void {
@@ -89,6 +111,8 @@ function useRegleDevtoolsRegistry() {
     addWatcher,
     setApi,
     notifyDevtools,
+    injectIframeRegistry,
+    loggedWarning,
   };
 }
 
@@ -96,18 +120,37 @@ function useRegleDevtoolsRegistry() {
 export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 
 /**
- * To be used by `useRegle` composable.
+ * To be used by `useRegle` like composables.
  */
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
   if (typeof window === 'undefined') return;
 
+  const regleVersion: string | undefined = inject(regleSymbol);
+
+  if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value) {
+    regleDevtoolsRegistry.loggedWarning.value = true;
+    console.warn(
+      `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
+    );
+    return;
+  }
+
   const instance = getCurrentInstance();
+  if (instance) {
+    instance.appContext.provides[regleRegistrySymbol] = regleDevtoolsRegistry;
+  }
   const componentName = instance?.type?.name || instance?.type?.__name;
+  // Find the file path of the component (if available)
+  let filePath: string | undefined;
+  if (instance && instance.type && typeof instance.type === 'object' && '__file' in instance.type) {
+    filePath = (instance.type as any).__file;
+  }
 
   const id = regleDevtoolsRegistry.register(r$, {
     name: options?.name,
     componentName,
     uid: instance?.uid,
+    filePath,
   });
 
   tryOnScopeDispose(() => {

@@ -58,6 +58,7 @@ export const useMyForm = defineStore('my-form', () => {
       },
     },
     {
+      id: 'incription-form',
       externalErrors,
     }
   );

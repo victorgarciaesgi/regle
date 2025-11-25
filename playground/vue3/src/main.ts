@@ -6,7 +6,6 @@ import '@andypf/json-viewer';
 import { createPinia } from 'pinia';
 import { RegleVuePlugin } from '@regle/core';
 
-console.log(RegleVuePlugin);
 const pinia = createPinia();
 
 const app = createApp(App);

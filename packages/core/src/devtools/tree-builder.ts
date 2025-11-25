@@ -7,7 +7,7 @@ import type {
   $InternalRegleStatusType,
   SuperCompatibleRegleRoot,
 } from '../types';
-import { COLORS } from './constants';
+import { COLORS, TOOLTIP_LABELS_FIELDS, TOOLTIP_LABELS_NESTED, TOOLTIP_LABELS_RULES } from './constants';
 import type { FieldsDictionary, RegleInstance } from './types';
 import { createFieldNodeId, createRuleNodeId } from './utils';
 import { isEmpty } from '../../../shared';
@@ -18,17 +18,25 @@ function buildNodeTags(
 ): InspectorNodeTag[] {
   const tags: InspectorNodeTag[] = [];
 
+  const isOptional = isFieldStatus(fieldOrR$)
+    ? 'required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active
+    : false;
+
+  const isNestedOrCollection = isNestedRulesStatus(fieldOrR$) || isCollectionRulesStatus(fieldOrR$);
+
   if (fieldOrR$.$error) {
     tags.push({
       label: 'error',
       textColor: COLORS.ERROR.text,
       backgroundColor: COLORS.ERROR.bg,
+      tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.ERROR : TOOLTIP_LABELS_FIELDS.ERROR,
     });
   } else if (fieldOrR$.$correct) {
     tags.push({
       label: 'correct',
-      textColor: COLORS.VALID.text,
-      backgroundColor: COLORS.VALID.bg,
+      textColor: COLORS.CORRECT.text,
+      backgroundColor: COLORS.CORRECT.bg,
+      tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.CORRECT : TOOLTIP_LABELS_FIELDS.CORRECT,
     });
   }
 
@@ -37,7 +45,26 @@ function buildNodeTags(
       label: 'pending',
       textColor: COLORS.PENDING.text,
       backgroundColor: COLORS.PENDING.bg,
+      tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.PENDING : TOOLTIP_LABELS_FIELDS.PENDING,
     });
+  }
+
+  if (isOptional) {
+    tags.push({
+      label: 'optional',
+      textColor: COLORS.OPTIONAL.text,
+      backgroundColor: COLORS.OPTIONAL.bg,
+      tooltip: TOOLTIP_LABELS_FIELDS.OPTIONAL,
+    });
+
+    if (!fieldOrR$.$invalid) {
+      tags.push({
+        label: 'valid',
+        textColor: COLORS.VALID.text,
+        backgroundColor: COLORS.VALID.bg,
+        tooltip: TOOLTIP_LABELS_FIELDS.VALID,
+      });
+    }
   }
 
   if (fieldOrR$.$dirty) {
@@ -45,12 +72,14 @@ function buildNodeTags(
       label: 'dirty',
       textColor: COLORS.DIRTY.text,
       backgroundColor: COLORS.DIRTY.bg,
+      tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.DIRTY : TOOLTIP_LABELS_FIELDS.DIRTY,
     });
   } else if ('$rules' in fieldOrR$) {
     tags.push({
       label: 'pristine',
       textColor: COLORS.PRISTINE.text,
       backgroundColor: COLORS.PRISTINE.bg,
+      tooltip: TOOLTIP_LABELS_FIELDS.PRISTINE,
     });
   }
 
@@ -73,18 +102,21 @@ function buildRuleTags(rule: $InternalRegleRuleStatus): InspectorNodeTag[] {
       label: 'inactive',
       textColor: COLORS.INACTIVE.text,
       backgroundColor: COLORS.INACTIVE.bg,
+      tooltip: TOOLTIP_LABELS_RULES.INACTIVE,
     });
   } else if (!rule.$valid) {
     tags.push({
       label: 'invalid',
       textColor: COLORS.INVALID.text,
       backgroundColor: COLORS.INVALID.bg,
+      tooltip: TOOLTIP_LABELS_RULES.INVALID,
     });
   } else if (rule.$valid) {
     tags.push({
       label: 'valid',
       textColor: COLORS.VALID.text,
       backgroundColor: COLORS.VALID.bg,
+      tooltip: TOOLTIP_LABELS_RULES.VALID,
     });
   }
 
@@ -93,6 +125,7 @@ function buildRuleTags(rule: $InternalRegleRuleStatus): InspectorNodeTag[] {
       label: 'pending',
       textColor: COLORS.PENDING.text,
       backgroundColor: COLORS.PENDING.bg,
+      tooltip: TOOLTIP_LABELS_RULES.PENDING,
     });
   }
 

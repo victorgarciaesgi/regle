@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { SFCOptions } from '@vue/repl';
-import { Repl, useStore } from '@vue/repl';
+import type { ReplProps, SFCOptions } from '@vue/repl';
+import { Repl, useStore, useVueImportMap } from '@vue/repl';
 import Monaco from '@vue/repl/monaco-editor';
 import { onMounted, ref, watchEffect } from 'vue';
 import { AppVue } from './defaults';
 import Header from './Header.vue';
+import { version } from '@regle/core/package.json';
 
 const setVH = () => {
   document.documentElement.style.setProperty('--vh', window.innerHeight + `px`);
@@ -12,7 +13,7 @@ const setVH = () => {
 window.addEventListener('resize', setVH);
 setVH();
 
-const useDevMode = ref(false);
+const useDevMode = ref(true);
 
 let hash = location.hash.slice(1);
 if (hash.startsWith('__DEV__')) {
@@ -20,7 +21,15 @@ if (hash.startsWith('__DEV__')) {
   useDevMode.value = true;
 }
 
-const store = useStore({}, hash);
+const { importMap: builtinImportMap, vueVersion } = useVueImportMap();
+
+const store = useStore(
+  {
+    builtinImportMap,
+    vueVersion,
+  },
+  hash
+);
 
 const sfcOptions: SFCOptions = {
   script: {
@@ -35,17 +44,41 @@ const sfcOptions: SFCOptions = {
   },
 };
 
+const previewOptions: ReplProps['previewOptions'] = {
+  customCode: {
+    importCode: `import { RegleVuePlugin } from '@regle/core'`,
+    useCode: /* js */ `
+    app.use(RegleVuePlugin);
+    if (typeof window !== 'undefined') {
+      parent.postMessage({event: 'regle-devtools-repl'}, '*');
+    }
+    `,
+  },
+};
+
 if (!hash) {
   store.setImportMap({
     imports: {
       ...store.getImportMap().imports,
-      vue: 'https://play.vuejs.org/vue.runtime.esm-browser.js',
-      'vue/server-renderer': 'https://play.vuejs.org/server-renderer.esm-browser.js',
-      '@regle/core': 'https://www.unpkg.com/@regle/core@latest/dist/regle-core.min.js',
-      '@regle/rules': 'https://www.unpkg.com/@regle/rules@latest/dist/regle-rules.min.js',
-      '@regle/schemas': 'https://www.unpkg.com/@regle/schemas@latest/dist/regle-schemas.min.js',
-      zod: 'https://cdn.jsdelivr.net/npm/zod@3.24.3/+esm',
-      valibot: 'https://cdn.jsdelivr.net/npm/valibot@1.0.0/+esm',
+      ...(import.meta.env.PROD
+        ? {
+            vue: 'https://play.vuejs.org/vue.esm-browser.js',
+            'vue/server-renderer': 'https://play.vuejs.org/server-renderer.esm-browser.js',
+            '@regle/core': `https://www.unpkg.com/@regle/core@${version}/dist/regle-core.min.js`,
+            '@regle/rules': `https://www.unpkg.com/@regle/rules@${version}/dist/regle-rules.min.js`,
+            '@regle/schemas': `https://www.unpkg.com/@regle/schemas@${version}/dist/regle-schemas.min.js`,
+            zod: 'https://cdn.jsdelivr.net/npm/zod@3.24.3/+esm',
+            valibot: 'https://cdn.jsdelivr.net/npm/valibot@1.0.0/+esm',
+          }
+        : {
+            vue: 'https://play.vuejs.org/vue.esm-browser.js',
+            'vue/server-renderer': 'https://play.vuejs.org/server-renderer.esm-browser.js',
+            '@regle/core': '/node_modules/@regle/core/dist/regle-core.js',
+            '@regle/rules': `https://www.unpkg.com/@regle/rules@${version}/dist/regle-rules.min.js`,
+            '@regle/schemas': `https://www.unpkg.com/@regle/schemas@${version}/dist/regle-schemas.min.js`,
+            zod: 'https://cdn.jsdelivr.net/npm/zod@3.24.3/+esm',
+            valibot: 'https://cdn.jsdelivr.net/npm/valibot@1.0.0/+esm',
+          }),
     },
   });
 
@@ -78,6 +111,7 @@ watchEffect(() => {
 
 function toggleDevMode() {
   const dev = (useDevMode.value = !useDevMode.value);
+  store.compiler;
   sfcOptions.script!.inlineTemplate =
     sfcOptions.script!.isProd =
     sfcOptions.template!.isProd =
@@ -107,6 +141,7 @@ onMounted(() => {
     :auto-resize="true"
     :sfc-options="sfcOptions"
     :clear-console="false"
+    :previewOptions="previewOptions"
     @keydown.ctrl.s.prevent
     @keydown.meta.s.prevent
   />

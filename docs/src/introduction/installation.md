@@ -47,3 +47,23 @@ bun add @regle/core @regle/rules
 ```
 
 :::
+
+## Devtools
+
+To enable devtools, you need to install the Regle plugin in your app.
+
+:::tip
+If you use the `@regle/nuxt` module, the devtools will be automatically enabled.
+:::
+
+```ts [main.ts]
+import { createApp } from 'vue';
+import { RegleVuePlugin } from '@regle/core';
+import App from './App.vue';
+
+const app = createApp(App);
+
+app.use(RegleVuePlugin); // <--
+
+app.mount('#app');
+```

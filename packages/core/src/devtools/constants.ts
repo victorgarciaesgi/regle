@@ -7,9 +7,13 @@ export const COLORS = {
     text: 0xffffff,
     bg: 0xff8c00,
   },
-  VALID: {
+  CORRECT: {
     text: 0xffffff,
     bg: 0x10b981,
+  },
+  VALID: {
+    text: 0xffffff,
+    bg: 0x047857,
   },
   PENDING: {
     text: 0xffffff,
@@ -31,6 +35,35 @@ export const COLORS = {
     text: 0x000000,
     bg: 0xb0b6be,
   },
+  OPTIONAL: {
+    text: 0x000000,
+    bg: 0xb0b6be,
+  },
+} as const;
+
+export const TOOLTIP_LABELS_FIELDS = {
+  PRISTINE: 'Field is not touched yet',
+  DIRTY: 'Field have been touched',
+  ERROR: 'Field has errors',
+  CORRECT: 'Field is dirty and all actives rules are valid',
+  VALID: 'Field rules are all valid',
+  PENDING: 'Field is pending',
+  INACTIVE: 'Field is inactive',
+  OPTIONAL: 'Field is not required',
+} as const;
+
+export const TOOLTIP_LABELS_NESTED = {
+  DIRTY: 'All nested fields have been touched',
+  ERROR: 'Some nested fields have errors',
+  CORRECT: 'All nested fields are correct',
+  PENDING: 'Some nested fields are pending',
+} as const;
+
+export const TOOLTIP_LABELS_RULES = {
+  INACTIVE: 'The rule is not active',
+  INVALID: 'Rule is invalid',
+  VALID: 'Rule is valid',
+  PENDING: 'Rule validator is pending',
 } as const;
 
 export const PRIORITY_KEYS = {

@@ -1,5 +1,5 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api';
-import type { App } from 'vue';
+import { type App } from 'vue';
 import { handleEditInspectorState, handleResetAction, handleValidateAction } from './actions';
 import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
@@ -7,8 +7,9 @@ import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
 import type { DevtoolsComponentInstance } from './types';
 import { parseFieldNodeId } from './utils';
+import { regleRegistrySymbol } from '../constants';
 
-export function createDevtools(app: App) {
+export function createDevtools(app: App, isIframe = false) {
   setupDevtoolsPlugin(
     {
       id: 'regle-devtools',
@@ -22,12 +23,22 @@ export function createDevtools(app: App) {
     (api) => {
       regleDevtoolsRegistry.setApi(api);
 
+      if (isIframe) {
+        const symbols = Object.getOwnPropertySymbols(app._context.provides);
+        const iframeApp = symbols.find((symbol) => symbol.description === regleRegistrySymbol.description);
+        if (iframeApp) {
+          for (const instance of app._context.provides[iframeApp].getAll()) {
+            regleDevtoolsRegistry.injectIframeRegistry(instance);
+          }
+        }
+      }
+
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,
         label: 'Regle',
         noSelectionText: 'No instance selected',
         icon: 'rule',
-        treeFilterPlaceholder: 'Filter',
+        treeFilterPlaceholder: 'Filter state',
         stateFilterPlaceholder: 'Filter validation status',
         nodeActions: [
           {
@@ -79,7 +90,7 @@ export function createDevtools(app: App) {
           const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
 
           const instance = componentInstances.find((instance) => {
-            const [componentName] = payload.nodeId.split('#');
+            const [componentName] = payload.nodeId?.split('#');
             return instance.uid.toString() === componentName;
           });
 

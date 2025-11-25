@@ -190,6 +190,7 @@ export default defineConfig({
         items: [
           { text: 'Introduction', link: '/introduction/' },
           { text: 'Installation', link: '/introduction/installation' },
+          { text: 'Devtools', link: '/introduction/devtools' },
           { text: 'Comparisons', link: '/introduction/comparisons' },
           { text: 'Migrate from Vuelidate', link: '/introduction/migrate-from-vuelidate' },
         ],

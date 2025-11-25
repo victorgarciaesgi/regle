@@ -18,6 +18,7 @@ export interface RegleInstance {
   name: string;
   r$: SuperCompatibleRegleRoot;
   componentName?: string;
+  filePath?: string;
 }
 
 export type DevtoolsNotifyCallback = () => void;
