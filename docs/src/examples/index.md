@@ -1,5 +1,9 @@
 # Exemples
 
+## Playground
+
+You can try Regle in the [Regle Playground](https://play.reglejs.dev).
+
 ## Simple Validation Example
 
 See a minimal usage of Regle's validation logic:  
