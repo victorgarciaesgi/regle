@@ -5,8 +5,6 @@ import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
 import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
-import type { DevtoolsComponentInstance } from './types';
-import { parseFieldNodeId } from './utils';
 
 export function createDevtools(app: App) {
   setupDevtoolsPlugin(
