@@ -36,6 +36,7 @@ export function createReactiveCollectionStatus({
   rulesDef,
   customMessages,
   path,
+  cachePath,
   storage,
   options,
   externalErrors,
@@ -147,7 +148,7 @@ export function createReactiveCollectionStatus({
           const element = createCollectionElement({
             $id: $id.value,
             path,
-            cachePath: path,
+            cachePath: cachePath,
             customMessages,
             rules: unwrapped ?? {},
             stateValue: toRef(() => value),

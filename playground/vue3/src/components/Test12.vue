@@ -1,65 +1,81 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRegle, createRule, type Maybe } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
-
-const state = ref({ name: '', email: '' });
-
-const slowEmailCheck = createRule({
-  async validator(value: Maybe<string>) {
-    console.log('going to slowly validate email');
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
-
-    console.log('email is good, submit away');
-    return true;
-  },
-  message: 'Email already in use',
-});
-
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: {
-    $debounce: 10_000,
-    email,
-    slowEmailCheck,
-  },
-});
-
-async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
-}
-</script>
-
 <template>
-  <h2>Hello Regle!</h2>
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 500px">
+    <input v-model="r$.$value.name" />
 
-  <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+    <ul v-if="r$.name.$errors.length > 0">
+      <li v-for="error in r$.name.$errors" :key="error.$id">
+        {{ error }}
+      </li>
+    </ul>
 
-  <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.email" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+    <!-- Array field -->
+    <div style="border: 1px solid; padding: 14px" v-for="field in r$.array.$each">
+      <input type="text" :key="field.$id" v-model="field.$value.test" />
 
-  <button @click="submit">Submit</button>
-  <button @click="r$.$reset({ toInitialState: true })">Restart</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+      <ul v-if="field.test.$errors.length > 0">
+        <li v-for="error in field.test.$errors" :key="error.$id">
+          {{ error }}
+        </li>
+      </ul>
+
+      <!-- Nested array field -->
+      <div style="border: 1px solid; padding: 14px; margin-top: 15px" v-for="nested_field in field.nested_array.$each">
+        <input type="text" :key="nested_field.$id" v-model="nested_field.$value.rest" />
+        <ul v-if="nested_field.rest.$errors.length > 0">
+          <li v-for="error in nested_field.rest.$errors" :key="error.$id">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <button @click="addTopLevel">Add one top level array field</button>
+    <button @click="moveTopLevelUp">Move last up</button>
+    <button @click="submit">Submit me!</button>
+  </div>
+
+  <!-- Errors -->
+  <pre>{{ r$.$errors }}</pre>
 </template>
+
+<script setup>
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
+import { timeout } from './validations';
+
+const values = {
+  name: 'root',
+  array: [{ test: 'array', nested_array: [{ rest: 'nested' }] }],
+};
+
+const { r$ } = useRegleSchema(
+  values,
+  z.object({
+    name: z.string().min(1),
+    array: z.array(
+      z.object({
+        test: z.string().min(1),
+        nested_array: z.array(
+          z.object({
+            rest: z.string().min(1),
+          })
+        ),
+      })
+    ),
+  })
+);
+
+const submit = async () => {
+  const res = await r$.$validate();
+  console.log(res);
+};
+
+const addTopLevel = () => {
+  r$.$value.array.push({ test: '', nested_array: [{ rest: '' }] });
+};
+
+// Moves the top level array's item one index higher within the array
+const moveTopLevelUp = () => {
+  r$.$value.array.unshift(r$.$value.array.pop());
+};
+</script>
