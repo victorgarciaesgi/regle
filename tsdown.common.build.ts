@@ -18,11 +18,18 @@ export function outExtensions(isMin = false): UserConfig['outExtensions'] | unde
 
 export const defaultOptions: UserConfig = {
   format: ['esm'],
-  dts: {
-    resolve: true,
-  },
+  dts: true,
   clean: true,
   sourcemap: false,
   treeshake: true,
   outExtensions: () => ({ js: '.js' }),
 };
+
+export const defaultExternals = [
+  'vue',
+  '@vue/reactivity',
+  '@vue/runtime-core',
+  '@vue/runtime-dom',
+  '@standard-schema/spec',
+  'type-fest',
+];

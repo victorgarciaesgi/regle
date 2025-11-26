@@ -1,4 +1,5 @@
-import { computed, reactive, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue';
+import { computed, reactive, ref, toValue, watch } from 'vue';
+import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { RegleRoot, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
 import { mergeRegles, type MergedRegles, type MergedScopedRegles } from '../mergeRegles';
 

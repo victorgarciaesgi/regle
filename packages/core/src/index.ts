@@ -117,4 +117,7 @@ export type {
   Unwrap,
   UnwrapRegleUniversalParams,
   UnwrapRuleWithParams,
+  NarrowVariantExtracts,
+  NarrowVariantFieldExtracts,
+  TupleToPlainObj,
 } from './types';

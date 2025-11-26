@@ -17,3 +17,5 @@ export type {
   RegleSingleFieldSchema,
   RegleSchemaBehaviourOptions,
 } from './types';
+
+import './overrides';

@@ -19,13 +19,13 @@
     }
   },
   "dependencies": {
-    "@standard-schema/spec": "1.0.0"
+    "@standard-schema/spec": "1.0.0",
+    "type-fest": "catalog:"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@vue/test-utils": "catalog:",
-    "expect-type": "catalog:",
     "prettier": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",

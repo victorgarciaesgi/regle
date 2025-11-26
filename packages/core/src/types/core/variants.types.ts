@@ -1,5 +1,4 @@
-import type { IsUnion } from 'expect-type';
-import type { EmptyObject, IsEmptyObject, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, UnionToTuple, IsUnion } from 'type-fest';
 import type {
   AllRulesDeclarations,
   InferRegleStatusType,
@@ -13,6 +12,11 @@ import type {
 import type { HasNamedKeys, LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
+/** Types to be augmented by @regle/schemas */
+export interface NarrowVariantExtracts {}
+/* oxlint-disable eslint(no-unused-vars) */
+export interface NarrowVariantFieldExtracts<T extends unknown> {}
+
 export type NarrowVariant<
   TRoot extends {
     [x: string]: unknown;
@@ -22,17 +26,36 @@ export type NarrowVariant<
   },
   TKey extends keyof TRoot,
   TValue extends LazyJoinDiscriminatedUnions<
-    Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+    Exclude<
+      TRoot[TKey],
+      | RegleCollectionStatus<any, any, any>
+      | RegleStatus<any, any, any>
+      | NarrowVariantExtracts[keyof NarrowVariantExtracts]
+    >
   > extends { $value: infer V }
     ? V
     : unknown,
 > = Extract<
   TRoot,
-  { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+  {
+    [K in TKey]:
+      | RegleFieldStatus<TValue, any, any>
+      | RegleFieldStatus<MaybeInput<TValue>, any, any>
+      | (IsEmptyObject<NarrowVariantFieldExtracts<TValue>> extends true
+          ? EmptyObject
+          : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
+  }
 > & {
   $fields: Extract<
     TRoot['$fields'],
-    { [K in TKey]: RegleFieldStatus<TValue, any, any> | RegleFieldStatus<MaybeInput<TValue>, any, any> }
+    {
+      [K in TKey]:
+        | RegleFieldStatus<TValue, any, any>
+        | RegleFieldStatus<MaybeInput<TValue>, any, any>
+        | (IsEmptyObject<NarrowVariantFieldExtracts<TValue>> extends true
+            ? EmptyObject
+            : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
+    }
   >;
 };
 

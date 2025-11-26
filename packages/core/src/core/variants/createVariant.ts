@@ -17,6 +17,7 @@ import type {
   JoinDiscriminatedUnions,
   LazyJoinDiscriminatedUnions,
   NarrowVariant,
+  NarrowVariantExtracts,
   RegleCollectionStatus,
   RegleStatus,
   VariantTuple,
@@ -101,12 +102,22 @@ export function narrowVariant<
   },
   const TKey extends keyof TRoot,
   const TValue extends LazyJoinDiscriminatedUnions<
-    Exclude<TRoot[TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+    Exclude<
+      TRoot[TKey],
+      | RegleCollectionStatus<any, any, any>
+      | RegleStatus<any, any, any>
+      | NarrowVariantExtracts[keyof NarrowVariantExtracts]
+    >
   > extends { $value: infer V }
     ? V
     : unknown,
->(root: TRoot, discriminantKey: TKey, discriminantValue: TValue): root is NarrowVariant<TRoot, TKey, TValue> {
+>(
+  root: TRoot | undefined,
+  discriminantKey: TKey,
+  discriminantValue: TValue
+): root is NarrowVariant<TRoot, TKey, TValue> {
   return (
+    !!root &&
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&
     root[discriminantKey]?.$value === discriminantValue
@@ -126,7 +137,12 @@ export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
   const TValue extends LazyJoinDiscriminatedUnions<
-    Exclude<TRoot['$fields'][TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+    Exclude<
+      TRoot['$fields'][TKey],
+      | RegleCollectionStatus<any, any, any>
+      | RegleStatus<any, any, any>
+      | NarrowVariantExtracts[keyof NarrowVariantExtracts]
+    >
   > extends { $value: infer V }
     ? V
     : unknown,
@@ -145,7 +161,12 @@ export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
   const TValue extends LazyJoinDiscriminatedUnions<
-    Exclude<TRoot['$fields'][TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
+    Exclude<
+      TRoot['$fields'][TKey],
+      | RegleCollectionStatus<any, any, any>
+      | RegleStatus<any, any, any>
+      | NarrowVariantExtracts[keyof NarrowVariantExtracts]
+    >
   > extends { $value: infer V }
     ? V
     : unknown,

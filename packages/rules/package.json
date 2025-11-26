@@ -10,7 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@regle/core": "workspace:*"
+    "@regle/core": "workspace:*",
+    "type-fest": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

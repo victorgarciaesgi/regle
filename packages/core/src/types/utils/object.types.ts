@@ -1,8 +1,7 @@
-import type { UnionToIntersection, UnionToTuple } from 'type-fest';
+import type { UnionToIntersection, UnionToTuple, IsUnion } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
-import type { IsUnion } from 'expect-type';
 
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
   ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]

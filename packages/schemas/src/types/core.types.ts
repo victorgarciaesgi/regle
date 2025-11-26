@@ -15,6 +15,7 @@ import type {
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, PartialDeep } from 'type-fest';
 import type { Raw } from 'vue';
+import type { MaybeSchemaVariantStatus } from './variants.types';
 
 export type RegleSchema<
   TState extends Record<string, any>,
@@ -26,7 +27,7 @@ export type RegleSchema<
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
-  r$: Raw<RegleSchemaStatus<TState, TShortcuts, true>>;
+  r$: Raw<MaybeSchemaVariantStatus<TState, TShortcuts, true>>;
 } & TAdditionalReturnProperties;
 
 export type RegleSingleFieldSchema<
@@ -53,7 +54,7 @@ export type RegleSchemaResult<TSchema extends unknown> =
   | { valid: false; data: PartialDeep<TSchema>; issues: RegleIssuesTree<TSchema>; errors: RegleErrorTree<TSchema> }
   | { valid: true; data: TSchema; issues: EmptyObject; errors: EmptyObject };
 
-type ProcessNestedFields<TState extends Record<string, any>, TShortcuts extends RegleShortcutDefinition> =
+type ProcessNestedFields<TState extends Record<string, any> | undefined, TShortcuts extends RegleShortcutDefinition> =
   HasNamedKeys<TState> extends true
     ? {
         readonly [TKey in keyof JoinDiscriminatedUnions<TState>]: TKey extends keyof JoinDiscriminatedUnions<TState>
@@ -74,7 +75,7 @@ type ProcessNestedFields<TState extends Record<string, any>, TShortcuts extends 
  * @public
  */
 export type RegleSchemaStatus<
-  TState extends Record<string, any> = Record<string, any>,
+  TState extends Record<string, any> | undefined = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   IsRoot extends boolean = false,
 > = Omit<RegleCommonStatus<TState>, IsRoot extends false ? '$pending' : ''> & {
@@ -120,7 +121,10 @@ export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extend
       : unknown extends TState
         ? RegleSchemaFieldStatus<TState extends EmptyObject ? unknown : TState, TShortcuts>
         : NonNullable<TState> extends Record<string, any>
-          ? RegleSchemaStatus<NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {}, TShortcuts>
+          ? MaybeSchemaVariantStatus<
+              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+              TShortcuts
+            >
           : RegleSchemaFieldStatus<TState, TShortcuts>;
 
 /**

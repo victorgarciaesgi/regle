@@ -1,10 +1,10 @@
 import { defineConfig, type UserConfig } from 'tsdown';
-import { defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
+import { defaultExternals, defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
-  external: ['vue', 'valibot', 'zod', '@standard-schema/spec'],
+  external: [...defaultExternals, '@regle/core'],
 };
 
 export default defineConfig([

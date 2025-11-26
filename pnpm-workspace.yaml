@@ -50,7 +50,6 @@ catalog:
   '@nuxt/schema': 4.1.2
 
   # Devtools
-  expect-type: 1.2.2
   prettier: 3.6.2
   typescript: 5.9.3
   '@total-typescript/ts-reset': 0.6.1

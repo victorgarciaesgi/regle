@@ -66,4 +66,6 @@ export function createScopedUseRegle<
   };
 }
 
-export const { useCollectScope, useScopedRegle } = createScopedUseRegle();
+const { useCollectScope, useScopedRegle } = createScopedUseRegle();
+
+export { useCollectScope, useScopedRegle };

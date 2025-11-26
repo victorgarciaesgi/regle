@@ -36,9 +36,6 @@ catalogs:
     arktype:
       specifier: 2.1.25
       version: 2.1.25
-    expect-type:
-      specifier: 1.2.2
-      version: 1.2.2
     nuxt:
       specifier: 4.1.2
       version: 4.1.2
@@ -327,6 +324,9 @@ importers:
       pinia:
         specifier: '>=2.2.5'
         version: 2.3.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.2.0
     devDependencies:
       '@total-typescript/ts-reset':
         specifier: 'catalog:'
@@ -337,18 +337,12 @@ importers:
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
-      expect-type:
-        specifier: 'catalog:'
-        version: 1.2.2
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
       tsdown:
         specifier: 'catalog:'
         version: 0.16.1(@typescript/native-preview@7.0.0-dev.20251105.1)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.2.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -420,6 +414,9 @@ importers:
       '@regle/core':
         specifier: workspace:*
         version: link:../core
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.2.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -436,9 +433,6 @@ importers:
       tsdown:
         specifier: 'catalog:'
         version: 0.16.1(@typescript/native-preview@7.0.0-dev.20251105.1)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.2.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -466,6 +460,9 @@ importers:
       arktype:
         specifier: ^2.1.0
         version: 2.1.12
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.2.0
     devDependencies:
       '@total-typescript/ts-reset':
         specifier: 'catalog:'
@@ -482,9 +479,6 @@ importers:
       tsdown:
         specifier: 'catalog:'
         version: 0.16.1(@typescript/native-preview@7.0.0-dev.20251105.1)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.2.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
