@@ -1,41 +1,58 @@
-<script setup lang="ts">
-import { narrowVariant } from '@regle/core'
-import { useRegleSchema } from '@regle/schemas'
-import * as v from 'valibot'
-import { ref } from 'vue'
-
-const variantSchema = v.object({
-  items: v.array(
-    v.variant('type', [
-      v.object({
-        type: v.literal('text'),
-        text: v.pipe(v.string(), v.nonEmpty()),
-      }),
-      v.object({
-        type: v.literal('image'),
-        url: v.string(),
-      }),
-    ]),
-  ),
-})
-
-const state = ref<{ items: { type: 'text'; text: string }[] }>({
-  items: [{ type: 'text', text: 'foo' }],
-})
-const { r$ } = useRegleSchema(state, variantSchema)
-
-const first = r$.items.$each[0]
-
-if (narrowVariant(first, 'type', 'text')) {
-  first.text.$anyDirty
-}
-</script>
-
 <template>
-  <div class="container p-3">
-    <h2>Hello Regle!</h2>
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 500px">
+    <input v-model="r$.$value.email" />
+    <ul v-if="r$.$errors.email.length">
+      <li v-for="error of r$.$errors.email" :key="error">
+        {{ error }}
+      </li>
+    </ul>
+    <button @click="submit">Submit me!</button>
+    <button @click="setValues">Set</button>
   </div>
+
+  <pre>{{ r$.$errors }}</pre>
 </template>
-<style>
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
-</style>
+
+<script setup lang="ts">
+import { useRegleSchema } from '@regle/schemas';
+import { ref } from 'vue';
+import { z } from 'zod/v4';
+
+const form = ref({
+  email: '',
+  user: {
+    firstName: '',
+    lastName: '',
+  },
+  contacts: [{ name: '' }],
+});
+
+const schema = z.object({
+  email: z.email(),
+  user: z.object({
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+  }),
+  contacts: z.array(
+    z.object({
+      name: z.string().min(1),
+    })
+  ),
+});
+
+function setValues() {
+  r$.email.$value = 'test@email.com';
+  r$.user.firstName.$value = 'John';
+  r$.user.lastName.$value = 'Doe';
+  if (form.value.contacts[0]) {
+    form.value.contacts[0].name = 'Contact';
+  }
+}
+
+const { r$ } = useRegleSchema(form, schema, { rewardEarly: true });
+
+const submit = async () => {
+  const res = await r$.$validate();
+  console.log(res);
+};
+</script>
