@@ -6,8 +6,7 @@
     "build:prod": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "turbo:postinstall": "nuxt prepare"
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
