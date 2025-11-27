@@ -15,6 +15,7 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "pinia": "catalog:",
+    "@pinia/nuxt": "0.11.3",
     "typescript": "catalog:",
     "zod": "catalog:"
   },
