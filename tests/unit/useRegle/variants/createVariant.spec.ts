@@ -118,6 +118,9 @@ describe('createVariant', () => {
     if (narrowVariant(vm.r$, 'type', 'ONE')) {
       expect(vm.r$.oneName).toBe(undefined);
 
+      expectTypeOf(vm.r$.$value.type).toEqualTypeOf<'ONE'>();
+      expectTypeOf(vm.r$.$value.oneValue).toEqualTypeOf<number | undefined>();
+
       expectTypeOf(vm.r$.oneName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
@@ -158,6 +161,9 @@ describe('createVariant', () => {
 
     if (narrowVariant(vm.r$, 'type', 'TWO')) {
       expect(vm.r$.twoName).toBe(undefined);
+      expectTypeOf(vm.r$.$value.type).toEqualTypeOf<'TWO'>();
+      expectTypeOf(vm.r$.$value.twoValue).toEqualTypeOf<number | undefined>();
+
       expectTypeOf(vm.r$.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
@@ -291,6 +297,9 @@ describe('createVariant', () => {
     if (narrowVariant(vm.r$.nested2, 'type', 'ONE') && vm.invariantRefOne) {
       expect(vm.r$.nested2.oneName).toBe(undefined);
 
+      expectTypeOf(vm.r$.nested2.$value.type).toEqualTypeOf<'ONE'>();
+      expectTypeOf(vm.r$.nested2.$value.oneValue).toEqualTypeOf<number | undefined>();
+
       expectTypeOf(vm.r$.nested2.oneName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
@@ -360,6 +369,10 @@ describe('createVariant', () => {
     if (narrowVariant(vm.r$.nested2, 'type', 'TWO') && vm.invariantRefTwo) {
       expect(vm.r$.nested2.twoName).toBe(undefined);
       expect(vm.r$.nested2.$fields.twoName).toBe(undefined);
+
+      expectTypeOf(vm.r$.nested2.$value.type).toEqualTypeOf<'TWO'>();
+      expectTypeOf(vm.r$.nested2.$value.twoValue).toEqualTypeOf<number | undefined>();
+
       expectTypeOf(vm.r$.nested2.twoName).toEqualTypeOf<
         RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
       >();
