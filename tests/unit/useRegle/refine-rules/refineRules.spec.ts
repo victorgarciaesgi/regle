@@ -1,5 +1,6 @@
 import {
   createVariant,
+  defineRules,
   narrowVariant,
   refineRules,
   useRegle,
@@ -255,5 +256,12 @@ describe('refineRules', () => {
 
     expect(narrowVariant(vm.r$, 'type', 'ONE')).toBe(false);
     expect(narrowVariant(vm.r$, 'type', 'TWO')).toBe(false);
+  });
+});
+
+describe('defineRules', () => {
+  it('should return the same rules', () => {
+    const rules = { email: { required } };
+    expect(defineRules(rules)).toStrictEqual(rules);
   });
 });
