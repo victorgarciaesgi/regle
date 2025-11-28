@@ -1,58 +1,75 @@
-<template>
-  <div style="display: flex; flex-direction: column; gap: 16px; width: 500px">
-    <input v-model="r$.$value.email" />
-    <ul v-if="r$.$errors.email.length">
-      <li v-for="error of r$.$errors.email" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-    <button @click="submit">Submit me!</button>
-    <button @click="setValues">Set</button>
-  </div>
-
-  <pre>{{ r$.$errors }}</pre>
-</template>
-
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
 import { ref } from 'vue';
-import { z } from 'zod/v4';
+import { useRegle } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
 
-const form = ref({
-  email: '',
-  user: {
-    firstName: '',
-    lastName: '',
-  },
-  contacts: [{ name: '' }],
+const state = ref({ name: '', email: '' });
+
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  // email: { email },
 });
 
-const schema = z.object({
-  email: z.email(),
-  user: z.object({
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
-  }),
-  contacts: z.array(
-    z.object({
-      name: z.string().min(1),
-    })
-  ),
-});
-
-function setValues() {
-  r$.email.$value = 'test@email.com';
-  r$.user.firstName.$value = 'John';
-  r$.user.lastName.$value = 'Doe';
-  if (form.value.contacts[0]) {
-    form.value.contacts[0].name = 'Contact';
+async function submit() {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
+  } else {
+    console.warn('Errors: ', r$.$errors);
   }
 }
-
-const { r$ } = useRegleSchema(form, schema, { rewardEarly: true });
-
-const submit = async () => {
-  const res = await r$.$validate();
-  console.log(res);
-};
 </script>
+
+<template>
+  <div class="container p-3">
+    <h2>Hello Regle!</h2>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+      />
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+  </div>
+</template>
+<style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+</style>

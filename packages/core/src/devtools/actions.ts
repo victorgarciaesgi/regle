@@ -5,7 +5,7 @@ import type { DevtoolsV6PluginAPI } from './types';
 import { parseFieldNodeId } from './utils';
 import type { DevToolsV6PluginAPIHookPayloads } from '@vue/devtools-kit';
 
-export function handleValidateAction(nodeId: string, api: DevtoolsV6PluginAPI) {
+export function handleValidateAction(nodeId: string) {
   if (nodeId.includes(':rule:')) {
     return;
   }
@@ -29,10 +29,10 @@ export function handleValidateAction(nodeId: string, api: DevtoolsV6PluginAPI) {
     }
   }
 
-  emitInspectorState(api);
+  regleDevtoolsRegistry.notifyDevtools();
 }
 
-export async function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI, resetState = false) {
+export function handleResetAction(nodeId: string, resetState = false) {
   const fieldInfo = parseFieldNodeId(nodeId);
 
   if (fieldInfo) {
@@ -52,8 +52,35 @@ export async function handleResetAction(nodeId: string, api: DevtoolsV6PluginAPI
       instance.r$.$reset({ toOriginalState: resetState });
     }
   }
+
+  regleDevtoolsRegistry.notifyDevtools();
 }
 
+export function handleTouchAction(nodeId: string) {
+  if (nodeId.includes(':rule:')) {
+    return;
+  }
+
+  const fieldInfo = parseFieldNodeId(nodeId);
+  if (fieldInfo) {
+    const { instanceId, fieldName } = fieldInfo;
+    const instance = regleDevtoolsRegistry.get(instanceId);
+
+    if (instance && instance.r$.$fields) {
+      const fieldStatus = resolveFieldByPath(instance.r$.$fields, fieldName);
+      if (fieldStatus && typeof fieldStatus.$touch === 'function') {
+        fieldStatus.$touch();
+      }
+    }
+  } else {
+    const instance = regleDevtoolsRegistry.get(nodeId);
+    if (instance && typeof instance.r$.$touch === 'function') {
+      instance.r$.$touch();
+    }
+  }
+
+  regleDevtoolsRegistry.notifyDevtools();
+}
 export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayloads['editInspectorState']) {
   const { nodeId, path, state } = payload;
 
@@ -81,4 +108,12 @@ export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayload
 export async function emitInspectorState(api: DevtoolsV6PluginAPI) {
   api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
   api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
+}
+
+function checkNotFocusedError(error: unknown): error is Error {
+  if (error instanceof Error && error.message.toLowerCase().includes('document is not focused')) {
+    console.warn('You need to activate the "Emulate a focused page" setting in the "Rendering" panel of devtools.');
+    return true;
+  }
+  return false;
 }

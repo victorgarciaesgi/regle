@@ -59,3 +59,10 @@ export function parseRuleNodeId(nodeId: string): { instanceId: string; fieldName
 export function createRuleNodeId(instanceId: string, fieldName: string, ruleName: string): string {
   return `${createFieldNodeId(instanceId, fieldName)}:rule:${ruleName}`;
 }
+
+export function checkClipboardAccess() {
+  if (!('clipboard' in navigator)) {
+    console.warn(`Your browser doesn't support the Clipboard API`);
+    return true;
+  }
+}
