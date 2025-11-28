@@ -99,6 +99,7 @@ export function narrowVariant<
     $fields: {
       [x: string]: unknown;
     };
+    $value: unknown;
   },
   const TKey extends keyof TRoot,
   const TValue extends LazyJoinDiscriminatedUnions<

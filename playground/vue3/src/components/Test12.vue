@@ -1,73 +1,62 @@
 <script setup lang="ts">
+import { useRegle, createVariant, narrowVariant } from '@regle/core';
+import { literal, required, email } from '@regle/rules';
 import { ref } from 'vue';
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+type FormStateLoginType =
+  | { type: 'EMAIL'; email: string }
+  | { type: 'GITHUB'; username: string }
+  | { type?: undefined };
 
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  // email: { email },
+type FormState = {
+  firstName?: string;
+  lastName?: string;
+} & FormStateLoginType;
+
+const state = ref<FormState>({});
+
+// ⚠️ Use getter syntax for your rules () => {} or a computed one
+const { r$ } = useRegle(state, () => {
+  /**
+   * Here you create you rules variations, see each member as a `OR`
+   * `type` here is the discriminant
+   *
+   * Depending of the value of `type`, Regle will apply the corresponding rules.
+   */
+  const variant = createVariant(state, 'type', [
+    { type: { literal: literal('EMAIL') }, email: { required, email } },
+    { type: { literal: literal('GITHUB') }, username: { required } },
+    { type: { required } },
+  ]);
+
+  return {
+    firstName: { required },
+    // Don't forget to return the computed rules
+    ...variant.value,
+  };
 });
-
-async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
-}
 </script>
 
 <template>
-  <div class="container p-3">
-    <h2>Hello Regle!</h2>
+  <input v-model="r$.firstName.$value" placeholder="First name" />
+  <Errors :errors="r$.firstName.$errors" />
 
-    <div class="py-2 has-validation">
-      <label class="form-label">Name</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.name"
-        placeholder="Type your name"
-        :class="{
-          'is-valid': r$.name.$correct,
-          'is-invalid': r$.name.$error,
-        }"
-        aria-describedby="name-error"
-      />
-      <ul id="name-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.name" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
+  <select v-model="r$.type.$value">
+    <option disabled value="">Account type</option>
+    <option value="EMAIL">Email</option>
+    <option value="GITHUB">Github</option>
+  </select>
 
-    <div class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.email"
-        placeholder="Type your email"
-        :class="{
-          'is-valid': r$.email.$correct,
-          'is-invalid': r$.email.$error,
-        }"
-        aria-describedby="email-error"
-      />
-      <ul id="email-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.email" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
+  <div v-if="narrowVariant(r$, 'type', 'EMAIL')">
+    <!-- `email` is now a known field in this block -->
+    <input v-model="r$.email.$value" placeholder="Email" />
+    <Errors :errors="r$.email.$errors" />
+  </div>
 
-    <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
-    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+  <div v-else-if="narrowVariant(r$, 'type', 'GITHUB')">
+    <!-- `username` is now a known field in this block -->
+    <input v-model="r$.username.$value" placeholder="Email" />
+    <Errors :errors="r$.username.$errors" />
   </div>
 </template>
 <style>
