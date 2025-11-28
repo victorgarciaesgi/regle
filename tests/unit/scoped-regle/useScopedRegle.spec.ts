@@ -239,11 +239,11 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope1Namespace: [] }]);
+      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
       expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([
-        { scope1Namespace: ['This field is required'] },
+        { scope4Namespace: ['This field is required'] },
       ]);
-      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope1Namespace: '' }]);
+      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
 
       wrapper.vm.scopeNamespace = 'other';
       await wrapper.vm.$nextTick();
@@ -271,11 +271,11 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
       expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope1Namespace: [] }]);
+      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
       expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([
-        { scope1Namespace: ['This field is required'] },
+        { scope4Namespace: ['This field is required'] },
       ]);
-      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope1Namespace: '' }]);
+      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
 
       wrapper.vm.showScope1Namespace = false;
       await wrapper.vm.$nextTick();
@@ -339,6 +339,28 @@ describe('useScopedRegle', () => {
       useScope5Regle({}, {}, {});
       // ✅
       useScope5Regle({}, {}, { scopeKey: 'foo' });
+    });
+
+    it('should collect multiple namespaces', async () => {
+      wrapper.vm.showScope1Namespace = true;
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.scope6NamespaceR$.$dirty).toBe(false);
+      expect(wrapper.vm.scope6NamespaceR$.$anyDirty).toBe(false);
+      expect(wrapper.vm.scope6NamespaceR$.$invalid).toBe(true);
+      expect(wrapper.vm.scope6NamespaceR$.$correct).toBe(false);
+      expect(wrapper.vm.scope6NamespaceR$.$error).toBe(false);
+      expect(wrapper.vm.scope6NamespaceR$.$edited).toBe(false);
+      expect(wrapper.vm.scope6NamespaceR$.$anyEdited).toBe(false);
+      expect(Object.keys(wrapper.vm.scope6NamespaceR$.$instances)).toHaveLength(2);
+      expect(wrapper.vm.scope6NamespaceR$.$errors).toStrictEqual([
+        {
+          scope4Namespace: [],
+        },
+        {
+          scope4Namespace: [],
+        },
+      ]);
     });
   }
 

@@ -5,14 +5,14 @@ import { mergeRegles, type MergedRegles, type MergedScopedRegles } from '../merg
 
 export type useCollectScopeFn<TNamedScoped extends boolean = false> = TNamedScoped extends true
   ? <const TValue extends Record<string, Record<string, any>>>(
-      namespace?: MaybeRefOrGetter<string>
+      namespace?: MaybeRefOrGetter<string | string[]>
     ) => {
       r$: MergedRegles<{
         [K in keyof TValue]: RegleRoot<TValue[K]> & SuperCompatibleRegleRoot;
       }>;
     }
   : <TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
-      namespace?: MaybeRefOrGetter<string>
+      namespace?: MaybeRefOrGetter<string | string[]>
     ) => {
       r$: MergedScopedRegles<TValue>;
     };
@@ -21,10 +21,12 @@ export function createUseCollectScope<TNamedScoped extends boolean = false>(
   instances: Ref<ScopedInstancesRecord>,
   options: { asRecord?: TNamedScoped }
 ): { useCollectScope: useCollectScopeFn<TNamedScoped> } {
-  function useCollectScope(namespace?: MaybeRefOrGetter<string>): {
+  function useCollectScope(namespace?: MaybeRefOrGetter<string | string[]>): {
     r$: MergedScopedRegles<Record<string, unknown>[]> | MergedRegles<Record<string, SuperCompatibleRegleRoot>>;
   } {
-    const computedNamespace = computed(() => toValue(namespace));
+    const computedNamespace = computed<string | string[] | undefined>(() => toValue(namespace));
+
+    const namespaceInstances = reactive<Record<string, SuperCompatibleRegleRoot>>({});
 
     setEmptyNamespace();
 
@@ -33,8 +35,16 @@ export function createUseCollectScope<TNamedScoped extends boolean = false>(
     const regle = reactive({ r$ });
 
     function setEmptyNamespace() {
-      if (computedNamespace.value && !instances.value[computedNamespace.value]) {
-        instances.value[computedNamespace.value] = {};
+      if (computedNamespace.value) {
+        if (typeof computedNamespace.value === 'string' && !instances.value[computedNamespace.value]) {
+          instances.value[computedNamespace.value] = {};
+        } else if (Array.isArray(computedNamespace.value)) {
+          computedNamespace.value.forEach((namespace) => {
+            if (!instances.value[namespace]) {
+              instances.value[namespace] = {};
+            }
+          });
+        }
       }
     }
 
@@ -50,8 +60,20 @@ export function createUseCollectScope<TNamedScoped extends boolean = false>(
 
     function collectRegles(r$Instances: ScopedInstancesRecord) {
       if (computedNamespace.value) {
-        const namespaceInstances = r$Instances[computedNamespace.value] ?? {};
-        return mergeRegles(namespaceInstances, !options.asRecord);
+        if (typeof computedNamespace.value === 'string') {
+          return mergeRegles(r$Instances[computedNamespace.value] ?? {}, !options.asRecord);
+        } else {
+          Object.keys(namespaceInstances).forEach((key) => {
+            delete namespaceInstances[key];
+          });
+
+          computedNamespace.value.forEach((namespace) => {
+            Object.entries(r$Instances[namespace]).forEach(([key, regle]) => {
+              Object.assign(namespaceInstances, { [key]: regle });
+            });
+          });
+          return mergeRegles(namespaceInstances, !options.asRecord);
+        }
       } else {
         return mergeRegles(r$Instances['~~global'] ?? {}, !options.asRecord);
       }
