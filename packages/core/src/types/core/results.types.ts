@@ -93,11 +93,27 @@ export type RegleNestedResult<
 > = RegleResult<Data, TRules> &
   (
     | {
+        /**
+         * The form contains validation errors, so the issues and errors will be populated.
+         */
         valid: false;
+        /**
+         * Collection of all the error messages, collected for all children properties and nested forms.
+         *
+         * Only contains errors from properties where $dirty equals true.
+         * */
         issues: RegleIssuesTree<Data>;
+        /**
+         * Collection of all the issues, collected for all children properties and nested forms.
+         *
+         * Only contains issues from properties where $dirty equals true.
+         */
         errors: RegleErrorTree<Data>;
       }
     | {
+        /**
+         * The result is valid, so the issues and errors will be empty.
+         */
         valid: true;
         issues: EmptyObject;
         errors: EmptyObject;
@@ -124,10 +140,19 @@ export type RegleCollectionResult<
 export type RegleFieldResult<
   Data extends any,
   TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
-> = RegleResult<Data, TRules> & {
-  issues: RegleFieldIssue<TRules>[];
-  errors: string[];
-};
+> = RegleResult<Data, TRules> &
+  (
+    | {
+        valid: false;
+        issues: RegleFieldIssue<TRules>[];
+        errors: string[];
+      }
+    | {
+        valid: true;
+        issues: [];
+        errors: [];
+      }
+  );
 
 /**
  * Infer safe output from any `r$` instance
