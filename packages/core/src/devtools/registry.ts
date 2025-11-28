@@ -34,7 +34,7 @@ function useRegleDevtoolsRegistry() {
       id,
       name,
       r$,
-      componentName: options?.componentName ? `<${options.componentName}>` : undefined,
+      componentName: options?.componentName,
       filePath: options?.filePath,
     });
 
