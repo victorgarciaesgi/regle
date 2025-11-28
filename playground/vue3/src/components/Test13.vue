@@ -1,62 +1,48 @@
 <script setup lang="ts">
-import { createVariant, defineRules, narrowVariant, refineRules, useRegle, type InferInput } from '@regle/core';
-import { email, literal, minLength, minValue, numeric, required, sameAs, type } from '@regle/rules';
-import { computed, ref } from 'vue';
-import Errors from './Errors.vue';
-import { type as arktypeType } from 'arktype';
+import * as v from 'valibot';
+import { useRegleSchema } from '@regle/schemas';
+import { type NarrowVariant, narrowVariant } from '@regle/core';
 
-const MyClosedObject = arktypeType({
-  '+': 'reject',
-  onlyAllowedKey: 'string',
+const schema = v.object({
+  a: v.variant('type', [
+    v.object({
+      type: v.literal('foo'),
+    }),
+    v.object({
+      type: v.literal('bar'),
+    }),
+  ]),
 });
 
-const myClosedObject = MyClosedObject({
-  onlyAllowedKey: 'hello',
-  foo: 'bar',
-});
+const { r$ } = useRegleSchema({ a: { type: 'foo' } }, schema);
 
-const rules = refineRules(
-  {
-    firstName: { required },
-    password: { required, type: type<string>() },
-    type: { type: type<'ONE' | 'TWO' | undefined>() },
-  },
-  (state) => {
-    const variant = createVariant(state, 'type', [
-      { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
-      {
-        type: { literal: literal('ONE') },
-        oneValue: { numeric, required, minValue: minValue(4) },
-      },
-      { type: { required, type: type<undefined>() } },
-    ]);
+type Root = typeof r$;
+type Narrow = NarrowVariant<Root['a'], 'type', 'foo'>;
 
-    return {
-      confirmPassword: { required, sameAs: sameAs(() => state.value.password) },
-      ...variant.value,
-    };
-  }
-);
+if (narrowVariant(r$.a, 'type', 'foo')) {
+  r$.a.$value.type;
+}
 
-const state = ref<InferInput<typeof rules>>({});
+type IsNarrowTypeValueFoo = Narrow['type']['$value'] extends 'foo' ? true : false; // true, ok
+type IsNarrowValueTypeFoo = Narrow['$value']['type'] extends 'foo' ? true : false; // true, ok
+type IsNarrowTypeValueBar = Narrow['type']['$value'] extends 'bar' ? true : false; // false, ok
+type IsNarrowValueTypeBar = Narrow['$value']['type'] extends 'bar' ? true : false; // false, ok
 
-const { r$ } = useRegle(state, rules);
+const value: Narrow['$value'] = { type: 'foo' };
+// @ts-expect-error
+const value2: Narrow['$value'] = { type: 'bar' };
+/*
+const value: {
+    type: "foo" | "bar";
+}
+*/
 </script>
 
 <template>
-  <select v-model="r$.type.$value">
-    <option disabled value="">Account type</option>
-    <option value="ONE">One</option>
-    <option value="TWO">Two</option>
-  </select>
-
-  <div v-if="narrowVariant(r$, 'type', 'ONE')">
-    <input v-model="r$.oneValue.$value" placeholder="oneValue" />
-    <Errors :errors="r$.oneValue.$errors" />
-  </div>
-
-  <div v-else-if="narrowVariant(r$, 'type', 'TWO')">
-    <input v-model="r$.twoValue.$value" placeholder="twoValue" />
-    <Errors :errors="r$.twoValue.$errors" />
+  <div class="container p-3">
+    <h2>Hello Regle!</h2>
   </div>
 </template>
+<style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+</style>

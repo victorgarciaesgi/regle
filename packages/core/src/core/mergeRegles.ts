@@ -7,7 +7,7 @@ import type {
   ResetOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
-import { computed, reactive } from 'vue';
+import { computed, reactive, watchEffect } from 'vue';
 
 export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,
@@ -16,7 +16,7 @@ export type MergedRegles<
   },
 > = Omit<
   RegleCommonStatus,
-  '$value' | '$silentValue' | '$errors' | '$silentErrors' | '$name' | '$unwatch' | '$watch'
+  '$value' | '$silentValue' | '$errors' | '$silentErrors' | '$name' | '$unwatch' | '$watch' | '$extractDirtyFields'
 > & {
   /** Map of merged Regle instances and their properties  */
   readonly $instances: { [K in keyof TRegles]: TRegles[K] };
@@ -41,14 +41,14 @@ export type MergedRegles<
     [K in keyof TRegles]: TRegles[K]['$silentIssues'];
   };
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TValue>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TValue>[];
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TRegles['$value']) => Promise<MergedReglesResult<TRegles>>;
-};
+} & { [K in keyof TRegles]: TRegles[K] };
 
 export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record<string, unknown>[]> = Omit<
   MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
-  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue' | '$validate'
+  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue' | '$validate' | '$extractDirtyFields'
 > & {
   /** Array of scoped Regles instances  */
   readonly $instances: SuperCompatibleRegleRoot[];
@@ -62,6 +62,8 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
   readonly $issues: RegleValidationErrors<Record<string, unknown>, false, true>[];
   /** Collection of all registered Regles instances silent issues */
   readonly $silentIssues: RegleValidationErrors<Record<string, unknown>, false, true>[];
+  /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
+  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TValue>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TValue) => Promise<{
     valid: boolean;
@@ -310,7 +312,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     }
   }
 
-  return reactive({
+  const fullStatus = reactive({
     ...(!scoped && {
       $silentValue: $silentValue as any,
     }),
@@ -335,4 +337,21 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $extractDirtyFields,
     $clearExternalErrors,
   } as any);
+
+  watchEffect(() => {
+    if (scoped) {
+      return;
+    }
+    // Cleanup previous field properties
+    for (const key of Object.keys(fullStatus).filter((key) => !key.startsWith('$') && !key.startsWith('~'))) {
+      delete fullStatus[key as keyof typeof fullStatus];
+    }
+    for (const [key, field] of Object.entries($instances.value)) {
+      Object.assign(fullStatus, {
+        [key]: field,
+      });
+    }
+  });
+
+  return fullStatus;
 }

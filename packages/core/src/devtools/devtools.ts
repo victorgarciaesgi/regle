@@ -1,10 +1,11 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import { type App } from 'vue';
-import { handleEditInspectorState, handleResetAction, handleValidateAction } from './actions';
+import { handleEditInspectorState, handleResetAction, handleTouchAction, handleValidateAction } from './actions';
 import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
 import { buildInspectorState } from './state-builder';
 import { buildInspectorTree } from './tree-builder';
+import { version } from '../../package.json';
 
 export function createDevtools(app: App) {
   setupDevtoolsPlugin(
@@ -27,26 +28,42 @@ export function createDevtools(app: App) {
         icon: 'rule',
         treeFilterPlaceholder: 'Filter state',
         stateFilterPlaceholder: 'Filter validation status',
+        actions: [
+          {
+            icon: 'confirmation_number',
+            tooltip: 'Log Regle version',
+            action: () => {
+              console.info('Regle version', version);
+            },
+          },
+        ],
         nodeActions: [
           {
-            icon: 'check_circle',
+            icon: 'check',
             tooltip: 'Validate',
             action: (nodeId) => {
-              handleValidateAction(nodeId, api);
+              handleValidateAction(nodeId);
             },
+          },
+          {
+            icon: 'touch_app',
+            action: (nodeId) => {
+              handleTouchAction(nodeId);
+            },
+            tooltip: 'Touch the instance with $touch',
           },
           {
             icon: 'refresh',
             tooltip: 'Reset validation state',
             action: (nodeId) => {
-              handleResetAction(nodeId, api);
+              handleResetAction(nodeId);
             },
           },
           {
             icon: 'restore',
             tooltip: 'Restore to original state',
             action: (nodeId) => {
-              handleResetAction(nodeId, api, true);
+              handleResetAction(nodeId, true);
             },
           },
         ],

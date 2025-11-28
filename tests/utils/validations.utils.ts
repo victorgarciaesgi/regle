@@ -60,7 +60,7 @@ export function shouldBeErrorField(field?: PossibleFields) {
   expect(field?.$reset).toBeInstanceOf(Function);
 }
 
-export function shouldBeValidField(field?: PossibleFields) {
+export function shouldBeValidField(field?: PossibleFields, correct = true) {
   expect(field?.$invalid).toBe(false);
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(true);
@@ -69,7 +69,9 @@ export function shouldBeValidField(field?: PossibleFields) {
   if (field && '$pending' in field) {
     expect(field?.$pending).toBe(false);
   }
-  expect(field?.$correct).toBe(true);
+  if (correct) {
+    expect(field?.$correct).toBe(true);
+  }
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$errors).toStrictEqual([]);
   }

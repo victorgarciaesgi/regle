@@ -14,7 +14,9 @@ const props = defineProps<{
 watch(
   () => props.data,
   (value) => {
-    (json.value as any).data = JSON.stringify(value);
+    if (json.value) {
+      (json.value as any).data = JSON.stringify(value);
+    }
   },
   { deep: true }
 );

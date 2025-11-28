@@ -19,7 +19,7 @@ function buildNodeTags(
   const tags: InspectorNodeTag[] = [];
 
   const isOptional = isFieldStatus(fieldOrR$)
-    ? 'required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active
+    ? ('required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active) || isEmpty(fieldOrR$.$rules)
     : false;
 
   const isNestedOrCollection = isNestedRulesStatus(fieldOrR$) || isCollectionRulesStatus(fieldOrR$);
@@ -57,7 +57,7 @@ function buildNodeTags(
       tooltip: TOOLTIP_LABELS_FIELDS.OPTIONAL,
     });
 
-    if (!fieldOrR$.$invalid) {
+    if (!fieldOrR$.$invalid && fieldOrR$.$dirty) {
       tags.push({
         label: 'valid',
         textColor: COLORS.VALID.text,
@@ -74,7 +74,7 @@ function buildNodeTags(
       backgroundColor: COLORS.DIRTY.bg,
       tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.DIRTY : TOOLTIP_LABELS_FIELDS.DIRTY,
     });
-  } else if ('$rules' in fieldOrR$) {
+  } else if (!isOptional) {
     tags.push({
       label: 'pristine',
       textColor: COLORS.PRISTINE.text,
@@ -85,7 +85,7 @@ function buildNodeTags(
 
   if (componentName) {
     tags.push({
-      label: componentName,
+      label: `<${componentName}.vue>`,
       textColor: COLORS.COMPONENT.text,
       backgroundColor: COLORS.COMPONENT.bg,
     });

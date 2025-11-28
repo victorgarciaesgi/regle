@@ -6,8 +6,7 @@
     "build:prod": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "turbo:postinstall": "nuxt prepare"
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@regle/core": "workspace:*",
@@ -15,6 +14,7 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "pinia": "catalog:",
+    "@pinia/nuxt": "0.11.3",
     "typescript": "catalog:",
     "zod": "catalog:"
   },

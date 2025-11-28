@@ -23,7 +23,13 @@ function buildFieldState(fieldStatus: $InternalRegleFieldStatus): CustomInspecto
   }
 
   // Remaining properties
-  const remainingProperties = getRemainingProperties(fieldStatus, [...PRIORITY_KEYS.FIELD, '$rules', '$fields']);
+  const remainingProperties = getRemainingProperties(fieldStatus, [
+    ...PRIORITY_KEYS.FIELD,
+    '$rules',
+    '$fields',
+    '$modifiers',
+    '$deepCompare',
+  ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
   }
@@ -87,7 +93,6 @@ function buildRuleState(ruleStatus: $InternalRegleRuleStatus): CustomInspectorSt
     '$fieldCorrect',
     '$fieldError',
     '$maybePending',
-    '$externalErrors',
   ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
@@ -104,7 +109,7 @@ function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
     state['State'] = priorityProperties;
   }
 
-  const remainingProperties = getRemainingProperties(r$, [...PRIORITY_KEYS.ROOT, '$fields']);
+  const remainingProperties = getRemainingProperties(r$, [...PRIORITY_KEYS.ROOT, '$fields', '$modifiers', '$path']);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
   }

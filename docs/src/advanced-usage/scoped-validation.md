@@ -136,7 +136,7 @@ In this example, only the components using the same scope and namespace will be 
 :::code-group
 ```vue [Parent.vue]
 <script setup lang="ts">
-import { useCollectScope } from './scoped-config';
+import { useCollectScope } from '@regle/core';
 import Child1 from './Child1.vue';
 import Child2 from './Child2.vue';
 
@@ -156,11 +156,11 @@ const { r$ } = useCollectScope('contacts');
 
 <script setup lang="ts">
 import { required } from '@regle/rules';
-import { useScopedRegle } from './scoped-config';
+import { useScopedRegle } from '@regle/core';
 
 const { r$ } = useScopedRegle(
   { firstName: '' }, 
-  { firstName: { required } }
+  { firstName: { required } },
   { namespace: 'contacts' }
 );
 </script>
@@ -178,10 +178,16 @@ const { r$ } = useScopedRegle(
 
 <script setup lang="ts">
 import { required, email } from '@regle/rules';
-import { useScopedRegle } from './scoped-config';
+import { useScopedRegle } from '@regle/core';
 
 const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
 </script>
+```
+
+You can also collect multiple namespaces at once by passing an array of namespace names to the `useCollectScope` function.
+
+```ts
+const { r$ } = useCollectScope(['contacts', 'persons']);
 ```
 :::
 
@@ -221,8 +227,6 @@ You can provide your own store ref.
 
 
 ```ts
-import {ref} from 'vue';
-// ---cut---
 import { createScopedUseRegle, type ScopedInstancesRecordLike } from '@regle/core';
 
 // Having a default 

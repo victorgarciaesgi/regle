@@ -23,6 +23,7 @@ export type NarrowVariant<
     $fields: {
       [x: string]: unknown;
     };
+    $value: unknown;
   },
   TKey extends keyof TRoot,
   TValue extends LazyJoinDiscriminatedUnions<
@@ -57,6 +58,8 @@ export type NarrowVariant<
             : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
     }
   >;
+} & {
+  $value: Omit<TRoot['$value'], TKey> & { [K in TKey]: TValue };
 };
 
 export type MaybeVariantStatus<

@@ -14,6 +14,7 @@
   </div>
   <div v-if="showScope1Namespace">
     <Scope4WithNamespace :scope="scopeNamespace" />
+    <Scope4WithNamespace scope="scope2" />
   </div>
 
   <div v-if="showScope5">
@@ -56,6 +57,8 @@ const { r$: scope3R$ } = useScope3Validations();
 
 const { r$: scope5R$ } = useScope5Validations<{ scope5: { scope5Record: string } }>();
 
+const { r$: scope6NamespaceR$ } = useScope1Validations(['scope', 'scope2']);
+
 defineExpose({
   showScope1,
   showScope1_1,
@@ -70,5 +73,6 @@ defineExpose({
   scope1NamespaceR$,
   scopeNamespace,
   scope5R$,
+  scope6NamespaceR$,
 });
 </script>

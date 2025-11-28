@@ -21,7 +21,7 @@ import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, Re
 
 export type useRegleSchemaFnOptions<TAdditionalOptions extends Record<string, any>> = Omit<
   Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
-  'validationGroups' | 'lazy' | 'rewardEarly'
+  'validationGroups' | 'lazy'
 > &
   RegleSchemaBehaviourOptions &
   TAdditionalOptions;
@@ -87,20 +87,40 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       : cloneDeep(processedState.value);
 
     const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
+    const previousIssues = ref<readonly StandardSchemaV1.Issue[]>([]);
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
+
+    function getIssuePath(issue: StandardSchemaV1.Issue) {
+      return issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+    }
 
     // ---- Schema mode
     if (!computedSchema.value?.['~standard']) {
       throw new Error(`Only "standard-schema" compatible libraries are supported`);
     }
 
-    function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>) {
+    function filterIssues(
+      issues: readonly StandardSchemaV1.Issue[],
+      isValidate = false
+    ): readonly StandardSchemaV1.Issue[] {
+      if (!isValidate && resolvedOptions.rewardEarly) {
+        if (previousIssues.value.length) {
+          return previousIssues.value.filter((issue) => issues.some((i) => getIssuePath(i) === getIssuePath(issue)));
+        }
+        return [];
+      }
+      return issues;
+    }
+
+    function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>, isValidate = false) {
       const output = {};
-      if (result.issues) {
-        const issues = result.issues.map((issue) => {
-          let $path =
-            issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+      let filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(result.issues ?? [], isValidate);
+
+      if (result.issues?.length) {
+        const issues = filteredIssues.map((issue) => {
+          let $path = getIssuePath(issue);
+
           const lastItem = issue.path?.[issue.path.length - 1];
           const lastItemKey = typeof lastItem === 'object' ? lastItem.key : lastItem;
           const isArray =
@@ -131,6 +151,9 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         issues.forEach(({ isArray, $path, ...issue }) => {
           setObjectError(output, $path, [issue], isArray);
         });
+        previousIssues.value = issues;
+      } else {
+        previousIssues.value = [];
       }
       return output;
     }
@@ -142,16 +165,18 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       }
 
       if (isSingleField.value) {
+        const filteredIssues = filterIssues(result.issues ?? [], isValidate);
         customErrors.value =
-          result.issues?.map((issue) => ({
+          filteredIssues?.map((issue) => ({
             $message: issue.message,
             $property: issue.path?.[issue.path.length - 1]?.toString() ?? '-',
             $rule: 'schema',
             ...issue,
           })) ?? [];
       } else {
-        customErrors.value = issuesToRegleErrors(result);
+        customErrors.value = issuesToRegleErrors(result, isValidate);
       }
+
       if (!result.issues) {
         if ((isValidate && syncOnValidate) || (!isValidate && syncOnUpdate)) {
           unWatchState?.();
@@ -169,7 +194,16 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     let unWatchState: WatchHandle;
 
     function defineWatchState() {
-      unWatchState = watch([processedState, computedSchema], () => computeErrors(), { deep: true });
+      unWatchState = watch(
+        [processedState, computedSchema],
+        () => {
+          if (resolvedOptions.silent) {
+            return;
+          }
+          computeErrors();
+        },
+        { deep: true }
+      );
     }
 
     defineWatchState();
