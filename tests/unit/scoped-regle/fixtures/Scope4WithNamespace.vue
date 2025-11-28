@@ -1,5 +1,5 @@
 <template>
-  <input v-model="r$.$value.scope1Namespace" class="scope1Namespace-input" />
+  <input v-model="r$.$value.scope4Namespace" class="scope4Namespace-input" />
 </template>
 
 <script setup lang="ts">
@@ -11,8 +11,8 @@ const props = defineProps<{
 }>();
 
 const { r$ } = useScoped1Regle(
-  { scope1Namespace: '' },
-  { scope1Namespace: { required: required } },
+  { scope4Namespace: '' },
+  { scope4Namespace: { required: required } },
   { namespace: () => props.scope }
 );
 </script>
