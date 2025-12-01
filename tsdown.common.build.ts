@@ -37,4 +37,4 @@ export const defaultExternals = [
   '@vue/runtime-dom',
   '@standard-schema/spec',
   'type-fest',
-];
+] as const;

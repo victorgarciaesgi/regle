@@ -18,7 +18,8 @@
     "pinia": "catalog:",
     "valibot": "catalog:",
     "vue": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "decimal.js": "10.6.0"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.2.0",

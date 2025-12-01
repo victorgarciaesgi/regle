@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUnknown, Or, PartialDeep, IsUnion } from 'type-fest';
-import type { MaybeRef, UnwrapNestedRefs } from 'vue';
+import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, PartialDeep } from 'type-fest';
+import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
@@ -34,9 +34,11 @@ import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
+  RegleStaticImpl,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
+  UnwrapStatic,
 } from '..';
 
 /**
@@ -179,14 +181,18 @@ export type InferRegleStatusType<
               : unknown extends TState[TKey]
                 ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
                 : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-                  ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+                  ? NonNullable<TState[TKey]> extends RegleStaticImpl<infer U>
+                    ? RegleFieldStatus<Raw<U>, TRule, TShortcuts>
+                    : MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
                   : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
           : NonNullable<TState[TKey]> extends Date | File
-            ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+            ? RegleFieldStatus<Raw<NonNullable<TState[TKey]>>, TRule, TShortcuts>
             : unknown extends TState[TKey]
               ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
               : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
-                ? MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+                ? NonNullable<TState[TKey]> extends RegleStaticImpl<infer U>
+                  ? RegleFieldStatus<Raw<U>, TRule, TShortcuts>
+                  : MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
                 : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
     : RegleCommonStatus<unknown>;
 
@@ -199,7 +205,9 @@ export type $InternalRegleStatusType =
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
 
-export type RegleFieldIssue<TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = EmptyObject> = {
+export type RegleFieldIssue<
+  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>> = EmptyObject,
+> = {
   readonly $property: string;
   readonly $type?: string;
   readonly $message: string;
@@ -217,7 +225,10 @@ export type RegleFieldIssue<TRules extends RegleFormPropertyType<any, Partial<Al
         : { readonly $rule: string };
     }[keyof ComputeFieldRules<any, TRules>]);
 
-type ComputeFieldRules<TState extends any, TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>>> =
+type ComputeFieldRules<
+  TState extends any,
+  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>>,
+> =
   IsEmptyObject<TRules> extends true
     ? {
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;
@@ -241,13 +252,23 @@ type ComputeFieldRules<TState extends any, TRules extends RegleFormPropertyType<
  */
 export type RegleFieldStatus<
   TState extends any = any,
-  TRules extends RegleFormPropertyType<any, Partial<AllRulesDeclarations>> = Record<string, any>,
+  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
-> = Omit<RegleCommonStatus<TState>, '$value' | '$silentValue'> & {
+> = Omit<RegleCommonStatus<TState>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: MaybeOutput<UnwrapNestedRefs<TState>>;
+
+  /**
+   * This value reflect the current initial value of the field.
+   * The initial value is different than the original value as the initial value can be mutated when using `$reset`.
+   */
+  readonly $initialValue: MaybeOutput<UnwrapNestedRefs<TState>>;
+  /**
+   * This value reflect the original value of the field at original call. This can't be mutated
+   */
+  readonly $originalValue: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -339,20 +360,20 @@ export interface RegleCommonStatus<TValue = any> extends StandardSchemaV1<TValue
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
-  $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  $value: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
   /**
    * This value reflect the current initial value of the field.
    * The initial value is different than the original value as the initial value can be mutated when using `$reset`.
    */
-  readonly $initialValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  readonly $initialValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
   /**
    * This value reflect the original value of the field at original call. This can't be mutated
    */
-  readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  readonly $originalValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
   /**
    * `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
    * */
-  $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  $silentValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
   /** Marks the field and all nested properties as $dirty. */
   $touch(): void;
   /**

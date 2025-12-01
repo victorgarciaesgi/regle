@@ -17,6 +17,7 @@ export {
   useScopedRegle,
   variantToRef,
   useRules,
+  markStatic,
   type CommonAlphaOptions,
   type CommonComparisonOptions,
   type CreateScopedUseRegleOptions,
@@ -121,4 +122,8 @@ export type {
   NarrowVariantExtracts,
   NarrowVariantFieldExtracts,
   TupleToPlainObj,
+  UnwrapStatic,
+  RegleStatic,
+  IsRegleStatic,
+  RegleStaticImpl,
 } from './types';

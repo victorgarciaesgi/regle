@@ -109,11 +109,3 @@ export async function emitInspectorState(api: DevtoolsV6PluginAPI) {
   api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
   api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
 }
-
-function checkNotFocusedError(error: unknown): error is Error {
-  if (error instanceof Error && error.message.toLowerCase().includes('document is not focused')) {
-    console.warn('You need to activate the "Emulate a focused page" setting in the "Rendering" panel of devtools.');
-    return true;
-  }
-  return false;
-}

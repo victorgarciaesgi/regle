@@ -28,6 +28,7 @@ import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { createStandardSchema } from './standard-schemas';
+import { isStatic } from '../guards';
 
 const DEFAULT_DEBOUNCE_TIME = 200;
 
@@ -84,6 +85,7 @@ export function createReactiveFieldStatus({
     $silentValue: ComputedRef<any>;
     $inactive: ComputedRef<boolean>;
     $modifiers: ComputedRef<FieldRegleBehaviourOptions>;
+    $isArrayOrRegleStatic: ComputedRef<boolean>;
     processShortcuts: () => void;
   }
 
@@ -209,6 +211,10 @@ export function createReactiveFieldStatus({
       const triggerPunishment = ref(false);
 
       const $anyDirty = computed<boolean>(() => $dirty.value);
+
+      const $isArrayOrRegleStatic = computed<boolean>(() => {
+        return $isArray || isStatic(state.value);
+      });
 
       const $debounce = computed<number>(() => {
         if ($localOptions.value.$debounce != null) {
@@ -502,6 +508,7 @@ export function createReactiveFieldStatus({
         $silentValue,
         $inactive,
         $modifiers,
+        $isArrayOrRegleStatic,
       } satisfies ScopeReturnState;
     })!;
 
@@ -549,7 +556,7 @@ export function createReactiveFieldStatus({
           $clearExternalErrors();
         }
       },
-      { deep: $isArray ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
+      { deep: scopeState.$isArrayOrRegleStatic.value ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
     );
   }
 

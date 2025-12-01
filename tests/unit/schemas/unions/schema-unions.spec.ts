@@ -1,4 +1,4 @@
-import type { RegleShortcutDefinition } from '@regle/core';
+import type { MaybeOutput, RegleShortcutDefinition } from '@regle/core';
 import { type RegleSchemaFieldStatus } from '@regle/schemas';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -98,13 +98,14 @@ describe.each([
     expect(valid).toBe(true);
 
     if (narrowVariant(vm.r$.gift, 'type', 'Cash')) {
-      expectTypeOf(vm.r$.gift.amount.$value).toEqualTypeOf<number>();
+      expectTypeOf(vm.r$.gift.type.$value).toEqualTypeOf<'Cash'>();
+      expectTypeOf(vm.r$.gift.amount.$value).toEqualTypeOf<MaybeOutput<number>>();
       expectTypeOf(vm.r$.gift.shares?.$value).toEqualTypeOf<number | undefined>();
     } else if (narrowVariant(vm.r$.gift, 'type', 'Shares')) {
-      expectTypeOf(vm.r$.gift.shares.$value).toEqualTypeOf<number>();
-      expectTypeOf(vm.r$.gift.company.$value).toEqualTypeOf<string>();
+      expectTypeOf(vm.r$.gift.shares.$value).toEqualTypeOf<MaybeOutput<number>>();
+      expectTypeOf(vm.r$.gift.company.$value).toEqualTypeOf<MaybeOutput<string>>();
     } else {
-      expectTypeOf(vm.r$.gift.type.$value).toEqualTypeOf<'Cash' | 'Shares'>();
+      expectTypeOf(vm.r$.gift.type.$value).toEqualTypeOf<MaybeOutput<'Cash' | 'Shares'>>();
       expectTypeOf(vm.r$.gift.amount?.$value).toEqualTypeOf<number | undefined>();
       expectTypeOf(vm.r$.gift.shares?.$value).toEqualTypeOf<number | undefined>();
     }

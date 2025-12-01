@@ -216,3 +216,20 @@ export function dotPathObjectToNested(obj: Record<string, any> | undefined): Rec
 
   return result;
 }
+
+export function hasOwn(val: object, key: string | symbol): key is keyof typeof val {
+  return Object.prototype.hasOwnProperty.call(val, key);
+}
+
+export function def(obj: object, key: string | symbol, value: any, writable = false): void {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    writable,
+    value,
+  });
+}
+
+export function isConstructor(value: unknown): value is new (...args: any[]) => any {
+  return typeof value === 'function' && !!value.prototype && value.prototype.constructor === value;
+}

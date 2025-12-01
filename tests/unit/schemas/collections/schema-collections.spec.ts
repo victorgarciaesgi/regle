@@ -23,7 +23,7 @@ describe.each([
 
     const { vm } = createRegleComponent(useSchema);
 
-    vm.r$.array.$value.push({ test: '', nested_array: [{ rest: '' }] });
+    vm.r$.array.$value?.push({ test: '', nested_array: [{ rest: '' }] });
 
     await nextTick();
 

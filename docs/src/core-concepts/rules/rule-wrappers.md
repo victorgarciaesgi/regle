@@ -15,7 +15,7 @@ The withMessage wrapper lets you associate an error message with a rule. Pass yo
 
 ``` ts twoslash {5-13}
 // @noErrors
-import { useRegle, type InlineRuleDeclaration, type Maybe } from '@regle/core';
+import { useRegle, type InlineRuleDeclaration, type Maybe, type MaybeInput } from '@regle/core';
 // ---cut---
 import { withMessage } from '@regle/rules';
 
@@ -27,7 +27,7 @@ const customRuleInlineWithMetaData = ((value: Maybe<string>) => ({
 const { r$ } = useRegle({ name: '' }, {
   name: {
     // Inline functions can be also written... inline
-    customRule1: withMessage((value) => !!value, "Custom Error"),
+    customRule1: withMessage((value: MaybeInput<string>) => !!value, "Custom Error"),
     customRule2: withMessage(customRuleInlineWithMetaData, "Custom Error"),
 
     // You can also access the current value and metadata with a getter function

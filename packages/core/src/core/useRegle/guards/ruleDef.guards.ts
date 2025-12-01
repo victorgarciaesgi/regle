@@ -1,4 +1,6 @@
-import type { MaybeRef, Ref } from 'vue';
+import { type MaybeRef, type Ref } from 'vue';
+import { hasOwn, isEmpty, isObject } from '../../../../../shared';
+import { REGLE_FLAGS } from '../../../constants';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleCollectionRuleDecl,
@@ -6,8 +8,8 @@ import type {
   $InternalRegleRuleDecl,
   InlineRuleDeclaration,
   RegleRuleDefinition,
+  RegleStaticImpl,
 } from '../../../types';
-import { isEmpty, isObject } from '../../../../../shared';
 import { isRefObject } from '../../../utils';
 
 export function isNestedRulesDef(
@@ -15,10 +17,11 @@ export function isNestedRulesDef(
   rules: Ref<$InternalFormPropertyTypes>
 ): rules is Ref<$InternalReglePartialRuleTree> {
   return (
-    isRefObject(state) ||
-    (isObject(rules.value) &&
-      !isEmpty(rules.value) &&
-      !Object.entries(rules.value).some(([_, rule]) => isRuleDef(rule) || typeof rule === 'function'))
+    !isStatic(state.value) &&
+    (isRefObject(state) ||
+      (isObject(rules.value) &&
+        !isEmpty(rules.value) &&
+        !Object.entries(rules.value).some(([_, rule]) => isRuleDef(rule) || typeof rule === 'function')))
   );
 }
 
@@ -60,4 +63,8 @@ export function isFormInline(rule: Ref<unknown>): rule is Ref<InlineRuleDeclarat
 
 export function isStateArray(state: Ref<unknown>): state is Ref<(unknown & { $id?: string })[]> {
   return Array.isArray(state.value);
+}
+
+export function isStatic<T extends unknown>(value: T): value is RegleStaticImpl<T> {
+  return isObject(value) && hasOwn(value, REGLE_FLAGS.REGLE_STATIC) && value[REGLE_FLAGS.REGLE_STATIC] === true;
 }

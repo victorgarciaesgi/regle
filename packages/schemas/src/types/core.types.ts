@@ -1,7 +1,9 @@
 import type {
+  ArrayElement,
   HasNamedKeys,
   JoinDiscriminatedUnions,
   Maybe,
+  MaybeOutput,
   PrimitiveTypes,
   RegleCollectionErrors,
   RegleCommonStatus,
@@ -10,11 +12,11 @@ import type {
   RegleIssuesTree,
   RegleRuleStatus,
   RegleShortcutDefinition,
-  ArrayElement,
+  RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, PartialDeep } from 'type-fest';
-import type { Raw } from 'vue';
+import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
 export type RegleSchema<
@@ -121,10 +123,12 @@ export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extend
       : unknown extends TState
         ? RegleSchemaFieldStatus<TState extends EmptyObject ? unknown : TState, TShortcuts>
         : NonNullable<TState> extends Record<string, any>
-          ? MaybeSchemaVariantStatus<
-              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-              TShortcuts
-            >
+          ? NonNullable<NonNullable<TState>> extends RegleStaticImpl<infer U>
+            ? RegleSchemaFieldStatus<Raw<U>, TShortcuts>
+            : MaybeSchemaVariantStatus<
+                NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+                TShortcuts
+              >
           : RegleSchemaFieldStatus<TState, TShortcuts>;
 
 /**
@@ -132,8 +136,21 @@ export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extend
  */
 export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcutDefinition = {}> = Omit<
   RegleCommonStatus<TState>,
-  '$pending'
+  '$pending' | '$value' | '$silentValue' | '$initialValue' | '$originalValue'
 > & {
+  /** A reference to the original validated model. It can be used to bind your form with v-model.*/
+  $value: MaybeOutput<UnwrapNestedRefs<TState>>;
+  /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
+  $silentValue: MaybeOutput<UnwrapNestedRefs<TState>>;
+  /**
+   * This value reflect the current initial value of the field.
+   * The initial value is different than the original value as the initial value can be mutated when using `$reset`.
+   */
+  readonly $initialValue: MaybeOutput<UnwrapNestedRefs<TState>>;
+  /**
+   * This value reflect the original value of the field at original call. This can't be mutated
+   */
+  readonly $originalValue: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */

@@ -1,4 +1,5 @@
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
+import type { RegleStatic } from './object.types';
 
 export type Prettify<T> = T extends infer R
   ? {
@@ -34,7 +35,11 @@ export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends 
   : T;
 
 export type ExtendOnlyRealRecord<T extends unknown> =
-  NonNullable<T> extends File | Date ? false : NonNullable<T> extends Record<string, any> ? true : false;
+  NonNullable<T> extends File | Date | RegleStatic<unknown>
+    ? false
+    : NonNullable<T> extends Record<string, any>
+      ? true
+      : false;
 
 export type OmitByType<T extends Record<string, any>, U> = {
   [K in keyof T as T[K] extends U ? never : K]: T[K];
