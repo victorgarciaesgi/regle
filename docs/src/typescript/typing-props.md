@@ -10,7 +10,7 @@ import Parent from '../parts/components/typing-props/Parent.vue';
 
 Forms often span multiple components, and splitting your logic across components is a common practice. Regle offers tools to help type your props correctly, ensuring type safety and improving developer experience.
 
-The best way to manage a centralized form state with inferred types is by using a Pinia store. Learn more in the Usage with Pinia guide [explained here](/advanced-usage/usage-with-pinia).
+The best way to manage a centralized form state with inferred types is by using a Pinia store. Learn more in the Usage with Pinia guide [explained here](/common-usage/usage-with-pinia).
 
 If you cannot use Pinia, here are the alternative approaches.
 

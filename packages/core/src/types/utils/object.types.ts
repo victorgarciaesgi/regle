@@ -1,6 +1,6 @@
-import type { UnionToIntersection, UnionToTuple, IsUnion } from 'type-fest';
+import type { UnionToIntersection, UnionToTuple, IsUnion, IsUnknown } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
-import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
+import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef, Raw } from 'vue';
 import type { DeepReactiveState } from '../core';
 
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
@@ -107,6 +107,18 @@ export type enumType<T extends Record<string, unknown>> = T[keyof T];
 export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
 
+export type UnwrapStatic<T> =
+  IsUnknown<T> extends true ? any : T extends RegleStatic<infer U> ? Raw<U> : UnwrapStaticSimple<T>;
+
+type UnwrapStaticSimple<T> =
+  T extends Array<infer U>
+    ? Array<UnwrapStatic<U>>
+    : isRecordLiteral<T> extends true
+      ? {
+          [K in keyof T]: UnwrapStatic<T[K]>;
+        }
+      : T;
+
 export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };
 
 // -- HasNamedKeys
@@ -118,3 +130,14 @@ type ProcessHasNamedKeys<T> = {
 }[keyof NonNullable<T>] extends never
   ? false
   : true;
+
+declare const RegleStaticSymbol: unique symbol;
+
+export type RegleStatic<T> = T extends new (...args: infer Args) => infer U
+  ? RegleStaticImpl<new (...args: Args) => RegleStaticImpl<U>>
+  : RegleStaticImpl<T>;
+
+export type RegleStaticImpl<T> = Raw<T & { [RegleStaticSymbol]: true }>;
+
+export type UnwrapRegleStatic<T> = T extends RegleStaticImpl<infer U> ? U : T;
+export type IsRegleStatic<T> = T extends RegleStaticImpl<T> ? true : false;

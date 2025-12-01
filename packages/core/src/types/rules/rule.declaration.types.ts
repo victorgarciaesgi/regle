@@ -1,6 +1,6 @@
-import type { MaybeRef, Ref } from 'vue';
+import type { MaybeRef, Raw, Ref } from 'vue';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
-import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, Unwrap } from '../utils';
+import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, RegleStatic, Unwrap } from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
@@ -81,7 +81,9 @@ export type RegleFormPropertyType<
         : NonNullable<TValue> extends Ref<infer V>
           ? RegleFormPropertyType<V, TCustomRules>
           : NonNullable<TValue> extends Record<string, any>
-            ? ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
+            ? NonNullable<TValue> extends RegleStatic<infer U>
+              ? MaybeRef<RegleRuleDecl<Raw<U>, TCustomRules>>
+              : ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
             : MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
 
 /**

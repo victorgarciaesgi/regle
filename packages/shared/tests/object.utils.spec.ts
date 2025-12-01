@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isObject, setObjectError, getDotPath, merge } from '../utils/object.utils';
+import { isObject, setObjectError, getDotPath, merge, isConstructor, def, hasOwn } from '../utils/object.utils';
 
 describe('isObject', () => {
   it('should return true for plain objects', () => {
@@ -275,5 +275,34 @@ describe('merge', () => {
     const result = merge(obj1, obj2);
 
     expect(result.items).toEqual([3, 4]);
+  });
+});
+
+describe('isConstructor', () => {
+  it('should return true for constructors', () => {
+    expect(isConstructor(Date)).toBe(true);
+  });
+  it('should return false for non-constructors', () => {
+    expect(isConstructor(1)).toBe(false);
+    expect(isConstructor('string')).toBe(false);
+    expect(isConstructor(true)).toBe(false);
+    expect(isConstructor(undefined)).toBe(false);
+    expect(isConstructor(null)).toBe(false);
+    expect(isConstructor({})).toBe(false);
+    expect(isConstructor([])).toBe(false);
+  });
+});
+
+describe('hasOwn', () => {
+  it('should return true for own properties', () => {
+    const obj = { a: 1 };
+    expect(hasOwn(obj, 'a')).toBe(true);
+  });
+});
+describe('def', () => {
+  it('should define a property on an object', () => {
+    const obj = {};
+    def(obj, 'a', 1);
+    expect((obj as any).a).toBe(1);
   });
 });

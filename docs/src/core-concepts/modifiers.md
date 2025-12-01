@@ -55,7 +55,7 @@ __Type__: `RegleExternalErrorTree<State>`
 
 Pass an object, matching your error state, that holds external validation errors. These can be from a backend validations or something else.
 
-Check the [External errors](/advanced-usage/external-errors) section for more details.
+Check the [External errors](/common-usage/external-errors) section for more details.
 
 
 ### `rewardEarly`

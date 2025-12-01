@@ -57,9 +57,13 @@ export type NarrowVariant<
             ? EmptyObject
             : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
     }
-  >;
+  > & {
+    [K in TKey]: TRoot[K] & { $value: TValue };
+  };
 } & {
   $value: Omit<TRoot['$value'], TKey> & { [K in TKey]: TValue };
+} & {
+  [K in TKey]: TRoot[K] & { $value: TValue };
 };
 
 export type MaybeVariantStatus<

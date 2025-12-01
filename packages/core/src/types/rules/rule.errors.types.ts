@@ -1,5 +1,11 @@
 import type { MaybeRef } from 'vue';
-import type { ExtendOnlyRealRecord, HasNamedKeys, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
+import type {
+  ExtendOnlyRealRecord,
+  HasNamedKeys,
+  IsRegleStatic,
+  JoinDiscriminatedUnions,
+  UnwrapMaybeRef,
+} from '../utils';
 import type { RegleFieldIssue } from './rule.status.types';
 import type { IsAny } from 'type-fest';
 
@@ -55,9 +61,11 @@ export type RegleValidationErrors<
         : NonNullable<TState> extends Date | File
           ? ErrorMessageOrIssue<TIssue>
           : NonNullable<TState> extends Record<string, any>
-            ? TExternal extends false
-              ? RegleErrorTree<TState, TIssue>
-              : RegleExternalErrorTree<TState>
+            ? IsRegleStatic<NonNullable<TState>> extends true
+              ? ErrorMessageOrIssue<TIssue>
+              : TExternal extends false
+                ? RegleErrorTree<TState, TIssue>
+                : RegleExternalErrorTree<TState>
             : ErrorMessageOrIssue<TIssue>
     : any;
 

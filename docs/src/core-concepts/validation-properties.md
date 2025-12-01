@@ -222,7 +222,7 @@ This represents all the children of your object. You can access any nested child
 
 ## Specific properties for collections
 
-Check documentation for [collections here](/advanced-usage/collections)
+Check documentation for [collections here](/common-usage/collections)
 
 
 ### `$each`

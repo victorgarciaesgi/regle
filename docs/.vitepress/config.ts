@@ -81,21 +81,25 @@ const Nav: (DefaultTheme.NavItem | DefaultTheme.NavItemChildren)[] = [
   },
 ];
 
-const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+const CommonUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   {
     text: 'Validating arrays',
-    link: '/advanced-usage/collections',
+    link: '/common-usage/collections',
   },
-  { text: 'Usage with Pinia', link: '/advanced-usage/usage-with-pinia' },
+  { text: 'Usage with Pinia', link: '/common-usage/usage-with-pinia' },
+  { text: 'Async validators', link: '/common-usage/async-validation' },
+  { text: 'Standard Schema', link: '/common-usage/standard-schema' },
+  { text: 'Server errors', link: '/common-usage/external-errors' },
+];
+
+const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'Rules metadata', link: '/advanced-usage/rule-metadata' },
-  { text: 'Async validators', link: '/advanced-usage/async-validation' },
   { text: 'Global configuration', link: '/advanced-usage/global-config' },
-  { text: 'Standard Schema', link: '/advanced-usage/standard-schema' },
-  { text: 'Server errors', link: '/advanced-usage/external-errors' },
   { text: 'Variants', link: '/advanced-usage/variants' },
   { text: 'Scoped validation', link: '/advanced-usage/scoped-validation' },
   { text: 'Properties shortcuts', link: '/advanced-usage/extend-properties' },
   { text: 'Merge multiple Regles', link: '/advanced-usage/merge-regles' },
+  { text: 'Handling immutable constuctors', link: '/advanced-usage/immutable-constructors' },
 ];
 
 const Typescript: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
@@ -209,6 +213,11 @@ export default defineConfig({
       {
         text: 'Integrations',
         items: Integrations,
+        collapsed: false,
+      },
+      {
+        text: 'Common Usages',
+        items: CommonUsage,
         collapsed: false,
       },
       {

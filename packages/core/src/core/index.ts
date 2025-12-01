@@ -1,5 +1,13 @@
 export { createRule, unwrapRuleParameters } from './createRule';
-export { useRegle, inferRules, useRootStorage, flatErrors, type useRegleFn, type inferRulesFn } from './useRegle';
+export {
+  useRegle,
+  inferRules,
+  useRootStorage,
+  flatErrors,
+  type useRegleFn,
+  type inferRulesFn,
+  markStatic,
+} from './useRegle';
 export { defineRegleConfig, extendRegleConfig } from './defineRegleConfig';
 export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions } from './defaultValidators';
 export { mergeRegles, type MergedRegles, type MergedScopedRegles } from './mergeRegles';

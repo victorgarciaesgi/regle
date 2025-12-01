@@ -113,7 +113,7 @@ r$.nested.child.$error // [!code ++]
 
 ## Collections
 
-See [docs for validating arrays](/advanced-usage/collections)
+See [docs for validating arrays](/common-usage/collections)
 
 ```ts
 const v$ = useVuelidate({ // [!code --]

@@ -75,8 +75,6 @@ describe('type utils', () => {
 
     // oxlint-disable-next-line
     const foo: RegleStatus<Record<string, any> | undefined> = r$.nested;
-    // oxlint-disable-next-line
-    const bar: RegleStatus<Record<string, any> | undefined> = r$.nested;
   });
 
   it('should correctly infer custom function types', () => {

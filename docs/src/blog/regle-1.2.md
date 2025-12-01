@@ -91,7 +91,7 @@ type State = InferInput<typeof rules>;
 
 
 :::info
-You can check the [full docs here](/advanced-usage/standard-schema)
+You can check the [full docs here](/common-usage/standard-schema)
 :::
 
 

@@ -11,6 +11,7 @@
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
     "arktype": "catalog:",
+    "decimal.js": "10.6.0",
     "date-fns": "4.1.0",
     "pinia": "catalog:",
     "type-fest": "catalog:",

@@ -370,6 +370,7 @@ describe('createVariant', () => {
       expect(vm.r$.nested2.twoName).toBe(undefined);
       expect(vm.r$.nested2.$fields.twoName).toBe(undefined);
 
+      expectTypeOf(vm.r$.nested2.type.$value).toEqualTypeOf<'TWO'>();
       expectTypeOf(vm.r$.nested2.$value.type).toEqualTypeOf<'TWO'>();
       expectTypeOf(vm.r$.nested2.$value.twoValue).toEqualTypeOf<number | undefined>();
 
