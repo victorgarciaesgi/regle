@@ -1,5 +1,5 @@
 import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
-import { useRegle } from '@regle/core';
+import { RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { and } from '../and';
@@ -58,7 +58,11 @@ describe('withMessage helper', () => {
     vi.useRealTimers();
   });
 
-  const { vm } = mount(testComponent);
+  const { vm } = mount(testComponent, {
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
 
   it('should return empty errors', () => {
     expect(vm.r$.$errors.email).toStrictEqual([]);

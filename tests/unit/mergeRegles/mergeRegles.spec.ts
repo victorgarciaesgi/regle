@@ -1,4 +1,4 @@
-import { mergeRegles, useRegle } from '@regle/core';
+import { mergeRegles, RegleVuePlugin, useRegle } from '@regle/core';
 import { numeric, required } from '@regle/rules';
 import { mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
@@ -54,7 +54,11 @@ function createMultipleRegleInstances() {
 }
 
 describe('mergeRegles', () => {
-  const { vm } = mount(createMultipleRegleInstances());
+  const { vm } = mount(createMultipleRegleInstances(), {
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
 
   it('should merge properties', async () => {
     expect(vm.r$Merged.$invalid).toBe(true);

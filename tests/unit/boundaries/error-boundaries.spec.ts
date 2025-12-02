@@ -30,7 +30,7 @@ describe('$validate', () => {
   it('should not crash when an error is thrown into validators', async () => {
     const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
-    await vm.r$.$validate();
+    expect(async () => await vm.r$.$validate()).not.toThrow();
 
     expect(vm.r$).toBeDefined();
   });

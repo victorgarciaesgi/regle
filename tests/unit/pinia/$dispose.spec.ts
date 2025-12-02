@@ -1,4 +1,4 @@
-import { useRegle } from '@regle/core';
+import { RegleVuePlugin, useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
@@ -60,7 +60,7 @@ describe.runIf(isVueSuperiorOrEqualTo3dotFive)('$dispose', () => {
     setActivePinia(pinia);
     const element = mount(ParentCompo, {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, RegleVuePlugin],
       },
     });
 

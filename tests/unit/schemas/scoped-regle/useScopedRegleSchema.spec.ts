@@ -3,11 +3,17 @@ import ParentCollector from './fixtures/ParentCollector.vue';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 import { useScope5Regle } from './fixtures/scoped-config';
 import { z } from 'zod';
+import { RegleVuePlugin } from '@regle/core';
 
 describe('useScopedRegle', () => {
   // Weird test bug to resolve with Vue 3.4
   if (isVueSuperiorOrEqualTo3dotFive) {
-    const wrapper = mount(ParentCollector, { attachTo: document.documentElement });
+    const wrapper = mount(ParentCollector, {
+      attachTo: document.documentElement,
+      global: {
+        plugins: [RegleVuePlugin],
+      },
+    });
 
     it('should work with default exported scoped composables', async () => {
       await wrapper.vm.$nextTick();

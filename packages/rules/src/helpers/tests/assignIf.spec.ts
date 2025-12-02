@@ -1,5 +1,5 @@
 import type { RegleFieldStatus, RegleRuleDefinition, RegleShortcutDefinition } from '@regle/core';
-import { defineRegleConfig, useRegle } from '@regle/core';
+import { defineRegleConfig, RegleVuePlugin, useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue';
 import { withMessage } from '..';
@@ -30,7 +30,11 @@ describe('assignIf helper', () => {
     template: '<div></div>',
   });
 
-  const { vm } = mount(testComponent);
+  const { vm } = mount(testComponent, {
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
 
   it('should return empty errors when condition is false', async () => {
     expect(vm.r$.$errors.name).toStrictEqual([]);

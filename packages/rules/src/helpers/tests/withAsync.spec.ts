@@ -1,5 +1,5 @@
 import type { Maybe, RegleRuleDefinition } from '@regle/core';
-import { useRegle } from '@regle/core';
+import { RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
@@ -32,7 +32,12 @@ describe('withAsync helper', () => {
           }));
         },
         template: '<div></div>',
-      })
+      }),
+      {
+        global: {
+          plugins: [RegleVuePlugin],
+        },
+      }
     );
   };
 

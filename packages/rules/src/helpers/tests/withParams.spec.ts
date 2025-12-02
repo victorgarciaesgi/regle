@@ -1,4 +1,4 @@
-import { inferRules, useRegle, type Maybe } from '@regle/core';
+import { inferRules, RegleVuePlugin, useRegle, type Maybe } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, ref } from 'vue';
 import { withParams } from '../withParams';
@@ -65,7 +65,11 @@ describe('withParams helper', () => {
     template: '<div></div>',
   });
 
-  const { vm } = mount(testComponent);
+  const { vm } = mount(testComponent, {
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
 
   it('should register reactive params as dependencies', async () => {
     expect(vm.r$.one.$invalid).toBe(true);

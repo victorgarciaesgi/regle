@@ -1,5 +1,5 @@
 import type { RegleRuleDefinition } from '@regle/core';
-import { useRegle } from '@regle/core';
+import { RegleVuePlugin, useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { minLength, required } from '../../rules';
@@ -23,7 +23,11 @@ describe('applyIf helper', () => {
     template: '<div></div>',
   });
 
-  const { vm } = mount(testComponent);
+  const { vm } = mount(testComponent, {
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
 
   it('should return empty errors', () => {
     expect(vm.r$.$errors.email).toStrictEqual([]);
