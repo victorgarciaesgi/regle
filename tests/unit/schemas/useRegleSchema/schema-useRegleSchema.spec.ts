@@ -11,6 +11,7 @@ import { zodNestedRegleFixture } from './fixtures/zod.fixture';
 import { z } from 'zod/v3';
 import { inferSchema } from '@regle/schemas';
 import { zod4NestedRegleFixture } from './fixtures/zod4.fixture';
+import type { InferSafeOutput } from '@regle/core';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],
@@ -289,6 +290,25 @@ describe.each([
         ],
       },
     });
+
+    if (valid) {
+      type SafeOutput = {
+        level0?: number | undefined;
+        level1: {
+          child?: number | undefined;
+          level2: {
+            child?: number | undefined;
+          };
+          collection: {
+            name: number;
+            description: string;
+          }[];
+        };
+      };
+
+      expectTypeOf(data).toEqualTypeOf<SafeOutput>();
+      expectTypeOf<InferSafeOutput<typeof vm.r$>>().toEqualTypeOf<SafeOutput>();
+    }
   });
 
   it('should reset on initial state when calling r$.$reset({toInitialState: true})', async () => {

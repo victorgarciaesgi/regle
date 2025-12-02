@@ -13,10 +13,13 @@ import type {
   RegleFieldStatus,
   RegleFormPropertyType,
   RegleIssuesTree,
+  RegleLike,
   ReglePartialRuleTree,
   RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
+  SuperCompatibleRegleFieldStatus,
+  SuperCompatibleRegleRoot,
 } from '../rules';
 import type {
   ArrayElement,
@@ -161,14 +164,14 @@ export type RegleFieldResult<
  * type FormRequest = InferSafeOutput<typeof r$>;
  * ```
  */
-export type InferSafeOutput<
-  TRegle extends MaybeRef<RegleRoot<{}, any, any, any>> | MaybeRef<RegleFieldStatus<any, any, any>>,
-> =
+export type InferSafeOutput<TRegle extends MaybeRef<SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>> =
   UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
     ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>
-      : never;
+      : UnwrapRef<TRegle> extends RegleLike<infer TState extends Record<string, any>>
+        ? TState
+        : never;
 
 export type $InternalRegleResult = {
   valid: boolean;

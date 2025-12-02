@@ -258,7 +258,7 @@ function buildRootChildrenNodes(
     return buildRuleNodes(r$, instanceId, 'root');
   }
 
-  if (!r$.$fields || typeof r$.$fields !== 'object') {
+  if (!('$fields' in r$) || typeof r$.$fields !== 'object') {
     return children;
   }
 
