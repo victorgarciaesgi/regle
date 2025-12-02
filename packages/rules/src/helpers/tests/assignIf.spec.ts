@@ -43,6 +43,8 @@ describe('assignIf helper', () => {
 
     expect(vm.r$.$errors.name).toStrictEqual([]);
     expect(vm.r$.$errors.email).toStrictEqual([]);
+    expect(vm.r$.name.$rules.required.$active).toBe(false);
+    expect(vm.r$.email.$rules.required.$active).toBe(false);
     expect(vm.r$.$error).toBe(false);
   });
 

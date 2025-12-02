@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, PartialDeep } from 'type-fest';
-import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
+import type { MaybeRef, Raw, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
@@ -228,19 +228,22 @@ export type RegleFieldIssue<
 
 type ComputeFieldRules<
   TState extends any,
-  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>>,
+  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>>>,
 > =
-  IsEmptyObject<TRules> extends true
+  IsEmptyObject<UnwrapRef<TRules>> extends true
     ? {
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;
       }
     : {
-        readonly [TRuleKey in keyof Omit<TRules, '$each' | keyof FieldRegleBehaviourOptions>]: RegleRuleStatus<
+        readonly [TRuleKey in keyof Omit<
+          UnwrapRef<TRules>,
+          '$each' | keyof FieldRegleBehaviourOptions
+        >]: RegleRuleStatus<
           TState,
-          TRules[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
-          TRules[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
             ? TMetadata
-            : TRules[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
+            : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
               ? TMetadata extends Promise<infer P>
                 ? P
                 : TMetadata
