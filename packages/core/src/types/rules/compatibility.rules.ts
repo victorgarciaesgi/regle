@@ -11,6 +11,11 @@ import type {
   ResetOptions,
 } from '..';
 
+export type RegleLike<TState extends Record<string, any>> = {
+  $value: TState;
+  $validate: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
+};
+
 export interface SuperCompatibleRegle {
   r$: SuperCompatibleRegleRoot;
 }
