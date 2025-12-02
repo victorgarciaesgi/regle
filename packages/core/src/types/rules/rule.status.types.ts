@@ -521,8 +521,10 @@ export type RegleCollectionStatus<
  * @internal
  * @reference {@link RegleCollectionStatus}
  */
-export interface $InternalRegleCollectionStatus
-  extends Omit<$InternalRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers'> {
+export interface $InternalRegleCollectionStatus extends Omit<
+  $InternalRegleStatus,
+  '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers'
+> {
   readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;
   readonly $issues: $InternalRegleCollectionIssues;

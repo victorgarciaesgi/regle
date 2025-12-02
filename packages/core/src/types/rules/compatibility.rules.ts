@@ -72,8 +72,10 @@ export interface SuperCompatibleRegleFieldStatus extends SuperCompatibleRegleCom
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate?: () => Promise<SuperCompatibleRegleResult>;
 }
-export interface SuperCompatibleRegleCollectionStatus
-  extends Omit<SuperCompatibleRegleStatus, '$fields' | '$issues' | '$errors' | '$silentErrors'> {
+export interface SuperCompatibleRegleCollectionStatus extends Omit<
+  SuperCompatibleRegleStatus,
+  '$fields' | '$issues' | '$errors' | '$silentErrors'
+> {
   readonly $self: SuperCompatibleRegleFieldStatus;
   readonly $each: Array<SuperCompatibleRegleStatus | SuperCompatibleRegleFieldStatus>;
   readonly $issues: SuperCompatibleRegleCollectionIssues;
