@@ -7,6 +7,6 @@ import { useScope5Regle } from './scoped-config';
 import { z } from 'zod';
 
 const { r$ } = useScope5Regle({ scope5Record: '' }, z.object({ scope5Record: z.string().min(1) }), {
-  scopeKey: 'scope5',
+  id: 'scope5',
 });
 </script>

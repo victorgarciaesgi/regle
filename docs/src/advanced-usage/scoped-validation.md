@@ -241,7 +241,7 @@ By default collected instances are stored in a readonly array.
 
 If you want to store your nested instances in a record it's possible with the `asRecord` option.
 
-This will **require** every nested `useScopeRegle` to provide a parameter `scopeKey`.
+This will **require** every nested `useScopeRegle` to provide a parameter `id`.
 
 :::code-group
 
@@ -284,7 +284,7 @@ import { useScopedRegleItem } from './scoped-config';
 const { r$ } = useScopedRegleItem(
   { firstName: '' }, 
   { firstName: { required } }
-  { scopeKey: 'child1' }
+  { id: 'child1' }
 );
 </script>
 ```
@@ -304,7 +304,7 @@ import { useScopedRegleItem } from './scoped-config';
 
 const { r$ } = useScopedRegleItem({ email: '' }, 
   { email: { required, email } }, 
-  { scopeKey: 'child2' });
+  { id: 'child2' });
 </script>
 ```
 :::

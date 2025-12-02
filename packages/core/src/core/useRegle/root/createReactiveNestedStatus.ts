@@ -451,7 +451,7 @@ export function createReactiveNestedStatus({
         return false;
       });
 
-      const $name = computed(() => fieldName);
+      const $name = computed(() => fieldName ?? commonArgs.options.id ?? 'root');
 
       const $modifiers = computed<RegleBehaviourOptions>(() => {
         return {

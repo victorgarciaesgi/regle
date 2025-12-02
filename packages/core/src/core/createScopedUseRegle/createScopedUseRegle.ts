@@ -17,7 +17,7 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
   /**
    * Collect instances in a Record instead of an array
    *
-   * ⚠️ Each nested `useScopedRegle` must provide a parameter `scopeKey` to be collected.
+   * ⚠️ Each nested `useScopedRegle` must provide a parameter `id` to be collected.
    */
   asRecord?: TAsRecord;
 };

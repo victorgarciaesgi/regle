@@ -317,6 +317,7 @@ describe('useScopedRegle', () => {
       expect(wrapper.vm.scope5R$.$edited).toBe(false);
       expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
       expect(Object.keys(wrapper.vm.scope5R$.$instances)).toHaveLength(1);
+      expect(wrapper.vm.scope5R$.$instances.scope5.$name).toBe('scope5');
       expect(wrapper.vm.scope5R$.$errors).toStrictEqual({
         scope5: {
           scope5Record: [],
@@ -335,10 +336,10 @@ describe('useScopedRegle', () => {
 
       // @ts-expect-error no 3rd argument
       useScope5Regle({}, {});
-      // @ts-expect-error no `scopeKey` option
+      // @ts-expect-error no `id` option
       useScope5Regle({}, {}, {});
       // ✅
-      useScope5Regle({}, {}, { scopeKey: 'foo' });
+      useScope5Regle({}, {}, { id: 'foo' });
     });
 
     it('should collect multiple namespaces', async () => {

@@ -11,9 +11,5 @@
 import { required } from '@regle/rules';
 import { useScopedRegle } from './scope-config';
 
-const { r$ } = useScopedRegle(
-  { firstName: '' },
-  { firstName: { required } },
-  { namespace: 'contacts', scopeKey: 'child2' }
-);
+const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } }, { namespace: 'contacts', id: 'child2' });
 </script>

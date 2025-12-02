@@ -2,13 +2,21 @@ import { computed, getCurrentInstance, onMounted, ref, toValue, watch, type Mayb
 import type { AllRulesDeclarations, Regle, ScopedInstancesRecord } from '../../types';
 import { randomId, tryOnScopeDispose } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
+import type { RequireAtLeastOne } from 'type-fest';
 
 export type UseScopedRegleOptions<TAsRecord extends boolean> = {
   namespace?: MaybeRefOrGetter<string>;
 } & (TAsRecord extends true
-  ? {
-      scopeKey: string;
-    }
+  ? RequireAtLeastOne<
+      {
+        id: string;
+        /**
+         * @deprecated Use `id` instead
+         */
+        scopeKey: string;
+      },
+      'id' | 'scopeKey'
+    >
   : {});
 
 export function createUseScopedRegleComposable<
@@ -26,9 +34,11 @@ export function createUseScopedRegleComposable<
     rulesFactory: MaybeRefOrGetter<{}>,
     options?: UseScopedRegleOptions<boolean> & Record<string, any>
   ) => {
-    const { namespace, scopeKey: _scopeKey, ...restOptions } = options ?? {};
+    const { namespace, scopeKey, id, ...restOptions } = options ?? {};
 
     scopedUseRegle.__config ??= {};
+
+    const computedScopeId = computed(() => id ?? scopeKey);
 
     const computedNamespace = computed(() => toValue(namespace));
 
@@ -36,10 +46,13 @@ export function createUseScopedRegleComposable<
     const $id = ref(`${Object.keys(instances.value).length + 1}-${randomId()}`);
 
     const instanceName = computed(() => {
-      return options?.scopeKey ?? `instance-${$id.value}`;
+      return computedScopeId.value ?? `instance-${$id.value}`;
     });
 
-    const { r$ } = scopedUseRegle(state, rulesFactory, restOptions);
+    const { r$ } = scopedUseRegle(state, rulesFactory, {
+      ...restOptions,
+      id: computedScopeId.value,
+    });
 
     register();
 
