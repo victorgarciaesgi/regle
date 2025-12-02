@@ -151,6 +151,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly '~modifiers'?: RegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
+  $id?: string;
 }
 
 /**

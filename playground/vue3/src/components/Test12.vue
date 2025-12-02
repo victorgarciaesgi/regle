@@ -16,7 +16,8 @@ const { r$ } = useRegle(
         return minValue(10).exec(value?.toNumber() ?? 0);
       }, 'Min value must be 10'),
     },
-  }
+  },
+  { id: 'test12' }
 );
 
 function handleDecimalInput(event: Event) {
@@ -27,8 +28,6 @@ function handleDecimalInput(event: Event) {
     r$.decimal.$value = undefined;
   }
 }
-
-const { data } = await r$.$validate();
 </script>
 
 <template>

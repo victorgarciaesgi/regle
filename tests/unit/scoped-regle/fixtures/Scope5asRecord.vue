@@ -6,5 +6,5 @@
 import { required } from '@regle/rules';
 import { useScope5Regle } from './scoped-config';
 
-const { r$ } = useScope5Regle({ scope5Record: '' }, { scope5Record: { required: required } }, { scopeKey: 'scope5' });
+const { r$ } = useScope5Regle({ scope5Record: '' }, { scope5Record: { required: required } }, { id: 'scope5' });
 </script>

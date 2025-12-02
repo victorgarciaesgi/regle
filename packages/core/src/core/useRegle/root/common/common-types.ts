@@ -15,7 +15,7 @@ export interface CommonResolverOptions {
   index?: number;
   storage: RegleStorage;
   options: ResolvedRegleBehaviourOptions;
-  fieldName: string;
+  fieldName: string | undefined;
   shortcuts: $InternalRegleShortcutDefinition | undefined;
 }
 

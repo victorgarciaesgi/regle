@@ -281,10 +281,10 @@ describe('useScopedRegle', () => {
 
       // @ts-expect-error no 3rd argument
       useScope5Regle({}, z.object({}));
-      // @ts-expect-error no `scopeKey` option
+      // @ts-expect-error no `id` option
       useScope5Regle({}, z.object({}), {});
       // ✅
-      useScope5Regle({}, z.object({}), { scopeKey: 'foo' });
+      useScope5Regle({}, z.object({}), { id: 'foo' });
     });
   }
 

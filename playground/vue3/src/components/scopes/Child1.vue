@@ -11,9 +11,5 @@
 import { required, email } from '@regle/rules';
 import { useScopedRegle } from './scope-config';
 
-const { r$ } = useScopedRegle(
-  { email: '' },
-  { email: { required, email } },
-  { namespace: 'persons', scopeKey: 'child1' }
-);
+const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } }, { namespace: 'persons', id: 'child1' });
 </script>

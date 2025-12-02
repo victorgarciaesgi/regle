@@ -15,7 +15,7 @@ import { useScopedRegle } from './config';
 const { r$ } = useScopedRegle(
   { nameFromCompo1: '' },
   { nameFromCompo1: { required: required } },
-  { namespace: 'foo', scopeKey: 'compo1' }
+  { namespace: 'foo', id: 'compo1' }
 );
 </script>
 

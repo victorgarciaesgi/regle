@@ -2,6 +2,7 @@ import type { Regle, RegleSingleField } from '@regle/core';
 import type { RegleSchema, RegleSingleFieldSchema } from '@regle/schemas';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
+import { RegleVuePlugin } from '@regle/core';
 
 export function createRegleComponent<
   T extends
@@ -16,6 +17,9 @@ export function createRegleComponent<
         return regleComposable();
       },
       template: '<div></div>',
+      global: {
+        plugins: [RegleVuePlugin],
+      },
     })
   );
 }

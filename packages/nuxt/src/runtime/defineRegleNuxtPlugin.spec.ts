@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 
-import { defineRegleConfig } from '@regle/core';
+import { defineRegleConfig, RegleVuePlugin } from '@regle/core';
 import { defineRegleNuxtPlugin } from './defineRegleNuxtPlugin';
 import { required } from '@regle/rules';
 import { mount } from '@vue/test-utils';
@@ -33,6 +33,9 @@ describe('defineRegleNuxtPlugin', () => {
         return { r$, r$2 };
       },
       template: `<div></div>`,
+      global: {
+        plugins: [RegleVuePlugin],
+      },
     });
 
     const { vm } = mount(component);
