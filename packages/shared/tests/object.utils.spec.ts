@@ -291,6 +291,25 @@ describe('isConstructor', () => {
     expect(isConstructor({})).toBe(false);
     expect(isConstructor([])).toBe(false);
   });
+  it('should handle functions with modified prototypes', () => {
+    function ModifiedProto() {}
+    ModifiedProto.prototype = Object.create(null);
+    expect(isConstructor(ModifiedProto)).toBe(false);
+  });
+  it('should handle arrow functions (no prototype)', () => {
+    const arrowFn = () => {};
+    expect(isConstructor(arrowFn)).toBe(false);
+  });
+  it('should return true for built-in constructors', () => {
+    expect(isConstructor(Array)).toBe(true);
+    expect(isConstructor(Object)).toBe(true);
+    expect(isConstructor(Map)).toBe(true);
+    expect(isConstructor(Set)).toBe(true);
+  });
+  it('should return true for custom class constructors', () => {
+    class CustomClass {}
+    expect(isConstructor(CustomClass)).toBe(true);
+  });
 });
 
 describe('hasOwn', () => {
