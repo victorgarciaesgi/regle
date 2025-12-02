@@ -33,12 +33,13 @@ describe('defineRegleNuxtPlugin', () => {
         return { r$, r$2 };
       },
       template: `<div></div>`,
+    });
+
+    const { vm } = mount(component, {
       global: {
         plugins: [RegleVuePlugin],
       },
     });
-
-    const { vm } = mount(component);
 
     vm.r$.$touch();
     await vm.$nextTick();

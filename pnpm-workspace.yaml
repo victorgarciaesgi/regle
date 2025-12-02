@@ -46,15 +46,15 @@ catalog:
   pinia-2.2.5: npm:pinia@2.2.5
 
   # Nuxt
-  nuxt: 4.1.2
-  '@nuxt/kit': 4.1.2
-  '@nuxt/schema': 4.1.2
+  nuxt: 4.2.1
+  '@nuxt/kit': 4.2.1
+  '@nuxt/schema': 4.2.1
 
   # Devtools
-  prettier: 3.6.2
+  prettier: 3.7.3
   typescript: 5.9.3
   '@total-typescript/ts-reset': 0.6.1
-  tsdown: 0.16.6
+  tsdown: 0.16.8
   type-fest: 5.2.0
 
   # Vite
@@ -66,7 +66,7 @@ catalog:
   # Schemas libraries
   arktype: 2.1.27
   valibot: 1.2.0
-  zod: 4.1.12
+  zod: 4.1.13
 
   # Front
   tailwindcss: 4.1.17
