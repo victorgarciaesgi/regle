@@ -231,5 +231,10 @@ export function def(obj: object, key: string | symbol, value: any, writable = fa
 }
 
 export function isConstructor(value: unknown): value is new (...args: any[]) => any {
-  return typeof value === 'function' && !!value.prototype && value.prototype.constructor === value;
+  return (
+    typeof value === 'function' &&
+    !!value.prototype &&
+    'constructor' in value.prototype &&
+    value.prototype.constructor === value
+  );
 }
