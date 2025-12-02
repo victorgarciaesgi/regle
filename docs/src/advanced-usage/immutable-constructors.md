@@ -1,4 +1,4 @@
-# Handling immutable constuctors
+# Handling immutable constructors
 
 Regle works by tracking changes in the state and updating the validation rules accordingly.
 
