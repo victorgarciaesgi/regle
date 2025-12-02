@@ -44,7 +44,9 @@ describe('assignIf helper', () => {
     expect(vm.r$.$errors.name).toStrictEqual([]);
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.name.$rules.required.$active).toBe(false);
+    expect(vm.r$.name.$rules.minLength.$active).toBe(false);
     expect(vm.r$.email.$rules.required.$active).toBe(false);
+    expect(vm.r$.email.$rules.email.$active).toBe(false);
     expect(vm.r$.$error).toBe(false);
   });
 
@@ -55,6 +57,10 @@ describe('assignIf helper', () => {
     // Should now have validation errors since fields are empty and rules are applied
     expect(vm.r$.$errors.name).toStrictEqual(['This field is required']);
     expect(vm.r$.$errors.email).toStrictEqual(['This field is required']);
+    expect(vm.r$.name.$rules.required.$active).toBe(true);
+    expect(vm.r$.name.$rules.minLength.$active).toBe(true);
+    expect(vm.r$.email.$rules.required.$active).toBe(true);
+    expect(vm.r$.email.$rules.email.$active).toBe(true);
     expect(vm.r$.$error).toBe(true);
   });
 
