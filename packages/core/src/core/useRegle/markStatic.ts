@@ -15,13 +15,14 @@ import type { RegleStatic } from '../../types';
 export function markStatic<T extends object>(value: T): RegleStatic<T> {
   if (isConstructor(value)) {
     const OriginalConstructor = value;
-    const StaticConstructor = function (this: any, ...args: any[]) {
-      const instance = new OriginalConstructor(...args);
-      return applyMarkStatic(instance);
+    const StaticConstructor = class extends (OriginalConstructor as { new (...args: any[]): any }) {
+      constructor(...args: any[]) {
+        super(...args);
+        return applyMarkStatic(this);
+      }
     };
 
     Object.defineProperty(StaticConstructor, 'name', { value: OriginalConstructor.name });
-    StaticConstructor.prototype = OriginalConstructor.prototype;
 
     return applyMarkStatic(StaticConstructor) as unknown as RegleStatic<T>;
   }
