@@ -425,7 +425,7 @@ export function createReactiveCollectionStatus({
         return true;
       });
 
-      const $name = computed(() => fieldName);
+      const $name = computed<string>(() => fieldName ?? options.id ?? 'root');
 
       const $modifiers = computed<CollectionRegleBehaviourOptions>(() => {
         return {
@@ -462,7 +462,7 @@ export function createReactiveCollectionStatus({
                     $originalValue: originalState,
                     $ready,
                     $anyDirty,
-                    $name: $name,
+                    $name,
                     $each: $eachStatus,
                     $self: $selfStatus as any,
                     $value: state as any,

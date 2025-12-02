@@ -312,7 +312,7 @@ export function createReactiveFieldStatus({
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
-            fieldName,
+            fieldName: $name.value,
           },
         });
       });
@@ -324,7 +324,7 @@ export function createReactiveFieldStatus({
             $error: $error.value,
             $externalErrors: externalErrors?.value,
             $schemaErrors: schemaErrors?.value,
-            fieldName,
+            fieldName: $name.value,
           },
           silent: true,
         });
@@ -392,7 +392,7 @@ export function createReactiveFieldStatus({
         }
       });
 
-      const $name = computed<string>(() => fieldName);
+      const $name = computed<string>(() => fieldName ?? options.id ?? 'root');
 
       const $inactive = computed<boolean>(() => {
         return !schemaMode && !Object.keys(rulesDef.value).some((key) => !key.startsWith('$'));
