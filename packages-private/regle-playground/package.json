@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "6.0.2",
-    "execa": "9.6.0",
+    "execa": "9.6.1",
     "vite": "catalog:"
   },
   "dependencies": {

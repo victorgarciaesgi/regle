@@ -17,10 +17,12 @@ export function createRegleComponent<
         return regleComposable();
       },
       template: '<div></div>',
+    }),
+    {
       global: {
         plugins: [RegleVuePlugin],
       },
-    })
+    }
   );
 }
 

@@ -15,11 +15,11 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "arktype": "catalog:",
+    "decimal.js": "10.6.0",
     "pinia": "catalog:",
     "valibot": "catalog:",
     "vue": "catalog:",
-    "zod": "catalog:",
-    "decimal.js": "10.6.0"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.2.0",
