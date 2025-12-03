@@ -4,6 +4,8 @@ import { shouldBeErrorField, shouldBePristineField, shouldBeValidField } from '.
 import { arktypeRewardEarlyFixture } from './fixtures/arktype.fixture';
 import { valibotRewardEarlyFixture } from './fixtures/valibot.fixture';
 import { zodRewardEarlyFixture } from './fixtures/zod.fixture';
+import { useRegleSchema } from '@regle/schemas';
+import z from 'zod';
 
 describe.each([
   ['zod', zodRewardEarlyFixture],
@@ -129,5 +131,24 @@ describe.each([
     vm.r$.$value.email = 'another-invalid';
     await nextTick();
     shouldBePristineField(vm.r$.email);
+  });
+});
+
+describe('schemas $rewardEarly - Empty state', () => {
+  it('should work with zod', async () => {
+    function regleSchemaFixture() {
+      const form = {};
+      return useRegleSchema(form, z.object({ email: z.string().email() }), { rewardEarly: true });
+    }
+    const { vm } = await createRegleComponent(regleSchemaFixture);
+
+    await vm.r$.$validate();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$.email);
+
+    vm.r$.$value.email = 'valid@email.com';
+    await nextTick();
+    shouldBeValidField(vm.r$.email);
   });
 });

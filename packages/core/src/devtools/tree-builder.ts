@@ -19,7 +19,8 @@ function buildNodeTags(
   const tags: InspectorNodeTag[] = [];
 
   const isOptional = isFieldStatus(fieldOrR$)
-    ? ('required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active) || isEmpty(fieldOrR$.$rules)
+    ? (('required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active) || isEmpty(fieldOrR$.$rules)) &&
+      !fieldOrR$.$schemaMode
     : false;
 
   const isNestedOrCollection = isNestedRulesStatus(fieldOrR$) || isCollectionRulesStatus(fieldOrR$);

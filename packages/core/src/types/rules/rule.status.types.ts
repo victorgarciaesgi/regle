@@ -38,7 +38,6 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
-  UnwrapStatic,
 } from '..';
 
 /**
@@ -320,6 +319,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $silentErrors: string[];
   readonly $issues: RegleFieldIssue[];
   readonly $isDebouncing: boolean;
+  readonly $schemaMode?: boolean;
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
@@ -364,20 +364,21 @@ export interface RegleCommonStatus<TValue = any> extends StandardSchemaV1<TValue
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
-  $value: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
+  $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  /**
+   * `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
+   * */
+  $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /**
    * This value reflect the current initial value of the field.
    * The initial value is different than the original value as the initial value can be mutated when using `$reset`.
    */
-  readonly $initialValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
+  readonly $initialValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
   /**
    * This value reflect the original value of the field at original call. This can't be mutated
    */
-  readonly $originalValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
-  /**
-   * `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
-   * */
-  $silentValue: UnwrapStatic<JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>>;
+  readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+
   /** Marks the field and all nested properties as $dirty. */
   $touch(): void;
   /**

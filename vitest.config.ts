@@ -36,7 +36,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: 'v8',
-      include: ['packages/*/src/**'],
+      include: ['packages/*/src/**', 'packages/*/utils/**'],
       exclude: [
         '**/*/index.ts',
         '**/types/**',

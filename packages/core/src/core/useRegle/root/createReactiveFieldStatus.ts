@@ -772,6 +772,7 @@ export function createReactiveFieldStatus({
     $extractDirtyFields,
     $clearExternalErrors,
     $abort,
+    $schemaMode: schemaMode,
     '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;

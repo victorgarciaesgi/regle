@@ -108,12 +108,12 @@ export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
 
 export type UnwrapStatic<T> =
-  IsUnknown<T> extends true ? any : T extends RegleStatic<infer U> ? Raw<U> : UnwrapStaticSimple<T>;
+  IsUnknown<T> extends true ? any : NonNullable<T> extends RegleStaticImpl<infer U> ? Raw<U> : UnwrapStaticSimple<T>;
 
 type UnwrapStaticSimple<T> =
-  T extends Array<infer U>
+  NonNullable<T> extends Array<infer U>
     ? Array<UnwrapStatic<U>>
-    : isRecordLiteral<T> extends true
+    : isRecordLiteral<NonNullable<T>> extends true
       ? {
           [K in keyof T]: UnwrapStatic<T[K]>;
         }

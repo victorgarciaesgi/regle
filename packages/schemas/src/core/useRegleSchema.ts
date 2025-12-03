@@ -41,8 +41,8 @@ export interface useRegleSchemaFn<
         : [options?: useRegleSchemaFnOptions<TAdditionalOptions>]),
     ]
   ): NonNullable<TState> extends PrimitiveTypes
-    ? RegleSingleFieldSchema<NonNullable<TState>, TShortcuts, TAdditionalReturnProperties>
-    : RegleSchema<UnwrapNestedRefs<NonNullable<TState>>, TShortcuts, TAdditionalReturnProperties>;
+    ? RegleSingleFieldSchema<NonNullable<TState>, TSchema, TShortcuts, TAdditionalReturnProperties>
+    : RegleSchema<UnwrapNestedRefs<NonNullable<TState>>, TSchema, TShortcuts, TAdditionalReturnProperties>;
 }
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
@@ -62,7 +62,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
       RegleSchemaBehaviourOptions
-  ): RegleSchema<Record<string, any>, RegleShortcutDefinition> {
+  ): RegleSchema<Record<string, any>, StandardSchemaV1, RegleShortcutDefinition> {
     const computedSchema = computed(() => unref(schema));
 
     const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};
@@ -212,12 +212,13 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     onValidate = async () => {
       try {
         const result = await computeErrors(true);
+        regle?.regle?.$touch();
 
         return {
           valid: !result.issues?.length,
           data: processedState.value,
-          errors: {},
-          issues: {},
+          errors: regle?.regle?.$errors,
+          issues: customErrors.value,
         };
       } catch (e) {
         return Promise.reject(e);

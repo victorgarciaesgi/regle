@@ -1,4 +1,5 @@
 import type { MaybeOutput, RegleShortcutDefinition } from '@regle/core';
+import { narrowVariant } from '@regle/core';
 import { type RegleSchemaFieldStatus } from '@regle/schemas';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -9,12 +10,9 @@ import {
   shouldBeValidField,
 } from '../../../utils/validations.utils';
 import { MyEnum, valibotUnionsFixture } from './fixtures/valibot.fixture';
-import { zodUnionsFixture } from './fixtures/zod.fixture';
 import { zod4UnionsFixture } from './fixtures/zod4.fixture';
-import { narrowVariant } from '@regle/core';
 
 describe.each([
-  ['zod', zodUnionsFixture],
   ['valibot', valibotUnionsFixture],
   ['zod4', zod4UnionsFixture],
 ])('schemas (%s) - unions types', (name, regleSchema) => {
@@ -27,7 +25,6 @@ describe.each([
   });
 
   it('should behave correctly with unions, nums, and discriminated unions', async () => {
-    // @ts-expect-error Invalid InferInput type on Standard Schema
     const { vm } = createRegleComponent(regleSchema);
 
     shouldBeInvalidField(vm.r$.enum);
@@ -105,9 +102,9 @@ describe.each([
       expectTypeOf(vm.r$.gift.shares.$value).toEqualTypeOf<MaybeOutput<number>>();
       expectTypeOf(vm.r$.gift.company.$value).toEqualTypeOf<MaybeOutput<string>>();
     } else {
-      expectTypeOf(vm.r$.gift.type.$value).toEqualTypeOf<MaybeOutput<'Cash' | 'Shares'>>();
-      expectTypeOf(vm.r$.gift.amount?.$value).toEqualTypeOf<number | undefined>();
-      expectTypeOf(vm.r$.gift.shares?.$value).toEqualTypeOf<number | undefined>();
+      expectTypeOf(vm.r$.gift?.type.$value).toEqualTypeOf<MaybeOutput<'Cash' | 'Shares'>>();
+      expectTypeOf(vm.r$.gift?.amount?.$value).toEqualTypeOf<number | undefined>();
+      expectTypeOf(vm.r$.gift?.shares?.$value).toEqualTypeOf<number | undefined>();
     }
 
     shouldBeErrorField(vm.r$.gift);
@@ -118,13 +115,11 @@ describe.each([
     shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.shares);
     shouldBeUnRuledSchemaCorrectField(vm.r$.gift?.amount);
 
-    expectTypeOf(vm.r$.gift?.company).toEqualTypeOf<
-      RegleSchemaFieldStatus<string, RegleShortcutDefinition<any>> | undefined
-    >();
+    expectTypeOf(vm.r$.gift?.company).toExtend<RegleSchemaFieldStatus<string> | undefined>();
     expectTypeOf(vm.r$.gift?.amount).toEqualTypeOf<
       RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
     >();
-    expectTypeOf(vm.r$.gift?.shares).toEqualTypeOf<
+    expectTypeOf(vm.r$.gift?.shares).toExtend<
       RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
     >();
 

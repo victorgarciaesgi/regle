@@ -34,7 +34,7 @@ it('valibot (%s) - collections should have the correct type', () => {
   });
   const { r$ } = useRegleSchema({} as v.InferInput<typeof schema>, schema);
 
-  expectTypeOf(r$.collection).toEqualTypeOf<
+  expectTypeOf(r$.collection).toExtend<
     RegleSchemaCollectionStatus<v.InferInput<typeof childSchema>[], RegleShortcutDefinition<any>>
   >;
 

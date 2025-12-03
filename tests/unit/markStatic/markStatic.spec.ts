@@ -52,8 +52,8 @@ describe('markStatic', () => {
 
     expectTypeOf(vm.r$.$errors.decimal).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.nested.wrapper).toEqualTypeOf<string[]>();
-    expectTypeOf(vm.r$.$value.decimal).toEqualTypeOf<Raw<Decimal>>();
-    expectTypeOf(vm.r$.$value.nested.wrapper).toEqualTypeOf<Raw<BigWrapper>>();
+    expectTypeOf(vm.r$.$value.decimal).toEqualTypeOf<RegleStaticImpl<Decimal>>();
+    expectTypeOf(vm.r$.$value.nested.wrapper).toEqualTypeOf<RegleStaticImpl<BigWrapper>>();
 
     expectTypeOf(vm.r$.decimal).toEqualTypeOf<
       RegleFieldStatus<
@@ -147,8 +147,8 @@ describe('markStatic', () => {
     expectTypeOf(vm.r$.$errors.decimal).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.nested.wrapper).toEqualTypeOf<string[]>();
 
-    expectTypeOf(vm.r$.$value.decimal).toEqualTypeOf<Raw<Decimal>>();
-    expectTypeOf(vm.r$.$value.nested.wrapper).toEqualTypeOf<Raw<BigWrapper>>();
+    expectTypeOf(vm.r$.$value.decimal).toEqualTypeOf<Raw<RegleStaticImpl<Decimal>>>();
+    expectTypeOf(vm.r$.$value.nested.wrapper).toEqualTypeOf<Raw<RegleStaticImpl<BigWrapper>>>();
 
     vm.r$.decimal;
 

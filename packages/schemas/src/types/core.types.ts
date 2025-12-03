@@ -21,6 +21,7 @@ import type { MaybeSchemaVariantStatus } from './variants.types';
 
 export type RegleSchema<
   TState extends Record<string, any>,
+  TSchema extends StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -29,11 +30,12 @@ export type RegleSchema<
    *
    * To see the list of properties: {@link https://reglejs.dev/core-concepts/validation-properties}
    */
-  r$: Raw<MaybeSchemaVariantStatus<TState, TShortcuts, true>>;
+  r$: Raw<MaybeSchemaVariantStatus<TState, TSchema, TShortcuts, true>>;
 } & TAdditionalReturnProperties;
 
 export type RegleSingleFieldSchema<
   TState extends Maybe<PrimitiveTypes>,
+  TSchema extends StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -47,7 +49,7 @@ export type RegleSingleFieldSchema<
       /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
       $validate: (
         forceValues?: TState extends EmptyObject ? any : HasNamedKeys<TState> extends true ? TState : any
-      ) => Promise<RegleSchemaResult<TState>>;
+      ) => Promise<RegleSchemaResult<StandardSchemaV1.InferOutput<TSchema>>>;
     }
   >;
 } & TAdditionalReturnProperties;
@@ -78,6 +80,7 @@ type ProcessNestedFields<TState extends Record<string, any> | undefined, TShortc
  */
 export type RegleSchemaStatus<
   TState extends Record<string, any> | undefined = Record<string, any>,
+  TSchema extends StandardSchemaV1 = StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   IsRoot extends boolean = false,
 > = Omit<RegleCommonStatus<TState>, IsRoot extends false ? '$pending' : ''> & {
@@ -101,7 +104,7 @@ export type RegleSchemaStatus<
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
         $validate: (
           forceValues?: TState extends EmptyObject ? (HasNamedKeys<TState> extends true ? TState : any) : TState
-        ) => Promise<RegleSchemaResult<TState>>;
+        ) => Promise<RegleSchemaResult<StandardSchemaV1.InferOutput<TSchema>>>;
       }
     : {}) &
   ([TShortcuts['nested']] extends [never]
@@ -127,6 +130,7 @@ export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extend
             ? RegleSchemaFieldStatus<Raw<U>, TShortcuts>
             : MaybeSchemaVariantStatus<
                 NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+                StandardSchemaV1,
                 TShortcuts
               >
           : RegleSchemaFieldStatus<TState, TShortcuts>;

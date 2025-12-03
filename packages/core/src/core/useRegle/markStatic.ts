@@ -1,6 +1,6 @@
 import { def, hasOwn, isConstructor } from '../../../../shared';
 import { REGLE_FLAGS } from '../../constants';
-import type { RegleStatic } from '../../types';
+import type { RegleStatic, RegleStaticImpl } from '../../types';
 
 /**
  * Marks a value as static and treats the constructor as a regular raw Field.
@@ -12,7 +12,7 @@ import type { RegleStatic } from '../../types';
  * const StaticBigWrapper = markStatic(BigWrapper);
  * ```
  */
-export function markStatic<T extends object>(value: T): RegleStatic<T> {
+export function markStatic<T extends object>(value: T): T extends RegleStaticImpl<unknown> ? T : RegleStatic<T> {
   if (isConstructor(value)) {
     const OriginalConstructor = value;
     const StaticConstructor = class extends (OriginalConstructor as { new (...args: any[]): any }) {
@@ -24,15 +24,15 @@ export function markStatic<T extends object>(value: T): RegleStatic<T> {
 
     Object.defineProperty(StaticConstructor, 'name', { value: OriginalConstructor.name });
 
-    return applyMarkStatic(StaticConstructor) as unknown as RegleStatic<T>;
+    return applyMarkStatic(StaticConstructor) as any;
   }
 
-  return applyMarkStatic(value);
+  return applyMarkStatic(value) as any;
 }
 
-function applyMarkStatic<T extends object>(value: T): RegleStatic<T> {
+function applyMarkStatic<T extends object>(value: T): T extends RegleStaticImpl<unknown> ? T : RegleStatic<T> {
   if (!hasOwn(value, REGLE_FLAGS.REGLE_STATIC) && Object.isExtensible(value)) {
     def(value, REGLE_FLAGS.REGLE_STATIC, true);
   }
-  return value as RegleStatic<T>;
+  return value as any;
 }
