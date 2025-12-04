@@ -95,6 +95,23 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       return issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
     }
 
+    function getParentArrayPath(issue: StandardSchemaV1.Issue) {
+      const lastItem = issue.path?.at(-1);
+      const isNestedPath =
+        typeof lastItem === 'object' ? typeof lastItem.key === 'string' : typeof lastItem === 'string';
+      const index = issue.path?.findLastIndex((item) =>
+        typeof item === 'object' ? typeof item.key === 'number' : typeof item === 'number'
+      );
+      if (!isNestedPath && index === -1) {
+        return undefined;
+      }
+      if (index != null) {
+        const troncatedPath = issue.path?.slice(0, index + 1);
+        return { ...issue, path: troncatedPath };
+      }
+      return undefined;
+    }
+
     // ---- Schema mode
     if (!computedSchema.value?.['~standard']) {
       throw new Error(`Only "standard-schema" compatible libraries are supported`);
@@ -106,7 +123,28 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     ): readonly StandardSchemaV1.Issue[] {
       if (!isValidate && resolvedOptions.rewardEarly) {
         if (previousIssues.value.length) {
-          return previousIssues.value.filter((issue) => issues.some((i) => getIssuePath(i) === getIssuePath(issue)));
+          let remappedPreviousIssues = previousIssues.value.reduce((acc, issue) => {
+            if (
+              '$currentArrayValue' in issue &&
+              isObject(issue.$currentArrayValue) &&
+              '$id' in issue.$currentArrayValue
+            ) {
+              let itemId = issue.$currentArrayValue.$id;
+              const previousArrayIssue = issues.find((i: any) => i?.$currentArrayValue?.['$id'] === itemId);
+              if (previousArrayIssue) {
+                acc.push({ ...issue, path: previousArrayIssue?.path ?? [] });
+              } else {
+                acc.push();
+              }
+            } else {
+              if (issues.some((i) => getIssuePath(i) === getIssuePath(issue))) {
+                acc.push(issue);
+              }
+            }
+            return acc;
+          }, [] as StandardSchemaV1.Issue[]);
+
+          return remappedPreviousIssues;
         }
         return [];
       }
@@ -115,9 +153,17 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>, isValidate = false) {
       const output = {};
-      let filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(result.issues ?? [], isValidate);
+      const mappedIssues = result.issues?.map((issue) => {
+        const parentArrayPath = getParentArrayPath(issue);
+        const $currentArrayValue = parentArrayPath
+          ? getDotPath(processedState.value, getIssuePath(parentArrayPath))
+          : undefined;
+        return { ...issue, $currentArrayValue };
+      });
 
-      if (result.issues?.length) {
+      let filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(mappedIssues ?? [], isValidate);
+
+      if (mappedIssues?.length) {
         const issues = filteredIssues.map((issue) => {
           let $path = getIssuePath(issue);
 
