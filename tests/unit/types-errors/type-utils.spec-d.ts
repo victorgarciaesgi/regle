@@ -1,4 +1,7 @@
+import type { AllRulesDeclarations, RegleComputedRules, RegleRuleDecl } from '@regle/core';
 import {
+  defineRegleConfig,
+  inferRules,
   useRegle,
   type InferRegleRoot,
   type JoinDiscriminatedUnions,
@@ -8,10 +11,16 @@ import {
   type RegleShortcutDefinition,
   type RegleStatus,
 } from '@regle/core';
-import { email, minLength, required } from '@regle/rules';
+import { email, minLength, required, withMessage } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
-import { ref } from 'vue';
+import type { Ref } from 'vue';
+import { computed, ref, type ComputedRef } from 'vue';
 import { z } from 'zod/v3';
+import type {
+  FieldRegleBehaviourOptions,
+  MaybeRefOrComputedRef,
+  RegleRuleRawInput,
+} from '../../../packages/core/src/types';
 
 describe('type utils', () => {
   it('JoinDiscriminatedUnions should bind unions correclty', () => {
@@ -122,5 +131,67 @@ describe('type utils', () => {
     });
 
     useForm({ r$ });
+  });
+});
+
+export type LegalFormDetails = {
+  legalEntityId?: string;
+};
+
+export type LegalFormPreferences = {
+  clientTerms?: File | null;
+  legalEntityId?: string;
+};
+
+export type LegalFormAffiliation = {
+  clientTeams: Set<string>;
+  legalEntityId?: string;
+};
+
+export type LegalEntityForm = {
+  legalEntityId?: string;
+  organizationId: string;
+  details: LegalFormDetails;
+  preferences: LegalFormPreferences;
+  affiliation: LegalFormAffiliation;
+};
+
+describe('type utils - misc', () => {
+  it('RegleComputedRules should correctly infer the rules type', () => {
+    const form = ref({ name: '', foo: '', nested: { name: '', foo: '' } });
+
+    function useMyRules(): ComputedRef<RegleComputedRules<typeof form>> {
+      return computed(() => ({ name: { required }, nested: { name: { required } } }));
+    }
+
+    useRegle(form, useMyRules());
+  });
+
+  it('MaybeGetter should correctly infer the getter type', () => {
+    const form: Ref<{ name: string }> | undefined = ref({ name: '' });
+
+    const rules = computed(() => inferRules(form, { name: { required } }));
+
+    useRegle(form, rules);
+  });
+
+  it('should work with nested forms', () => {
+    const { useRegle: useCustomRegle } = defineRegleConfig({
+      rules: () => ({
+        required: withMessage(required, 'Custom rule'),
+        customRule: withMessage(required, 'Custom rule'),
+      }),
+    });
+    const form: Ref<LegalEntityForm> | undefined = ref({} as any);
+
+    const rules: ComputedRef<RegleComputedRules<LegalEntityForm>> = computed(() => ({
+      legalEntityId: { required },
+      organizationId: { required },
+      preferences: {
+        clientTerms: { required },
+      },
+    }));
+
+    useCustomRegle(form, rules);
   });
 });

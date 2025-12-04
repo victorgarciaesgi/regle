@@ -1,14 +1,25 @@
-import type { MaybeRef, Raw, Ref } from 'vue';
+import type { Raw, Ref } from 'vue';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
-import type { ArrayElement, JoinDiscriminatedUnions, Maybe, MaybeGetter, RegleStatic, Unwrap } from '../utils';
+import type {
+  ArrayElement,
+  JoinDiscriminatedUnions,
+  Maybe,
+  MaybeGetter,
+  MaybeRefOrComputedRef,
+  RegleStatic,
+  Unwrap,
+  UnwrapMaybeRef,
+} from '../utils';
 import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
+  RegleRuleRawInput,
   RegleRuleWithParamsDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
+import type { useRegleFn } from '../../core';
 
 /**
  * @public
@@ -41,18 +52,21 @@ export type RegleUnknownRulesTree = {
  * @public
  */
 export type RegleComputedRules<
-  TForm extends MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
-  TCustomRules extends Partial<AllRulesDeclarations> | Regle<any, any> = Partial<AllRulesDeclarations>,
-  TState = Unwrap<TForm>,
+  TForm extends MaybeRefOrComputedRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
+  TCustomRules extends Partial<AllRulesDeclarations> | Regle<any, any> | useRegleFn<any> =
+    Partial<AllRulesDeclarations>,
+  TState = Unwrap<UnwrapMaybeRef<TForm>>,
   TCustom = TCustomRules extends Regle<any, infer R>
     ? R extends ReglePartialRuleTree<any, infer C>
       ? C
       : Partial<AllRulesDeclarations>
-    : TCustomRules,
+    : TCustomRules extends useRegleFn<infer Rules, any>
+      ? Rules
+      : {},
 > = {
   [TKey in keyof JoinDiscriminatedUnions<TState>]?: RegleFormPropertyType<
     JoinDiscriminatedUnions<TState>[TKey],
-    TCustom extends Partial<AllRulesDeclarations> ? TCustom : {}
+    Omit<Partial<AllRulesDeclarations>, keyof TCustom> & Partial<TCustom>
   >;
 };
 
@@ -71,27 +85,27 @@ export type RegleFormPropertyType<
   TValue = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
-  ? MaybeRef<RegleRuleDecl<TValue, TCustomRules>>
+  ? MaybeRefOrComputedRef<RegleRuleDecl<TValue, TCustomRules>>
   : NonNullable<TValue> extends Array<any>
     ? RegleCollectionRuleDecl<TValue, TCustomRules>
     : NonNullable<TValue> extends Date
-      ? MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
+      ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
       : NonNullable<TValue> extends File
-        ? MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
+        ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
         : NonNullable<TValue> extends Ref<infer V>
           ? RegleFormPropertyType<V, TCustomRules>
           : NonNullable<TValue> extends Record<string, any>
             ? NonNullable<TValue> extends RegleStatic<infer U>
-              ? MaybeRef<RegleRuleDecl<Raw<U>, TCustomRules>>
+              ? MaybeRefOrComputedRef<RegleRuleDecl<Raw<U>, TCustomRules>>
               : ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
-            : MaybeRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
+            : MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
 
 /**
  * @internal
  * @reference {@link RegleFormPropertyType}
  */
 export type $InternalFormPropertyTypes =
-  | MaybeRef<$InternalRegleRuleDecl>
+  | MaybeRefOrComputedRef<$InternalRegleRuleDecl>
   | $InternalRegleCollectionRuleDecl
   | $InternalReglePartialRuleTree
   | FieldRegleBehaviourOptions;
