@@ -119,7 +119,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       if (!isNestedPath && index === -1) {
         return undefined;
       }
-      if (index != null && index !== -1) {
+      if (index != null) {
         const truncatedPath = issue.path?.slice(0, index + 1);
         return { ...issue, path: truncatedPath };
       }
