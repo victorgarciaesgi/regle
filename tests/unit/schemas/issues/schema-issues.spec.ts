@@ -22,6 +22,7 @@ describe('schemas (%s) - $issues ', async () => {
 
     expect(vm.r$.level0?.$issues).toStrictEqual([
       {
+        $currentArrayValue: undefined,
         $message: 'Custom error',
         $property: 'level0',
         $rule: 'schema',
@@ -32,6 +33,7 @@ describe('schemas (%s) - $issues ', async () => {
     ]);
     expect(vm.r$.level0?.$issues).toStrictEqual([
       {
+        $currentArrayValue: undefined,
         $message: 'Custom error',
         $property: 'level0',
         $rule: 'schema',
@@ -43,6 +45,7 @@ describe('schemas (%s) - $issues ', async () => {
 
     expect(vm.r$.$fields.level1.$fields.child?.$issues).toStrictEqual([
       {
+        $currentArrayValue: undefined,
         $message: 'Custom error',
         $property: 'child',
         $rule: 'schema',
@@ -54,6 +57,7 @@ describe('schemas (%s) - $issues ', async () => {
 
     expect(vm.r$.$fields.level1.$fields.collection.$each[0].$fields.name.$issues).toStrictEqual([
       {
+        $currentArrayValue: { name: 1 },
         $message: 'Custom error',
         $property: 'name',
         $rule: 'schema',
@@ -64,6 +68,7 @@ describe('schemas (%s) - $issues ', async () => {
     ]);
     expect(vm.r$.level1.collection.$each[0].name.$issues).toStrictEqual([
       {
+        $currentArrayValue: { name: 1 },
         $message: 'Custom error',
         $property: 'name',
         $rule: 'schema',

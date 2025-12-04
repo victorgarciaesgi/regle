@@ -5,7 +5,7 @@ export function valibotfixture() {
   const tagSchema = v.array(v.picklist(['wolt', 'eat_in'], 'Custom message'));
   const menuSchema = v.object({
     tags: tagSchema,
-    usernames: v.pipe(v.array(v.string()), v.minLength(1, 'Custom message')),
+    usernames: v.pipe(v.array(v.string()), v.minLength(1, 'Array too short')),
   });
 
   return useRegleSchema({ tags: [], usernames: [] }, menuSchema);

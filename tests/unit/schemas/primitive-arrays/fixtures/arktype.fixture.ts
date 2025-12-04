@@ -7,7 +7,7 @@ export function arktypefixture() {
   });
   const menuSchema = type({
     tags: type(tagSchema, '[]'),
-    usernames: type('string[] > 0').configure({ message: () => 'Custom message' }),
+    usernames: type('string[] >= 1').configure({ message: () => 'Array too short' }),
   });
 
   return useRegleSchema({ tags: [], usernames: [] }, menuSchema);

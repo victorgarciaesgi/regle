@@ -110,7 +110,6 @@ describe.each([
   it('should reset reward early state after $reset', async () => {
     const { vm } = await createRegleComponent(regleSchemaFixture);
 
-    // Validate and set valid value
     vm.r$.$value.email = 'invalid';
     vm.r$.$validate();
     await nextTick();
@@ -120,17 +119,55 @@ describe.each([
     await nextTick();
     shouldBeValidField(vm.r$.email);
 
-    // Reset
     vm.r$.$reset();
     await nextTick();
 
-    // After reset, should be back to invalid (pristine) state
     shouldBePristineField(vm.r$.email);
 
-    // Changing value should not trigger validation
     vm.r$.$value.email = 'another-invalid';
     await nextTick();
     shouldBePristineField(vm.r$.email);
+  });
+
+  it('should work with arrays swapping items', async () => {
+    const { vm } = await createRegleComponent(regleSchemaFixture);
+
+    vm.r$.$value.contacts[0].name = 'Victor';
+    vm.r$.$value.email = 'victor@email.com';
+    vm.r$.$value.contacts.push({ name: '' });
+    await vm.r$.$validate();
+    await nextTick();
+    shouldBeValidField(vm.r$.email);
+    shouldBeValidField(vm.r$.contacts.$each[0].name);
+    shouldBeErrorField(vm.r$.contacts.$each[1].name);
+
+    const lastItem = vm.r$.$value.contacts?.pop();
+    if (lastItem) {
+      vm.r$.$value.contacts.unshift(lastItem);
+    }
+
+    await nextTick();
+    shouldBeValidField(vm.r$.email);
+    shouldBeErrorField(vm.r$.contacts.$each[0].name);
+    shouldBeValidField(vm.r$.contacts.$each[1].name);
+
+    vm.r$.$value.contacts.push({ name: '' });
+    await vm.r$.$validate();
+    await nextTick();
+    shouldBeValidField(vm.r$.email);
+    shouldBeErrorField(vm.r$.contacts.$each[0].name);
+    shouldBeValidField(vm.r$.contacts.$each[1].name);
+    shouldBeErrorField(vm.r$.contacts.$each[2].name);
+
+    const lastItem2 = vm.r$.$value.contacts?.pop();
+    if (lastItem2) {
+      vm.r$.$value.contacts.unshift(lastItem2);
+    }
+    await nextTick();
+    shouldBeValidField(vm.r$.email);
+    shouldBeErrorField(vm.r$.contacts.$each[0].name);
+    shouldBeErrorField(vm.r$.contacts.$each[1].name);
+    shouldBeValidField(vm.r$.contacts.$each[2].name);
   });
 });
 

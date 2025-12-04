@@ -14,7 +14,7 @@ export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>
     >,
     TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState>,
+    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
     rulesFactory: TState extends MaybeInput<PrimitiveTypes> ? TDecl : TState extends Record<string, any> ? TRules : {}
   ): NonNullable<TState> extends PrimitiveTypes ? TDecl : TRules;
 }

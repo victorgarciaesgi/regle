@@ -1,6 +1,6 @@
 import type { UnionToIntersection, UnionToTuple, IsUnion, IsUnknown } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
-import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef, Raw } from 'vue';
+import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef, Raw, ComputedRef } from 'vue';
 import type { DeepReactiveState } from '../core';
 
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
@@ -103,6 +103,8 @@ export type EnumLike = {
 };
 
 export type enumType<T extends Record<string, unknown>> = T[keyof T];
+
+export type MaybeRefOrComputedRef<T extends any> = MaybeRef<T> | ComputedRef<T>;
 
 export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
