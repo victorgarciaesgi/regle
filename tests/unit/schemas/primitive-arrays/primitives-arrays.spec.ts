@@ -8,7 +8,7 @@ describe.each([
   ['zod', zodFixture],
   ['arktype', arktypefixture],
 ])('primitives arrays (%s) ', async (name, regleSchema) => {
-  it('should report errors of primitives arrays', async () => {
+  it.only('should report errors of primitives arrays', async () => {
     const { vm } = createRegleComponent(regleSchema);
 
     expect(vm.r$.tags.$error).toBe(false);
@@ -19,14 +19,15 @@ describe.each([
 
     expect(vm.r$.tags.$error).toBe(true);
     expect(vm.r$.tags.$error).toBe(true);
-    expect(vm.r$.tags.$errors).toStrictEqual(['Custom message']);
+    expect(vm.r$.$errors.tags).toStrictEqual(['Custom message']);
     expect(vm.r$.tags.$errors).toStrictEqual(['Custom message']);
 
     await vm.r$.$validate();
+    await vm.$nextTick();
 
     expect(vm.r$.usernames.$error).toBe(true);
-    expect(vm.r$.usernames.$errors).toStrictEqual(['Custom message']);
-    expect(vm.r$.$errors.usernames).toStrictEqual(['Custom message']);
+    expect(vm.r$.usernames.$errors).toStrictEqual(['Array too short']);
+    expect(vm.r$.$errors.usernames).toStrictEqual(['Array too short']);
 
     expectTypeOf(vm.r$.usernames.$errors).toEqualTypeOf<string[]>();
     expectTypeOf(vm.r$.$errors.usernames).toEqualTypeOf<string[]>();

@@ -91,6 +91,20 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
 
+    function getPropertiesFromIssue(issue: StandardSchemaV1.Issue) {
+      let $path = getIssuePath(issue);
+      const lastItem = issue.path?.[issue.path.length - 1];
+      const lastItemKey = typeof lastItem === 'object' ? lastItem.key : lastItem;
+      const isArray =
+        (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
+        ('type' in issue ? issue.type === 'array' : false) ||
+        Array.isArray(getDotPath(processedState.value, $path));
+
+      const isPrimitivesArray = !isArray && typeof lastItemKey === 'number';
+
+      return { isArray, isPrimitivesArray, $path, lastItemKey, lastItem };
+    }
+
     function getIssuePath(issue: StandardSchemaV1.Issue) {
       return issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
     }
@@ -133,8 +147,6 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
               const previousArrayIssue = issues.find((i: any) => i?.$currentArrayValue?.['$id'] === itemId);
               if (previousArrayIssue) {
                 acc.push({ ...issue, path: previousArrayIssue?.path ?? [] });
-              } else {
-                acc.push();
               }
             } else {
               if (issues.some((i) => getIssuePath(i) === getIssuePath(issue))) {
@@ -154,27 +166,29 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>, isValidate = false) {
       const output = {};
       const mappedIssues = result.issues?.map((issue) => {
+        const { isPrimitivesArray } = getPropertiesFromIssue(issue);
+        if (isPrimitivesArray) {
+          return issue;
+        }
         const parentArrayPath = getParentArrayPath(issue);
-        const $currentArrayValue = parentArrayPath
-          ? getDotPath(processedState.value, getIssuePath(parentArrayPath))
-          : undefined;
-        return { ...issue, $currentArrayValue };
+        if (parentArrayPath) {
+          const $currentArrayValue = getDotPath(processedState.value, getIssuePath(parentArrayPath));
+          Object.defineProperty(issue, '$currentArrayValue', {
+            value: $currentArrayValue,
+            enumerable: true,
+            configurable: true,
+            writable: true,
+          });
+        }
+
+        return issue;
       });
 
-      let filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(mappedIssues ?? [], isValidate);
+      const filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(mappedIssues ?? [], isValidate);
 
       if (mappedIssues?.length) {
         const issues = filteredIssues.map((issue) => {
-          let $path = getIssuePath(issue);
-
-          const lastItem = issue.path?.[issue.path.length - 1];
-          const lastItemKey = typeof lastItem === 'object' ? lastItem.key : lastItem;
-          const isArray =
-            (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
-            ('type' in issue ? issue.type === 'array' : false) ||
-            Array.isArray(getDotPath(processedState.value, $path));
-
-          const isPrimitivesArray = !isArray && typeof lastItemKey === 'number';
+          let { isArray, isPrimitivesArray, $path, lastItemKey } = getPropertiesFromIssue(issue);
 
           if (isPrimitivesArray) {
             $path =
