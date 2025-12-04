@@ -120,8 +120,8 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         return undefined;
       }
       if (index != null && index !== -1) {
-        const troncatedPath = issue.path?.slice(0, index + 1);
-        return { ...issue, path: troncatedPath };
+        const truncatedPath = issue.path?.slice(0, index + 1);
+        return { ...issue, path: truncatedPath };
       }
       return undefined;
     }
