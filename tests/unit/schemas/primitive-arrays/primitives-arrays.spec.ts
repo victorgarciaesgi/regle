@@ -8,7 +8,7 @@ describe.each([
   ['zod', zodFixture],
   ['arktype', arktypefixture],
 ])('primitives arrays (%s) ', async (name, regleSchema) => {
-  it.only('should report errors of primitives arrays', async () => {
+  it('should report errors of primitives arrays', async () => {
     const { vm } = createRegleComponent(regleSchema);
 
     expect(vm.r$.tags.$error).toBe(false);
