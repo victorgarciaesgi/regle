@@ -110,7 +110,6 @@ describe.each([
   it('should reset reward early state after $reset', async () => {
     const { vm } = await createRegleComponent(regleSchemaFixture);
 
-    // Validate and set valid value
     vm.r$.$value.email = 'invalid';
     vm.r$.$validate();
     await nextTick();
@@ -120,14 +119,11 @@ describe.each([
     await nextTick();
     shouldBeValidField(vm.r$.email);
 
-    // Reset
     vm.r$.$reset();
     await nextTick();
 
-    // After reset, should be back to invalid (pristine) state
     shouldBePristineField(vm.r$.email);
 
-    // Changing value should not trigger validation
     vm.r$.$value.email = 'another-invalid';
     await nextTick();
     shouldBePristineField(vm.r$.email);
