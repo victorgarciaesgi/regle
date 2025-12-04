@@ -20,6 +20,7 @@ import type {
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
+  MaybeRefOrComputedRef,
   PrimitiveTypes,
   Unwrap,
 } from '../../types/utils';
@@ -56,10 +57,10 @@ export interface useRegleFn<
       TRules,
       ReglePartialRuleTree<
         Unwrap<TState extends Record<string, any> ? TState : {}>,
-        Partial<AllRulesDeclarations> & TCustomRules
+        Partial<AllRulesDeclarations> & Partial<TCustomRules>
       >
     >,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & Partial<TCustomRules>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [
@@ -67,7 +68,7 @@ export interface useRegleFn<
       rulesFactory: TState extends MaybeInput<PrimitiveTypes>
         ? MaybeRefOrGetter<TDecl>
         : TState extends Record<string, any>
-          ? MaybeRef<TRules> | ((...args: any[]) => TRules)
+          ? MaybeRefOrComputedRef<TRules> | ((...args: any[]) => TRules)
           : {},
       ...(HaveAnyRequiredProps<useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>> extends true
         ? [options: useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>]
