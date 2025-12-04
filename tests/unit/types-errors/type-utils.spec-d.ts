@@ -1,4 +1,4 @@
-import type { AllRulesDeclarations, RegleComputedRules, RegleRuleDecl } from '@regle/core';
+import type { RegleComputedRules } from '@regle/core';
 import {
   defineRegleConfig,
   inferRules,
@@ -16,11 +16,6 @@ import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 import type { Ref } from 'vue';
 import { computed, ref, type ComputedRef } from 'vue';
 import { z } from 'zod/v3';
-import type {
-  FieldRegleBehaviourOptions,
-  MaybeRefOrComputedRef,
-  RegleRuleRawInput,
-} from '../../../packages/core/src/types';
 
 describe('type utils', () => {
   it('JoinDiscriminatedUnions should bind unions correclty', () => {

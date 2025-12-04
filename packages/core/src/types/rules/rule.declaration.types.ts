@@ -1,4 +1,5 @@
 import type { Raw, Ref } from 'vue';
+import type { useRegleFn } from '../../core';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
 import type {
   ArrayElement,
@@ -14,12 +15,10 @@ import type { AllRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  RegleRuleRawInput,
   RegleRuleWithParamsDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
-import type { useRegleFn } from '../../core';
 
 /**
  * @public
