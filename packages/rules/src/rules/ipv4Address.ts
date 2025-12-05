@@ -20,7 +20,18 @@ function nibbleValid(nibble: string) {
 }
 
 /**
- * Validates IPv4 addresses in dotted decimal notation 127.0.0.1.
+ * Validates IPv4 addresses in dotted decimal notation (e.g., `127.0.0.1`).
+ *
+ * @example
+ * ```ts
+ * import { ipv4Address } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ address: '' }, {
+ *   address: { ipv4Address },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#ipv4address Documentation}
  */
 export const ipv4Address: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'ipv4Address',

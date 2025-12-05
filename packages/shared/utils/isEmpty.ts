@@ -2,12 +2,34 @@ import type { EmptyObject } from 'type-fest';
 import { isFile } from './isFile';
 
 /**
- * This is the inverse of isFilled. It will check if the value is in any way empty (including arrays and objects)
+ * Checks if a value is empty in any way (including arrays and objects).
+ * This is the inverse of `isFilled`.
  *
- * isEmpty also acts as a type guard.
+ * `isEmpty` also acts as a type guard.
  *
- * @param value - the target value
- * @param [considerEmptyArrayInvalid=true] - will return false if set to `false`. (default: `true`)
+ * By default, it considers an empty array as `true`. You can override this behavior with `considerEmptyArrayInvalid`.
+ *
+ * @param value - The target value to check
+ * @param considerEmptyArrayInvalid - When `false`, empty arrays are not considered empty (default: `true`)
+ * @returns `true` if the value is empty, `false` otherwise
+ *
+ * @example
+ * ```ts
+ * import { createRule, type Maybe } from '@regle/core';
+ * import { isEmpty } from '@regle/rules';
+ *
+ * const rule = createRule({
+ *   validator(value: Maybe<string>) {
+ *     if (isEmpty(value)) {
+ *       return true;
+ *     }
+ *     return check(value);
+ *   },
+ *   message: 'Error'
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#isempty Documentation}
  */
 export function isEmpty(
   value: unknown,

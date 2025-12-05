@@ -22,6 +22,35 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
   asRecord?: TAsRecord;
 };
 
+/**
+ * Create a scoped validation system for collecting and validating multiple form instances.
+ * Useful for dynamic forms, multi-step wizards, or component-based form architectures.
+ *
+ * @param options - Configuration options
+ * @param options.customUseRegle - Custom useRegle instance with your global config
+ * @param options.customStore - External ref to store collected instances
+ * @param options.asRecord - If true, collect instances in a Record (requires `id` param in useScopedRegle)
+ * @returns Object containing `useScopedRegle` and `useCollectScope` functions
+ *
+ * @example
+ * ```ts
+ * // scoped-config.ts
+ * import { createScopedUseRegle } from '@regle/core';
+ *
+ * export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
+ *
+ * // ChildComponent.vue
+ * const { r$ } = useScopedRegle(state, rules, {
+ *   namespace: 'myForm'
+ * });
+ *
+ * // ParentComponent.vue
+ * const { r$: collectedR$ } = useCollectScope('myForm');
+ * await collectedR$.$validate(); // Validates all child forms
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
+ */
 export function createScopedUseRegle<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarations>>,
   TAsRecord extends boolean = false,

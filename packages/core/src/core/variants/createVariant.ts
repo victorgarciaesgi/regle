@@ -25,24 +25,42 @@ import type {
 import { isRuleDef } from '../useRegle/guards';
 
 /**
- * Declare variations of state that depends on one value
+ * Create variant-based validation rules that depend on a discriminant field value.
+ * Useful for union types where different fields are required based on a type discriminant.
  *
- * Autocomplete may not work here because of https://github.com/microsoft/TypeScript/issues/49547
+ * Note: Autocomplete may not fully work due to TypeScript limitations.
  *
+ * @param root - The reactive state object
+ * @param discriminantKey - The key used to discriminate between variants
+ * @param variants - Array of variant rule definitions using `literal` for type matching
+ * @returns A computed ref containing the currently active variant rules
+ *
+ * @example
  * ```ts
- *  // ⚠️ Use getter syntax for your rules () => {} or a computed one
- *    const {r$} = useRegle(state, () => {
- *      const variant = createVariant(state, 'type', [
- *        {type: { literal: literal('EMAIL')}, email: { required, email }},
- *        {type: { literal: literal('GITHUB')}, username: { required }},
- *        {type: { required }},
- *      ]);
+ * import { useRegle, createVariant } from '@regle/core';
+ * import { required, email, literal } from '@regle/rules';
  *
- *      return {
- *        ...variant.value,
- *      };
- *    })
+ * const state = ref({
+ *   type: 'EMAIL' as 'EMAIL' | 'GITHUB',
+ *   email: '',
+ *   username: ''
+ * });
+ *
+ * // ⚠️ Use getter syntax for your rules
+ * const { r$ } = useRegle(state, () => {
+ *   const variant = createVariant(state, 'type', [
+ *     { type: { literal: literal('EMAIL') }, email: { required, email } },
+ *     { type: { literal: literal('GITHUB') }, username: { required } },
+ *     { type: { required } }, // Default case
+ *   ]);
+ *
+ *   return {
+ *     ...variant.value,
+ *   };
+ * });
  * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/variants Documentation}
  */
 export function createVariant<
   TForm extends Record<string, any>,
@@ -85,13 +103,25 @@ export function createVariant<
 }
 
 /**
- * Narrow a nested variant field to a discriminated value
+ * Type guard to narrow a variant field to a specific discriminated value.
+ * Enables type-safe access to variant-specific fields.
  *
+ * @param root - The Regle status object
+ * @param discriminantKey - The key used to discriminate between variants
+ * @param discriminantValue - The specific value to narrow to
+ * @returns `true` if the discriminant matches, with TypeScript narrowing the type
+ *
+ * @example
  * ```ts
+ * import { narrowVariant } from '@regle/core';
+ *
  * if (narrowVariant(r$, 'type', 'EMAIL')) {
- *    r$.email.$value = 'foo';
+ *   // TypeScript knows r$.email exists here
+ *   r$.email.$value = 'user@example.com';
  * }
  * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/variants Documentation}
  */
 export function narrowVariant<
   TRoot extends {
@@ -126,13 +156,28 @@ export function narrowVariant<
 }
 
 /**
- * Narrow a nested variant root to a reactive reference
+ * Create a reactive reference to a narrowed variant.
+ * Useful in templates or when you need a stable ref to the narrowed type.
  *
+ * @param root - The Regle status object (can be a ref)
+ * @param discriminantKey - The key used to discriminate between variants
+ * @param discriminantValue - The specific value to narrow to
+ * @param options - Optional `{ unsafeAssertion: true }` to assert the variant always exists
+ * @returns A ref containing the narrowed variant (or undefined if not matching)
+ *
+ * @example
  * ```vue
  * <script setup lang="ts">
- *   const variantR$ = variantToRef(r$, 'type', 'EMAIL');
+ * import { variantToRef } from '@regle/core';
+ *
+ * const emailR$ = variantToRef(r$, 'type', 'EMAIL');
+ *
+ * // In template:
+ * // <input v-if="emailR$" v-model="emailR$.$value.email" />
  * </script>
  * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/variants Documentation}
  */
 export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,

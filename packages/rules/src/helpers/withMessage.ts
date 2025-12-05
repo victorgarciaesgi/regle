@@ -11,21 +11,30 @@ import type {
 import { createRule, InternalRuleType } from '@regle/core';
 
 /**
- * The withMessage wrapper lets you associate an error message with a rule. Pass your rule as the first argument and the error message as the second.
- * 
+ * The `withMessage` wrapper lets you associate an error message with a rule.
+ * Pass your rule as the first argument and the error message as the second.
+ *
+ * @param rule - The rule to wrap (can be inline function or rule definition)
+ * @param newMessage - The error message (string or function returning a string)
+ *
+ * @example
  * ```ts
+ * import { withMessage } from '@regle/rules';
+ *
  * const { r$ } = useRegle({ name: '' }, {
-    name: {
-      customRule1: withMessage((value) => !!value, "Custom Error"),
-      customRule2: withMessage(customRuleInlineWithMetaData, "Custom Error"),
-      customRule3: withMessage(
-        customRuleInlineWithMetaData, 
-        ({ $value, foo }) => `Custom Error: ${$value} ${foo}`
-      ), 
-    }
-  })
+ *   name: {
+ *     // With a static message
+ *     customRule1: withMessage((value) => !!value, "Custom Error"),
+ *     // With dynamic message using metadata
+ *     customRule2: withMessage(
+ *       customRuleInlineWithMetaData,
+ *       ({ $value, foo }) => `Custom Error: ${$value} ${foo}`
+ *     ),
+ *   }
+ * })
  * ```
- * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withmessage}
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withmessage Documentation}
  */
 
 export function withMessage<

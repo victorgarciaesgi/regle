@@ -12,19 +12,27 @@ import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core'
 import type { MaybeRefOrGetter } from 'vue';
 
 /**
- * The applyIf operator is similar to requiredIf, but it can be used with any rule.
+ * The `applyIf` operator is similar to `requiredIf`, but it can be used with **any rule**.
  * It simplifies conditional rule declarations.
+ *
+ * @param _condition - The condition to check (ref, getter, or value)
+ * @param rule - The rule to apply conditionally
+ * @returns A rule that only applies when the condition is truthy
  *
  * @example
  * ```ts
+ * import { minLength, applyIf } from '@regle/rules';
+ *
  * const condition = ref(false);
- * const { r$ } = useRegle({name: ''}, {
+ *
+ * const { r$ } = useRegle({ name: '' }, {
  *   name: {
  *     minLength: applyIf(condition, minLength(6))
  *   },
  * });
- *
  * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#applyif Documentation}
  */
 export function applyIf<TRule extends FormRuleDeclaration<any>>(
   _condition: MaybeRefOrGetter<Maybe<boolean>>,

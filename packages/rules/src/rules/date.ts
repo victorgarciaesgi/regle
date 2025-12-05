@@ -3,9 +3,23 @@ import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
 /**
- * Requires a value to be a native Date constructor
+ * Requires a value to be a native `Date` constructor.
  *
- * Mainly used for typing
+ * Mainly used for typing with `InferInput`.
+ *
+ * @example
+ * ```ts
+ * import { type InferInput } from '@regle/core';
+ * import { date } from '@regle/rules';
+ *
+ * const rules = {
+ *   birthday: { date },
+ * }
+ *
+ * const state = ref<InferInput<typeof rules>>({});
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#date Documentation}
  */
 export const date: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<Date>, unknown> = createRule({
   type: 'date',

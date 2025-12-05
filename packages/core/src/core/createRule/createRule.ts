@@ -9,35 +9,57 @@ import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
 
 /**
- * Create a typed custom rule that can be used like default rules.
- * It can also be declared in the global options
+ * Create a typed custom rule that can be used like built-in rules.
+ * The created rule can be declared in global options or used directly.
  *
- * It will automatically detect if the rule is async
+ * Features:
+ * - Automatically detects if the rule is async
+ * - Supports parameters for configurable rules
+ * - Full TypeScript type inference
+ * - Custom metadata support
  *
+ * @param definition - The rule definition object containing:
+ *   - `validator`: The validation function
+ *   - `message`: Error message (string or function)
+ *   - `type`: Optional rule type identifier
+ *   - `active`: Optional function to conditionally activate the rule
+ *   - `tooltip`: Optional tooltip message
  *
- * @param definition - The rule processors object
+ * @returns A rule definition that is callable if it accepts parameters
  *
- * @returns A rule definition that can be callable depending on params presence
- *
- * @exemple
- *
+ * @example
  * ```ts
- * // Create a simple rule with no params
- * import {isFilled} from '@regle/rules';
+ * import { createRule } from '@regle/core';
+ * import { isFilled } from '@regle/rules';
  *
+ * // Simple rule without params
  * export const isFoo = createRule({
  *   validator(value: Maybe<string>) {
- *       if (isFilled(value)) {
- *           return value === 'foo';
- *       }
- *       return true
+ *     if (isFilled(value)) {
+ *       return value === 'foo';
+ *     }
+ *     return true;
  *   },
  *   message: "The value should be 'foo'"
- * })
+ * });
  *
+ * // Rule with parameters
+ * export const minCustom = createRule({
+ *   validator(value: Maybe<number>, min: number) {
+ *     if (isFilled(value)) {
+ *       return value >= min;
+ *     }
+ *     return true;
+ *   },
+ *   message: ({ $params: [min] }) => `Value must be at least ${min}`
+ * });
+ *
+ * // Usage
+ * useRegle({ name: '' }, { name: { isFoo } });
+ * useRegle({ count: 0 }, { count: { minCustom: minCustom(5) } });
  * ```
  *
- * Docs: {@link https://reglejs.dev/core-concepts/rules/reusable-rules}
+ * @see {@link https://reglejs.dev/core-concepts/rules/reusable-rules Documentation}
  */
 export function createRule<
   TValue extends any,

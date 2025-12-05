@@ -6,6 +6,17 @@ const numericRegex = /^\d*(\.\d+)?$/;
 
 /**
  * Allows only numeric values (including numeric strings).
+ *
+ * @example
+ * ```ts
+ * import { numeric } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ count: 0 }, {
+ *   count: { numeric },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#numeric Documentation}
  */
 export const numeric: RegleRuleDefinition<
   string | number,

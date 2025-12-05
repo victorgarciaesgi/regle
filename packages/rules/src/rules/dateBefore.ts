@@ -6,8 +6,23 @@ import { formatLocaleDate } from '../utils/getLocale.util';
 /**
  * Checks if the date is before the given parameter.
  *
- * @param before - the date to compare to
- * @param options - comparison options
+ * @param before - The date to compare to (can be a `Date`, string, ref, or getter)
+ * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ *
+ * @example
+ * ```ts
+ * import { dateBefore } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ birthday: null as Date | null }, {
+ *   birthday: {
+ *     dateBefore: dateBefore(new Date()),
+ *     // or with options
+ *     dateBefore: dateBefore(new Date(), { allowEqual: false }),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#datebefore Documentation}
  */
 export const dateBefore: RegleRuleWithParamsDefinition<
   string | Date,

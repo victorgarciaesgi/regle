@@ -20,10 +20,30 @@ export function createInferSchemaHelper(): inferSchemaFn {
 }
 
 /**
- * Rule type helper to provide autocomplete and typecheck to your form rules or part of your form rules
- * It will just return the rules without any processing.
+ * Type helper to provide autocomplete and type-checking for your schema.
+ * Returns the schema without any processing - useful with computed schemas.
  *
  * @param state - The state reference
- * @param schema - Your schema
+ * @param schema - Your Standard Schema (Zod, Valibot, ArkType, etc.)
+ * @returns The schema (passthrough)
+ *
+ * @example
+ * ```ts
+ * import { inferSchema, useRegleSchema } from '@regle/schemas';
+ * import { z } from 'zod';
+ *
+ * const state = ref({ name: '' });
+ *
+ * // inferSchema preserves TypeScript autocompletion
+ * const schema = computed(() => {
+ *   return inferSchema(state, z.object({
+ *     name: z.string().min(2)
+ *   }));
+ * });
+ *
+ * const { r$ } = useRegleSchema(state, schema);
+ * ```
+ *
+ * @see {@link https://reglejs.dev/integrations/schemas-libraries Documentation}
  */
 export const inferSchema = createInferSchemaHelper();

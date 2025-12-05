@@ -5,7 +5,18 @@ import { isFilled } from '../helpers';
 /**
  * Checks if the string ends with the specified substring.
  *
- * @param part - the value the field must end with
+ * @param part - The substring the value must end with
+ *
+ * @example
+ * ```ts
+ * import { endsWith } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ firstName: '' }, {
+ *   firstName: { endsWith: endsWith('foo') },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#endswith Documentation}
  */
 export const endsWith: RegleRuleWithParamsDefinition<
   string,

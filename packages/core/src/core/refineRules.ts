@@ -4,32 +4,58 @@ import type { InferInput, ReglePartialRuleTree, RegleUnknownRulesTree } from '..
 import type { Ref } from 'vue';
 
 /**
- * Helper method to wrap an raw rules object
+ * Helper method to wrap a raw rules object with type inference.
+ * Provides autocomplete and type-checking without processing.
  *
- * Similar to:
+ * @param rules - The rules object to wrap
+ * @returns The same rules object (passthrough)
  *
+ * @example
  * ```ts
- * const rules = {...} satisfies RegleUnknownRulesTree
+ * import { defineRules } from '@regle/core';
+ * import { required, string } from '@regle/rules';
+ *
+ * // defineRules helps catch structure errors
+ * const rules = defineRules({
+ *   firstName: { required, string },
+ *   lastName: { required, string }
+ * });
  * ```
+ *
+ * @see {@link https://reglejs.dev/common-usage/standard-schema Documentation}
  */
 export function defineRules<TRules extends RegleUnknownRulesTree>(rules: TRules): TRules {
   return rules;
 }
 
 /**
- * Refine a raw rules object to set rules that depends on the state values.
+ * Refine a rules object to add rules that depend on the state values.
+ * Inspired by Zod's `refine`, this allows writing dynamic rules while maintaining type safety.
+ *
+ * @param rules - The base rules object
+ * @param refinement - A function that receives the typed state and returns additional rules
+ * @returns A function that, given the state ref, returns the merged rules
  *
  * @example
- *
  * ```ts
+ * import { refineRules, type InferInput } from '@regle/core';
+ * import { required, string, sameAs } from '@regle/rules';
+ *
  * const rules = refineRules({
- *    password: { required, type: type<string>() },
- * }, (state) => {
- *    return {
- *        confirmPassword: { required, sameAs: sameAs(() => state.value.password)}
- *    }
- * })
+ *   password: { required, string },
+ * }, (state) => ({
+ *   // state is typed based on the base rules
+ *   confirmPassword: {
+ *     required,
+ *     sameAs: sameAs(() => state.value.password)
+ *   }
+ * }));
+ *
+ * type State = InferInput<typeof rules>;
+ * // { password: string; confirmPassword: string }
  * ```
+ *
+ * @see {@link https://reglejs.dev/common-usage/standard-schema#refinerules Documentation}
  */
 export function refineRules<
   TRules extends RegleUnknownRulesTree,

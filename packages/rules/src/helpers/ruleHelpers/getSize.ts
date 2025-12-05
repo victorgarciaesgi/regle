@@ -2,7 +2,28 @@ import type { MaybeRef } from 'vue';
 import { unref } from 'vue';
 
 /**
- * This helper will return the length of any data type you pass. It works with strings, arrays, objects and numbers.
+ * Returns the length/size of any data type. Works with strings, arrays, objects and numbers.
+ *
+ * @param value - The value to get the size of
+ * @returns The length of strings/arrays, number of keys for objects, or the number itself
+ *
+ * @example
+ * ```ts
+ * import { createRule, type Maybe } from '@regle/core';
+ * import { isFilled, getSize } from '@regle/rules';
+ *
+ * const rule = createRule({
+ *   validator(value: Maybe<string | Array<number>>) {
+ *     if (isFilled(value)) {
+ *       return getSize(value) > 6;
+ *     }
+ *     return true;
+ *   },
+ *   message: 'Error'
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize Documentation}
  */
 export function getSize(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
   const _value = unref(value);

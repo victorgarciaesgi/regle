@@ -9,7 +9,31 @@ import type {
 } from '../types';
 
 /**
- * The and operator combines multiple rules and validates successfully only if all provided rules are valid.
+ * The `and` operator combines multiple rules and validates successfully only if **all** provided rules are valid.
+ *
+ * @param rules - Two or more rules to combine
+ * @returns A combined rule that passes when all provided rules pass
+ *
+ * @example
+ * ```ts
+ * import { useRegle } from '@regle/core';
+ * import { and, startsWith, endsWith, withMessage } from '@regle/rules';
+ *
+ * const { r$ } = useRegle(
+ *   { regex: '' },
+ *   {
+ *     regex: {
+ *       myError: withMessage(
+ *         and(startsWith('^'), endsWith('$')),
+ *         ({ $params: [start, end] }) =>
+ *           `Regex should start with "${start}" and end with "${end}"`
+ *       ),
+ *     },
+ *   }
+ * );
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#and Documentation}
  */
 export function and<const TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]

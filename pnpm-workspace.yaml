@@ -5,6 +5,7 @@ packages:
   - packages/nuxt
   - packages/nuxt/fixtures
   - packages/shared
+  - packages/mcp-server
   - packages-private/regle-playground
   - tests
   - docs

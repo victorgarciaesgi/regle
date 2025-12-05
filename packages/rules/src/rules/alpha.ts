@@ -8,8 +8,23 @@ const alphaSymbolRegex = /^[\w.]+$/;
 /**
  * Allows only alphabetic characters.
  *
- * @param [options] - Alpha rules options
- * */
+ * @param options - Optional configuration for alpha validation
+ *
+ * @example
+ * ```ts
+ * import { alpha } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     alpha,
+ *     // or with symbols allowed
+ *     alpha: alpha({ allowSymbols: true }),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#alpha Documentation}
+ */
 export const alpha: RegleRuleWithParamsDefinition<
   string,
   [options?: CommonAlphaOptions | undefined],

@@ -130,20 +130,33 @@ export function createUseRulesComposable<
 }
 
 /**
- * useRules is a clone of useRegle, without the need to provide a state.
+ * `useRules` is a variant of `useRegle` that doesn't require you to provide initial state.
+ * It creates an empty state based on your rules structure and implements the Standard Schema spec.
  *
- * It accepts the following inputs:
+ * This is useful when you want to define validation rules first and infer the state type from them.
  *
- * @param rules - Your rules object
- * @param modifiers - Customize regle behaviour
- * 
+ * @param rules - Your validation rules object
+ * @param modifiers - Optional configuration to customize regle behavior
+ * @returns The reactive validation state (implements StandardSchemaV1)
+ *
+ * @example
  * ```ts
- * import { useRules } from '@regle/core';
-   import { required } from '@regle/rules';
-
-   const { r$ } = useRules({
-     email: { required }
-   })
+ * import { useRules, type InferInput } from '@regle/core';
+ * import { required, string, email } from '@regle/rules';
+ *
+ * const r$ = useRules({
+ *   name: { required, string },
+ *   email: { required, email }
+ * });
+ *
+ * // State is automatically created and typed
+ * r$.$value.name // string | null
+ * r$.$value.email // string | null
+ *
+ * // Can be used with Standard Schema compatible libraries
+ * const result = await r$['~standard'].validate({ name: '', email: '' });
  * ```
+ *
+ * @see {@link https://reglejs.dev/common-usage/standard-schema#userules Documentation}
  */
 export const useRules = createUseRulesComposable();

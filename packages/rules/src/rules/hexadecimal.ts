@@ -5,7 +5,18 @@ import { matchRegex, isEmpty } from '../helpers';
 const hexadecimalRegex = /^[a-fA-F0-9]*$/;
 
 /**
- * Allows only hexadecimal values.
+ * Validates hexadecimal values.
+ *
+ * @example
+ * ```ts
+ * import { hexadecimal } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ hexadecimal: '' }, {
+ *   hexadecimal: { hexadecimal },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#hexadecimal Documentation}
  */
 export const hexadecimal: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'hexadecimal',

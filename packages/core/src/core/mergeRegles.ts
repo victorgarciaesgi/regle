@@ -97,6 +97,44 @@ type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>
       issues: EmptyObject;
     };
 
+/**
+ * Merge multiple Regle instances into a single validation state.
+ * Useful for combining multiple forms or validation scopes.
+ *
+ * @param regles - An object containing named Regle instances to merge
+ * @param _scoped - Internal flag for scoped validation (default: false)
+ * @returns A merged validation state with all instances' properties combined
+ *
+ * @example
+ * ```ts
+ * import { useRegle, mergeRegles } from '@regle/core';
+ * import { required } from '@regle/rules';
+ *
+ * // Create separate validation instances
+ * const { r$: personalInfo } = useRegle(
+ *   { name: '', email: '' },
+ *   { name: { required }, email: { required } }
+ * );
+ *
+ * const { r$: address } = useRegle(
+ *   { street: '', city: '' },
+ *   { street: { required }, city: { required } }
+ * );
+ *
+ * // Merge them together
+ * const merged$ = mergeRegles({
+ *   personalInfo,
+ *   address
+ * });
+ *
+ * // Access combined state
+ * merged$.$valid           // true when ALL forms are valid
+ * merged$.$errors          // { personalInfo: {...}, address: {...} }
+ * await merged$.$validate() // Validates all forms
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/merge-regles Documentation}
+ */
 export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleRoot>, TScoped extends boolean = false>(
   regles: TRegles,
   _scoped?: TScoped

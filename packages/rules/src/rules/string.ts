@@ -3,9 +3,23 @@ import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
 /**
- * Requires a value to be a native string type
+ * Requires a value to be a native string type.
  *
- * Mainly used for typing
+ * Mainly used for typing with `InferInput`.
+ *
+ * @example
+ * ```ts
+ * import { type InferInput } from '@regle/core';
+ * import { string } from '@regle/rules';
+ *
+ * const rules = {
+ *   firstName: { string },
+ * }
+ *
+ * const state = ref<InferInput<typeof rules>>({});
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#string Documentation}
  */
 export const string: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<string>, unknown> = createRule({
   type: 'string',

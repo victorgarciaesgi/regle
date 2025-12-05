@@ -13,22 +13,27 @@ import type {
 import { createRule, InternalRuleType } from '@regle/core';
 
 /**
- * withAsync works like withParams, but is specifically designed for async rules that depend on external values.
- * 
+ * `withAsync` works like `withParams`, but is specifically designed for async rules that depend on external values.
+ *
+ * @param rule - The async rule function
+ * @param depsArray - Array of reactive dependencies (refs or getters)
+ *
+ * @example
  * ```ts
- *import { withAsync } from '@regle/rules';
-
-  const base = ref('foo');
-
-  const { r$ } = useRegle({ name: '' }, {
-    name: {
-      customRule: withAsync(async (value, param) => {
-        await someAsyncCall(param)
-      }, [base])
-    }
-  })
+ * import { withAsync } from '@regle/rules';
+ *
+ * const base = ref('foo');
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     customRule: withAsync(async (value, param) => {
+ *       await someAsyncCall(param)
+ *     }, [base])
+ *   }
+ * })
  * ```
- * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withasync}
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withasync Documentation}
  */
 export function withAsync<
   TValue,

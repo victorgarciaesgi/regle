@@ -10,6 +10,17 @@ const urlRegex =
 
 /**
  * Validates URLs.
+ *
+ * @example
+ * ```ts
+ * import { url } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ bestUrl: '' }, {
+ *   bestUrl: { url },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#url Documentation}
  */
 export const url: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'url',

@@ -3,7 +3,20 @@ import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import { isFilled, withMessage, withParams } from '../helpers';
 
 /**
- * Allow only one possible literal value
+ * Allow only one possible literal value.
+ *
+ * @param literal - The literal value to match
+ *
+ * @example
+ * ```ts
+ * import { literal } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ status: '' }, {
+ *   status: { literal: literal('active') },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#literal Documentation}
  */
 export function literal<const TValue extends string | number>(
   literal: MaybeRefOrGetter<TValue>

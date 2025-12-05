@@ -132,22 +132,36 @@ export function createUseRegleComposable<
 }
 
 /**
- * useRegle serves as the foundation for validation logic.
+ * `useRegle` serves as the foundation for validation logic.
+ * It transforms your data and validation rules into a powerful, reactive validation system.
  *
- * It accepts the following inputs:
+ * @param state - Your form data (plain object, ref, reactive object, or structure with nested refs)
+ * @param rules - Validation rules that should align with the structure of your state
+ * @param modifiers - Optional configuration to customize regle behavior
+ * @returns An object containing `r$` - the reactive validation state
  *
- * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
- * @param rules - These should align with the structure of your state.
- * @param modifiers - Customize regle behaviour
- * 
+ * @example
  * ```ts
  * import { useRegle } from '@regle/core';
-   import { required } from '@regle/rules';
-
-   const { r$ } = useRegle({ email: '' }, {
-     email: { required }
-   })
+ * import { required, email, minLength } from '@regle/rules';
+ *
+ * const { r$ } = useRegle(
+ *   { name: '', email: '' },
+ *   {
+ *     name: { required, minLength: minLength(2) },
+ *     email: { required, email }
+ *   }
+ * );
+ *
+ * // Access validation state
+ * r$.$valid        // Whether all validations pass
+ * r$.$value        // The current form values
+ * r$.name.$errors  // Errors for the name field
+ *
+ * // Trigger validation
+ * const result = await r$.$validate();
  * ```
- * Docs: {@link https://reglejs.dev/core-concepts/}  
+ *
+ * @see {@link https://reglejs.dev/core-concepts/ Documentation}
  */
 export const useRegle = createUseRegleComposable();

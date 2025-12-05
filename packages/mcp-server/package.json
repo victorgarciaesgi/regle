@@ -1,0 +1,64 @@
+{
+  "name": "@regle/mcp-server",
+  "version": "1.12.1",
+  "description": "MCP Server for Regle - provides AI-powered assistance for Vue.js form validation",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/regle-mcp-server.js",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "4.21.0",
+    "typescript": "catalog:"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-mcp-server.d.ts",
+      "default": "./dist/regle-mcp-server.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "main": "./dist/regle-mcp-server.js",
+  "module": "./dist/regle-mcp-server.js",
+  "types": "./dist/regle-mcp-server.d.ts",
+  "bin": {
+    "regle-mcp-server": "./dist/regle-mcp-server.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://reglejs.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "keywords": [
+    "regle",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "vue",
+    "validation",
+    "forms"
+  ],
+  "license": "MIT"
+}

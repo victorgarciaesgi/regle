@@ -28,7 +28,28 @@ interface SameAsFn {
 }
 
 /**
- * Checks if the value matches the specified property or ref.
+ * Checks if the value matches the specified property or ref. Useful for password confirmation fields.
+ *
+ * @param target - The target value to compare against (can be a ref or getter)
+ * @param otherName - Optional name for the other field (used in error message)
+ *
+ * @example
+ * ```ts
+ * import { sameAs } from '@regle/rules';
+ *
+ * const form = ref({
+ *   password: '',
+ *   confirmPassword: '',
+ * });
+ *
+ * const { r$ } = useRegle(form, {
+ *   confirmPassword: {
+ *     sameAs: sameAs(() => form.value.password),
+ *   }
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#sameas Documentation}
  */
 export const sameAs: SameAsFn = createRule({
   type: 'sameAs',

@@ -11,7 +11,30 @@ import type {
 import { createRule, InternalRuleType } from '@regle/core';
 
 /**
- * The withTooltip wrapper allows you to display additional messages for your field that aren’t necessarily errors. Tooltips are aggregated and accessible via $fields.xxx.$tooltips .
+ * The `withTooltip` wrapper allows you to display additional messages for your field that aren't necessarily errors.
+ * Tooltips are aggregated and accessible via `$tooltips` property.
+ *
+ * @param rule - The rule to wrap (can be inline function or rule definition)
+ * @param newTooltip - The tooltip message (string or function returning a string)
+ *
+ * @example
+ * ```ts
+ * import { withTooltip, minLength } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ password: '' }, {
+ *   password: {
+ *     minLength: withTooltip(
+ *       minLength(8),
+ *       'Password should be at least 8 characters for better security'
+ *     ),
+ *   }
+ * })
+ *
+ * // Access tooltips via:
+ * // r$.password.$tooltips
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withtooltip Documentation}
  */
 
 export function withTooltip<

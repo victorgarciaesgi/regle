@@ -3,9 +3,28 @@ import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 
 /**
- * Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
+ * Requires the input value to have a strict specified length. Works with arrays, objects and strings.
  *
- * @param count - the required length
+ * @param count - The exact required length
+ *
+ * @example
+ * ```ts
+ * import { exactLength } from '@regle/rules';
+ *
+ * const exactValue = ref(6);
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     exactLength: exactLength(6),
+ *     // or with reactive value
+ *     exactLength: exactLength(exactValue),
+ *     // or with getter
+ *     exactLength: exactLength(() => exactValue.value)
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#exactlength Documentation}
  */
 export const exactLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
