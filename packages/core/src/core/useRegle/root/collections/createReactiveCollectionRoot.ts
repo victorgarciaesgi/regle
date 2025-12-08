@@ -129,9 +129,8 @@ export function createReactiveCollectionStatus({
 
     $value.value = $selfStatus.value.$value;
 
-    if (Array.isArray(state.value) && !immediateScopeState.isPrimitiveArray.value) {
+    if (Array.isArray(state.value) && (!immediateScopeState.isPrimitiveArray.value || schemaMode)) {
       $eachStatus.value = state.value
-        .filter((value) => typeof value === 'object')
         .map((value, index) => {
           const { scope, unwrapped } = unwrapGetter(
             rulesDef.value.$each,
@@ -195,11 +194,10 @@ export function createReactiveCollectionStatus({
   }
 
   function updateStatus() {
-    if (Array.isArray(state.value) && !immediateScopeState.isPrimitiveArray.value) {
+    if (Array.isArray(state.value) && (!immediateScopeState.isPrimitiveArray.value || schemaMode)) {
       const previousStatus = cloneDeep($eachStatus.value);
 
       $eachStatus.value = state.value
-        .filter((value) => typeof value === 'object')
         .map((value, index) => {
           const currentValue = toRef(() => value);
           if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
@@ -328,8 +326,13 @@ export function createReactiveCollectionStatus({
       });
 
       const $correct = computed<boolean>(() => {
+        const isSelfCorrect = schemaMode
+          ? $selfStatus.value.$correct
+          : isEmpty($selfStatus.value.$rules)
+            ? true
+            : $selfStatus.value.$correct;
         return (
-          (isEmpty($selfStatus.value.$rules) ? true : $selfStatus.value.$correct) &&
+          isSelfCorrect &&
           (!$eachStatus.value.length ||
             $eachStatus.value.every((statusOrField) => {
               return statusOrField.$correct || (statusOrField.$anyDirty && !statusOrField.$invalid);

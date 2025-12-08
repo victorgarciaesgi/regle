@@ -55,7 +55,12 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
       obj[lastProp].$self = (obj[lastProp].$self ??= []).concat(value);
     }
   } else {
-    if (Array.isArray(obj[lastProp])) {
+    if (!isNaN(parseInt(lastProp))) {
+      if (obj.$each == undefined) {
+        obj.$each = [];
+      }
+      obj.$each[lastProp] = (obj.$each[lastProp] ??= []).concat(value);
+    } else if (Array.isArray(obj[lastProp])) {
       obj[lastProp] = obj[lastProp].concat(value);
     } else {
       obj[lastProp] = value;

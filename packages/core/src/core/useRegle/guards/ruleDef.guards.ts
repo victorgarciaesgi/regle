@@ -32,7 +32,7 @@ export function isCollectionRulesDef(
 ): rules is Ref<$InternalRegleCollectionRuleDecl> {
   return (
     (!!rules.value && isObject(rules.value) && '$each' in rules.value) ||
-    (schemaMode && Array.isArray(state.value) && state.value.some(isObject)) ||
+    (schemaMode && Array.isArray(state.value)) ||
     (Array.isArray(state.value) && state.value.some(isObject))
   );
 }

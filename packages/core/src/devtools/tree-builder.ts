@@ -192,7 +192,7 @@ function buildCollectionItemNodes(
     }
   });
 
-  if (fieldStatus.$self && typeof fieldStatus.$self === 'object' && !isEmpty(fieldStatus.$self.$rules)) {
+  if (fieldStatus.$self && typeof fieldStatus.$self === 'object') {
     const itemTags = buildNodeTags(fieldStatus.$self);
     const itemPath = `${fieldPath}[$self]`;
 

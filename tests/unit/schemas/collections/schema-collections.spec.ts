@@ -53,4 +53,24 @@ describe.each([
     shouldBeValidField(vm.r$.array.$each[1].test);
     shouldBeValidField(vm.r$.array.$each[1].nested_array.$each[0].rest);
   });
+
+  it('should work with an empty array', async () => {
+    const values = {
+      name: 'root',
+      array: [],
+    };
+
+    function useSchema() {
+      return useRegleSchema(values, fixture());
+    }
+
+    const { vm } = createRegleComponent(useSchema);
+
+    await vm.r$.$validate();
+    await nextTick();
+
+    shouldBeErrorField(vm.r$.array);
+
+    expect(vm.r$.array.$errors.$self).toStrictEqual(['Array must contain at least 1 element']);
+  });
 });

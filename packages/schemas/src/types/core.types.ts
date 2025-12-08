@@ -55,7 +55,12 @@ export type RegleSingleFieldSchema<
 } & TAdditionalReturnProperties;
 
 export type RegleSchemaResult<TSchema extends unknown> =
-  | { valid: false; data: PartialDeep<TSchema>; issues: RegleIssuesTree<TSchema>; errors: RegleErrorTree<TSchema> }
+  | {
+      valid: false;
+      data: PartialDeep<TSchema>;
+      issues: RegleIssuesTree<TSchema, true>;
+      errors: RegleErrorTree<TSchema, false, true>;
+    }
   | { valid: true; data: TSchema; issues: EmptyObject; errors: EmptyObject };
 
 type ProcessNestedFields<TState extends Record<string, any> | undefined, TShortcuts extends RegleShortcutDefinition> =
@@ -89,13 +94,13 @@ export type RegleSchemaStatus<
   /** Collection of all issues, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $issues: RegleIssuesTree<TState>;
+  readonly $issues: RegleIssuesTree<TState, true>;
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
-  readonly $errors: RegleErrorTree<TState>;
+  readonly $errors: RegleErrorTree<TState, false, true>;
   /** Collection of all the error messages, collected for all children properties. */
-  readonly $silentErrors: RegleErrorTree<TState>;
+  readonly $silentErrors: RegleErrorTree<TState, false, true>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
 } & ProcessNestedFields<TState, TShortcuts> &
@@ -117,10 +122,8 @@ export type RegleSchemaStatus<
  * @public
  */
 export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extends RegleShortcutDefinition = {}> =
-  NonNullable<TState> extends Array<infer A>
-    ? A extends Record<string, any>
-      ? RegleSchemaCollectionStatus<NonNullable<TState>, TShortcuts>
-      : RegleSchemaFieldStatus<TState, TShortcuts>
+  NonNullable<TState> extends Array<any>
+    ? RegleSchemaCollectionStatus<NonNullable<TState>, TShortcuts>
     : NonNullable<TState> extends Date | File
       ? RegleSchemaFieldStatus<TState, TShortcuts>
       : unknown extends TState
