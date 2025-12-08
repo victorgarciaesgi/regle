@@ -1,80 +1,79 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRegle, useCollectScope } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
+
+const state = ref({ name: '', email: '' });
+const { r$: collect$r } = useCollectScope();
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  email: { email },
+});
+
+const isInvalid = (): boolean => collect$r.$invalid;
+
+console.log(isInvalid);
+
+async function submit() {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
+  } else {
+    console.warn('Errors: ', r$.$errors);
+  }
+}
+</script>
+
 <template>
-  <div style="display: flex; flex-direction: column; gap: 16px; width: 500px">
-    <input v-model="r$.$value.name" />
+  <div class="container p-3">
+    <h2>Hello Regle!</h2>
 
-    <ul v-if="r$.name?.$errors?.length">
-      <li v-for="error in r$.name.$errors">
-        {{ error }}
-      </li>
-    </ul>
-
-    <!-- Array field -->
-    <div style="border: 1px solid; padding: 14px" v-for="field in r$.array?.$each">
-      <input type="text" :key="field.$id" v-model="field.$value.test" />
-
-      <ul v-if="field.test.$errors.length > 0">
-        <li v-for="error in field.test.$errors">
+    <div class="py-2 has-validation">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+      />
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
           {{ error }}
         </li>
       </ul>
-
-      <!-- Nested array field -->
-      <div style="border: 1px solid; padding: 14px; margin-top: 15px" v-for="nested_field in field.nested_array.$each">
-        <input type="text" :key="nested_field.$id" v-model="nested_field.$value.rest" />
-        <ul v-if="nested_field.rest.$errors.length > 0">
-          <li v-for="error in nested_field.rest.$errors">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
     </div>
 
-    <button @click="addTopLevel">Add one top level array field</button>
-    <button @click="moveTopLevelUp">Move last up</button>
-    <button @click="submit">Submit me!</button>
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
-
-  <!-- Errors -->
-  <pre>{{ r$.$errors }}</pre>
 </template>
-
-<script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod';
-
-const schema = z.object({
-  name: z.string().min(1),
-  array: z.array(
-    z.object({
-      test: z.string().min(1),
-      nested_array: z.array(
-        z.object({
-          rest: z.string().min(1),
-        })
-      ),
-    })
-  ),
-});
-
-const values = {
-  array: [{ test: 'array', nested_array: [{ rest: 'nested' }] }],
-};
-
-const { r$ } = useRegleSchema(values, schema, {
-  rewardEarly: true,
-});
-
-const submit = async () => {
-  const res = await r$.$validate();
-  console.log(res);
-};
-
-const addTopLevel = () => {
-  r$.$value.array.push({ test: '', nested_array: [{ rest: '' }] });
-};
-
-// Moves the top level array's item one index higher within the array
-const moveTopLevelUp = () => {
-  r$.$value.array.unshift(r$.$value.array.pop());
-};
-</script>
+<style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+</style>

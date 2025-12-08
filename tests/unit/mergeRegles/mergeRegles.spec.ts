@@ -68,6 +68,13 @@ describe('mergeRegles', () => {
     expect(vm.r$Merged.$anyEdited).toBe(false);
     expect(vm.r$Merged.$ready).toBe(false);
 
+    expectTypeOf(vm.r$Merged.$invalid).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.r$Merged.$dirty).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.r$Merged.$anyDirty).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.r$Merged.$edited).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.r$Merged.$anyEdited).toEqualTypeOf<boolean>();
+    expectTypeOf(vm.r$Merged.$ready).toEqualTypeOf<boolean>();
+
     expect(vm.r$Merged.$value).toStrictEqual({
       firstR$: {
         competency: 'c1',
