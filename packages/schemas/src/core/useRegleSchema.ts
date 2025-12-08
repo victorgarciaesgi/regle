@@ -100,9 +100,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         ('type' in issue ? issue.type === 'array' : false) ||
         Array.isArray(getDotPath(processedState.value, $path));
 
-      const isPrimitivesArray = !isArray && typeof lastItemKey === 'number';
-
-      return { isArray, isPrimitivesArray, $path, lastItemKey, lastItem };
+      return { isArray, $path, lastItemKey, lastItem };
     }
 
     function getIssuePath(issue: StandardSchemaV1.Issue) {
@@ -166,10 +164,6 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>, isValidate = false) {
       const output = {};
       const mappedIssues = result.issues?.map((issue) => {
-        const { isPrimitivesArray } = getPropertiesFromIssue(issue);
-        if (isPrimitivesArray) {
-          return issue;
-        }
         const parentArrayPath = getParentArrayPath(issue);
         if (parentArrayPath) {
           const $currentArrayValue = getDotPath(processedState.value, getIssuePath(parentArrayPath));
@@ -188,15 +182,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
       if (mappedIssues?.length) {
         const issues = filteredIssues.map((issue) => {
-          let { isArray, isPrimitivesArray, $path, lastItemKey } = getPropertiesFromIssue(issue);
-
-          if (isPrimitivesArray) {
-            $path =
-              issue.path
-                ?.slice(0, issue.path.length - 1)
-                ?.map((item) => (typeof item === 'object' ? item.key : item.toString()))
-                .join('.') ?? '';
-          }
+          let { isArray, $path, lastItemKey } = getPropertiesFromIssue(issue);
 
           return {
             ...issue,
@@ -211,6 +197,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
         issues.forEach(({ isArray, $path, ...issue }) => {
           setObjectError(output, $path, [issue], isArray);
         });
+
         previousIssues.value = issues;
       } else {
         previousIssues.value = [];
