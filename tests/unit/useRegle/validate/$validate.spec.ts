@@ -1,43 +1,7 @@
-import { useRegle, type InferSafeOutput, type MaybeOutput } from '@regle/core';
-import { email, minLength, required, requiredIf } from '@regle/rules';
+import { useRegle, type InferSafeOutput, type InferValidOutput, type MaybeOutput } from '@regle/core';
+import { email, minLength, required } from '@regle/rules';
 import { createRegleComponent } from '../../../utils/test.utils';
-
-function simpleNestedStateWithMixedValidation() {
-  interface Form {
-    email?: string;
-    date: Date;
-    maybeUndefined: number;
-    user?: {
-      firstName?: string;
-      lastName?: string;
-    };
-    contacts?: [{ name: string }];
-    collection?: [{ name: string }];
-  }
-
-  const condition: boolean = true as boolean;
-
-  return useRegle({} as Form, {
-    email: { required },
-    date: { required: requiredIf(false) },
-    maybeUndefined: {
-      ...(condition && {
-        required,
-      }),
-    },
-    user: {
-      firstName: { required },
-    },
-    contacts: {
-      $each: {
-        name: { required },
-      },
-    },
-    collection: {
-      required,
-    },
-  });
-}
+import { simpleNestedStateWithMixedValidation } from './fixtures';
 
 describe('$validate', () => {
   it('should have a deep safe form if the result is true', async () => {
@@ -54,6 +18,7 @@ describe('$validate', () => {
           lastName?: string | undefined;
           firstName: string;
         };
+        file: File;
         contacts: {
           name: string;
         }[];
@@ -70,6 +35,7 @@ describe('$validate', () => {
           firstName?: MaybeOutput<string>;
           lastName?: MaybeOutput<string>;
         };
+        file?: MaybeOutput<File>;
         contacts?: {
           name?: MaybeOutput<string>;
         }[];
@@ -89,6 +55,24 @@ describe('$validate', () => {
         lastName?: string | undefined;
         firstName: string;
       };
+      file: File;
+      contacts: {
+        name: string;
+      }[];
+      collection: {
+        name: string;
+      }[];
+    }>();
+
+    expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<{
+      email: string;
+      date?: Date | undefined;
+      maybeUndefined?: number | undefined;
+      user: {
+        lastName?: string | undefined;
+        firstName: string;
+      };
+      file: File;
       contacts: {
         name: string;
       }[];

@@ -1,4 +1,4 @@
-import type { RegleValidationGroupEntry } from '../core';
+import type { RegleValidationGroupEntry } from '../types';
 
 export function mergeBooleanGroupProperties(
   entries: RegleValidationGroupEntry[],

@@ -1,5 +1,6 @@
 import type {
   DeepMaybeRef,
+  DeepPartial,
   DeepReactiveState,
   HaveAnyRequiredProps,
   LocalRegleBehaviourOptions,
@@ -13,7 +14,6 @@ import type {
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { PartialDeep } from 'type-fest';
 import type { MaybeRef, Raw, Ref, UnwrapNestedRefs, WatchHandle } from 'vue';
 import { computed, getCurrentScope, isRef, onScopeDispose, ref, unref, watch } from 'vue';
 import { cloneDeep, getDotPath, isObject, merge, setObjectError } from '../../../shared';
@@ -32,9 +32,7 @@ export interface useRegleSchemaFn<
 > {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
     ...params: [
-      state:
-        | MaybeRef<PartialDeep<NoInferLegacy<TState>, { recurseIntoArrays: true }>>
-        | DeepReactiveState<PartialDeep<NoInferLegacy<TState>, { recurseIntoArrays: true }>>,
+      state: MaybeRef<DeepPartial<NoInferLegacy<TState>>> | DeepReactiveState<DeepPartial<NoInferLegacy<TState>>>,
       rulesFactory: MaybeRef<TSchema>,
       ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TAdditionalOptions>> extends true
         ? [options: useRegleSchemaFnOptions<TAdditionalOptions>]

@@ -141,7 +141,7 @@ It returns a promise that will either resolve to `false` or a Headless copy of y
 The first argument is optional and can be used to assign a new state before validating. It's equivalent to use `r$.$value = x` and `r$.$validate();`.
 
 ### `$extractDirtyFields` 
-- Type: `(filterNullishValues = true) => PartialDeep<TState>`
+- Type: `(filterNullishValues = true) => DeepPartial<TState>`
 
 Will return a copy of your state with only the fields that are dirty.
 By default it will filter out nullish values or objects, but you can override it with the first parameter `$extractDirtyFields(false)`.

@@ -1,13 +1,10 @@
-import type { DeepReactiveState, NoInferLegacy } from '@regle/core';
+import type { DeepPartial, DeepReactiveState, NoInferLegacy } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { PartialDeep } from 'type-fest';
 import { type ComputedRef, type MaybeRef } from 'vue';
 
 export interface inferSchemaFn {
   <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
-    state:
-      | MaybeRef<PartialDeep<TState, { recurseIntoArrays: true }>>
-      | DeepReactiveState<PartialDeep<TState, { recurseIntoArrays: true }>>,
+    state: MaybeRef<DeepPartial<TState>> | DeepReactiveState<DeepPartial<TState>>,
     rulesFactory: MaybeRef<TSchema>
   ): NoInferLegacy<TSchema>;
 }

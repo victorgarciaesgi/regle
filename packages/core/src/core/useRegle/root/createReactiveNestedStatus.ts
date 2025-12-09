@@ -18,7 +18,7 @@ import type {
   RegleValidationGroupOutput,
   ResetOptions,
 } from '../../../types';
-import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../types';
+import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../utils';
 import { isRefObject } from '../../../utils';
 import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';

@@ -1,5 +1,6 @@
-import type { EmptyObject, PartialDeep } from 'type-fest';
+import type { EmptyObject } from 'type-fest';
 import type {
+  DeepPartial,
   HasNamedKeys,
   PromiseReturn,
   RegleCommonStatus,
@@ -42,7 +43,7 @@ export type MergedRegles<
     [K in keyof TRegles]: TRegles[K]['$silentIssues'];
   };
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TValue>[];
+  $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TValue>[];
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TRegles['$value']) => Promise<MergedReglesResult<TRegles>>;
 } & (HasNamedKeys<TRegles> extends true ? { [K in keyof TRegles]: TRegles[K] } : {});
@@ -64,7 +65,7 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
   /** Collection of all registered Regles instances silent issues */
   readonly $silentIssues: RegleValidationErrors<Record<string, unknown>, false, true>[];
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TValue>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TValue>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TValue) => Promise<{
     valid: boolean;
