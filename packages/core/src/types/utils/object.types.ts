@@ -1,6 +1,5 @@
-import type { UnionToIntersection, UnionToTuple, IsUnion, IsUnknown } from 'type-fest';
-import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
-import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef, Raw, ComputedRef } from 'vue';
+import type { IsUnion } from 'type-fest';
+import type { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
 import type { RegleStaticImpl } from './static.types';
 import type { LazyJoinDiscriminatedUnions } from './union.types';
@@ -14,6 +13,10 @@ export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
   [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? K : never]: TObject[K];
 } & {
   [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? never : K]?: TObject[K];
+};
+
+export type RemoveIndexSignature<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: T[K];
 };
 
 // ----- Prop types

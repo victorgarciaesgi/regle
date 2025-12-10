@@ -3,7 +3,7 @@ import type { ComputedRef, MaybeRef, Raw } from 'vue';
 import { computed, isRef, ref } from 'vue';
 import { isEmpty, isObject } from '../../../../shared';
 import type {
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   CustomRulesDeclarationTree,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
@@ -56,12 +56,12 @@ export type useRulesFnOptions<
   >;
 
 export interface useRulesFn<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > {
   <
     TRules extends RegleUnknownRulesTree | RegleRuleDecl,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & TCustomRules>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
     TState extends Record<string, any> = InferInput<TRules>,
   >(
@@ -86,7 +86,7 @@ export interface useRulesFn<
 }
 
 export function createUseRulesComposable<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(
   customRules?: () => TCustomRules,

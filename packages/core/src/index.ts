@@ -33,6 +33,7 @@ export { RegleVuePlugin } from './plugin';
 export { InternalRuleType } from './types';
 export type {
   $InternalRegleStatus,
+  ExtendedRulesDeclarations,
   AllRulesDeclarations,
   ArrayElement,
   DeepMaybeRef,

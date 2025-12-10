@@ -3,7 +3,7 @@ import type { RegleUniversalParams } from './rule.params.types';
 import type { RegleInternalRuleDefs } from './rule.internal.types';
 import type {
   $InternalRegleRuleStatus,
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   RegleCommonStatus,
   RegleFormPropertyType,
   RegleRuleDecl,
@@ -198,7 +198,7 @@ export type RegleRuleDefinitionWithMetadataProcessor<
 
 export type RegleCollectionRuleDefinition<
   TValue = any[],
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > =
   | (RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions> & {
       $each: MaybeGetter<RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>, ArrayElement<TValue>>;

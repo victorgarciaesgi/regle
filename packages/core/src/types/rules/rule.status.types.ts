@@ -7,7 +7,7 @@ import type {
   $InternalRegleErrors,
   $InternalRegleIssues,
   $InternalRegleResult,
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   ArrayElement,
   CollectionRegleBehaviourOptions,
   DeepPartial,
@@ -208,7 +208,7 @@ export type $InternalRegleStatusType =
   | $InternalRegleFieldStatus;
 
 export type RegleFieldIssue<
-  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>> = EmptyObject,
+  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
 > = {
   readonly $property: string;
   readonly $type?: string;
@@ -229,7 +229,7 @@ export type RegleFieldIssue<
 
 type ComputeFieldRules<
   TState extends any,
-  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>>>,
+  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>>>,
 > =
   IsEmptyObject<UnwrapRef<TRules>> extends true
     ? {
@@ -257,7 +257,7 @@ type ComputeFieldRules<
  */
 export type RegleFieldStatus<
   TState extends any = any,
-  TRules extends RegleFormPropertyType<unknown, Partial<AllRulesDeclarations>> = Record<string, any>,
+  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
 > = Omit<RegleCommonStatus<TState, TRules>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/

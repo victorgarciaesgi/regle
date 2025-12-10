@@ -18,6 +18,7 @@ describe('applyIf helper', () => {
         email: {
           error: applyIf(() => form.value.count === 1, required),
           foo: applyIf(false, alpha),
+          $autoDirty: false,
         },
       }));
     },

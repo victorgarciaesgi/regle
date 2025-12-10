@@ -1,5 +1,5 @@
 import type { Raw, Ref } from 'vue';
-import type { DefaultValidators, useRegleFn } from '../../core';
+import type { useRegleFn } from '../../core';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
 import type {
   ArrayElement,
@@ -8,10 +8,11 @@ import type {
   MaybeGetter,
   MaybeRefOrComputedRef,
   RegleStatic,
+  RemoveIndexSignature,
   Unwrap,
   UnwrapMaybeRef,
 } from '../utils';
-import type { AllRulesDeclarations } from './rule.custom.types';
+import type { ExtendedRulesDeclarations, DefaultValidatorsTree } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
@@ -19,14 +20,13 @@ import type {
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
-import type { EmptyObject } from 'type-fest';
 
 /**
  * @public
  */
 export type ReglePartialRuleTree<
   TForm extends Record<string, any> = Record<string, any>,
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 };
@@ -36,7 +36,7 @@ export type ReglePartialRuleTree<
  */
 export type RegleRuleTree<
   TForm extends Record<string, any>,
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 };
@@ -53,20 +53,20 @@ export type RegleUnknownRulesTree = {
  */
 export type RegleComputedRules<
   TForm extends MaybeRefOrComputedRef<Record<string, any>> | DeepReactiveState<Record<string, any>>,
-  TCustomRules extends Partial<AllRulesDeclarations> | Regle<any, any> | useRegleFn<any> =
-    Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> | Regle<any, any> | useRegleFn<any> =
+    Partial<ExtendedRulesDeclarations>,
   TState = Unwrap<UnwrapMaybeRef<TForm>>,
   TCustom = TCustomRules extends Regle<any, infer R>
     ? R extends ReglePartialRuleTree<any, infer C>
       ? C
-      : Partial<AllRulesDeclarations>
+      : Partial<ExtendedRulesDeclarations>
     : TCustomRules extends useRegleFn<infer Rules, any>
       ? Rules
       : {},
 > = {
   [TKey in keyof JoinDiscriminatedUnions<TState>]?: RegleFormPropertyType<
     JoinDiscriminatedUnions<TState>[TKey],
-    Omit<Partial<AllRulesDeclarations>, keyof TCustom> & Partial<TCustom>
+    Omit<Partial<ExtendedRulesDeclarations>, keyof TCustom> & Partial<TCustom>
   >;
 };
 
@@ -83,7 +83,7 @@ export type $InternalReglePartialRuleTree = {
  */
 export type RegleFormPropertyType<
   TValue = any,
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
   ? MaybeRefOrComputedRef<RegleRuleDecl<TValue, TCustomRules>>
   : NonNullable<TValue> extends Array<any>
@@ -116,18 +116,11 @@ export type $InternalFormPropertyTypes =
  */
 export type RegleRuleDecl<
   TValue extends any = any,
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<DefaultValidatorsTree>,
   TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions,
 > = TOptions & {
-  [TKey in keyof TCustomRules]?: NonNullable<TCustomRules[TKey]> extends RegleRuleWithParamsDefinition<
-    any,
-    infer TParams
-  >
-    ? RegleRuleDefinition<TValue, [...TParams, ...args: [...any[]]], boolean>
-    : NonNullable<TCustomRules[TKey]> extends RegleRuleDefinition<any, any[], any, any>
-      ? FormRuleDeclaration<TValue, any[]>
-      : FormRuleDeclaration<TValue, any[]> | TOptions[keyof TOptions];
-};
+  [TKey in keyof RemoveIndexSignature<TCustomRules>]?: FormRuleDeclaration<TValue, any[]>;
+} & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
 
 /**
  * @internal
@@ -149,7 +142,7 @@ export type RegleCollectionRuleDeclKeyProperty = {
  */
 export type RegleCollectionRuleDecl<
   TValue = any[],
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > =
   | ({
       $each?: RegleCollectionEachRules<TValue, TCustomRules>;
@@ -161,7 +154,7 @@ export type RegleCollectionRuleDecl<
 /** @public */
 export type RegleCollectionEachRules<
   TValue = any[],
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = MaybeGetter<
   RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
   ArrayElement<TValue>,

@@ -1,4 +1,4 @@
-import type { AllRulesDeclarations, Maybe, RegleRuleDecl } from '@regle/core';
+import type { ExtendedRulesDeclarations, Maybe, RegleRuleDecl } from '@regle/core';
 import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue';
 import { isObject } from '../../../shared';
 import { applyIf } from './applyIf';
@@ -31,7 +31,7 @@ function mapRulesWithCondition(
  */
 export function assignIf<
   TValue extends unknown = any,
-  TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
   TRulesDelc extends RegleRuleDecl<TValue, TCustomRules> = RegleRuleDecl<TValue, TCustomRules>,
 >(
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
