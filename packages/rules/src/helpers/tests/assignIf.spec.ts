@@ -13,6 +13,7 @@ describe('assignIf helper', () => {
       const form = ref({
         name: '',
         email: '',
+        collections: [{ name: '' }],
         isAdvanced: false,
       });
 
@@ -25,6 +26,13 @@ describe('assignIf helper', () => {
           required,
           email,
         }),
+        collections: {
+          $each: {
+            name: assignIf(() => form.value.isAdvanced, {
+              required,
+            }),
+          },
+        },
       }));
     },
     template: '<div></div>',

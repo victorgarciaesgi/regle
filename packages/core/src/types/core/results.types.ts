@@ -10,16 +10,11 @@ import type {
   RegleCollectionRuleDecl,
   RegleErrorTree,
   RegleFieldIssue,
-  RegleFieldStatus,
   RegleFormPropertyType,
   RegleIssuesTree,
-  RegleLike,
   ReglePartialRuleTree,
-  RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
-  SuperCompatibleRegleFieldStatus,
-  SuperCompatibleRegleRoot,
 } from '../rules';
 import type {
   ArrayElement,
@@ -30,6 +25,7 @@ import type {
   Maybe,
   MaybeInput,
   MaybeOutput,
+  MaybeRefOrComputedRef,
   Prettify,
 } from '../utils';
 
@@ -193,7 +189,7 @@ export type DeepSafeFormState<
       : TState;
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
-  TRule extends MaybeRef<RegleRuleDecl<any, any>>
+  TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>
     ? [unknown] extends UnwrapRef<TRule>['required']
       ? NonNullable<UnwrapRef<TRule>['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
         ? true

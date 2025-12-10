@@ -12,11 +12,10 @@ import type {
   Unwrap,
   UnwrapMaybeRef,
 } from '../utils';
-import type { ExtendedRulesDeclarations, DefaultValidatorsTree } from './rule.custom.types';
+import type { DefaultValidatorsTree, ExtendedRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  RegleRuleWithParamsDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
