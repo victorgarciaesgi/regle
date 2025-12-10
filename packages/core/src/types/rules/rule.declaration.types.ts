@@ -1,5 +1,5 @@
 import type { Raw, Ref } from 'vue';
-import type { useRegleFn } from '../../core';
+import type { DefaultValidators, useRegleFn } from '../../core';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
 import type {
   ArrayElement,
@@ -19,6 +19,7 @@ import type {
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
+import type { EmptyObject } from 'type-fest';
 
 /**
  * @public
