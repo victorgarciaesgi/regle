@@ -133,4 +133,5 @@ export type {
   InferValidOutput,
   InferOutput,
   InferSafeOutput,
+  RegleRuleWithParamsDefinitionInput,
 } from './types';

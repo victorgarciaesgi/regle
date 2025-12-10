@@ -1,12 +1,12 @@
 import type {
-  InlineRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  RegleRuleMetadataDefinition,
   RegleRuleMetadataConsumer,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleRaw,
   Maybe,
+  FormRuleDeclaration,
+  InlineRuleDeclaration,
 } from '@regle/core';
 import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
@@ -26,16 +26,19 @@ import type { MaybeRefOrGetter } from 'vue';
  *
  * ```
  */
-export function applyIf<
-  TValue extends any,
-  TParams extends any[],
-  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
-  TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
-  TAsync extends boolean = TReturn extends Promise<any> ? true : false,
->(
+export function applyIf<TRule extends FormRuleDeclaration<any>>(
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
-  rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
-): RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata> {
+  rule: TRule
+): TRule extends InlineRuleDeclaration<infer TValue, infer TParams, infer TReturn>
+  ? RegleRuleDefinition<
+      TValue,
+      [...TParams, condition: boolean],
+      TReturn extends Promise<any> ? true : false,
+      TReturn extends Promise<infer M> ? M : TReturn
+    >
+  : TRule extends FormRuleDeclaration<infer TValue, infer TParams, any, infer TMetadata, infer TAsync>
+    ? RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata>
+    : TRule {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined = [];

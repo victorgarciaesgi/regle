@@ -4,6 +4,7 @@ import type {
   AllRulesDeclarations,
   CustomRulesDeclarationTree,
   DeepReactiveState,
+  FieldRegleBehaviourOptions,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,

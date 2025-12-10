@@ -1,8 +1,20 @@
 import type { AllRulesDeclarations, Maybe, RegleRuleDecl } from '@regle/core';
 import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue';
-import { applyIf } from './applyIf';
 import { isObject } from '../../../shared';
+import { applyIf } from './applyIf';
 
+function mapRulesWithCondition(
+  condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rules: MaybeRefOrGetter<RegleRuleDecl<any, any>>,
+  trueCheck: boolean
+) {
+  return Object.entries(toValue(rules)).map(([key, rule]) => {
+    if (typeof rule === 'function' || (isObject(rule) && '_validator' in rule)) {
+      return [key, applyIf(trueCheck ? condition : () => !toValue(condition), rule)];
+    }
+    return [key, rule];
+  });
+}
 /**
  * The assignIf is a shorthand for conditional destructuring assignment.
  * It allows to apply multiple rules to a field conditionally.
@@ -21,15 +33,14 @@ export function assignIf<
   TValue extends unknown = any,
   TCustomRules extends Partial<AllRulesDeclarations> = Partial<AllRulesDeclarations>,
   TRulesDelc extends RegleRuleDecl<TValue, TCustomRules> = RegleRuleDecl<TValue, TCustomRules>,
->(_condition: MaybeRefOrGetter<Maybe<boolean>>, rules: MaybeRefOrGetter<TRulesDelc>): ComputedRef<TRulesDelc> {
+>(
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rules: MaybeRefOrGetter<TRulesDelc>,
+  otherwiseRules?: MaybeRefOrGetter<TRulesDelc>
+): ComputedRef<TRulesDelc> {
   return computed(() => {
-    return Object.fromEntries(
-      Object.entries(toValue(rules)).map(([key, rule]) => {
-        if (typeof rule === 'function' || (isObject(rule) && '_validator' in rule)) {
-          return [key, applyIf(_condition, rule as any)];
-        }
-        return [key, rule];
-      })
-    );
+    let trueRules = mapRulesWithCondition(_condition, rules, true);
+    let falseRules = otherwiseRules ? mapRulesWithCondition(_condition, otherwiseRules, false) : [];
+    return Object.fromEntries([...trueRules, ...falseRules]);
   });
 }

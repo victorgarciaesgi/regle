@@ -90,6 +90,7 @@ function useRegleDevtoolsRegistry() {
   }
 
   return {
+    devtoolsApi,
     register,
     unregister,
     getAll,
@@ -114,7 +115,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
   if (__USE_DEVTOOLS__) {
     const regleVersion: string | undefined = inject(regleSymbol);
 
-    if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value) {
+    if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value && !!regleDevtoolsRegistry.devtoolsApi) {
       regleDevtoolsRegistry.loggedWarning.value = true;
       console.warn(
         `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
