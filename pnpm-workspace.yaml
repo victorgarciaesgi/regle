@@ -3,6 +3,7 @@ packages:
   - packages/rules
   - packages/schemas
   - packages/nuxt
+  - packages/nuxt/fixtures
   - packages/shared
   - packages-private/regle-playground
   - tests
@@ -38,7 +39,6 @@ catalog:
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
 
   # Vue Ecosystem
-  '@vue/test-utils': 2.4.6
   vue-router: 4.6.3
   vue-tsc: 3.1.5
   vue-eslint-parser: 10.2.0
@@ -57,9 +57,16 @@ catalog:
   tsdown: 0.16.8
   type-fest: 5.2.0
 
+  # Testing
+
+  playwright: 1.56.1
+  playwright-core: 1.56.1
+  '@playwright/test': 1.56.1
+  vitest: 4.0.13
+  '@vue/test-utils': 2.4.6
+
   # Vite
   vite: 7.2.4
-  vitest: 4.0.13
   '@vitejs/plugin-vue': 6.0.2
   '@vitejs/plugin-vue-jsx': 5.1.2
 
