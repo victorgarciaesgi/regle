@@ -43,7 +43,7 @@ describe('external errors', () => {
     shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
     shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item);
 
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.root.$errors).toStrictEqual([]);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
@@ -435,7 +435,7 @@ describe('external errors', () => {
     shouldBePristineField(vm.r$.collection.$each[0].item);
 
     expect(vm.r$.$anyDirty).toBe(false);
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.root.$errors).toStrictEqual([]);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
@@ -589,7 +589,7 @@ describe('external errors', () => {
     shouldBeUnRuledPristineField(vm.r$.nested.name1.name2);
     shouldBeUnRuledPristineField(vm.r$.collection.$each[0].item.$each[0].name);
 
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.root.$errors).toStrictEqual([]);
     expect(vm.r$.nested.name1.name2.$errors).toStrictEqual([]);
@@ -759,7 +759,7 @@ describe('external errors', () => {
     shouldBeUnRuledPristineField(vm.r$.base.players.$each[0].shoes.$each[0].name);
     shouldBeUnRuledPristineField(vm.r$.base.players.$each[0].shoes.$each[0].id);
 
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.base.players.$each[0].shoes.$each[0].name.$errors).toStrictEqual([]);
     expect(vm.r$.base.players.$each[0].shoes.$each[0].id.$errors).toStrictEqual([]);

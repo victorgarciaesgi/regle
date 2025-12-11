@@ -395,10 +395,7 @@ export function createReactiveNestedStatus({
       });
 
       const $ready = computed<boolean>(() => {
-        if ($silent.value) {
-          return !($invalid.value || $pending.value);
-        }
-        return $anyDirty.value && !($invalid.value || $pending.value);
+        return !($invalid.value || $pending.value);
       });
 
       const $localPending = ref(false);
