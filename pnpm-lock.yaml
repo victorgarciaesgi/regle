@@ -12,6 +12,9 @@ catalogs:
     '@nuxt/schema':
       specifier: 4.2.1
       version: 4.2.1
+    '@playwright/test':
+      specifier: 1.56.1
+      version: 1.56.1
     '@total-typescript/ts-reset':
       specifier: 0.6.1
       version: 0.6.1
@@ -45,6 +48,12 @@ catalogs:
     pinia-2.2.5:
       specifier: npm:pinia@2.2.5
       version: 2.2.5
+    playwright:
+      specifier: 1.56.1
+      version: 1.56.1
+    playwright-core:
+      specifier: 1.56.1
+      version: 1.56.1
     prettier:
       specifier: 3.7.3
       version: 3.7.3
@@ -171,10 +180,10 @@ importers:
         specifier: 'catalog:'
         version: pinia@2.2.5(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
       playwright:
-        specifier: 1.56.1
+        specifier: 'catalog:'
         version: 1.56.1
       playwright-core:
-        specifier: 1.56.1
+        specifier: 'catalog:'
         version: 1.56.1
       prettier:
         specifier: 'catalog:'
@@ -386,6 +395,9 @@ importers:
       '@nuxt/test-utils':
         specifier: 3.20.1
         version: 3.20.1(@playwright/test@1.56.1)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(magicast@0.5.1)(playwright-core@1.56.1)(typescript@5.9.3)(vitest@4.0.13(@types/debug@4.1.12)(@types/node@22.19.1)(happy-dom@20.0.11)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.94.2)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.1))
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.56.1
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
@@ -417,6 +429,12 @@ importers:
       '@regle/schemas':
         specifier: workspace:*
         version: link:../schemas
+
+  packages/nuxt/fixtures:
+    dependencies:
+      '@regle/nuxt':
+        specifier: workspace:*
+        version: link:..
 
   packages/rules:
     dependencies:

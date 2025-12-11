@@ -1,5 +1,6 @@
 import type {
   ArrayElement,
+  DeepPartial,
   HasNamedKeys,
   JoinDiscriminatedUnions,
   Maybe,
@@ -15,7 +16,7 @@ import type {
   RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, PartialDeep } from 'type-fest';
+import type { EmptyObject } from 'type-fest';
 import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
@@ -57,7 +58,7 @@ export type RegleSingleFieldSchema<
 export type RegleSchemaResult<TSchema extends unknown> =
   | {
       valid: false;
-      data: PartialDeep<TSchema>;
+      data: DeepPartial<TSchema>;
       issues: RegleIssuesTree<TSchema, true>;
       errors: RegleErrorTree<TSchema, false, true>;
     }
@@ -102,7 +103,7 @@ export type RegleSchemaStatus<
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState, false, true>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ProcessNestedFields<TState, TShortcuts> &
   (IsRoot extends true
     ? {
@@ -181,7 +182,7 @@ export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcu
     [`~validator`]: RegleRuleStatus<TState, []>;
   };
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ([TShortcuts['fields']] extends [never]
     ? {}
     : {
@@ -212,7 +213,7 @@ export type RegleSchemaCollectionStatus<TState extends any[], TShortcuts extends
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: RegleCollectionErrors<TState>;
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  $extractDirtyFields: (filterNullishValues?: boolean) => PartialDeep<TState>;
+  $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ([TShortcuts['collections']] extends [never]
     ? {}
     : {

@@ -1,5 +1,5 @@
 import type { Merge } from 'type-fest';
-import type { AllRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefinition } from '../types';
+import type { ExtendedRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefinition } from '../types';
 import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
 import { merge } from '../../../shared';
@@ -18,7 +18,7 @@ import { merge } from '../../../shared';
  */
 export function defineRegleConfig<
   TShortcuts extends RegleShortcutDefinition<TCustomRules>,
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
 >({
   rules,
   modifiers,
@@ -51,10 +51,10 @@ export function defineRegleConfig<
  * - an `inferRules` helper that can typecheck your custom rules
  */
 export function extendRegleConfig<
-  TRootCustomRules extends Partial<AllRulesDeclarations>,
+  TRootCustomRules extends Partial<ExtendedRulesDeclarations>,
   TRootShortcuts extends RegleShortcutDefinition<{}>,
   TShortcuts extends RegleShortcutDefinition<Merge<TRootCustomRules, TCustomRules>>,
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
 >(
   regle: useRegleFn<TRootCustomRules, TRootShortcuts>,
   {

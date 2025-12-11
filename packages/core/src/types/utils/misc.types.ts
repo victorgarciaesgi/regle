@@ -1,5 +1,5 @@
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
-import type { RegleStatic, RegleStaticImpl } from './object.types';
+import type { RegleStatic, RegleStaticImpl } from './static.types';
 
 export type Prettify<T> = T extends infer R
   ? {

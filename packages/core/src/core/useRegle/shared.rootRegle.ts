@@ -4,7 +4,7 @@ import { type DeepMaybeRef, type LocalRegleBehaviourOptions, type RegleBehaviour
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
@@ -18,7 +18,7 @@ interface RootRegleOptions {
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>;
   globalOptions: RegleBehaviourOptions;
-  customRules?: () => Partial<AllRulesDeclarations>;
+  customRules?: () => Partial<ExtendedRulesDeclarations>;
   shortcuts?: RegleShortcutDefinition | undefined;
 }
 

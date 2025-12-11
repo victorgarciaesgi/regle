@@ -1,7 +1,7 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { isRef, ref } from 'vue';
 import type {
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   CustomRulesDeclarationTree,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
@@ -30,7 +30,7 @@ export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
   TRules extends DeepExact<
     TRules,
-    ReglePartialRuleTree<Unwrap<TState extends Record<string, any> ? TState : {}>, Partial<AllRulesDeclarations>>
+    ReglePartialRuleTree<Unwrap<TState extends Record<string, any> ? TState : {}>, Partial<ExtendedRulesDeclarations>>
   >,
   TAdditionalOptions extends Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
@@ -46,7 +46,7 @@ export type useRegleFnOptions<
         TAdditionalOptions;
 
 export interface useRegleFn<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
@@ -57,10 +57,10 @@ export interface useRegleFn<
       TRules,
       ReglePartialRuleTree<
         Unwrap<TState extends Record<string, any> ? TState : {}>,
-        Partial<AllRulesDeclarations> & Partial<TCustomRules>
+        Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>
       >
     >,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & Partial<TCustomRules>>,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [
@@ -91,7 +91,7 @@ export interface useRegleFn<
 }
 
 export function createUseRegleComposable<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(
   customRules?: () => TCustomRules,

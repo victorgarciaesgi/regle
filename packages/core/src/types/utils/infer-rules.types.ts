@@ -1,9 +1,38 @@
 import type { IsUnion, UnionToTuple } from 'type-fest';
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
-import type { ExtractFromGetter, Prettify, UnwrapSimple } from './misc.types';
+import type { ExtractFromGetter, isRecordLiteral, Prettify, Unwrap, UnwrapSimple } from './misc.types';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
+import type { DeepSafeFormState } from '../core';
+import type { JoinDiscriminatedUnions } from './union.types';
 
+/**
+ * Infer safe output type from a rules object and it's original state type
+ *
+ * ```ts
+ * type FormRequest = InferOutput<typeof rules, typeof formState>;
+ * ```
+ */
+export type InferOutput<
+  TRules extends
+    | MaybeRef<ReglePartialRuleTree<Record<string, any>, any>>
+    | ((state: any) => ReglePartialRuleTree<Record<string, any>, any>)
+    | MaybeRef<StandardSchemaV1<any>>,
+  TState extends MaybeRef<unknown> = InferInput<TRules>,
+> =
+  isRecordLiteral<TState> extends true
+    ? DeepSafeFormState<JoinDiscriminatedUnions<Unwrap<NonNullable<TState>>>, TRules>
+    : TState extends any[]
+      ? TState[]
+      : TState;
+
+/**
+ * Infer input type from a rules object
+ *
+ * ```ts
+ * type FormRequest = InferInput<typeof rules>;
+ * ```
+ */
 export type InferInput<
   TRules extends
     | MaybeRef<ReglePartialRuleTree<Record<string, any>, any>>

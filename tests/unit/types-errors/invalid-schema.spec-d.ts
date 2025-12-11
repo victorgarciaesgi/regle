@@ -1,5 +1,6 @@
 import { inferRules, useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
-import { required } from '@regle/rules';
+import { minLength, required } from '@regle/rules';
+import type { Ref } from 'vue';
 
 describe('useRegle should throw errors for invalid rule schema', () => {
   it('Empty rules OK', () => {
@@ -51,6 +52,12 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     useRegle({ name: '' }, { incorrect: { required: () => true } });
 
     // @ts-expect-error Incorrect property ❌
+    useRegle({ name: '' }, { name: { $autoDirty: 4 } });
+
+    // @ts-expect-error Incorrect property ❌
+    useRegle({ name: '' }, { name: { required: false } });
+
+    // @ts-expect-error Incorrect property ❌
     useRegle({ name: '' }, { name: { required: () => true }, incorrect: { required: () => true } });
 
     // @ts-expect-error Incorrect property ❌
@@ -58,6 +65,42 @@ describe('useRegle should throw errors for invalid rule schema', () => {
 
     // correct schema with getter ✅
     useRegle({ name: '' }, () => ({ name: { required: () => true } }));
+
+    // correct collection schema with nested property ✅
+    useRegle(
+      { name: [{ nested: '' }] },
+      {
+        name: {
+          required,
+          minLength: minLength(4),
+          $deepCompare: true,
+          $autoDirty: false,
+          $each: {
+            nested: { required, minLength: minLength(4) },
+          },
+        },
+      }
+    );
+
+    // correct collection schema with nestedgetter ✅
+    useRegle(
+      { name: [{ nested: '' }] },
+      {
+        name: {
+          required,
+          minLength: minLength(4),
+          $deepCompare: true,
+          $autoDirty: false,
+          $each: (value, index) => {
+            expectTypeOf(index).toEqualTypeOf<number>();
+            expectTypeOf(value).toEqualTypeOf<Ref<{ nested: string }>>();
+            return {
+              nested: { required, minLength: minLength(4) },
+            };
+          },
+        },
+      }
+    );
 
     useRegle(
       { name: { nested: '' } },

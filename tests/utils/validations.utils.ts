@@ -98,7 +98,7 @@ export function shouldBeUnRuledPristineField(field?: RegleFieldStatus<any, any>)
   expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
   expect(field?.$anyDirty).toBe(false);
-  expect(field?.$ready).toBe(false);
+  expect(field?.$ready).toBe(true);
   expect(field?.$pending).toBe(false);
   expect(field?.$correct).toBe(false);
   expect(field?.$errors).toStrictEqual([]);

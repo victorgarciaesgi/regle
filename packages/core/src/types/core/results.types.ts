@@ -10,16 +10,11 @@ import type {
   RegleCollectionRuleDecl,
   RegleErrorTree,
   RegleFieldIssue,
-  RegleFieldStatus,
   RegleFormPropertyType,
   RegleIssuesTree,
-  RegleLike,
   ReglePartialRuleTree,
-  RegleRoot,
   RegleRuleDecl,
   RegleRuleDefinition,
-  SuperCompatibleRegleFieldStatus,
-  SuperCompatibleRegleRoot,
 } from '../rules';
 import type {
   ArrayElement,
@@ -30,6 +25,7 @@ import type {
   Maybe,
   MaybeInput,
   MaybeOutput,
+  MaybeRefOrComputedRef,
   Prettify,
 } from '../utils';
 
@@ -65,7 +61,7 @@ export type RegleResult<
           ? unknown
           : HasNamedKeys<Data> extends true
             ? NonNullable<Data> extends Date | File
-              ? MaybeOutput<Data>
+              ? MaybeOutput<Raw<Data>>
               : NonNullable<Data> extends Array<infer U extends Record<string, any>>
                 ? PartialFormState<U>[]
                 : NonNullable<Data> extends Record<string, any>
@@ -80,12 +76,12 @@ export type RegleResult<
         : IsAny<Data> extends true
           ? unknown
           : HasNamedKeys<Data> extends true
-            ? Data extends Array<infer U extends Record<string, any>>
+            ? NonNullable<Data> extends Array<infer U extends Record<string, any>>
               ? DeepSafeFormState<U, TRules>[]
-              : Data extends Date | File
-                ? SafeFieldProperty<Data, TRules>
-                : Data extends Record<string, any>
-                  ? DeepSafeFormState<Data, TRules>
+              : NonNullable<Data> extends Date | File
+                ? SafeFieldProperty<Raw<NonNullable<Data>>, TRules>
+                : NonNullable<Data> extends Record<string, any>
+                  ? DeepSafeFormState<NonNullable<Data>, TRules>
                   : SafeFieldProperty<Data, TRules>
             : unknown;
     };
@@ -157,22 +153,6 @@ export type RegleFieldResult<
       }
   );
 
-/**
- * Infer safe output from any `r$` instance
- *
- * ```ts
- * type FormRequest = InferSafeOutput<typeof r$>;
- * ```
- */
-export type InferSafeOutput<TRegle extends MaybeRef<SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>> =
-  UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
-    ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
-    : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
-      ? SafeFieldProperty<TState, TRules>
-      : UnwrapRef<TRegle> extends RegleLike<infer TState extends Record<string, any>>
-        ? TState
-        : never;
-
 export type $InternalRegleResult = {
   valid: boolean;
   data: any;
@@ -209,7 +189,7 @@ export type DeepSafeFormState<
       : TState;
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
-  TRule extends MaybeRef<RegleRuleDecl<any, any>>
+  TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>
     ? [unknown] extends UnwrapRef<TRule>['required']
       ? NonNullable<UnwrapRef<TRule>['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
         ? true

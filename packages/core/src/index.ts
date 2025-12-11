@@ -33,6 +33,7 @@ export { RegleVuePlugin } from './plugin';
 export { InternalRuleType } from './types';
 export type {
   $InternalRegleStatus,
+  ExtendedRulesDeclarations,
   AllRulesDeclarations,
   ArrayElement,
   DeepMaybeRef,
@@ -47,7 +48,6 @@ export type {
   InferRegleRules,
   InferRegleShortcuts,
   InferRegleStatusType,
-  InferSafeOutput,
   InlineRuleDeclaration,
   JoinDiscriminatedUnions,
   LocalRegleBehaviourOptions,
@@ -126,4 +126,13 @@ export type {
   RegleStatic,
   IsRegleStatic,
   RegleStaticImpl,
+  RegleNestedResult,
+  DeepPartial,
+  RegleLike,
+  InferRegleValidationResult,
+  InferRegleSettings,
+  InferValidOutput,
+  InferOutput,
+  InferSafeOutput,
+  RegleRuleWithParamsDefinitionInput,
 } from './types';

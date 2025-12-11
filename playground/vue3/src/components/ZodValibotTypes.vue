@@ -60,7 +60,6 @@ import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
 import { ref } from 'vue';
 import { z, ZodSchema } from 'zod/v3';
-import type { PartialDeep } from 'type-fest';
 
 // const zodSchema = z
 //   .object({

@@ -13,6 +13,7 @@ describe('assignIf helper', () => {
       const form = ref({
         name: '',
         email: '',
+        collections: [{ name: '' }],
         isAdvanced: false,
       });
 
@@ -25,6 +26,13 @@ describe('assignIf helper', () => {
           required,
           email,
         }),
+        collections: {
+          $each: {
+            name: assignIf(() => form.value.isAdvanced, {
+              required,
+            }),
+          },
+        },
       }));
     },
     template: '<div></div>',
@@ -280,5 +288,46 @@ describe('assignIf helper', () => {
         }>
       >
     >();
+  });
+
+  it('should work with otherwise rules', async () => {
+    const testComponent = defineComponent({
+      setup() {
+        const condition = ref(true);
+        return {
+          ...useRegle({ name: '' }, () => ({
+            name: assignIf(condition, { email, required }, { minLength: minLength(5) }),
+          })),
+          condition,
+        };
+      },
+      template: '<div></div>',
+    });
+
+    const { vm } = mount(testComponent, {
+      global: {
+        plugins: [RegleVuePlugin],
+      },
+    });
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.name.$rules.email?.$active).toBe(true);
+    expect(vm.r$.name.$rules.required?.$active).toBe(true);
+    expect(vm.r$.name.$rules.minLength?.$active).toBe(false);
+
+    vm.r$.$value.name = 'foo';
+
+    await vm.r$.$validate();
+
+    expect(vm.r$.$errors.name).toStrictEqual(['The value must be an valid email address']);
+
+    vm.condition = false;
+    await vm.$nextTick();
+
+    expect(vm.r$.name.$rules.email?.$active).toBe(false);
+    expect(vm.r$.name.$rules.required?.$active).toBe(false);
+    expect(vm.r$.name.$rules.minLength?.$active).toBe(true);
+
+    expect(vm.r$.$errors.name).toStrictEqual(['The value length should be at least 5']);
   });
 });

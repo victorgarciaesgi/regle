@@ -1,6 +1,6 @@
 import type { EmptyObject, IsEmptyObject, UnionToTuple, IsUnion } from 'type-fest';
 import type {
-  AllRulesDeclarations,
+  ExtendedRulesDeclarations,
   InferRegleStatusType,
   RegleCollectionStatus,
   RegleFieldStatus,
@@ -165,14 +165,14 @@ type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends
 type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> = unknown extends T[TKey]
   ? {
       [x: string]: {
-        [K in TKey]-?: Omit<RegleRuleDecl<any, Partial<AllRulesDeclarations>>, 'literal'> & {
+        [K in TKey]-?: Omit<RegleRuleDecl<any, Partial<ExtendedRulesDeclarations>>, 'literal'> & {
           literal?: RegleRuleDefinition<any, [literal: any], false, boolean, any, string | number>;
         };
       };
     }
   : {
       [TVal in NonNullable<T[TKey]>]: {
-        [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<AllRulesDeclarations>>, 'literal'> & {
+        [K in TKey]-?: Omit<RegleRuleDecl<TVal, Partial<ExtendedRulesDeclarations>>, 'literal'> & {
           literal?: RegleRuleDefinition<
             MaybeInput<TVal>,
             [literal: TVal],

@@ -20,6 +20,7 @@
     "dist"
   ],
   "scripts": {
+    "turbo:postinstall": "pnpm exec playwright install",
     "prepack": "nuxt-module-build build",
     "dev": "echo 'no dev build'",
     "dev:playground": "nuxi dev playground",
@@ -29,8 +30,9 @@
     "build": "pnpm run cleanup && nuxt-module-build prepare && nuxt-module-build build",
     "build:sourcemaps": "pnpm run cleanup && nuxt-module-build prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build && nuxt-module-build prepare && nuxi prepare playground && nuxi prepare test/fixtures",
-    "test": "pnpm exec playwright install && vitest run",
-    "test:watch": "vitest watch"
+    "playwright": "playwright test --ui --headed",
+    "playwright:ci": "playwright test",
+    "test": "playwright test"
   },
   "dependencies": {
     "@nuxt/kit": "catalog:",
@@ -44,6 +46,7 @@
   "devDependencies": {
     "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "3.20.1",
+    "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "nuxt": "catalog:",
     "prettier": "catalog:",

@@ -58,6 +58,15 @@
       "persistent": true,
       "dependsOn": ["^build"]
     },
+
+    // -- Tests
+    "playwright:ci": {
+      "outputs": []
+    },
+    "//#playwright:ci": {
+      "outputs": []
+    },
+
     // -- Docs
     "docs#dev": {
       "persistent": true,
@@ -73,6 +82,7 @@
       "outputs": [".vitepress/dist/**"],
       "outputLogs": "new-only"
     },
+
     // -- Typecheck && Lint
     "typecheck": {
       "outputs": []
@@ -83,6 +93,7 @@
     "lint:fix": {
       "outputs": []
     },
+
     // -- Misc
     "turbo:postinstall": {
       "outputLogs": "new-only"

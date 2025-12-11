@@ -2,7 +2,7 @@ import type { RegleRuleDefinition } from '@regle/core';
 import { RegleVuePlugin, useRegle } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
-import { minLength, required } from '../../rules';
+import { alpha, minLength, required } from '../../rules';
 import { applyIf } from '../applyIf';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 
@@ -17,6 +17,8 @@ describe('applyIf helper', () => {
       return useRegle(form, () => ({
         email: {
           error: applyIf(() => form.value.count === 1, required),
+          foo: applyIf(false, alpha),
+          $autoDirty: false,
         },
       }));
     },

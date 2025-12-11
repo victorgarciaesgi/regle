@@ -1,5 +1,5 @@
 import type { Raw } from 'vue';
-import type { enumType, Maybe } from '../utils';
+import type { EnumType, Maybe } from '../utils';
 import type { PossibleRegleRuleMetadataConsumer, RegleRuleMetadataDefinition } from './rule.definition.type';
 import type { RegleUniversalParams } from './rule.params.types';
 
@@ -29,4 +29,4 @@ export const InternalRuleType = {
   Async: '__async',
 } as const;
 
-export type InternalRuleType = enumType<typeof InternalRuleType>;
+export type InternalRuleType = EnumType<typeof InternalRuleType>;

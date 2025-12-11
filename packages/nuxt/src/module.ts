@@ -17,7 +17,7 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'regle',
+    name: '@regle/nuxt',
     configKey: 'regle',
   },
   defaults: {},

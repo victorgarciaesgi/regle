@@ -1,11 +1,10 @@
-import type { UnionToIntersection, UnionToTuple, IsUnion, IsUnknown } from 'type-fest';
-import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
-import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef, Raw, ComputedRef } from 'vue';
+import type { IsUnion } from 'type-fest';
+import type { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
+import type { RegleStaticImpl } from './static.types';
+import type { LazyJoinDiscriminatedUnions } from './union.types';
 
-type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
-  ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]
-  : [];
+// ----- Utils -----
 
 /**
  * Restore the optional properties (with ?) of a generated mapped object type
@@ -16,6 +15,14 @@ export type RestoreOptionalProperties<TObject extends Record<string, any>> = {
   [K in keyof TObject as TObject[K] extends NonNullable<TObject[K]> ? never : K]?: TObject[K];
 };
 
+export type RemoveIndexSignature<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: T[K];
+};
+
+// ----- Prop types
+/**
+ * Merge every boolean property into a single boolean.
+ */
 type MergePropsIntoRequiredBooleans<TObject extends Record<string, any>> = {
   [K in keyof TObject]-?: TObject[K] extends NonNullable<TObject[K]> ? true : false;
 }[keyof TObject];
@@ -31,99 +38,24 @@ export type HaveAnyRequiredProps<TObject extends Record<string, any>> = [TObject
       : true
     : false;
 
-/**
- * Get item value from object, otherwise fallback to undefined. Avoid TS to not be able to infer keys not present on all unions
- */
-type GetMaybeObjectValue<O extends Record<string, any>, K extends string> = K extends keyof O ? O[K] : undefined;
+// ----- Enum types -----
 
-/**
- * Combine all union values to be able to get even the normally "never" values, act as an intersection type
- */
-type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> = T extends [
-  infer F extends Record<string, any>,
-  ...infer R,
-]
-  ? [
-      {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
-          ? never
-          : K]?: GetMaybeObjectValue<F, K>;
-      } & {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
-          ? K
-          : never]: GetMaybeObjectValue<F, K>;
-      },
-      ...RetrieveUnionUnknownValues<R, TKeys>,
-    ]
-  : [];
-
-/**
- * Get all possible keys from a union, even the ones present only on one union
- */
-type RetrieveUnionUnknownKeysOf<T extends readonly any[]> = T extends [infer F, ...infer R]
-  ? [keyof F, ...RetrieveUnionUnknownKeysOf<R>]
-  : [];
-
-/**
- * Transforms a union and apply undefined values to non-present keys to support intersection
- */
-type NormalizeUnion<TUnion> = RetrieveUnionUnknownValues<
-  NonNullable<UnionToTuple<TUnion>>,
-  RetrieveUnionUnknownKeysOf<NonNullable<UnionToTuple<TUnion>>>[number]
->[number];
-
-/**
- * Combine all members of a union type, merging types for each key, and keeping loose types
- */
-export type JoinDiscriminatedUnions<TUnion extends unknown> =
-  HasNamedKeys<TUnion> extends true
-    ? isRecordLiteral<TUnion> extends true
-      ? Prettify<
-          Partial<
-            UnionToIntersection<
-              RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
-            >
-          > &
-            Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
-        >
-      : TUnion
-    : TUnion;
-
-export type LazyJoinDiscriminatedUnions<TUnion extends unknown> =
-  isRecordLiteral<TUnion> extends true
-    ? Prettify<
-        Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NonNullable<TUnion>>[number]>> &
-          Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>
-      >
-    : TUnion;
-
+export type EnumType<T extends Record<string, unknown>> = T[keyof T];
 export type EnumLike = {
   [k: string]: string | number;
   [nu: number]: string;
 };
 
-export type enumType<T extends Record<string, unknown>> = T[keyof T];
+// ------ Vue Ref utils
 
 export type MaybeRefOrComputedRef<T extends any> = MaybeRef<T> | ComputedRef<T>;
 
 export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
   T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
 
-export type UnwrapStatic<T> =
-  IsUnknown<T> extends true ? any : NonNullable<T> extends RegleStaticImpl<infer U> ? Raw<U> : UnwrapStaticSimple<T>;
-
-type UnwrapStaticSimple<T> =
-  NonNullable<T> extends Array<infer U>
-    ? Array<UnwrapStatic<U>>
-    : isRecordLiteral<NonNullable<T>> extends true
-      ? {
-          [K in keyof T]: UnwrapStatic<T[K]>;
-        }
-      : T;
-
+// ------ Object Checks -----
 export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };
 
-// -- HasNamedKeys
 export type HasNamedKeys<T> =
   IsUnion<T> extends true ? ProcessHasNamedKeys<LazyJoinDiscriminatedUnions<T>> : ProcessHasNamedKeys<T>;
 
@@ -133,13 +65,18 @@ type ProcessHasNamedKeys<T> = {
   ? false
   : true;
 
-declare const RegleStaticSymbol: unique symbol;
+// ----- Object Transformations -----
 
-export type RegleStatic<T> = T extends new (...args: infer Args) => infer U
-  ? RegleStaticImpl<new (...args: Args) => RegleStaticImpl<U>>
-  : RegleStaticImpl<T>;
-
-export type RegleStaticImpl<T> = Raw<T & { [RegleStaticSymbol]: true }>;
-
-export type UnwrapRegleStatic<T> = T extends RegleStaticImpl<infer U> ? U : T;
-export type IsRegleStatic<T> = T extends RegleStaticImpl<T> ? true : false;
+/**
+ * Convert a nested object to a deeply nested partial object.
+ */
+export type DeepPartial<T> =
+  T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends Date | File | RegleStaticImpl<unknown>
+      ? T
+      : T extends Record<string, any>
+        ? {
+            [K in keyof T]?: DeepPartial<T[K]> | undefined;
+          }
+        : T | undefined;

@@ -1,18 +1,24 @@
 import { type ComputedRef, type MaybeRef } from 'vue';
-import type { AllRulesDeclarations, DeepReactiveState, ReglePartialRuleTree, RegleRuleDecl } from '../../types';
+import type {
+  ExtendedRulesDeclarations,
+  DeepReactiveState,
+  DefaultValidatorsTree,
+  ReglePartialRuleTree,
+  RegleRuleDecl,
+} from '../../types';
 import type { DeepExact, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
 
-export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>> {
+export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarations>> {
   <
     TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
     TRules extends DeepExact<
       TRules,
       ReglePartialRuleTree<
         Unwrap<TState extends Record<string, any> ? TState : {}>,
-        Partial<AllRulesDeclarations> & TCustomRules
+        Partial<DefaultValidatorsTree> & TCustomRules
       >
     >,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<AllRulesDeclarations> & TCustomRules>,
+    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<DefaultValidatorsTree> & TCustomRules>,
   >(
     state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
     rulesFactory: TState extends MaybeInput<PrimitiveTypes> ? TDecl : TState extends Record<string, any> ? TRules : {}
@@ -20,7 +26,7 @@ export interface inferRulesFn<TCustomRules extends Partial<AllRulesDeclarations>
 }
 
 export function createInferRuleHelper<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations>,
 >(): inferRulesFn<TCustomRules> {
   function inferRules(
     state: Record<string, any>,

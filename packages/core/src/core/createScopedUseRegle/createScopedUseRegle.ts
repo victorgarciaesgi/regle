@@ -1,5 +1,5 @@
 import { ref, type Ref } from 'vue';
-import type { AllRulesDeclarations, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
+import type { ExtendedRulesDeclarations, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
@@ -23,12 +23,12 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
 };
 
 export function createScopedUseRegle<
-  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<AllRulesDeclarations>>,
+  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarations>>,
   TAsRecord extends boolean = false,
   TReturnedRegle extends useRegleFn<any, any, any, any> = TCustomRegle extends useRegleFn<infer A, infer B>
     ? useRegleFn<A, B, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>
     : useRegleFn<
-        Partial<AllRulesDeclarations>,
+        Partial<ExtendedRulesDeclarations>,
         any,
         { dispose: () => void; register: () => void },
         UseScopedRegleOptions<TAsRecord>

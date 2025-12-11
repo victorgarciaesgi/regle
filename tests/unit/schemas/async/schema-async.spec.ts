@@ -31,7 +31,7 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);
@@ -245,7 +245,7 @@ describe.each([
       },
     });
 
-    expect(vm.r$.$ready).toBe(false);
+    expect(vm.r$.$ready).toBe(true);
 
     expect(vm.r$.$anyDirty).toBe(false);
     expect(vm.r$.$dirty).toBe(false);
