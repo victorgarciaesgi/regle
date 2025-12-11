@@ -8,6 +8,7 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,3 +29,5 @@ jobs:
         run: pnpm run build
       - name: Publish
         run: pnpm run npm:publish
+        env:
+          NPM_CONFIG_PROVENANCE: true
