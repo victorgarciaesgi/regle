@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildApiMetadata, type PackageApi } from './build-api-metadata.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,6 +11,11 @@ interface DocPage {
   category: string;
   path: string;
   content: string;
+}
+
+interface DocsData {
+  docs: DocPage[];
+  api: PackageApi;
 }
 
 /**
@@ -143,7 +149,24 @@ function buildDocsData(): void {
     });
   }
 
-  fs.writeFileSync(outputPath, JSON.stringify(docPages, null, 2));
+  // Build API metadata
+  console.info('Building API metadata...');
+  const apiMetadata = buildApiMetadata();
+
+  // Log stats
+  for (const [pkg, apis] of Object.entries(apiMetadata)) {
+    console.info(`  ${pkg}: ${apis.length} exports`);
+  }
+
+  const docsData: DocsData = {
+    docs: docPages,
+    api: apiMetadata,
+  };
+
+  fs.writeFileSync(outputPath, JSON.stringify(docsData, null, 2));
+  console.info(
+    `Generated docs-data.json with ${docPages.length} docs and API metadata for ${Object.keys(apiMetadata).length} packages`
+  );
 }
 
 buildDocsData();

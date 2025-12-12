@@ -9,17 +9,25 @@ import {
   getRulesFromDocs,
   getHelpersFromDocs,
   searchDocs,
+  getApiPackages,
+  getApiByPackage,
+  getApiByName,
+  searchApi,
 } from './docs-data.js';
+import { version } from '../package.json';
 
 const categories = getCategories();
 
 const server = new McpServer({
   name: 'regle-mcp-server',
-  version: '1.0.0',
+  version,
+  icons: [{ src: 'https://reglejs.dev/logo_main.png' }],
+  title: 'Regle MCP Server',
+  websiteUrl: 'https://reglejs.dev',
 });
 
 server.registerTool(
-  'list-docs',
+  'regle-list-docs',
   {
     title: 'List all available Regle documentation pages',
     inputSchema: z.object({
@@ -29,16 +37,22 @@ server.registerTool(
   async ({ category }) => {
     const filteredDocs = category ? getDocsByCategory(category) : docs;
     return {
-      structuredContent: {
-        docs: filteredDocs.map((doc) => ({
-          id: doc.id,
-          title: doc.title,
-        })),
-      },
       content: [
         {
           type: 'text',
-          text: `Here is the list of all available Regle documentation pages:`,
+          text: JSON.stringify(
+            {
+              message: 'Available Regle documentation pages',
+              category: category || 'all',
+              count: filteredDocs.length,
+              docs: filteredDocs.map((doc) => ({
+                id: doc.id,
+                title: doc.title,
+              })),
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -46,7 +60,7 @@ server.registerTool(
 );
 
 server.registerTool(
-  'get-doc',
+  'regle-get-doc',
   {
     title: 'Get the full content of a specific Regle documentation page',
     inputSchema: z.object({
@@ -57,9 +71,22 @@ server.registerTool(
     const doc = getDocById(id);
 
     if (!doc) {
-      const availableIds = docs.map((d) => d.id).join(', ');
+      const availableIds = docs.map((d) => d.id);
       return {
-        content: [{ type: 'text', text: `Documentation page not found: ${id}\n\nAvailable IDs: ${availableIds}` }],
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                error: 'Documentation page not found',
+                requestedId: id,
+                availableIds,
+              },
+              null,
+              2
+            ),
+          },
+        ],
         isError: true,
       };
     }
@@ -68,7 +95,17 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: `# ${doc.title}\n\nCategory: ${doc.category}\nPath: ${doc.path}\n\n---\n\n${doc.content}`,
+          text: JSON.stringify(
+            {
+              id: doc.id,
+              title: doc.title,
+              category: doc.category,
+              path: doc.path,
+              content: doc.content,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -76,7 +113,7 @@ server.registerTool(
 );
 
 server.registerTool(
-  'search-docs',
+  'regle-search-docs',
   {
     title: 'Search Regle documentation for specific topics, rules, or concepts',
     inputSchema: z.object({
@@ -92,7 +129,16 @@ server.registerTool(
         content: [
           {
             type: 'text',
-            text: `No documentation found for: "${query}"\n\nTry searching for: ${categories.join(', ')}`,
+            text: JSON.stringify(
+              {
+                query,
+                resultCount: 0,
+                results: [],
+                suggestions: categories,
+              },
+              null,
+              2
+            ),
           },
         ],
       };
@@ -117,7 +163,7 @@ server.registerTool(
 );
 
 server.registerTool(
-  'get-rules-reference',
+  'regle-get-rules-reference',
   {
     title: 'Get a quick reference of all built-in validation rules in Regle',
     inputSchema: z.object({}),
@@ -127,29 +173,27 @@ server.registerTool(
 
     if (rules.length === 0) {
       return {
-        content: [{ type: 'text', text: 'Built-in rules documentation not found' }],
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ error: 'Built-in rules documentation not found' }, null, 2),
+          },
+        ],
         isError: true,
       };
     }
-
-    const rulesList = rules.map((r) => `- \`${r.name}\`: ${r.description}`).join('\n');
 
     return {
       content: [
         {
           type: 'text',
-          text: `# Built-in Rules
-
-All rules are available from \`@regle/rules\`.
-
-## Available Rules (${rules.length})
-
-${rulesList}
-
-## Usage Example
-
-\`\`\`typescript
-import { useRegle } from '@regle/core';
+          text: JSON.stringify(
+            {
+              title: 'Built-in Rules',
+              package: '@regle/rules',
+              count: rules.length,
+              rules: rules.map((r) => ({ name: r.name, description: r.description })),
+              usageExample: `import { useRegle } from '@regle/core';
 import { required, email, minLength } from '@regle/rules';
 
 const { r$ } = useRegle(
@@ -158,10 +202,12 @@ const { r$ } = useRegle(
     email: { required, email },
     password: { required, minLength: minLength(8) }
   }
-);
-\`\`\`
-
-Use \`get-doc\` with id \`core-concepts-rules-built-in-rules\` for full documentation.`,
+);`,
+              fullDocId: 'core-concepts-rules-built-in-rules',
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -169,7 +215,7 @@ Use \`get-doc\` with id \`core-concepts-rules-built-in-rules\` for full document
 );
 
 server.registerTool(
-  'get-validation-properties',
+  'regle-get-validation-properties',
   {
     title: 'Get documentation on all validation properties available on r$ and field objects',
     inputSchema: z.object({}),
@@ -179,19 +225,38 @@ server.registerTool(
 
     if (!doc) {
       return {
-        content: [{ type: 'text', text: 'Validation properties documentation not found' }],
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ error: 'Validation properties documentation not found' }, null, 2),
+          },
+        ],
         isError: true,
       };
     }
 
     return {
-      content: [{ type: 'text', text: `# ${doc.title}\n\n${doc.content}` }],
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              id: doc.id,
+              title: doc.title,
+              category: doc.category,
+              content: doc.content,
+            },
+            null,
+            2
+          ),
+        },
+      ],
     };
   }
 );
 
 server.registerTool(
-  'get-helpers-reference',
+  'regle-get-helpers-reference',
   {
     title: 'Get a reference of all validation helper utilities available in Regle',
     inputSchema: z.object({}),
@@ -201,7 +266,12 @@ server.registerTool(
 
     if (helpers.length === 0) {
       return {
-        content: [{ type: 'text', text: 'Validation helpers documentation not found' }],
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ error: 'Validation helpers documentation not found' }, null, 2),
+          },
+        ],
         isError: true,
       };
     }
@@ -210,47 +280,48 @@ server.registerTool(
     const operations = helpers.filter((h) => h.category === 'operation');
     const coerces = helpers.filter((h) => h.category === 'coerce');
 
-    const formatHelpers = (helpers: typeof guards) =>
-      helpers.map((h) => `- \`${h.name}\`: ${h.description}`).join('\n');
+    const formatHelpers = (list: typeof guards) => list.map((h) => ({ name: h.name, description: h.description }));
 
     return {
       content: [
         {
           type: 'text',
-          text: `# Validation Helpers
-
-All helpers are available from \`@regle/rules\`.
-
-## Runtime and Type Guards
-
-${formatHelpers(guards)}
-
-## Operations Utils
-
-${formatHelpers(operations)}
-
-## Coerce Utils
-
-${formatHelpers(coerces)}
-
-## Usage Example
-
-\`\`\`typescript
-import { createRule } from '@regle/core';
+          text: JSON.stringify(
+            {
+              title: 'Validation Helpers',
+              package: '@regle/rules',
+              totalCount: helpers.length,
+              categories: {
+                guards: {
+                  description: 'Runtime and Type Guards',
+                  helpers: formatHelpers(guards),
+                },
+                operations: {
+                  description: 'Operations Utils',
+                  helpers: formatHelpers(operations),
+                },
+                coerces: {
+                  description: 'Coerce Utils',
+                  helpers: formatHelpers(coerces),
+                },
+              },
+              usageExample: `import { createRule, type Maybe } from '@regle/core';
 import { isFilled, getSize } from '@regle/rules';
 
 const rule = createRule({
-  validator(value: unknown) {
+  validator(value: Maybe<string>) {
     if (isFilled(value)) {
       return getSize(value) > 6;
     }
     return true;
   },
   message: 'Error'
-});
-\`\`\`
-
-Use \`get-doc\` with id \`core-concepts-rules-validations-helpers\` for full documentation.`,
+});`,
+              fullDocId: 'core-concepts-rules-validations-helpers',
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -258,7 +329,7 @@ Use \`get-doc\` with id \`core-concepts-rules-validations-helpers\` for full doc
 );
 
 server.registerTool(
-  'get-useregle-guide',
+  'regle-get-useregle-guide',
   {
     title: 'Get a comprehensive guide on how to use the useRegle composable',
     inputSchema: z.object({}),
@@ -268,20 +339,194 @@ server.registerTool(
 
     if (!doc) {
       return {
-        content: [{ type: 'text', text: 'useRegle guide not found' }],
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ error: 'useRegle guide not found' }, null, 2),
+          },
+        ],
         isError: true,
       };
     }
 
     return {
-      content: [{ type: 'text', text: `# ${doc.title}\n\n${doc.content}` }],
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              id: doc.id,
+              title: doc.title,
+              category: doc.category,
+              content: doc.content,
+            },
+            null,
+            2
+          ),
+        },
+      ],
     };
   }
 );
 
-// ============================================================================
-// Start Server
-// ============================================================================
+const apiPackages = getApiPackages();
+
+server.registerTool(
+  'regle-get-api-reference',
+  {
+    title: 'Get API reference for Regle packages with full metadata (parameters, return types, examples)',
+    inputSchema: z.object({
+      package: z
+        .string()
+        .optional()
+        .describe('Package name (e.g., "@regle/core", "@regle/rules", "@regle/schemas", "@regle/nuxt")'),
+      name: z.string().optional().describe('Specific function/export name to look up (e.g., "useRegle", "required")'),
+      search: z.string().optional().describe('Search query to find exports by name or description'),
+    }),
+  },
+  async ({ package: packageName, name, search }) => {
+    // If searching by name
+    if (name) {
+      const apiItem = getApiByName(name, packageName);
+      if (!apiItem) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  error: `API export "${name}" not found`,
+                  availablePackages: apiPackages,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                name: apiItem.name,
+                kind: apiItem.kind,
+                description: apiItem.description,
+                parameters: apiItem.parameters,
+                returnType: apiItem.returnType,
+                example: apiItem.example,
+                tags: apiItem.tags,
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+
+    // If searching
+    if (search) {
+      const results = searchApi(search);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                query: search,
+                resultCount: results.length,
+                results: results.map((r) => ({
+                  name: r.name,
+                  package: r.package,
+                  kind: r.kind,
+                  description: r.description.substring(0, 200) + (r.description.length > 200 ? '...' : ''),
+                })),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+
+    // If listing a specific package
+    if (packageName) {
+      const apis = getApiByPackage(packageName);
+      if (apis.length === 0) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  error: `Package "${packageName}" not found or has no exports`,
+                  availablePackages: apiPackages,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                package: packageName,
+                exportCount: apis.length,
+                exports: apis.map((a) => ({
+                  name: a.name,
+                  kind: a.kind,
+                  description: a.description.substring(0, 150) + (a.description.length > 150 ? '...' : ''),
+                  hasExample: !!a.example,
+                  parameterCount: a.parameters.length,
+                })),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+
+    // Default: list all packages with their export counts
+    const packageSummary = apiPackages.map((pkg) => ({
+      package: pkg,
+      exportCount: getApiByPackage(pkg).length,
+    }));
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              message: 'Available Regle API packages',
+              packages: packageSummary,
+              usage:
+                'Use "package" to list exports, "name" to get specific export details, or "search" to find exports',
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);

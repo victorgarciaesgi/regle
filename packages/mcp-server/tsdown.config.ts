@@ -8,9 +8,14 @@ const sharedOptions: UserConfig = {
   treeshake: true,
   outExtensions: () => ({ js: '.js' }),
   entry: { 'regle-mcp-server': 'src/index.ts' },
-  external: ['zod'],
+  external: ['zod', '@modelcontextprotocol/sdk'],
   banner: {
     js: '#!/usr/bin/env node',
+  },
+  inputOptions(inputOptions) {
+    inputOptions.experimental ??= {};
+    inputOptions.experimental.attachDebugInfo = 'none';
+    return inputOptions;
   },
 };
 
