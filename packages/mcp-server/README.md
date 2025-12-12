@@ -22,7 +22,9 @@ Add to your `claude_desktop_config.json`:
 
 ### Cursor
 
-Add to your MCP settings:
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D)
+
+Or add to your MCP settings:
 
 ```json
 {

@@ -21,7 +21,15 @@ The MCP server provides the following features:
 
 ## Cursor
 
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=regle-mcp-server&config=eyJjb21tYW5kIjoicG5weCBAcmVnbGUvbWNwLXNlcnZlciJ9)
+<a href="https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D">
+  <div class="light-only">
+      <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install MCP Server" />
+  </div>
+  <div class="dark-only">
+      <img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Install MCP Server" />
+  </div>
+</a>
+
 
 Or add to your `.cursor/mcp.json`
 ```json

@@ -40,7 +40,14 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 
 ## 🤖 MCP Server
 
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=regle-mcp-server&config=eyJjb21tYW5kIjoicG5weCBAcmVnbGUvbWNwLXNlcnZlciJ9)
+<a href="https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="https://cursor.com/deeplink/mcp-install-dark.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cursor.com/deeplink/mcp-install-light.svg">
+  </picture>
+</a>
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D)
 
 ## ✨ Features
 
