@@ -1,22 +1,24 @@
 {
   "name": "@regle/mcp-server",
-  "version": "1.12.1",
-  "description": "MCP Server for Regle - provides AI-powered assistance for Vue.js form validation",
+  "version": "1.13.1",
+  "description": "MCP Server for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsdown",
-    "dev": "tsx watch src/index.ts",
+    "build:docs": "tsx scripts/build-docs-data.ts",
+    "build": "pnpm run build:docs && tsdown",
+    "lint": "oxlint",
+    "dev": "pnpm run build:docs && tsx watch src/index.ts",
     "start": "node dist/regle-mcp-server.js",
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^3.24.0"
+    "@modelcontextprotocol/sdk": "1.24.3",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "tsdown": "catalog:",
-    "tsx": "4.21.0",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   },
   "type": "module",
