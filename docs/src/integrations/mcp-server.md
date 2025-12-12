@@ -1,3 +1,9 @@
+---
+title: Regle MCP server
+description: Integrate Regle MCP with your favorite AI assistant
+---
+
+
 # MCP Server
 
 Regle offers an MCP server that can be used to get documentation and autocomplete for Regle.

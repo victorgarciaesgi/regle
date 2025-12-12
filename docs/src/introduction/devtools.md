@@ -1,3 +1,8 @@
+---
+title: Devtools
+description: Debug your validation tree with Regle devtools
+---
+
 # Regle Devtools
 
 Regle offers a devtools extension for [Vue Devtools](https://devtools.vuejs.org/) to help you debug your validation tree.
