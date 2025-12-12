@@ -6,6 +6,17 @@ const integerRegex = /(^[0-9]*$)|(^-[0-9]+$)/;
 
 /**
  * Allows only integers (positive and negative).
+ *
+ * @example
+ * ```ts
+ * import { integer } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ count: 0 }, {
+ *   count: { integer },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#integer Documentation}
  */
 export const integer: RegleRuleDefinition<string | number, [], false, boolean, MaybeInput<number>> = createRule({
   type: 'integer',

@@ -4,6 +4,27 @@ import { createRule } from '@regle/core';
 
 /**
  * Requires a field to have a strict numeric value.
+ *
+ * @param count - The exact required numeric value
+ *
+ * @example
+ * ```ts
+ * import { exactValue } from '@regle/rules';
+ *
+ * const exactCount = ref(6);
+ *
+ * const { r$ } = useRegle({ count: 0 }, {
+ *   count: {
+ *     exactValue: exactValue(6),
+ *     // or with reactive value
+ *     exactValue: exactValue(exactCount),
+ *     // or with getter
+ *     exactValue: exactValue(() => exactCount.value)
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#exactvalue Documentation}
  */
 export const exactValue: RegleRuleWithParamsDefinition<
   number,

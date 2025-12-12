@@ -296,22 +296,44 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 }
 
 /**
- * useRegle serves as the foundation for validation logic.
+ * `useRegleSchema` enables validation using Standard Schema compatible libraries
+ * like Zod, Valibot, or ArkType.
  *
- * It accepts the following inputs:
+ * @param state - Your form data (plain object, ref, reactive object, or structure with nested refs)
+ * @param schema - A Standard Schema compliant schema (Zod, Valibot, ArkType, etc.)
+ * @param modifiers - Optional configuration to customize regle behavior
+ * @returns An object containing `r$` - the reactive validation state
  *
- * @param state - This can be a plain object, a ref, a reactive object, or a structure containing nested refs.
- * @param schema - These should align with the structure of your state.
- * @param modifiers - customize regle behaviour
- *
+ * @example
  * ```ts
  * import { useRegleSchema } from '@regle/schemas';
  * import * as v from 'valibot';
  *
- * const { r$ } = useRegleSchema({ name: '' }, v.object({
- *   name: v.pipe(v.string(), v.minLength(3))
- * }))
+ * // With Valibot
+ * const { r$ } = useRegleSchema(
+ *   { name: '', email: '' },
+ *   v.object({
+ *     name: v.pipe(v.string(), v.minLength(3)),
+ *     email: v.pipe(v.string(), v.email())
+ *   })
+ * );
+ *
+ * // With Zod
+ * import { z } from 'zod';
+ *
+ * const { r$ } = useRegleSchema(
+ *   { name: '' },
+ *   z.object({
+ *     name: z.string().min(3)
+ *   })
+ * );
+ *
+ * // Access validation state
+ * r$.$valid        // Whether all validations pass
+ * r$.$value        // The current form values
+ * r$.name.$errors  // Errors for the name field
  * ```
- * Docs: {@link https://reglejs.dev/integrations/schemas-libraries}
+ *
+ * @see {@link https://reglejs.dev/integrations/schemas-libraries Documentation}
  */
 export const useRegleSchema = createUseRegleSchemaComposable();

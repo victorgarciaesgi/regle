@@ -8,7 +8,22 @@ const alphaNumSymbolRegex = /^[a-zA-Z0-9_]*$/;
 /**
  * Allows only alphanumeric characters.
  *
- * @param [options] - Alpha rules options
+ * @param options - Optional configuration for alphanumeric validation
+ *
+ * @example
+ * ```ts
+ * import { alphaNum } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     alphaNum,
+ *     // or with symbols allowed
+ *     alphaNum: alphaNum({ allowSymbols: true }),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#alphanum Documentation}
  */
 export const alphaNum: RegleRuleWithParamsDefinition<
   string | number,

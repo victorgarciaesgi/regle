@@ -6,8 +6,23 @@ import { formatLocaleDate } from '../utils/getLocale.util';
 /**
  * Checks if the date is after the given parameter.
  *
- * @param after - the date to compare to
- * @param options - comparison options
+ * @param after - The date to compare to (can be a `Date`, string, ref, or getter)
+ * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ *
+ * @example
+ * ```ts
+ * import { dateAfter } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ birthday: null as Date | null }, {
+ *   birthday: {
+ *     dateAfter: dateAfter(new Date()),
+ *     // or with options
+ *     dateAfter: dateAfter(new Date(), { allowEqual: false }),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#dateafter Documentation}
  */
 export const dateAfter: RegleRuleWithParamsDefinition<
   string | Date,

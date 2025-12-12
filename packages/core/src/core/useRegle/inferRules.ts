@@ -38,10 +38,30 @@ export function createInferRuleHelper<
 }
 
 /**
- * Rule type helper to provide autocomplete and typecheck to your form rules or part of your form rules
- * It will just return the rules without any processing.
+ * Type helper to provide autocomplete and type-checking for your form rules.
+ * It returns the rules without any processing - useful with computed rules.
  *
  * @param state - The state reference
  * @param rules - Your rule tree
+ * @returns The rules object (passthrough)
+ *
+ * @example
+ * ```ts
+ * import { inferRules, useRegle } from '@regle/core';
+ * import { required, minLength } from '@regle/rules';
+ *
+ * const state = ref({ name: '' });
+ *
+ * // inferRules preserves TypeScript autocompletion
+ * const rules = computed(() => {
+ *   return inferRules(state, {
+ *     name: { required, minLength: minLength(2) }
+ *   })
+ * });
+ *
+ * const { r$ } = useRegle(state, rules);
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/#dynamic-rules-object Documentation}
  */
 export const inferRules = createInferRuleHelper();

@@ -3,14 +3,30 @@ import { createUseRegleSchemaComposable, type useRegleSchemaFn } from './useRegl
 import { createInferSchemaHelper, type inferSchemaFn } from './inferSchema';
 
 /**
- * Define a global regle configuration, where you can:
- * - Define global modifiers
- * - Define shortcuts
+ * Define a global configuration for `useRegleSchema`.
  *
- * It will return:
+ * Features:
+ * - Define global modifiers (lazy, rewardEarly, etc.)
+ * - Define shortcuts for common validation patterns
  *
- * - a `useRegleSchema` composable that can typecheck your custom rules
- * - an `inferSchema` helper that can typecheck your custom rules
+ * @param options - Configuration options
+ * @param options.modifiers - Global behavior modifiers
+ * @param options.shortcuts - Reusable validation shortcuts
+ * @returns Object containing typed `useRegleSchema` and `inferSchema` functions
+ *
+ * @example
+ * ```ts
+ * import { defineRegleSchemaConfig } from '@regle/schemas';
+ *
+ * export const { useRegleSchema, inferSchema } = defineRegleSchemaConfig({
+ *   modifiers: {
+ *     lazy: true,
+ *     rewardEarly: true
+ *   }
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/integrations/schemas-libraries Documentation}
  */
 export function defineRegleSchemaConfig<TShortcuts extends RegleShortcutDefinition>({
   modifiers,

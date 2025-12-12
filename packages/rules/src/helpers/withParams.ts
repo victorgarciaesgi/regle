@@ -13,24 +13,31 @@ import { createRule, InternalRuleType } from '@regle/core';
 import { type Ref } from 'vue';
 
 /**
- * The withParams wrapper allows your rule to depend on external parameters, such as a reactive property in your component or store.
+ * The `withParams` wrapper allows your rule to depend on external parameters,
+ * such as a reactive property in your component or store.
  *
- * By default, useRegle observes changes automatically when rules are defined using getter functions or computed properties.
- * 
+ * By default, `useRegle` observes changes automatically when rules are defined using getter functions or computed properties.
+ * However, sometimes dependencies cannot be tracked automatically; use `withParams` to manually define them.
+ *
+ * @param rule - The rule function or definition
+ * @param depsArray - Array of reactive dependencies (refs or getters)
+ *
+ * @example
  * ```ts
  * import { withParams } from '@regle/rules';
-
-    const base = ref('foo');
-
-    const { r$ } = useRegle({ name: '' }, {
-      name: {
-        customRule: withParams((value, param) => value === param, [base]),
-        // or
-        customRule: withParams((value, param) => value === param, [() => base.value]),
-      }
-    })
+ *
+ * const base = ref('foo');
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     customRule: withParams((value, param) => value === param, [base]),
+ *     // or with getter
+ *     customRule: withParams((value, param) => value === param, [() => base.value]),
+ *   }
+ * })
  * ```
- * Docs: {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withparams}
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withparams Documentation}
  */
 export function withParams<
   TValue,

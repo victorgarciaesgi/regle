@@ -5,38 +5,57 @@ import { isFilled, toNumber } from '../helpers';
 /**
  * Requires a field to have a specified maximum numeric value.
  *
- * @param max - the maximum value
- * @param options - comparison options
+ * @param max - The maximum value
+ * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ *
+ * @example
+ * ```ts
+ * import { maxValue } from '@regle/rules';
+ *
+ * const maxCount = ref(6);
+ *
+ * const { r$ } = useRegle({ count: 0 }, {
+ *   count: {
+ *     maxValue: maxValue(6),
+ *     // or with options
+ *     maxValue: maxValue(maxCount, { allowEqual: false }),
+ *     // or with getter
+ *     maxValue: maxValue(() => maxCount.value)
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#maxvalue Documentation}
  */
 export const maxValue: RegleRuleWithParamsDefinition<
   number | string,
-  [count: number | string, options?: CommonComparisonOptions],
+  [max: number | string, options?: CommonComparisonOptions],
   false,
   boolean,
   MaybeInput<number | string>
 > = createRule({
   type: 'maxValue',
-  validator: (value: MaybeInput<number | string>, count: number | string, options?: CommonComparisonOptions) => {
+  validator: (value: MaybeInput<number | string>, max: number | string, options?: CommonComparisonOptions) => {
     const { allowEqual = true } = options ?? {};
-    if (isFilled(value) && isFilled(count)) {
-      if (!isNaN(toNumber(value)) && !isNaN(toNumber(count))) {
+    if (isFilled(value) && isFilled(max)) {
+      if (!isNaN(toNumber(value)) && !isNaN(toNumber(max))) {
         if (allowEqual) {
-          return toNumber(value) <= toNumber(count);
+          return toNumber(value) <= toNumber(max);
         } else {
-          return toNumber(value) < toNumber(count);
+          return toNumber(value) < toNumber(max);
         }
       }
-      console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
+      console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
       return false;
     }
     return true;
   },
-  message: ({ $params: [count, options] }) => {
+  message: ({ $params: [max, options] }) => {
     const { allowEqual = true } = options ?? {};
     if (allowEqual) {
-      return `The value must be less than or equal to ${count}`;
+      return `The value must be less than or equal to ${max}`;
     } else {
-      return `The value must be less than ${count}`;
+      return `The value must be less than ${max}`;
     }
   },
 });

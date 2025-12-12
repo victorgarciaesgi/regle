@@ -3,9 +3,24 @@ import { createRule } from '@regle/core';
 import { isEmpty } from '../helpers';
 
 /**
- * Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
+ * Validates MAC addresses. Call as a function to specify a custom separator (e.g., `':'` or an empty string for `00ff1122334455`).
  *
- * @param separator - the custom separator
+ * @param separator - The custom separator (default: `':'`)
+ *
+ * @example
+ * ```ts
+ * import { macAddress } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ address: '' }, {
+ *   address: {
+ *     macAddress,
+ *     // or with custom separator
+ *     macAddress: macAddress('-')
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#macaddress Documentation}
  */
 export const macAddress: RegleRuleWithParamsDefinition<
   string,

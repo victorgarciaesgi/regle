@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "regle-mcp-server": {
+      "command": "node",
+      "args": ["packages/mcp-server/dist/regle-mcp-server.js"]
+    }
+  }
+}
