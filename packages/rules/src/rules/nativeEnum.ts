@@ -17,7 +17,24 @@ function getValidEnumValues(obj: any) {
 }
 
 /**
- * Validate against a native Typescript enum value.
+ * Validate against a native TypeScript enum value. Similar to Zod's `nativeEnum`.
+ *
+ * @param enumLike - The TypeScript enum to validate against
+ *
+ * @example
+ * ```ts
+ * import { nativeEnum } from '@regle/rules';
+ *
+ * enum Foo {
+ *   Bar, Baz
+ * }
+ *
+ * const { r$ } = useRegle({ type: '' }, {
+ *   type: { nativeEnum: nativeEnum(Foo) },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#nativeenum Documentation}
  */
 export function nativeEnum<T extends EnumLike>(
   enumLike: T

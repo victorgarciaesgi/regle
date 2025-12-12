@@ -1,7 +1,29 @@
 import { isEmpty } from './isEmpty';
 
 /**
- * This is a useful helper that can check if the provided value is a Date, it is used internally for date rules. This can also check strings.
+ * Checks if the provided value is a valid Date. Used internally for date rules.
+ * Can also validate date strings.
+ *
+ * @param value - The value to check
+ * @returns `true` if the value is a valid Date or date string, `false` otherwise
+ *
+ * @example
+ * ```ts
+ * import { createRule, type Maybe } from '@regle/core';
+ * import { isFilled, isDate } from '@regle/rules';
+ *
+ * const rule = createRule({
+ *   validator(value: Maybe<string | Date>) {
+ *     if (isFilled(value) && isDate(value)) {
+ *       return checkDate(value);
+ *     }
+ *     return true;
+ *   },
+ *   message: 'Error'
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#isdate Documentation}
  */
 export function isDate(value: unknown): value is Date | string {
   if (isEmpty(value)) {

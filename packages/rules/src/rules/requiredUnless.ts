@@ -3,9 +3,27 @@ import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
 /**
- * Requires non-empty data, only if provided data property, ref, or a function resolves to false.
+ * Requires non-empty data, only if provided data property, ref, or a function resolves to `false`.
  *
- * @param condition - the condition to disable the required rule
+ * @param condition - The condition to disable the required rule (can be a ref, getter, or value)
+ *
+ * @example
+ * ```ts
+ * import { requiredUnless } from '@regle/rules';
+ *
+ * const form = ref({ name: '', condition: false });
+ * const conditionRef = ref(false);
+ *
+ * const { r$ } = useRegle(form, {
+ *   name: {
+ *     required: requiredUnless(() => form.value.condition),
+ *     // or with a ref
+ *     required: requiredUnless(conditionRef)
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#requiredunless Documentation}
  */
 export const requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean], false, boolean> = createRule({
   type: 'required',

@@ -3,9 +3,23 @@ import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
 
 /**
- * Requires a value to be a native boolean type
+ * Requires a value to be a native boolean type.
  *
- * Mainly used for typing
+ * Mainly used for typing with `InferInput`.
+ *
+ * @example
+ * ```ts
+ * import { type InferInput } from '@regle/core';
+ * import { boolean } from '@regle/rules';
+ *
+ * const rules = {
+ *   checkbox: { boolean },
+ * }
+ *
+ * const state = ref<InferInput<typeof rules>>({});
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#boolean Documentation}
  */
 export const boolean: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<boolean>, unknown> = createRule({
   type: 'boolean',

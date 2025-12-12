@@ -6,6 +6,17 @@ const decimalRegex = /^[-]?\d*(\.\d+)?$/;
 
 /**
  * Allows positive and negative decimal numbers.
+ *
+ * @example
+ * ```ts
+ * import { decimal } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ price: 0 }, {
+ *   price: { decimal },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#decimal Documentation}
  */
 export const decimal: RegleRuleDefinition<
   string | number,

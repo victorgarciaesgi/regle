@@ -5,6 +5,7 @@ packages:
   - packages/nuxt
   - packages/nuxt/fixtures
   - packages/shared
+  - packages/mcp-server
   - packages-private/regle-playground
   - tests
   - docs
@@ -56,6 +57,7 @@ catalog:
   '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.16.8
   type-fest: 5.2.0
+  'tsx': 4.21.0
 
   # Testing
 

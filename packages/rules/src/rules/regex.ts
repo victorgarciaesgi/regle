@@ -4,6 +4,23 @@ import { isFilled, matchRegex } from '../helpers';
 
 /**
  * Checks if the value matches one or more regular expressions.
+ *
+ * @param regexp - A single RegExp or an array of RegExp patterns
+ *
+ * @example
+ * ```ts
+ * import { regex } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ name: '' }, {
+ *   name: {
+ *     regex: regex(/^foo/),
+ *     // or with multiple patterns
+ *     regex: regex([/^bar/, /baz$/]),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#regex Documentation}
  */
 export const regex: RegleRuleWithParamsDefinition<
   string | number,

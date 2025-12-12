@@ -16,6 +16,29 @@ export const { useCollectScope: useCollectSchemaScope, useScopedRegle: useScoped
   customUseRegle: useRegleSchema as any,
 }) as unknown as { useCollectScope: typeof useCollectScope; useScopedRegle: typeof useRegleSchema };
 
+/**
+ * Create a scoped validation system for schema-based validation.
+ * Similar to `createScopedUseRegle` but for use with Standard Schema libraries.
+ *
+ * @param options - Configuration options
+ * @param options.customUseRegle - Custom useRegleSchema instance with your global config
+ * @param options.customStore - External ref to store collected instances
+ * @param options.asRecord - If true, collect instances in a Record (requires `id` param)
+ * @returns Object containing `useScopedRegle` and `useCollectScope` functions
+ *
+ * @example
+ * ```ts
+ * import { createScopedUseRegleSchema, defineRegleSchemaConfig } from '@regle/schemas';
+ *
+ * const { useRegleSchema } = defineRegleSchemaConfig({...});
+ *
+ * export const { useScopedRegle, useCollectScope } = createScopedUseRegleSchema({
+ *   customUseRegle: useRegleSchema
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
+ */
 export const createScopedUseRegleSchema = <
   TCustomRegle extends useRegleSchemaFn = useRegleSchemaFn,
   TAsRecord extends boolean = false,

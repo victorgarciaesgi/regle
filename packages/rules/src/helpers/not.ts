@@ -11,7 +11,33 @@ import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
 
 /**
- * The not operator passes when the provided rule fails and fails when the rule passes. It can be combined with other rules.
+ * The `not` operator passes when the provided rule **fails** and fails when the rule **passes**.
+ * It can be combined with other rules.
+ *
+ * @param rule - The rule to negate
+ * @param message - Optional custom error message
+ * @returns A negated rule
+ *
+ * @example
+ * ```ts
+ * import { useRegle } from '@regle/core';
+ * import { not, required, sameAs, withMessage } from '@regle/rules';
+ * import { ref } from 'vue';
+ *
+ * const form = ref({ oldPassword: '', newPassword: '' });
+ *
+ * const { r$ } = useRegle(form, {
+ *   oldPassword: { required },
+ *   newPassword: {
+ *     notEqual: withMessage(
+ *       not(sameAs(() => form.value.oldPassword)),
+ *       'Your new password must not be the same as your old password'
+ *     ),
+ *   },
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#not Documentation}
  */
 export function not<
   TValue,

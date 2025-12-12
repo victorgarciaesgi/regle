@@ -5,7 +5,20 @@ import { isFilled } from '../helpers';
 /**
  * Checks if the string contains the specified substring.
  *
- * @param part - the part the value needs to contain
+ * @param part - The substring the value must contain
+ *
+ * @example
+ * ```ts
+ * import { contains } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ bestLib: '' }, {
+ *   bestLib: {
+ *     contains: contains('regle')
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#contains Documentation}
  */
 export const contains: RegleRuleWithParamsDefinition<
   string,

@@ -34,6 +34,21 @@ interface OneOfFn {
 
 /**
  * Allow only one of the values from a fixed Array of possible entries.
+ *
+ * @param options - Array of allowed values
+ *
+ * @example
+ * ```ts
+ * import { oneOf } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ aliment: 'Fish' }, {
+ *   aliment: {
+ *     oneOf: oneOf(['Fish', 'Meat', 'Bone'])
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#oneof Documentation}
  */
 export const oneOf: OneOfFn = createRule({
   type: 'oneOf',

@@ -6,9 +6,24 @@ import { formatLocaleDate } from '../utils/getLocale.util';
 /**
  * Checks if the date falls between the specified bounds.
  *
- * @param before - the minimum limit
- * @param after - the maximum limit
- * @param options - comparison options
+ * @param before - The minimum date limit
+ * @param after - The maximum date limit
+ * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ *
+ * @example
+ * ```ts
+ * import { dateBetween } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ birthday: null as Date | null }, {
+ *   birthday: {
+ *     dateBetween: dateBetween(new Date(), new Date(2030, 3, 1)),
+ *     // or with options
+ *     dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: false }),
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#datebetweeen Documentation}
  */
 export const dateBetween: RegleRuleWithParamsDefinition<
   string | Date,

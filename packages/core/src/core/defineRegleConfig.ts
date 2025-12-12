@@ -5,16 +5,43 @@ import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules'
 import { merge } from '../../../shared';
 
 /**
- * Define a global regle configuration, where you can:
+ * Define a global Regle configuration to customize the validation behavior across your application.
+ *
+ * Features:
  * - Customize built-in rules messages
- * - Add your custom rules
- * - Define global modifiers
- * - Define shortcuts
+ * - Add your custom rules with full type inference
+ * - Define global modifiers (lazy, rewardEarly, etc.)
+ * - Define shortcuts for common validation patterns
  *
- * It will return:
+ * @param options - Configuration options
+ * @param options.rules - Factory function returning custom rules
+ * @param options.modifiers - Global behavior modifiers
+ * @param options.shortcuts - Reusable validation shortcuts
+ * @returns Object containing typed `useRegle`, `inferRules`, and `useRules` functions
  *
- * - a `useRegle` composable that can typecheck your custom rules
- * - an `inferRules` helper that can typecheck your custom rules
+ * @example
+ * ```ts
+ * import { defineRegleConfig } from '@regle/core';
+ * import { required, withMessage } from '@regle/rules';
+ *
+ * export const { useRegle, inferRules, useRules } = defineRegleConfig({
+ *   rules: () => ({
+ *     // Override default required message
+ *     required: withMessage(required, 'This field cannot be empty'),
+ *     // Add custom rule
+ *     myCustomRule: createRule({
+ *       validator: (value) => value === 'valid',
+ *       message: 'Invalid value'
+ *     })
+ *   }),
+ *   modifiers: {
+ *     lazy: true,
+ *     rewardEarly: true
+ *   }
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
  */
 export function defineRegleConfig<
   TShortcuts extends RegleShortcutDefinition<TCustomRules>,
@@ -43,12 +70,31 @@ export function defineRegleConfig<
 }
 
 /**
- * Extend an already created custom `useRegle` (as the first parameter)
+ * Extend an already created custom `useRegle` configuration with additional rules, modifiers, or shortcuts.
  *
- * It will return:
+ * @param regle - The existing useRegle function to extend
+ * @param options - Additional configuration to merge
+ * @param options.rules - Additional custom rules
+ * @param options.modifiers - Additional modifiers to merge
+ * @param options.shortcuts - Additional shortcuts to merge
+ * @returns Object containing the extended `useRegle` and `inferRules` functions
  *
- * - a `useRegle` composable that can typecheck your custom rules
- * - an `inferRules` helper that can typecheck your custom rules
+ * @example
+ * ```ts
+ * import { extendRegleConfig } from '@regle/core';
+ * import { baseUseRegle } from './base-config';
+ *
+ * export const { useRegle, inferRules } = extendRegleConfig(baseUseRegle, {
+ *   rules: () => ({
+ *     additionalRule: myNewRule
+ *   }),
+ *   modifiers: {
+ *     rewardEarly: true
+ *   }
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
  */
 export function extendRegleConfig<
   TRootCustomRules extends Partial<ExtendedRulesDeclarations>,

@@ -5,7 +5,20 @@ import { isFilled } from '../helpers';
 /**
  * Checks if the string starts with the specified substring.
  *
- * @private part - the value the field must start with
+ * @param part - The substring the value must start with
+ *
+ * @example
+ * ```ts
+ * import { startsWith } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ bestLib: '' }, {
+ *   bestLib: {
+ *     startsWith: startsWith('regle')
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#startswith Documentation}
  */
 export const startsWith: RegleRuleWithParamsDefinition<
   string,

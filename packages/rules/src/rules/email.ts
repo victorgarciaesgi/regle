@@ -8,6 +8,17 @@ const emailRegex =
 
 /**
  * Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
+ *
+ * @example
+ * ```ts
+ * import { email } from '@regle/rules';
+ *
+ * const { r$ } = useRegle({ email: '' }, {
+ *   email: { email },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#email Documentation}
  */
 export const email: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'email',

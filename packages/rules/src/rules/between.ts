@@ -4,10 +4,30 @@ import { createRule } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
 
 /**
- * Checks if a number is in specified bounds. min and max are both inclusive.
+ * Checks if a number is in specified bounds. `min` and `max` are both inclusive by default.
  *
- * @param min - the minimum limit
- * @param max - the maximum limit
+ * @param min - The minimum limit
+ * @param max - The maximum limit
+ * @param options - Optional configuration (e.g., `{ allowEqual: false }` for exclusive bounds)
+ *
+ * @example
+ * ```ts
+ * import { between } from '@regle/rules';
+ *
+ * const maxCount = ref(6);
+ *
+ * const { r$ } = useRegle({ count: 0 }, {
+ *   count: {
+ *     between: between(1, 6),
+ *     // or with reactive max
+ *     between: between(1, maxCount, { allowEqual: false }),
+ *     // or with getter
+ *     between: between(() => maxCount.value, 10)
+ *   },
+ * })
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#between Documentation}
  */
 export const between: RegleRuleWithParamsDefinition<
   number,

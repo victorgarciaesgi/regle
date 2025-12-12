@@ -16,18 +16,26 @@ function mapRulesWithCondition(
   });
 }
 /**
- * The assignIf is a shorthand for conditional destructuring assignment.
- * It allows to apply multiple rules to a field conditionally.
+ * The `assignIf` is a shorthand for conditional destructuring assignment.
+ * It allows applying **multiple rules** to a field conditionally.
+ *
+ * @param _condition - The condition to check (ref, getter, or value)
+ * @param rules - An object of rules to apply conditionally
+ * @returns A computed ref containing the rules that only apply when the condition is truthy
  *
  * @example
  * ```ts
+ * import { required, email, minLength, assignIf } from '@regle/rules';
+ *
  * const condition = ref(false);
  *
  * const { r$ } = useRegle(ref({ name: '', email: '' }), {
  *   name: assignIf(condition, { required, minLength: minLength(4) }),
  *   email: { email },
- * })
+ * });
  * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#assignif Documentation}
  */
 export function assignIf<
   TValue extends unknown = any,
