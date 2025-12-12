@@ -43,9 +43,8 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 <a href="https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D" alt="Install MCP Server">
   <picture>
     <source media="(prefers-color-scheme: light)" srcset="https://cursor.com/deeplink/mcp-install-dark.svg">
-    <source media="(prefers-color-scheme: dark)" srcset="https://cursor.com/deeplink/mcp-install-light.svg">
   </picture>
-  <img alt="fallback" src="https://cursor.com/deeplink/mcp-install-dark.svg">
+  <img alt="fallback alt='Install MCP Server" src="https://cursor.com/deeplink/mcp-install-light.svg">
 </a>
 
 [![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D)
