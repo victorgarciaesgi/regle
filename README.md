@@ -47,7 +47,6 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
   </picture>
 </a>
 
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D)
 
 ## ✨ Features
 
