@@ -135,7 +135,6 @@ function extractApiFromSourceFile(
   const apis: ApiMetadata[] = [];
 
   function visit(node: ts.Node) {
-    // Handle variable declarations (const exports)
     if (ts.isVariableStatement(node)) {
       const isExported = node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
       for (const declaration of node.declarationList.declarations) {
@@ -149,7 +148,6 @@ function extractApiFromSourceFile(
               const description = getJSDocComment(node) || getJSDocComment(declaration);
               const tags = { ...getJSDocTags(node), ...getJSDocTags(declaration) };
 
-              // Determine kind
               let kind: ApiMetadata['kind'] = 'const';
               if (typeString.includes('=>') || typeString.includes('Function')) {
                 kind = 'function';
@@ -158,7 +156,6 @@ function extractApiFromSourceFile(
               const parameters: ApiParameter[] = [];
               const paramDescriptions = getParamDescriptions(node);
 
-              // Extract parameters if it's a function
               const callSignatures = type.getCallSignatures();
               if (callSignatures.length > 0) {
                 const sig = callSignatures[0];
@@ -176,7 +173,6 @@ function extractApiFromSourceFile(
                 }
               }
 
-              // Get return type
               let returnType = '';
               if (callSignatures.length > 0) {
                 returnType = simplifyType(checker.typeToString(callSignatures[0].getReturnType()));
@@ -199,7 +195,6 @@ function extractApiFromSourceFile(
       }
     }
 
-    // Handle function declarations
     if (ts.isFunctionDeclaration(node) && node.name) {
       const name = node.name.text;
       const isExported = node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
@@ -269,7 +264,6 @@ function getExportedNames(
   visited.add(filePath);
 
   function visit(node: ts.Node) {
-    // Handle named exports: export { name1, name2 } from './module'
     if (ts.isExportDeclaration(node)) {
       if (node.exportClause && ts.isNamedExports(node.exportClause)) {
         for (const element of node.exportClause.elements) {
@@ -277,14 +271,12 @@ function getExportedNames(
         }
       }
 
-      // Handle export * from './module' - follow and collect exports
       if (!node.exportClause && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
         const modulePath = node.moduleSpecifier.text;
         if (modulePath.startsWith('.')) {
           const dir = path.dirname(filePath);
           let resolvedPath = path.resolve(dir, modulePath);
 
-          // Try with .ts extension
           if (!resolvedPath.endsWith('.ts')) {
             if (fs.existsSync(resolvedPath + '.ts')) {
               resolvedPath += '.ts';
@@ -302,7 +294,6 @@ function getExportedNames(
       }
     }
 
-    // Handle direct exports: export const/function/class
     if (ts.isVariableStatement(node)) {
       const isExported = node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
       if (isExported) {
@@ -343,7 +334,6 @@ export function buildApiMetadata(): PackageApi {
       continue;
     }
 
-    // Collect all source files to include in the program (recursively)
     const allSourceFiles = new Set<string>();
 
     function collectSourceFiles(filePath: string) {
@@ -355,7 +345,6 @@ export function buildApiMetadata(): PackageApi {
       const content = fs.readFileSync(filePath, 'utf-8');
       const dir = path.dirname(filePath);
 
-      // Find all local imports/exports
       const importExportRegex = /from\s+['"](\.[^'"]+)['"]/g;
       let match;
       while ((match = importExportRegex.exec(content)) !== null) {
@@ -376,7 +365,6 @@ export function buildApiMetadata(): PackageApi {
 
     collectSourceFiles(indexPath);
 
-    // Create a TypeScript program
     const program = ts.createProgram(Array.from(allSourceFiles), {
       target: ts.ScriptTarget.ESNext,
       module: ts.ModuleKind.ESNext,
@@ -389,7 +377,6 @@ export function buildApiMetadata(): PackageApi {
     const checker = program.getTypeChecker();
     const packageApis: ApiMetadata[] = [];
 
-    // Get exported names from the index file
     const indexSourceFile = program.getSourceFile(indexPath);
     if (!indexSourceFile) {
       api[pkg.name] = [];
@@ -398,7 +385,6 @@ export function buildApiMetadata(): PackageApi {
 
     const exportedNames = getExportedNames(indexSourceFile, program);
 
-    // Extract APIs from all source files
     for (const sourceFile of program.getSourceFiles()) {
       if (sourceFile.fileName.includes('node_modules')) continue;
       if (!allSourceFiles.has(sourceFile.fileName)) continue;
@@ -407,17 +393,14 @@ export function buildApiMetadata(): PackageApi {
       packageApis.push(...apis);
     }
 
-    // Deduplicate by name
     const uniqueApis = new Map<string, ApiMetadata>();
     for (const apiItem of packageApis) {
-      // Prefer entries with descriptions
       const existing = uniqueApis.get(apiItem.name);
       if (!existing || (apiItem.description && !existing.description)) {
         uniqueApis.set(apiItem.name, apiItem);
       }
     }
 
-    // Filter to only include exported names and sort
     const filteredApis = Array.from(uniqueApis.values())
       .filter((a) => exportedNames.has(a.name))
       .sort((a, b) => a.name.localeCompare(b.name));

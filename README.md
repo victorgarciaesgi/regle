@@ -38,12 +38,17 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 | ------------- | ------------- | ------------- |
 | <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
 
+## 🤖 MCP Server
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=regle-mcp-server&config=eyJjb21tYW5kIjoicG5weCBAcmVnbGUvbWNwLXNlcnZlciJ9)
+
 ## ✨ Features
 
 - 🔌 **Headless**: Plug any UI or markup to the validation.
 - 🎯 **Type safe**: Full inference and autocompletion support.
 - 🌳 **Model based**: Your validation tree structure matches the data model.
 - 🔍 **Devtools**: Built-in Vue devtools extention for easy debugging and testing.
+- 🤖 **MCP Server**: MCP server for easy documentation and autocomplete.
 - 🎨 **Style Agnostic**: Works with any CSS framework or plain CSS.
 - 📦 **Modular design**: Expand Regle properties or default validation rules.
 - 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.

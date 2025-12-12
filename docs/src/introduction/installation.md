@@ -67,3 +67,13 @@ app.use(RegleVuePlugin); // <--
 
 app.mount('#app');
 ```
+
+
+## MCP server
+
+Regle offers an MCP server that can be used to get documentation and autocomplete for Regle.
+
+You can install it using the following configurations:
+
+- [Cursor](/integrations/mcp-server#cursor)
+- [Claude Desktop](/integrations/mcp-server#claude-desktop)

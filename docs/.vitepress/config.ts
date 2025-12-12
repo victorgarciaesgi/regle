@@ -123,6 +123,10 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
     text: 'Schemas libraries',
     link: '/integrations/schemas-libraries',
   },
+  {
+    text: 'MCP Server',
+    link: '/integrations/mcp-server',
+  },
 ];
 
 const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [

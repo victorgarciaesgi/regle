@@ -1,19 +1,7 @@
 # @regle/mcp-server
 
-MCP (Model Context Protocol) Server for [Regle](https://reglejs.dev) - providing AI-powered assistance for Vue.js form validation.
+MCP (Model Context Protocol) Server for [Regle](https://reglejs.dev) - providing AI-powered assistance for Vue form validation.
 
-## Installation
-
-```bash
-# npm
-npm install @regle/mcp-server
-
-# pnpm
-pnpm add @regle/mcp-server
-
-# yarn
-yarn add @regle/mcp-server
-```
 
 ## Usage with AI Assistants
 
