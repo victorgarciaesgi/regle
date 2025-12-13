@@ -278,9 +278,11 @@ function buildRootChildrenNodes(
         fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldName);
       }
 
+      const filteredChildren = fieldChildren.filter((child) => child.label !== '$self');
+
       children.push({
         id: createFieldNodeId(instanceId, fieldName),
-        label: `${isCollection ? `${fieldName}[${fieldChildren.length}]` : fieldName}`,
+        label: `${isCollection ? `${fieldName}[${filteredChildren.length}]` : fieldName}`,
         tags: fieldTags,
         children: fieldChildren,
       });
