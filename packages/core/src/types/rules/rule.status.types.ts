@@ -30,7 +30,6 @@ import type {
   RegleFieldResult,
   RegleFormPropertyType,
   RegleIssuesTree,
-  RegleNestedResult,
   ReglePartialRuleTree,
   RegleRuleDecl,
   RegleRuleDefinition,
@@ -40,6 +39,7 @@ import type {
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
+  RegleResult,
 } from '..';
 
 /**
@@ -131,7 +131,7 @@ export type RegleStatus<
           ? any
           : JoinDiscriminatedUnions<TState>
         : any
-  ) => Promise<RegleNestedResult<JoinDiscriminatedUnions<TState>, TRules>>;
+  ) => Promise<RegleResult<JoinDiscriminatedUnions<TState>, TRules>>;
 } & ProcessNestedFields<TState, TRules, TShortcuts> &
   ([TShortcuts['nested']] extends [never]
     ? {}

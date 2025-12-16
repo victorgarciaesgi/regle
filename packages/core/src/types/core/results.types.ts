@@ -21,6 +21,7 @@ import type {
   ExtendOnlyRealRecord,
   ExtractFromGetter,
   HasNamedKeys,
+  isRecordLiteral,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeInput,
@@ -54,7 +55,9 @@ export type RegleResult<
   TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
 > =
   | {
+      /** The result is invalid */
       valid: false;
+      /** Unsafe output data */
       data: IsUnknown<Data> extends true
         ? unknown
         : IsAny<Data> extends true
@@ -68,9 +71,23 @@ export type RegleResult<
                   ? PartialFormState<NonNullable<Data>>
                   : MaybeOutput<Data>
             : unknown;
+      /**
+       * Collection of all the error messages, collected for all children properties and nested forms.
+       *
+       * Only contains errors from properties where $dirty equals true.
+       * */
+      issues: DataTypeRegleIssues<Data, TRules>;
+      /**
+       * Collection of all the issues, collected for all children properties and nested forms.
+       *
+       * Only contains issues from properties where $dirty equals true.
+       */
+      errors: DataTypeRegleErrors<Data>;
     }
   | {
+      /** The result is valid */
       valid: true;
+      /** Filtered type safe output data */
       data: IsUnknown<Data> extends true
         ? unknown
         : IsAny<Data> extends true
@@ -84,40 +101,36 @@ export type RegleResult<
                   ? DeepSafeFormState<NonNullable<Data>, TRules>
                   : SafeFieldProperty<Data, TRules>
             : unknown;
+      /** Empty object because the result is valid */
+      issues: EmptyObject;
+      /** Empty object because the result is valid */
+      errors: EmptyObject;
     };
 
-export type RegleNestedResult<
-  Data extends Record<string, any> | unknown,
-  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
-> = RegleResult<Data, TRules> &
-  (
-    | {
-        /**
-         * The form contains validation errors, so the issues and errors will be populated.
-         */
-        valid: false;
-        /**
-         * Collection of all the error messages, collected for all children properties and nested forms.
-         *
-         * Only contains errors from properties where $dirty equals true.
-         * */
-        issues: RegleIssuesTree<Data>;
-        /**
-         * Collection of all the issues, collected for all children properties and nested forms.
-         *
-         * Only contains issues from properties where $dirty equals true.
-         */
-        errors: RegleErrorTree<Data>;
-      }
-    | {
-        /**
-         * The result is valid, so the issues and errors will be empty.
-         */
-        valid: true;
-        issues: EmptyObject;
-        errors: EmptyObject;
-      }
-  );
+export type DataTypeRegleIssues<
+  TData extends Record<string, any> | any[] | unknown,
+  TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any> = never,
+> =
+  HasNamedKeys<TData> extends true
+    ? NonNullable<TData> extends Array<infer U>
+      ? isRecordLiteral<U> extends true
+        ? RegleFieldIssue<TRules>[]
+        : RegleCollectionErrors<TData, true>
+      : isRecordLiteral<TData> extends true
+        ? RegleIssuesTree<TData>
+        : RegleFieldIssue<TRules>[]
+    : RegleFieldIssue | RegleCollectionErrors<TData, true> | RegleIssuesTree<TData>;
+
+export type DataTypeRegleErrors<TData extends Record<string, any> | any[] | unknown> =
+  HasNamedKeys<TData> extends true
+    ? NonNullable<TData> extends Array<infer U>
+      ? isRecordLiteral<U> extends true
+        ? string[]
+        : RegleCollectionErrors<TData>
+      : isRecordLiteral<TData> extends true
+        ? RegleErrorTree<TData>
+        : string[]
+    : string[] | RegleErrorTree<TData> | RegleCollectionErrors<TData>;
 
 export type RegleCollectionResult<
   Data extends any[],

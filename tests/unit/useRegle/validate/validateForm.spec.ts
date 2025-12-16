@@ -1,9 +1,9 @@
 import {
+  useCollectScope,
   type InferRegleValidationResult,
   type MaybeOutput,
   type RegleRoot,
   type RegleStatus,
-  type SuperCompatibleRegleFieldStatus,
   type SuperCompatibleRegleRoot,
 } from '@regle/core';
 import { nextTick, unref, type MaybeRef } from 'vue';
@@ -27,7 +27,7 @@ import { simpleNestedStateWithMixedValidation } from './fixtures';
  * @link https://reglejs.dev/core-concepts/type-safe-output
  *
  */
-async function validateForm<TRegle extends SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>(
+async function validateForm<TRegle extends SuperCompatibleRegleRoot>(
   r$: MaybeRef<TRegle>
 ): Promise<InferRegleValidationResult<TRegle>> {
   const regle = unref(r$) as unknown as RegleRoot<any, any, any, any> | RegleStatus<any, any, any>;
@@ -89,6 +89,17 @@ describe('validateForm', () => {
           name?: MaybeOutput<string>;
         }[];
       }>();
+    }
+  });
+
+  it('should accept scoped regle root', async () => {
+    const { r$ } = useCollectScope<{ email: string }[]>();
+
+    const { valid, data } = await validateForm(r$);
+    if (valid) {
+      expectTypeOf(data).toEqualTypeOf<{ email: string }[]>();
+    } else {
+      expectTypeOf(data).toEqualTypeOf<{ email?: MaybeOutput<string> }[]>();
     }
   });
 });

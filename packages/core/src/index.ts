@@ -126,7 +126,6 @@ export type {
   RegleStatic,
   IsRegleStatic,
   RegleStaticImpl,
-  RegleNestedResult,
   DeepPartial,
   RegleLike,
   InferRegleValidationResult,

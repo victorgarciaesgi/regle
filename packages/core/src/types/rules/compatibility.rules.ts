@@ -30,7 +30,7 @@ export type SuperCompatibleRegleRoot = SuperCompatibleRegleStatus & {
 export type SuperCompatibleRegleResult = $InternalRegleResult;
 
 export type SuperCompatibleRegleStatus = {
-  readonly $fields: {
+  readonly $fields?: {
     [x: string]: any;
   };
   readonly $issues: Record<string, RegleValidationErrors<any, false, true>>;

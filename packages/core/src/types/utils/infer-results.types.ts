@@ -1,15 +1,19 @@
 import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
-  RegleErrorTree,
+  DataTypeRegleErrors,
+  DataTypeRegleIssues,
+  DeepSafeFormState,
+  RegleResult,
+  SafeFieldProperty,
+} from '../core';
+import type {
   RegleFieldStatus,
-  RegleIssuesTree,
   RegleLike,
   RegleRoot,
   SuperCompatibleRegleFieldStatus,
   SuperCompatibleRegleRoot,
 } from '../rules';
-import type { JoinDiscriminatedUnions } from '../utils';
-import type { DeepSafeFormState, RegleNestedResult, SafeFieldProperty } from '../core';
+import type { DeepPartial, JoinDiscriminatedUnions } from '../utils';
 
 /**
  * Infer safe output from any `r$` instance
@@ -45,13 +49,13 @@ export type InferValidOutput<TRegle extends MaybeRef<SuperCompatibleRegleRoot | 
 export type InferRegleValidationResult<
   TRegle extends MaybeRef<SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>,
 > =
-  InferRegleSettings<TRegle> extends { state: infer TState; rules: infer TRules extends Record<string, any> }
-    ? RegleNestedResult<TState, TRules>
-    : InferRegleSettings<TRegle> extends { state: infer TState; rules: never }
-      ? ({ valid: true; data: TState } | { valid: false; data: TState }) & {
-          errors: RegleErrorTree<TState>[];
-          issues: RegleIssuesTree<TState>;
-        }
+  InferRegleSettings<TRegle> extends { state: infer TState; rules: never }
+    ? ({ valid: true; data: TState } | { valid: false; data: DeepPartial<TState> }) & {
+        errors: DataTypeRegleErrors<TState>;
+        issues: DataTypeRegleIssues<TState>;
+      }
+    : InferRegleSettings<TRegle> extends { state: infer TState; rules: infer TRules extends Record<string, any> }
+      ? RegleResult<TState, TRules>
       : never;
 
 /**
