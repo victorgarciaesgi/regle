@@ -340,7 +340,7 @@ export interface RegleCommonStatus<TValue = any, TRules extends Record<string, a
    * This is not the opposite of `$invalid`. Correct is meant to display UI validation report.
    *
    * This will be `true` only if:
-   * - The field have at least one active rule
+   * - The field has at least one active rule
    * - Is dirty and not empty
    * - Passes validation
    */
@@ -446,9 +446,11 @@ export type RegleRuleStatus<
   ? {}
   : [unknown[]] extends [TParams]
     ? {
+        /** Contains the rule parameters when the rule accepts arguments. */
         readonly $params?: any[];
       }
     : {
+        /** Contains the rule parameters when the rule accepts arguments. */
         readonly $params: [...TParams];
       });
 

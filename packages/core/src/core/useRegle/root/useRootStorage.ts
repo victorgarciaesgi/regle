@@ -18,6 +18,11 @@ import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 import { dotPathObjectToNested } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
 
+/**
+ * @internal
+ * This is the internal function that creates the root storage for the Regle instance.
+ * This allows shared logic between all `useRegle` like composables
+ */
 export function useRootStorage({
   initialState,
   originalState,

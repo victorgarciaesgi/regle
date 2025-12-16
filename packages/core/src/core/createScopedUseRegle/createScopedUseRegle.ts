@@ -95,6 +95,63 @@ export function createScopedUseRegle<
   };
 }
 
-const { useCollectScope, useScopedRegle } = createScopedUseRegle();
+const { useCollectScope: _useCollectScope, useScopedRegle: _useScopedRegle } = createScopedUseRegle();
+
+/**
+ * Composable to collect and merge all Regle instances created with the default `useScopedRegle` within the same scope.
+ * Returns a merged `r$` object allowing validation across multiple components simultaneously.
+ *
+ * Children properties like `$value` and `$errors` are converted to arrays instead of objects.
+ * You have access to all validation properties like `$error`, `$invalid`, `$validate()`, etc.
+ *
+ * @param namespace - Optional namespace or array of namespaces to filter which scoped instances to collect
+ * @returns Object containing `r$` - the merged Regle instance with array-based properties
+ *
+ * @example
+ * ```ts
+ * // ParentComponent.vue
+ * import { useCollectScope } from '@regle/core';
+ *
+ * const { r$ } = useCollectScope();
+ * // Or with namespace filtering
+ * const { r$ } = useCollectScope('contacts');
+ *
+ * // Validate all collected forms
+ * const { result, data } = await r$.$validate();
+ * // Access collected errors
+ * console.log(r$.$errors);
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
+ */
+const useCollectScope = _useCollectScope;
+
+/**
+ * Clone of `useRegle` that automatically registers its instance for collection by `useCollectScope`.
+ * Every time it's called, a new instance is added for the parent scope to collect.
+ *
+ * Can be called multiple times anywhere in your app - not restricted to components or DOM.
+ * When the component is unmounted or scope is disposed, the instance is automatically unregistered.
+ *
+ * @param state - Reactive state object to validate
+ * @param rules - Validation rules to apply
+ * @param options - Configuration options including optional `namespace` for scoping
+ * @returns Object containing `r$` (Regle instance), `dispose()` and `register()` methods
+ *
+ * @example
+ * ```ts
+ * // ChildComponent.vue
+ * import { useScopedRegle } from '@regle/core';
+ *
+ * const { r$ } = useScopedRegle(
+ *   { email: '' },
+ *   { email: { required, email } },
+ *   { namespace: 'contacts' }
+ * );
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
+ */
+const useScopedRegle = _useScopedRegle;
 
 export { useCollectScope, useScopedRegle };

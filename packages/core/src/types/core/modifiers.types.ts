@@ -85,12 +85,19 @@ export interface LocalRegleBehaviourOptions<
 export type RegleValidationGroupEntry = RegleFieldStatus<any, any> | undefined;
 
 export interface RegleValidationGroupOutput {
+  /** Indicates whether any field in the validation group is invalid. */
   $invalid: boolean;
+  /** Convenience flag to easily decide if an error message should be displayed. True when any field in the group is dirty, not pending, and invalid. */
   $error: boolean;
+  /** Indicates if any async rule in the validation group is currently running. */
   $pending: boolean;
+  /** Indicates whether any field in the validation group has been interacted with by the user. */
   $dirty: boolean;
+  /** Indicates whether all fields in the validation group pass validation and are dirty. */
   $correct: boolean;
+  /** Collection of all error messages from fields in the group where $dirty equals true. */
   $errors: string[];
+  /** Collection of all error messages from fields in the group, regardless of $dirty state. */
   $silentErrors: string[];
 }
 

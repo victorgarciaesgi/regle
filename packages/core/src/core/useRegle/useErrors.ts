@@ -96,9 +96,39 @@ function isCollectionError(errors: $InternalRegleErrors): errors is $InternalReg
 }
 
 /**
- * Converts a nested $errors object to a flat array of string errors
+ * Converts a nested `$errors` object to a flat array of error strings.
+ * Useful for displaying a complete list of form errors or counting total errors.
  *
- * Can also flatten to an array containing the path of each error with the options.includePath
+ * With the `includePath` option, returns errors in Standard Schema Issue format
+ * including the path to each error field.
+ *
+ * @param errors - The `$errors` object from a Regle instance (e.g., `r$.$errors`)
+ * @param options - Configuration options
+ * @param options.includePath - If true, returns Standard Schema Issues with paths
+ * @returns Array of error strings, or Standard Schema Issues if `includePath` is true
+ *
+ * @example
+ * ```ts
+ * import { flatErrors, useRegle } from '@regle/core';
+ * import { required, email, minLength } from '@regle/rules';
+ *
+ * const { r$ } = useRegle(
+ *   { name: '', email: 'invalid' },
+ *   { name: { required, minLength: minLength(3) }, email: { email } }
+ * );
+ *
+ * await r$.$validate();
+ *
+ * // Get flat array of error messages
+ * const errors = flatErrors(r$.$errors);
+ * // ['This field is required', 'Value must be a valid email address']
+ *
+ * // Get errors with paths (Standard Schema format)
+ * const issues = flatErrors(r$.$errors, { includePath: true });
+ * // [{ message: 'This field is required', path: ['name'] }, ...]
+ * ```
+ *
+ * @see {@link https://reglejs.dev/core-concepts/displaying-errors#display-flat-errors Documentation}
  */
 export function flatErrors(errors: $InternalRegleErrors, options: { includePath: true }): StandardSchemaV1.Issue[];
 export function flatErrors(errors: $InternalRegleErrors, options?: { includePath?: false }): string[];
