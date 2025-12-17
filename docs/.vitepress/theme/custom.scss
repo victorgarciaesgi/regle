@@ -24,6 +24,18 @@ html:not(.dark) .dark-only {
   display: none !important;
 }
 
+@media (min-width: 960px) {
+  html.has-bb-banner .VPNav {
+    top: 72px;
+  }
+}
+
+html.has-bb-banner .VPSidebar,
+html.has-bb-banner .VPDoc.has-sidebar.has-aside .aside-container,
+.VPLocalNav {
+  top: 72px;
+}
+
 .VPHero {
   @media (min-width: 960px) {
     .name,
