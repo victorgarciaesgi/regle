@@ -31,9 +31,12 @@ html:not(.dark) .dark-only {
 }
 
 html.has-bb-banner .VPSidebar,
-html.has-bb-banner .VPDoc.has-sidebar.has-aside .aside-container,
-.VPLocalNav {
+html.has-bb-banner .VPDoc.has-sidebar.has-aside .aside-container {
   top: 72px;
+}
+
+html.has-bb-banner .VPLocalNav {
+  margin-top: 72px;
 }
 
 .VPHero {
