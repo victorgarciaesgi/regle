@@ -69,7 +69,7 @@ const { r$ } = useMyForm();
 ```vue twoslash [Child.vue]
 <template>
   <ul>
-    <li v-for="error of regle.$errors.email" :key="error">
+    <li v-for="error of r$.$errors.email" :key="error">
       {{ error }}
     </li>
   </ul>
@@ -83,7 +83,7 @@ import type { useMyForm } from './myForm';
 import type { InferRegleRoot } from '@regle/core';
 
 const props = defineProps<{
-  regle: InferRegleRoot<typeof useMyForm>;
+  r$: InferRegleRoot<typeof useMyForm>;
 }>();
 </script>
 ```
@@ -94,6 +94,28 @@ const props = defineProps<{
 `InferRegleRoot` also works with `@regle/schemas`
 :::
 
+
+### Manually typing your state and rules
+
+If you happen to have no way of importing the type, you can style use `RegleRoot` type, that will allow you to manually type your state and rules.
+
+
+```vue [MyForm.vue]
+<script setup lang="ts">
+import { RegleRoot } from '@regle/core';
+
+const props = defineProps<{
+  r$: RegleRoot<{
+    name: string;
+    email: string;
+  }>;
+}>();
+</script>
+```
+
+:::warning
+While this can be useful, be warned that `r$` will be missing the rule properties.
+:::
 
 
 ## Typing a field prop
