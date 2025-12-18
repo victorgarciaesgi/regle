@@ -46,7 +46,7 @@ import type {
  * @public
  */
 export type RegleRoot<
-  TState extends Record<string, unknown> = {},
+  TState extends object | Record<string, unknown> = {},
   TRules extends ReglePartialRuleTree<TState> = Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = never,
   TShortcuts extends RegleShortcutDefinition = {},
@@ -100,7 +100,7 @@ type ProcessNestedFields<
  * @public
  */
 export type RegleStatus<
-  TState extends Record<string, any> | undefined = Record<string, any>,
+  TState extends object | Record<string, any> | undefined = Record<string, any>,
   TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState, TRules> & {
