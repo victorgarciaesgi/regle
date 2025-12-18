@@ -41,7 +41,7 @@ function useRegleDevtoolsRegistry() {
 
     const stopHandle = watch(
       () => r$,
-      () => notifyDevtools(),
+      () => notifyDevtoolsDebounced(),
       { deep: true, flush: 'post' }
     );
 
@@ -52,11 +52,17 @@ function useRegleDevtoolsRegistry() {
     return id;
   }
 
-  const notifyDevtools = debounce(() => {
+  const notifyDevtoolsDebounced = debounce(() => {
     if (devtoolsApi.value) {
       emitInspectorState(devtoolsApi.value);
     }
   }, 100);
+
+  function notifyDevtools(): void {
+    if (devtoolsApi.value) {
+      emitInspectorState(devtoolsApi.value);
+    }
+  }
 
   function unregister(id: string): void {
     instances.value.delete(id);
