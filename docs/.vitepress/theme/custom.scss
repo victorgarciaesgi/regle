@@ -30,13 +30,21 @@ html:not(.dark) .dark-only {
   }
 }
 
+@media (min-width: 960px) {
+  html.has-bb-banner .VPLocalNav {
+    margin-top: 72px;
+  }
+}
+
+@media (min-width: 960px) {
+  html.has-bb-banner .VPContent {
+    padding-top: 0;
+  }
+}
+
 html.has-bb-banner .VPSidebar,
 html.has-bb-banner .VPDoc.has-sidebar.has-aside .aside-container {
   top: 72px;
-}
-
-html.has-bb-banner .VPLocalNav {
-  margin-top: 72px;
 }
 
 .VPHero {
