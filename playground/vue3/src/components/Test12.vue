@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRegle, useCollectScope } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
+import { createRule, useRegle, type Maybe } from '@regle/core';
+import { required, minLength, email, isFilled } from '@regle/rules';
 
 const state = ref({ name: '', email: '' });
-const { r$: collect$r } = useCollectScope();
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: { email },
+
+const asyncRule = createRule({
+  validator: async (value: Maybe<string>) => {
+    if (isFilled(value)) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return value === 'test';
+    }
+    return true;
+  },
+  message: 'Not valid async',
 });
 
-const isInvalid = (): boolean => collect$r.$invalid;
-
-console.log(isInvalid);
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  email: { required, asyncRule, $debounce: 500 },
+});
 
 async function submit() {
   const { valid, data } = await r$.$validate();
@@ -62,7 +69,8 @@ async function submit() {
         }"
         aria-describedby="email-error"
       />
-      <ul id="email-errors" class="invalid-feedback">
+      <p v-if="r$.email.$pending">Loading...</p>
+      <ul v-else id="email-errors" class="invalid-feedback">
         <li v-for="error of r$.$errors.email" :key="error">
           {{ error }}
         </li>

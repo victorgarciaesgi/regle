@@ -53,9 +53,14 @@ describe('$pending', () => {
     shouldBePristineField(vm.r$, true);
 
     vm.r$.$value.level0 = 1;
+    await nextTick();
+
+    expect(vm.r$.level0.$dirty).toBe(false);
+
     await vi.advanceTimersByTimeAsync(200);
     await nextTick();
 
+    expect(vm.r$.level0.$dirty).toBe(true);
     expect(vm.r$.level0.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);

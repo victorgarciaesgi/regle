@@ -101,6 +101,7 @@ export function createReactiveFieldStatus({
 
   let $commit: DebouncedFunction<() => void> | (() => void) = () => {};
   let $validateAbortablePromise: AbortablePromiseResult<any> | undefined;
+  let $setDirty: DebouncedFunction<() => void> | (() => void) = () => {};
 
   const $isDebouncing = ref(false);
 
@@ -152,6 +153,7 @@ export function createReactiveFieldStatus({
     scopeState.processShortcuts();
 
     define$commit();
+    define$setDirty();
 
     if (storeResult?.valid != null) {
       scopeState.$dirty.value = storage.getDirtyState(cachePath);
@@ -173,6 +175,18 @@ export function createReactiveFieldStatus({
       });
     } else {
       $commit = $commitHandler;
+    }
+  }
+
+  function define$setDirty() {
+    if (scopeState.$debounce.value > 0) {
+      $setDirty = debounce(() => {
+        scopeState.$dirty.value = true;
+      }, scopeState.$debounce.value);
+    } else {
+      $setDirty = () => {
+        scopeState.$dirty.value = true;
+      };
     }
   }
 
@@ -536,7 +550,7 @@ export function createReactiveFieldStatus({
       () => {
         if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
           if (!scopeState.$dirty.value) {
-            scopeState.$dirty.value = true;
+            $setDirty();
           }
         }
 
@@ -638,7 +652,7 @@ export function createReactiveFieldStatus({
 
   function $touch(runCommit = true, withConditions = false): void {
     if (!scopeState.$dirty.value) {
-      scopeState.$dirty.value = true;
+      $setDirty();
     }
 
     if (withConditions && runCommit) {

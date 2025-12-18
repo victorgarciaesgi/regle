@@ -4,6 +4,7 @@ import { tryOnScopeDispose } from '../utils';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 import { emitInspectorState } from './actions';
 import { regleSymbol } from '../constants';
+import { debounce } from '../../../shared/utils';
 
 /*#__PURE__*/
 function useRegleDevtoolsRegistry() {
@@ -51,11 +52,11 @@ function useRegleDevtoolsRegistry() {
     return id;
   }
 
-  function notifyDevtools(): void {
+  const notifyDevtools = debounce(() => {
     if (devtoolsApi.value) {
       emitInspectorState(devtoolsApi.value);
     }
-  }
+  }, 100);
 
   function unregister(id: string): void {
     instances.value.delete(id);
