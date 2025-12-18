@@ -21,7 +21,7 @@ export default defineConfig<ConfigOptions>({
     },
     screenshot: 'only-on-failure',
     nuxt: {
-      rootDir: fileURLToPath(new URL('./fixtures', import.meta.url)),
+      rootDir: fileURLToPath(new URL('./test/fixtures', import.meta.url)),
       port: frontAppPort,
       dev: true,
     },

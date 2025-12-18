@@ -3,6 +3,7 @@
   "name": "nuxt-test",
   "type": "module",
   "dependencies": {
-    "@regle/nuxt": "workspace:*"
+    "@regle/nuxt": "workspace:*",
+    "check-password-strength": "catalog:"
   }
 }

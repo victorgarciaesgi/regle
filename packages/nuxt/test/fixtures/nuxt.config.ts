@@ -9,6 +9,6 @@ export default defineNuxtConfig({
     autoImport: true,
   },
   regle: {
-    setupFile: '~/regle/regle-setup.ts',
+    setupFile: '~/regle-config.ts',
   },
 });

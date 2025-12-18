@@ -3,7 +3,7 @@ packages:
   - packages/rules
   - packages/schemas
   - packages/nuxt
-  - packages/nuxt/fixtures
+  - packages/nuxt/test/fixtures
   - packages/shared
   - packages/mcp-server
   - packages-private/regle-playground
@@ -79,3 +79,4 @@ catalog:
 
   # Front
   tailwindcss: 4.1.17
+  check-password-strength: 3.0.0

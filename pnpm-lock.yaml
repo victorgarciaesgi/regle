@@ -39,6 +39,9 @@ catalogs:
     arktype:
       specifier: 2.1.27
       version: 2.1.27
+    check-password-strength:
+      specifier: 3.0.0
+      version: 3.0.0
     nuxt:
       specifier: 4.2.1
       version: 4.2.1
@@ -261,7 +264,7 @@ importers:
         specifier: 10.4.22
         version: 10.4.22(postcss@8.5.6)
       check-password-strength:
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       lodash-es:
         specifier: 4.17.21
@@ -455,11 +458,14 @@ importers:
         specifier: workspace:*
         version: link:../schemas
 
-  packages/nuxt/fixtures:
+  packages/nuxt/test/fixtures:
     dependencies:
       '@regle/nuxt':
         specifier: workspace:*
-        version: link:..
+        version: link:../..
+      check-password-strength:
+        specifier: 'catalog:'
+        version: 3.0.0
 
   packages/rules:
     dependencies:
@@ -577,7 +583,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/rules
       check-password-strength:
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       pinia:
         specifier: 'catalog:'
@@ -790,8 +796,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/schemas
       check-password-strength:
-        specifier: 2.0.10
-        version: 2.0.10
+        specifier: 'catalog:'
+        version: 3.0.0
       pinia:
         specifier: 'catalog:'
         version: 3.0.4(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
@@ -4468,9 +4474,6 @@ packages:
 
   character-entities@2.0.2:
     resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
-
-  check-password-strength@2.0.10:
-    resolution: {integrity: sha512-HRM5ICPmtnNtLnTv2QrfVkq1IxI9z3bzYpDJ1k5ixwD9HtJGHuv265R6JmHOV6r8wLhQMlULnIUVpkrC2yaiCw==}
 
   check-password-strength@3.0.0:
     resolution: {integrity: sha512-XIBvWpb7/RI2DO05tMixE4WbFFvEC7ls/jr1VSrWgXvlCmdiH2fsdkixG0cNGs1uIXwoSqJ75T3s9H/TlJV6Cw==}
@@ -12495,8 +12498,6 @@ snapshots:
   character-entities-legacy@3.0.0: {}
 
   character-entities@2.0.2: {}
-
-  check-password-strength@2.0.10: {}
 
   check-password-strength@3.0.0:
     dependencies:

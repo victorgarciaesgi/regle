@@ -22,7 +22,7 @@
   "scripts": {
     "turbo:postinstall": "pnpm exec playwright install",
     "prepack": "nuxt-module-build build",
-    "dev": "echo 'no dev build'",
+    "dev": "nuxt-module-build build --stub",
     "dev:playground": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "typecheck": "pnpm dev:prepare && vue-tsc --noEmit && nuxi typecheck test/fixtures",

@@ -12,7 +12,7 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
-    "check-password-strength": "3.0.0",
+    "check-password-strength": "catalog:",
     "pinia": "catalog:",
     "sass": "1.94.2",
     "vue": "catalog:",

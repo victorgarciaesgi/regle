@@ -33,14 +33,20 @@ export default defineNuxtModule<ModuleOptions>({
       try {
         const setupFilePathOS = await resolvePath(options.setupFile);
         // Ensure the path is normalized for POSIX compatibility (https://github.com/victorgarciaesgi/regle/issues/152)
-        const setupFilePath = path.posix.normalize(setupFilePathOS.replaceAll(/\\/gi, '/'));
         // console.log(setupFilePath);
-        if (setupFilePath) {
-          const relativePath = resolve(setupFilePath);
+        if (setupFilePathOS) {
+          const relativePath = resolve(setupFilePathOS);
 
           const setupFilePathWithoutExtension = path.join(
             path.dirname(relativePath),
             path.basename(relativePath, path.extname(relativePath))
+          );
+
+          /**
+           * Ensure absolute paths work on Windows OS
+           */
+          const setupFilePathWithoutExtensionCleaned = path.posix.normalize(
+            setupFilePathWithoutExtension.replaceAll(/\\/gi, '/')
           );
 
           const template = addTemplate({
@@ -48,7 +54,7 @@ export default defineNuxtModule<ModuleOptions>({
             write: true,
             getContents: () => `
 import type { InferRegleRules, RegleCustomFieldStatus } from '@regle/core';
-import ReglePlugin from "${setupFilePathWithoutExtension}";
+import ReglePlugin from "${setupFilePathWithoutExtensionCleaned}";
 export const { inferRules, useRegle, useCollectScope, useScopedRegle } = ReglePlugin;
 
 export type RegleFieldStatus<
