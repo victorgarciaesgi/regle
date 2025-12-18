@@ -7,13 +7,16 @@ import 'virtual:group-icons.css';
 import { createPinia } from 'pinia';
 import DefaultTheme from 'vitepress/theme';
 import { RegleVuePlugin } from '@regle/core';
+import GitHubStars from '../components/GitHubStars.vue';
 import './style.css';
 import './custom.scss';
 
 export default {
   extends: DefaultTheme,
   Layout: () => {
-    return h(DefaultTheme.Layout, null, {});
+    return h(DefaultTheme.Layout, null, {
+      'home-hero-info-after': () => h(GitHubStars),
+    });
   },
   enhanceApp({ app, router }: EnhanceAppContext) {
     app.use(TwoslashFloatingVue as any);

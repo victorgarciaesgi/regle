@@ -87,7 +87,13 @@ A reference to the original validated model. It can be used to bind your form wi
 ### `$initialValue` 
 - Type: `TValue` 
 
-Initial value of the field.
+Initial value of the field. This value will be set to the current `$value` when using `$reset`.
+
+
+### `$originalValue` 
+- Type: `TValue` 
+
+Original value of the field. This value is the unmutated state that was passed to the form when it was initialized. This value will not be mutated when using `$reset`.
 
   
 ### `$pending` 
@@ -136,7 +142,7 @@ Return the current key name of the field.
 Sets all properties as dirty, triggering all rules. 
 It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
 
-### `forceValues` parameter
+#### `forceValues` parameter
 
 The first argument is optional and can be used to assign a new state before validating. It's equivalent to use `r$.$value = x` and `r$.$validate();`.
 
@@ -157,38 +163,9 @@ Marks the field and all nested properties as `$dirty`.
 Reset the validation status to a pristine state while keeping the current state.
 The current state is treated as the new initial state.
 
-#### Options
-
-
-| Option                | Type                          | Description                                                                                                                                                                                                                 |
-|-----------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `toInitialState`      | `boolean`                     | Reset validation status and reset form state to its initial state.<br><br>Initial state is different from the original state, as it can be mutated when using `$reset`. This serves as the base comparison for `$edited`.<br><br>⚠️ This doesn't work if the state is a `reactive` object. |
-| `toOriginalState`     | `boolean`                     | Reset validation status and reset form state to its original state.<br><br>Original state is the unmutated state that was passed to the form when it was initialized.                                                       |
-| `toState`             | `TState` or `() => TState`    | Reset validation status and reset form state to the given state. Also sets the new state as the new initial state.                                                                    |
-| `clearExternalErrors` | `boolean`                     | Clears the `$externalErrors` state back to an empty object.                                                                                                                           |
-     
-
-Example:
-
-```ts
-r$.$reset(); // Only reset validation state
-```
-
-```ts
-r$.$reset({ toInitialState: true }); // Reset validation state and form state to initial state
-```
-
-```ts
-r$.$reset({ toOriginalState: true }); // Reset validation state and form state to original state
-```
-
-```ts
-r$.$reset({ toState: { email: 'test@test.com' } }); // Reset validation state and form state to the given state
-```
-
-```ts
-r$.$reset({ clearExternalErrors: true }); // Clear $externalErrors state
-```
+:::tip
+For more information about the `$reset` method, check the [reseting forms section](/common-usage/reseting-form)
+:::
 
 ### `$clearExternalErrors` 
 - Type: `() => void`

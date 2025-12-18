@@ -47,14 +47,3 @@ features:
     details: Use any schema library like Zod, Valibot or ArkType to control your validations
 ---
 
-
-
-<h2 class="hidden-title">Vue validation library</h2>
-<h2 class="hidden-title">Vue form library</h2>
-<h2 class="hidden-title">Vue zod forms</h2>
-<h2 class="hidden-title">Vue zod</h2>
-<h2 class="hidden-title">Vuelidate Zod</h2>
-<h2 class="hidden-title">Vuelidate alternative</h2>
-<h2 class="hidden-title">Veevalidate alternative</h2>
-<h2 class="hidden-title">Vueforms alternative</h2>
-<h2 class="hidden-title">Tanstack forms alternative</h2>

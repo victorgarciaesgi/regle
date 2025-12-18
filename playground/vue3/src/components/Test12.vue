@@ -3,7 +3,8 @@ import { ref } from 'vue';
 import { createRule, useRegle, type Maybe } from '@regle/core';
 import { required, minLength, email, isFilled } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+const name = ref('');
+const emailState = ref('');
 
 const asyncRule = createRule({
   validator: async (value: Maybe<string>) => {
@@ -16,10 +17,13 @@ const asyncRule = createRule({
   message: 'Not valid async',
 });
 
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: { required, asyncRule, $debounce: 500 },
-});
+const { r$ } = useRegle(
+  { name, email: emailState },
+  {
+    name: { required, minLength: minLength(4) },
+    email: { required, asyncRule, $debounce: 500 },
+  }
+);
 
 async function submit() {
   const { valid, data } = await r$.$validate();
