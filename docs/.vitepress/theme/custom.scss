@@ -36,7 +36,7 @@ html:not(.dark) .dark-only {
   }
 }
 
-@media (min-width: 960px) {
+@media (max-width: 1280px) {
   html.has-bb-banner .VPContent {
     padding-top: 0;
   }
