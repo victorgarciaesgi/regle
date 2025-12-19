@@ -103,12 +103,13 @@ export function withMessage(
     | RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, boolean>
     | undefined;
   let _params: any[] | undefined;
+  let _async: boolean = false;
 
   if (typeof rule === 'function' && !('_validator' in rule)) {
     _type = InternalRuleType.Inline;
     validator = rule;
   } else {
-    ({ _type, validator, _active, _params } = rule);
+    ({ _type, validator, _active, _params, _async } = rule);
   }
 
   const newRule = createRule({
@@ -116,6 +117,7 @@ export function withMessage(
     validator: validator,
     active: _active,
     message: newMessage,
+    async: _async,
   }) as RegleRuleRaw;
 
   const newParams = [...(_params ?? [])] as [];

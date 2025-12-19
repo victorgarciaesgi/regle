@@ -1,5 +1,5 @@
 import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
-import { RegleVuePlugin, useRegle } from '@regle/core';
+import { createRule, RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { and } from '../and';
@@ -18,9 +18,21 @@ describe('withMessage helper', () => {
         firstName: '',
         lastName: '',
         testOverride: '',
+        pseudo: '',
       });
 
       const overriddenRule = withMessage(minLength, ({ $params: [min] }) => `Test override: ${min}`);
+
+      const asyncCreateRule = createRule({
+        validator: async (value, _param: number) => {
+          return await new Promise<boolean>((resolve) => {
+            setTimeout(() => {
+              resolve(isFilled(value));
+            }, 200);
+          });
+        },
+        message: 'Create rule async',
+      });
 
       return useRegle(form, () => ({
         email: {
@@ -41,6 +53,9 @@ describe('withMessage helper', () => {
             }),
             'Required async'
           ),
+        },
+        pseudo: {
+          ruleAsync: withMessage(asyncCreateRule(2), 'Required async'),
         },
         testOverride: {
           foo: overriddenRule(6),
@@ -101,13 +116,23 @@ describe('withMessage helper', () => {
 
     await nextTick();
 
-    vi.advanceTimersByTimeAsync(1000);
+    vi.advanceTimersByTimeAsync(200);
     await nextTick();
     await flushPromises();
 
     expect(vm.r$.$errors.firstName).toStrictEqual([]);
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$errors.lastName).toStrictEqual(['Required async']);
+  });
+
+  it('should correctly keep async handlers', async () => {
+    vm.r$.$value.pseudo = 'foo';
+    await nextTick();
+    vi.advanceTimersByTimeAsync(1000);
+    await nextTick();
+    await flushPromises();
+    expect(vm.r$.pseudo.$error).toBe(false);
+    expect(vm.r$.$errors.pseudo).toStrictEqual([]);
   });
 
   it('should create a rule factory when passed a rule factory', async () => {

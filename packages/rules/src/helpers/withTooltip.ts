@@ -90,12 +90,13 @@ export function withTooltip(
     | undefined;
   let _params: any[] | undefined;
   let _message: any;
+  let _async: boolean = false;
 
   if (typeof rule === 'function' && !('_validator' in rule)) {
     _type = InternalRuleType.Inline;
     validator = rule;
   } else {
-    ({ _type, validator, _active, _params, _message } = rule);
+    ({ _type, validator, _active, _params, _message, _async } = rule);
   }
 
   const newRule = createRule({
@@ -104,6 +105,7 @@ export function withTooltip(
     active: _active,
     message: _message,
     tooltip: newTooltip,
+    async: _async,
   }) as RegleRuleRaw;
 
   const newParams = [...(_params ?? [])] as [];
