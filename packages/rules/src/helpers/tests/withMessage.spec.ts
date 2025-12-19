@@ -1,14 +1,13 @@
-import type { Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule, RegleVuePlugin, useRegle } from '@regle/core';
+import type { CommonComparisonOptions, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
+import { createRule, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
-import { and } from '../and';
 import { dateBefore, email, minLength, oneOf, required, sameAs } from '../../rules';
-import { withMessage } from '../withMessage';
-import { withAsync } from '../withAsync';
+import { and } from '../and';
 import { isFilled } from '../ruleHelpers';
+import { withAsync } from '../withAsync';
+import { withMessage } from '../withMessage';
 import { withParams } from '../withParams';
-import type { CommonComparisonOptions } from '@regle/core';
 
 describe('withMessage helper', () => {
   const testComponent = defineComponent({
@@ -73,11 +72,7 @@ describe('withMessage helper', () => {
     vi.useRealTimers();
   });
 
-  const { vm } = mount(testComponent, {
-    global: {
-      plugins: [RegleVuePlugin],
-    },
-  });
+  const { vm } = mount(testComponent, {});
 
   it('should return empty errors', () => {
     expect(vm.r$.$errors.email).toStrictEqual([]);
