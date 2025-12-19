@@ -1,6 +1,6 @@
 {
   "name": "@regle/mcp-server",
-  "version": "1.14.5",
+  "version": "1.14.6",
   "description": "MCP Server for Regle",
   "scripts": {
     "typecheck": "tsc --noEmit",
