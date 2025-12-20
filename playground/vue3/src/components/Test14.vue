@@ -1,43 +1,75 @@
-<template>
-  <div class="demo-container">
-    <div class="block">
-      <input v-model="condition" type="checkbox" />
-      <label>The field is required</label>
-    </div>
-    <div>
-      <input
-        v-model="form.foo"
-        type="date"
-        :class="{ valid: r$.foo.$correct, error: r$.foo.$error }"
-        :placeholder="`Type your foo${r$.foo.$rules.required.$active ? '*' : ''}`"
-      />
-      <button type="button" @click="r$.$reset({ toInitialState: true })"> Reset </button>
-    </div>
-    <ul v-if="r$.$errors.foo.length">
-      <li v-for="error of r$.$errors.foo" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-  </div>
-  <JSONViewer :data="r$"></JSONViewer>
-</template>
-
 <script setup lang="ts">
-import { inferRules, useRegle } from '@regle/core';
-import { applyIf, minLength, required } from '@regle/rules';
 import { ref } from 'vue';
-import JSONViewer from './JSONViewer.vue';
+import { useRegle } from '@regle/core';
+import { required, minLength, email } from '@regle/rules';
 
-type Form = {
-  foo: Date;
-};
+const state = ref({ name: '', email: '' });
 
-const form = ref<Form>({ foo: new Date() });
-const condition = ref(false);
-
-const { r$ } = useRegle(form, {
-  foo: {
-    required,
-  },
+const { r$ } = useRegle(state, {
+  name: { required, minLength: minLength(4) },
+  email: { email },
 });
+
+async function submit() {
+  const { valid, data } = await r$.$validate();
+  if (valid) {
+    console.log(data.name);
+    //               ^ string
+    console.log(data.email);
+    //.              ^ string | undefined
+  } else {
+    console.warn('Errors: ', r$.$errors);
+  }
+}
 </script>
+
+<template>
+  <div class="container p-3">
+    <h2>Hello Regle!</h2>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+      />
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+  </div>
+</template>
+<style>
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+</style>

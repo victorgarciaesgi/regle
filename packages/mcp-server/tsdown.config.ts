@@ -14,7 +14,7 @@ const sharedOptions: UserConfig = {
     js: '#!/usr/bin/env node',
   },
   env: {
-    POSTHOG_API_KEY: process.env.POSTHOG_API_KEY,
+    POSTHOG_API_KEY: process.env.POSTHOG_API_KEY ?? '',
   },
   inputOptions(inputOptions) {
     inputOptions.experimental ??= {};

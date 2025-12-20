@@ -26,6 +26,8 @@ jobs:
         run: pnpm i
       - name: Build
         run: pnpm run build
+        env:
+          POSTHOG_API_KEY: ${{ vars.POSTHOG_API_KEY }}
       - name: Publish
         run: pnpm run npm:publish
         env:
