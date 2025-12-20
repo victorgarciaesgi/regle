@@ -55,9 +55,9 @@ export type RegleResult<
   TRules extends ReglePartialRuleTree<any> | RegleFormPropertyType<any>,
 > =
   | {
-      /** The result is invalid */
+      /** The result of the validation */
       valid: false;
-      /** Unsafe output data */
+      /** Output data, filter the result by checking the `valid` property */
       data: IsUnknown<Data> extends true
         ? unknown
         : IsAny<Data> extends true
@@ -85,9 +85,7 @@ export type RegleResult<
       errors: DataTypeRegleErrors<Data>;
     }
   | {
-      /** The result is valid */
       valid: true;
-      /** Filtered type safe output data */
       data: IsUnknown<Data> extends true
         ? unknown
         : IsAny<Data> extends true
@@ -101,9 +99,7 @@ export type RegleResult<
                   ? DeepSafeFormState<NonNullable<Data>, TRules>
                   : SafeFieldProperty<Data, TRules>
             : unknown;
-      /** Empty object because the result is valid */
       issues: EmptyObject;
-      /** Empty object because the result is valid */
       errors: EmptyObject;
     };
 
