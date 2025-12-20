@@ -1,91 +1,131 @@
+<template>
+  <h2>Activities</h2>
+  <pre>{{ r$?.$errors }}</pre>
+
+  <div v-for="(activity, index) in r$.$fields.activities.$each" :key="index">
+    <!-- Sport activity card -->
+    <div v-if="activity.$value.type === 'sport'">
+      <label>
+        Sport Name:
+        <input type="text" v-model="activity.$value.name" />
+      </label>
+      <label>
+        Experience:
+        <input type="number" v-model="activity.$value.experience" />
+      </label>
+    </div>
+
+    <!-- Intellectual activity card  -->
+    <div v-else-if="activity.$value.type === 'intellectual'">
+      <label>
+        Activity Name:
+        <input type="text" v-model="activity.$value.name" />
+      </label>
+      <label>
+        Description:
+        <input type="text" v-model="activity.$value.description" />
+      </label>
+    </div>
+  </div>
+
+  <button @click="validate">Validate</button>
+  <button @click="addSportActivity" type="button">Add sport activity</button>
+  <button @click="addIntellectualActivity" type="button"> Add intellectual activity </button>
+</template>
+
 <script setup lang="ts">
-import { ref } from 'vue';
-import { createRule, useRegle, type Maybe } from '@regle/core';
-import { required, minLength, email, isFilled } from '@regle/rules';
+import * as v from 'valibot';
+import * as z from 'zod';
+import { useRegleSchema } from '@regle/schemas';
+import { ref, toRaw } from 'vue';
 
-const name = ref('');
-const emailState = ref('');
+// ------------------------------------
+//           Valibot setup
+// ------------------------------------
 
-const asyncRule = createRule({
-  validator: async (value: Maybe<string>) => {
-    if (isFilled(value)) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return value === 'test';
-    }
-    return true;
-  },
-  message: 'Not valid async',
+// Sports
+const sport = v.object({
+  type: v.literal('sport'),
+  name: v.pipe(v.string(), v.nonEmpty()),
+  experience: v.pipe(v.number()),
 });
 
-const { r$ } = useRegle(
-  { name, email: emailState },
-  {
-    name: { required, minLength: minLength(4) },
-    email: { required, asyncRule, $debounce: 500 },
-  }
-);
+// Intellectual (reading, etc.)
+const intellectual = v.object({
+  type: v.literal('intellectual'),
+  name: v.pipe(v.string(), v.nonEmpty()),
+  // These are different, hence the variant (discriminated union in Zod) <-
+  description: v.pipe(v.string(), v.nonEmpty()),
+});
 
-async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
-  }
-}
+// Variant of sports and intellectual activities into one activity type
+// https://valibot.dev/guides/unions/
+
+const activity = v.variant('type', [sport, intellectual]);
+
+// Person's main validation schema
+const validationSchema = v.object({
+  activities: v.array(activity),
+});
+
+// ------------------------------------
+//             Zod setup
+// ------------------------------------
+
+const zSport = z.object({
+  type: z.literal('sport'),
+  name: z.string().min(1),
+  experience: z.number(),
+});
+
+const zIntellectual = z.object({
+  type: z.literal('intellectual'),
+  name: z.string().min(1),
+  description: z.string().min(1),
+});
+
+const zActivity = z.discriminatedUnion('type', [zSport, zIntellectual]);
+
+const zValidationSchema = z.object({
+  activities: z.array(zActivity),
+});
+
+// ------------------------------------
+//             Form setup
+// ------------------------------------
+
+// Setup the Regle instance
+const formState = ref<v.InferInput<typeof validationSchema>>({
+  activities: [],
+});
+
+// Regle instance
+const { r$ } = useRegleSchema(formState, validationSchema, {
+  // After enabling rewardEarly, it causs the errors from these complex fields to merge in a weird way
+  rewardEarly: true,
+});
+
+// Validate the form
+const validate = async () => {
+  const res = await r$.$validate();
+  console.log(res);
+  console.log(v.parse(validationSchema, toRaw(formState.value)));
+};
+
+const addSportActivity = () => {
+  formState.value.activities.push({
+    type: 'sport',
+    name: '',
+    experience: undefined as any,
+  });
+};
+
+// Add a new intellectual activity with default values
+const addIntellectualActivity = () => {
+  formState.value.activities.push({
+    type: 'intellectual',
+    name: '',
+    description: '',
+  });
+};
 </script>
-
-<template>
-  <div class="container p-3">
-    <h2>Hello Regle!</h2>
-
-    <div class="py-2 has-validation">
-      <label class="form-label">Name</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.name"
-        placeholder="Type your name"
-        :class="{
-          'is-valid': r$.name.$correct,
-          'is-invalid': r$.name.$error,
-        }"
-        aria-describedby="name-error"
-      />
-      <ul id="name-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.name" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-
-    <div class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.email"
-        placeholder="Type your email"
-        :class="{
-          'is-valid': r$.email.$correct,
-          'is-invalid': r$.email.$error,
-        }"
-        aria-describedby="email-error"
-      />
-      <p v-if="r$.email.$pending">Loading...</p>
-      <ul v-else id="email-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.email" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-
-    <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
-    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
-  </div>
-</template>
-<style>
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
-</style>

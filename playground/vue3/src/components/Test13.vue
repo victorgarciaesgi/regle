@@ -1,48 +1,66 @@
-<script setup lang="ts">
-import * as v from 'valibot';
-import { useRegleSchema } from '@regle/schemas';
-import { type NarrowVariant, narrowVariant } from '@regle/core';
-
-const schema = v.object({
-  a: v.variant('type', [
-    v.object({
-      type: v.literal('foo'),
-    }),
-    v.object({
-      type: v.literal('bar'),
-    }),
-  ]),
-});
-
-const { r$ } = useRegleSchema({ a: { type: 'foo' } }, schema);
-
-type Root = typeof r$;
-type Narrow = NarrowVariant<Root['a'], 'type', 'foo'>;
-
-if (narrowVariant(r$.a, 'type', 'foo')) {
-  r$.a.$value.type;
-}
-
-type IsNarrowTypeValueFoo = Narrow['type']['$value'] extends 'foo' ? true : false; // true, ok
-type IsNarrowValueTypeFoo = Narrow['$value']['type'] extends 'foo' ? true : false; // true, ok
-type IsNarrowTypeValueBar = Narrow['type']['$value'] extends 'bar' ? true : false; // false, ok
-type IsNarrowValueTypeBar = Narrow['$value']['type'] extends 'bar' ? true : false; // false, ok
-
-const value: Narrow['$value'] = { type: 'foo' };
-// @ts-expect-error
-const value2: Narrow['$value'] = { type: 'bar' };
-/*
-const value: {
-    type: "foo" | "bar";
-}
-*/
-</script>
-
 <template>
-  <div class="container p-3">
-    <h2>Hello Regle!</h2>
+  <!-- Values -->
+  <pre>{{ r$.$value }}</pre>
+  <br />
+  <!-- Errors -->
+  <pre>{{ r$.$errors }}</pre>
+
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 500px">
+    <input v-model="r$.$value.name" />
+
+    <!-- Array field -->
+    <div style="border: 1px solid; padding: 14px" v-for="field in r$.array.$each">
+      <input type="text" :key="field.$id" v-model="field.$value.test" />
+
+      <!-- Nested array field -->
+      <div style="border: 1px solid; padding: 14px; margin-top: 15px" v-for="nested_field in field.nested_array.$each">
+        <input type="text" :key="nested_field.$id" v-model="nested_field.$value.rest" />
+      </div>
+    </div>
+
+    <button @click="addTopLevel">Add one top level array field</button>
+    <button @click="moveTopLevelUp">Move last up</button>
+    <button @click="submit">Submit me!</button>
   </div>
 </template>
-<style>
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
-</style>
+
+<script setup lang="ts">
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
+
+const values = {
+  name: 'test',
+  array: [{ test: 'test', nested_array: [{ rest: 'rest' }] }],
+};
+
+const { r$ } = useRegleSchema(
+  values,
+  z.object({
+    name: z.string().min(1),
+    array: z.array(
+      z.object({
+        test: z.string().min(1),
+        nested_array: z.array(
+          z.object({
+            rest: z.string().min(1),
+          })
+        ),
+      })
+    ),
+  })
+);
+
+const submit = async () => {
+  const res = await r$.$validate();
+  console.log(res);
+};
+
+const addTopLevel = () => {
+  r$.$value.array.push({ test: '', nested_array: [{ rest: '' }] });
+};
+
+// Moves the top level array's item one index higher within the array
+const moveTopLevelUp = () => {
+  r$.$value.array.unshift(r$.$value.array.pop()!);
+};
+</script>

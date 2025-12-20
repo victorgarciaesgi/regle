@@ -85,7 +85,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       : cloneDeep(processedState.value);
 
     const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
-    const previousIssues = ref<readonly StandardSchemaV1.Issue[]>([]);
+    const previousIssues = ref<readonly (StandardSchemaV1.Issue & { $currentArrayValue?: any })[]>([]);
 
     let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
 
@@ -103,6 +103,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     function getIssuePath(issue: StandardSchemaV1.Issue) {
       return issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
+    }
+
+    function getIssueLastPathKey(issue: StandardSchemaV1.Issue) {
+      const lastItem = issue.path?.at(-1);
+      return typeof lastItem === 'object' ? lastItem.key : lastItem;
     }
 
     function getParentArrayPath(issue: StandardSchemaV1.Issue) {
@@ -128,25 +133,30 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     }
 
     function filterIssues(
-      issues: readonly StandardSchemaV1.Issue[],
+      issues: readonly (StandardSchemaV1.Issue & { $currentArrayValue?: any })[],
       isValidate = false
     ): readonly StandardSchemaV1.Issue[] {
       if (!isValidate && resolvedOptions.rewardEarly) {
         if (previousIssues.value.length) {
-          let remappedPreviousIssues = previousIssues.value.reduce((acc, issue) => {
+          let remappedPreviousIssues = previousIssues.value.reduce((acc, prevIssue) => {
             if (
-              '$currentArrayValue' in issue &&
-              isObject(issue.$currentArrayValue) &&
-              '$id' in issue.$currentArrayValue
+              '$currentArrayValue' in prevIssue &&
+              isObject(prevIssue.$currentArrayValue) &&
+              '$id' in prevIssue.$currentArrayValue
             ) {
-              let itemId = issue.$currentArrayValue.$id;
-              const previousArrayIssue = issues.find((i: any) => i?.$currentArrayValue?.['$id'] === itemId);
+              const previousItemId = prevIssue.$currentArrayValue.$id;
+              const previousLastPathKey = getIssueLastPathKey(prevIssue);
+              const previousArrayIssue = issues.find(
+                (currentIssue) =>
+                  currentIssue?.$currentArrayValue?.['$id'] === previousItemId &&
+                  getIssueLastPathKey(currentIssue) === previousLastPathKey
+              );
               if (previousArrayIssue) {
-                acc.push({ ...issue, path: previousArrayIssue?.path ?? [] });
+                acc.push({ ...prevIssue, path: previousArrayIssue?.path ?? [] });
               }
             } else {
-              if (issues.some((i) => getIssuePath(i) === getIssuePath(issue))) {
-                acc.push(issue);
+              if (issues.some((i) => getIssuePath(i) === getIssuePath(prevIssue))) {
+                acc.push(prevIssue);
               }
             }
             return acc;
