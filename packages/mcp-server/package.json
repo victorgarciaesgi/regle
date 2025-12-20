@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.24.3",
+    "dotenv": "17.2.3",
+    "posthog-node": "5.17.4",
     "zod": "catalog:"
   },
   "devDependencies": {

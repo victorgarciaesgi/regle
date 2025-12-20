@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { Result } from '@modelcontextprotocol/sdk/types.js';
@@ -16,6 +17,16 @@ import {
   searchApi,
 } from './docs-data.js';
 import { version } from '../package.json';
+import {
+  trackToolCall,
+  trackServerConnected,
+  trackSearchQuery,
+  trackDocAccessed,
+  trackRuleLookup,
+  trackHelperLookup,
+  shutdown,
+  type ClientInfo,
+} from './analytics';
 
 function jsonResponse(data: unknown) {
   return {
@@ -38,7 +49,45 @@ const server = new McpServer({
   websiteUrl: 'https://reglejs.dev',
 });
 
-server.registerTool(
+function getClientInfo(): ClientInfo {
+  const clientInfo = server.server.getClientVersion();
+  return {
+    clientName: clientInfo?.name,
+    clientVersion: clientInfo?.version,
+  };
+}
+
+function registerTrackedTool<T extends z.ZodObject<z.ZodRawShape>>(
+  name: string,
+  config: { title: string; inputSchema: T },
+  handler: (args: z.infer<T>, clientInfo: ClientInfo) => Promise<Result>
+) {
+  server.registerTool<T>(name, config as any, async (args: any) => {
+    const clientInfo = getClientInfo();
+
+    try {
+      const result = await handler(args, clientInfo);
+      const isError = 'isError' in result && result.isError === true;
+      trackToolCall({
+        toolName: name,
+        success: !isError,
+        ...clientInfo,
+        ...(isError && { errorMessage: JSON.stringify(result.content) }),
+      });
+      return result as any;
+    } catch (error) {
+      trackToolCall({
+        toolName: name,
+        success: false,
+        ...clientInfo,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+      return Promise.reject(error);
+    }
+  });
+}
+
+registerTrackedTool(
   'regle-list-documentation',
   {
     title: 'List all available Regle documentation pages',
@@ -60,7 +109,7 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-documentation',
   {
     title: 'Get the full content of a specific Regle documentation page',
@@ -68,7 +117,7 @@ server.registerTool(
       id: z.string().describe('The documentation page ID (e.g., "core-concepts-rules-built-in-rules")'),
     }),
   },
-  async ({ id }) => {
+  async ({ id }, clientInfo) => {
     const doc = getDocById(id);
 
     if (!doc) {
@@ -78,6 +127,12 @@ server.registerTool(
         availableIds,
       });
     }
+
+    trackDocAccessed({
+      ...clientInfo,
+      docId: doc.id,
+      docCategory: doc.category,
+    });
 
     return jsonResponse({
       id: doc.id,
@@ -89,18 +144,24 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-usage-guide',
   {
     title: 'Get a comprehensive guide on how to use the useRegle composable',
     inputSchema: z.object({}),
   },
-  async () => {
+  async (_args, clientInfo) => {
     const doc = getDocById('core-concepts-index');
 
     if (!doc) {
       return errorResponse('useRegle guide not found');
     }
+
+    trackDocAccessed({
+      ...clientInfo,
+      docId: doc.id,
+      docCategory: doc.category,
+    });
 
     return jsonResponse({
       id: doc.id,
@@ -111,18 +172,24 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-vuelidate-migration-guide',
   {
     title: 'Get a guide on how to migrate from Vuelidate to Regle',
     inputSchema: z.object({}),
   },
-  async () => {
+  async (_args, clientInfo) => {
     const doc = getDocById('introduction-migrate-from-vuelidate');
 
     if (!doc) {
       return errorResponse('Vuelidate migration guide not found');
     }
+
+    trackDocAccessed({
+      ...clientInfo,
+      docId: doc.id,
+      docCategory: doc.category,
+    });
 
     return jsonResponse({
       id: doc.id,
@@ -135,7 +202,7 @@ server.registerTool(
 
 const categories = getCategories();
 
-server.registerTool(
+registerTrackedTool(
   'regle-search-documentation',
   {
     title: 'Search Regle documentation for specific topics, rules, or concepts',
@@ -144,8 +211,15 @@ server.registerTool(
       limit: z.number().optional().default(5).describe('Maximum number of results to return'),
     }),
   },
-  async ({ query, limit }) => {
+  async ({ query, limit }, clientInfo) => {
     const results = searchDocs(query).slice(0, limit);
+
+    trackSearchQuery({
+      ...clientInfo,
+      query,
+      resultCount: results.length,
+      toolName: 'regle-search-documentation',
+    });
 
     if (results.length === 0) {
       return jsonResponse({
@@ -167,13 +241,13 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-list-rules',
   {
     title: 'Get a quick reference of all built-in validation rules in Regle',
     inputSchema: z.object({}),
   },
-  async () => {
+  async (_args, _clientInfo) => {
     const rules = getRulesFromDocs();
 
     if (rules.length === 0) {
@@ -200,7 +274,7 @@ const { r$ } = useRegle(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-rule-reference',
   {
     title: 'Get details about a specific built-in validation rule',
@@ -208,8 +282,14 @@ server.registerTool(
       name: z.string().describe('The rule name (e.g., "required", "email", "minLength")'),
     }),
   },
-  async ({ name }) => {
+  async ({ name }, clientInfo) => {
     const rule = getApiByName(name);
+
+    trackRuleLookup({
+      ...clientInfo,
+      ruleName: name,
+      found: !!rule,
+    });
 
     if (!rule) {
       const allRules = getRulesFromDocs();
@@ -228,18 +308,24 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-list-validation-properties',
   {
     title: 'Get documentation on all validation properties available on r$ and field objects',
     inputSchema: z.object({}),
   },
-  async () => {
+  async (_args, clientInfo) => {
     const doc = getDocById('core-concepts-validation-properties');
 
     if (!doc) {
       return errorResponse('Validation properties documentation not found');
     }
+
+    trackDocAccessed({
+      ...clientInfo,
+      docId: doc.id,
+      docCategory: doc.category,
+    });
 
     return jsonResponse({
       id: doc.id,
@@ -250,13 +336,13 @@ server.registerTool(
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-list-helpers',
   {
     title: 'Get a reference of all validation helper utilities available in Regle',
     inputSchema: z.object({}),
   },
-  async () => {
+  async (_args, _clientInfo) => {
     const helpers = getHelpersFromDocs();
 
     if (helpers.length === 0) {
@@ -304,7 +390,7 @@ const rule = createRule({
   }
 );
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-helper-reference',
   {
     title: 'Get details about a specific validation helper utility',
@@ -312,8 +398,14 @@ server.registerTool(
       name: z.string().describe('The helper name (e.g., "isFilled", "getSize", "toNumber")'),
     }),
   },
-  async ({ name }) => {
+  async ({ name }, clientInfo) => {
     const helper = getApiByName(name);
+
+    trackHelperLookup({
+      ...clientInfo,
+      helperName: name,
+      found: !!helper,
+    });
 
     if (!helper) {
       const allHelpers = getHelpersFromDocs();
@@ -335,7 +427,7 @@ server.registerTool(
 
 const apiPackages = getApiPackages();
 
-server.registerTool(
+registerTrackedTool(
   'regle-get-api-reference',
   {
     title: 'Get API reference for Regle packages with full metadata (parameters, return types, examples)',
@@ -348,7 +440,7 @@ server.registerTool(
       search: z.string().optional().describe('Search query to find exports by name or description'),
     }),
   },
-  async ({ package: packageName, name, search }) => {
+  async ({ package: packageName, name, search }, clientInfo) => {
     if (name) {
       const apiItem = getApiByName(name, packageName);
       if (!apiItem) {
@@ -370,6 +462,14 @@ server.registerTool(
 
     if (search) {
       const results = searchApi(search);
+
+      trackSearchQuery({
+        ...clientInfo,
+        query: search,
+        resultCount: results.length,
+        toolName: 'regle-get-api-reference',
+      });
+
       return jsonResponse({
         query: search,
         resultCount: results.length,
@@ -419,10 +519,26 @@ server.registerTool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
+
+  const clientInfo = server.server.getClientVersion();
+  trackServerConnected({
+    clientName: clientInfo?.name,
+    clientVersion: clientInfo?.version,
+  });
+
   console.error('Regle MCP Server running on stdio');
 }
 
-main().catch((error) => {
+async function gracefulShutdown() {
+  await shutdown();
+  process.exit(0);
+}
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
+
+main().catch(async (error) => {
   console.error('Failed to start server:', error);
+  await shutdown();
   process.exit(1);
 });
