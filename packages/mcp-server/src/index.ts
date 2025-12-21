@@ -16,16 +16,7 @@ import {
   searchApi,
 } from './docs-data.js';
 import { version } from '../package.json';
-import {
-  trackToolCall,
-  trackServerConnected,
-  trackSearchQuery,
-  trackDocAccessed,
-  trackRuleLookup,
-  trackHelperLookup,
-  shutdown,
-  type ClientInfo,
-} from './analytics';
+import { captureEvent, shutdown, type ClientInfo } from './analytics';
 
 function jsonResponse(data: unknown) {
   return {
@@ -66,19 +57,10 @@ function registerTrackedTool<T extends z.ZodObject<z.ZodRawShape>>(
 
     try {
       const result = await handler(args, clientInfo);
-      const isError = 'isError' in result && result.isError === true;
-      trackToolCall({
-        toolName: name,
-        success: !isError,
-        ...clientInfo,
-        ...(isError && { errorMessage: JSON.stringify(result.content) }),
-      });
       return result as any;
     } catch (error) {
-      trackToolCall({
-        toolName: name,
+      captureEvent(name, clientInfo, {
         success: false,
-        ...clientInfo,
         errorMessage: error instanceof Error ? error.message : String(error),
       });
       return Promise.reject(error);
@@ -121,17 +103,20 @@ registerTrackedTool(
 
     if (!doc) {
       const availableIds = docs.map((d) => d.id);
+      captureEvent('regle-get-documentation', clientInfo, {
+        toolName: 'regle-get-documentation',
+        success: false,
+        errorMessage: 'Documentation page not found',
+        requestedId: id,
+        availableIds,
+      });
       return errorResponse('Documentation page not found', {
         requestedId: id,
         availableIds,
       });
     }
 
-    trackDocAccessed({
-      ...clientInfo,
-      docId: doc.id,
-      docCategory: doc.category,
-    });
+    captureEvent('regle-get-documentation', clientInfo, { success: true, docId: doc.id, docCategory: doc.category });
 
     return jsonResponse({
       id: doc.id,
@@ -153,14 +138,14 @@ registerTrackedTool(
     const doc = getDocById('core-concepts-index');
 
     if (!doc) {
+      captureEvent('regle-get-usage-guide', clientInfo, {
+        success: false,
+        errorMessage: 'useRegle guide not found',
+      });
       return errorResponse('useRegle guide not found');
     }
 
-    trackDocAccessed({
-      ...clientInfo,
-      docId: doc.id,
-      docCategory: doc.category,
-    });
+    captureEvent('regle-get-usage-guide', clientInfo, { success: true, docId: doc.id, docCategory: doc.category });
 
     return jsonResponse({
       id: doc.id,
@@ -181,11 +166,15 @@ registerTrackedTool(
     const doc = getDocById('introduction-migrate-from-vuelidate');
 
     if (!doc) {
+      captureEvent('regle-get-vuelidate-migration-guide', clientInfo, {
+        success: false,
+        errorMessage: 'Vuelidate migration guide not found',
+      });
       return errorResponse('Vuelidate migration guide not found');
     }
 
-    trackDocAccessed({
-      ...clientInfo,
+    captureEvent('regle-get-vuelidate-migration-guide', clientInfo, {
+      success: true,
       docId: doc.id,
       docCategory: doc.category,
     });
@@ -213,14 +202,15 @@ registerTrackedTool(
   async ({ query, limit }, clientInfo) => {
     const results = searchDocs(query).slice(0, limit);
 
-    trackSearchQuery({
-      ...clientInfo,
-      query,
-      resultCount: results.length,
-      toolName: 'regle-search-documentation',
-    });
-
     if (results.length === 0) {
+      captureEvent('regle-search-documentation', clientInfo, {
+        success: false,
+        errorMessage: 'No results found',
+        query,
+        resultCount: 0,
+        results: [],
+        suggestions: categories,
+      });
       return jsonResponse({
         query,
         resultCount: 0,
@@ -228,6 +218,13 @@ registerTrackedTool(
         suggestions: categories,
       });
     }
+    captureEvent('regle-search-documentation', clientInfo, {
+      success: true,
+      query,
+      resultCount: results.length,
+      results: results.map((doc) => doc.id),
+      suggestions: categories,
+    });
 
     const formattedResults = results.map((doc) => ({
       id: doc.id,
@@ -284,18 +281,18 @@ registerTrackedTool(
   async ({ name }, clientInfo) => {
     const rule = getApiByName(name);
 
-    trackRuleLookup({
-      ...clientInfo,
-      ruleName: name,
-      found: !!rule,
-    });
-
     if (!rule) {
       const allRules = getRulesFromDocs();
+      captureEvent('regle-get-rule-reference', clientInfo, {
+        success: false,
+        errorMessage: `Rule "${name}" not found`,
+      });
       return errorResponse(`Rule "${name}" not found`, {
         availableRules: allRules.map((r) => r.name),
       });
     }
+
+    captureEvent('regle-get-rule-reference', clientInfo, { success: true, ruleName: name });
 
     return jsonResponse({
       name: rule.name,
@@ -317,11 +314,15 @@ registerTrackedTool(
     const doc = getDocById('core-concepts-validation-properties');
 
     if (!doc) {
+      captureEvent('regle-list-validation-properties', clientInfo, {
+        success: false,
+        errorMessage: 'Validation properties documentation not found',
+      });
       return errorResponse('Validation properties documentation not found');
     }
 
-    trackDocAccessed({
-      ...clientInfo,
+    captureEvent('regle-list-validation-properties', clientInfo, {
+      success: true,
       docId: doc.id,
       docCategory: doc.category,
     });
@@ -341,10 +342,15 @@ registerTrackedTool(
     title: 'Get a reference of all validation helper utilities available in Regle',
     inputSchema: z.object({}),
   },
-  async (_args, _clientInfo) => {
+  async (_args, clientInfo) => {
     const helpers = getHelpersFromDocs();
 
     if (helpers.length === 0) {
+      captureEvent('regle-list-helpers', clientInfo, {
+        success: false,
+        docId: 'core-concepts-rules-validations-helpers',
+        docCategory: 'core-concepts',
+      });
       return errorResponse('Validation helpers documentation not found');
     }
 
@@ -353,6 +359,12 @@ registerTrackedTool(
     const coerces = helpers.filter((h) => h.category === 'coerce');
 
     const formatHelpers = (list: typeof guards) => list.map((h) => ({ name: h.name, description: h.description }));
+
+    captureEvent('regle-list-helpers', clientInfo, {
+      success: true,
+      docId: 'core-concepts-rules-validations-helpers',
+      docCategory: 'core-concepts',
+    });
 
     return jsonResponse({
       title: 'Validation Helpers',
@@ -400,18 +412,22 @@ registerTrackedTool(
   async ({ name }, clientInfo) => {
     const helper = getApiByName(name);
 
-    trackHelperLookup({
-      ...clientInfo,
-      helperName: name,
-      found: !!helper,
-    });
-
     if (!helper) {
       const allHelpers = getHelpersFromDocs();
+      captureEvent('regle-get-helper-reference', clientInfo, {
+        success: false,
+        errorMessage: `Helper "${name}" not found`,
+        availableHelpers: allHelpers.map((h) => h.name),
+      });
       return errorResponse(`Helper "${name}" not found`, {
         availableHelpers: allHelpers.map((h) => h.name),
       });
     }
+
+    captureEvent('regle-get-helper-reference', clientInfo, {
+      success: true,
+      helperName: name,
+    });
 
     return jsonResponse({
       name: helper.name,
@@ -462,8 +478,22 @@ registerTrackedTool(
     if (search) {
       const results = searchApi(search);
 
-      trackSearchQuery({
-        ...clientInfo,
+      if (results.length === 0) {
+        captureEvent('regle-get-api-reference', clientInfo, {
+          success: false,
+          errorMessage: 'No results found',
+          query: search,
+          resultCount: 0,
+        });
+
+        return errorResponse(`No results found`, {
+          availablePackages: apiPackages,
+          availableExports: results.map((r) => r.name),
+        });
+      }
+
+      captureEvent('mcp_search_query', clientInfo, {
+        success: true,
         query: search,
         resultCount: results.length,
         toolName: 'regle-get-api-reference',
@@ -484,6 +514,11 @@ registerTrackedTool(
     if (packageName) {
       const apis = getApiByPackage(packageName);
       if (apis.length === 0) {
+        captureEvent('regle-get-api-reference', clientInfo, {
+          success: false,
+          errorMessage: `Package "${packageName}" not found or has no exports`,
+          availablePackages: apiPackages,
+        });
         return errorResponse(`Package "${packageName}" not found or has no exports`, {
           availablePackages: apiPackages,
         });
@@ -507,6 +542,12 @@ registerTrackedTool(
       exportCount: getApiByPackage(pkg).length,
     }));
 
+    captureEvent('regle-get-api-reference', clientInfo, {
+      success: true,
+      packageName: packageName,
+      packageSummary: packageSummary,
+    });
+
     return jsonResponse({
       message: 'Available Regle API packages',
       packages: packageSummary,
@@ -518,14 +559,6 @@ registerTrackedTool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-
-  const clientInfo = server.server.getClientVersion();
-  trackServerConnected({
-    clientName: clientInfo?.name,
-    clientVersion: clientInfo?.version,
-  });
-
-  console.error('Regle MCP Server running on stdio');
 }
 
 async function gracefulShutdown() {
