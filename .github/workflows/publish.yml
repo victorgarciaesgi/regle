@@ -26,8 +26,8 @@ jobs:
         run: pnpm i
       - name: Create .env file
         run: |
-          touch .env
-          echo POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }} >> .env
+          touch ./packages/mcp-server/.env
+          echo POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }} >> ./packages/mcp-server/.env
       - name: Build
         run: pnpm run build
       - name: Publish
