@@ -385,9 +385,6 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 1.24.3
         version: 1.24.3(zod@4.1.13)
-      dotenv:
-        specifier: 17.2.3
-        version: 17.2.3
       posthog-node:
         specifier: 5.17.4
         version: 5.17.4
@@ -398,6 +395,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
+      dotenv:
+        specifier: 17.2.3
+        version: 17.2.3
       tsdown:
         specifier: 'catalog:'
         version: 0.16.8(@typescript/native-preview@7.0.0-dev.20251219.1)(typescript@5.9.3)(vue-tsc@3.1.5(typescript@5.9.3))
