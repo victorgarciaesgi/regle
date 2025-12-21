@@ -43,6 +43,7 @@ export default defineConfig({
         '**/dist/**/*',
         '**/*.d.ts',
         '**/*.spec.ts',
+        'packages/mcp-server/**',
         'packages/nuxt/src/module.ts',
         'packages/nuxt/src/runtime/plugins/regle.plugin.js',
         'packages/nuxt/dist/**',

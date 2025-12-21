@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { hostname, userInfo } from 'os';
 import { PostHog } from 'posthog-node';
 import { version } from '../package.json';
@@ -20,10 +21,11 @@ export type ClientInfo = {
 };
 
 /**
- * Get basic machine information to differentiate the users
+ * Get an anonymous hash to differentiate users without storing identifiable info
  */
 function getMachineFingerprint(): string {
-  return [hostname(), userInfo().username].join('-');
+  const raw = [hostname(), userInfo().username].join('-');
+  return createHash('sha256').update(raw).digest('hex').slice(0, 16);
 }
 
 function getBaseProperties(clientInfo: ClientInfo) {
