@@ -39,7 +39,9 @@ export const exactValue: RegleRuleWithParamsDefinition<
       if (isNumber(count) && !isNaN(toNumber(value))) {
         return toNumber(value) === count;
       }
-      console.warn(`[exactValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
+      if (__IS_DEV__) {
+        console.warn(`[exactValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
+      }
       return true;
     }
     return true;

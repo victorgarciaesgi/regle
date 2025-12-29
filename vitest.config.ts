@@ -31,6 +31,7 @@ const alias: AliasOptions = [
 export default defineConfig({
   define: {
     __USE_DEVTOOLS__: false,
+    __IS_DEV__: false,
   },
   test: {
     globals: true,

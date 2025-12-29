@@ -45,7 +45,9 @@ export const maxValue: RegleRuleWithParamsDefinition<
           return toNumber(value) < toNumber(max);
         }
       }
-      console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
+      if (__IS_DEV__) {
+        console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
+      }
       return false;
     }
     return true;

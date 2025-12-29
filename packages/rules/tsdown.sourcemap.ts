@@ -1,19 +1,15 @@
-import { defineConfig, type UserConfig } from 'tsdown';
+import { defineConfig } from 'tsdown';
 import { defaultExternals, defaultOptions, outExtensions } from '../../tsdown.common.build.ts';
 
-const sharedOptions: UserConfig = {
+export default defineConfig({
   ...defaultOptions,
   entry: { 'regle-rules': 'src/index.ts' },
   external: [...defaultExternals, '@regle/core'],
   sourcemap: true,
-};
-
-export default defineConfig([
-  sharedOptions,
-  {
-    ...sharedOptions,
-    minify: true,
-    dts: false,
-    outExtensions: outExtensions(true),
+  treeshake: {
+    moduleSideEffects: false,
+    annotations: true,
   },
-]);
+  dts: false,
+  outExtensions: outExtensions(true),
+});

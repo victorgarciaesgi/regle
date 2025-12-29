@@ -1,11 +1,5 @@
 import type { MaybeRef } from 'vue';
-import type {
-  ExtendOnlyRealRecord,
-  HasNamedKeys,
-  IsRegleStatic,
-  JoinDiscriminatedUnions,
-  UnwrapMaybeRef,
-} from '../utils';
+import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
 import type { RegleFieldIssue } from './rule.status.types';
 import type { IsAny } from 'type-fest';
 

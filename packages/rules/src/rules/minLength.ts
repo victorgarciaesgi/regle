@@ -50,7 +50,9 @@ export const minLength: RegleRuleWithParamsDefinition<
           return getSize(value) > min;
         }
       }
-      console.warn(`[minLength] Parameter isn't a number, got parameter: ${min}`);
+      if (__IS_DEV__) {
+        console.warn(`[minLength] Parameter isn't a number, got parameter: ${min}`);
+      }
       return false;
     }
     return true;

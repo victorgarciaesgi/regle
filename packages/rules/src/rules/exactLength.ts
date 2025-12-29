@@ -38,7 +38,9 @@ export const exactLength: RegleRuleWithParamsDefinition<
       if (isNumber(count)) {
         return getSize(value) === count;
       }
-      console.warn(`[minLength] Parameter isn't a number, got parameter: ${count}`);
+      if (__IS_DEV__) {
+        console.warn(`[exactLength] Parameter isn't a number, got parameter: ${count}`);
+      }
       return false;
     }
     return true;

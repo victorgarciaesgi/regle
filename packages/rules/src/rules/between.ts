@@ -51,7 +51,9 @@ export const between: RegleRuleWithParamsDefinition<
           return tValue > tMin && tValue < tMax;
         }
       }
-      console.warn(`[between] Value or parameters aren't numbers, got value: ${value}, min: ${min}, max: ${max}`);
+      if (__IS_DEV__) {
+        console.warn(`[between] Value or parameters aren't numbers, got value: ${value}, min: ${min}, max: ${max}`);
+      }
       return false;
     }
     return true;
