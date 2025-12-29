@@ -8,7 +8,9 @@ describe('fileType validator', () => {
 
   it('should validate File value', () => {
     expect(
-      fileType(['image/png', 'image/jpeg']).exec(new File([new ArrayBuffer(1000)], 'test.png', { type: 'image/png' }))
+      fileType(['image/png', 'image/jpeg'] as const).exec(
+        new File([new ArrayBuffer(1000)], 'test.png', { type: 'image/png' })
+      )
     ).toBe(true);
   });
 

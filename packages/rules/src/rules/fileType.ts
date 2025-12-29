@@ -19,10 +19,10 @@ import { isFile } from '../../../shared/utils/isFile';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#filetype Documentation}
  */
-export const fileType: RegleRuleWithParamsDefinition<File, [accept: string[]], false, boolean, unknown, File> =
+export const fileType: RegleRuleWithParamsDefinition<File, [accept: readonly string[]], false, boolean, unknown, File> =
   createRule({
     type: 'fileType',
-    validator: (value: MaybeInput<File>, accept: string[]) => {
+    validator: (value: MaybeInput<File>, accept: readonly string[]) => {
       if (isFilled(value)) {
         if (isFile(value)) {
           return accept.includes(value.type);
