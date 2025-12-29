@@ -1,4 +1,4 @@
-import { createRule, useRegle } from '@regle/core';
+import { createRule, useRegle, type RegleCollectionErrors } from '@regle/core';
 import { isFilled, minLength, required } from '@regle/rules';
 import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -195,20 +195,25 @@ describe('collections validations', () => {
       return useRegle(form, {
         files: {
           minLength: minLength(1),
+          $each: {
+            required,
+          },
         },
       });
     }
 
     const { vm } = createRegleComponent(regleComposable);
 
-    // @ts-expect-error This should not be considered a collection
-    expect(vm.r$.files.$each).toBeUndefined();
+    expect(vm.r$.files.$each).toBeDefined();
 
-    expect(vm.r$.files.$errors).toStrictEqual([]);
-    expect(vm.r$.$errors.files).toStrictEqual([]);
+    expect(vm.r$.files.$errors.$each).toStrictEqual([]);
+    expect(vm.r$.files.$errors.$self).toStrictEqual([]);
+    expect(vm.r$.$errors.files.$each).toStrictEqual([]);
+    expect(vm.r$.$errors.files.$self).toStrictEqual([]);
 
-    expectTypeOf(vm.r$.files.$errors).toEqualTypeOf<string[]>();
-    expectTypeOf(vm.r$.$errors.files).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.files.$errors).toEqualTypeOf<RegleCollectionErrors<File[]>>();
+    expectTypeOf(vm.r$.$errors.files.$each[0]).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.files.$self).toEqualTypeOf<string[]>();
   });
 
   it('should track dirty state correctly', async () => {

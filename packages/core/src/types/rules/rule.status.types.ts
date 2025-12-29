@@ -168,7 +168,7 @@ export type InferRegleStatusType<
     ? [TState[TKey]] extends [undefined | null]
       ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
       : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
-        ? ExtendOnlyRealRecord<U> extends true
+        ? U extends Record<string, any>
           ? TRule extends RegleCollectionRuleDefinition<any, any>
             ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
               ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
