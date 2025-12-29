@@ -6,7 +6,7 @@ describe('file', () => {
     expect(file.exec(undefined)).toBe(true);
   });
 
-  it('should validate Date value', () => {
+  it('should validate File value', () => {
     expect(file.exec(new File([], 'test.txt'))).toBe(true);
   });
 
