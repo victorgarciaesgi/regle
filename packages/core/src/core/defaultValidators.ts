@@ -68,6 +68,8 @@ export type DefaultValidators = {
     boolean
   >;
   exactValue: RegleRuleWithParamsDefinition<number, [count: number], false, boolean>;
+  file: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<File>, unknown>;
+  fileType: RegleRuleWithParamsDefinition<unknown, [accept: string[]], false, boolean>;
   hexadecimal: RegleRuleDefinition<string, [], false, boolean, string>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipv4Address: RegleRuleDefinition<string, [], false, boolean, string>;

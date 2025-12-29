@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
 import { useRegle } from '@regle/core';
-import { required, minLength, email, withMessage } from '@regle/rules';
+import { required, minLength, email, withMessage, fileType } from '@regle/rules';
 
 const state = ref({ files: [] as File[] });
 
@@ -10,6 +10,7 @@ const { r$ } = useRegle(state, {
     required,
     $each: {
       required,
+      fileType: fileType(['image/png', 'image/jpeg']),
       otherValidation: withMessage((value) => {
         if (value instanceof File) {
           return value.size > 1000000000;
@@ -57,6 +58,7 @@ async function handleFileChange(event: Event) {
           'is-invalid': r$.files.$error,
         }"
         aria-describedby="name-error"
+        accept=""
         type="file"
         multiple
         @change="handleFileChange"

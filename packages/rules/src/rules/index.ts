@@ -35,3 +35,5 @@ export * from './startsWith';
 export * from './string';
 export * from './type';
 export * from './url';
+export * from './file';
+export * from './fileType';

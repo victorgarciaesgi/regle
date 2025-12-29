@@ -305,6 +305,34 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+## `file`
+
+Requires a value to be a native File constructor. Mainly used for typing.
+
+```ts
+import { file } from '@regle/rules';
+
+const rules = {
+  file: { file },
+}
+
+const state = ref<InferInput<typeof rules>>({});
+```
+
+
+## `fileType`
+
+Requires a value to be a file with a specific type.
+
+```ts
+import { fileType } from '@regle/rules';
+
+const { r$ } = useRegle({ file: null as File | null }, {
+  file: { fileType: fileType(['image/png', 'image/jpeg']) },
+})
+```
+
+
 ## `hexadecimal`
 
 Validates hexadecimal values.
