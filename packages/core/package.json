@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.14.7",
+  "version": "1.15.0",
   "description": "Headless form validation library for Vue",
   "scripts": {
     "typecheck": "tsc --noEmit",
