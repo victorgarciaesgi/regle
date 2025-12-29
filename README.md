@@ -67,7 +67,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
   - 🚢 [ArkType](https://arktype.io)
 
 
-## Devtools
+## 🔍 Devtools
 
 Regle comes with a built-in Vue devtools extension for easy debugging and testing.
 
