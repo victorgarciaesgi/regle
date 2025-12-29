@@ -66,9 +66,7 @@ export type RegleValidationErrors<
         ? TSchema extends false
           ? U extends Record<string, any>
             ? TExternal extends false
-              ? ExtendOnlyRealRecord<U> extends true
-                ? RegleCollectionErrors<U, TIssue, TSchema>
-                : ErrorMessageOrIssue<TIssue>
+              ? RegleCollectionErrors<U, TIssue, TSchema>
               : RegleExternalCollectionErrors<U, TIssue, TSchema>
             : ErrorMessageOrIssue<TIssue>
           : RegleCollectionErrors<U, TIssue, TSchema>
