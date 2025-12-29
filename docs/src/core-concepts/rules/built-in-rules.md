@@ -394,6 +394,18 @@ const { r$ } = useRegle({ address: '' }, {
 })
 ```
 
+## `maxFileSize`
+
+Requires a value to be a file with a maximum size.
+
+```ts
+import { maxFileSize } from '@regle/rules';
+
+const { r$ } = useRegle({ file: null as File | null }, {
+  file: { maxFileSize: maxFileSize(10_000_000) }, // 10 MB
+})
+```
+
 
 ## `maxLength`
 
@@ -443,6 +455,19 @@ const { r$ } = useRegle({ count: 0 }, {
   },
 })
 ```
+
+## `minFileSize`
+
+Requires a value to be a file with a minimum size.
+
+```ts
+import { minFileSize } from '@regle/rules';
+
+const { r$ } = useRegle({ file: null as File | null }, {
+  file: { minFileSize: minFileSize(1_000_000) }, // 1 MB
+})
+```
+
 
 ## `minLength`
 

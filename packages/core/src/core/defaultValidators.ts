@@ -81,7 +81,9 @@ export type DefaultValidators = {
     false,
     boolean
   >;
+  maxFileSize: RegleRuleWithParamsDefinition<unknown, [maxSize: number], false, boolean, MaybeInput<File>, unknown>;
   maxValue: RegleRuleWithParamsDefinition<number, [count: number, options?: CommonComparisonOptions], false, boolean>;
+  minFileSize: RegleRuleWithParamsDefinition<unknown, [minSize: number], false, boolean, MaybeInput<File>, unknown>;
   minLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
     [count: number, options?: CommonComparisonOptions],
