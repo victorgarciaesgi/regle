@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src/**/*.ts", "./src/reset.d.ts", "./tests/**/*", "./src/shims/shims.d.ts"],
+  "include": ["./src/**/*.ts", "./src/reset.d.ts", "./tests/**/*", "../shared/shims/shims.d.ts"],
   "exclude": ["dist"]
 }

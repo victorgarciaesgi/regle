@@ -45,7 +45,9 @@ export const minValue: RegleRuleWithParamsDefinition<
           return toNumber(value) > toNumber(min);
         }
       }
-      console.warn(`[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${min}`);
+      if (__IS_DEV__) {
+        console.warn(`[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${min}`);
+      }
       return false;
     }
     return true;

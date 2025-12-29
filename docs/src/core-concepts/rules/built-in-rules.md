@@ -262,6 +262,27 @@ const { r$ } = useRegle({ firstName: '' }, {
 ```
 
 
+## `exactDigits`
+_**Params**_
+  - `count: Ref<number> | number | () => number`
+
+Requires the input value to have a strict specified number of digits.
+
+```ts
+import { exactDigits } from '@regle/rules';
+
+const exactValue = ref(6);
+
+const { r$ } = useRegle({ digits: '' }, {
+  digits: {
+    exactDigits: exactDigits(6),
+    exactDigits: exactDigits(exactValue),
+    exactDigits: exactDigits(() => exactValue.value)
+  },
+})
+```
+
+
 ## `exactLength`
 
 _**Params**_

@@ -1,7 +1,6 @@
 import { defineConfig, type UserConfig } from 'tsdown';
 import { defaultOptions } from '../../tsdown.common.dev.ts';
-import { defaultExternals } from '../../tsdown.common.build.ts';
-import { replacePlugin } from 'rolldown/plugins';
+import { defaultExternals, devBuildPlugins } from '../../tsdown.common.build.ts';
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
@@ -10,11 +9,7 @@ const sharedOptions: UserConfig = {
   external: [...defaultExternals, '@vue/devtools-api'],
   sourcemap: true,
   watch: ['./src', '../shared/utils'],
-  plugins: [
-    replacePlugin({
-      __USE_DEVTOOLS__: 'true',
-    }),
-  ],
+  plugins: [...devBuildPlugins],
 };
 
 export default defineConfig(sharedOptions);

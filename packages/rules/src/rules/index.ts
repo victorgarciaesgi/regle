@@ -11,6 +11,7 @@ export * from './dateBetween';
 export * from './decimal';
 export * from './email';
 export * from './endsWith';
+export * from './exactDigits';
 export * from './exactLength';
 export * from './exactValue';
 export * from './file';
