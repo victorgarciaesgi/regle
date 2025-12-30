@@ -12,7 +12,7 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
-    "@standard-schema/spec": "1.0.0",
+    "@standard-schema/spec": "1.1.0",
     "type-fest": "catalog:"
   },
   "peerDependencies": {

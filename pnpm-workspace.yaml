@@ -20,15 +20,15 @@ minimumReleaseAgeExclude:
   - oxlint
 
 catalog:
-  '@types/node': 22.19.1
+  '@types/node': 22.19.3
   # Vue
-  vue: 3.5.25
-  '@vue/reactivity': 3.5.25
-  '@vue/runtime-core': 3.5.25
-  '@vue/runtime-dom': 3.5.25
-  '@vue/shared': 3.5.25
-  '@vue/compiler-dom': 3.5.25
-  '@vue/server-renderer': 3.5.25
+  vue: 3.5.26
+  '@vue/reactivity': 3.5.26
+  '@vue/runtime-core': 3.5.26
+  '@vue/runtime-dom': 3.5.26
+  '@vue/shared': 3.5.26
+  '@vue/compiler-dom': 3.5.26
+  '@vue/server-renderer': 3.5.26
 
   # Vue 3.4
   vue-3.4: npm:vue@3.4.38
@@ -40,23 +40,23 @@ catalog:
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
 
   # Vue Ecosystem
-  vue-router: 4.6.3
-  vue-tsc: 3.1.5
+  vue-router: 4.6.4
+  vue-tsc: 3.2.1
   vue-eslint-parser: 10.2.0
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5
 
   # Nuxt
-  nuxt: 4.2.1
-  '@nuxt/kit': 4.2.1
-  '@nuxt/schema': 4.2.1
+  nuxt: 4.2.2
+  '@nuxt/kit': 4.2.2
+  '@nuxt/schema': 4.2.2
 
   # Devtools
-  prettier: 3.7.3
+  prettier: 3.7.4
   typescript: 5.9.3
   '@total-typescript/ts-reset': 0.6.1
-  tsdown: 0.16.8
-  type-fest: 5.2.0
+  tsdown: 0.18.3
+  type-fest: 5.3.1
   'tsx': 4.21.0
 
   # Testing
@@ -64,19 +64,19 @@ catalog:
   playwright: 1.56.1
   playwright-core: 1.56.1
   '@playwright/test': 1.56.1
-  vitest: 4.0.13
+  vitest: 4.0.16
   '@vue/test-utils': 2.4.6
 
   # Vite
-  vite: 7.2.4
-  '@vitejs/plugin-vue': 6.0.2
-  '@vitejs/plugin-vue-jsx': 5.1.2
+  vite: 7.3.0
+  '@vitejs/plugin-vue': 6.0.3
+  '@vitejs/plugin-vue-jsx': 5.1.3
 
   # Schemas libraries
-  arktype: 2.1.27
+  arktype: 2.1.29
   valibot: 1.2.0
-  zod: 4.1.13
+  zod: 4.2.1
 
   # Front
-  tailwindcss: 4.1.17
+  tailwindcss: 4.1.18
   check-password-strength: 3.0.0
