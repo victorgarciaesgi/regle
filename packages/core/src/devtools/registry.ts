@@ -1,4 +1,4 @@
-import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, inject, nextTick, onMounted, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
@@ -41,22 +41,18 @@ function useRegleDevtoolsRegistry() {
 
     const stopHandle = watch(
       () => r$,
-      () => notifyDevtoolsDebounced(),
+      () => notifyDevtools(),
       { deep: true, flush: 'post' }
     );
 
     regleDevtoolsRegistry.addWatcher(id, stopHandle);
 
-    notifyDevtools();
+    window.requestAnimationFrame(() => {
+      notifyDevtools();
+    });
 
     return id;
   }
-
-  const notifyDevtoolsDebounced = debounce(() => {
-    if (devtoolsApi.value) {
-      emitInspectorState(devtoolsApi.value);
-    }
-  }, 100);
 
   function notifyDevtools(): void {
     if (devtoolsApi.value) {
@@ -65,13 +61,13 @@ function useRegleDevtoolsRegistry() {
   }
 
   function unregister(id: string): void {
-    instances.value.delete(id);
-
     const watcher = watchers.value.get(id);
     if (watcher) {
       watcher();
       watchers.value.delete(id);
     }
+
+    instances.value.delete(id);
 
     notifyDevtools();
   }
