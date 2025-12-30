@@ -86,6 +86,9 @@ export function createDevtools(app: App) {
       api.on.getInspectorState((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
           const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
+          if (!state) {
+            api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
+          }
 
           if (state) {
             payload.state = state;
