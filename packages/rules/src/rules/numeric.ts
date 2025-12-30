@@ -1,8 +1,7 @@
 import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
-
-const numericRegex = /^\d*(\.\d+)?$/;
+import { NUMERIC_REGEX } from '../utils/regexes';
 
 /**
  * Allows only numeric values (including numeric strings).
@@ -30,7 +29,7 @@ export const numeric: RegleRuleDefinition<
     if (isEmpty(value)) {
       return true;
     }
-    return matchRegex(value, numericRegex);
+    return matchRegex(value, NUMERIC_REGEX);
   },
   message: 'The value must be numeric',
 });

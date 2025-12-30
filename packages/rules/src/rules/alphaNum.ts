@@ -1,14 +1,13 @@
 import type { CommonAlphaOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
-
-const alphaNumRegex = /^[a-zA-Z0-9]*$/;
-const alphaNumSymbolRegex = /^[a-zA-Z0-9_]*$/;
+import { ALPHA_NUM_REGEX, ALPHA_NUM_SYMBOL_REGEX } from '../utils/regexes';
 
 /**
  * Allows only alphanumeric characters.
  *
  * @param options - Optional configuration for alphanumeric validation
+ * @param options.allowSymbols - Optional flag to allow symbols (_) in the alphanumeric string
  *
  * @example
  * ```ts
@@ -38,9 +37,9 @@ export const alphaNum: RegleRuleWithParamsDefinition<
       return true;
     }
     if (options?.allowSymbols) {
-      return matchRegex(value, alphaNumSymbolRegex);
+      return matchRegex(value, ALPHA_NUM_SYMBOL_REGEX);
     }
-    return matchRegex(value, alphaNumRegex);
+    return matchRegex(value, ALPHA_NUM_REGEX);
   },
   message: 'The value must be alpha-numeric',
 });

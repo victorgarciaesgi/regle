@@ -9,6 +9,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  * @param before - The minimum date limit
  * @param after - The maximum date limit
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ * @param options.allowEqual - Optional flag to allow equal dates
  *
  * @example
  * ```ts

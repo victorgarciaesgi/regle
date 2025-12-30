@@ -8,6 +8,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  *
  * @param min - The minimum length
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ * @param options.allowEqual - Optional flag to allow equal length
  *
  * @example
  * ```ts

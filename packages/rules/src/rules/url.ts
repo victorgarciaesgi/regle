@@ -1,15 +1,17 @@
-import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
+import { HOSTNAME_REGEX, URL_REGEX } from '../utils/regexes';
 
-/**
- * Regex taken from {@link https://gist.github.com/dperini/729294}
- */
-const urlRegex =
-  /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+export interface UrlOptions {
+  protocol?: RegExp;
+}
 
 /**
  * Validates URLs.
+ *
+ * @param options - Optional configuration for url validation
+ * @param options.protocol - Optional regex for validating the protocol
  *
  * @example
  * ```ts
@@ -17,18 +19,45 @@ const urlRegex =
  *
  * const { r$ } = useRegle({ bestUrl: '' }, {
  *   bestUrl: { url },
+ *   // or with custom protocol validation
+ *   bestUrl: { url: url({ protocol: /^https?$/ }) },
  * })
  * ```
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#url Documentation}
  */
-export const url: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
+export const url: RegleRuleWithParamsDefinition<
+  string,
+  [options?: UrlOptions | undefined],
+  false,
+  boolean,
+  unknown,
+  string
+> = createRule({
   type: 'url',
-  validator(value: MaybeInput<string>) {
-    if (isEmpty(value)) {
-      return true;
+  validator(value: MaybeInput<string>, options: UrlOptions = {}) {
+    try {
+      if (isEmpty(value)) {
+        return true;
+      }
+      const { protocol } = options || {};
+      const urlInput = new URL(value);
+
+      HOSTNAME_REGEX.lastIndex = 0;
+      if (!HOSTNAME_REGEX.test(urlInput.hostname)) {
+        return false;
+      }
+
+      if (protocol) {
+        protocol.lastIndex = 0;
+        if (!protocol.test(urlInput.protocol.endsWith(':') ? urlInput.protocol.slice(0, -1) : urlInput.protocol)) {
+          return false;
+        }
+      }
+      return matchRegex(value, URL_REGEX);
+    } catch {
+      return false;
     }
-    return matchRegex(value, urlRegex);
   },
   message: 'The value is not a valid URL address',
 });

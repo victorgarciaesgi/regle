@@ -6,6 +6,8 @@ import { isFile } from '../../../shared/utils/isFile';
 /**
  * Requires a value to be a file with a specific type.
  *
+ * @param accept - The allowed file types
+ *
  * @example
  * ```ts
  * import { type InferInput } from '@regle/core';

@@ -7,6 +7,7 @@ import { isFilled, toNumber } from '../helpers';
  *
  * @param max - The maximum value
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ * @param options.allowEqual - Optional flag to allow equal value
  *
  * @example
  * ```ts

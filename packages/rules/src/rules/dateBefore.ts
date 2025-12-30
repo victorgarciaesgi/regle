@@ -8,6 +8,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  *
  * @param before - The date to compare to (can be a `Date`, string, ref, or getter)
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
+ * @param options.allowEqual - Optional flag to allow equal dates
  *
  * @example
  * ```ts

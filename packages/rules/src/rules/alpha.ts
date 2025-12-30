@@ -1,14 +1,13 @@
 import type { MaybeInput, RegleRuleWithParamsDefinition, CommonAlphaOptions } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
-
-const alphaRegex = /^[a-zA-Z]*$/;
-const alphaSymbolRegex = /^[\w.]+$/;
+import { ALPHA_REGEX, ALPHA_SYMBOL_REGEX } from '../utils/regexes';
 
 /**
  * Allows only alphabetic characters.
  *
  * @param options - Optional configuration for alpha validation
+ * @param options.allowSymbols - Optional flag to allow symbols (_) in the alpha string
  *
  * @example
  * ```ts
@@ -39,9 +38,9 @@ export const alpha: RegleRuleWithParamsDefinition<
       return true;
     }
     if (options?.allowSymbols) {
-      return matchRegex(value, alphaSymbolRegex);
+      return matchRegex(value, ALPHA_SYMBOL_REGEX);
     }
-    return matchRegex(value, alphaRegex);
+    return matchRegex(value, ALPHA_REGEX);
   },
   message: 'The value is not alphabetical',
 });
