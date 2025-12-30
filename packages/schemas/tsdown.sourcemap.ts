@@ -10,6 +10,6 @@ export default defineConfig({
     moduleSideEffects: false,
     annotations: true,
   },
-  dts: false,
+  minify: false,
   plugins: [...productionBuildPlugins],
 });

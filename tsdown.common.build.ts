@@ -55,10 +55,10 @@ export const defaultOptions: UserConfig = {
     inputOptions.experimental.attachDebugInfo = 'none';
     return inputOptions;
   },
-  // outputOptions(outputOptions) {
-  //   outputOptions.legalComments = 'inline';
-  //   return outputOptions;
-  // },
+  outputOptions(outputOptions) {
+    outputOptions.legalComments = 'inline';
+    return outputOptions;
+  },
 };
 
 export const defaultExternals = [

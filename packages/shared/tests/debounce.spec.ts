@@ -179,4 +179,24 @@ describe('debounce', () => {
 
     await expect(promise).rejects.toThrow('Promise error');
   });
+
+  it('should handle function errors in immediate mode', async () => {
+    const func = vi.fn(() => {
+      throw new Error('Immediate function error');
+    });
+    const debounced = debounce(func, 100, { immediate: true });
+
+    const promise = debounced();
+
+    await expect(promise).rejects.toThrow('Immediate function error');
+  });
+
+  it('should handle promise rejections in immediate mode', async () => {
+    const func = vi.fn(() => Promise.reject(new Error('Immediate promise error')));
+    const debounced = debounce(func, 100, { immediate: true });
+
+    const promise = debounced();
+
+    await expect(promise).rejects.toThrow('Immediate promise error');
+  });
 });

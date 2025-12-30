@@ -70,4 +70,17 @@ describe('abortablePromise', () => {
 
     expect(removeEventListenerSpy).toHaveBeenCalled();
   });
+
+  it('should reject with AbortError when input promise rejects while signal is aborted', async () => {
+    let rejectInput: (error: Error) => void;
+    const inputPromise = new Promise<string>((_, reject) => {
+      rejectInput = reject;
+    });
+    const { promise, abort } = abortablePromise(inputPromise);
+
+    abort();
+    rejectInput!(new Error('original error'));
+
+    await expect(promise).rejects.toThrow(AbortError);
+  });
 });

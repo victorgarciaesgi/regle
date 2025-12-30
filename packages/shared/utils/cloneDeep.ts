@@ -1,15 +1,11 @@
 function getRegExpFlags(regExp: any) {
-  if (typeof regExp.source.flags == 'string') {
-    return regExp.source.flags;
-  } else {
-    let flags = [];
-    regExp.global && flags.push('g');
-    regExp.ignoreCase && flags.push('i');
-    regExp.multiline && flags.push('m');
-    regExp.sticky && flags.push('y');
-    regExp.unicode && flags.push('u');
-    return flags.join('');
-  }
+  let flags = [];
+  regExp.global && flags.push('g');
+  regExp.ignoreCase && flags.push('i');
+  regExp.multiline && flags.push('m');
+  regExp.sticky && flags.push('y');
+  regExp.unicode && flags.push('u');
+  return flags.join('');
 }
 
 export function cloneDeep<T>(obj: T, dep = 0): T {

@@ -29,19 +29,15 @@ export function isDate(value: unknown): value is Date | string {
   if (isEmpty(value)) {
     return false;
   }
-  try {
-    let possibleDate: Date | null = null;
-    if (value instanceof Date) {
-      possibleDate = value;
-    } else if (typeof value === 'string') {
-      const date = new Date(value);
-      if (date.toString() === 'Invalid Date') {
-        return false;
-      }
-      possibleDate = date;
+  let possibleDate: Date | null = null;
+  if (value instanceof Date) {
+    possibleDate = value;
+  } else if (typeof value === 'string') {
+    const date = new Date(value);
+    if (date.toString() === 'Invalid Date') {
+      return false;
     }
-    return !!possibleDate;
-  } catch {
-    return false;
+    possibleDate = date;
   }
+  return !!possibleDate;
 }

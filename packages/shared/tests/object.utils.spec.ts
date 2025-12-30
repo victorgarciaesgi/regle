@@ -125,6 +125,30 @@ describe('setObjectError', () => {
     expect(obj.user.name).toBe('John');
     expect(obj.user.email).toBe('email error');
   });
+
+  it('should handle array as propsArg', () => {
+    const obj: Record<string, any> = {};
+    const result = setObjectError(obj, ['user', 'name'] as any, 'name error', false);
+
+    expect(result).toBe(true);
+    expect(obj.user.name).toBe('name error');
+  });
+
+  it('should concat values when target is already an array', () => {
+    const obj: Record<string, any> = { errors: ['existing error'] };
+    const result = setObjectError(obj, 'errors', 'new error', false);
+
+    expect(result).toBe(true);
+    expect(obj.errors).toEqual(['existing error', 'new error']);
+  });
+
+  it('should handle isArray flag with existing $self value', () => {
+    const obj: Record<string, any> = { items: { $self: ['old error'] } };
+    const result = setObjectError(obj, 'items', 'new error', true);
+
+    expect(result).toBe(true);
+    expect(obj.items.$self).toEqual(['old error', 'new error']);
+  });
 });
 
 describe('getDotPath', () => {
@@ -190,6 +214,12 @@ describe('getDotPath', () => {
   it('should handle paths with undefined intermediate values', () => {
     const obj: Record<string, any> = { user: {} };
     expect(getDotPath(obj, 'user.email.name')).toBeUndefined();
+  });
+
+  it('should handle symbol as propsArg', () => {
+    const sym = Symbol('test');
+    const obj: Record<string, any> = { [sym]: 'symbol value' };
+    expect(getDotPath(obj, sym as any)).toBe('symbol value');
   });
 });
 
