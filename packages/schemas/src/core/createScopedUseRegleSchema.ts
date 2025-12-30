@@ -1,6 +1,13 @@
-import type { UseScopedRegleOptions, useCollectScope, useCollectScopeFn } from '@regle/core';
+import type {
+  MergedScopedRegles,
+  RegleShortcutDefinition,
+  UseScopedRegleOptions,
+  useCollectScope,
+  useCollectScopeFn,
+} from '@regle/core';
 import { createScopedUseRegle, type CreateScopedUseRegleOptions } from '@regle/core';
 import { useRegleSchema, type useRegleSchemaFn } from './useRegleSchema';
+import type { MaybeRefOrGetter } from 'vue';
 
 type CreateScopedUseRegleSchemaOptions<
   TCustomRegle extends useRegleSchemaFn<any, any>,
@@ -11,10 +18,6 @@ type CreateScopedUseRegleSchemaOptions<
    */
   customUseRegle?: TCustomRegle;
 };
-
-export const { useCollectScope: useCollectSchemaScope, useScopedRegle: useScopedRegleSchema } = createScopedUseRegle({
-  customUseRegle: useRegleSchema as any,
-}) as unknown as { useCollectScope: typeof useCollectScope; useScopedRegle: typeof useRegleSchema };
 
 /**
  * Create a scoped validation system for schema-based validation.
@@ -54,3 +57,17 @@ export const createScopedUseRegleSchema = <
   const { customStore, customUseRegle = useRegleSchema, asRecord = false } = options ?? {};
   return createScopedUseRegle({ customStore, customUseRegle, asRecord } as any) as any;
 };
+
+const { useCollectScope: _useCollectSchemaScope, useScopedRegle: _useScopedRegleSchema } = createScopedUseRegle({
+  customUseRegle: useRegleSchema as any,
+}) as unknown as { useCollectScope: typeof useCollectScope; useScopedRegle: typeof useRegleSchema };
+
+const useCollectSchemaScope: <TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
+  namespace?: MaybeRefOrGetter<string | string[]>
+) => {
+  r$: MergedScopedRegles<TValue>;
+} = _useCollectSchemaScope;
+
+const useScopedRegleSchema: useRegleSchemaFn<RegleShortcutDefinition<any>, {}, {}> = _useScopedRegleSchema;
+
+export { useCollectSchemaScope, useScopedRegleSchema };

@@ -7,6 +7,8 @@ import { formatFileSize } from '../../../shared';
 /**
  * Requires a value to be a file with a minimum size.
  *
+ * @param minSize - The minimum size of the file
+ *
  * @example
  * ```ts
  * import { type InferInput } from '@regle/core';

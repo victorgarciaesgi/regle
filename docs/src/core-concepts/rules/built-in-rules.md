@@ -246,6 +246,20 @@ const { r$ } = useRegle({ email: '' }, {
 })
 ```
 
+
+## `emoji`
+
+Validates emojis.
+
+```ts
+import { emoji } from '@regle/rules';
+
+const { r$ } = useRegle({ emoji: '' }, {
+  emoji: { emoji },
+})
+```
+
+
 ## `endsWith`
 
 _**Params**_
@@ -366,6 +380,37 @@ const { r$ } = useRegle({ hexadecimal: '' }, {
 })
 ```
 
+
+## `hostname`
+
+Validates hostnames.
+
+```ts
+import { hostname } from '@regle/rules';
+
+const { r$ } = useRegle({ siteHost: '' }, {
+  siteHost: { hostname },
+})
+```
+
+
+## `httpUrl`
+
+_**Params**_
+- `options?: {protocol?: RegExp}`
+
+Validates HTTP URLs.
+
+```ts
+import { httpUrl } from '@regle/rules';
+
+const { r$ } = useRegle({ bestUrl: '' }, {
+  bestUrl: { httpUrl },
+  // or with custom protocol validation
+  bestUrl: { httpUrl: httpUrl({ protocol: /^https$/ }) },
+})
+```
+
 ## `integer`
 
 Allows only integers (positive and negative).
@@ -391,7 +436,29 @@ const { r$ } = useRegle({ address: '' }, {
 })
 ```
 
+## `literal`
 
+Validates literal values.
+
+```ts
+import { literal } from '@regle/rules';
+
+const { r$ } = useRegle({ value: '' }, {
+  value: { literal: literal('foo') },
+})
+```
+
+## `lowercase`
+
+Validates lowercase strings.
+
+```ts
+import { lowercase } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { lowercase },
+})
+```
 
 ## `macAddress`
 
@@ -749,7 +816,22 @@ const state = ref<InferInput<typeof rules>>({});
 ```
 
 
+## `uppercase`
+
+Validates uppercase strings.
+
+```ts
+import { uppercase } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
+  name: { uppercase },
+})
+```
+
 ## `url`
+
+_**Params**_
+- `options?: {protocol?: RegExp}`
 
 Validates URLs.
 
@@ -758,5 +840,7 @@ import { url } from '@regle/rules';
 
 const { r$ } = useRegle({ bestUrl: '' }, {
   bestUrl: { url },
+  // or with custom protocol validation
+  bestUrl: { url: url({ protocol: /^https?$/ }) },
 })
 ```

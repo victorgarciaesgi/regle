@@ -1,8 +1,7 @@
 import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isEmpty, matchRegex } from '../helpers';
-
-const integerRegex = /(^[0-9]*$)|(^-[0-9]+$)/;
+import { INTEGER_REGEX } from '../utils/regexes';
 
 /**
  * Allows only integers (positive and negative).
@@ -24,7 +23,7 @@ export const integer: RegleRuleDefinition<string | number, [], false, boolean, M
     if (isEmpty(value)) {
       return true;
     }
-    return matchRegex(value, integerRegex);
+    return matchRegex(value, INTEGER_REGEX);
   },
   message: 'The value must be an integer',
 });

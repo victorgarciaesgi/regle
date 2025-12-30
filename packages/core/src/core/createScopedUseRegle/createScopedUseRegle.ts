@@ -1,9 +1,10 @@
-import { ref, type Ref } from 'vue';
+import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
 import type { ExtendedRulesDeclarations, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
 import { createUseScopedRegleComposable, type UseScopedRegleOptions } from './useScopedRegle';
+import type { MergedScopedRegles } from '../mergeRegles';
 
 export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any>, TAsRecord extends boolean> = {
   /**
@@ -124,7 +125,11 @@ const { useCollectScope: _useCollectScope, useScopedRegle: _useScopedRegle } = c
  *
  * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
  */
-const useCollectScope = _useCollectScope;
+const useCollectScope: <TValue extends Record<string, unknown>[] = Record<string, unknown>[]>(
+  namespace?: MaybeRefOrGetter<string | string[]>
+) => {
+  r$: MergedScopedRegles<TValue>;
+} = _useCollectScope;
 
 /**
  * Clone of `useRegle` that automatically registers its instance for collection by `useCollectScope`.
@@ -152,6 +157,16 @@ const useCollectScope = _useCollectScope;
  *
  * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
  */
-const useScopedRegle = _useScopedRegle;
+const useScopedRegle: useRegleFn<
+  Partial<ExtendedRulesDeclarations>,
+  never,
+  {
+    dispose: () => void;
+    register: () => void;
+  },
+  {
+    namespace?: MaybeRefOrGetter<string>;
+  }
+> = _useScopedRegle;
 
 export { useCollectScope, useScopedRegle };

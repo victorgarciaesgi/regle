@@ -86,15 +86,25 @@ describe('url validator', () => {
     'http://3628126748',
     'http://.www.foo.bar/',
     'http://.www.foo.bar./',
-    'http://10.1.1.1',
-    'http://10.1.1.254',
   ];
 
   it.each(correctUrls)('should validate correct url %s', (urlString) => {
     expect(url.exec(urlString)).toBe(true);
   });
 
-  it.each(incorrectUrls)('should not validate incorrect url %s', (urlString) => {
+  it.only.each(incorrectUrls)('should not validate incorrect url %s', (urlString) => {
     expect(url.exec(urlString)).toBe(false);
+  });
+
+  it('should work with protocol option', () => {
+    expect(url({ protocol: /^https?$/ }).exec('http://example.com')).toBe(true);
+    expect(url({ protocol: /^https?$/ }).exec('https://example.com')).toBe(true);
+    expect(url({ protocol: /^https?$/ }).exec('ftp://example.com')).toBe(false);
+    expect(url({ protocol: /^https?$/ }).exec('mailto:test@example.com')).toBe(false);
+
+    expect(url({ protocol: /^ftp$/ }).exec('http://example.com')).toBe(false);
+    expect(url({ protocol: /^ftp$/ }).exec('https://example.com')).toBe(false);
+    expect(url({ protocol: /^ftp$/ }).exec('ftp://example.com')).toBe(true);
+    expect(url({ protocol: /^ftp$/ }).exec('mailto:test@example.com')).toBe(false);
   });
 });

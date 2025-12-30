@@ -9,6 +9,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * @param min - The minimum limit
  * @param max - The maximum limit
  * @param options - Optional configuration (e.g., `{ allowEqual: false }` for exclusive bounds)
+ * @param options.allowEqual - Optional flag to allow equal bounds
  *
  * @example
  * ```ts

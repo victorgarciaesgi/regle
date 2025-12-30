@@ -1,8 +1,7 @@
 import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { matchRegex, isEmpty } from '../helpers';
-
-const hexadecimalRegex = /^[a-fA-F0-9]*$/;
+import { HEX_REGEX } from '../utils/regexes';
 
 /**
  * Validates hexadecimal values.
@@ -24,7 +23,7 @@ export const hexadecimal: RegleRuleDefinition<string, [], false, boolean, MaybeI
     if (isEmpty(value)) {
       return true;
     }
-    return matchRegex(value, hexadecimalRegex);
+    return matchRegex(value, HEX_REGEX);
   },
   message: 'The value must be hexadecimal',
 });

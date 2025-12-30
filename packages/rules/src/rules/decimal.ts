@@ -1,8 +1,7 @@
 import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { matchRegex, isEmpty } from '../helpers';
-
-const decimalRegex = /^[-]?\d*(\.\d+)?$/;
+import { DECIMAL_REGEX } from '../utils/regexes';
 
 /**
  * Allows positive and negative decimal numbers.
@@ -30,7 +29,7 @@ export const decimal: RegleRuleDefinition<
     if (isEmpty(value)) {
       return true;
     }
-    return matchRegex(value, decimalRegex);
+    return matchRegex(value, DECIMAL_REGEX);
   },
   message: 'The value must be decimal',
 });
