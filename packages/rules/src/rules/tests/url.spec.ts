@@ -92,7 +92,7 @@ describe('url validator', () => {
     expect(url.exec(urlString)).toBe(true);
   });
 
-  it.only.each(incorrectUrls)('should not validate incorrect url %s', (urlString) => {
+  it.each(incorrectUrls)('should not validate incorrect url %s', (urlString) => {
     expect(url.exec(urlString)).toBe(false);
   });
 
