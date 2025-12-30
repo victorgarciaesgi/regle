@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsdown';
-import { defaultExternals, defaultOptions, outExtensions, productionBuildPlugins } from '../../tsdown.common.build.ts';
+import { defaultExternals, defaultOptions, productionBuildPlugins } from '../../tsdown.common.build.ts';
 
 export default defineConfig({
   ...defaultOptions,
@@ -10,7 +10,7 @@ export default defineConfig({
     moduleSideEffects: false,
     annotations: true,
   },
-  dts: false,
-  outExtensions: outExtensions(true),
+  minify: false,
+  dts: true,
   plugins: [...productionBuildPlugins],
 });

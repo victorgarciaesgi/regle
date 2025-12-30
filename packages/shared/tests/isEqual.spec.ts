@@ -160,6 +160,32 @@ describe('isEqual', () => {
     });
   });
 
+  describe('objects with custom toString', () => {
+    it('should compare objects with custom toString using toString result', () => {
+      const obj1 = {
+        value: 'test',
+        toString() {
+          return this.value;
+        },
+      };
+      const obj2 = {
+        value: 'test',
+        toString() {
+          return this.value;
+        },
+      };
+      const obj3 = {
+        value: 'different',
+        toString() {
+          return this.value;
+        },
+      };
+
+      expect(isEqual(obj1, obj2)).toBe(true);
+      expect(isEqual(obj1, obj3)).toBe(false);
+    });
+  });
+
   describe('complex nested structures', () => {
     it('should handle deeply nested structures', () => {
       const obj1 = {

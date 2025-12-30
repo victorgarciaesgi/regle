@@ -69,6 +69,23 @@ describe('cloneDeep', () => {
     expect(cloned.flags).toBe(original.flags);
   });
 
+  it('should clone RegExp with multiline, sticky and unicode flags', () => {
+    const multiline = /test/m;
+    const clonedMultiline = cloneDeep(multiline);
+    expect(clonedMultiline.multiline).toBe(true);
+    expect(clonedMultiline.flags).toBe('m');
+
+    const sticky = /test/y;
+    const clonedSticky = cloneDeep(sticky);
+    expect(clonedSticky.sticky).toBe(true);
+    expect(clonedSticky.flags).toBe('y');
+
+    const unicode = /test/u;
+    const clonedUnicode = cloneDeep(unicode);
+    expect(clonedUnicode.unicode).toBe(true);
+    expect(clonedUnicode.flags).toBe('u');
+  });
+
   it('should deep clone Map with nested objects', () => {
     const original = new Map([
       ['a', { x: 1 }],

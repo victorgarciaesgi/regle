@@ -19,11 +19,6 @@ export function abortablePromise<T>(input: Promise<T>): AbortablePromiseResult<T
   const { signal } = controller;
 
   const promise = new Promise<T>((resolve, reject) => {
-    if (signal.aborted) {
-      reject(new AbortError());
-      return;
-    }
-
     function abortHandler() {
       reject(new AbortError());
     }
