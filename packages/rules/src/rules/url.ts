@@ -43,13 +43,11 @@ export const url: RegleRuleWithParamsDefinition<
       const { protocol } = options || {};
       const urlInput = new URL(value);
 
-      HOSTNAME_REGEX.lastIndex = 0;
       if (!HOSTNAME_REGEX.test(urlInput.hostname)) {
         return false;
       }
 
       if (protocol) {
-        protocol.lastIndex = 0;
         if (!protocol.test(urlInput.protocol.endsWith(':') ? urlInput.protocol.slice(0, -1) : urlInput.protocol)) {
           return false;
         }

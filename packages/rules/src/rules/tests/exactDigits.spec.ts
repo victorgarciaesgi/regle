@@ -49,7 +49,7 @@ describe('exactDigits validator', () => {
     expect(exactDigits(5).exec('abc12')).toBe(false);
   });
 
-  it('should not validate spaces', () => {
+  it('should validate spaces', () => {
     expect(exactDigits(5).exec('     ')).toBe(true);
   });
 

@@ -290,7 +290,9 @@ const exactValue = ref(6);
 const { r$ } = useRegle({ digits: '' }, {
   digits: {
     exactDigits: exactDigits(6),
+    // or with ref
     exactDigits: exactDigits(exactValue),
+    // or with getter
     exactDigits: exactDigits(() => exactValue.value)
   },
 })
