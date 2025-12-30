@@ -29,6 +29,10 @@ html:not(.dark) .dark-only {
   html.has-bb-banner .VPNav {
     top: 72px;
   }
+
+  html.has-bb-banner .aside-container {
+    height: calc(100vh - 72px);
+  }
 }
 
 @media (min-width: 960px) {
