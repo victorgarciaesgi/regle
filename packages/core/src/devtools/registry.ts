@@ -135,7 +135,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
     if (isTestEnv) {
       return;
     }
-    const regleVersion: string | undefined = inject(regleSymbol);
+    const regleVersion: string | undefined = inject(regleSymbol, undefined);
 
     if (
       !regleVersion &&
