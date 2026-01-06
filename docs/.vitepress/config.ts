@@ -88,7 +88,7 @@ const CommonUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)
   },
   { text: 'Usage with Pinia', link: '/common-usage/usage-with-pinia' },
   { text: 'Async validators', link: '/common-usage/async-validation' },
-  { text: 'Reseting forms', link: '/common-usage/reseting-form' },
+  { text: 'Reset forms', link: '/common-usage/reset-form' },
   { text: 'Standard Schema', link: '/common-usage/standard-schema' },
   { text: 'Server errors', link: '/common-usage/external-errors' },
 ];

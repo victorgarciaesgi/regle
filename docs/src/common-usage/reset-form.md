@@ -1,5 +1,5 @@
 ---
-title: Reseting forms
+title: Reset forms
 description: How to reset forms and fields
 ---
 
@@ -7,7 +7,7 @@ description: How to reset forms and fields
 import ResetBasic from '../parts/components/reset/ResetBasic.vue';
 </script>
 
-# Reseting forms
+# Reset forms
 
 Regle offers multiple options to reset a form. It depends on your use case and what you want to achieve.
 
@@ -70,7 +70,7 @@ r$.$reset({ clearExternalErrors: true }); // Clear $externalErrors state
 ```
 
 
-## Exemple
+## Example
 
 ```vue
 <template>
