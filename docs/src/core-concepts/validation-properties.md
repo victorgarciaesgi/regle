@@ -164,7 +164,7 @@ Reset the validation status to a pristine state while keeping the current state.
 The current state is treated as the new initial state.
 
 :::tip
-For more information about the `$reset` method, check the [reseting forms section](/common-usage/reseting-form)
+For more information about the `$reset` method, check the [reseting forms section](/common-usage/reset-form)
 :::
 
 ### `$clearExternalErrors` 

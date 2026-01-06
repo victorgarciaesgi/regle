@@ -1,5 +1,3 @@
-import type { Maybe } from '@regle/core';
-
 /**
  * Coerces any string, number, or Date value into a `Date` using the `Date` constructor.
  *
@@ -17,7 +15,7 @@ import type { Maybe } from '@regle/core';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#todate Documentation}
  */
-export function toDate(argument: Maybe<Date | number | string>): Date {
+export function toDate(argument: Date | number | string | null | undefined): Date {
   const argStr = Object.prototype.toString.call(argument);
   if (argument == null) {
     return new Date(NaN);

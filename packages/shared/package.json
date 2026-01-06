@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@regle/core": "workspace:*",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
