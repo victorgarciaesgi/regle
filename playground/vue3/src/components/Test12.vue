@@ -1,23 +1,27 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
-import { useRegle } from '@regle/core';
+import { defineRegleConfig, type RegleStaticImpl } from '@regle/core';
 import { required, minLength, email, withMessage, fileType } from '@regle/rules';
+import { Decimal } from 'decimal.js';
 
-const state = ref({ files: [] as File[] });
+const state = ref({ decimal: null as RegleStaticImpl<Decimal> | null });
+
+const { useRegle } = defineRegleConfig({
+  overrides: {
+    isEdited: (currentValue, initialValue, defaultHandlerFn) => {
+      console.log('currentValue', currentValue);
+      console.log('initialValue', initialValue);
+      if (currentValue instanceof Decimal && initialValue instanceof Decimal) {
+        return currentValue.toString() !== initialValue.toString();
+      }
+      return defaultHandlerFn(currentValue, initialValue);
+    },
+  },
+});
 
 const { r$ } = useRegle(state, {
-  files: {
+  decimal: {
     required,
-    $each: {
-      required,
-      fileType: fileType(['image/png', 'image/jpeg']),
-      otherValidation: withMessage((value) => {
-        if (value instanceof File) {
-          return value.size > 1000000000;
-        }
-        return false;
-      }, 'File is too light'),
-    },
   },
 });
 
@@ -32,15 +36,6 @@ async function submit() {
   //   console.warn('Errors: ', r$.$errors)
   // }
 }
-
-async function handleFileChange(event: Event) {
-  const files = (event.target as HTMLInputElement).files;
-  if (files) {
-    r$.files.$value = Array.from(files);
-    await nextTick();
-    r$.files.$touch();
-  }
-}
 </script>
 
 <template>
@@ -48,28 +43,22 @@ async function handleFileChange(event: Event) {
     <h2>Hello Regle!</h2>
 
     <div class="py-2 has-validation">
-      <label class="form-label">Files</label>
+      <label class="form-label">Files. Edited?: {{ r$.decimal.$edited }}</label>
+
       <input
         class="form-control"
-        :model-value="r$.files.$value"
-        placeholder="Select files"
-        :class="{
-          'is-valid': r$.files.$correct,
-          'is-invalid': r$.files.$error,
-        }"
-        aria-describedby="name-error"
-        accept=""
-        type="file"
-        multiple
-        @change="handleFileChange"
+        :value="r$.decimal.$value"
+        @input="r$.decimal.$value = new Decimal($event.target.value)"
       />
-      <div v-for="file of r$.files.$each" :key="file.$id">
-        {{ file.$value?.name }}
-      </div>
+      <ul>
+        <li v-for="error of r$.decimal.$errors" :key="error">
+          {{ error }}
+        </li>
+      </ul>
     </div>
 
     <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <button class="btn btn-secondary" @click="r$.$reset()">Restart</button>
     <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
 </template>

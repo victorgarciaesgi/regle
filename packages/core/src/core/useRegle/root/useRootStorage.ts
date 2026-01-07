@@ -17,6 +17,7 @@ import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 import { dotPathObjectToNested } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
+import type { GlobalConfigOverrides } from '../../defineRegleConfig';
 
 /**
  * @internal
@@ -34,6 +35,7 @@ export function useRootStorage({
   schemaErrors,
   schemaMode = false,
   onValidate,
+  overrides,
 }: {
   scopeRules: Ref<$InternalReglePartialRuleTree>;
   state: Ref<Record<string, any> | PrimitiveTypes>;
@@ -45,6 +47,7 @@ export function useRootStorage({
   schemaErrors?: Ref<any | undefined>;
   schemaMode?: boolean;
   onValidate?: () => Promise<$InternalRegleResult>;
+  overrides: GlobalConfigOverrides | undefined;
 }) {
   const storage = useStorage();
 
@@ -110,6 +113,7 @@ export function useRootStorage({
       rootSchemaErrors: schemaErrors,
       schemaMode,
       onValidate,
+      overrides,
     });
   } else if (isValidatorRulesDef(scopeRules)) {
     regle.value = createReactiveFieldStatus({
@@ -128,6 +132,7 @@ export function useRootStorage({
       schemaMode,
       schemaErrors,
       onValidate,
+      overrides,
     });
   }
 

@@ -11,6 +11,7 @@ import { randomId } from '../../../../utils';
 import type { CommonResolverOptions, StateWithId } from '../common/common-types';
 import { createReactiveChildrenStatus } from '../createReactiveNestedStatus';
 import { isObject } from '../../../../../../shared';
+import { isStatic } from '../../guards';
 
 interface CreateCollectionElementArgs extends CommonResolverOptions {
   $id: string;
@@ -41,6 +42,7 @@ export function createCollectionElement({
   shortcuts,
   fieldName,
   schemaMode,
+  overrides,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
   const $fieldId = stateValue.value?.$id ?? rules.$key ?? randomId();
   let $cachePath = `${cachePath}.${String($fieldId)}`;
@@ -78,6 +80,7 @@ export function createCollectionElement({
     shortcuts,
     fieldName,
     schemaMode,
+    overrides,
   });
 
   if ($status) {
@@ -86,7 +89,7 @@ export function createCollectionElement({
     storage.addArrayStatus($id, $status.$id, $status);
   }
 
-  if (stateValue.value && !isObject(stateValue.value) && schemaMode) {
+  if (stateValue.value && (!isObject(stateValue.value) || isStatic(stateValue.value)) && schemaMode) {
     $status?.$touch();
   }
 
