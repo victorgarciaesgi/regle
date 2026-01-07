@@ -1,10 +1,9 @@
-import { getCurrentInstance, inject, nextTick, onMounted, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
+import { regleSymbol } from '../constants';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
-import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 import { emitInspectorState } from './actions';
-import { regleSymbol } from '../constants';
-import { debounce } from '../../../shared/utils';
+import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
 /*#__PURE__*/
 function useRegleDevtoolsRegistry() {

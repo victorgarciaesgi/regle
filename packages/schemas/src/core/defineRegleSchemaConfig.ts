@@ -1,4 +1,4 @@
-import type { RegleBehaviourOptions, RegleShortcutDefinition } from '@regle/core';
+import type { GlobalConfigOverrides, RegleBehaviourOptions, RegleShortcutDefinition } from '@regle/core';
 import { createUseRegleSchemaComposable, type useRegleSchemaFn } from './useRegleSchema';
 import { createInferSchemaHelper, type inferSchemaFn } from './inferSchema';
 
@@ -31,14 +31,16 @@ import { createInferSchemaHelper, type inferSchemaFn } from './inferSchema';
 export function defineRegleSchemaConfig<TShortcuts extends RegleShortcutDefinition>({
   modifiers,
   shortcuts,
+  overrides,
 }: {
   modifiers?: RegleBehaviourOptions;
   shortcuts?: TShortcuts;
+  overrides?: GlobalConfigOverrides;
 }): {
   useRegleSchema: useRegleSchemaFn<TShortcuts>;
   inferSchema: inferSchemaFn;
 } {
-  const useRegleSchema = createUseRegleSchemaComposable<TShortcuts>(modifiers, shortcuts as any);
+  const useRegleSchema = createUseRegleSchemaComposable<TShortcuts>({ options: modifiers, shortcuts, overrides });
   const inferSchema = createInferSchemaHelper();
 
   return { useRegleSchema, inferSchema };

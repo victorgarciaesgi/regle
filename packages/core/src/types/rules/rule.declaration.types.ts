@@ -116,7 +116,7 @@ export type $InternalFormPropertyTypes =
 export type RegleRuleDecl<
   TValue extends any = any,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<DefaultValidatorsTree>,
-  TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions,
+  TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions<TValue>,
 > = TOptions & {
   [TKey in keyof RemoveIndexSignature<TCustomRules>]?: FormRuleDeclaration<TValue, any[]>;
 } & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };

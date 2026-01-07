@@ -12,6 +12,7 @@ import type {
   RegleStatus,
 } from '../rules';
 import type { DeepMaybeRef, OmitByType, Unwrap } from '../utils';
+import type { isEditedHandlerFn } from './overrides.types';
 
 export interface RegleBehaviourOptions {
   /**
@@ -101,14 +102,18 @@ export interface RegleValidationGroupOutput {
   $silentErrors: string[];
 }
 
-export type FieldRegleBehaviourOptions = AddDollarToOptions<RegleBehaviourOptions> & {
+export type FieldRegleBehaviourOptions<TValue extends unknown = unknown> = AddDollarToOptions<RegleBehaviourOptions> & {
   /**
    * Let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
    */
   $debounce?: number;
+  /**
+   * Override the default `$edited` handler.
+   */
+  $isEdited?: isEditedHandlerFn<TValue>;
 };
 
-export type CollectionRegleBehaviourOptions = FieldRegleBehaviourOptions & {
+export type CollectionRegleBehaviourOptions<TValue extends unknown = unknown> = FieldRegleBehaviourOptions<TValue> & {
   /**
    * Allow deep compare of array children to compute the `$edited` property
    *

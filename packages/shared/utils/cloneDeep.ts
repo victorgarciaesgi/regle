@@ -34,6 +34,7 @@ export function cloneDeep<T>(obj: T, dep = 0): T {
       result[key] = cloneDeep(obj[key], dep++);
     }
   }
+
   // primitives and non-supported objects (e.g. functions) land here
   return result;
 }

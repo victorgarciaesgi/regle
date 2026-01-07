@@ -4,7 +4,6 @@ import { computed, isRef, ref } from 'vue';
 import { isEmpty, isObject } from '../../../../shared';
 import type {
   ExtendedRulesDeclarations,
-  CustomRulesDeclarationTree,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   RegleFieldStatus,
@@ -17,6 +16,7 @@ import type {
 import type { DeepMaybeRef, InferInput, JoinDiscriminatedUnions, PrimitiveTypes, Unwrap } from '../../types/utils';
 import { isRuleDef } from './guards';
 import { createRootRegleLogic } from './shared.rootRegle';
+import type { GlobalConfigOptions } from '../defineRegleConfig';
 
 function createEmptyRuleState(rules: RegleUnknownRulesTree | RegleRuleDecl): Record<string, any> | any {
   const result: Record<string, any> = {};
@@ -78,27 +78,21 @@ export interface useRulesFn<
         >
       > &
         StandardSchemaV1<TState>;
-  __config?: {
-    rules?: () => CustomRulesDeclarationTree;
-    modifiers?: RegleBehaviourOptions;
-    shortcuts?: TShortcuts;
-  };
+  __config?: GlobalConfigOptions<TCustomRules, TShortcuts>;
 }
 
 export function createUseRulesComposable<
   TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
->(
-  customRules?: () => TCustomRules,
-  options?: RegleBehaviourOptions,
-  shortcuts?: RegleShortcutDefinition | undefined
-): useRulesFn<TCustomRules, TShortcuts> {
+>(options?: GlobalConfigOptions<TCustomRules, TShortcuts>): useRulesFn<TCustomRules, TShortcuts> {
+  const { rules: customRules, modifiers, shortcuts, overrides } = options ?? {};
+
   const globalOptions: RegleBehaviourOptions = {
-    autoDirty: options?.autoDirty,
-    lazy: options?.lazy,
-    rewardEarly: options?.rewardEarly,
-    silent: options?.silent,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
+    autoDirty: modifiers?.autoDirty,
+    lazy: modifiers?.lazy,
+    rewardEarly: modifiers?.rewardEarly,
+    silent: modifiers?.silent,
+    clearExternalErrorsOnChange: modifiers?.clearExternalErrorsOnChange,
   };
 
   function useRules(
@@ -121,6 +115,7 @@ export function createUseRulesComposable<
       globalOptions,
       customRules,
       shortcuts,
+      overrides,
     });
 
     return regle.regle as any;

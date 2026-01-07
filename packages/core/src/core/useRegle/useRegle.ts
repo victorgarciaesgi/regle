@@ -2,7 +2,6 @@ import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { isRef, ref } from 'vue';
 import type {
   ExtendedRulesDeclarations,
-  CustomRulesDeclarationTree,
   DeepReactiveState,
   LocalRegleBehaviourOptions,
   Regle,
@@ -25,6 +24,7 @@ import type {
   Unwrap,
 } from '../../types/utils';
 import { createRootRegleLogic } from './shared.rootRegle';
+import type { GlobalConfigOptions } from '../defineRegleConfig';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
@@ -83,27 +83,21 @@ export interface useRegleFn<
         TShortcuts,
         TAdditionalReturnProperties
       >;
-  __config?: {
-    rules?: () => CustomRulesDeclarationTree;
-    modifiers?: RegleBehaviourOptions;
-    shortcuts?: TShortcuts;
-  };
+  __config?: GlobalConfigOptions<TCustomRules, TShortcuts>;
 }
 
 export function createUseRegleComposable<
   TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
->(
-  customRules?: () => TCustomRules,
-  options?: RegleBehaviourOptions,
-  shortcuts?: RegleShortcutDefinition | undefined
-): useRegleFn<TCustomRules, TShortcuts> {
+>(options?: GlobalConfigOptions<TCustomRules, TShortcuts>): useRegleFn<TCustomRules, TShortcuts> {
+  const { rules: customRules, modifiers, shortcuts, overrides } = options ?? {};
+
   const globalOptions: RegleBehaviourOptions = {
-    autoDirty: options?.autoDirty,
-    lazy: options?.lazy,
-    rewardEarly: options?.rewardEarly,
-    silent: options?.silent,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
+    autoDirty: modifiers?.autoDirty,
+    lazy: modifiers?.lazy,
+    rewardEarly: modifiers?.rewardEarly,
+    silent: modifiers?.silent,
+    clearExternalErrorsOnChange: modifiers?.clearExternalErrorsOnChange,
   };
 
   function useRegle(
@@ -121,6 +115,7 @@ export function createUseRegleComposable<
       globalOptions,
       customRules,
       shortcuts,
+      overrides,
     });
 
     return {

@@ -7,6 +7,7 @@ import type {
   ExtendedRulesDeclarations,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
+  GlobalConfigOverrides,
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
 import { tryOnScopeDispose } from '../../utils';
@@ -20,6 +21,7 @@ interface RootRegleOptions {
   globalOptions: RegleBehaviourOptions;
   customRules?: () => Partial<ExtendedRulesDeclarations>;
   shortcuts?: RegleShortcutDefinition | undefined;
+  overrides: GlobalConfigOverrides | undefined;
 }
 
 export function createRootRegleLogic({
@@ -29,6 +31,7 @@ export function createRootRegleLogic({
   globalOptions,
   customRules,
   shortcuts,
+  overrides,
 }: RootRegleOptions) {
   const definedRules = isRef(rulesFactory)
     ? rulesFactory
@@ -68,6 +71,7 @@ export function createRootRegleLogic({
     originalState,
     customRules,
     shortcuts,
+    overrides,
   });
 
   return regle;

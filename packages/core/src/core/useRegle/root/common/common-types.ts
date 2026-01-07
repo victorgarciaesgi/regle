@@ -2,9 +2,11 @@ import type { ComputedRef } from 'vue';
 import type {
   $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
+  GlobalConfigOverrides,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
 import type { RegleStorage } from '../../../useStorage';
+import type { Ref } from 'vue';
 
 export type StateWithId = unknown & { $id?: string };
 
@@ -17,6 +19,7 @@ export interface CommonResolverOptions {
   options: ResolvedRegleBehaviourOptions;
   fieldName: string | undefined;
   shortcuts: $InternalRegleShortcutDefinition | undefined;
+  overrides: GlobalConfigOverrides | undefined;
 }
 
 export interface CommonResolverScopedState {
@@ -26,6 +29,6 @@ export interface CommonResolverScopedState {
   $error: ComputedRef<boolean>;
   $pending: ComputedRef<boolean>;
   $name: ComputedRef<string>;
-  $edited: ComputedRef<boolean>;
+  $edited: Ref<boolean>;
   $anyEdited: ComputedRef<boolean>;
 }
