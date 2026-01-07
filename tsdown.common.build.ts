@@ -46,7 +46,7 @@ export const defaultOptions: UserConfig = {
   clean: true,
   sourcemap: false,
   treeshake: {
-    moduleSideEffects: true,
+    moduleSideEffects: false,
     annotations: true,
   },
   outExtensions: () => ({ js: '.js' }),
