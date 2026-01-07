@@ -20,7 +20,7 @@ import type {
 } from '../../../types';
 import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../utils';
 import { isRefObject } from '../../../utils';
-import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isStatic, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
@@ -642,7 +642,7 @@ export function createReactiveNestedStatus({
 
   function filterNullishFields(fields: [string, unknown][]) {
     return fields.filter(([_, value]) => {
-      if (isObject(value)) {
+      if (isObject(value) && !isStatic(value)) {
         return !(value && typeof value === 'object' && '_null' in value) && !isEmpty(value);
       } else if (Array.isArray(value)) {
         return value.length;

@@ -1,8 +1,74 @@
 import type { Merge } from 'type-fest';
-import type { ExtendedRulesDeclarations, RegleBehaviourOptions, RegleShortcutDefinition } from '../types';
+import { merge } from '../../../shared';
+import type {
+  CustomRulesDeclarationTree,
+  ExtendedRulesDeclarations,
+  GlobalConfigOverrides,
+  RegleBehaviourOptions,
+  RegleShortcutDefinition,
+} from '../types';
 import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
-import { merge } from '../../../shared';
+
+export interface GlobalConfigOptions<
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = CustomRulesDeclarationTree,
+  TShortcuts extends RegleShortcutDefinition<any> = never,
+> {
+  /**
+   * Declare custom rules to be used globally or override the default rules messages.
+   *
+   * Ex:
+   * ```ts
+   * import { defineRegleConfig } from '@regle/core';
+   * import { required, withMessage } from '@regle/rules';
+   *
+   * export const { useRegle, inferRules, useRules } = defineRegleConfig({
+   *   rules: () => ({
+   *     required: withMessage(required, 'This field cannot be empty'),
+   *   }),
+   * });
+   * ```
+   * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
+   */
+  rules?: () => TCustomRules;
+  /**
+   * Define modifiers to be used globally.
+   *
+   * Ex:
+   * ```ts
+   * import { defineRegleConfig } from '@regle/core';
+   *
+   * export const { useRegle, inferRules, useRules } = defineRegleConfig({
+   *   modifiers: {
+   *     lazy: true,
+   *     rewardEarly: true
+   *   }
+   * });
+   * ```
+   * @see {@link https://reglejs.dev/advanced-usage/global-config#declare-modifiers Documentation}
+   */
+  modifiers?: RegleBehaviourOptions;
+  /**
+   * Define reusable validation shortcuts to be used globally.
+   *
+   * Ex:
+   * ```ts
+   * import { defineRegleConfig } from '@regle/core';
+   *
+   * export const { useRegle, inferRules, useRules } = defineRegleConfig({
+   *   shortcuts: {
+   *     fields: {
+   *       $isRequired: (field) => field.$rules.required?.$active ?? false,
+   *     },
+   *   },
+   * });
+   * ```
+   * @see {@link https://reglejs.dev/advanced-usage/extend-properties#extend-properties Documentation}
+   */
+  shortcuts?: TShortcuts;
+  /** Override default behaviors of Regle processors. */
+  overrides?: GlobalConfigOverrides<unknown>;
+}
 
 /**
  * Define a global Regle configuration to customize the validation behavior across your application.
@@ -14,9 +80,6 @@ import { merge } from '../../../shared';
  * - Define shortcuts for common validation patterns
  *
  * @param options - Configuration options
- * @param options.rules - Factory function returning custom rules
- * @param options.modifiers - Global behavior modifiers
- * @param options.shortcuts - Reusable validation shortcuts
  * @returns Object containing typed `useRegle`, `inferRules`, and `useRules` functions
  *
  * @example
@@ -50,19 +113,16 @@ export function defineRegleConfig<
   rules,
   modifiers,
   shortcuts,
-}: {
-  rules?: () => TCustomRules;
-  modifiers?: RegleBehaviourOptions;
-  shortcuts?: TShortcuts;
-}): {
+  overrides,
+}: GlobalConfigOptions<TCustomRules, TShortcuts>): {
   useRegle: useRegleFn<TCustomRules, TShortcuts>;
   inferRules: inferRulesFn<TCustomRules>;
   useRules: useRulesFn<TCustomRules, TShortcuts>;
 } {
-  const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>(rules, modifiers, shortcuts as any);
-  const useRules = createUseRulesComposable<TCustomRules, TShortcuts>(rules, modifiers, shortcuts as any);
-  useRegle.__config = { rules, modifiers, shortcuts };
-  useRules.__config = { rules, modifiers, shortcuts };
+  const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>({ rules, modifiers, shortcuts, overrides });
+  const useRules = createUseRulesComposable<TCustomRules, TShortcuts>({ rules, modifiers, shortcuts, overrides });
+  useRegle.__config = { rules, modifiers, shortcuts, overrides };
+  useRules.__config = { rules, modifiers, shortcuts, overrides };
 
   const inferRules = createInferRuleHelper<TCustomRules>();
 
@@ -103,15 +163,7 @@ export function extendRegleConfig<
   TCustomRules extends Partial<ExtendedRulesDeclarations>,
 >(
   regle: useRegleFn<TRootCustomRules, TRootShortcuts>,
-  {
-    rules,
-    modifiers,
-    shortcuts,
-  }: {
-    rules?: () => TCustomRules;
-    modifiers?: RegleBehaviourOptions;
-    shortcuts?: TShortcuts;
-  }
+  { rules, modifiers, shortcuts, overrides }: GlobalConfigOptions<TCustomRules, TShortcuts>
 ): {
   useRegle: useRegleFn<Merge<TRootCustomRules, TCustomRules>, TRootShortcuts & TShortcuts>;
   inferRules: inferRulesFn<Merge<TRootCustomRules, TCustomRules>>;
@@ -122,9 +174,21 @@ export function extendRegleConfig<
     rootConfig.modifiers && modifiers ? merge(rootConfig.modifiers, modifiers) : (rootConfig.modifiers ?? modifiers);
   const newShortcuts =
     rootConfig.shortcuts && shortcuts ? merge(rootConfig.shortcuts, shortcuts) : (rootConfig.shortcuts ?? shortcuts);
+  const newOverrides =
+    rootConfig.overrides && overrides ? merge(rootConfig.overrides, overrides) : (rootConfig.overrides ?? overrides);
 
-  const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>(newRules, newModifiers, newShortcuts as any);
-  useRegle.__config = { rules: newRules, modifiers: newModifiers, shortcuts: newShortcuts as any };
+  const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>({
+    rules: newRules,
+    modifiers: newModifiers,
+    shortcuts: newShortcuts as any,
+    overrides: newOverrides,
+  });
+  useRegle.__config = {
+    rules: newRules,
+    modifiers: newModifiers,
+    shortcuts: newShortcuts as any,
+    overrides: newOverrides,
+  };
 
   const inferRules = createInferRuleHelper<TCustomRules>();
 

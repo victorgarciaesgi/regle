@@ -62,6 +62,7 @@ export function createReactiveFieldStatus({
   initialState,
   originalState,
   shortcuts,
+  overrides,
   onValidate,
 }: CreateReactiveFieldStatusArgs): $InternalRegleFieldStatus {
   interface ScopeReturnState extends CommonResolverScopedState {
@@ -84,7 +85,7 @@ export function createReactiveFieldStatus({
     $dirty: Ref<boolean>;
     $silentValue: ComputedRef<any>;
     $inactive: ComputedRef<boolean>;
-    $modifiers: ComputedRef<FieldRegleBehaviourOptions>;
+    $modifiers: ComputedRef<FieldRegleBehaviourOptions<unknown>>;
     $isArrayOrRegleStatic: ComputedRef<boolean>;
     processShortcuts: () => void;
   }
@@ -352,19 +353,32 @@ export function createReactiveFieldStatus({
         return $silentIssues.value.map((issue) => issue.$message);
       });
 
-      const $edited = computed<boolean>(() => {
-        if ($dirty.value) {
-          if (initialState.value instanceof Date && state.value instanceof Date) {
-            return toDate(initialState.value).getDate() !== toDate(state.value).getDate();
-          } else if (initialState.value == null) {
-            // Keep empty string as the same value of undefined|null
-            return !!state.value;
-          } else if (Array.isArray(state.value) && Array.isArray(initialState.value)) {
-            return !isEqual(state.value, initialState.value, $localOptions.value.$deepCompare);
-          }
-          return initialState.value !== state.value;
+      const $edited = ref(false);
+
+      function isEditedHandler(currentValue: unknown, initialValue: unknown): boolean {
+        if (initialValue instanceof Date && currentValue instanceof Date) {
+          return toDate(initialValue).getDate() !== toDate(currentValue).getDate();
+        } else if (initialValue == null) {
+          // Keep empty string as the same value of undefined|null
+          return !!currentValue;
+        } else if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
+          return !isEqual(currentValue, initialValue, $localOptions.value.$deepCompare);
         }
-        return false;
+        return initialValue !== currentValue;
+      }
+
+      watchEffect(() => {
+        if ($dirty.value) {
+          if ($localOptions.value.$isEdited) {
+            $edited.value = $localOptions.value.$isEdited(state.value, initialState.value, isEditedHandler);
+          } else if (overrides?.isEdited) {
+            $edited.value = overrides.isEdited(state.value, initialState.value, isEditedHandler);
+          } else {
+            $edited.value = isEditedHandler(state.value, initialState.value);
+          }
+        } else {
+          $edited.value = false;
+        }
       });
 
       const $anyEdited = computed(() => $edited.value);
@@ -433,7 +447,7 @@ export function createReactiveFieldStatus({
         return Object.values($rules.value).some((rule) => rule.$haveAsync);
       });
 
-      const $modifiers = computed<FieldRegleBehaviourOptions>(() => {
+      const $modifiers = computed<FieldRegleBehaviourOptions<unknown>>(() => {
         return {
           $debounce: $debounce.value,
           $lazy: $lazy.value,
@@ -604,11 +618,12 @@ export function createReactiveFieldStatus({
         initialState.value = cloneDeep(newInitialState);
         state.value = cloneDeep(newInitialState);
       } else {
-        initialState.value = isObject(state.value)
-          ? cloneDeep(state.value)
-          : Array.isArray(state.value)
-            ? [...state.value]
-            : state.value;
+        initialState.value =
+          isObject(state.value) && !isStatic(state.value)
+            ? cloneDeep(state.value)
+            : Array.isArray(state.value)
+              ? [...state.value]
+              : state.value;
       }
     }
 

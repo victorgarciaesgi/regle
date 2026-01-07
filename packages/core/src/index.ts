@@ -134,4 +134,6 @@ export type {
   InferOutput,
   InferSafeOutput,
   RegleRuleWithParamsDefinitionInput,
+  GlobalConfigOverrides,
+  isEditedHandlerFn,
 } from './types';

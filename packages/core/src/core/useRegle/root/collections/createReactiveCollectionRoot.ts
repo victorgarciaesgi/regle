@@ -46,6 +46,7 @@ export function createReactiveCollectionStatus({
   originalState,
   shortcuts,
   fieldName,
+  overrides,
 }: CreateReactiveCollectionStatusArgs): $InternalRegleCollectionStatus | undefined {
   interface ScopeReturnState extends CommonResolverScopedState {
     $dirty: ComputedRef<boolean>;
@@ -162,6 +163,7 @@ export function createReactiveCollectionStatus({
             shortcuts,
             fieldName,
             schemaMode,
+            overrides,
           });
 
           if (element) {
@@ -190,6 +192,7 @@ export function createReactiveCollectionStatus({
       shortcuts,
       fieldName,
       schemaMode,
+      overrides,
     });
   }
 
@@ -232,6 +235,7 @@ export function createReactiveCollectionStatus({
               shortcuts,
               fieldName,
               schemaMode,
+              overrides,
             });
 
             if (element) {

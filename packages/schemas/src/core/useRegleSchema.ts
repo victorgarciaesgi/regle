@@ -2,6 +2,7 @@ import type {
   DeepMaybeRef,
   DeepPartial,
   DeepReactiveState,
+  GlobalConfigOverrides,
   HaveAnyRequiredProps,
   LocalRegleBehaviourOptions,
   NoInferLegacy,
@@ -43,10 +44,13 @@ export interface useRegleSchemaFn<
     : RegleSchema<UnwrapNestedRefs<NonNullable<TState>>, TSchema, TShortcuts, TAdditionalReturnProperties>;
 }
 
-export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(
-  options?: RegleBehaviourOptions,
-  shortcuts?: RegleShortcutDefinition | undefined
-): useRegleSchemaFn<TShortcuts> {
+export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(params?: {
+  options?: RegleBehaviourOptions;
+  shortcuts?: RegleShortcutDefinition | undefined;
+  overrides?: GlobalConfigOverrides;
+}): useRegleSchemaFn<TShortcuts> {
+  const { options, shortcuts, overrides } = params ?? {};
+
   const globalOptions: RegleBehaviourOptions = {
     autoDirty: options?.autoDirty,
     lazy: options?.lazy,
@@ -296,6 +300,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       shortcuts,
       schemaMode: true,
       onValidate,
+      overrides,
     });
     return {
       r$: regle.regle as any,
