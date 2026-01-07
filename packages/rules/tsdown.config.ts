@@ -26,6 +26,10 @@ export default defineConfig([
     ...sharedOptions,
     minify: true,
     dts: false,
+    treeshake: {
+      moduleSideEffects: false,
+      annotations: true,
+    },
     outExtensions: outExtensions(true),
     plugins: [...productionBuildPlugins],
   },

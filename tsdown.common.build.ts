@@ -45,10 +45,6 @@ export const defaultOptions: UserConfig = {
   dts: true,
   clean: true,
   sourcemap: false,
-  treeshake: {
-    moduleSideEffects: false,
-    annotations: true,
-  },
   outExtensions: () => ({ js: '.js' }),
   inputOptions(inputOptions) {
     inputOptions.experimental ??= {};
