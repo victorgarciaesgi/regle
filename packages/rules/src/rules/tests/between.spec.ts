@@ -42,17 +42,17 @@ describe('between validator', () => {
     expect(between(3, 3).exec(3)).toBe(true);
   });
 
-  it('should not validate text', () => {
-    expect(between(3, 3).exec('hello' as any)).toBe(false);
+  it('should skip text', () => {
+    expect(between(3, 3).exec('hello' as any)).toBe(true);
   });
 
-  it('should not validate number-like text', () => {
-    expect(between(3, 3).exec('15a' as any)).toBe(false);
+  it('should skip number-like text', () => {
+    expect(between(3, 3).exec('15a' as any)).toBe(true);
   });
 
-  it('should not validate padded numbers', () => {
-    expect(between(5, 20).exec(' 15' as any)).toBe(false);
-    expect(between(5, 20).exec('15 ' as any)).toBe(false);
+  it('should skip padded numbers', () => {
+    expect(between(5, 20).exec(' 15' as any)).toBe(true);
+    expect(between(5, 20).exec('15 ' as any)).toBe(true);
   });
 
   it('should validate fractions', () => {
@@ -71,7 +71,13 @@ describe('between validator', () => {
     expect(between(3, 16).exec(25.5)).toBe(false);
   });
 
-  it('should not validate NaN', () => {
-    expect(between(3, 16).exec(NaN)).toBe(false);
+  it('should skip NaN', () => {
+    expect(between(3, 16).exec(NaN)).toBe(true);
+    expect(between(3, NaN).exec(3)).toBe(true);
+  });
+
+  it('should skip non numbers', () => {
+    expect(between(3, 16).exec('hello' as any)).toBe(true);
+    expect(between(3, 16).exec({ hello: 'world' } as any)).toBe(true);
   });
 });

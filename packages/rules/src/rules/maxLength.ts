@@ -53,7 +53,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
       if (__IS_DEV__) {
         console.warn(`[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
       }
-      return false;
+      return true;
     }
     return true;
   },

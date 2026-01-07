@@ -20,4 +20,12 @@ describe('endsWith validator', () => {
   it('should validate a value containing parameter', () => {
     expect(endsWith('st').exec('first')).toBe(true);
   });
+
+  it('should skip non-string param', () => {
+    expect(endsWith('any').exec(123 as any)).toBe(true);
+  });
+
+  it('should skip non-string value', () => {
+    expect(endsWith('any').exec(123 as any)).toBe(true);
+  });
 });

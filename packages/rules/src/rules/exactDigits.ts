@@ -37,7 +37,7 @@ export const exactDigits: RegleRuleWithParamsDefinition<string | number, [count:
       if (__IS_DEV__) {
         console.warn(`[exactDigits] Parameter isn't a number, got parameter: ${count}`);
       }
-      return false;
+      return true;
     }
     return true;
   },

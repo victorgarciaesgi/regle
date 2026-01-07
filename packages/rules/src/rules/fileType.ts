@@ -29,7 +29,7 @@ export const fileType: RegleRuleWithParamsDefinition<File, [accept: readonly str
         if (isFile(value)) {
           return accept.includes(value.type);
         }
-        return false;
+        return true;
       }
       return true;
     },
