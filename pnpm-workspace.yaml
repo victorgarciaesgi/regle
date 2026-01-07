@@ -18,6 +18,7 @@ minimumReleaseAge: 1440 # 24 hours
 minimumReleaseAgeExclude:
   - tsdown
   - oxlint
+  - '@modelcontextprotocol/sdk'
 
 catalog:
   '@types/node': 22.19.3

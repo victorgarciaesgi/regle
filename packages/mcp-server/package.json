@@ -12,7 +12,7 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.25.1",
+    "@modelcontextprotocol/sdk": "1.25.2",
     "posthog-node": "5.18.0",
     "zod": "catalog:"
   },
