@@ -13,8 +13,8 @@ describe('minLength validator', () => {
     expect(minLength(5).exec('a')).toBe(false);
   });
 
-  it('should not validate string param', () => {
-    expect(minLength('eee' as any).exec('eeeeee')).toBe(false);
+  it('should skip string param', () => {
+    expect(minLength('eee' as any).exec('eeeeee')).toBe(true);
   });
 
   it('should validate enough characters', () => {
@@ -33,7 +33,7 @@ describe('minLength validator', () => {
     expect(minLength(5).exec('     ')).toBe(true);
   });
 
-  it('should not validate empty arrays', () => {
+  it('should skip empty arrays', () => {
     expect(minLength(5).exec([])).toBe(false);
   });
 

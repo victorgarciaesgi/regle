@@ -1,6 +1,7 @@
 import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from '../helpers';
+import { isString } from '../helpers/ruleHelpers';
 
 /**
  * Checks if the string ends with the specified substring.
@@ -27,7 +28,7 @@ export const endsWith: RegleRuleWithParamsDefinition<
 > = createRule({
   type: 'endsWith',
   validator(value: MaybeInput<string>, part: MaybeInput<string>) {
-    if (isFilled(value) && isFilled(part)) {
+    if (isFilled(value) && isFilled(part) && isString(value) && isString(part)) {
       return value.endsWith(part);
     }
     return true;

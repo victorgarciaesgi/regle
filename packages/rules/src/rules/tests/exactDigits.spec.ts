@@ -37,8 +37,8 @@ describe('exactDigits validator', () => {
     expect(exactDigits(1).exec(5)).toBe(true);
   });
 
-  it('should not validate string param', () => {
-    expect(exactDigits('eee' as any).exec('12345')).toBe(false);
+  it('should skip string param', () => {
+    expect(exactDigits('eee' as any).exec('12345')).toBe(true);
   });
 
   it('should not validate letters', () => {

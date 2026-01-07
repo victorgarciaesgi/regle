@@ -49,7 +49,7 @@ export const maxValue: RegleRuleWithParamsDefinition<
       if (__IS_DEV__) {
         console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
       }
-      return false;
+      return true;
     }
     return true;
   },

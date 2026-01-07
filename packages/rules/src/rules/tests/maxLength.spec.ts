@@ -9,8 +9,8 @@ describe('maxLength validator', () => {
     expect(maxLength(-1).exec('')).toBe(true);
   });
 
-  it('should not validate string param', () => {
-    expect(maxLength('eee' as any).exec('eeeeee')).toBe(false);
+  it('should skip string param', () => {
+    expect(maxLength('eee' as any).exec('eeeeee')).toBe(true);
   });
 
   it('should validate null', () => {
@@ -41,7 +41,7 @@ describe('maxLength validator', () => {
     expect(maxLength(-2).exec([1, 2])).toBe(false);
   });
 
-  it('should not validate empty arrays', () => {
+  it('should skip empty arrays', () => {
     expect(maxLength(5).exec([])).toBe(true);
   });
 

@@ -49,7 +49,7 @@ export const minValue: RegleRuleWithParamsDefinition<
       if (__IS_DEV__) {
         console.warn(`[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${min}`);
       }
-      return false;
+      return true;
     }
     return true;
   },

@@ -17,12 +17,12 @@ describe('maxValue validator', () => {
     expect(maxValue(5).exec(6)).toBe(false);
   });
 
-  it('should not validate the string value', () => {
-    expect(maxValue(5).exec('not string here' as any)).toBe(false);
+  it('should skip the string value', () => {
+    expect(maxValue(5).exec('not string here' as any)).toBe(true);
   });
 
-  it('should not validate the object value', () => {
-    expect(maxValue(5).exec({ hello: 'world' } as any)).toBe(false);
+  it('should skip the object value', () => {
+    expect(maxValue(5).exec({ hello: 'world' } as any)).toBe(true);
   });
 
   it('should work with string values', () => {
@@ -30,8 +30,8 @@ describe('maxValue validator', () => {
     expect(maxValue('5').exec('10')).toBe(false);
   });
 
-  it('should not work with NaN values', () => {
-    expect(maxValue('ezfzef').exec(5)).toBe(false);
-    expect(maxValue(5).exec('ezfmjze')).toBe(false);
+  it('should skip NaN values', () => {
+    expect(maxValue('ezfzef').exec(5)).toBe(true);
+    expect(maxValue(5).exec('ezfmjze')).toBe(true);
   });
 });
