@@ -2,11 +2,11 @@ import type { ComputedRef } from 'vue';
 import type {
   $InternalRegleShortcutDefinition,
   CustomRulesDeclarationTree,
+  GlobalConfigOverrides,
   ResolvedRegleBehaviourOptions,
 } from '../../../../types';
 import type { RegleStorage } from '../../../useStorage';
 import type { Ref } from 'vue';
-import type { GlobalConfigOverrides } from '../../../defineRegleConfig';
 
 export type StateWithId = unknown & { $id?: string };
 

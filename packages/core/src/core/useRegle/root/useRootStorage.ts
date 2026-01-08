@@ -10,6 +10,7 @@ import type {
   PrimitiveTypes,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
+  GlobalConfigOverrides,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
@@ -17,7 +18,6 @@ import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 import { dotPathObjectToNested } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
-import type { GlobalConfigOverrides } from '../../defineRegleConfig';
 
 /**
  * @internal

@@ -7,11 +7,11 @@ import type {
   ExtendedRulesDeclarations,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
+  GlobalConfigOverrides,
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
 import { tryOnScopeDispose } from '../../utils';
 import { useRootStorage } from './root';
-import type { GlobalConfigOverrides } from '../defineRegleConfig';
 
 interface RootRegleOptions {
   state: Ref<Record<string, any> | PrimitiveTypes>;
