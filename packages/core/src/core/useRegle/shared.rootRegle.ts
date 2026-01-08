@@ -5,13 +5,13 @@ import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
   ExtendedRulesDeclarations,
+  GlobalConfigOverrides,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
 import { tryOnScopeDispose } from '../../utils';
 import { useRootStorage } from './root';
-import type { GlobalConfigOverrides } from '../defineRegleConfig';
 
 interface RootRegleOptions {
   state: Ref<Record<string, any> | PrimitiveTypes>;

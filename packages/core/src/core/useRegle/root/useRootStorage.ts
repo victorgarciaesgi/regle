@@ -7,6 +7,7 @@ import type {
   $InternalRegleShortcutDefinition,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
+  GlobalConfigOverrides,
   PrimitiveTypes,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
@@ -17,7 +18,6 @@ import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 import { dotPathObjectToNested } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
-import type { GlobalConfigOverrides } from '../../defineRegleConfig';
 
 /**
  * @internal
