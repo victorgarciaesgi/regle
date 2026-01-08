@@ -144,7 +144,7 @@ Type: `(currentValue: MaybeInput<TValue>, initialValue: MaybeInput<TValue>, defa
 Override the default `$edited` property handler. Useful to handle custom comparisons for complex object types.
 
 :::warning
-It's higly recommended to use this modifier with the [`markStatic`](/advanced-usage/immutable-constructors) helper to handle immutable constructors.
+It's highly recommended to use this modifier with the [`markStatic`](/advanced-usage/immutable-constructors) helper to handle immutable constructors.
 :::
 
 ```ts

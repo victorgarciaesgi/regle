@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { nextTick, ref } from 'vue';
-import { defineRegleConfig, useRegle, type RegleStaticImpl } from '@regle/core';
-import { required, minLength, email, withMessage, fileType } from '@regle/rules';
+import { ref } from 'vue';
+import { markStatic, useRegle, type RegleStaticImpl } from '@regle/core';
+import { required } from '@regle/rules';
 import { Decimal } from 'decimal.js';
-import { markStatic } from '@regle/core';
 
 const state = ref({ decimal: null as RegleStaticImpl<Decimal> | null });
 
@@ -11,8 +10,8 @@ const { r$ } = useRegle(state, {
   decimal: {
     required,
     $isEdited: (currentValue, initialValue, defaultHandlerFn) => {
-      if (currentValue && initialValue) {
-        return currentValue.toString() !== initialValue.toString();
+      if (currentValue != null && initialValue != null) {
+        return currentValue.toNearest(0.01).toString() !== initialValue.toNearest(0.01).toString();
       }
       return defaultHandlerFn(currentValue, initialValue);
     },
