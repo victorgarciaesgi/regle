@@ -341,3 +341,19 @@ const { r$ } = useCollectScope<[{ foo: string }]>();
 const { valid, data } = await r$.$validate();
 //               ^?
 ```
+
+
+## Testing
+
+If you write unit test for a component using scoped validation, you may encounter problems with the tests failing.
+
+To solve this, mount your component with the `attachTo` option set to the document element.
+
+```ts
+import { mount } from '@vue/test-utils';
+import ComponentUsingCollectScope from './ComponentUsingCollectScope.vue';
+
+const wrapper = mount(ComponentUsingCollectScope, {
+  attachTo: document.documentElement,
+});
+```
