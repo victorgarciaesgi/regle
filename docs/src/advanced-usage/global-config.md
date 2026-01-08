@@ -206,3 +206,4 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
     },
   },
 })
+```
