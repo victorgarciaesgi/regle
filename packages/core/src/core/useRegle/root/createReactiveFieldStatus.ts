@@ -85,7 +85,7 @@ export function createReactiveFieldStatus({
     $dirty: Ref<boolean>;
     $silentValue: ComputedRef<any>;
     $inactive: ComputedRef<boolean>;
-    $modifiers: ComputedRef<FieldRegleBehaviourOptions>;
+    $modifiers: ComputedRef<FieldRegleBehaviourOptions<unknown>>;
     $isArrayOrRegleStatic: ComputedRef<boolean>;
     processShortcuts: () => void;
   }
@@ -369,7 +369,9 @@ export function createReactiveFieldStatus({
 
       watchEffect(() => {
         if ($dirty.value) {
-          if (overrides?.isEdited) {
+          if ($localOptions.value.$isEdited) {
+            $edited.value = $localOptions.value.$isEdited(state.value, initialState.value, isEditedHandler);
+          } else if (overrides?.isEdited) {
             $edited.value = overrides.isEdited(state.value, initialState.value, isEditedHandler);
           } else {
             $edited.value = isEditedHandler(state.value, initialState.value);
@@ -445,7 +447,7 @@ export function createReactiveFieldStatus({
         return Object.values($rules.value).some((rule) => rule.$haveAsync);
       });
 
-      const $modifiers = computed<FieldRegleBehaviourOptions>(() => {
+      const $modifiers = computed<FieldRegleBehaviourOptions<unknown>>(() => {
         return {
           $debounce: $debounce.value,
           $lazy: $lazy.value,

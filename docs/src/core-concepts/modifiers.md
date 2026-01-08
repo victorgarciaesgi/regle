@@ -138,6 +138,34 @@ This let you declare the number of milliseconds the rule needs to wait before ex
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
 :::
 
+### `$isEdited`
+Type: `(currentValue: MaybeInput<TValue>, initialValue: MaybeInput<TValue>, defaultHandlerFn: (currentValue: unknown, initialValue: unknown) => boolean) => boolean`
+
+Override the default `$edited` property handler. Useful to handle custom comparisons for complex object types.
+
+:::warning
+It's higly recommended to use this modifier with the [`markStatic`](/advanced-usage/immutable-constructors) helper to handle immutable constructors.
+:::
+
+```ts
+import { markStatic, useRegle } from '@regle/core';
+import { Decimal } from 'decimal.js';
+import { required } from '@regle/rules';
+
+const { r$ } = useRegle({ decimal: markStatic(new Decimal(1)) }, {
+  decimal: {
+    required,
+    $isEdited(currentValue, initialValue, defaultHandlerFn) {
+      if (currentValue != null && initialValue != null) {
+        return currentValue.toNearest(0.01).toString() !== initialValue.toNearest(0.01).toString();
+      }
+      // fallback to the default handler
+      return defaultHandlerFn(currentValue, initialValue);
+    },
+  },
+})
+```
+
 
 ## Array specific modifiers
 

@@ -176,3 +176,33 @@ useExtendedRegle({name: ''}, {
 })
 
 ```
+
+
+## Override default behaviors
+
+You can override the default behaviors of Regle processors by using the `overrides` property.
+
+
+### `isEdited`
+
+Override the default `$edited` property handler. Useful to handle custom comparisons for complex object types.
+
+:::warning
+It's higly recommended to use this modifier with the [`markStatic`](/advanced-usage/immutable-constructors) helper to handle immutable constructors.
+:::
+
+```ts
+import { defineRegleConfig } from '@regle/core';
+import { Decimal } from 'decimal.js';
+
+export const { useRegle: useCustomRegle } = defineRegleConfig({
+  overrides: {
+    isEdited(currentValue, initialValue, defaultHandlerFn) {
+      if (currentValue instanceof Decimal && initialValue instanceof Decimal) {
+        return currentValue.toNearest(0.01).toString() !== initialValue.toNearest(0.01).toString();
+      }
+      // fallback to the default handler
+      return defaultHandlerFn(currentValue, initialValue);
+    },
+  },
+})

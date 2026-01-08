@@ -3,19 +3,13 @@ import { merge } from '../../../shared';
 import type {
   CustomRulesDeclarationTree,
   ExtendedRulesDeclarations,
+  GlobalConfigOverrides,
   RegleBehaviourOptions,
   RegleShortcutDefinition,
 } from '../types';
 import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
 
-export interface GlobalConfigOverrides {
-  isEdited?: (
-    currentValue: unknown,
-    initialValue: unknown,
-    defaultHandlerFn: (currentValue: unknown, initialValue: unknown) => boolean
-  ) => boolean;
-}
 export interface GlobalConfigOptions<
   TCustomRules extends Partial<ExtendedRulesDeclarations> = CustomRulesDeclarationTree,
   TShortcuts extends RegleShortcutDefinition<any> = never,
@@ -73,7 +67,7 @@ export interface GlobalConfigOptions<
    */
   shortcuts?: TShortcuts;
   /** Override default behaviors of Regle processors. */
-  overrides?: GlobalConfigOverrides;
+  overrides?: GlobalConfigOverrides<unknown>;
 }
 
 /**
