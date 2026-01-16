@@ -1,8 +1,8 @@
 import type { RegleFieldStatus, RegleRuleDefinition, RegleShortcutDefinition } from '@regle/core';
-import { defineRegleConfig, RegleVuePlugin, useRegle } from '@regle/core';
-import { mount } from '@vue/test-utils';
+import { createRule, defineRegleConfig, RegleVuePlugin, useRegle } from '@regle/core';
+import { flushPromises, mount } from '@vue/test-utils';
 import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue';
-import { withMessage } from '..';
+import { isFilled, withMessage } from '..';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 import { email, minLength, required } from '../../rules';
 import { assignIf } from '../assignIf';
@@ -15,6 +15,18 @@ describe('assignIf helper', () => {
         email: '',
         collections: [{ name: '' }],
         isAdvanced: false,
+        pseudoAsync: '',
+      });
+
+      const asyncRule = createRule({
+        validator: async (value) => {
+          return new Promise<boolean>((resolve) => {
+            setTimeout(() => {
+              resolve(isFilled(value));
+            }, 200);
+          });
+        },
+        message: 'Create rule async',
       });
 
       return useRegle(form, () => ({
@@ -33,9 +45,20 @@ describe('assignIf helper', () => {
             }),
           },
         },
+        pseudoAsync: assignIf(true, {
+          error: asyncRule,
+        }),
       }));
     },
     template: '<div></div>',
+  });
+
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
   });
 
   const { vm } = mount(testComponent, {
@@ -98,6 +121,18 @@ describe('assignIf helper', () => {
     expect(vm.r$.$errors.name).toStrictEqual(['The value length should be at least 3']);
     expect(vm.r$.$errors.email).toStrictEqual(['The value must be an valid email address']);
     expect(vm.r$.$error).toBe(true);
+  });
+
+  it('should correctly keep async handlers', async () => {
+    vm.r$.$value.pseudoAsync = 'foo';
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(200);
+    expect(vm.r$.pseudoAsync.$pending).toBe(true);
+    await vi.advanceTimersByTimeAsync(200);
+    await nextTick();
+    await flushPromises();
+    expect(vm.r$.pseudoAsync.$error).toBe(false);
+    expect(vm.r$.$errors.pseudoAsync).toStrictEqual([]);
   });
 
   it('should remove rules when condition becomes false again', async () => {
