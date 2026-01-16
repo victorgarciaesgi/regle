@@ -1,28 +1,55 @@
 import type { RegleRuleDefinition } from '@regle/core';
-import { RegleVuePlugin, useRegle } from '@regle/core';
-import { mount } from '@vue/test-utils';
+import { createRule, RegleVuePlugin, useRegle } from '@regle/core';
+import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
+import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 import { alpha, minLength, required } from '../../rules';
 import { applyIf } from '../applyIf';
-import { createRegleComponent } from '../../../../../tests/utils/test.utils';
+import { isFilled } from '../ruleHelpers';
 
 describe('applyIf helper', () => {
   const testComponent = defineComponent({
     setup() {
+      const checkPseudo = ref(true);
       const form = ref({
         email: '',
         count: 0,
+        pseudoAsync: '',
       });
 
-      return useRegle(form, () => ({
+      const asyncRule = createRule({
+        validator: async (value) => {
+          return new Promise<boolean>((resolve) => {
+            setTimeout(() => {
+              resolve(isFilled(value));
+            }, 200);
+          });
+        },
+        message: 'Create rule async',
+      });
+
+      const { r$ } = useRegle(form, () => ({
         email: {
           error: applyIf(() => form.value.count === 1, required),
           foo: applyIf(false, alpha),
           $autoDirty: false,
         },
+        pseudoAsync: {
+          error: applyIf(checkPseudo, asyncRule),
+        },
       }));
+
+      return { r$, checkPseudo };
     },
     template: '<div></div>',
+  });
+
+  beforeAll(() => {
+    vi.useFakeTimers();
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
   });
 
   const { vm } = mount(testComponent, {
@@ -40,6 +67,18 @@ describe('applyIf helper', () => {
     await nextTick();
     expect(vm.r$.$errors.email).toStrictEqual([]);
     expect(vm.r$.$error).toBe(false);
+  });
+
+  it('should correctly keep async handlers', async () => {
+    vm.r$.$value.pseudoAsync = 'foo';
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(200);
+    expect(vm.r$.pseudoAsync.$pending).toBe(true);
+    await vi.advanceTimersByTimeAsync(200);
+    await nextTick();
+    await flushPromises();
+    expect(vm.r$.pseudoAsync.$error).toBe(false);
+    expect(vm.r$.$errors.pseudoAsync).toStrictEqual([]);
   });
 
   it('should be invalid when touching activating helper', async () => {

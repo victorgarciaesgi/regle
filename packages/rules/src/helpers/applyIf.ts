@@ -55,13 +55,14 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
     RegleRuleMetadataConsumer<any, any[]>,
     string | string[]
   > = '';
+  let _async: boolean = false;
 
   if (typeof rule === 'function') {
     _type = InternalRuleType.Inline;
     validator = rule;
     _params = [_condition];
   } else {
-    ({ _type, validator, _message } = rule);
+    ({ _type, validator, _message, _async } = rule);
     _params = rule._params?.concat([_condition] as any);
   }
 
@@ -83,6 +84,7 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
     validator: newValidator,
     active: newActive,
     message: _message,
+    async: _async,
   }) as RegleRuleRaw;
 
   const newParams = [...(_params ?? [])] as [];
