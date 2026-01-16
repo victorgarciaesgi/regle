@@ -123,7 +123,7 @@ describe('withMessage helper', () => {
   it('should correctly keep async handlers', async () => {
     vm.r$.$value.pseudo = 'foo';
     await nextTick();
-    vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(1000);
     await nextTick();
     await flushPromises();
     expect(vm.r$.pseudo.$error).toBe(false);
