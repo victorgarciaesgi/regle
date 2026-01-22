@@ -7,7 +7,7 @@
   "bracketSpacing": true,
   "trailingComma": "es5",
   "htmlWhitespaceSensitivity": "strict",
-  "ignorePatterns": [],
+  "ignorePatterns": ["**/.output/", "**/dist/**/*.js", "playground/**/*", "docs/.vitepress/cache/**/*", "**/*.md"],
   "experimentalSortPackageJson": false,
   "vueIndentScriptAndStyle": true,
   "overrides": [

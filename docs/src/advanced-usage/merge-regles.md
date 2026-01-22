@@ -10,6 +10,7 @@ it will return an output similar to the main `r$`, while still being able to cal
 
 All types are preserved.
 
+
 ```ts twoslash
 import {required, numeric, email} from '@regle/rules';
 // ---cut---

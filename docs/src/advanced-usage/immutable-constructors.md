@@ -21,43 +21,46 @@ To handle these cases, you can use the `markStatic` helper to mark the value as 
 </template>
 
 <script setup lang="ts">
-  import { markStatic, useRegle } from '@regle/core';
-  import { Decimal } from 'decimal.js';
+import { markStatic, useRegle } from '@regle/core'
+import { Decimal } from 'decimal.js'
 
-  const StaticDecimal = markStatic(Decimal);
+const StaticDecimal = markStatic(Decimal)
 
-  const state = { decimal: new StaticDecimal(0) };
+const state = { decimal: new StaticDecimal(0) }
 
-  const { r$ } = useRegle(state, {
-    decimal: {
-      minDecimal: (value: MaybeInput<Decimal>) => {
-        return minValue(10).exec(value?.toNumber() ?? 0);
-      },
+const { r$ } = useRegle(state, {
+  decimal: {
+    minDecimal: (value: MaybeInput<Decimal>) => {
+      return minValue(10).exec(value?.toNumber() ?? 0)
     },
-  });
+  },
+})
 
-  function handleDecimalInput(event: Event) {
-    r$.decimal.$value = new StaticDecimal($event.target.value || '0');
-  }
+function handleDecimalInput(event: Event) {
+  r$.decimal.$value = new StaticDecimal($event.target.value || '0')
+}
 </script>
 ```
+
 
 ## Schema Usage
 
 When using Regle with `@regle/schemas`, you will have to also declare the static constructor in the schema.
 
 ```ts
-import { markStatic, useRegleSchema } from '@regle/core';
-import { z } from 'zod';
+import { markStatic, useRegleSchema } from '@regle/core'
+import { z } from 'zod'
 
-const StaticDecimal = markStatic(Decimal);
+const StaticDecimal = markStatic(Decimal)
 
 const schema = z.object({
   decimal: z.instanceof(StaticDecimal).refine((value) => value.toNumber() > 10),
-});
+})
 
-const { r$ } = useRegleSchema({ decimal: new StaticDecimal(0) }, schema);
+const { r$ } = useRegleSchema({ decimal: new StaticDecimal(0) }, schema)
+
 ```
+
 
 ## `isStatic` helper
 
@@ -68,6 +71,7 @@ import { isStatic } from '@regle/core';
 
 const isStatic = isStatic(r$.$value.decimal); // true
 ```
+
 
 ## `UnwrapStatic` type helper
 
