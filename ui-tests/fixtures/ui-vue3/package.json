@@ -17,7 +17,7 @@
     "pinia": "catalog:",
     "sass": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:",
+    "vue-router": "catalog:"
   },
   "devDependencies": {
     "@tsconfig/node24": "24.0.4",
