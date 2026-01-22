@@ -42,21 +42,13 @@ Or add to your `.cursor/mcp.json`
 ```
 
 
-## Claude Desktop
+## Claude Code
 
-Add to your `claude_desktop_config.json`:
+For Claude Code, run the following command:
 
-```json
-{
-  "mcpServers": {
-    "regle": {
-      "command": "npx",
-      "args": ["@regle/mcp-server"]
-    }
-  }
-}
+```bash
+claude mcp add regle --scope project '{"command":"npx","args":["-y","@regle/mcp-server"]}'
 ```
-
 
 
 
