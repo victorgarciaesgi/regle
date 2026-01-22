@@ -15,7 +15,7 @@
     "@regle/schemas": "workspace:*",
     "check-password-strength": "catalog:",
     "pinia": "catalog:",
-    "sass": "1.86.0",
+    "sass": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
