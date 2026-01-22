@@ -27,19 +27,19 @@
 </template>
 
 <script setup lang="ts">
-import { useCollectScope } from './scoped-config';
-import Child1 from './Child1.vue';
-import Child2 from './Child2.vue';
-import { ref } from 'vue';
+  import { useCollectScope } from './scoped-config';
+  import Child1 from './Child1.vue';
+  import Child2 from './Child2.vue';
+  import { ref } from 'vue';
 
-const showChild1 = ref(true);
-const showChild2 = ref(true);
+  const showChild1 = ref(true);
+  const showChild2 = ref(true);
 
-function reset() {
-  showChild1.value = true;
-  showChild2.value = true;
-  r$.$reset({ toInitialState: true });
-}
+  function reset() {
+    showChild1.value = true;
+    showChild2.value = true;
+    r$.$reset({ toInitialState: true });
+  }
 
-const { r$ } = useCollectScope();
+  const { r$ } = useCollectScope();
 </script>

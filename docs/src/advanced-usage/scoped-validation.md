@@ -12,16 +12,15 @@ import ScopedValidationBasic from '../parts/components/scoped-validation/basic-s
 Scoped validation in Regle is made to port Vuelidate's `nested component validation`.
 
 Problems with Vuelidate's approach:
- - Performances
- - Not declarative
- - Usage (too magic for the user)
- - Type safety
- - Restricted to DOM
- - Have to play with `$scope` and `$stopPropagation` to avoid unwanted behaviour
 
+- Performances
+- Not declarative
+- Usage (too magic for the user)
+- Type safety
+- Restricted to DOM
+- Have to play with `$scope` and `$stopPropagation` to avoid unwanted behaviour
 
 Regle's solution solves all this problems
-
 
 ## Collecting validation with `useCollectScope` and `useScopedRegle`
 
@@ -41,7 +40,6 @@ Children properties like `$value` and `$errors` will not be objects, and are con
 
 You will also have access to every validation properties like `$error`, `$invalid` etc...
 
-
 :::code-group
 
 ```vue [Parent.vue]
@@ -56,14 +54,13 @@ You will also have access to every validation properties like `$error`, `$invali
 </template>
 
 <script setup lang="ts">
-import { useCollectScope } from '@regle/core';
-import Child1 from './Child1.vue';
-import Child2 from './Child2.vue';
+  import { useCollectScope } from '@regle/core';
+  import Child1 from './Child1.vue';
+  import Child2 from './Child2.vue';
 
-const { r$ } = useCollectScope();
+  const { r$ } = useCollectScope();
 </script>
 ```
-
 
 ```vue [Child1.vue]
 <template>
@@ -76,10 +73,10 @@ const { r$ } = useCollectScope();
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScopedRegle } from '@regle/core';
+  import { required } from '@regle/rules';
+  import { useScopedRegle } from '@regle/core';
 
-const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
+  const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
 </script>
 ```
 
@@ -94,20 +91,18 @@ const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
 </template>
 
 <script setup lang="ts">
-import { required, email } from '@regle/rules';
-import { useScopedRegle } from '@regle/core';
+  import { required, email } from '@regle/rules';
+  import { useScopedRegle } from '@regle/core';
 
-const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
+  const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
 </script>
 ```
-:::
 
+:::
 
 Result:
 
 <ScopedValidationBasic/>
-
-
 
 ## Multiple scopes
 
@@ -119,10 +114,7 @@ It's advised to change the name of this composable to avoid conflicts or issues.
 import { createScopedUseRegle } from '@regle/core';
 
 export const { useScopedRegle, useCollectScope } = createScopedUseRegle();
-export const { 
-  useScopedRegle: useContactsRegle, 
-  useCollectScope: useCollectContacts 
-} = createScopedUseRegle();
+export const { useScopedRegle: useContactsRegle, useCollectScope: useCollectContacts } = createScopedUseRegle();
 ```
 
 ## Namespaces inside scopes
@@ -134,13 +126,14 @@ The namespace can be reactive, so it will update every time it changes.
 In this example, only the components using the same scope and namespace will be collected.
 
 :::code-group
+
 ```vue [Parent.vue]
 <script setup lang="ts">
-import { useCollectScope } from '@regle/core';
-import Child1 from './Child1.vue';
-import Child2 from './Child2.vue';
+  import { useCollectScope } from '@regle/core';
+  import Child1 from './Child1.vue';
+  import Child2 from './Child2.vue';
 
-const { r$ } = useCollectScope('contacts');
+  const { r$ } = useCollectScope('contacts');
 </script>
 ```
 
@@ -155,14 +148,10 @@ const { r$ } = useCollectScope('contacts');
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScopedRegle } from '@regle/core';
+  import { required } from '@regle/rules';
+  import { useScopedRegle } from '@regle/core';
 
-const { r$ } = useScopedRegle(
-  { firstName: '' }, 
-  { firstName: { required } },
-  { namespace: 'contacts' }
-);
+  const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } }, { namespace: 'contacts' });
 </script>
 ```
 
@@ -177,10 +166,10 @@ const { r$ } = useScopedRegle(
 </template>
 
 <script setup lang="ts">
-import { required, email } from '@regle/rules';
-import { useScopedRegle } from '@regle/core';
+  import { required, email } from '@regle/rules';
+  import { useScopedRegle } from '@regle/core';
 
-const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
+  const { r$ } = useScopedRegle({ email: '' }, { email: { required, email } });
 </script>
 ```
 
@@ -189,6 +178,7 @@ You can also collect multiple namespaces at once by passing an array of namespac
 ```ts
 const { r$ } = useCollectScope(['contacts', 'persons']);
 ```
+
 :::
 
 ## Inject global config
@@ -199,40 +189,39 @@ If you have a global config already registered, simply pass it as a parameter to
 import { createScopedUseRegle, defineRegleConfig } from '@regle/core';
 import { required, withMessage } from '@regle/rules';
 
-
 const { useRegle } = defineRegleConfig({
   rules: () => ({
     custom: withMessage(required, 'Custom error'),
   }),
 });
 
-export const { useScopedRegle, useCollectScope } = createScopedUseRegle({customUseRegle: useRegle});
+export const { useScopedRegle, useCollectScope } = createScopedUseRegle({ customUseRegle: useRegle });
 
 // @noErrors
-const {r$} = useScopedRegle({name: ''}, {
-  name: {
-    cus
-//     ^|
+const { r$ } = useScopedRegle(
+  { name: '' },
+  {
+    name: {
+      cus,
+      //     ^|
+    },
   }
-})
-
+);
 ```
-
 
 ## Custom store for instances
 
-By default collected instances are stored in a local ref. 
+By default collected instances are stored in a local ref.
 
 You can provide your own store ref.
-
 
 ```ts
 import { createScopedUseRegle, type ScopedInstancesRecordLike } from '@regle/core';
 
-// Having a default 
+// Having a default
 const myCustomStore = ref<ScopedInstancesRecordLike>({});
 
-const { useScopedRegle, useCollectScope } = createScopedUseRegle({customStore: myCustomStore});
+const { useScopedRegle, useCollectScope } = createScopedUseRegle({ customStore: myCustomStore });
 ```
 
 ## Collect instances in a Record
@@ -248,23 +237,23 @@ This will **require** every nested `useScopeRegle` to provide a parameter `id`.
 ```ts [scoped-config.ts]
 import { createScopedUseRegle } from '@regle/core';
 
-export const { 
-  useScopedRegle: useScopedRegleItem, 
-  useCollectScope: useCollectScopeRecord 
-} = createScopedUseRegle({ asRecord: true });
+export const { useScopedRegle: useScopedRegleItem, useCollectScope: useCollectScopeRecord } = createScopedUseRegle({
+  asRecord: true,
+});
 ```
+
 ```vue [Parent.vue]
 <script setup lang="ts">
-import { useCollectScopeRecord } from './scoped-config';
-import Child1 from './Child1.vue';
-import Child2 from './Child2.vue';
+  import { useCollectScopeRecord } from './scoped-config';
+  import Child1 from './Child1.vue';
+  import Child2 from './Child2.vue';
 
-const { r$ } = useCollectScopeRecord<{
-    child1: {firstName: string},
-    child2: {email: string},
+  const { r$ } = useCollectScopeRecord<{
+    child1: { firstName: string };
+    child2: { email: string };
   }>();
 
-console.log(r$.$value.child1.firstName);
+  console.log(r$.$value.child1.firstName);
 </script>
 ```
 
@@ -279,13 +268,13 @@ console.log(r$.$value.child1.firstName);
 </template>
 
 <script setup lang="ts">
-import { useScopedRegleItem } from './scoped-config';
+  import { useScopedRegleItem } from './scoped-config';
 
-const { r$ } = useScopedRegleItem(
-  { firstName: '' }, 
-  { firstName: { required } }
-  { id: 'child1' }
-);
+  const { r$ } = useScopedRegleItem(
+    { firstName: '' },
+    { firstName: { required } }
+    { id: 'child1' }
+  );
 </script>
 ```
 
@@ -300,13 +289,12 @@ const { r$ } = useScopedRegleItem(
 </template>
 
 <script setup lang="ts">
-import { useScopedRegleItem } from './scoped-config';
+  import { useScopedRegleItem } from './scoped-config';
 
-const { r$ } = useScopedRegleItem({ email: '' }, 
-  { email: { required, email } }, 
-  { id: 'child2' });
+  const { r$ } = useScopedRegleItem({ email: '' }, { email: { required, email } }, { id: 'child2' });
 </script>
 ```
+
 :::
 
 ## Manually dispose or register a scope entry
@@ -316,13 +304,12 @@ const { r$ } = useScopedRegleItem({ email: '' },
 You can then programmatically handle if your component is collected from inside.
 
 ```vue
-<script setup lang='ts'>
-import { useCollectScope } from './scoped-config';
+<script setup lang="ts">
+  import { useCollectScope } from './scoped-config';
 
-const { r$, dispose, register } = useScopedRegle();
+  const { r$, dispose, register } = useScopedRegle();
 </script>
 ```
-
 
 ## Manual typing
 
@@ -341,7 +328,6 @@ const { r$ } = useCollectScope<[{ foo: string }]>();
 const { valid, data } = await r$.$validate();
 //               ^?
 ```
-
 
 ## Testing
 

@@ -16,18 +16,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { or, startsWith, endsWith, withMessage } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { or, startsWith, endsWith, withMessage } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { regex: '' },
-  {
-    regex: {
-      myError: withMessage(
-        or(startsWith('^'), endsWith('$')),
-        ({ $params: [start, end] }) => `Field should start with "${start}" or end with "${end}"`
-      ),
-    },
-  }
-);
+  const { r$ } = useRegle(
+    { regex: '' },
+    {
+      regex: {
+        myError: withMessage(
+          or(startsWith('^'), endsWith('$')),
+          ({ $params: [start, end] }) => `Field should start with "${start}" or end with "${end}"`
+        ),
+      },
+    }
+  );
 </script>

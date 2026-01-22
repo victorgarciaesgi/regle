@@ -3,16 +3,13 @@ title: Extend properties
 description: Regle offers a way to extend the default validation properties with defineRegleConfig
 ---
 
-
 # Extend properties
 
 Regle offers a way to extend the default validation properties with `defineRegleConfig`.
 
 For more information about global config [check here](/advanced-usage/global-config)
 
-
 ## Extending field properties
-
 
 ```ts twoslash
 import { required } from '@regle/rules';
@@ -38,9 +35,7 @@ r$.name.$isRe
 //          ^|
 ```
 
-
 ## Extending nested object properties
-
 
 ```ts twoslash
 import { required } from '@regle/rules';
@@ -67,9 +62,7 @@ r$.user.$is
 
 ```
 
-
 ## Extending collections properties
-
 
 ```ts twoslash
 import { required } from '@regle/rules';
@@ -98,12 +91,10 @@ r$.projects.$is
 
 ```
 
-
 ## Typing shortcuts in component props <span data-title='*.ts'></span>
 
 When defining shortcuts, it can be hard to type props in common Input components.
 For this Regle provides a type helper that can ease the declaration of these props.
-
 
 :::code-group
 
@@ -122,23 +113,22 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
 ```
 
 ```vue twoslash [myInput.vue]
-<script lang='ts' setup>
-import { defineRegleConfig } from '@regle/core';
-// @include: config
-// @noErrors
-// ---cut---
-// @module: esnext
-import type { RegleCustomFieldStatus } from '@regle/core';
-import {useCustomRegle} from './config'
+<script lang="ts" setup>
+  import { defineRegleConfig } from '@regle/core';
+  // @include: config
+  // @noErrors
+  // ---cut---
+  // @module: esnext
+  import type { RegleCustomFieldStatus } from '@regle/core';
+  import { useCustomRegle } from './config';
 
-const props = defineProps<{
-  field: RegleCustomFieldStatus<typeof useCustomRegle, string, 'required'>;
-  placeholder: string;
-}>();
+  const props = defineProps<{
+    field: RegleCustomFieldStatus<typeof useCustomRegle, string, 'required'>;
+    placeholder: string;
+  }>();
 
-props.field.$test
+  props.field.$test;
 </script>
 ```
-
 
 :::

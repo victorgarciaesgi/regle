@@ -6,10 +6,8 @@
 
 # Regle
 
-
 Regle \ʁɛɡl\ (French word for 'rule') is a Typescript-first model-based validation library for Vue 3.
 It's heavily inspired by Vuelidate.
-
 
 ## 📚 Documentation
 
@@ -17,9 +15,9 @@ It's heavily inspired by Vuelidate.
 
 ## 🎮 Play with it
 
-| Playground | Simple demo  | Advanced Demo |
-| ------------- | ------------- | ------------- |
-| <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
+| Playground                                                                                                                                                                                           | Simple demo                                                                                                                                                                                                                                                             | Advanced Demo                                                                                                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example) | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example) |
 
 ## ✨ Features
 

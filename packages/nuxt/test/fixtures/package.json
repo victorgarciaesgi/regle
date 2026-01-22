@@ -1,6 +1,6 @@
 {
-  "private": true,
   "name": "nuxt-test",
+  "private": true,
   "type": "module",
   "dependencies": {
     "@regle/nuxt": "workspace:*",

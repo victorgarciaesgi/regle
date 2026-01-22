@@ -13,15 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import MyInput from './MyInput.vue';
-import { useRegle } from '@regle/core';
-import { email, required } from '@regle/rules';
+  import MyInput from './MyInput.vue';
+  import { useRegle } from '@regle/core';
+  import { email, required } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { name: '', email: '' },
-  {
-    name: { required },
-    email: { required, email },
-  }
-);
+  const { r$ } = useRegle(
+    { name: '', email: '' },
+    {
+      name: { required },
+      email: { required, email },
+    }
+  );
 </script>

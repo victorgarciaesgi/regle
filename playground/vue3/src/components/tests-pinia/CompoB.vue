@@ -15,11 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { useTestStore } from '@/stores/test.store';
-import JSONViewer from '../JSONViewer.vue';
+  import { useTestStore } from '@/stores/test.store';
+  import JSONViewer from '../JSONViewer.vue';
 
-const testForm = useTestStore();
-// testForm.r$.$reset();
+  const testForm = useTestStore();
+  // testForm.r$.$reset();
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,49 +1,49 @@
 <script setup lang="ts">
-import { type _DeepPartial } from 'pinia';
-import MyInput from './components/MyInput.vue';
-import { useMyForm } from './stores/myForm.store';
-import Password from './components/Password.vue';
-import { ref } from 'vue';
-import FieldError from './components/FieldError.vue';
-import { useRegle } from '@regle/core';
-import { minLength, required, sameAs } from '@regle/rules';
+  import { type _DeepPartial } from 'pinia';
+  import MyInput from './components/MyInput.vue';
+  import { useMyForm } from './stores/myForm.store';
+  import Password from './components/Password.vue';
+  import { ref } from 'vue';
+  import FieldError from './components/FieldError.vue';
+  import { useRegle } from '@regle/core';
+  import { minLength, required, sameAs } from '@regle/rules';
 
-const myForm = useMyForm();
+  const myForm = useMyForm();
 
-const dirtyFields = ref<ReturnType<typeof myForm.r$.$extractDirtyFields>>();
+  const dirtyFields = ref<ReturnType<typeof myForm.r$.$extractDirtyFields>>();
 
-const { r$ } = useRegle(
-  {
-    user: { pseudo: '', password: '', confirmPassword: '' },
-    projects: [{ name: '', countMaintainers: undefined, maintainers: [] }],
-  },
-  {
-    user: {
-      pseudo: { required },
-      password: { required },
-      confirmPassword: { required },
+  const { r$ } = useRegle(
+    {
+      user: { pseudo: '', password: '', confirmPassword: '' },
+      projects: [{ name: '', countMaintainers: undefined, maintainers: [] }],
     },
-    projects: { required, minLength: minLength(1) },
+    {
+      user: {
+        pseudo: { required },
+        password: { required },
+        confirmPassword: { required },
+      },
+      projects: { required, minLength: minLength(1) },
+    }
+  );
+
+  function extractDirtyFields() {
+    dirtyFields.value = myForm.r$.$extractDirtyFields();
   }
-);
 
-function extractDirtyFields() {
-  dirtyFields.value = myForm.r$.$extractDirtyFields();
-}
-
-function reset() {
-  dirtyFields.value = undefined;
-  myForm.r$.$reset({ toInitialState: true });
-}
-
-async function submit() {
-  const { valid, data } = await myForm.r$.$validate();
-  if (valid) {
-    alert('Your form is valid!');
-    console.log(data);
-    //           ^ Hover type here to see type safe result
+  function reset() {
+    dirtyFields.value = undefined;
+    myForm.r$.$reset({ toInitialState: true });
   }
-}
+
+  async function submit() {
+    const { valid, data } = await myForm.r$.$validate();
+    if (valid) {
+      alert('Your form is valid!');
+      console.log(data);
+      //           ^ Hover type here to see type safe result
+    }
+  }
 </script>
 
 <template>

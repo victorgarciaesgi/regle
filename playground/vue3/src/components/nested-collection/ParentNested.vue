@@ -33,24 +33,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import Compo1 from './Compo1.vue';
-import Compo2 from './Compo2.vue';
-import Compo3 from './Compo3.vue';
-import { useCollectScope } from './config';
-import { minLength } from '@regle/rules';
-import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import Compo1 from './Compo1.vue';
+  import Compo2 from './Compo2.vue';
+  import Compo3 from './Compo3.vue';
+  import { useCollectScope } from './config';
+  import { minLength } from '@regle/rules';
+  import { ref } from 'vue';
 
-const { r$ } = useCollectScope('foo');
+  const { r$ } = useCollectScope('foo');
 
-const show = ref(false);
+  const show = ref(false);
 
-const { r$: independentR$ } = useRegle(
-  { local: '' },
-  {
-    local: { minLength: minLength(4) },
-  }
-);
+  const { r$: independentR$ } = useRegle(
+    { local: '' },
+    {
+      local: { minLength: minLength(4) },
+    }
+  );
 </script>
 
 <style lang="scss" scoped></style>

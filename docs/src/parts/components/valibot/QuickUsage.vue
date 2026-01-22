@@ -21,13 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import * as v from 'valibot';
+  import { useRegleSchema } from '@regle/schemas';
+  import * as v from 'valibot';
 
-const { r$ } = useRegleSchema(
-  { name: '' },
-  v.object({
-    name: v.pipe(v.string(), v.minLength(3)),
-  })
-);
+  const { r$ } = useRegleSchema(
+    { name: '' },
+    v.object({
+      name: v.pipe(v.string(), v.minLength(3)),
+    })
+  );
 </script>

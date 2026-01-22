@@ -34,8 +34,10 @@
     "commitlint": "commitlint --edit",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "lint:github": "oxlint --format=github",
     "lint:staged": "oxlint --fix",
-    "format:staged": "prettier '**/*.{js,ts,vue,json,jsonc}' --write --ignore-unknown --config ./prettier.config.mjs"
+    "format:check": "oxfmt --check",
+    "format:staged": "oxfmt"
   },
   "devDependencies": {
     "@commitlint/cli": "20.3.1",
@@ -61,11 +63,11 @@
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
     "nuxt": "catalog:",
+    "oxfmt": "0.26.0",
     "oxlint": "1.41.0",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
-    "prettier": "catalog:",
     "rolldown": "1.0.0-beta.60",
     "semver": "7.7.3",
     "std-env": "3.10.0",
@@ -80,30 +82,30 @@
     "vue-tsc": "catalog:",
     "zx": "8.8.5"
   },
-  "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
   "author": {
     "name": "Victor Garcia",
     "url": "https://github.com/victorgarciaesgi"
   },
-  "homepage": "https://reglejs.dev/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
-  "engines": {
-    "node": ">=22",
-    "pnpm": ">=10.14.0"
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
   },
-  "license": "MIT",
-  "packageManager": "pnpm@10.28.1",
   "devEngines": {
     "runtime": {
       "name": "node",
       "version": "24.8.0",
       "onFail": "download"
     }
-  }
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10.14.0"
+  },
+  "packageManager": "pnpm@10.28.1"
 }

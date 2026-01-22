@@ -22,13 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { email: '' },
-  {
-    email: { required, minLength: minLength(4), email },
-  }
-);
+  const { r$ } = useRegle(
+    { email: '' },
+    {
+      email: { required, minLength: minLength(4), email },
+    }
+  );
 </script>

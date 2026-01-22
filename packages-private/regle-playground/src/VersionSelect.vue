@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+  import { onMounted, ref } from 'vue';
 
-const expanded = ref(false);
-const versions = ref<string[]>();
+  const expanded = ref(false);
+  const versions = ref<string[]>();
 
-const version = defineModel<string>();
-const props = defineProps<{
-  pkg: string;
-  label?: string;
-}>();
+  const version = defineModel<string>();
+  const props = defineProps<{
+    pkg: string;
+    label?: string;
+  }>();
 
-async function toggle() {
-  expanded.value = !expanded.value;
-  if (!versions.value) {
-    versions.value = await fetchVersions();
-  }
-}
-
-async function fetchVersions(): Promise<string[]> {
-  const res = await fetch(`https://data.jsdelivr.com/v1/package/npm/${props.pkg}`);
-  const { versions } = (await res.json()) as { versions: string[] };
-
-  if (props.pkg === 'typescript') {
-    return versions.filter((v) => !v.includes('dev') && !v.includes('insiders'));
-  }
-  return versions;
-}
-
-function setVersion(v: string) {
-  version.value = v;
-  expanded.value = false;
-}
-
-onMounted(() => {
-  window.addEventListener('click', () => {
-    expanded.value = false;
-  });
-  window.addEventListener('blur', () => {
-    if (document.activeElement?.tagName === 'IFRAME') {
-      expanded.value = false;
+  async function toggle() {
+    expanded.value = !expanded.value;
+    if (!versions.value) {
+      versions.value = await fetchVersions();
     }
+  }
+
+  async function fetchVersions(): Promise<string[]> {
+    const res = await fetch(`https://data.jsdelivr.com/v1/package/npm/${props.pkg}`);
+    const { versions } = (await res.json()) as { versions: string[] };
+
+    if (props.pkg === 'typescript') {
+      return versions.filter((v) => !v.includes('dev') && !v.includes('insiders'));
+    }
+    return versions;
+  }
+
+  function setVersion(v: string) {
+    version.value = v;
+    expanded.value = false;
+  }
+
+  onMounted(() => {
+    window.addEventListener('click', () => {
+      expanded.value = false;
+    });
+    window.addEventListener('blur', () => {
+      if (document.activeElement?.tagName === 'IFRAME') {
+        expanded.value = false;
+      }
+    });
   });
-});
 </script>
 
 <template>
@@ -66,38 +66,38 @@ onMounted(() => {
 </template>
 
 <style>
-.version {
-  margin-right: 12px;
-  position: relative;
-}
+  .version {
+    margin-right: 12px;
+    position: relative;
+  }
 
-.active-version {
-  cursor: pointer;
-  position: relative;
-  display: inline-flex;
-  place-items: center;
-}
+  .active-version {
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    place-items: center;
+  }
 
-.active-version .number {
-  margin-left: 4px;
-}
+  .active-version .number {
+    margin-left: 4px;
+  }
 
-.versions .active a {
-  color: var(--green);
-}
+  .versions .active a {
+    color: var(--green);
+  }
 
-.active-version .number {
-  color: var(--green);
-  margin-left: 4px;
-}
+  .active-version .number {
+    color: var(--green);
+    margin-left: 4px;
+  }
 
-.active-version::after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid #aaa;
-  margin-left: 8px;
-}
+  .active-version::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #aaa;
+    margin-left: 8px;
+  }
 </style>

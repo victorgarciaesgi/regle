@@ -4,7 +4,6 @@ title: Typing rules
 
 # Typing rules schema
 
-
 ## Computed rules
 
 When defining your rules schema in a separate computed property, you may lose autocompletion and detailed type checking for your rules. While useRegle will still perform type checks, the feedback will be less informative.
@@ -25,13 +24,14 @@ const form = ref({ name: '' });
 
 const rules = computed(() =>
   inferRules(form, {
-    n
-//   ^|
+    n,
+    //   ^|
   })
 );
 
 const { r$ } = useRegle(form, rules);
 ```
+
 <br/>
 
 ### Example: Typing Without inferRules
@@ -46,11 +46,14 @@ import { useRegle, type RegleComputedRules } from '@regle/core';
 
 const form = ref({ name: '' });
 
-const rules = computed(() => ({
-  name: {
-    required: () => true
-  }
-} satisfies RegleComputedRules<typeof form>))
+const rules = computed(
+  () =>
+    ({
+      name: {
+        required: () => true,
+      },
+    }) satisfies RegleComputedRules<typeof form>
+);
 
 const { r$ } = useRegle(form, rules);
 ```
@@ -61,9 +64,10 @@ If you don’t want to write your rules in a separate computed property, you can
 ```ts
 const min = ref(1);
 useRegle({ name: '' }, () => ({
-  name: { minLength: minLength(min.value) }
-}))
+  name: { minLength: minLength(min.value) },
+}));
 ```
+
 :::
 
 ## Typing external nested properties
@@ -98,7 +102,6 @@ const { r$ } = useRegle(form, rules);
 :::tip
 `Zod` and `Valibot` also have their own `inferSchema` exported.
 :::
-
 
 ## Typing external nested field
 

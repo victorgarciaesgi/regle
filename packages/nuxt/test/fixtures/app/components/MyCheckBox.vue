@@ -17,30 +17,30 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe, RegleFieldStatus } from '@regle/core';
-import { computed } from 'vue';
+  import type { Maybe, RegleFieldStatus } from '@regle/core';
+  import { computed } from 'vue';
 
-const modelValue = defineModel<boolean>();
+  const modelValue = defineModel<boolean>();
 
-const props = defineProps<{
-  field: RegleFieldStatus<boolean | undefined>;
-  placeholder: string;
-}>();
+  const props = defineProps<{
+    field: RegleFieldStatus<boolean | undefined>;
+    placeholder: string;
+  }>();
 
-const isRequired = computed(() => {
-  return props.field.$rules.required?.$active ?? false;
-});
+  const isRequired = computed(() => {
+    return props.field.$rules.required?.$active ?? false;
+  });
 </script>
 
 <style lang="scss" scoped>
-.my-input {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: 8px;
+  .my-input {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 8px;
 
-  label {
-    margin-bottom: 0;
+    label {
+      margin-bottom: 0;
+    }
   }
-}
 </style>

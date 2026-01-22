@@ -34,56 +34,56 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-import { required } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { ref } from 'vue';
+  import { required } from '@regle/rules';
 
-function shuffle(arr: any[], options?: any) {
-  if (!Array.isArray(arr)) {
-    throw new Error('expected an array');
-  }
-
-  if (arr.length < 2) {
-    return arr;
-  }
-
-  var shuffleAll = options && options.shuffleAll;
-  var result = arr.slice();
-
-  var i = arr.length,
-    rand,
-    temp;
-
-  while (--i > 0) {
-    do {
-      rand = Math.floor(Math.random() * (i + 1));
-    } while (shuffleAll && rand == i);
-
-    if (!shuffleAll || rand != i) {
-      temp = result[i];
-      result[i] = result[rand];
-      result[rand] = temp;
+  function shuffle(arr: any[], options?: any) {
+    if (!Array.isArray(arr)) {
+      throw new Error('expected an array');
     }
+
+    if (arr.length < 2) {
+      return arr;
+    }
+
+    var shuffleAll = options && options.shuffleAll;
+    var result = arr.slice();
+
+    var i = arr.length,
+      rand,
+      temp;
+
+    while (--i > 0) {
+      do {
+        rand = Math.floor(Math.random() * (i + 1));
+      } while (shuffleAll && rand == i);
+
+      if (!shuffleAll || rand != i) {
+        temp = result[i];
+        result[i] = result[rand];
+        result[rand] = temp;
+      }
+    }
+
+    return result;
   }
 
-  return result;
-}
+  const form = ref<{ collection: Array<{ name: string }> }>({
+    collection: [{ name: '' }],
+  });
 
-const form = ref<{ collection: Array<{ name: string }> }>({
-  collection: [{ name: '' }],
-});
+  function removeRandomItem() {
+    form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
+  }
 
-function removeRandomItem() {
-  form.value.collection.splice(Math.floor(Math.random() * form.value.collection.length), 1);
-}
-
-const { r$ } = useRegle(form, {
-  collection: {
-    $each: {
-      name: { required },
+  const { r$ } = useRegle(form, {
+    collection: {
+      $each: {
+        name: { required },
+      },
     },
-  },
-});
+  });
 </script>
 
 <style lang="scss"></style>

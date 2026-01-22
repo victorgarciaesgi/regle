@@ -26,17 +26,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { minLength, applyIf } from '@regle/rules';
-import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { minLength, applyIf } from '@regle/rules';
+  import { ref } from 'vue';
 
-const condition = ref(false);
+  const condition = ref(false);
 
-const form = ref({ name: '' });
+  const form = ref({ name: '' });
 
-const { r$ } = useRegle(form, {
-  name: {
-    minLength: applyIf(condition, minLength(6)),
-  },
-});
+  const { r$ } = useRegle(form, {
+    name: {
+      minLength: applyIf(condition, minLength(6)),
+    },
+  });
 </script>

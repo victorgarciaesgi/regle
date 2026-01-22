@@ -101,94 +101,94 @@
 </template>
 
 <script setup lang="ts">
-import {
-  and,
-  checked,
-  contains,
-  email,
-  maxLength,
-  maxValue,
-  minLength,
-  minValue,
-  numeric,
-  required,
-  requiredIf,
-  sameAs,
-  url,
-  withMessage,
-} from '@regle/rules';
-import { reactive, ref } from 'vue';
-import MyCheckBox from './components/MyCheckBox.vue';
-import MyInput from './components/MyInput.vue';
-import MyTextArea from './components/MyTextArea.vue';
-import Password from './components/Password.vue';
-import { checkPseudo, strongPassword, useCustomRegle } from './components/regle.global.config';
-
-type Form = {
-  user: {
-    name?: string;
-    email?: string;
-    pseudo?: string;
-  };
-  description?: string;
-  acceptTC?: boolean;
-  projects: Array<{ name?: string; github_url?: string; price?: number }>;
-  password?: string;
-  confirmPassword?: string;
-};
-
-const form = reactive<Form>({
-  user: {},
-  projects: [{ name: '', github_url: '' }],
-});
-
-const { r$ } = useCustomRegle(form, {
-  user: {
-    name: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(30),
-    },
-    email: {
-      required,
-      email,
-    },
-    pseudo: {
-      checkPseudo,
-    },
-  },
-  description: {
-    minLength: withMessage(
-      minLength(100),
-      ({ $params: [min] }) => `Your description must be at least ${min} characters long`
-    ),
-  },
-  projects: {
-    $autoDirty: false,
-    minLength: withMessage(minLength(1), ({ $params: [min] }) => `You need at least ${min} project`),
-    $each: {
-      name: { required },
-      price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
-      github_url: { url, contains: contains('github') },
-    },
-  },
-  acceptTC: {
-    required: withMessage(and(required, checked), 'You need to accept T&C'),
-  },
-  password: { required, strongPassword: strongPassword() },
-  confirmPassword: {
+  import {
+    and,
+    checked,
+    contains,
+    email,
+    maxLength,
+    maxValue,
+    minLength,
+    minValue,
+    numeric,
     required,
-    sameAs: sameAs(() => form.password, 'password'),
-  },
-});
+    requiredIf,
+    sameAs,
+    url,
+    withMessage,
+  } from '@regle/rules';
+  import { reactive, ref } from 'vue';
+  import MyCheckBox from './components/MyCheckBox.vue';
+  import MyInput from './components/MyInput.vue';
+  import MyTextArea from './components/MyTextArea.vue';
+  import Password from './components/Password.vue';
+  import { checkPseudo, strongPassword, useCustomRegle } from './components/regle.global.config';
 
-async function submit() {
-  const { valid, data } = await r$.$validate();
+  type Form = {
+    user: {
+      name?: string;
+      email?: string;
+      pseudo?: string;
+    };
+    description?: string;
+    acceptTC?: boolean;
+    projects: Array<{ name?: string; github_url?: string; price?: number }>;
+    password?: string;
+    confirmPassword?: string;
+  };
 
-  if (valid) {
-    alert('Form is valid!');
+  const form = reactive<Form>({
+    user: {},
+    projects: [{ name: '', github_url: '' }],
+  });
+
+  const { r$ } = useCustomRegle(form, {
+    user: {
+      name: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
+      },
+      email: {
+        required,
+        email,
+      },
+      pseudo: {
+        checkPseudo,
+      },
+    },
+    description: {
+      minLength: withMessage(
+        minLength(100),
+        ({ $params: [min] }) => `Your description must be at least ${min} characters long`
+      ),
+    },
+    projects: {
+      $autoDirty: false,
+      minLength: withMessage(minLength(1), ({ $params: [min] }) => `You need at least ${min} project`),
+      $each: {
+        name: { required },
+        price: { required, numeric, minValue: minValue(1), maxValue: maxValue(1000) },
+        github_url: { url, contains: contains('github') },
+      },
+    },
+    acceptTC: {
+      required: withMessage(and(required, checked), 'You need to accept T&C'),
+    },
+    password: { required, strongPassword: strongPassword() },
+    confirmPassword: {
+      required,
+      sameAs: sameAs(() => form.password, 'password'),
+    },
+  });
+
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+
+    if (valid) {
+      alert('Form is valid!');
+    }
   }
-}
 </script>
 
 <style lang="scss"></style>

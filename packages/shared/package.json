@@ -2,15 +2,15 @@
   "name": "@regle/shared",
   "private": true,
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "echo 'no dev'",
+    "test": "echo 'no tests'"
+  },
   "devDependencies": {
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vue": "catalog:"
-  },
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "dev": "echo 'no dev'",
-    "test": "echo 'no tests'"
   }
 }

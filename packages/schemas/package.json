@@ -2,6 +2,38 @@
   "name": "@regle/schemas",
   "version": "1.17.0",
   "description": "Schemas adapter for Regle",
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/regle-schemas.js",
+  "module": "./dist/regle-schemas.js",
+  "types": "./dist/regle-schemas.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-schemas.d.ts",
+      "production": "./dist/regle-schemas.min.js",
+      "development": "./dist/regle-schemas.js",
+      "default": "./dist/regle-schemas.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
@@ -15,10 +47,23 @@
     "@standard-schema/spec": "1.1.0",
     "type-fest": "catalog:"
   },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "catalog:",
+    "@types/node": "catalog:",
+    "@vue/test-utils": "catalog:",
+    "tsdown": "catalog:",
+    "type-fest": "catalog:",
+    "typescript": "catalog:",
+    "valibot": "catalog:",
+    "vitest": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:",
+    "zod": "catalog:"
+  },
   "peerDependencies": {
+    "arktype": "^2.1.0",
     "valibot": "^1.0.0",
-    "zod": "^3.24.0 || ^4.0.0",
-    "arktype": "^2.1.0"
+    "zod": "^3.24.0 || ^4.0.0"
   },
   "peerDependenciesMeta": {
     "valibot": {
@@ -30,51 +75,5 @@
     "arktype": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@total-typescript/ts-reset": "catalog:",
-    "@types/node": "catalog:",
-    "@vue/test-utils": "catalog:",
-    "prettier": "catalog:",
-    "tsdown": "catalog:",
-    "type-fest": "catalog:",
-    "typescript": "catalog:",
-    "valibot": "catalog:",
-    "vitest": "catalog:",
-    "vue": "catalog:",
-    "vue-tsc": "catalog:",
-    "zod": "catalog:"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/regle-schemas.d.ts",
-      "production": "./dist/regle-schemas.min.js",
-      "development": "./dist/regle-schemas.js",
-      "default": "./dist/regle-schemas.js"
-    },
-    "./package.json": "./package.json",
-    "./dist/*": "./dist/*"
-  },
-  "main": "./dist/regle-schemas.js",
-  "module": "./dist/regle-schemas.js",
-  "types": "./dist/regle-schemas.d.ts",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": {
-    "name": "Victor Garcia",
-    "url": "https://github.com/victorgarciaesgi"
-  },
-  "homepage": "https://reglejs.dev/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/regle.git"
-  },
-  "license": "MIT"
+  }
 }

@@ -22,28 +22,28 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type InferRegleShortcuts,
-  type Maybe,
-  type RegleEnforceCustomRequiredRules,
-  type RegleFieldStatus,
-} from '@regle/core';
-import { computed } from 'vue';
-import type { regleConfig } from '../regle-config';
+  import {
+    type InferRegleShortcuts,
+    type Maybe,
+    type RegleEnforceCustomRequiredRules,
+    type RegleFieldStatus,
+  } from '@regle/core';
+  import { computed } from 'vue';
+  import type { regleConfig } from '../regle-config';
 
-const modelValue = defineModel<Maybe<string>>();
+  const modelValue = defineModel<Maybe<string>>();
 
-const props = defineProps<{
-  field: RegleFieldStatus<
-    string | undefined,
-    RegleEnforceCustomRequiredRules<typeof regleConfig.useRegle, 'strongPassword'>,
-    InferRegleShortcuts<typeof regleConfig.useRegle>
-  >;
-  label?: string;
-  placeholder: string;
-}>();
+  const props = defineProps<{
+    field: RegleFieldStatus<
+      string | undefined,
+      RegleEnforceCustomRequiredRules<typeof regleConfig.useRegle, 'strongPassword'>,
+      InferRegleShortcuts<typeof regleConfig.useRegle>
+    >;
+    label?: string;
+    placeholder: string;
+  }>();
 
-const isRequired = computed(() => {
-  return props.field.$isRequired;
-});
+  const isRequired = computed(() => {
+    return props.field.$isRequired;
+  });
 </script>

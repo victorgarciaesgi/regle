@@ -49,82 +49,82 @@
 </template>
 
 <script setup lang="ts">
-import type { RegleExternalErrorTree } from '@regle/core';
-import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/rules';
-import { reactive, ref } from 'vue';
-import { asyncEmail, useRegle } from './validations';
+  import type { RegleExternalErrorTree } from '@regle/core';
+  import { and, dateAfter, maxLength, not, required, sameAs, withMessage } from '@regle/rules';
+  import { reactive, ref } from 'vue';
+  import { asyncEmail, useRegle } from './validations';
 
-type Form = {
-  email?: string;
-  firstName?: string;
-  birthDate?: Date;
-  today?: Date;
-  foo: {
-    bar?: number | undefined;
-    bloublou: {
-      test: {
-        name: string;
-      }[];
-    };
-  };
-};
-
-const form = reactive<Form>({
-  email: '',
-  foo: {
-    bar: 5,
-    bloublou: {
-      test: [{ name: 'foo' }],
-    },
-  },
-});
-
-async function submit() {
-  const { valid, data } = await r$.$validate();
-
-  if (valid) {
-    const test: string = data.foo.bloublou.test[0].name;
-  }
-}
-
-const limit = ref(2);
-
-const externalErrors = ref<RegleExternalErrorTree<Form>>({});
-
-const { r$ } = useRegle(
-  form,
-  () => ({
-    email: {
-      required,
-      foo: withMessage(
-        and(asyncEmail(2), maxLength(6)),
-        ({ $params: [limit, max], foo }) => `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
-      ),
-      $debounce: 300,
-    },
-    firstName: {
-      ...(limit.value === 2 && { required }),
-      not: not(
-        sameAs(() => form.email),
-        ({ $params: [target] }) => `Should not be same as email (${target})`
-      ),
-    },
-    birthDate: {
-      required,
-    },
-    today: {
-      dateAfter: dateAfter(() => form.birthDate),
-    },
+  type Form = {
+    email?: string;
+    firstName?: string;
+    birthDate?: Date;
+    today?: Date;
     foo: {
+      bar?: number | undefined;
       bloublou: {
         test: {
-          $each: {
-            name: { required },
+          name: string;
+        }[];
+      };
+    };
+  };
+
+  const form = reactive<Form>({
+    email: '',
+    foo: {
+      bar: 5,
+      bloublou: {
+        test: [{ name: 'foo' }],
+      },
+    },
+  });
+
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+
+    if (valid) {
+      const test: string = data.foo.bloublou.test[0].name;
+    }
+  }
+
+  const limit = ref(2);
+
+  const externalErrors = ref<RegleExternalErrorTree<Form>>({});
+
+  const { r$ } = useRegle(
+    form,
+    () => ({
+      email: {
+        required,
+        foo: withMessage(
+          and(asyncEmail(2), maxLength(6)),
+          ({ $params: [limit, max], foo }) => `Should be ${limit}, AND maxLength: ${max}. Metadata: ${foo}`
+        ),
+        $debounce: 300,
+      },
+      firstName: {
+        ...(limit.value === 2 && { required }),
+        not: not(
+          sameAs(() => form.email),
+          ({ $params: [target] }) => `Should not be same as email (${target})`
+        ),
+      },
+      birthDate: {
+        required,
+      },
+      today: {
+        dateAfter: dateAfter(() => form.birthDate),
+      },
+      foo: {
+        bloublou: {
+          test: {
+            $each: {
+              name: { required },
+            },
           },
         },
       },
-    },
-  }),
-  { externalErrors }
-);
+    }),
+    { externalErrors }
+  );
 </script>

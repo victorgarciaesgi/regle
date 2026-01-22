@@ -9,10 +9,10 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useRegle } from '@regle/core';
+  import { required } from '@regle/rules';
+  import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle({ dataFromCompo2: '' }, { dataFromCompo2: { required: required } });
+  const { r$ } = useRegle({ dataFromCompo2: '' }, { dataFromCompo2: { required: required } });
 </script>
 
 <style lang="scss" scoped></style>

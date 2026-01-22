@@ -17,53 +17,56 @@ Using a Pinia store is an excellent way to avoid prop drilling with multiple pro
 ## Using regle in a Pinia store
 
 ::: code-group
-```ts [demo.store.ts] 
+
+```ts [demo.store.ts]
 import { required, minLength, email } from '@regle/rules';
 import { defineStore } from 'pinia';
 import { useRegle } from '@regle/core';
 
 export const useDemoStore = defineStore('demo-store', () => {
-  const { r$ } = useRegle({ email: '' }, {
-    email: { required, minLength: minLength(4), email }
-  })
+  const { r$ } = useRegle(
+    { email: '' },
+    {
+      email: { required, minLength: minLength(4), email },
+    }
+  );
 
   return {
-    r$
-  }
-})
+    r$,
+  };
+});
 ```
 
-``` vue [ComponentA.vue]
+```vue [ComponentA.vue]
 <template>
-  <input v-model='r$.$value.email' placeholder='Type your email'/>
-  <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
+  <input v-model="r$.$value.email" placeholder="Type your email" />
+  <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
 </template>
 
-<script setup lang='ts'>
-import { useDemoStore } from './demo.store';
-import { storeToRefs } from 'pinia';
+<script setup lang="ts">
+  import { useDemoStore } from './demo.store';
+  import { storeToRefs } from 'pinia';
 
-const demoStore = useDemoStore();
-const { r$ } = storeToRefs(demoStore);
-
+  const demoStore = useDemoStore();
+  const { r$ } = storeToRefs(demoStore);
 </script>
 ```
 
-``` vue [ComponentB.vue]
+```vue [ComponentB.vue]
 <template>
   <ul>
-    <li v-for="error of r$.$errors.email" :key='error'>
+    <li v-for="error of r$.$errors.email" :key="error">
       {{ error }}
     </li>
   </ul>
 </template>
 
-<script setup lang='ts'>
-import { useDemoStore } from './demo.store';
-import { storeToRefs } from 'pinia';
+<script setup lang="ts">
+  import { useDemoStore } from './demo.store';
+  import { storeToRefs } from 'pinia';
 
-const demoStore = useDemoStore();
-const { r$ } = storeToRefs(demoStore);
+  const demoStore = useDemoStore();
+  const { r$ } = storeToRefs(demoStore);
 </script>
 ```
 
@@ -76,7 +79,6 @@ Component A:
 Component B:
 
 <ComponentB />
-
 
 ## Avoid hydration issues
 
@@ -93,7 +95,7 @@ To avoid this, you can use [skipHydrate](https://pinia.vuejs.org/api/pinia/funct
 import { skipHydrate } from 'pinia';
 
 export const usePiniaStore = defineStore('pinia-store', () => {
-  const {r$} = useRegle(/** */)
+  const { r$ } = useRegle(/** */);
 
   return { r$: skipHydrate(r$) };
 });

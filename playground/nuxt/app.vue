@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import RegleForm from './components/RegleForm.vue';
+  import RegleForm from './components/RegleForm.vue';
 </script>

@@ -34,20 +34,20 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { not, required, sameAs, withMessage } from '@regle/rules';
-import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { not, required, sameAs, withMessage } from '@regle/rules';
+  import { ref } from 'vue';
 
-const form = ref({ oldPassword: '', newPassword: '' });
-const { r$ } = useRegle(form, {
-  oldPassword: {
-    required,
-  },
-  newPassword: {
-    notEqual: withMessage(
-      not(sameAs(() => form.value.oldPassword)),
-      'Your new password password must not be the same as your old password'
-    ),
-  },
-});
+  const form = ref({ oldPassword: '', newPassword: '' });
+  const { r$ } = useRegle(form, {
+    oldPassword: {
+      required,
+    },
+    newPassword: {
+      notEqual: withMessage(
+        not(sameAs(() => form.value.oldPassword)),
+        'Your new password password must not be the same as your old password'
+      ),
+    },
+  });
 </script>

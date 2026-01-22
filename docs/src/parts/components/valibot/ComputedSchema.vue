@@ -37,24 +37,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema, withDeps } from '@regle/schemas';
-import * as v from 'valibot';
-import { ref, computed } from 'vue';
+  import { useRegleSchema, withDeps } from '@regle/schemas';
+  import * as v from 'valibot';
+  import { ref, computed } from 'vue';
 
-const form = ref({ firstName: '', lastName: '' });
+  const form = ref({ firstName: '', lastName: '' });
 
-const schema = computed(() =>
-  v.object({
-    firstName: v.string(),
-    lastName: withDeps(
-      v.pipe(
-        v.string(),
-        v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+  const schema = computed(() =>
+    v.object({
+      firstName: v.string(),
+      lastName: withDeps(
+        v.pipe(
+          v.string(),
+          v.check((v) => v !== form.value.firstName, "Last name can't be equal to first name")
+        ),
+        [() => form.value.firstName]
       ),
-      [() => form.value.firstName]
-    ),
-  })
-);
+    })
+  );
 
-const { r$ } = useRegleSchema(form, schema);
+  const { r$ } = useRegleSchema(form, schema);
 </script>

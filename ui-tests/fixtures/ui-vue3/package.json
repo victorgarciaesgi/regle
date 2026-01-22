@@ -20,14 +20,13 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@tsconfig/node22": "22.0.2",
+    "@tsconfig/node24": "24.0.4",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "@vue/tsconfig": "0.8.1",
     "autoprefixer": "10.4.21",
     "npm-run-all2": "8.0.4",
     "postcss": "8.5.3",
-    "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

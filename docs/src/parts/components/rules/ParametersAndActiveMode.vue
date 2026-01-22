@@ -23,14 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { requiredIf } from '@regle/rules';
-import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { requiredIf } from '@regle/rules';
+  import { ref } from 'vue';
 
-const form = ref({ name: '' });
-const condition = ref(false);
+  const form = ref({ name: '' });
+  const condition = ref(false);
 
-const { r$ } = useRegle(form, {
-  name: { required: requiredIf(condition) },
-});
+  const { r$ } = useRegle(form, {
+    name: { required: requiredIf(condition) },
+  });
 </script>

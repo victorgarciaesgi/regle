@@ -2,6 +2,38 @@
   "name": "@regle/rules",
   "version": "1.17.0",
   "description": "Collection of rules and helpers for Regle",
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/regle-rules.js",
+  "module": "./dist/regle-rules.js",
+  "types": "./dist/regle-rules.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-rules.d.ts",
+      "production": "./dist/regle-rules.min.js",
+      "development": "./dist/regle-rules.js",
+      "default": "./dist/regle-rules.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "typecheck": "vue-tsc --noEmit",
     "build": "tsdown",
@@ -17,44 +49,11 @@
     "@types/node": "catalog:",
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "catalog:",
-    "prettier": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/regle-rules.d.ts",
-      "production": "./dist/regle-rules.min.js",
-      "development": "./dist/regle-rules.js",
-      "default": "./dist/regle-rules.js"
-    },
-    "./package.json": "./package.json",
-    "./dist/*": "./dist/*"
-  },
-  "main": "./dist/regle-rules.js",
-  "module": "./dist/regle-rules.js",
-  "types": "./dist/regle-rules.d.ts",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": {
-    "name": "Victor Garcia",
-    "url": "https://github.com/victorgarciaesgi"
-  },
-  "homepage": "https://reglejs.dev/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/regle.git"
-  },
-  "license": "MIT"
+  }
 }

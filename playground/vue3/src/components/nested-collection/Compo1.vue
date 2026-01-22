@@ -9,14 +9,14 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScopedRegle } from './config';
+  import { required } from '@regle/rules';
+  import { useScopedRegle } from './config';
 
-const { r$ } = useScopedRegle(
-  { nameFromCompo1: '' },
-  { nameFromCompo1: { required: required } },
-  { namespace: 'foo', id: 'compo1' }
-);
+  const { r$ } = useScopedRegle(
+    { nameFromCompo1: '' },
+    { nameFromCompo1: { required: required } },
+    { namespace: 'foo', id: 'compo1' }
+  );
 </script>
 
 <style lang="scss" scoped></style>

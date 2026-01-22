@@ -5,20 +5,20 @@
 </template>
 
 <script setup lang="ts">
-import { useTestStore } from '@/stores/test.store';
-import { ref } from 'vue';
-import CompoB from './CompoB.vue';
-import CompA from './CompA.vue';
+  import { useTestStore } from '@/stores/test.store';
+  import { ref } from 'vue';
+  import CompoB from './CompoB.vue';
+  import CompA from './CompA.vue';
 
-const condition = ref(true);
-const store = useTestStore();
+  const condition = ref(true);
+  const store = useTestStore();
 
-function handleToggle() {
-  if (!condition.value) {
-    store.$dispose();
+  function handleToggle() {
+    if (!condition.value) {
+      store.$dispose();
+    }
+    condition.value = !condition.value;
   }
-  condition.value = !condition.value;
-}
 </script>
 
 <style lang="scss" scoped></style>

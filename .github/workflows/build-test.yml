@@ -2,14 +2,14 @@ name: Unit & E2E tests
 on:
   push:
     paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - '.github/**'
+      - "docs/**"
+      - "*.md"
+      - ".github/**"
   pull_request:
     paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - '.github/**'
+      - "docs/**"
+      - "*.md"
+      - ".github/**"
   pull_request_review:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,9 +27,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v4
-      - run: pnpm i
+      - run: pnpm i --frozen-lockfile
       - run: pnpm exec playwright install --with-deps
       - run: pnpm build
+      - run: pnpm run lint:github
+      - run: pnpm run format:check
       - run: pnpm run test
         env:
           CI: true

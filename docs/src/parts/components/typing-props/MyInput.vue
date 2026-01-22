@@ -15,12 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import type { RegleFieldStatus } from '@regle/core';
+  import type { RegleFieldStatus } from '@regle/core';
 
-const modelValue = defineModel<string>();
+  const modelValue = defineModel<string>();
 
-defineProps<{
-  field: RegleFieldStatus<string>;
-  placeholder: string;
-}>();
+  defineProps<{
+    field: RegleFieldStatus<string>;
+    placeholder: string;
+  }>();
 </script>

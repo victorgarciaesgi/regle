@@ -16,7 +16,6 @@ import type { DefaultValidatorsTree, ExtendedRulesDeclarations } from './rule.cu
 import type {
   RegleRuleDefinition,
   RegleRuleMetadataDefinition,
-  RegleRuleWithParamsDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';

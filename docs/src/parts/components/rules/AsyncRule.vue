@@ -21,32 +21,32 @@
 </template>
 
 <script setup lang="ts">
-import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, isEmpty } from '@regle/rules';
-import { ref } from 'vue';
+  import { createRule, useRegle, type Maybe } from '@regle/core';
+  import { email, isEmpty } from '@regle/rules';
+  import { ref } from 'vue';
 
-function randomBoolean(): boolean {
-  return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
-}
+  function randomBoolean(): boolean {
+    return [1, 2][Math.floor(Math.random() * 2)] === 1 ? true : false;
+  }
 
-function timeout(count: number) {
-  return new Promise((resolve) => setTimeout(resolve, count));
-}
+  function timeout(count: number) {
+    return new Promise((resolve) => setTimeout(resolve, count));
+  }
 
-const checkEmailExists = createRule({
-  async validator(value: Maybe<string>) {
-    if (isEmpty(value) || !email.exec(value)) {
-      return true;
-    }
-    await timeout(1000);
-    return randomBoolean();
-  },
-  message: 'This email already exists',
-});
+  const checkEmailExists = createRule({
+    async validator(value: Maybe<string>) {
+      if (isEmpty(value) || !email.exec(value)) {
+        return true;
+      }
+      await timeout(1000);
+      return randomBoolean();
+    },
+    message: 'This email already exists',
+  });
 
-const form = ref({ email: '' });
+  const form = ref({ email: '' });
 
-const { r$ } = useRegle(form, {
-  email: { email, checkEmailExists },
-});
+  const { r$ } = useRegle(form, {
+    email: { email, checkEmailExists },
+  });
 </script>

@@ -3,23 +3,23 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, watch } from 'vue';
+  import { useTemplateRef, watch } from 'vue';
 
-const json = useTemplateRef('json');
+  const json = useTemplateRef('json');
 
-const props = defineProps<{
-  data: unknown;
-}>();
+  const props = defineProps<{
+    data: unknown;
+  }>();
 
-watch(
-  () => props.data,
-  (value) => {
-    if (json.value) {
-      (json.value as any).data = JSON.stringify(value);
-    }
-  },
-  { deep: true }
-);
+  watch(
+    () => props.data,
+    (value) => {
+      if (json.value) {
+        (json.value as any).data = JSON.stringify(value);
+      }
+    },
+    { deep: true }
+  );
 </script>
 
 <style lang="scss" scoped></style>

@@ -17,20 +17,20 @@
 </template>
 
 <script setup lang="ts">
-import type { InferRegleShortcuts, Maybe, RegleFieldStatus } from '@regle/core';
-import { type InputTypeHTMLAttribute } from 'vue';
-import type { useCustomRegle } from './regle.global.config';
+  import type { InferRegleShortcuts, Maybe, RegleFieldStatus } from '@regle/core';
+  import { type InputTypeHTMLAttribute } from 'vue';
+  import type { useCustomRegle } from './regle.global.config';
 
-const modelValue = defineModel<Maybe<string | number>>();
+  const modelValue = defineModel<Maybe<string | number>>();
 
-type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
+  type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
-const { type = 'text', ...props } = defineProps<{
-  field:
-    | RegleFieldStatus<string | undefined, any, MyShortcuts>
-    | RegleFieldStatus<number | undefined, any, MyShortcuts>;
-  label?: string;
-  type?: InputTypeHTMLAttribute;
-  placeholder: string;
-}>();
+  const { type = 'text', ...props } = defineProps<{
+    field:
+      | RegleFieldStatus<string | undefined, any, MyShortcuts>
+      | RegleFieldStatus<number | undefined, any, MyShortcuts>;
+    label?: string;
+    type?: InputTypeHTMLAttribute;
+    placeholder: string;
+  }>();
 </script>

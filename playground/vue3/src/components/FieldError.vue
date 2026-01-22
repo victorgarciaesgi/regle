@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  errors: any;
-}>();
+  const props = defineProps<{
+    errors: any;
+  }>();
 </script>
