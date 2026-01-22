@@ -21,18 +21,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { and, startsWith, endsWith, withMessage } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { and, startsWith, endsWith, withMessage } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { regex: '' },
-  {
-    regex: {
-      myError: withMessage(
-        and(startsWith('^'), endsWith('$')),
-        ({ $params: [start, end] }) => `Regex should start with "${start}" and end with "${end}"`
-      ),
-    },
-  }
-);
+  const { r$ } = useRegle(
+    { regex: '' },
+    {
+      regex: {
+        myError: withMessage(
+          and(startsWith('^'), endsWith('$')),
+          ({ $params: [start, end] }) => `Regex should start with "${start}" and end with "${end}"`
+        ),
+      },
+    }
+  );
 </script>

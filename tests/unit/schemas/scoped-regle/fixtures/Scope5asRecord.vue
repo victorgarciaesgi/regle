@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { useScope5Regle } from './scoped-config';
-import { z } from 'zod';
+  import { useScope5Regle } from './scoped-config';
+  import { z } from 'zod';
 
-const { r$ } = useScope5Regle({ scope5Record: '' }, z.object({ scope5Record: z.string().min(1) }), {
-  id: 'scope5',
-});
+  const { r$ } = useScope5Regle({ scope5Record: '' }, z.object({ scope5Record: z.string().min(1) }), {
+    id: 'scope5',
+  });
 </script>

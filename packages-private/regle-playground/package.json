@@ -1,21 +1,21 @@
 {
   "name": "regle-playground",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --port=5178",
     "build": "vite build",
     "serve": "vite preview"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.3",
-    "execa": "9.6.1",
-    "vite": "catalog:"
   },
   "dependencies": {
     "@vue/repl": "4.7.1",
     "file-saver": "2.0.5",
     "jszip": "3.10.1",
     "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.3",
+    "execa": "9.6.1",
+    "vite": "catalog:"
   }
 }

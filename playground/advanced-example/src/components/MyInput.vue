@@ -25,21 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import type { InferRegleShortcuts, Maybe, RegleFieldStatus } from '@regle/core';
-import { type InputTypeHTMLAttribute } from 'vue';
-import FieldError from './FieldError.vue';
-import type { useCustomRegle } from '../validations/regle.global.config';
+  import type { InferRegleShortcuts, Maybe, RegleFieldStatus } from '@regle/core';
+  import { type InputTypeHTMLAttribute } from 'vue';
+  import FieldError from './FieldError.vue';
+  import type { useCustomRegle } from '../validations/regle.global.config';
 
-const modelValue = defineModel<Maybe<string | number>>({ required: true });
+  const modelValue = defineModel<Maybe<string | number>>({ required: true });
 
-type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
+  type MyShortcuts = InferRegleShortcuts<typeof useCustomRegle>;
 
-const { type = 'text', ...props } = defineProps<{
-  field?:
-    | RegleFieldStatus<string | undefined, any, MyShortcuts>
-    | RegleFieldStatus<number | undefined, any, MyShortcuts>;
-  label?: string;
-  type?: InputTypeHTMLAttribute;
-  placeholder?: string;
-}>();
+  const { type = 'text', ...props } = defineProps<{
+    field?:
+      | RegleFieldStatus<string | undefined, any, MyShortcuts>
+      | RegleFieldStatus<number | undefined, any, MyShortcuts>;
+    label?: string;
+    type?: InputTypeHTMLAttribute;
+    placeholder?: string;
+  }>();
 </script>

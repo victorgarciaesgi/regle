@@ -34,44 +34,44 @@
 </template>
 
 <script setup lang="ts">
-import type { RegleExternalErrorTree } from '@regle/core';
-import { useRegleSchema } from '@regle/schemas';
-import { nextTick, reactive, ref } from 'vue';
-import { z } from 'zod/v3';
+  import type { RegleExternalErrorTree } from '@regle/core';
+  import { useRegleSchema } from '@regle/schemas';
+  import { nextTick, reactive, ref } from 'vue';
+  import { z } from 'zod/v3';
 
-type Form = {
-  email: string;
-  firstName?: number;
-  nested: [{ name: string }];
-};
+  type Form = {
+    email: string;
+    firstName?: number;
+    nested: [{ name: string }];
+  };
 
-const form = reactive<Form>({
-  email: '',
-  firstName: 0,
-  nested: [{ name: '' }],
-});
+  const form = reactive<Form>({
+    email: '',
+    firstName: 0,
+    nested: [{ name: '' }],
+  });
 
-async function submit() {
-  const { valid, data } = await r$.$validate();
-}
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+  }
 
-const externalErrors = ref<RegleExternalErrorTree<Form>>({
-  email: [''],
-});
+  const externalErrors = ref<RegleExternalErrorTree<Form>>({
+    email: [''],
+  });
 
-const { r$ } = useRegleSchema(
-  form,
-  z.object({
-    email: z.string(),
-    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite2' }).optional(),
-    nested: z
-      .array(
-        z.object({
-          name: z.string().min(1, 'Required'),
-        })
-      )
-      .default([]),
-  }),
-  { externalErrors }
-);
+  const { r$ } = useRegleSchema(
+    form,
+    z.object({
+      email: z.string(),
+      firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite2' }).optional(),
+      nested: z
+        .array(
+          z.object({
+            name: z.string().min(1, 'Required'),
+          })
+        )
+        .default([]),
+    }),
+    { externalErrors }
+  );
 </script>

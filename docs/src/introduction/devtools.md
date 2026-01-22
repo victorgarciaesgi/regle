@@ -9,7 +9,6 @@ Regle offers a devtools extension for [Vue Devtools](https://devtools.vuejs.org/
 
 ![Regle Devtools Screenshot](/screenshots/devtools.png)
 
-
 ## Installation
 
 To enable devtools, you need to install the Regle plugin in your app.
@@ -52,26 +51,28 @@ You can perform actions on the `r$` instance by clicking on the actions buttons 
 
 ![Devtools Actions Screenshot](/screenshots/devtools-actions.png)
 
-
 - Validate: Validate the `r$` instance (with `$validate` method)
 - Reset validation state: Reset the validation state of the `r$` instance (with `$reset` method)
 - Restore to original state: Restore the `r$` instance to the original state (with `$reset` method)
 
-
 ## Providing custom `r$` ids to devtools
 
-By default, the devtools will use a generic name to display the `r$` instance. 
+By default, the devtools will use a generic name to display the `r$` instance.
 
 You can provide a custom name to the `useRegle` composable to display a more descriptive name in the devtools.
 
 ```ts [App.vue]
 import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle({ name: '' }, {
-  name: { required }
-}, {
-  id: 'my-form'
-});
+const { r$ } = useRegle(
+  { name: '' },
+  {
+    name: { required },
+  },
+  {
+    id: 'my-form',
+  }
+);
 ```
 
 ## Devtools demo
@@ -85,7 +86,6 @@ Regle devtools also integrate cleanly with [Vite](https://vitejs.dev/) when you'
 You should see the Regle panel show up automatically in the Vite devtools if you've installed the plugin correctly.
 
 <img src="/screenshots/vite-devtools.png" alt="Vite Devtools with Regle panel" width="100"/>
-
 
 You will see the Regle icon showing in the devtools. Just click on it!
 

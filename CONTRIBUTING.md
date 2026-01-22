@@ -13,7 +13,6 @@ The Regle repo is a monorepo using pnpm workspaces. The package manager used to 
 
 Run `pnpm run dev` to have a watch mode for the builds.
 
-
 ### Independant builds
 
 This project uses turborepo. So you can run any command using:
@@ -24,9 +23,7 @@ This project uses turborepo. So you can run any command using:
 
 You can run a Vue 3 and Nuxt playground using:
 
--`pnpm run play:vue3` 
--`pnpm run play:nuxt`
-
+-`pnpm run play:vue3` -`pnpm run play:nuxt`
 
 ### Unit Testing
 
@@ -34,25 +31,24 @@ You can run a Vue 3 and Nuxt playground using:
    - `pnpm run test:dev` to run runtime tests in watch mode
    - `pnpm run test:dts` to run all the typecheck tests
    - `pnpm run test` to run all the test suite
-  
+
 You can additionally run all TS related typechecking and type unit tests using:
-  - `pnpm run typecheck`
+
+- `pnpm run typecheck`
 
 ### UI Testing
 
 Ui testing uses playwright. You can run the tests using:
 
 - `pnpm run ui-tests:run` to run the tests
-   - `pnpm run ui-tests:run --headed` to run the server in headed mode
-   - `pnpm run ui-tests:run --ui` to run the tests in ui mode
+  - `pnpm run ui-tests:run --headed` to run the server in headed mode
+  - `pnpm run ui-tests:run --ui` to run the tests in ui mode
 - `pnpm run ui-tests:test` to run the tests and generate a report
-
 
 ### Docs
 
 1. Run `pnpm run docs:dev` to start the docs in dev mode
 2. Run `pnpm run docs:build` to ensure docs build correctly, `twoslash` can fail if not done right
-
 
 ## Notes
 

@@ -79,122 +79,122 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe, RegleExternalErrorTree } from '@regle/core';
-import { useRegleSchema } from '@regle/schemas';
-import { nextTick, reactive, ref, watch } from 'vue';
-import {
-  nativeEnum,
-  z,
-  type mergeTypes,
-  type objectOutputType,
-  type ZodDiscriminatedUnionOption,
-  type ZodIntersectionDef,
-  type ZodObjectDef,
-} from 'zod/v3';
+  import type { Maybe, RegleExternalErrorTree } from '@regle/core';
+  import { useRegleSchema } from '@regle/schemas';
+  import { nextTick, reactive, ref, watch } from 'vue';
+  import {
+    nativeEnum,
+    z,
+    type mergeTypes,
+    type objectOutputType,
+    type ZodDiscriminatedUnionOption,
+    type ZodIntersectionDef,
+    type ZodObjectDef,
+  } from 'zod/v3';
 
-enum MyEnum {
-  Foo = 'Foo',
-  Bar = 'Bar',
-}
+  enum MyEnum {
+    Foo = 'Foo',
+    Bar = 'Bar',
+  }
 
-enum MyEnum2 {
-  Foo2 = 'Foo',
-  Bar2 = 'Bar',
-}
+  enum MyEnum2 {
+    Foo2 = 'Foo',
+    Bar2 = 'Bar',
+  }
 
-const GiftType = z.enum(['Cash', 'Shares'], {
-  required_error: 'Please select an option',
-});
+  const GiftType = z.enum(['Cash', 'Shares'], {
+    required_error: 'Please select an option',
+  });
 
-const CashGift = z.object({
-  type: z.literal(GiftType.Values.Cash),
-  amount: z.number().nonnegative().finite(),
-});
+  const CashGift = z.object({
+    type: z.literal(GiftType.Values.Cash),
+    amount: z.number().nonnegative().finite(),
+  });
 
-const SharesGift = z.object({
-  type: z.literal(GiftType.Values.Shares),
-  shares: z
-    .number({
-      invalid_type_error: 'Shares must be a number',
-    })
-    .int()
-    .nonnegative('Must be a positive number')
-    .finite(),
-  company: z
-    .string({
-      required_error: "Company can't be empty",
-    })
-    .nonempty("Company can't be empty"),
-});
-const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], {
-  description: 'Gift',
-});
-
-const Dateish = z.preprocess(
-  (x) => {
-    return x && typeof x === 'string' ? new Date(x) : x;
-  },
-  z.date({
-    required_error: 'Please provide a valid date',
-    invalid_type_error: 'Please provide a valid date',
-  })
-);
-
-const formSchema = z
-  .object({
-    email: z.union([z.number(), z.string()]),
-    discri: z
-      .discriminatedUnion('status', [
-        z.object({ status: z.literal('success'), data: z.string() }),
-        z.object({ status: z.literal('failed'), error: z.instanceof(Error) }),
-      ])
-      .optional(),
-    gift: Gift,
-    people: z.object({
-      person1: z.object({ fullName: z.string() }).nullish(),
-      person2: z.object({ fullName: z.string() }).nullish(),
-    }),
-    date: Dateish,
-    firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
-    donors: z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        address: z.string(),
-        job: z.string(),
+  const SharesGift = z.object({
+    type: z.literal(GiftType.Values.Shares),
+    shares: z
+      .number({
+        invalid_type_error: 'Shares must be a number',
       })
-    ),
-    nested: z
-      .array(
+      .int()
+      .nonnegative('Must be a positive number')
+      .finite(),
+    company: z
+      .string({
+        required_error: "Company can't be empty",
+      })
+      .nonempty("Company can't be empty"),
+  });
+  const Gift = z.discriminatedUnion('type', [CashGift, SharesGift], {
+    description: 'Gift',
+  });
+
+  const Dateish = z.preprocess(
+    (x) => {
+      return x && typeof x === 'string' ? new Date(x) : x;
+    },
+    z.date({
+      required_error: 'Please provide a valid date',
+      invalid_type_error: 'Please provide a valid date',
+    })
+  );
+
+  const formSchema = z
+    .object({
+      email: z.union([z.number(), z.string()]),
+      discri: z
+        .discriminatedUnion('status', [
+          z.object({ status: z.literal('success'), data: z.string() }),
+          z.object({ status: z.literal('failed'), error: z.instanceof(Error) }),
+        ])
+        .optional(),
+      gift: Gift,
+      people: z.object({
+        person1: z.object({ fullName: z.string() }).nullish(),
+        person2: z.object({ fullName: z.string() }).nullish(),
+      }),
+      date: Dateish,
+      firstName: z.coerce.number({ invalid_type_error: 'Not a number', required_error: 'Bite' }).optional(),
+      donors: z.array(
         z.object({
-          name: z.string().min(3, 'Min Length : 3'),
+          id: z.string(),
+          name: z.string(),
+          address: z.string(),
+          job: z.string(),
         })
-      )
-      .min(1),
-  })
-  .and(z.object({ enum: z.enum(['Salmon', 'Tuna', 'Trout']) }))
-  .and(z.object({ nativeEnum: z.nativeEnum(MyEnum) }));
+      ),
+      nested: z
+        .array(
+          z.object({
+            name: z.string().min(3, 'Min Length : 3'),
+          })
+        )
+        .min(1),
+    })
+    .and(z.object({ enum: z.enum(['Salmon', 'Tuna', 'Trout']) }))
+    .and(z.object({ nativeEnum: z.nativeEnum(MyEnum) }));
 
-const form = reactive<Partial<z.infer<typeof formSchema>>>({
-  gift: {} as any,
-  nested: [],
-});
+  const form = reactive<Partial<z.infer<typeof formSchema>>>({
+    gift: {} as any,
+    nested: [],
+  });
 
-async function submit() {
-  const { valid, data } = await r$.$validate();
-}
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+  }
 
-const { r$ } = useRegleSchema(form, formSchema);
+  const { r$ } = useRegleSchema(form, formSchema);
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 1s ease;
-}
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 1s ease;
+  }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
 </style>

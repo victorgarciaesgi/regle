@@ -19,8 +19,9 @@ import { isFilled, isEmpty, getSize, ... } from '@regle/rules';
 ### `isFilled`
 
 _**Params**_
- - `value: unknown`
- - `considerEmptyArrayInvalid = true`
+
+- `value: unknown`
+- `considerEmptyArrayInvalid = true`
 
 This is almost a must have for optional fields. It checks if any value you provided is defined (including arrays and objects).
 You can base your validator result on this.
@@ -40,22 +41,22 @@ const rule = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
 
 ### `isEmpty`
 
 _**Params**_
- - `value: unknown`
- - `considerEmptyArrayInvalid = true`
+
+- `value: unknown`
+- `considerEmptyArrayInvalid = true`
 
 This is the inverse of `isFilled`. It will check if the value is in any way empty (including arrays and objects)
 
 `isEmpty` also acts as a type guard.
 
 By default, it considers empty array as `true`. You can override this behaviour with the `considerEmptyArrayInvalid`
-
 
 ```ts
 import { createRule, type Maybe } from '@regle/core';
@@ -68,10 +69,9 @@ const rule = createRule({
     }
     return check(value);
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
-
 
 ### `isNumber`
 
@@ -89,10 +89,9 @@ const rule = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
-
 
 ### `isDate`
 
@@ -110,8 +109,8 @@ const rule = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
 
 ## Operations utils
@@ -132,8 +131,8 @@ const rule = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
 
 ### `matchRegex`
@@ -151,8 +150,8 @@ const regex = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
 
 ## Coerce utils
@@ -166,7 +165,6 @@ This helper returns `NaN` if the input cannot be coerced, which is technically s
 
 It can be safe to also check for `isNaN` additionally.
 :::
-
 
 ### `toDate`
 

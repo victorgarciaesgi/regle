@@ -22,17 +22,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { required, minLength, email, withMessage } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email, withMessage } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { email: '' },
-  {
-    email: {
-      required: withMessage(required, 'Missing value'),
-      email: withMessage(email, 'Try a valid email?'),
-      minLength: withMessage(minLength(4), ({ $params: [min] }) => `It needs ${min} characters`),
-    },
-  }
-);
+  const { r$ } = useRegle(
+    { email: '' },
+    {
+      email: {
+        required: withMessage(required, 'Missing value'),
+        email: withMessage(email, 'Try a valid email?'),
+        minLength: withMessage(minLength(4), ({ $params: [min] }) => `It needs ${min} characters`),
+      },
+    }
+  );
 </script>

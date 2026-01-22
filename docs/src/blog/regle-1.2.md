@@ -10,13 +10,11 @@ outline:
   level: 2
 ---
 
-
 # Welcome Regle `1.2` 👋
 
 <br/>
 
 ![regle 1.2 banner](/blog/regle-1.2-banner.png)
-
 
 Regle is beginning to gain some serious traction recently. Since I released Regle `1.1`, I've seen the number of stars and views on the documentation continualy increasing.
 
@@ -24,12 +22,10 @@ Thanks to the <a  href="https://github.com/victorgarciaesgi/regle"><img style="d
 
 It's really rewarding to see people use and love something you spent time on, and I hope I can reach more people.
 
-Having more and more people on your library also bring a lot of pressure.   
-Of course I still don't have as many users as other libraries or `Vuelidate`, but you feel like you cannot disappoint the people using it from the early stages.  
+Having more and more people on your library also bring a lot of pressure.  
+Of course I still don't have as many users as other libraries or `Vuelidate`, but you feel like you cannot disappoint the people using it from the early stages.
 
 I personnaly am extremely cautious about updates and tests, as Regle is used in some complex forms at my company [Malt](https://malt.fr) <span data-title='malt'></span>.
-
-
 
 ## What's new in this version
 
@@ -40,7 +36,6 @@ I know this is not following semver, but this wasn't enough to justify releasing
 Sorry in advance to everyone impacted by this, even thought the changes are minimal and should impact only a zero to a fraction of the users.
 
 - You can check the [releases notes here](https://github.com/victorgarciaesgi/regle/releases/tag/v1.2.0)
-
 
 ## 💅 Infer state type from rules
 
@@ -55,45 +50,41 @@ This feature brings multiple helpers to create your state type from your rules.
 This type can infer a state interface from any rules object or ref.
 
 ```ts
-import { type InferInput} from '@regle/core';
+import { type InferInput } from '@regle/core';
 import { required, string, numeric, type } from '@regle/rules';
 
 const rules = {
   firstName: { required, string },
   count: { numeric },
-  enforceType: { required, type: type<'FOO' | 'BAR'>()}
-}
+  enforceType: { required, type: type<'FOO' | 'BAR'>() },
+};
 
 type State = InferInput<typeof rules>;
-
 ```
 
 ### `refineRules`
 
-In Regle, rules can depend on the state, this helps declare dynamic rules without having cylcic types problems.  
-
+In Regle, rules can depend on the state, this helps declare dynamic rules without having cylcic types problems.
 
 ```ts
-import { refineRules, type InferInput} from '@regle/core';
+import { refineRules, type InferInput } from '@regle/core';
 import { required, string, sameAs } from '@regle/rules';
 
-const rules = refineRules({
-  password: { required, string },
-}, 
- (state) => ({
-   confirmPassword: { required, sameAs: sameAs(() => state.value.password) }
- })
-)
+const rules = refineRules(
+  {
+    password: { required, string },
+  },
+  (state) => ({
+    confirmPassword: { required, sameAs: sameAs(() => state.value.password) },
+  })
+);
 
 type State = InferInput<typeof rules>;
 ```
 
-
-
 :::info
 You can check the [full docs here](/common-usage/standard-schema)
 :::
-
 
 ## 🧩 Brand new Nuxt module <span data-title='nuxt'></span>
 
@@ -103,16 +94,15 @@ Fellowing this [feature request](https://github.com/victorgarciaesgi/regle/issue
 
 The idea is to enable the injection of your global configuration into Nuxt auto-imports.
 
-
 :::code-group
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   modules: ['@regle/nuxt'],
   regle: {
-    setupFile: '~/regle-config.ts'
-  }
-})
+    setupFile: '~/regle-config.ts',
+  },
+});
 ```
 
 ```ts [regle-config.ts]
@@ -123,41 +113,41 @@ import { required, withMessage } from '@regle/rules';
 export default defineRegleNuxtPlugin(() => {
   return defineRegleConfig({
     rules: () => {
-      const {t} = useI18n();
+      const { t } = useI18n();
 
       return {
         required: withMessage(required, t('general.required')),
         customRule: myCustomRule,
-      }
+      };
     },
   });
 });
-
 ```
+
 :::
 
 This will inject composables to your auto-imports and `#imports`, loaded with your custom error messages and rules.
 
-
 ```vue [app.vue] {2}
 <script setup lang="ts">
-import { useRegle } from '#imports';
-import { required, minLength, email } from '@regle/rules';
+  import { useRegle } from '#imports';
+  import { required, minLength, email } from '@regle/rules';
 
-const { r$ } = useRegle({ name: '', email: '' }, {
-  name: { required, minLength: minLength(4) },
-  email: { email },
-});
-
+  const { r$ } = useRegle(
+    { name: '', email: '' },
+    {
+      name: { required, minLength: minLength(4) },
+      email: { email },
+    }
+  );
 </script>
 ```
-
 
 ## 🔄 `syncState` option in `@regle/schemas`
 
 Schemas libraries (Zod, Valibot etc..) allow to patch the state with defaults or transforms.
 
-Until now this was not applied to the Regle state. 
+Until now this was not applied to the Regle state.
 
 `useRegleSchema` now add a `syncState` option allowing the parsed schema to be applied.
 
@@ -176,7 +166,7 @@ type RegleSchemaBehaviourOptions = {
 };
 ```
 
-Usage: 
+Usage:
 
 ```ts
 const { r$ } = useRegleSchema(
@@ -189,7 +179,6 @@ const { r$ } = useRegleSchema(
 );
 ```
 
-
 ## 🤫 `silent` modifier
 
 When I created Regle, I tried to match as much as possible how **Vuelidate** behaved.
@@ -200,22 +189,21 @@ This updates introduce a breaking change, changing `autoDirty` to only affect th
 
 The old behaviour is migrated to a new modifier: `silent`.
 
-
 ## Full details
 
 ### 🚨 Breaking Changes
 
-- Fixed spelling errors in docs and rule metadata by [@jeremyworboys](https://github.com/jeremyworboys) in [#110](https://github.com/victorgarciaesgi/regle/issues/110 )
+- Fixed spelling errors in docs and rule metadata by [@jeremyworboys](https://github.com/jeremyworboys) in [#110](https://github.com/victorgarciaesgi/regle/issues/110)
 - Replaced `autoDirty` with `silent`, `autoDirty` now match Vuelidate behaviour in [#67](https://github.com/victorgarciaesgi/regle/issues/67)
 - `dateBefore`, `dateAfter` and `dateBetween` now allow equals by default
 
 ### 🚀 Features
 
-- Add hexadecimal rule by [@jeremyworboys](https://github.com/jeremyworboys) in [#111](https://github.com/victorgarciaesgi/regle/issues/111) 
+- Add hexadecimal rule by [@jeremyworboys](https://github.com/jeremyworboys) in [#111](https://github.com/victorgarciaesgi/regle/issues/111)
 - Add comparison options date rules by [@jeremyworboys](https://github.com/jeremyworboys) in [#109](https://github.com/victorgarciaesgi/regle/issues/109)
-- Rules first typing: `InferInput` type and `refineRules` helper by @victorgarciaesgi in [#112](https://github.com/victorgarciaesgi/regle/issues/112 )
+- Rules first typing: `InferInput` type and `refineRules` helper by @victorgarciaesgi in [#112](https://github.com/victorgarciaesgi/regle/issues/112)
 - `setupFile` option in Nuxt module #117 by @victorgarciaesgi in [#117](https://github.com/victorgarciaesgi/regle/issues/117)
-- Support scoped validation in `@regle/schemas` #115 by @victorgarciaesgi in [#115](https://github.com/victorgarciaesgi/regle/issues/115 )
+- Support scoped validation in `@regle/schemas` #115 by @victorgarciaesgi in [#115](https://github.com/victorgarciaesgi/regle/issues/115)
 - `syncState` options to apply schema transforms and default to state in `@regle/schemas` [#114](https://github.com/victorgarciaesgi/regle/issues/114) and [#120](https://github.com/victorgarciaesgi/regle/issues)
 - `asRecord` option to support named keys in `useCollectScope` [#105](https://github.com/victorgarciaesgi/regle/issues/105)
 - Added `$deepCompare` modifier to enable `$edited` to work on array of nested objects [#122](https://github.com/victorgarciaesgi/regle/issues/122)

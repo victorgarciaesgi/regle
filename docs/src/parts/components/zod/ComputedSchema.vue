@@ -37,23 +37,23 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema, withDeps } from '@regle/schemas';
-import { z } from 'zod/v3';
-import { ref, computed } from 'vue';
+  import { useRegleSchema, withDeps } from '@regle/schemas';
+  import { z } from 'zod/v3';
+  import { ref, computed } from 'vue';
 
-const form = ref({ firstName: '', lastName: '' });
+  const form = ref({ firstName: '', lastName: '' });
 
-const schema = computed(() =>
-  z.object({
-    firstName: z.string(),
-    lastName: withDeps(
-      z.string().refine((v) => v !== form.value.firstName, {
-        message: "Last name can't be equal to first name",
-      }),
-      [() => form.value.firstName]
-    ),
-  })
-);
+  const schema = computed(() =>
+    z.object({
+      firstName: z.string(),
+      lastName: withDeps(
+        z.string().refine((v) => v !== form.value.firstName, {
+          message: "Last name can't be equal to first name",
+        }),
+        [() => form.value.firstName]
+      ),
+    })
+  );
 
-const { r$ } = useRegleSchema(form, schema);
+  const { r$ } = useRegleSchema(form, schema);
 </script>

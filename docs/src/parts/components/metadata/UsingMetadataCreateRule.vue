@@ -20,33 +20,33 @@
 </template>
 
 <script setup lang="ts">
-import { createRule, useRegle, type Maybe } from '@regle/core';
-import { isFilled } from '@regle/rules';
-import { passwordStrength, type Options } from 'check-password-strength';
+  import { createRule, useRegle, type Maybe } from '@regle/core';
+  import { isFilled } from '@regle/rules';
+  import { passwordStrength, type Options } from 'check-password-strength';
 
-const strongPassword = createRule({
-  validator: (value: Maybe<string>, options?: Options<string>) => {
-    if (isFilled(value)) {
-      const result = passwordStrength(value, options);
-      return {
-        $valid: result.id > 1,
-        result,
-      };
-    }
+  const strongPassword = createRule({
+    validator: (value: Maybe<string>, options?: Options<string>) => {
+      if (isFilled(value)) {
+        const result = passwordStrength(value, options);
+        return {
+          $valid: result.id > 1,
+          result,
+        };
+      }
 
-    return { $valid: true };
-  },
-  message({ result }) {
-    return `Your password is ${result?.value.toLocaleLowerCase()}`;
-  },
-});
-
-const { r$ } = useRegle(
-  { password: '' },
-  {
-    password: {
-      strongPassword: strongPassword(),
+      return { $valid: true };
     },
-  }
-);
+    message({ result }) {
+      return `Your password is ${result?.value.toLocaleLowerCase()}`;
+    },
+  });
+
+  const { r$ } = useRegle(
+    { password: '' },
+    {
+      password: {
+        strongPassword: strongPassword(),
+      },
+    }
+  );
 </script>

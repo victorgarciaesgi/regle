@@ -3,8 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScoped1Regle } from './scoped-config';
+  import { required } from '@regle/rules';
+  import { useScoped1Regle } from './scoped-config';
 
-const { r$ } = useScoped1Regle({ scope1Data: '' }, { scope1Data: { required } });
+  const { r$ } = useScoped1Regle({ scope1Data: '' }, { scope1Data: { required } });
 </script>

@@ -6,12 +6,10 @@ title: Async validations
   import AsyncRule from '../parts/components/rules/AsyncRule.vue';
 </script>
 
-
 # Async validation
 
 A common pattern in forms is to asynchronously check for a value on the server side.
 Async rules can perform these tasks, and they update the `$pending` state whenever invoked.
-
 
 :::tip
 By default, all async rules will be debounced by `200ms`. It can be overriden with the `$debounce` modifier.
@@ -27,11 +25,10 @@ const myAsyncRule = async (value: Maybe<number>) => {
     return await someStuff();
   }
   return true;
-}
+};
 ```
 
 If your rule doesn't use `async await` syntax, but still returns a `Promise`, you have to use the `withAsync` helper when using your rule in your form. Otherwise, Regle can't know it's an async rule.
-
 
 ## Async using `createRule`
 
@@ -45,8 +42,8 @@ const myAsyncRule = createRule({
     }
     return true;
   },
-  message: 'Error'
-})
+  message: 'Error',
+});
 ```
 
 ## `$pending` property
@@ -55,25 +52,20 @@ Every time you update the `$value` of the field using an async rule, the `$pendi
 
 This can be used to display a loading icon and a custom message indicating that an operation is taking time.
 
-
 ## Full example
 
 ```vue [App.vue]
 <template>
   <div class="demo-container">
     <div>
-      <input
-        v-model="form.email"
-        :class="{ pending: r$.email.$pending }"
-        placeholder="Type your email"
-      />
+      <input v-model="form.email" :class="{ pending: r$.email.$pending }" placeholder="Type your email" />
 
-      <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button type="button" @click="r$.$validate()">Submit</button>
     </div>
 
     <span v-if="r$.email.$pending"> Checking... </span>
-    
+
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
@@ -83,30 +75,29 @@ This can be used to display a loading icon and a custom message indicating that 
 </template>
 
 <script setup lang="ts">
-import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, isEmpty } from '@regle/rules';
-import { ref } from 'vue';
+  import { createRule, useRegle, type Maybe } from '@regle/core';
+  import { email, isEmpty } from '@regle/rules';
+  import { ref } from 'vue';
 
-const checkEmailExists = createRule({
-  async validator(value: Maybe<string>) {
-    if (isEmpty(value) || !email.exec(value)) {
-      return true;
-    }
+  const checkEmailExists = createRule({
+    async validator(value: Maybe<string>) {
+      if (isEmpty(value) || !email.exec(value)) {
+        return true;
+      }
 
-    await timeout(1000);
-    return randomBoolean();
-  },
-  
-  message: 'This email already exists',
-});
+      await timeout(1000);
+      return randomBoolean();
+    },
 
-const form = ref({ email: '' });
+    message: 'This email already exists',
+  });
 
-const { r$ } = useRegle(form, {
-  email: { email, checkEmailExists },
-});
+  const form = ref({ email: '' });
+
+  const { r$ } = useRegle(form, {
+    email: { email, checkEmailExists },
+  });
 </script>
 ```
-
 
 <AsyncRule/>

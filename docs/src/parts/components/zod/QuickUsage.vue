@@ -21,13 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod/v3';
+  import { useRegleSchema } from '@regle/schemas';
+  import { z } from 'zod/v3';
 
-const { r$ } = useRegleSchema(
-  { name: '' },
-  z.object({
-    name: z.string().min(1),
-  })
-);
+  const { r$ } = useRegleSchema(
+    { name: '' },
+    z.object({
+      name: z.string().min(1),
+    })
+  );
 </script>

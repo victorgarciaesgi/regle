@@ -36,24 +36,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-import { ref } from 'vue';
-import { minLength, required } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { ref } from 'vue';
+  import { minLength, required } from '@regle/rules';
 
-const form = ref<{ collection: Array<{ name: string }> }>({
-  collection: [{ name: '' }],
-});
+  const form = ref<{ collection: Array<{ name: string }> }>({
+    collection: [{ name: '' }],
+  });
 
-const { r$ } = useRegle(form, {
-  collection: {
-    // $rewardEarly avoid the error being display too soon
-    $rewardEarly: true,
-    minLength: minLength(4),
-    $each: {
-      name: { required },
+  const { r$ } = useRegle(form, {
+    collection: {
+      // $rewardEarly avoid the error being display too soon
+      $rewardEarly: true,
+      minLength: minLength(4),
+      $each: {
+        name: { required },
+      },
     },
-  },
-});
+  });
 </script>
 
 <style lang="scss"></style>

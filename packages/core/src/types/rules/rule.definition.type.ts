@@ -22,7 +22,7 @@ export interface RegleRuleDefinition<
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   _TInput = unknown,
-  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+  TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
 > extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
     TFilteredValue,
@@ -58,7 +58,7 @@ export type RegleRuleWithParamsDefinition<
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
   TInput = unknown,
-  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+  TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
 > = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
   RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
     (...params: RegleUniversalParams<TParams>): RegleRuleDefinition<TFilteredValue, TParams, TAsync, TMetadata, TInput>;
@@ -73,7 +73,7 @@ export type RegleRuleWithParamsDefinitionInput<
   TParams extends any[] = never,
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
-  TFilteredValue extends any = TValue extends Date & File & infer M ? M : TValue,
+  TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
 > = RegleRuleCore<TFilteredValue, TParams, TAsync, TMetadata> &
   RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> &
   (TParams extends [param?: any, ...any[]]

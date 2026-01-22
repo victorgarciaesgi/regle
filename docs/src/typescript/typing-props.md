@@ -20,9 +20,7 @@ As Regle's types are complex and based on both your state and your rules, it's h
 
 `@regle/core` exports all its utility types, it can be long to explain each one of them, so we'll show the simplest way to type your props.
 
-
 To avoid juggling with complex generic types, you can declare your form in a composable inside a file outside your component, and use this composable to type your props.
-
 
 :::code-group
 
@@ -56,13 +54,13 @@ export function useMyForm() {
 </template>
 
 <script setup lang="ts">
-// @include: useMyForm
-// ---cut---
-// @noErrors
-import Child from './Child.vue';
-import { useMyForm } from './myForm';
+  // @include: useMyForm
+  // ---cut---
+  // @noErrors
+  import Child from './Child.vue';
+  import { useMyForm } from './myForm';
 
-const { r$ } = useMyForm();
+  const { r$ } = useMyForm();
 </script>
 ```
 
@@ -76,47 +74,44 @@ const { r$ } = useMyForm();
 </template>
 
 <script setup lang="ts">
-// @include: useMyForm
-// ---cut---
-// @noErrors
-import type { useMyForm } from './myForm';
-import type { InferRegleRoot } from '@regle/core';
+  // @include: useMyForm
+  // ---cut---
+  // @noErrors
+  import type { useMyForm } from './myForm';
+  import type { InferRegleRoot } from '@regle/core';
 
-const props = defineProps<{
-  r$: InferRegleRoot<typeof useMyForm>;
-}>();
+  const props = defineProps<{
+    r$: InferRegleRoot<typeof useMyForm>;
+  }>();
 </script>
 ```
-:::
 
+:::
 
 :::tip
 `InferRegleRoot` also works with `@regle/schemas`
 :::
 
-
 ### Manually typing your state and rules
 
 If you happen to have no way of importing the type, you can style use `RegleRoot` type, that will allow you to manually type your state and rules.
 
-
 ```vue [MyForm.vue]
 <script setup lang="ts">
-import { RegleRoot } from '@regle/core';
+  import { RegleRoot } from '@regle/core';
 
-const props = defineProps<{
-  r$: RegleRoot<{
-    name: string;
-    email: string;
-  }>;
-}>();
+  const props = defineProps<{
+    r$: RegleRoot<{
+      name: string;
+      email: string;
+    }>;
+  }>();
 </script>
 ```
 
 :::warning
 While this can be useful, be warned that `r$` will be missing the rule properties.
 :::
-
 
 ## Typing a field prop
 
@@ -130,11 +125,7 @@ Here's how you can do it:
 ```vue [MyInput.vue]
 <template>
   <div class="my-input">
-    <input
-      v-model="modelValue"
-      :class="{ valid: field.$correct, error: field.$error }"
-      :placeholder="placeholder"
-    />
+    <input v-model="modelValue" :class="{ valid: field.$correct, error: field.$error }" :placeholder="placeholder" />
 
     <ul v-if="field.$errors.length">
       <li v-for="error of field.$errors" :key="error">
@@ -145,14 +136,14 @@ Here's how you can do it:
 </template>
 
 <script setup lang="ts">
-import type { RegleFieldStatus } from '@regle/core';
+  import type { RegleFieldStatus } from '@regle/core';
 
-const modelValue = defineModel<string>();
+  const modelValue = defineModel<string>();
 
-const props = defineProps<{
-  field: RegleFieldStatus<string>;
-  placeholder: string;
-}>();
+  const props = defineProps<{
+    field: RegleFieldStatus<string>;
+    placeholder: string;
+  }>();
 </script>
 ```
 
@@ -165,27 +156,28 @@ const props = defineProps<{
 </template>
 
 <script setup lang="ts">
-// @noErrors
-import MyInput from './MyInput.vue';
-import { useRegle } from '@regle/core';
-import { email, required } from '@regle/rules';
+  // @noErrors
+  import MyInput from './MyInput.vue';
+  import { useRegle } from '@regle/core';
+  import { email, required } from '@regle/rules';
 
-const { r$ } = useRegle({ name: '', email: '' }, {
-  name: { required },
-  email: { required, email },
-})
+  const { r$ } = useRegle(
+    { name: '', email: '' },
+    {
+      name: { required },
+      email: { required, email },
+    }
+  );
 </script>
 ```
+
 :::
 
 <Parent/>
 
-
 ## Typing a field prop with global configuration
 
-
 :::code-group
-
 
 ```ts twoslash include config [config.ts]
 // @module: esnext
@@ -196,70 +188,54 @@ import { defineRegleConfig } from '@regle/core';
 
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
-    strongPassword: withMessage(() => true, 'test')
+    strongPassword: withMessage(() => true, 'test'),
   }),
   shortcuts: {
     fields: {
-      $test: () => true
-    }
-  }
+      $test: () => true,
+    },
+  },
 });
 ```
 
 ```vue twoslash [MyPassword.vue]
 <script setup lang="ts">
-import { computed } from 'vue';
-// @include: config
-// @noErrors
-// ---cut---
-import {
-  type RegleEnforceCustomRequiredRules,
-  type RegleCustomFieldStatus,
-} from '@regle/core';
-import type { useCustomRegle } from './config';
+  import { computed } from 'vue';
+  // @include: config
+  // @noErrors
+  // ---cut---
+  import { type RegleEnforceCustomRequiredRules, type RegleCustomFieldStatus } from '@regle/core';
+  import type { useCustomRegle } from './config';
 
-const props = defineProps<{
-  field: RegleCustomFieldStatus<
-    typeof useCustomRegle, string
-  >;
-}>();
+  const props = defineProps<{
+    field: RegleCustomFieldStatus<typeof useCustomRegle, string>;
+  }>();
 </script>
 ```
 
 :::
 
-
 ## Enforcing rules for a specific component
-
 
 On your common Input component, you can also enforce a rule to be present in the field.
 
-
 ```vue twoslash [MyPassword.vue]
 <script setup lang="ts">
-import { computed } from 'vue';
-// @noErrors
-// ---cut---
-import {
-  type RegleEnforceRequiredRules,
-  type RegleFieldStatus,
-} from '@regle/core';
+  import { computed } from 'vue';
+  // @noErrors
+  // ---cut---
+  import { type RegleEnforceRequiredRules, type RegleFieldStatus } from '@regle/core';
 
-const props = defineProps<{
-  field: RegleFieldStatus<
-    string | undefined,
-    RegleEnforceRequiredRules<'required' | 'minLength'>,
-  >;
-}>();
+  const props = defineProps<{
+    field: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required' | 'minLength'>>;
+  }>();
 </script>
 ```
-
 
 ### For a custom configurations
 
 :::code-group
 
-
 ```ts twoslash include config [config.ts]
 // @module: esnext
 // @filename config.ts
@@ -269,38 +245,29 @@ import { defineRegleConfig } from '@regle/core';
 
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
-    strongPassword: withMessage(() => true, 'test')
+    strongPassword: withMessage(() => true, 'test'),
   }),
   shortcuts: {
     fields: {
-      $test: () => true
-    }
-  }
+      $test: () => true,
+    },
+  },
 });
 ```
 
 ```vue twoslash [MyPassword.vue]
 <script setup lang="ts">
-import { computed } from 'vue';
-// @include: config
-// @noErrors
-// ---cut---
-import {
-  type RegleEnforceCustomRequiredRules,
-  type RegleCustomFieldStatus,
-} from '@regle/core';
-import type { useCustomRegle } from './config';
+  import { computed } from 'vue';
+  // @include: config
+  // @noErrors
+  // ---cut---
+  import { type RegleEnforceCustomRequiredRules, type RegleCustomFieldStatus } from '@regle/core';
+  import type { useCustomRegle } from './config';
 
-const props = defineProps<{
-  field: RegleCustomFieldStatus<
-    string,
-    'strongPassword' | 'required',
-  >;
-}>();
+  const props = defineProps<{
+    field: RegleCustomFieldStatus<string, 'strongPassword' | 'required'>;
+  }>();
 </script>
 ```
 
 :::
-
-
-

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
+  import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-const state = ref({ name: '', email: '' });
+  const state = ref({ name: '', email: '' });
 
-const { r$ } = useRegle(state, {
-  name: { required, minLength: minLength(4) },
-  email: { email },
-});
+  const { r$ } = useRegle(state, {
+    name: { required, minLength: minLength(4) },
+    email: { email },
+  });
 
-async function submit() {
-  const { valid, data } = await r$.$validate();
-  if (valid) {
-    console.log(data.name);
-    //               ^ string
-    console.log(data.email);
-    //.              ^ string | undefined
-  } else {
-    console.warn('Errors: ', r$.$errors);
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+    if (valid) {
+      console.log(data.name);
+      //               ^ string
+      console.log(data.email);
+      //.              ^ string | undefined
+    } else {
+      console.warn('Errors: ', r$.$errors);
+    }
   }
-}
 </script>
 
 <template>
@@ -71,5 +71,5 @@ async function submit() {
   </div>
 </template>
 <style>
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+  @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
 </style>

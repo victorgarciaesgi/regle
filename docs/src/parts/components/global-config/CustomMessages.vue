@@ -21,25 +21,25 @@
 </template>
 
 <script setup lang="ts">
-import { defineRegleConfig } from '@regle/core';
-import { withMessage, minLength, required } from '@regle/rules';
+  import { defineRegleConfig } from '@regle/core';
+  import { withMessage, minLength, required } from '@regle/rules';
 
-const { useRegle: useCustomRegle } = defineRegleConfig({
-  rules: () => ({
-    required: withMessage(required, 'You need to provide a value'),
-    minLength: withMessage(minLength, ({ $value, $params: [count] }) => {
-      return `Minimum length is ${count}. Current length: ${$value?.length}`;
+  const { useRegle: useCustomRegle } = defineRegleConfig({
+    rules: () => ({
+      required: withMessage(required, 'You need to provide a value'),
+      minLength: withMessage(minLength, ({ $value, $params: [count] }) => {
+        return `Minimum length is ${count}. Current length: ${$value?.length}`;
+      }),
     }),
-  }),
-});
+  });
 
-const { r$ } = useCustomRegle(
-  { name: '' },
-  {
-    name: {
-      required,
-      minLength: minLength(6),
-    },
-  }
-);
+  const { r$ } = useCustomRegle(
+    { name: '' },
+    {
+      name: {
+        required,
+        minLength: minLength(6),
+      },
+    }
+  );
 </script>

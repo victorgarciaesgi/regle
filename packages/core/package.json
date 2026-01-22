@@ -2,21 +2,57 @@
   "name": "@regle/core",
   "version": "1.17.0",
   "description": "Headless form validation library for Vue",
+  "keywords": [
+    "regle",
+    "regle vue",
+    "regle vue form",
+    "regle vue forms",
+    "reglejs",
+    "vue forms",
+    "vue forms typescript",
+    "vue model validation",
+    "vue typescript forms",
+    "vue validation library",
+    "vue zod"
+  ],
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/regle-core.js",
+  "module": "./dist/regle-core.js",
+  "types": "./dist/regle-core.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-core.d.ts",
+      "production": "./dist/regle-core.min.js",
+      "development": "./dist/regle-core.js",
+      "default": "./dist/regle-core.js"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts",
     "test": "echo 'no tests'"
-  },
-  "peerDependencies": {
-    "pinia": ">=2.2.5",
-    "vue": ">=3.3.0"
-  },
-  "peerDependenciesMeta": {
-    "pinia": {
-      "optional": true
-    }
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",
@@ -28,57 +64,19 @@
     "@types/node": "catalog:",
     "@vue/devtools-kit": "7.7.9",
     "@vue/test-utils": "catalog:",
-    "prettier": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
   },
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/regle-core.d.ts",
-      "production": "./dist/regle-core.min.js",
-      "development": "./dist/regle-core.js",
-      "default": "./dist/regle-core.js"
-    },
-    "./package.json": "./package.json",
-    "./dist/*": "./dist/*"
+  "peerDependencies": {
+    "pinia": ">=2.2.5",
+    "vue": ">=3.3.0"
   },
-  "main": "./dist/regle-core.js",
-  "module": "./dist/regle-core.js",
-  "types": "./dist/regle-core.d.ts",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "homepage": "https://reglejs.dev/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/regle.git"
-  },
-  "author": {
-    "name": "Victor Garcia",
-    "url": "https://github.com/victorgarciaesgi"
-  },
-  "keywords": [
-    "regle",
-    "vue forms",
-    "vue validation library",
-    "vue forms typescript",
-    "vue model validation",
-    "vue zod",
-    "vue typescript forms",
-    "regle",
-    "reglejs",
-    "regle vue",
-    "regle vue forms",
-    "regle vue form"
-  ],
-  "license": "MIT"
+  "peerDependenciesMeta": {
+    "pinia": {
+      "optional": true
+    }
+  }
 }

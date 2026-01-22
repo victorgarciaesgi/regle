@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { useDemoStore } from './demo.store';
-import { storeToRefs } from 'pinia';
+  import { useDemoStore } from './demo.store';
+  import { storeToRefs } from 'pinia';
 
-const demoStore = useDemoStore();
-const { r$ } = storeToRefs(demoStore);
+  const demoStore = useDemoStore();
+  const { r$ } = storeToRefs(demoStore);
 </script>

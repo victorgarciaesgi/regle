@@ -3,16 +3,16 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScoped1Regle } from './scoped-config';
+  import { required } from '@regle/rules';
+  import { useScoped1Regle } from './scoped-config';
 
-const props = defineProps<{
-  scope: string;
-}>();
+  const props = defineProps<{
+    scope: string;
+  }>();
 
-const { r$ } = useScoped1Regle(
-  { scope4Namespace: '' },
-  { scope4Namespace: { required: required } },
-  { namespace: () => props.scope }
-);
+  const { r$ } = useScoped1Regle(
+    { scope4Namespace: '' },
+    { scope4Namespace: { required: required } },
+    { namespace: () => props.scope }
+  );
 </script>

@@ -53,34 +53,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRegle, createVariant, narrowVariant } from '@regle/core';
-import { literal, required, email } from '@regle/rules';
+  import { ref } from 'vue';
+  import { useRegle, createVariant, narrowVariant } from '@regle/core';
+  import { literal, required, email } from '@regle/rules';
 
-type FormStateLoginType =
-  | { type: 'EMAIL'; email: string }
-  | { type: 'GITHUB'; username: string }
-  | { type?: undefined };
+  type FormStateLoginType =
+    | { type: 'EMAIL'; email: string }
+    | { type: 'GITHUB'; username: string }
+    | { type?: undefined };
 
-type FormState = {
-  firstName?: string;
-  lastName?: string;
-} & FormStateLoginType;
+  type FormState = {
+    firstName?: string;
+    lastName?: string;
+  } & FormStateLoginType;
 
-const state = ref<FormState>({});
+  const state = ref<FormState>({});
 
-const { r$ } = useRegle(state, () => {
-  const variant = createVariant(state, 'type', [
-    { type: { literal: literal('EMAIL') }, email: { required, email } },
-    { type: { literal: literal('GITHUB') }, username: { required } },
-    { type: { required } },
-  ]);
+  const { r$ } = useRegle(state, () => {
+    const variant = createVariant(state, 'type', [
+      { type: { literal: literal('EMAIL') }, email: { required, email } },
+      { type: { literal: literal('GITHUB') }, username: { required } },
+      { type: { required } },
+    ]);
 
-  return {
-    firstName: { required },
-    ...variant.value,
-  };
-});
+    return {
+      firstName: { required },
+      ...variant.value,
+    };
+  });
 
-function submit() {}
+  function submit() {}
 </script>

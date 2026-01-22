@@ -9,7 +9,6 @@ title: Reusable rules
 
 # Reusable rules
 
-
 ## `createRule`
 
 To create reusable rules, it’s recommended to use `createRule`. This utility simplifies defining the rule’s type, parameters, active state as well as track reactive dependencies automatically.
@@ -31,49 +30,53 @@ export const required = createRule({
 ## Available options:
 
 ### `validator`
+
 _**Type**_: `(value, ...params?) => boolean | {$valid: boolean, [x: string]: any}`
 
-*required*
+_required_
 
 The `validator` function determines whether the field is valid. You can write it in the same way as an inline rule.
 
 ### `message`
+
 _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
-*required*
+_required_
 
 This will define what error message you assign to your rule. It can be a string or a function receiving the value, params and metadata as parameters.
 
-### `type` 
+### `type`
+
 _**Type**_: `string`
 
-*optional*
+_optional_
 
 Specifies the type of validator. This is useful when multiple rules share the same target, such as `required` and `requiredIf`.
 
-
 ### `active`
+
 _**Type**_: `boolean | (metadata) => boolean`
 
-*optional*
+_optional_
 
 Defines the `$active` state of the rule, indicating whether the rule is currently being validated. This can be computed dynamically.
 For more details, see [Parameters and active mode](#parameters-and-active-mode).
 
 ### `async`
+
 _**Type**_: `boolean`
 
-*optional*
+_optional_
 
 If your validator function is not written with `async await` syntax, you can enforce the rule to be async with this parameter.
 
 ### `tooltip`
+
 _**Type**_: `string | string[] | (metadata) => (string | string[])`
 
-*optional*
+_optional_
 
 Use `tooltip` to display non-error-related messages for your field. These tooltips are aggregated and made accessible via `xxx.$tooltips`. This is useful for providing additional information or guidance.
-
 
 ## Reactive parameters
 
@@ -92,7 +95,7 @@ export const myValidator = createRule({
   },
   message: ({ $params: [arg] }) => {
     return 'This field is invalid';
-  }
+  },
 });
 ```
 
@@ -122,7 +125,6 @@ const {r$} = useRegle({foo: ''}, {
 })
 ```
 
-
 :::warning
 
 While adding spread parameters `...anyOtherArg` is supported, keep in mind that it will receive every parameters, even the ones injected by a parent modifier like `applyIf`, `and`, `or` etc..
@@ -137,23 +139,26 @@ The real advantage of using `createRule` is that it automatically registers para
 ```ts
 const max = ref(5);
 
-useRegle({name: ''},{
-  name: {
-    // Plain value
-    rule1: myValidator(5),
-    // Ref
-    rule2: myValidator(max),
-    // Getter value
-    rule3: myValidator(() => max.value)
+useRegle(
+  { name: '' },
+  {
+    name: {
+      // Plain value
+      rule1: myValidator(5),
+      // Ref
+      rule2: myValidator(max),
+      // Getter value
+      rule3: myValidator(() => max.value),
+    },
   }
-})
+);
 ```
 
 :::warning
 If you pass a raw value as a parameter, it will only be reactive if all your rules are declared as a computed or a getter function
 
 ```ts
-const state = ref({name: ''})
+const state = ref({ name: '' });
 const max = ref(5);
 
 // ❌ Not reactive
@@ -162,9 +167,9 @@ useRegle(state, {
     maxLength: maxLength(max.value),
     ...(max.value === 3 && {
       required,
-    })
-  }
-})
+    }),
+  },
+});
 
 // ✅ Reactive
 useRegle(state, () => ({
@@ -172,9 +177,9 @@ useRegle(state, () => ({
     maxLength: maxLength(max.value),
     ...(max.value === 3 && {
       required,
-    })
-  }
-}))
+    }),
+  },
+}));
 
 // ✅ Reactive
 const rules = computed(() => ({
@@ -182,12 +187,12 @@ const rules = computed(() => ({
     maxLength: maxLength(max.value),
     ...(max.value === 3 && {
       required,
-    })
-  }
-}))
+    }),
+  },
+}));
 useRegle(state, rules);
-
 ```
+
 :::
 
 ### Active property
@@ -199,7 +204,6 @@ This property allows you to declare the active state of the rule.
 
 It will then be exposed in the `$active` rule property and be used to reflect the validation to your user.
 
-
 ```ts
 import { createRule, useRegle } from '@regle/core';
 
@@ -207,7 +211,7 @@ const myConditionalRule = createRule({
   validator(value: unknown, param: string) {
     // Params like `condition` will always be unwrapped here
     // no need to check if it's a value, a ref or a getter function
-    if (param === "Yes") {
+    if (param === 'Yes') {
       return isFilled(value);
     }
     return true;
@@ -221,25 +225,21 @@ const myConditionalRule = createRule({
 Usage in a component:
 
 ```vue
-<script setup lang='ts'>
-import { createRule, useRegle } from '@regle/core';
+<script setup lang="ts">
+  import { createRule, useRegle } from '@regle/core';
 
-const yesOrNo = ref('No');
+  const yesOrNo = ref('No');
 
-const { r$ } = useRegle({name: ''}, {
-  name: {
-    myConditionalRule: myConditionalRule(yesOrNo);
-  }
-})
-
+  const { r$ } = useRegle({name: ''}, {
+    name: {
+      myConditionalRule: myConditionalRule(yesOrNo);
+    }
+  })
 </script>
 
 <template>
-  <label>
-    Name <span v-if="r$.name.$rules.myConditionalRule.$active">(required)</span>
-  </label>
+  <label> Name <span v-if="r$.name.$rules.myConditionalRule.$active">(required)</span> </label>
 </template>
-
 ```
 
 ### Recreating `requiredIf` rule
@@ -247,47 +247,47 @@ const { r$ } = useRegle({name: ''}, {
 ::: code-group
 
 ```vue [Form.vue]
-<script setup lang='ts'>
-import { useRegle } from '@regle/core';
+<script setup lang="ts">
+  import { useRegle } from '@regle/core';
 
-const condition = ref(false);
+  const condition = ref(false);
 
-const { r$ } = useRegle({name: ''}, {
-  name: { required: requiredIf(condition) }
-})
+  const { r$ } = useRegle(
+    { name: '' },
+    {
+      name: { required: requiredIf(condition) },
+    }
+  );
 </script>
 
 <template>
   <div>
-    <input v-model="condition" type='checkbox'/>
+    <input v-model="condition" type="checkbox" />
     <label>The field is required</label>
   </div>
 
   <div>
     <!-- Here we can use $active to know if the rule is enabled -->
-    <input 
-      v-model='form.name'
-      :placeholder='`Type your name${r$.name.$rules.required.$active ? "*": ""}`'
-    />
+    <input v-model="form.name" :placeholder="`Type your name${r$.name.$rules.required.$active ? '*' : ''}`" />
 
-    <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
+    <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
   </div>
 
   <ul v-if="r$.$errors.name.length">
-    <li v-for="error of r$.$errors.name" :key='error'>
+    <li v-for="error of r$.$errors.name" :key="error">
       {{ error }}
     </li>
   </ul>
 </template>
 ```
+
 :::
 
-Result: 
+Result:
 
 <ParametersAndActiveMode/>
 
 ## Async rules
-
 
 Async rules are useful for server-side validations or computationally expensive local checks. They update the `$pending` state whenever invoked.
 
@@ -295,18 +295,14 @@ Async rules are useful for server-side validations or computationally expensive 
 <template>
   <div class="demo-container">
     <div>
-      <input
-        v-model="form.email"
-        :class="{ pending: r$.email.$pending }"
-        placeholder="Type your email"
-      />
+      <input v-model="form.email" :class="{ pending: r$.email.$pending }" placeholder="Type your email" />
 
-      <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
+      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
       <button type="button" @click="r$.$validate()">Submit</button>
     </div>
 
     <span v-if="r$.email.$pending"> Checking... </span>
-    
+
     <ul v-if="r$.$errors.email.length">
       <li v-for="error of r$.$errors.email" :key="error">
         {{ error }}
@@ -316,37 +312,36 @@ Async rules are useful for server-side validations or computationally expensive 
 </template>
 
 <script setup lang="ts">
-import { createRule, useRegle, type Maybe } from '@regle/core';
-import { email, isEmpty } from '@regle/rules';
-import { ref } from 'vue';
+  import { createRule, useRegle, type Maybe } from '@regle/core';
+  import { email, isEmpty } from '@regle/rules';
+  import { ref } from 'vue';
 
-const checkEmailExists = createRule({
-  async validator(value: Maybe<string>) {
-    if (isEmpty(value) || !email.exec(value)) {
-      return true;
-    }
+  const checkEmailExists = createRule({
+    async validator(value: Maybe<string>) {
+      if (isEmpty(value) || !email.exec(value)) {
+        return true;
+      }
 
-    await timeout(1000);
-    return randomBoolean();
-  },
-  
-  message: 'This email already exists',
-});
+      await timeout(1000);
+      return randomBoolean();
+    },
 
-const form = ref({ email: '' });
+    message: 'This email already exists',
+  });
 
-const { r$ } = useRegle(form, {
-  email: { email, checkEmailExists },
-});
+  const form = ref({ email: '' });
+
+  const { r$ } = useRegle(form, {
+    email: { email, checkEmailExists },
+  });
 </script>
 ```
-
 
 <AsyncRule/>
 
 ## Metadata
 
-Like in inline rules, you can return any data from your validator function as long as it returns  an object containing at least `$valid: boolean`.
+Like in inline rules, you can return any data from your validator function as long as it returns an object containing at least `$valid: boolean`.
 
 It can be useful for returning computed data from the validator, or in async function to process api result, or api errors.
 
@@ -358,13 +353,13 @@ export const example = createRule({
     if (value === 'regle') {
       return {
         $valid: false,
-        foo: 'bar'
-      }
+        foo: 'bar',
+      };
     }
     return true;
   },
-  message({foo}) {
-//           ^?
+  message({ foo }) {
+    //           ^?
     return 'Error example';
   },
 });

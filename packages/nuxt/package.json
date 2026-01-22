@@ -2,8 +2,22 @@
   "name": "@regle/nuxt",
   "version": "1.17.0",
   "description": "Regle nuxt module",
+  "homepage": "https://reglejs.dev/",
   "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
   "exports": {
     ".": {
       "types": "./dist/types.d.mts",
@@ -14,11 +28,9 @@
       "import": "./dist/runtime/defineRegleNuxtPlugin.js"
     }
   },
-  "main": "./dist/module.mjs",
-  "types": "./dist/types.d.mts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "turbo:postinstall": "pnpm exec playwright install",
     "prepack": "nuxt-module-build build",
@@ -40,16 +52,12 @@
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*"
   },
-  "optionalDependencies": {
-    "@regle/schemas": "workspace:*"
-  },
   "devDependencies": {
     "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "3.23.0",
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "nuxt": "catalog:",
-    "prettier": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "unbuild": "3.6.1",
@@ -57,19 +65,10 @@
     "vue": "catalog:",
     "vue-tsc": "catalog:"
   },
+  "optionalDependencies": {
+    "@regle/schemas": "workspace:*"
+  },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": {
-    "name": "Victor Garcia",
-    "url": "https://github.com/victorgarciaesgi"
-  },
-  "homepage": "https://reglejs.dev/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/regle.git"
   }
 }

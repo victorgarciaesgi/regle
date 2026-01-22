@@ -44,40 +44,40 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { ref } from 'vue';
-import { type RegleExternalErrorTree, useRegle } from '@regle/core';
+  import { required } from '@regle/rules';
+  import { ref } from 'vue';
+  import { type RegleExternalErrorTree, useRegle } from '@regle/core';
 
-const form = ref({
-  email: '',
-  name: {
-    pseudo: '',
-  },
-});
+  const form = ref({
+    email: '',
+    name: {
+      pseudo: '',
+    },
+  });
 
-const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
+  const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
 
-const { r$ } = useRegle(
-  form,
-  {
-    email: { required },
-    name: { pseudo: { required } },
-  },
-  {
-    externalErrors,
+  const { r$ } = useRegle(
+    form,
+    {
+      email: { required },
+      name: { pseudo: { required } },
+    },
+    {
+      externalErrors,
+    }
+  );
+
+  async function submit() {
+    const { valid } = await r$.$validate();
+
+    if (valid) {
+      externalErrors.value = {
+        email: ['Email already exists'],
+        name: {
+          pseudo: ['Pseudo already exists'],
+        },
+      };
+    }
   }
-);
-
-async function submit() {
-  const { valid } = await r$.$validate();
-
-  if (valid) {
-    externalErrors.value = {
-      email: ['Email already exists'],
-      name: {
-        pseudo: ['Pseudo already exists'],
-      },
-    };
-  }
-}
 </script>

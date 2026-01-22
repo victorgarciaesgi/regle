@@ -25,69 +25,69 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type InferRegleShortcuts,
-  type Maybe,
-  type RegleEnforceCustomRequiredRules,
-  type RegleFieldStatus,
-} from '@regle/core';
-import type { useCustomRegle } from '../validations/regle.global.config';
+  import {
+    type InferRegleShortcuts,
+    type Maybe,
+    type RegleEnforceCustomRequiredRules,
+    type RegleFieldStatus,
+  } from '@regle/core';
+  import type { useCustomRegle } from '../validations/regle.global.config';
 
-const modelValue = defineModel<Maybe<string>>();
+  const modelValue = defineModel<Maybe<string>>();
 
-const props = defineProps<{
-  field: RegleFieldStatus<
-    string | undefined,
-    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
-    InferRegleShortcuts<typeof useCustomRegle>
-  >;
-  label?: string;
-  placeholder: string;
-}>();
+  const props = defineProps<{
+    field: RegleFieldStatus<
+      string | undefined,
+      RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+      InferRegleShortcuts<typeof useCustomRegle>
+    >;
+    label?: string;
+    placeholder: string;
+  }>();
 </script>
 
 <style lang="scss" scoped>
-.password-strength {
-  margin: 8px 8px 0 8px;
-  width: calc(100% - 15px);
-  height: 4px;
-  border-radius: 4px;
-  border: 1px solid rgb(230, 230, 230);
-  position: relative;
+  .password-strength {
+    margin: 8px 8px 0 8px;
+    width: calc(100% - 15px);
+    height: 4px;
+    border-radius: 4px;
+    border: 1px solid rgb(230, 230, 230);
+    position: relative;
 
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 100%;
-    @apply bg-red-400;
-    transition: width 0.2s ease;
-  }
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 100%;
+      @apply bg-red-400;
+      transition: width 0.2s ease;
+    }
 
-  &.level-0 {
-    &::before {
-      width: 10%;
+    &.level-0 {
+      &::before {
+        width: 10%;
+      }
+    }
+    &.level-1 {
+      &::before {
+        width: 40%;
+        @apply bg-orange-300;
+      }
+    }
+    &.level-2 {
+      &::before {
+        width: 75%;
+        @apply bg-green-400;
+      }
+    }
+    &.level-3 {
+      &::before {
+        width: 100%;
+        @apply bg-green-400;
+      }
     }
   }
-  &.level-1 {
-    &::before {
-      width: 40%;
-      @apply bg-orange-300;
-    }
-  }
-  &.level-2 {
-    &::before {
-      width: 75%;
-      @apply bg-green-400;
-    }
-  }
-  &.level-3 {
-    &::before {
-      width: 100%;
-      @apply bg-green-400;
-    }
-  }
-}
 </style>

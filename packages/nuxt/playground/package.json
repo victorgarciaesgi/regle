@@ -1,6 +1,6 @@
 {
-  "private": true,
   "name": "regle-playground",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",

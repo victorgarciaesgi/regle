@@ -36,42 +36,42 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { type } from 'arktype';
-import { reactive } from 'vue';
+  import { useRegleSchema } from '@regle/schemas';
+  import { type } from 'arktype';
+  import { reactive } from 'vue';
 
-const form = reactive({
-  level0: 0,
-  level1: {
-    child: 1,
-    level2: {
-      child: 2,
+  const form = reactive({
+    level0: 0,
+    level1: {
+      child: 1,
+      level2: {
+        child: 2,
+      },
+      collection: [{ name: undefined as number | undefined }],
     },
-    collection: [{ name: undefined as number | undefined }],
-  },
-});
+  });
 
-const arkIsEven = type('number').narrow((data, ctx) => {
-  return data % 2 === 0 ? true : ctx.reject({ message: 'Custom error' });
-});
+  const arkIsEven = type('number').narrow((data, ctx) => {
+    return data % 2 === 0 ? true : ctx.reject({ message: 'Custom error' });
+  });
 
-const schema = type({
-  'level0?': 'number',
-  level1: type({
-    'child?': 'number',
-    level2: type({
+  const schema = type({
+    'level0?': 'number',
+    level1: type({
       'child?': 'number',
+      level2: type({
+        'child?': 'number',
+      }),
+      collection: type({
+        name: 'number',
+      })
+        .array()
+        .atLeastLength(3)
+        .configure({ message: () => 'Array must contain at least 3 element(s)' }),
     }),
-    collection: type({
-      name: 'number',
-    })
-      .array()
-      .atLeastLength(3)
-      .configure({ message: () => 'Array must contain at least 3 element(s)' }),
-  }),
-});
+  });
 
-const { r$ } = useRegleSchema(form, schema);
+  const { r$ } = useRegleSchema(form, schema);
 </script>
 
 <style lang="scss" scoped></style>

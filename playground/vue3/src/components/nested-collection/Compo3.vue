@@ -9,14 +9,14 @@
 </template>
 
 <script setup lang="ts">
-import { minValue, numeric, required } from '@regle/rules';
-import { useScopedRegle } from './config';
+  import { minValue, numeric, required } from '@regle/rules';
+  import { useScopedRegle } from './config';
 
-const { r$ } = useScopedRegle(
-  { countFromCompo3: 0 },
-  { countFromCompo3: { required, numeric, minValue: minValue(4) } },
-  { namespace: 'foo', id: 'compo3' }
-);
+  const { r$ } = useScopedRegle(
+    { countFromCompo3: 0 },
+    { countFromCompo3: { required, numeric, minValue: minValue(4) } },
+    { namespace: 'foo', id: 'compo3' }
+  );
 </script>
 
 <style lang="scss" scoped></style>

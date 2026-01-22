@@ -37,18 +37,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { ref } from 'vue';
-import { z } from 'zod';
+  import { useRegleSchema } from '@regle/schemas';
+  import { ref } from 'vue';
+  import { z } from 'zod';
 
-const state = ref({ firstName: '', lastName: '' });
+  const state = ref({ firstName: '', lastName: '' });
 
-const { r$ } = useRegleSchema(
-  state,
-  z.object({
-    firstName: z.string().min(1).catch('Victor'),
-    lastName: z.string().transform((value) => `Transformed ${value}`),
-  }),
-  { syncState: { onValidate: true } }
-);
+  const { r$ } = useRegleSchema(
+    state,
+    z.object({
+      firstName: z.string().min(1).catch('Victor'),
+      lastName: z.string().transform((value) => `Transformed ${value}`),
+    }),
+    { syncState: { onValidate: true } }
+  );
 </script>

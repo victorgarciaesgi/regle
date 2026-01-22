@@ -28,45 +28,45 @@
 </template>
 
 <script setup lang="ts">
-import { useRegleSchema } from '@regle/schemas';
-import { z } from 'zod';
+  import { useRegleSchema } from '@regle/schemas';
+  import { z } from 'zod';
 
-const values = {
-  name: 'test',
-  array: [{ test: '', nested_array: [{ rest: '' }] }],
-};
+  const values = {
+    name: 'test',
+    array: [{ test: '', nested_array: [{ rest: '' }] }],
+  };
 
-const { r$ } = useRegleSchema(
-  values,
-  z.object({
-    name: z.string().min(1),
-    array: z.array(
-      z.object({
-        test: z.string().min(1),
-        nested_array: z.array(
-          z.object({
-            rest: z.string().min(1),
-          })
-        ),
-      })
-    ),
-  }),
-  {
-    silent: true,
-  }
-);
+  const { r$ } = useRegleSchema(
+    values,
+    z.object({
+      name: z.string().min(1),
+      array: z.array(
+        z.object({
+          test: z.string().min(1),
+          nested_array: z.array(
+            z.object({
+              rest: z.string().min(1),
+            })
+          ),
+        })
+      ),
+    }),
+    {
+      silent: true,
+    }
+  );
 
-const submit = async () => {
-  const res = await r$.$validate();
-  console.log(res);
-};
+  const submit = async () => {
+    const res = await r$.$validate();
+    console.log(res);
+  };
 
-const addTopLevel = () => {
-  r$.$value.array.push({ test: '', nested_array: [{ rest: '' }] });
-};
+  const addTopLevel = () => {
+    r$.$value.array.push({ test: '', nested_array: [{ rest: '' }] });
+  };
 
-// Moves the top level array's item one index higher within the array
-const moveTopLevelUp = () => {
-  r$.$value.array.unshift(r$.$value.array.pop()!);
-};
+  // Moves the top level array's item one index higher within the array
+  const moveTopLevelUp = () => {
+    r$.$value.array.unshift(r$.$value.array.pop()!);
+  };
 </script>

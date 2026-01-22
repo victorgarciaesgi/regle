@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  errors?: string[];
-}>();
+  defineProps<{
+    errors?: string[];
+  }>();
 </script>

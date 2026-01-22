@@ -2,16 +2,16 @@
 title: Rules metadata
 description: Rule validator functions can return more than just a boolean
 ---
+
 <script setup>
 import UsingMetadataCreateRule from '../parts/components/metadata/UsingMetadataCreateRule.vue';
 </script>
 
 # Rules metadata
 
-Rule validator functions can return more than just a boolean. It can return any object as long as it returns an object containing at least `$valid: boolean`.  
+Rule validator functions can return more than just a boolean. It can return any object as long as it returns an object containing at least `$valid: boolean`.
 
 This additional data can be utilized by your `message` handler, `active` handler, or any other part of your application that has access to the regle instance.
-
 
 ```ts twoslash
 // @noErrors
@@ -19,7 +19,7 @@ import {withMessage} from '@regle/rules';
 import {useRegle} from '@regle/core';
 
 const inlineRule = withMessage((value: unknown) => {
-  return {  
+  return {
     $valid: true,
     myCustomMetadata: 100
   }
@@ -41,7 +41,7 @@ You can use `createRule` to define your custom rules. Let's explore a real-world
 
 :::code-group
 
-```ts twoslash include strongPassword [strongPassword.ts] 
+```ts twoslash include strongPassword [strongPassword.ts]
 // @module: esnext
 // @filename strongPassword.ts
 // ---cut---
@@ -67,22 +67,15 @@ export const strongPassword = createRule({
 });
 ```
 
-``` vue twoslash [ComponentA.vue]
+```vue twoslash [ComponentA.vue]
 <template>
   <div>
-    <input
-      v-model="r$.$value.password"
-      :class="{ valid: r$.password.$correct }"
-      placeholder="Type your password"
-    />
+    <input v-model="r$.$value.password" :class="{ valid: r$.password.$correct }" placeholder="Type your password" />
 
-    <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
+    <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
   </div>
 
-  <div
-    class="password-strength"
-    :class="[`level-${r$.password.$rules.strongPassword.$metadata.result?.id}`]">
-  </div>
+  <div class="password-strength" :class="[`level-${r$.password.$rules.strongPassword.$metadata.result?.id}`]"> </div>
 
   <ul v-if="r$.$errors.password.length">
     <li v-for="error of r$.$errors.password" :key="error">
@@ -90,30 +83,26 @@ export const strongPassword = createRule({
     </li>
   </ul>
 
-  <div v-else-if="r$.password.$correct" class="success">
-    Your password is strong enough
-  </div>
+  <div v-else-if="r$.password.$correct" class="success"> Your password is strong enough </div>
 </template>
 
 <script setup lang="ts">
-// @include: strongPassword
-// @noErrors
-// ---cut---
-// @module: esnext
-import { useRegle } from '@regle/core';
+  // @include: strongPassword
+  // @noErrors
+  // ---cut---
+  // @module: esnext
+  import { useRegle } from '@regle/core';
 
-const { r$ } = useRegle(
-  { password: '' },
-  {
-    password: {
-      strongPassword: strongPassword(),
-    },
-  }
-);
+  const { r$ } = useRegle(
+    { password: '' },
+    {
+      password: {
+        strongPassword: strongPassword(),
+      },
+    }
+  );
 </script>
-
 ```
-
 
 :::
 

@@ -54,7 +54,6 @@ catalog:
   '@nuxt/schema': 4.2.2
 
   # Devtools
-  prettier: 3.7.4
   typescript: 5.9.3
   '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.18.4

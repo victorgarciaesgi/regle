@@ -15,14 +15,14 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted } from 'vue';
-import { useDemoStore } from './demo.store';
-import { storeToRefs } from 'pinia';
+  import { onUnmounted } from 'vue';
+  import { useDemoStore } from './demo.store';
+  import { storeToRefs } from 'pinia';
 
-const demoStore = useDemoStore();
-const { r$ } = storeToRefs(demoStore);
+  const demoStore = useDemoStore();
+  const { r$ } = storeToRefs(demoStore);
 
-onUnmounted(() => {
-  demoStore.$dispose();
-});
+  onUnmounted(() => {
+    demoStore.$dispose();
+  });
 </script>

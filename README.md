@@ -3,6 +3,7 @@
 [npm-downloads-src]: https://img.shields.io/npm/dm/@regle/core.svg
 [npm-total-downloads-src]: https://img.shields.io/npm/dt/@regle/core.svg
 [npm-downloads-href]: https://www.npmjs.com/package/@regle/core
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/regle-github-banner.png"
     alt="regle cover" />
@@ -20,12 +21,9 @@
 
 # Regle
 
-
-
 Regle \ʁɛɡl\ (French word for 'rule' ) is a headless model-based form validation library for Vue 3.
 
 It's heavily inspired by Vuelidate and aims to replace it in modern apps.
-
 
 ## 📚 Documentation
 
@@ -33,10 +31,9 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 
 ## 🎮 Play with it
 
-
-| Playground | Simple demo  | Advanced Demo |
-| ------------- | ------------- | ------------- |
-| <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example)  |  [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example)  |
+| Playground                                                                                                                                                                                           | Simple demo                                                                                                                                                                                                                                                             | Advanced Demo                                                                                                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example) | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example) |
 
 ## 🤖 MCP Server
 
@@ -46,7 +43,6 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
     <img alt="fallback alt='Install MCP Server" src="https://cursor.com/deeplink/mcp-install-light.svg">
   </picture>
 </a>
-
 
 ## ✨ Features
 
@@ -66,49 +62,41 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
   - 🤖 [Valibot](https://valibot.dev/)
   - 🚢 [ArkType](https://arktype.io)
 
-
 ## 🔍 Devtools
 
 Regle comes with a built-in Vue devtools extension for easy debugging and testing.
 
 ![Regle Devtools Screenshot](https://reglejs.dev/screenshots/devtools.png)
 
-
 > 📝 For more details, see the [Devtools documentation](https://reglejs.dev/introduction/devtools).
-
-
-
 
 ## Basic example
 
 ```vue
 <template>
-  <input 
-    v-model='r$.$value.email' 
-    :class="{ error: r$.email.$error }" 
-    placeholder='Type your email'
-  />
+  <input v-model="r$.$value.email" :class="{ error: r$.email.$error }" placeholder="Type your email" />
 
   <ul>
-    <li v-for="error of r$.email.$errors" :key='error'>
+    <li v-for="error of r$.email.$errors" :key="error">
       {{ error }}
     </li>
   </ul>
 </template>
 
-<script setup lang='ts'>
-import { useRegle } from '@regle/core';
-import { required, minLength, email } from '@regle/rules';
+<script setup lang="ts">
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-const { r$ } = useRegle({ email: '' }, {
-  email: { required, minLength: minLength(4), email }
-})
+  const { r$ } = useRegle(
+    { email: '' },
+    {
+      email: { required, minLength: minLength(4), email },
+    }
+  );
 </script>
 ```
 
-
 ## Compatibility:
-
 
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/vue.svg" alt='vue'/> Vue 3.3+
 - <img src="https://raw.githubusercontent.com/victorgarciaesgi/regle/master/.github/images/icons/nuxt.svg" alt='nuxt'/> Nuxt 3.1+
@@ -117,7 +105,6 @@ const { r$ } = useRegle({ email: '' }, {
   - 🦸‍♂️ Zod 3.24+
   - 🤖 Valibot 1.0+
   - 🚢 Arktype 2.0.0+
-
 
 ## ⬇️ Quick install
 
@@ -129,14 +116,11 @@ yarn add @regle/core @regle/rules
 npm install @regle/core @regle/rules
 ```
 
-
 ## 🫶 Credits
 
 - [Johannes Lacourly](https://www.behance.net/johanneslaf7dc) for designing logo and banners 🪄
 - [Martins Zeltins](https://github.com/martinszeltins) who helped me identify a lot of bugs, find new features and contributed to docs.
 - [Vuelidate](https://vuelidate-next.netlify.app) Which I loved and used for 8 years, and is my main inspiration for creating Regle
-
-
 
 ## 📑 License
 

@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { required } from '@regle/rules';
-import { useScopedRegle } from './scoped-config';
+  import { required } from '@regle/rules';
+  import { useScopedRegle } from './scoped-config';
 
-const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
+  const { r$ } = useScopedRegle({ firstName: '' }, { firstName: { required } });
 </script>

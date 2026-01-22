@@ -2,7 +2,6 @@
 
 MCP (Model Context Protocol) Server for [Regle](https://reglejs.dev) - providing AI-powered assistance for Vue form validation.
 
-
 ## Usage with AI Assistants
 
 ### Claude Desktop
@@ -37,7 +36,6 @@ Or add to your MCP settings:
 }
 ```
 
-
 ## Development
 
 ```bash
@@ -57,4 +55,3 @@ pnpm typecheck
 ## License
 
 MIT
-

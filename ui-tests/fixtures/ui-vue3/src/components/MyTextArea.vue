@@ -16,15 +16,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Maybe, RegleFieldStatus } from '@regle/core';
+  import type { Maybe, RegleFieldStatus } from '@regle/core';
 
-const modelValue = defineModel<Maybe<string>>();
+  const modelValue = defineModel<Maybe<string>>();
 
-defineProps<{
-  field: RegleFieldStatus;
-  label?: string;
-  placeholder: string;
-}>();
+  defineProps<{
+    field: RegleFieldStatus;
+    label?: string;
+    placeholder: string;
+  }>();
 </script>
 
 <style lang="scss" scoped></style>

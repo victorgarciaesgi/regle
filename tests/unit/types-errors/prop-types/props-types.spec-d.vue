@@ -24,42 +24,42 @@
 </template>
 
 <script setup lang="ts">
-import { useRegle } from '@regle/core';
-/* oxlint-disable-next-line */
-import ComponentTest from './Component-test.vue';
-import { checked, minLength, required, sameAs } from '@regle/rules';
-import { useCustomRegle } from './prop-types.config';
-import type { ComponentProps } from 'vue-component-type-helpers';
+  import { useRegle } from '@regle/core';
+  /* oxlint-disable-next-line */
+  import ComponentTest from './Component-test.vue';
+  import { checked, minLength, required, sameAs } from '@regle/rules';
+  import { useCustomRegle } from './prop-types.config';
+  import type { ComponentProps } from 'vue-component-type-helpers';
 
-type Props = ComponentProps<typeof ComponentTest>;
+  type Props = ComponentProps<typeof ComponentTest>;
 
-const fakeProps = {} as Props;
+  const fakeProps = {} as Props;
 
-const { r$ } = useRegle(
-  {
-    checked: false,
-    firstName: '',
-    lastName: '',
-    num: 0,
-  },
-  {
-    checked: { checked: checked },
-    firstName: { required: required, sameAs: sameAs('foo'), minLength: minLength(4) },
-  }
-);
+  const { r$ } = useRegle(
+    {
+      checked: false,
+      firstName: '',
+      lastName: '',
+      num: 0,
+    },
+    {
+      checked: { checked: checked },
+      firstName: { required: required, sameAs: sameAs('foo'), minLength: minLength(4) },
+    }
+  );
 
-const { r$: r$2 } = useCustomRegle(
-  {
-    checked: false,
-    firstName: '',
-    lastName: '',
-    num: 0,
-  },
-  {
-    checked: { checked: checked },
-    firstName: { required, myCustomRule: () => true },
-  }
-);
+  const { r$: r$2 } = useCustomRegle(
+    {
+      checked: false,
+      firstName: '',
+      lastName: '',
+      num: 0,
+    },
+    {
+      checked: { checked: checked },
+      firstName: { required, myCustomRule: () => true },
+    }
+  );
 </script>
 
 <style lang="scss" scoped></style>
