@@ -2,14 +2,14 @@ name: Unit & E2E tests
 on:
   push:
     paths-ignore:
-      - "docs/**"
-      - "*.md"
-      - ".github/**"
+      - 'docs/**'
+      - '*.md'
+      - '.github/**'
   pull_request:
     paths-ignore:
-      - "docs/**"
-      - "*.md"
-      - ".github/**"
+      - 'docs/**'
+      - '*.md'
+      - '.github/**'
   pull_request_review:
 
 jobs:
