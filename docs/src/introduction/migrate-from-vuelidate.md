@@ -23,6 +23,7 @@ const v$ = useVuelidate(rules, state, options); // [!code --]
 const { r$ } = useRegle(state, rules, options); // [!code ++]
 ```
 
+
 ## Helpers
 
 ```ts
@@ -39,24 +40,30 @@ Helpers which have been renamed:
 - `unwrap` -> use `toValue` from [Vue](https://vuejs.org/api/reactivity-utilities#tovalue)
   - Parameters are automatically unwrapped when using `createRule`
 
+
 ## Displaying errors
 
-Vuelidate:
 
+Vuelidate:
 ```vue
-<template>
-  <p v-for="error of v$.name.$errors" :key="error.$uid">
-    {{ error.$message }}
+<template> 
+  <p 
+    v-for="error of v$.name.$errors"
+    :key="error.$uid" 
+  >
+      {{error.$message}}
   </p>
 </template>
 ```
 
-Regle:
-
+Regle: 
 ```vue
 <template>
-  <p v-for="(error, index) of r$.$errors.name" :key="index">
-    {{ error }}
+  <p
+    v-for="(error, index) of r$.$errors.name"
+    :key="index"
+  >
+      {{ error }} 
   </p>
 </template>
 ```
@@ -66,8 +73,8 @@ Regle:
 Order of parameters are swapped
 
 ```ts
-const rule = helpers.withMessage('This field cannot be empty', required); // [!code --]
-const rule = withMessage(required, 'This field cannot be empty'); // [!code ++]
+const rule = helpers.withMessage('This field cannot be empty', required) // [!code --]
+const rule = withMessage(required, 'This field cannot be empty') // [!code ++]
 ```
 
 ### `withParams`
@@ -94,14 +101,14 @@ const contains = createRule({ // [!code ++]
 Some properties have been renamed
 
 - `$model` -> `$value`
-- `$response` -> `$metadata` [Using metadata from rules](/advanced-usage/rule-metadata#using-metadata-from-rules)
+- `$response` -> `$metadata`  [Using metadata from rules](/advanced-usage/rule-metadata#using-metadata-from-rules)
 - `$externalResults` -> `$externalErrors`
 
 ### Accessing nested fields
 
 ```ts
-v$.nested.child.$error; // [!code --]
-r$.nested.child.$error; // [!code ++]
+v$.nested.child.$error // [!code --]
+r$.nested.child.$error // [!code ++]
 ```
 
 ## Collections
@@ -109,43 +116,30 @@ r$.nested.child.$error; // [!code ++]
 See [docs for validating arrays](/common-usage/collections)
 
 ```ts
-const v$ = useVuelidate(
-  {
-    // [!code --]
-    collection: {
-      // [!code --]
-      $each: helpers.forEach({
-        // [!code --]
-        name: {
-          // [!code --]
-          required, // [!code --]
-        }, // [!code --]
-      }), // [!code --]
-    }, // [!code --]
-  },
-  { collection: [{ name: '' }] }
-); // [!code --]
-const { r$ } = useRegle(
-  { collection: [{ name: '' }] },
-  {
-    // [!code ++]
-    collection: {
-      // [!code ++]
-      $each: {
-        // [!code ++]
-        name: {
-          // [!code ++]
-          required, // [!code ++]
-        }, // [!code ++]
-      }, // [!code ++]
-    }, // [!code ++]
-  }
-); // [!code ++]
+const v$ = useVuelidate({ // [!code --]
+  collection: { // [!code --]
+    $each: helpers.forEach({ // [!code --]
+      name: { // [!code --]
+        required // [!code --]
+      } // [!code --]
+    }) // [!code --]
+  } // [!code --]
+}, {collection: [{name: ''}]}) // [!code --]
+const { r$ } = useRegle({ collection: [{name: ''}]}, { // [!code ++]
+  collection: {// [!code ++]
+    $each: {// [!code ++]
+      name: {// [!code ++]
+        required// [!code ++]
+      }// [!code ++]
+    }// [!code ++]
+  }// [!code ++]
+})// [!code ++]
 ```
 
 ## Methods
 
 See [docs for type safe output](/typescript/type-safe-output)
+
 
 ```ts
 const result = await v$.$validate(); // [!code --]
@@ -157,14 +151,21 @@ const { valid, data } = await r$.$validate(); // [!code ++]
 If you used to declare this kind of helper methods with Vuelidate:
 
 ```ts
-import { helpers, required, numeric, minLength } from '@vuelidate/validators';
+import {helpers, required, numeric, minLength} from '@vuelidate/validators';
 
-export const requiredValidator = helpers.withMessage('This field is required.', required);
-export const numericValidator = helpers.withMessage('Please enter a valid value.', numeric);
+export const requiredValidator = helpers.withMessage(
+  'This field is required.',
+  required
+);
+export const numericValidator = helpers.withMessage(
+  'Please enter a valid value.',
+  numeric
+);
 
 export const minLengthValidator = (value) =>
   helpers.withMessage(
-    ({ $model, $params }) => `Please enter a value greater than or equal to  ${$params.max}.`,
+    ({ $model, $params }) =>
+      `Please enter a value greater than or equal to  ${$params.max}.`,
     minLength(value)
   );
 ```
@@ -185,25 +186,22 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
     numeric: withMessage(numeric, 'Please enter a valid value.'),
     minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
       return `Minimum length is ${max}. Current length: ${$value?.length}`;
-    }),
-  }),
-});
+    })
+  })
+})
 
-const { r$ } = useCustomRegle(
-  { name: '' },
-  {
-    name: {
-      required,
-      numeric,
-      minLength: minLength(6),
-    },
+const { r$ } = useCustomRegle({ name: '' }, {
+  name: {
+    required,
+    numeric,
+    minLength: minLength(6)
   }
-);
+})
 ```
 
 ## Nested component validation
 
-\***\*Nested component\*\*** validation is replaced by \***\*Scoped validation\*\***.
+__**Nested component**__ validation is replaced by __**Scoped validation**__.
 
 See [docs for scoped validation](/advanced-usage/scoped-validation) for more details
 
@@ -213,10 +211,11 @@ import { useScopedRegle, useCollectScope, useRegle } from '@regle/core'; // [!co
 
 // Parent.vue
 const v$ = useVuelidate(); // [!code --]
-const v$ = useVuelidate({}, {}, { $scope: 'foo' }); // [!code --]
+const v$ = useVuelidate({}, {}, {$scope: 'foo'}); // [!code --]
 
 const { r$ } = useCollectScope(); // [!code ++]
 const { r$ } = useCollectScope('foo'); // [!code ++]
+
 
 // Child.vue
 
@@ -227,7 +226,7 @@ const v$ = useVuelidate(validations, state, { $stopPropagation: true }); // [!co
 
 const { r$ } = useScopedRegle(state, validations); // [!code ++]
 const { r$ } = useRegle(state, validations); // [!code ++]
-const { r$ } = useScopedRegle(state, validations, { namespace: 'foo' }); // [!code ++]
+const { r$ } = useScopedRegle(state, validations, {namespace: 'foo'}); // [!code ++]
 const { r$ } = useScopedRegle(state, validations); // [!code ++]
 ```
 

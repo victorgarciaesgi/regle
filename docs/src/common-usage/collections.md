@@ -25,17 +25,18 @@ Primitives (Strings, Numbers etc...) are immutable, so they can't be modified to
 
 ```ts
 const form = ref<{ collection: { name: string }[] }>({
-  collection: [],
-});
+  collection: []
+})
 
 const { r$ } = useRegle(form, {
   collection: {
     $each: {
       name: { required },
-    },
-  },
-});
+    }
+  }
+})
 ```
+
 
 ## Displaying collection errors
 
@@ -45,9 +46,15 @@ Alternatively, you can map your errors using `r$.$errors.collection.$each`.
 
 ```vue twoslash
 <template>
-  <div v-for="item of r$.collection.$each" :key="item.$id">
+  <div 
+    v-for="item of r$.collection.$each" 
+    :key="item.$id">
     <div>
-      <input v-model="item.$value.name" :class="{ valid: item.name.$correct }" placeholder="Type an item value" />
+      <input
+        v-model="item.$value.name"
+        :class="{ valid: item.name.$correct }"
+        placeholder="Type an item value"
+      />
 
       <ul>
         <li v-for="error of item.name.$errors" :key="error">
@@ -58,50 +65,49 @@ Alternatively, you can map your errors using `r$.$errors.collection.$each`.
   </div>
 
   <button type="button" @click="form.collection.push({ name: '' })">Add item</button>
-  <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
+  <button type="button" @click="r$.$reset({toInitialState: true})">Reset</button>
 </template>
 
 <script setup lang="ts">
-  //---cut---
-  import { ref } from 'vue';
-  import { required } from '@regle/rules';
-  //---cut---
-  import { useRegle } from '@regle/core';
+//---cut---
+import { ref } from 'vue';
+import { required } from '@regle/rules';
+//---cut---
+import { useRegle } from '@regle/core';
 
-  const form = ref<{ collection: { name: string }[] }>({
-    collection: [{ name: '' }],
-  });
+const form = ref<{ collection: { name: string }[] }>({
+  collection: [{ name: '' }],
+});
 
-  const { r$ } = useRegle(form, {
-    collection: {
-      $each: {
-        name: { required },
-      },
+const { r$ } = useRegle(form, {
+  collection: {
+    $each: {
+      name: { required },
     },
-  });
+  },
+});
 </script>
 ```
 
-Result:
+Result: 
 
 <DisplayingCollectionErrors/>
+
 
 :::warning
 
 If your array is empty, Regle can't know if it's supposed to be considered a field or a collection, only type-wise. Be sure to declare even an `$each` object in the client rules to tell Regle that the array is to be treated as a collection.
 
 ```ts
-const { r$ } = useRegle(
-  { collection: [] as { name: string } },
-  {
-    collection: {
-      $each: {},
-    },
-  }
-);
+const { r$ } = useRegle({collection: [] as {name: string}}, {
+  collection: {
+    $each: {}
+  },
+})
 ```
 
 :::
+
 
 ## Validating the array independently
 
@@ -110,6 +116,7 @@ Sometimes, you may want to validate not only each field in every element of the 
 You can do this just like you would with a normal field.
 
 Errors can be displayed either using `r$.$errors.[field].$self` or `r$.[field].$self.$errors`.
+
 
 ```ts
 import { useRegle } from '@regle/core';
@@ -132,6 +139,7 @@ const { r$ } = useRegle(form, {
 Result:
 
 <ValidatingArray />
+
 
 ## Accessing the current item state
 
@@ -163,6 +171,7 @@ Result:
 By default, Regle generates a random ID to track your items and maintain their state through mutations. This ID is stored in `$id` and can be used in Vue as a `key` for rendering.
 
 You can also provide your own key to the rule for custom tracking:
+
 
 ```ts
 import { useRegle } from '@regle/core';

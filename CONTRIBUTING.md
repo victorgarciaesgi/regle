@@ -23,7 +23,8 @@ This project uses turborepo. So you can run any command using:
 
 You can run a Vue 3 and Nuxt playground using:
 
--`pnpm run play:vue3` -`pnpm run play:nuxt`
+-`pnpm run play:vue3` 
+-`pnpm run play:nuxt`
 
 ### Unit Testing
 

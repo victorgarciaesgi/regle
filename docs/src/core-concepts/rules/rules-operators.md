@@ -10,6 +10,7 @@ import OperatorNot from '../../parts/components/operators/OperatorNot.vue';
 import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vue';
 </script>
 
+
 # Rules operators
 
 Regle provides tools to combine and operate on different rules. It includes four built-in operators, available in `@regle/rules`:
@@ -26,9 +27,11 @@ These operators work with any rules you provide, but combining rules with incomp
 All operators are compatible with wrappers
 :::
 
+
 ## `and`
 
 The `and` operator combines multiple rules and validates successfully only if all provided rules are valid.
+
 
 ```ts
 import { useRegle } from '@regle/core';
@@ -40,20 +43,23 @@ const { r$ } = useRegle(
     regex: {
       myError: withMessage(
         and(startsWith('^'), endsWith('$')),
-        ({ $params: [start, end] }) => `Regex should start with "${start}" and end with "${end}"`
+        ({ $params: [start, end] }) =>
+          `Regex should start with "${start}" and end with "${end}"`
       ),
     },
   }
 );
 ```
 
-Result:
+Result: 
 
 <OperatorAnd />
+
 
 ## `or`
 
 The `or` operator validates successfully if at least one of the provided rules is valid.
+
 
 ```ts twoslash
 import { useRegle } from '@regle/core';
@@ -65,16 +71,18 @@ const { r$ } = useRegle(
     regex: {
       myError: withMessage(
         or(startsWith('^'), endsWith('$')),
-        ({ $params: [start, end] }) => `Field should start with "${start}" or end with "${end}"`
+        ({ $params: [start, end] }) =>
+          `Field should start with "${start}" or end with "${end}"`
       ),
     },
   }
 );
 ```
 
-Result:
+Result: 
 
 <OperatorOr />
+
 
 ## `not`
 
@@ -99,9 +107,10 @@ const { r$ } = useRegle(form, {
 });
 ```
 
-Result:
+Result: 
 
 <OperatorNot />
+
 
 ## `applyIf`
 
@@ -112,22 +121,21 @@ import { minLength, applyIf } from '@regle/rules';
 
 const condition = ref(false);
 
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      minLength: applyIf(condition, minLength(6)),
-    },
-  }
-);
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    minLength: applyIf(condition, minLength(6))
+  },
+});
 ```
 
 <OperatorApplyIf />
+
 
 ## `assignIf`
 
 The `assignIf` is a shorthand for conditional destructuring assignment.
 It allows to apply multiple rules to a field conditionally.
+
 
 ```ts
 import { required, email, minLength, assignIf } from '@regle/rules';

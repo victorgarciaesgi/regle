@@ -10,6 +10,7 @@ import CustomMessages from '../parts/components/global-config/CustomMessages.vue
 
 If your app includes multiple forms, it can be helpful to define a global configuration that centralizes your custom validators, error messages, and modifiers. This eliminates the need to declare these settings repeatedly for every `useRegle` call, improving both code consistency and developer experience with features like autocompletion and type checking.
 
+
 ## Replace built-in rules messages
 
 Each `@regle/rules` rule provides a default error message. You may may not want to call `withMessage` every time you need to use one with a custom error message.
@@ -25,24 +26,22 @@ const { useRegle: useCustomRegle } = defineRegleConfig({
     required: withMessage(required, 'You need to provide a value'),
     minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
       return `Minimum length is ${max}. Current length: ${$value?.length}`;
-    }),
-  }),
-});
+    })
+  })
+})
 
-const { r$ } = useCustomRegle(
-  { name: '' },
-  {
-    name: {
-      required,
-      minLength: minLength(6),
-    },
+const { r$ } = useCustomRegle({ name: '' }, {
+  name: {
+    required,
+    minLength: minLength(6)
   }
-);
+})
 ```
 
-Result:
+Result: 
 
 <CustomMessages/>
+
 
 :::tip
 If you use Nuxt, check out the [Nuxt module](/integrations/nuxt) for a even better DX.  
@@ -60,17 +59,18 @@ import { useI18n } from 'vue-i18n';
 
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => {
-    const { t } = useI18n();
+    const { t } = useI18n()
 
     return {
       required: withMessage(required, t('general.required')),
       minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
-        return t('general.minLength', { max });
-      }),
-    };
-  },
-});
+        return t('general.minLength', {max});
+      })
+    }
+  }
+})
 ```
+
 
 ## Declare new rules
 
@@ -97,20 +97,18 @@ const asyncEmail = createRule({
 
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
-    asyncEmail,
-  }),
-});
+    asyncEmail
+  })
+})
 
-const { r$ } = useCustomRegle(
-  { name: '' },
-  {
-    name: {
-      asy,
-      //     ^|
-    },
+const { r$ } = useCustomRegle({ name: '' }, {
+  name: {
+    asy
+//     ^|
   }
-);
+})
 ```
+
 
 ## Declare modifiers
 
@@ -125,10 +123,11 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
     autoDirty: false,
     silent: true,
     lazy: true,
-    rewardEarly: true,
-  },
-});
+    rewardEarly: true
+  }
+})
 ```
+
 
 ## Export scoped `inferRules` helper
 
@@ -140,10 +139,9 @@ For information about `inferRules`, check [Typing rules docs](/typescript/typing
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
 
-export const { useRegle, inferRules } = defineRegleConfig({
-  /* */
-});
+export const { useRegle, inferRules } = defineRegleConfig({/* */})
 ```
+
 
 ## Extend global config
 
@@ -156,32 +154,34 @@ With `extendRegleConfig`, you can recreate a custom one with a existing composab
 import { defineRegleConfig, extendRegleConfig, createRule } from '@regle/core';
 import { withMessage, required } from '@regle/rules';
 
+
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     customRule: withMessage(required, 'Custom rule'),
-  }),
-});
+  })
+})
 
-const { useRegle: useExtendedRegle } = extendRegleConfig(useCustomRegle, {
+const {useRegle: useExtendedRegle} = extendRegleConfig(useCustomRegle, {
   rules: () => ({
     customRuleExtended: withMessage(required, 'Custom rule 2'),
-  }),
-});
+  })
+})
 
-useExtendedRegle(
-  { name: '' },
-  {
-    name: {
-      custom,
-      //    ^|
-    },
+
+useExtendedRegle({name: ''}, {
+  name: {
+    custom
+    //    ^|
   }
-);
+})
+
 ```
+
 
 ## Override default behaviors
 
 You can override the default behaviors of Regle processors by using the `overrides` property.
+
 
 ### `isEdited`
 
@@ -205,5 +205,5 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
       return defaultHandlerFn(currentValue, initialValue);
     },
   },
-});
+})
 ```

@@ -4,11 +4,13 @@ title: Type safe output
 
 # Type safe output
 
+
 What would be the benefit of building a validation library without a type safe output?
 
 Inspired by the `Zod` parse output type, `Regle` will also infer your validator types to know which properties are _**guaranteed**_ to be defined.
 
-## `$validate`
+
+## `$validate`  
 
 Using `r$.$validate` will asynchronously run and wait for all your validators to finish, and will return an object containing the status of your form.
 
@@ -16,9 +18,10 @@ Using `r$.$validate` will asynchronously run and wait for all your validators to
 const { valid, data, errors, issues } = await r$.$validate();
 ```
 
-If your _*result*_ is `true`, the **data** will be type safe.
+If your *_result_* is `true`, the **data** will be type safe.
 
 It will check if the `required` rule is present, but it will not work with `requiredIf` or `requiredUnless`, because we can't know the condition at build time.
+
 
 ```ts twoslash
 import { useRegle } from '@regle/core';
@@ -28,9 +31,9 @@ import { required } from '@regle/rules';
 type Form = {
   firstName?: string;
   lastName?: string;
-};
+}
 
-const form = ref<Form>({ firstName: '', lastName: '' });
+const form = ref<Form>({ firstName: '', lastName: '' })
 
 const { r$ } = useRegle(form, {
   lastName: { required },
@@ -52,6 +55,7 @@ async function submit() {
 
 You can also statically infer the safe output from any `r$` instance.
 
+
 ```ts twoslash
 import { ref, type Ref, computed } from 'vue';
 import { required } from '@regle/rules';
@@ -60,9 +64,9 @@ import { useRegle, InferSafeOutput } from '@regle/core';
 type Form = {
   firstName?: string;
   lastName?: string;
-};
+}
 
-const form: Ref<Form> = ref({ firstName: '', lastName: '' });
+const form: Ref<Form> = ref({ firstName: '', lastName: '' })
 
 const { r$ } = useRegle(form, {
   lastName: { required },

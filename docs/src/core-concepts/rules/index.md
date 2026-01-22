@@ -29,45 +29,35 @@ You can jump directly to the [createRule section](/core-concepts/rules/reusable-
 You can write inline rules as simple functions that receive the value being evaluated as a parameter. Use the `InlineRuleDeclaration` type helper for enhanced type safety.
 
 Simple rule
-
 ```ts
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      simpleRule: (value) => value === 'regle',
-    },
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    simpleRule: (value) => value === 'regle'
   }
-);
+})
 ```
 
 Async rule
-
-```ts
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      asyncRule: async (value) => await someAsyncCall(),
-    },
+``` ts
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    asyncRule: async (value) => await someAsyncCall()
   }
-);
+})
 ```
 
 Rule with metadata
 
 ```ts
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      metadataRule: (value) => ({
-        $valid: value === 'regle',
-        foo: 'bar',
-      }),
-    },
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    metadataRule: (value) => ({
+      $valid: value === 'regle',
+      foo: 'bar'
+    })
   }
-);
+})
+
 ```
 
 ## Adding error messages
@@ -75,14 +65,11 @@ const { r$ } = useRegle(
 Any rule can be wrapped with the `withMessage` helper to provide error messages.
 
 ```ts
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      foo: withMessage((value: Maybe<string>) => value === 'foo', "Value must be 'foo'"),
-    },
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    foo: withMessage((value: Maybe<string>) => value === "foo", "Value must be 'foo'"),
   }
-);
+})
 ```
 
 :::tip
@@ -101,19 +88,18 @@ This allow to separate the core rule logic of how a field should look and whethe
 
 It will also output better errors.
 
+
 It's advised to keep this logic in mind when writing custom rules.
 
-```ts
-import { isFilled } from '@regle/rules';
 
-const { r$ } = useRegle(
-  { name: '' },
-  {
-    name: {
-      mustBeFoo: (value) => {
-        return isFilled(value) && value === 'foo';
-      },
-    },
+```ts
+import {isFilled} from '@regle/rules'
+
+const { r$ } = useRegle({name: ''}, {
+  name: {
+    mustBeFoo: (value) => {
+      return isFilled(value) && value === 'foo'
+    }
   }
-);
+})
 ```

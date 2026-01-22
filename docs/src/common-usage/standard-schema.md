@@ -26,6 +26,8 @@ const result = await r$.['~standard'].validate({ name: '' });
 console.log(result.issues);
 ```
 
+
+
 ### Schema only usage
 
 ```ts
@@ -33,8 +35,8 @@ import { useRules } from '@regle/core';
 import { required, string } from '@regle/rules';
 
 const schema = useRules({
-  name: { string, required },
-});
+  name: { string, required }
+})
 
 const result = await schema['~standard'].validate({ name: '' });
 ```
@@ -43,19 +45,23 @@ const result = await schema['~standard'].validate({ name: '' });
 
 ```vue
 <template>
-  <input v-model="r$.$value.email" :class="{ error: r$.email.$error }" placeholder="Type your email" />
+  <input 
+     v-model='r$.$value.email' 
+    :class="{ error: r$.email.$error }" 
+    placeholder='Type your email'
+  />
 
-  <li v-for="error of r$.email.$errors" :key="error">
+  <li v-for="error of r$.email.$errors" :key='error'>
     {{ error }}
   </li>
 </template>
 <script setup lang="ts">
-  import { useRules } from '@regle/core';
-  import { required, string } from '@regle/rules';
+import { useRules } from '@regle/core';
+import { required, string } from '@regle/rules';
 
-  const r$ = useRules({
-    name: { string, required },
-  });
+const r$ = useRules({
+  name: { string, required }
+})
 </script>
 ```
 
@@ -72,20 +78,21 @@ Some types like `numeric` will feel weird as it's typed `string | number`, it's 
 :::
 
 ```ts twoslash
-import { ref } from 'vue';
+import {ref} from 'vue';
 // ---cut---
-import { defineRules, type InferInput } from '@regle/core';
+import { defineRules, type InferInput} from '@regle/core';
 import { required, string, numeric, type } from '@regle/rules';
 
 /* defineRules is not required, but it helps you catch errors in structure */
 const rules = defineRules({
   firstName: { required, string },
   count: { numeric },
-  enforceType: { required, type: type<'FOO' | 'BAR'>() },
-});
+  enforceType: { required, type: type<'FOO' | 'BAR'>()}
+})
 
 type State = InferInput<typeof rules>;
 //     ^?
+
 ```
 
 <br/>
@@ -99,6 +106,7 @@ type State = InferInput<typeof rules>;
 It works exactly like `useRegle`, but it doesn't accept a state parameter, it will create a emp from the rules.
 
 ```ts twoslash
+
 import { useRules, type InferInput } from '@regle/core';
 import { required, string } from '@regle/rules';
 
@@ -109,28 +117,30 @@ const r$ = useRules({
 
 ## `refineRules`
 
-Regle is state first because in real world forms, rules can depend a state values.  
+Regle is state first because in real world forms, rules can depend a state values.   
 This make it a problem for dynamic rules as it would make a cyclic type error when trying to use the state inside the rules.
 
 To cover this case and inspired by Zod's `refine`, Regle provides a `refineRules` helper to write dynamic rules that depend on the state, while making it possible to access a typed state.
 
+
 Anything returned by the rule refine function will override what's defined in the default rules.
 
 ```ts twoslash
-import { ref } from 'vue';
+import {ref} from 'vue';
 // ---cut---
-import { refineRules, type InferInput } from '@regle/core';
+import { refineRules, type InferInput} from '@regle/core';
 import { required, string, sameAs } from '@regle/rules';
 
-const rules = refineRules(
-  {
-    password: { required, string },
-  },
-  (state) => ({
-    confirmPassword: { required, sameAs: sameAs(() => state.value.password) },
-  })
-);
+const rules = refineRules({
+  password: { required, string },
+}, 
+ (state) => ({
+   confirmPassword: { required, sameAs: sameAs(() => state.value.password) }
+ })
+)
 
 type State = InferInput<typeof rules>;
 //     ^?
 ```
+
+

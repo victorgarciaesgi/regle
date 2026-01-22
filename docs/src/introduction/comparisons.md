@@ -2,20 +2,20 @@
 title: Comparison with other form libraries
 ---
 
+
 # Comparison with other form libraries
+
 
 ## Vuelidate
 
 Regle is successor of Vuelidate. As a long-time user of Vuelidate, I was inspired to create Regle after the project was discontinued.
 
 Both libraries share a similar API and developer experience (DX), including:
-
 - Data-based validation
 - Unified reactivity
 - Simple declaration
 
 Regle builds upon these features and adds several improvements:
-
 - 100% type safety
 - Autocomplete
 - Zod/Valibot support (with more integrations planned)
@@ -32,11 +32,12 @@ Its API is less declarative compared to Regle, making it challenging to handle l
 
 While VeeValidate supports typed schemas using libraries like Zod, Yup, or Valibot, this comes at the cost of losing some of VeeValidate's native features. In contrast, when using Zod with Regle, you retain all the features available in the default @regle/rules, ensuring a consistent developer experience.
 
+
 ## Tanstack Forms
 
 I love Tanstack products and what he's doing is so great for the JS community, specially making their tools framework agnostic.
 
-As for Tanstack Forms, I feel the API for Vue keeps too much syntax logic from the React counterpart.
+As for Tanstack Forms, I feel the API for Vue keeps too much syntax logic from the React counterpart. 
 It doesn't take advantage of the Vue composition API enough.
 
 Tanstack forms also relies on DOM components, Regle doesn't.
