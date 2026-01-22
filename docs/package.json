@@ -18,7 +18,7 @@
     "arktype": "catalog:",
     "autoprefixer": "10.4.23",
     "check-password-strength": "catalog:",
-    "lodash-es": "4.17.22",
+    "lodash-es": "4.17.23",
     "pinia": "catalog:",
     "postcss": "8.5.6",
     "sass": "1.97.1",
