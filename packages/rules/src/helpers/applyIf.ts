@@ -7,9 +7,11 @@ import type {
   Maybe,
   FormRuleDeclaration,
   InlineRuleDeclaration,
+  RegleRuleWithParamsDefinitionInput,
 } from '@regle/core';
 import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
+import { isRuleDef } from '../utils/guards.utils';
 
 /**
  * The `applyIf` operator is similar to `requiredIf`, but it can be used with **any rule**.
@@ -44,9 +46,11 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
       TReturn extends Promise<any> ? true : false,
       TReturn extends Promise<infer M> ? M : TReturn
     >
-  : TRule extends FormRuleDeclaration<infer TValue, infer TParams, any, infer TMetadata, infer TAsync>
+  : TRule extends RegleRuleWithParamsDefinitionInput<infer TValue, infer TParams, infer TAsync, infer TMetadata>
     ? RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata>
-    : TRule {
+    : TRule extends RegleRuleDefinition<infer TValue, any[], infer TAsync, infer TMetadata>
+      ? RegleRuleDefinition<TValue, [condition: boolean], TAsync, TMetadata>
+      : TRule {
   let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let _params: any[] | undefined = [];
@@ -57,13 +61,13 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
   > = '';
   let _async: boolean = false;
 
-  if (typeof rule === 'function') {
+  if (typeof rule === 'function' && !('_validator' in rule)) {
     _type = InternalRuleType.Inline;
     validator = rule;
     _params = [_condition];
-  } else {
-    ({ _type, validator, _message, _async } = rule);
-    _params = rule._params?.concat([_condition] as any);
+  } else if (isRuleDef(rule)) {
+    ({ _type, validator, _message, _async, _params } = rule);
+    _params = (_params ?? [])?.concat([_condition] as any);
   }
 
   function newValidator(value: any, ...args: any[]) {
