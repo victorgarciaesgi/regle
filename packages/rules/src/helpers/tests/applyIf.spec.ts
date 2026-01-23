@@ -3,7 +3,7 @@ import { createRule, RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
-import { alpha, minLength, required } from '../../rules';
+import { alpha, minLength, required, url } from '../../rules';
 import { applyIf } from '../applyIf';
 import { isFilled } from '../ruleHelpers';
 
@@ -95,6 +95,7 @@ describe('applyIf helper', () => {
         name: '',
         count: 0,
         field: '',
+        url: '',
       });
 
       return useRegle(form, () => ({
@@ -107,12 +108,16 @@ describe('applyIf helper', () => {
         field: {
           error: applyIf(form.value.count === 1, minLength(3)),
         },
+        url: {
+          url: applyIf(form.value.count === 1, url),
+        },
       }));
     });
 
     expect(vm.r$.email.$rules.error.$params).toStrictEqual([false]);
     expect(vm.r$.name.$rules.error.$params).toStrictEqual([false]);
     expect(vm.r$.field.$rules.error.$params).toStrictEqual([3, false]);
+    expect(vm.r$.url.$rules.url.$params).toStrictEqual([false]);
 
     vm.r$.count.$value = 1;
 
@@ -121,6 +126,7 @@ describe('applyIf helper', () => {
     expect(vm.r$.email.$rules.error.$params).toStrictEqual([true]);
     expect(vm.r$.name.$rules.error.$params).toStrictEqual([true]);
     expect(vm.r$.field.$rules.error.$params).toStrictEqual([3, true]);
+    expect(vm.r$.url.$rules.url.$params).toStrictEqual([true]);
   });
 
   it('should have correct types', () => {
@@ -135,12 +141,11 @@ describe('applyIf helper', () => {
       )
     ).toEqualTypeOf<RegleRuleDefinition<unknown, [condition: boolean], true, boolean, unknown>>();
 
-    expectTypeOf(
-      applyIf(
-        () => true,
-        () => ({ $valid: true, foo: 'bar' })
-      )
-    ).toEqualTypeOf<
+    const metadatarule = applyIf(
+      () => true,
+      () => ({ $valid: true, foo: 'bar' })
+    );
+    expectTypeOf(metadatarule).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
         [condition: boolean],
@@ -149,6 +154,7 @@ describe('applyIf helper', () => {
           $valid: true;
           foo: string;
         },
+        unknown,
         unknown
       >
     >();
