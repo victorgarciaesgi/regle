@@ -30,6 +30,11 @@ export type LazyJoinDiscriminatedUnions<TUnion extends unknown> =
       >
     : TUnion;
 
+export type DumbJoinDiscriminatedUnions<TUnion extends unknown> =
+  isRecordLiteral<TUnion> extends true
+    ? Prettify<Partial<UnionToIntersection<TUnion>> & Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>>
+    : TUnion;
+
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
   ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]
   : [];
