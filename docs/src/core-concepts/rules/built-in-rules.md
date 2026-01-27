@@ -168,7 +168,6 @@ Checks if the date is after the given parameter.
 ```ts
 import { dateAfter } from '@regle/rules';
 
-
 const today = ref(new Date());
 
 const { r$ } = useRegle({ birthday: null as Date | null }, {

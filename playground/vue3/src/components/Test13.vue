@@ -28,33 +28,57 @@
 </template>
 
 <script setup lang="ts">
+  import { useRegle, type DumbJoinDiscriminatedUnions } from '@regle/core';
+  import { minLength, withMessage } from '@regle/rules';
   import { useRegleSchema } from '@regle/schemas';
+  import { ref } from 'vue';
   import { z } from 'zod';
 
-  const values = {
-    name: 'test',
-    array: [{ test: '', nested_array: [{ rest: '' }] }],
-  };
+  export interface WorkConditions {
+    /**
+     *
+     * @type {Availability}
+     * @memberof WorkConditions
+     */
+    availability: any;
+  }
 
-  const { r$ } = useRegleSchema(
-    values,
-    z.object({
-      name: z.string().min(1),
-      array: z.array(
-        z.object({
-          test: z.string().min(1),
-          nested_array: z.array(
-            z.object({
-              rest: z.string().min(1),
-            })
-          ),
-        })
-      ),
-    }),
-    {
-      silent: true,
-    }
-  );
+  export interface Hybrid extends WorkConditions {
+    /**
+     *
+     * @type {PostalAddress}
+     * @memberof Hybrid
+     */
+    address: string;
+    /**
+     *
+     * @type {number}
+     * @memberof Hybrid
+     */
+    frequency: number;
+  }
+
+  export interface OnSite extends WorkConditions {
+    /**
+     *
+     * @type {string}
+     * @memberof OnSite
+     */
+    address: string;
+  }
+
+  export interface Remote extends WorkConditions {
+    /**
+     *
+     * @type {string}
+     * @memberof Remote
+     */
+    address?: string;
+  }
+
+  const state = ref<DumbJoinDiscriminatedUnions<Hybrid | OnSite | Remote>>({} as any);
+
+  const { r$ } = useRegle(state, {});
 
   const submit = async () => {
     const res = await r$.$validate();
