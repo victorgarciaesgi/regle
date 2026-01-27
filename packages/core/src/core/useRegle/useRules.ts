@@ -93,6 +93,7 @@ export function createUseRulesComposable<
     rewardEarly: modifiers?.rewardEarly,
     silent: modifiers?.silent,
     clearExternalErrorsOnChange: modifiers?.clearExternalErrorsOnChange,
+    immediateDirty: modifiers?.immediateDirty,
   };
 
   function useRules(

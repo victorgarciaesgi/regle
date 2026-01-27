@@ -16,12 +16,12 @@ import type { isEditedHandlerFn } from './overrides.types';
 
 export interface RegleBehaviourOptions {
   /**
-   * Only display error when calling `r$.$validate()`
+   * Does not run rules until the field is dirty.
    * @default false
    */
   lazy?: boolean | undefined;
   /**
-   * Automatically set the dirty set without the need of `$value` or `$touch`.
+   * Automatically set the dirty state to true when value is changed without the need of calling `$touch`.
    * @default true
    *
    */
@@ -48,6 +48,11 @@ export interface RegleBehaviourOptions {
    * @default true
    */
   clearExternalErrorsOnChange?: boolean | undefined;
+  /**
+   * Set the dirty state to true when the form is initialized.
+   * @default false
+   */
+  immediateDirty?: boolean | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<

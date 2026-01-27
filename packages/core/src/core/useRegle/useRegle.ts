@@ -98,6 +98,7 @@ export function createUseRegleComposable<
     rewardEarly: modifiers?.rewardEarly,
     silent: modifiers?.silent,
     clearExternalErrorsOnChange: modifiers?.clearExternalErrorsOnChange,
+    immediateDirty: modifiers?.immediateDirty,
   };
 
   function useRegle(

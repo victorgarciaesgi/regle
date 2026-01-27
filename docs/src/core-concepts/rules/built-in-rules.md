@@ -168,11 +168,14 @@ Checks if the date is after the given parameter.
 ```ts
 import { dateAfter } from '@regle/rules';
 
+
+const today = ref(new Date());
+
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateAfter: dateAfter(new Date()),
+    dateAfter: dateAfter(today),
     // or
-    dateAfter: dateAfter(new Date(), { allowEqual: false }),
+    dateAfter: dateAfter(today, { allowEqual: false }),
   },
 })
 ```
@@ -189,11 +192,13 @@ Checks if the date is before the given parameter.
 ```ts
 import { dateBefore } from '@regle/rules';
 
+const today = ref(new Date());
+
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBefore: dateBefore(new Date()),
+    dateBefore: dateBefore(today),
     // or
-    dateBefore: dateBefore(new Date(), { allowEqual: false }),
+    dateBefore: dateBefore(today, { allowEqual: false }),
   },
 })
 ```
@@ -211,11 +216,14 @@ Checks if the date falls between the specified bounds.
 ```ts
 import { dateBetween } from '@regle/rules';
 
+const before = ref(new Date());
+const after = ref(new Date(2030, 3, 1));
+
 const { r$ } = useRegle({ birthday: null as Date | null }, {
   birthday: {
-    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1)),
+    dateBetween: dateBetween(before, after),
     // or
-    dateBetween: dateBetween(new Date(), new Date(2030, 3, 1), { allowEqual: false }),
+    dateBetween: dateBetween(before, after, { allowEqual: false }),
   },
 })
 ```

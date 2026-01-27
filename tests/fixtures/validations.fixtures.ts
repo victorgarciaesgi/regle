@@ -195,7 +195,12 @@ export function computedValidationsObjectWithRefs(): any {
   return { form: { conditional, number }, ...useRegle({ number, conditional }, validations) };
 }
 
-export function simpleNestedStateWithMixedValidation({ autoDirty = true, silent = false, rewardEarly = false } = {}) {
+export function simpleNestedStateWithMixedValidation({
+  autoDirty = true,
+  silent = false,
+  rewardEarly = false,
+  immediateDirty = false,
+} = {}) {
   const form = ref({
     email: '',
     user: {
@@ -225,16 +230,21 @@ export function simpleNestedStateWithMixedValidation({ autoDirty = true, silent 
           },
         },
       }),
-      { autoDirty, rewardEarly, silent }
+      { autoDirty, rewardEarly, silent, immediateDirty }
     ),
   };
 }
 
-export function simpleNestedStateWithMixedValidationAndGlobalConfig({ autoDirty = true, silent = false } = {}) {
+export function simpleNestedStateWithMixedValidationAndGlobalConfig({
+  autoDirty = true,
+  silent = false,
+  immediateDirty = false,
+} = {}) {
   const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
     modifiers: {
       autoDirty,
       silent,
+      immediateDirty,
     },
   });
   const form = ref({

@@ -1,65 +1,78 @@
 <script setup lang="ts">
-  import { nextTick, ref } from 'vue';
-  import { defineRegleConfig, useRegle, type RegleStaticImpl } from '@regle/core';
-  import { required, minLength, email, withMessage, fileType } from '@regle/rules';
-  import { Decimal } from 'decimal.js';
-  import { markStatic } from '@regle/core';
+  import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-  const state = ref({ decimal: null as RegleStaticImpl<Decimal> | null });
+  const state = ref({ name: '', email: '' });
 
-  const { r$ } = useRegle(state, {
-    decimal: {
-      required,
-      $isEdited: (currentValue, initialValue, defaultHandlerFn) => {
-        if (currentValue && initialValue) {
-          return currentValue.toString() !== initialValue.toString();
-        }
-        return defaultHandlerFn(currentValue, initialValue);
-      },
+  const { r$ } = useRegle(
+    state,
+    {
+      name: { required, minLength: minLength(4) },
+      email: { email },
     },
-  });
-
-  function handleDecimalInput(event: Event) {
-    if (event.target instanceof HTMLInputElement) {
-      if (event.target.value) {
-        r$.decimal.$value = markStatic(new Decimal(event.target.value));
-      } else {
-        r$.decimal.$value = undefined;
-      }
+    {
+      immediateDirty: true,
     }
-  }
+  );
 
   async function submit() {
     const { valid, data } = await r$.$validate();
-    // if (valid) {
-    //   console.log(data.name)
-    //   //               ^ string
-    //   console.log(data.email)
-    //   //.              ^ string | undefined
-    // } else {
-    //   console.warn('Errors: ', r$.$errors)
-    // }
+    if (valid) {
+      console.log(data.name);
+      //               ^ string
+      console.log(data.email);
+      //.              ^ string | undefined
+    } else {
+      console.warn('Errors: ', r$.$errors);
+    }
   }
 </script>
 
 <template>
   <div class="container p-3">
-    <div class="py-2 has-validation">
-      <label class="form-label">Files. Edited?: {{ r$.decimal.$edited }}</label>
+    <h2>Hello Regle!</h2>
 
-      <input class="form-control" :value="r$.decimal.$value" @input="handleDecimalInput" />
-      <ul>
-        <li v-for="error of r$.decimal.$errors" :key="error">
+    <div class="py-2 has-validation">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+      />
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
           {{ error }}
         </li>
       </ul>
     </div>
 
     <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset()">Restart</button>
-
-    <pre>{{ r$.decimal }}</pre>
-
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
     <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
 </template>

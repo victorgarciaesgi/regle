@@ -73,6 +73,7 @@ export function createReactiveFieldStatus({
     $autoDirty: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
     $clearExternalErrorsOnChange: ComputedRef<boolean>;
+    $immediateDirty: ComputedRef<boolean>;
     $issues: ComputedRef<RegleFieldIssue[]>;
     $silentIssues: ComputedRef<RegleFieldIssue[]>;
     $errors: ComputedRef<string[]>;
@@ -253,6 +254,15 @@ export function createReactiveFieldStatus({
           return $localOptions.value.$lazy;
         } else if (unref(options.lazy) != null) {
           return unref(options.lazy);
+        }
+        return false;
+      });
+
+      const $immediateDirty = computed<boolean>(() => {
+        if ($localOptions.value.$immediateDirty != null) {
+          return $localOptions.value.$immediateDirty;
+        } else if (unref(options.immediateDirty) != null) {
+          return unref(options.immediateDirty);
         }
         return false;
       });
@@ -508,6 +518,7 @@ export function createReactiveFieldStatus({
         $debounce,
         $deepCompare,
         $lazy,
+        $immediateDirty,
         $ready,
         $issues,
         $silentIssues,
@@ -761,6 +772,10 @@ export function createReactiveFieldStatus({
 
   if (!scopeState.$lazy.value && !scopeState.$dirty.value && !scopeState.$silent.value) {
     $commitHandler();
+  }
+
+  if (scopeState.$immediateDirty.value) {
+    scopeState.$dirty.value = true;
   }
 
   // oxlint-disable typescript-eslint/no-unused-vars
