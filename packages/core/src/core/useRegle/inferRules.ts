@@ -6,23 +6,24 @@ import type {
   ReglePartialRuleTree,
   RegleRuleDecl,
 } from '../../types';
-import type { DeepExact, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { Maybe, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
 
 export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarations>> {
   <
-    TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-    TRules extends DeepExact<
-      TRules,
-      ReglePartialRuleTree<
-        Unwrap<TState extends Record<string, any> ? TState : {}>,
-        Partial<DefaultValidatorsTree> & TCustomRules
-      >
+    TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
+    TRules extends ReglePartialRuleTree<
+      Unwrap<TState extends Record<string, any> ? TState : {}>,
+      Partial<DefaultValidatorsTree> & TCustomRules
     >,
     TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<DefaultValidatorsTree> & TCustomRules>,
   >(
-    state: MaybeRef<TState> | DeepReactiveState<TState> | undefined,
-    rulesFactory: TState extends MaybeInput<PrimitiveTypes> ? TDecl : TState extends Record<string, any> ? TRules : {}
-  ): NonNullable<TState> extends PrimitiveTypes ? TDecl : TRules;
+    state: Maybe<TState> | DeepReactiveState<TState>,
+    rulesFactory: Unwrap<TState> extends MaybeInput<PrimitiveTypes>
+      ? TDecl
+      : Unwrap<TState> extends Record<string, any>
+        ? TRules
+        : {}
+  ): NonNullable<Unwrap<TState>> extends PrimitiveTypes ? TDecl : TRules;
 }
 
 export function createInferRuleHelper<

@@ -1,8 +1,8 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { isRef, ref } from 'vue';
 import type {
-  ExtendedRulesDeclarations,
   DeepReactiveState,
+  ExtendedRulesDeclarations,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
@@ -13,24 +13,24 @@ import type {
   RegleValidationGroupEntry,
 } from '../../types';
 import type {
-  DeepExact,
   DeepMaybeRef,
   HaveAnyRequiredProps,
   JoinDiscriminatedUnions,
   Maybe,
+  MaybeComputedOrGetter,
   MaybeInput,
-  MaybeRefOrComputedRef,
   PrimitiveTypes,
   Unwrap,
+  UnwrapSimple,
 } from '../../types/utils';
-import { createRootRegleLogic } from './shared.rootRegle';
 import type { GlobalConfigOptions } from '../defineRegleConfig';
+import { createRootRegleLogic } from './shared.rootRegle';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-  TRules extends DeepExact<
-    TRules,
-    ReglePartialRuleTree<Unwrap<TState extends Record<string, any> ? TState : {}>, Partial<ExtendedRulesDeclarations>>
+  TRules extends ReglePartialRuleTree<
+    Unwrap<TState extends Record<string, any> ? TState : {}>,
+    Partial<ExtendedRulesDeclarations>
   >,
   TAdditionalOptions extends Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
@@ -52,33 +52,32 @@ export interface useRegleFn<
   TAdditionalOptions extends Record<string, any> = {},
 > {
   <
-    TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-    TRules extends DeepExact<
-      TRules,
-      ReglePartialRuleTree<
-        Unwrap<TState extends Record<string, any> ? TState : {}>,
-        Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>
-      >
+    TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
+    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>>,
+    TDecl extends RegleRuleDecl<
+      NonNullable<Unwrap<TState>>,
+      Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>
     >,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [
-      state: Maybe<MaybeRef<TState> | DeepReactiveState<TState>>,
-      rulesFactory: TState extends MaybeInput<PrimitiveTypes>
+      state: Maybe<TState> | DeepReactiveState<TState>,
+      rulesFactory: Unwrap<TState> extends MaybeInput<PrimitiveTypes>
         ? MaybeRefOrGetter<TDecl>
-        : TState extends Record<string, any>
-          ? MaybeRefOrComputedRef<TRules> | ((...args: any[]) => TRules)
+        : Unwrap<TState> extends Record<string, any>
+          ? MaybeComputedOrGetter<TRules>
           : {},
-      ...(HaveAnyRequiredProps<useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>> extends true
-        ? [options: useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>]
-        : [options?: useRegleFnOptions<TState, TRules, TAdditionalOptions, TValidationGroups>]),
+      ...(HaveAnyRequiredProps<
+        useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>
+      > extends true
+        ? [options: useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>]
+        : [options?: useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>]),
     ]
-  ): NonNullable<TState> extends PrimitiveTypes
-    ? RegleSingleField<NonNullable<TState>, TDecl, TShortcuts, TAdditionalReturnProperties>
+  ): NonNullable<Unwrap<TState>> extends PrimitiveTypes
+    ? RegleSingleField<NonNullable<Unwrap<TState>>, TDecl, TShortcuts, TAdditionalReturnProperties>
     : Regle<
-        TState extends Record<string, any> ? Unwrap<TState> : {},
-        TRules extends Record<string, any> ? TRules : {},
+        Unwrap<TState> extends Record<string, any> ? Unwrap<TState> : {},
+        UnwrapSimple<TRules> extends Record<string, any> ? UnwrapSimple<TRules> : {},
         TValidationGroups,
         TShortcuts,
         TAdditionalReturnProperties
