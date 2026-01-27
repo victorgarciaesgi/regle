@@ -1,5 +1,6 @@
 import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { RegleStatic, RegleStaticImpl } from './static.types';
+import type { MaybeRefOrComputedRef } from './object.types';
 
 export type Prettify<T> = T extends infer R
   ? {
@@ -20,12 +21,17 @@ export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}> =
   | T
   | ((value: Ref<V>, index: number) => T & TAdd);
 
-export type Unwrap<T extends MaybeRef<Record<string, any>>> = T extends Ref ? UnwrapRef<T> : UnwrapNestedRefs<T>;
-export type UnwrapSimple<T extends MaybeRef<Record<string, any>>> = T extends Ref
-  ? UnwrapRef<T>
-  : T extends (...args: any[]) => infer U
+export type MaybeComputedOrGetter<T> = MaybeRefOrComputedRef<T> | ((...args: any[]) => T);
+
+export type Unwrap<T extends MaybeRef<unknown>> = T extends Ref ? UnwrapRef<T> : UnwrapNestedRefs<T>;
+export type UnwrapSimple<T extends MaybeRef<Record<string, any>>> =
+  T extends MaybeComputedOrGetter<infer U>
     ? U
-    : T;
+    : T extends Ref<infer U>
+      ? U
+      : T extends (...args: any[]) => infer U
+        ? U
+        : T;
 
 export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends ((
   value: Ref<any>,
