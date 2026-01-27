@@ -29,6 +29,15 @@ __Default__: `true`
 
 Automatically set the dirty set without the need of `$value` or `$touch`.
 
+### `immediateDirty`
+
+__Type__: `boolean`
+
+__Default__: `false`
+
+Set the dirty state to true when the form is initialized.
+
+
 ### `silent`
 
 __Type__: `boolean`
@@ -127,7 +136,7 @@ const { r$ } = useRegle({ name: '' }, {
 <br><br>
 
 
-`$autoDirty` `$lazy`, `$silent` and `$rewardEarly` work the same as the deep modifiers.
+`$autoDirty` `$lazy`, `$silent`, `$immediateDirty` and `$rewardEarly` work the same as the deep modifiers.
 
 ### `$debounce`
 Type: `number` (ms)
