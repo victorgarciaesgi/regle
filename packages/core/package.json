@@ -2,34 +2,18 @@
   "name": "@regle/core",
   "version": "1.17.3",
   "description": "Headless form validation library for Vue",
-  "keywords": [
-    "regle",
-    "regle vue",
-    "regle vue form",
-    "regle vue forms",
-    "reglejs",
-    "vue forms",
-    "vue forms typescript",
-    "vue model validation",
-    "vue typescript forms",
-    "vue validation library",
-    "vue zod"
-  ],
-  "homepage": "https://reglejs.dev/",
-  "license": "MIT",
-  "author": {
-    "name": "Victor Garcia",
-    "url": "https://github.com/victorgarciaesgi"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/regle.git"
-  },
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown",
+    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
+    "dev": "tsdown --config=tsdown.dev.ts",
+    "test": "echo 'no tests'"
+  },
   "type": "module",
   "main": "./dist/regle-core.js",
   "module": "./dist/regle-core.js",
@@ -46,13 +30,6 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "build": "tsdown",
-    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
-    "dev": "tsdown --config=tsdown.dev.ts",
-    "test": "echo 'no tests'"
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",
@@ -78,5 +55,28 @@
     "pinia": {
       "optional": true
     }
+  },
+  "keywords": [
+    "regle",
+    "regle vue",
+    "regle vue form",
+    "regle vue forms",
+    "reglejs",
+    "vue forms",
+    "vue forms typescript",
+    "vue model validation",
+    "vue typescript forms",
+    "vue validation library",
+    "vue zod"
+  ],
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
   }
 }

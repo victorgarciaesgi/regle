@@ -1,5 +1,6 @@
 packages:
   - packages/core
+  - packages/eslint
   - packages/rules
   - packages/schemas
   - packages/nuxt
@@ -61,7 +62,6 @@ catalog:
   'tsx': 4.21.0
 
   # Testing
-
   playwright: 1.57.0
   playwright-core: 1.57.0
   '@playwright/test': 1.57.0

@@ -1,0 +1,73 @@
+{
+  "name": "@regle/eslint",
+  "version": "1.17.1",
+  "description": "ESLint rules for Regle",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown",
+    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
+    "dev": "tsdown --config=tsdown.dev.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@typescript-eslint/scope-manager": "^8.51.0",
+    "@typescript-eslint/utils": "^8.51.0"
+  },
+  "devDependencies": {
+    "eslint": "9.39.2",
+    "@typescript-eslint/scope-manager": "8.53.0",
+    "@typescript-eslint/utils": "8.53.0",
+    "@typescript-eslint/parser": "8.53.0",
+    "@typescript-eslint/rule-tester": "8.53.0",
+    "eslint-plugin-vitest": "0.5.4",
+    "eslint-config-prettier": "10.1.8",
+    "@eslint/js": "9.39.2",
+    "eslint-config-flat-gitignore": "^2.1.0",
+    "eslint-plugin-eslint-plugin": "7.3.0",
+    "tsdown": "catalog:",
+    "prettier": "3.8.1",
+    "typescript-eslint": "8.53.0",
+    "@types/eslint": "9.6.1",
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "eslint": ">=8.57.0",
+    "typescript": ">=5.0.0",
+    "vitest": "*"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    }
+  },
+  "main": "./dist/regle-eslint.cjs",
+  "module": "./dist/regle-eslint.mjs",
+  "type": "module",
+  "types": "./dist/regle-eslint.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/regle-eslint.d.ts",
+      "import": "./dist/regle-eslint.mjs",
+      "require": "./dist/regle-eslint.cjs"
+    }
+  },
+  "homepage": "https://reglejs.dev/",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Garcia",
+    "url": "https://github.com/victorgarciaesgi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorgarciaesgi/regle.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ]
+}
