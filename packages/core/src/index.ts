@@ -136,4 +136,6 @@ export type {
   RegleRuleWithParamsDefinitionInput,
   GlobalConfigOverrides,
   isEditedHandlerFn,
+  LazyJoinDiscriminatedUnions,
+  DumbJoinDiscriminatedUnions,
 } from './types';
