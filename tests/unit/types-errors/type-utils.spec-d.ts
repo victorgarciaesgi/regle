@@ -33,6 +33,26 @@ describe('type utils', () => {
     }>();
   });
 
+  it('should handle unions without discriminating keys', () => {
+    type Union =
+      | { firstName: string; address: { street: string } }
+      | { firstName: number; lastName: string }
+      | { type?: undefined };
+
+    type DumbUnion = JoinDiscriminatedUnions<Union>;
+
+    expectTypeOf<DumbUnion>().toEqualTypeOf<{
+      type?: undefined;
+      firstName?: string | number | undefined;
+      lastName?: string | undefined;
+      address?:
+        | {
+            street: string;
+          }
+        | undefined;
+    }>();
+  });
+
   it('InferRegleRoot should work correctly', () => {
     function useMyForm() {
       return useRegle(

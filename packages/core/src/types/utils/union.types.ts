@@ -8,14 +8,16 @@ import type { HasNamedKeys } from './object.types';
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
   HasNamedKeys<TUnion> extends true
     ? isRecordLiteral<TUnion> extends true
-      ? Prettify<
-          Partial<
-            UnionToIntersection<
-              RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
-            >
-          > &
-            Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
-        >
+      ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true
+        ? Prettify<
+            Partial<
+              UnionToIntersection<
+                RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
+              >
+            > &
+              Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
+          >
+        : DumbJoinDiscriminatedUnions<TUnion>
       : TUnion
     : TUnion;
 
@@ -38,6 +40,12 @@ export type DumbJoinDiscriminatedUnions<TUnion extends unknown> =
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
   ? [Prettify<Omit<F, K>>, ...RemoveCommonKey<R, K>]
   : [];
+
+type HasCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
+  ? K extends keyof F
+    ? true
+    : HasCommonKey<R, K>
+  : false;
 
 /**
  * Transforms a union and apply undefined values to non-present keys to support intersection
