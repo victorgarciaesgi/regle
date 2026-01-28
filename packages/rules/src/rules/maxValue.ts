@@ -1,6 +1,5 @@
 import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule } from '@regle/core';
-import { isFilled, toNumber } from '../helpers';
+import { createValueComparisonRule } from '../helpers/ruleHelpers';
 
 /**
  * Requires a field to have a specified maximum numeric value.
@@ -34,31 +33,7 @@ export const maxValue: RegleRuleWithParamsDefinition<
   false,
   boolean,
   MaybeInput<number | string>
-> = createRule({
+> = createValueComparisonRule({
   type: 'maxValue',
-  validator: (value: MaybeInput<number | string>, max: number | string, options?: CommonComparisonOptions) => {
-    const { allowEqual = true } = options ?? {};
-    if (isFilled(value) && isFilled(max)) {
-      if (!isNaN(toNumber(value)) && !isNaN(toNumber(max))) {
-        if (allowEqual) {
-          return toNumber(value) <= toNumber(max);
-        } else {
-          return toNumber(value) < toNumber(max);
-        }
-      }
-      if (__IS_DEV__) {
-        console.warn(`[maxValue] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
-      }
-      return true;
-    }
-    return true;
-  },
-  message: ({ $params: [max, options] }) => {
-    const { allowEqual = true } = options ?? {};
-    if (allowEqual) {
-      return `The value must be less than or equal to ${max}`;
-    } else {
-      return `The value must be less than ${max}`;
-    }
-  },
+  direction: 'max',
 });

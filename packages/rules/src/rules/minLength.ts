@@ -1,7 +1,6 @@
-import { isFilled, isNumber, getSize } from '../helpers';
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
-import { createRule } from '@regle/core';
+import type { RegleRuleWithParamsDefinition } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
+import { createLengthRule } from '../helpers/ruleHelpers';
 
 /**
  * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
@@ -34,34 +33,7 @@ export const minLength: RegleRuleWithParamsDefinition<
   [min: number, options?: CommonComparisonOptions],
   false,
   boolean
-> = createRule({
+> = createLengthRule({
   type: 'minLength',
-  validator: (
-    value: Maybe<string | Record<PropertyKey, any> | any[]>,
-    min: number,
-    options?: CommonComparisonOptions
-  ) => {
-    const { allowEqual = true } = options ?? {};
-
-    if (isFilled(value, false) && isFilled(min)) {
-      if (isNumber(min)) {
-        if (allowEqual) {
-          return getSize(value) >= min;
-        } else {
-          return getSize(value) > min;
-        }
-      }
-      if (__IS_DEV__) {
-        console.warn(`[minLength] Parameter isn't a number, got parameter: ${min}`);
-      }
-      return true;
-    }
-    return true;
-  },
-  message: ({ $value, $params: [min] }) => {
-    if (Array.isArray($value)) {
-      return `The list should have at least ${min} items`;
-    }
-    return `The value length should be at least ${min}`;
-  },
+  direction: 'min',
 });

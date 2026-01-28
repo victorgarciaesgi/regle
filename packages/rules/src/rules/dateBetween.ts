@@ -24,7 +24,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  * })
  * ```
  *
- * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#datebetweeen Documentation}
+ * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#datebetween Documentation}
  */
 export const dateBetween: RegleRuleWithParamsDefinition<
   string | Date,

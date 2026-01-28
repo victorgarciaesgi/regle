@@ -25,5 +25,5 @@ export const uppercase: RegleRuleDefinition<string, [], false, boolean, unknown,
     }
     return matchRegex(value, UPPERCASE_REGEX);
   },
-  message: 'The value is not a valid uppercase string',
+  message: 'The value must be uppercase',
 });

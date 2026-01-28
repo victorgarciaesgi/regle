@@ -53,7 +53,7 @@ export function nativeEnum<T extends EnumLike>(
       },
       [params]
     ),
-    ({ $params: [enumLike] }) => `The value should be one of those options: ${Object.values(enumLike).join(', ')}.`
+    ({ $params: [enumLike] }) => `The value must be one of the following: ${Object.values(enumLike).join(', ')}`
   );
 
   return rule as any;

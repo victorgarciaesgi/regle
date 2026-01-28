@@ -37,5 +37,5 @@ export const regex: RegleRuleWithParamsDefinition<
     }
     return true;
   },
-  message: 'The value does not match the required pattern',
+  message: 'The value must match the required pattern',
 });

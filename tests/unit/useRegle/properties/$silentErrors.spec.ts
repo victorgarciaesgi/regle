@@ -29,6 +29,6 @@ describe('$silentErrors', () => {
     vm.r$.$value.email = 'foo';
     await vm.$nextTick();
 
-    expect(vm.r$.email.$silentErrors).toStrictEqual(['The value must be an valid email address']);
+    expect(vm.r$.email.$silentErrors).toStrictEqual(['The value must be a valid email address']);
   });
 });

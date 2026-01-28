@@ -1,7 +1,6 @@
-import { isFilled, isNumber, getSize } from '../helpers';
-import type { RegleRuleWithParamsDefinition, Maybe } from '@regle/core';
-import { createRule } from '@regle/core';
+import type { RegleRuleWithParamsDefinition } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
+import { createLengthRule } from '../helpers/ruleHelpers';
 
 /**
  * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
@@ -34,33 +33,7 @@ export const maxLength: RegleRuleWithParamsDefinition<
   [max: number, options?: CommonComparisonOptions],
   false,
   boolean
-> = createRule({
+> = createLengthRule({
   type: 'maxLength',
-  validator: (
-    value: Maybe<string | Record<PropertyKey, any> | any[]>,
-    max: number,
-    options?: CommonComparisonOptions
-  ) => {
-    const { allowEqual = true } = options ?? {};
-    if (isFilled(value, false) && isFilled(max)) {
-      if (isNumber(max)) {
-        if (allowEqual) {
-          return getSize(value) <= max;
-        } else {
-          return getSize(value) < max;
-        }
-      }
-      if (__IS_DEV__) {
-        console.warn(`[maxLength] Value or parameter isn't a number, got value: ${value}, parameter: ${max}`);
-      }
-      return true;
-    }
-    return true;
-  },
-  message: ({ $value, $params: [count] }) => {
-    if (Array.isArray($value)) {
-      return `This list should have maximum ${count} items`;
-    }
-    return `The value length should not exceed ${count}`;
-  },
+  direction: 'max',
 });
