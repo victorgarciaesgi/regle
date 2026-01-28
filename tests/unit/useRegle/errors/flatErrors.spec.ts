@@ -91,8 +91,8 @@ describe('flatErrors', () => {
     const flats3 = flatErrors(vm.r$.$errors, { includePath: true });
 
     expect(flats3).toStrictEqual([
-      { message: 'The value must be an valid email address', path: ['email'] },
-      { message: 'The value length should be at least 5', path: ['email'] },
+      { message: 'The value must be a valid email address', path: ['email'] },
+      { message: 'The value must be at least 5 characters long', path: ['email'] },
       { message: 'This field is required', path: ['user', 'firstName'] },
       { message: 'This field is required', path: ['user', 'nested', 'child'] },
       { message: 'This field is required', path: ['user', 'nested', 'collection', 0, 'name'] },

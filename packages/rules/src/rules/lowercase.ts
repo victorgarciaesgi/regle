@@ -25,5 +25,5 @@ export const lowercase: RegleRuleDefinition<string, [], false, boolean, unknown,
     }
     return matchRegex(value, LOWERCASE_REGEX);
   },
-  message: 'The value is not a valid lowercase string',
+  message: 'The value must be lowercase',
 });

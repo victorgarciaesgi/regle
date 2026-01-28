@@ -118,8 +118,8 @@ describe('assignIf helper', () => {
 
     vm.r$.$touch();
 
-    expect(vm.r$.$errors.name).toStrictEqual(['The value length should be at least 3']);
-    expect(vm.r$.$errors.email).toStrictEqual(['The value must be an valid email address']);
+    expect(vm.r$.$errors.name).toStrictEqual(['The value must be at least 3 characters long']);
+    expect(vm.r$.$errors.email).toStrictEqual(['The value must be a valid email address']);
     expect(vm.r$.$error).toBe(true);
   });
 
@@ -249,7 +249,7 @@ describe('assignIf helper', () => {
     await vm.$nextTick();
 
     expect(vm.r$.$errors.user.profile.name).toStrictEqual(['This field is required']);
-    expect(vm.r$.$errors.user.profile.bio).toStrictEqual(['The value length should be at least 10']);
+    expect(vm.r$.$errors.user.profile.bio).toStrictEqual(['The value must be at least 10 characters long']);
   });
 
   it('should have correct return type', () => {
@@ -354,7 +354,7 @@ describe('assignIf helper', () => {
 
     await vm.r$.$validate();
 
-    expect(vm.r$.$errors.name).toStrictEqual(['The value must be an valid email address']);
+    expect(vm.r$.$errors.name).toStrictEqual(['The value must be a valid email address']);
 
     vm.condition = false;
     await vm.$nextTick();
@@ -363,6 +363,6 @@ describe('assignIf helper', () => {
     expect(vm.r$.name.$rules.required?.$active).toBe(false);
     expect(vm.r$.name.$rules.minLength?.$active).toBe(true);
 
-    expect(vm.r$.$errors.name).toStrictEqual(['The value length should be at least 5']);
+    expect(vm.r$.$errors.name).toStrictEqual(['The value must be at least 5 characters long']);
   });
 });

@@ -57,5 +57,5 @@ export const url: RegleRuleWithParamsDefinition<
       return false;
     }
   },
-  message: 'The value is not a valid URL address',
+  message: 'The value must be a valid URL',
 });

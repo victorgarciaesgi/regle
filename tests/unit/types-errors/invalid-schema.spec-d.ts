@@ -1,5 +1,6 @@
 import { inferRules, useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
-import { minLength, required } from '@regle/rules';
+import { email, minLength, required } from '@regle/rules';
+import { ref } from 'vue';
 import type { Ref } from 'vue';
 
 describe('useRegle should throw errors for invalid rule schema', () => {
@@ -197,5 +198,19 @@ describe('useRegle should throw errors for invalid rule schema', () => {
   it('Known rules with inline validator returning metadata ✅', () => {
     const { r$ } = useRegle({ name: '' }, { name: { required: (_value) => ({ $valid: true, customMeta: 'bar' }) } });
     expectTypeOf(r$.name.$rules.required.$metadata).toEqualTypeOf<{ customMeta: string }>();
+  });
+
+  it('should not error when having a state property named "value"', () => {
+    const { r$ } = useRegle({ value: '' }, { value: { required: () => true, email } });
+
+    expectTypeOf(r$.$value.value).toEqualTypeOf<string>();
+
+    const state = ref({ value: '' });
+    const { r$: r$1 } = useRegle(state, { value: { required: () => true, email } });
+    expectTypeOf(r$1.$value.value).toEqualTypeOf<string>();
+
+    const state2 = ref({ foo: { bar: { value: '' } } });
+    const { r$: r$3 } = useRegle(state2, { foo: { bar: { value: { required: () => true, email } } } });
+    expectTypeOf(r$3.$value.foo.bar.value).toEqualTypeOf<string>();
   });
 });

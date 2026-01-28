@@ -15,6 +15,7 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleRuleDecl,
+  $InternalRegleRuleDefinition,
   $InternalRegleRuleStatus,
   CollectionRegleBehaviourOptions,
   FieldRegleBehaviourOptions,
@@ -84,7 +85,7 @@ export function createReactiveFieldStatus({
     $shortcuts: ToRefs<RegleShortcutDefinition['fields']>;
     $validating: Ref<boolean>;
     $dirty: Ref<boolean>;
-    $silentValue: ComputedRef<any>;
+    $silentValue: ComputedRef<unknown>;
     $inactive: ComputedRef<boolean>;
     $modifiers: ComputedRef<FieldRegleBehaviourOptions<unknown>>;
     $isArrayOrRegleStatic: ComputedRef<boolean>;
@@ -102,16 +103,16 @@ export function createReactiveFieldStatus({
   let $unwatchRuleFieldValues: WatchStopHandle;
 
   let $commit: DebouncedFunction<() => void> | (() => void) = () => {};
-  let $validateAbortablePromise: AbortablePromiseResult<any> | undefined;
+  let $validateAbortablePromise: AbortablePromiseResult<unknown> | undefined;
   let $setDirty: DebouncedFunction<() => void> | (() => void) = () => {};
 
   const $isDebouncing = ref(false);
 
   function createReactiveRulesResult() {
-    const declaredRules = rulesDef.value as RegleRuleDecl<any, any>;
+    const declaredRules = rulesDef.value as RegleRuleDecl<unknown, any>;
     const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
 
-    const options: Record<string, any> = {};
+    const options: Record<string, unknown> = {};
     for (const key in declaredRules) {
       if (key.startsWith('$')) {
         options[key] = declaredRules[key];
@@ -139,7 +140,7 @@ export function createReactiveFieldStatus({
             $rewardEarly: scopeState.$rewardEarly,
           },
           customMessages,
-          rule: ruleRef as any,
+          rule: ruleRef as Ref<$InternalRegleRuleDefinition>,
           ruleKey,
           state,
           path,
@@ -666,7 +667,7 @@ export function createReactiveFieldStatus({
       $validateAbortablePromise.abort();
     }
     $validateAbortablePromise = abortablePromise(promise);
-    return $validateAbortablePromise;
+    return $validateAbortablePromise as AbortablePromiseResult<T>;
   }
 
   function $abort() {

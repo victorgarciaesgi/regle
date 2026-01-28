@@ -59,5 +59,5 @@ export const oneOf: OneOfFn = createRule({
 
     return true;
   },
-  message: ({ $params: [options] }) => `The value should be one of those options: ${options.join(', ')}.`,
+  message: ({ $params: [options] }) => `The value must be one of the following: ${options.join(', ')}`,
 }) as any;
