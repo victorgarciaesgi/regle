@@ -1,7 +1,5 @@
 import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
-import { createRule } from '@regle/core';
-import { isFilled } from '../helpers';
-import { isString } from '../helpers/ruleHelpers';
+import { createStringOperationRule } from '../helpers/ruleHelpers';
 
 /**
  * Checks if the string starts with the specified substring.
@@ -27,15 +25,7 @@ export const startsWith: RegleRuleWithParamsDefinition<
   false,
   boolean,
   MaybeInput<string>
-> = createRule({
+> = createStringOperationRule({
   type: 'startsWith',
-  validator(value: MaybeInput<string>, part: MaybeInput<string>) {
-    if (isFilled(value) && isFilled(part) && isString(value) && isString(part)) {
-      return value.startsWith(part);
-    }
-    return true;
-  },
-  message({ $params: [part] }) {
-    return `The value must start with ${part}`;
-  },
+  operation: 'startsWith',
 });

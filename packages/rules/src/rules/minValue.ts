@@ -1,6 +1,5 @@
 import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
-import { createRule } from '@regle/core';
-import { isFilled, toNumber } from '../helpers';
+import { createValueComparisonRule } from '../helpers/ruleHelpers';
 
 /**
  * Requires a field to have a specified minimum numeric value.
@@ -34,31 +33,7 @@ export const minValue: RegleRuleWithParamsDefinition<
   false,
   boolean,
   MaybeInput<number | string>
-> = createRule({
+> = createValueComparisonRule({
   type: 'minValue',
-  validator: (value: MaybeInput<number | string>, min: number | string, options?: CommonComparisonOptions) => {
-    const { allowEqual = true } = options ?? {};
-    if (isFilled(value) && isFilled(min)) {
-      if (!isNaN(toNumber(value)) && !isNaN(toNumber(min))) {
-        if (allowEqual) {
-          return toNumber(value) >= toNumber(min);
-        } else {
-          return toNumber(value) > toNumber(min);
-        }
-      }
-      if (__IS_DEV__) {
-        console.warn(`[minValue] Value or parameter isn't a number, got value: ${value}, parameter: ${min}`);
-      }
-      return true;
-    }
-    return true;
-  },
-  message: ({ $params: [min, options] }) => {
-    const { allowEqual = true } = options ?? {};
-    if (allowEqual) {
-      return `The value must be greater than or equal to ${min}`;
-    } else {
-      return `The value must be greater than ${min}`;
-    }
-  },
+  direction: 'min',
 });

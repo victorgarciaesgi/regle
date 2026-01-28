@@ -42,5 +42,5 @@ export const alpha: RegleRuleWithParamsDefinition<
     }
     return matchRegex(value, ALPHA_REGEX);
   },
-  message: 'The value is not alphabetical',
+  message: 'The value must be alphabetical',
 });
