@@ -49,13 +49,24 @@ export default defineNuxtModule<ModuleOptions>({
             setupFilePathWithoutExtension.replaceAll(/\\/gi, '/')
           );
 
+          const regleImports = [
+            { name: 'inferRules', type: false },
+            { name: 'useRegle', type: false },
+            { name: 'useCollectScope', type: false },
+            { name: 'useScopedRegle', type: false },
+            { name: 'RegleFieldStatus', type: true },
+          ];
+
           const template = addTemplate({
             filename: 'regle-exports.ts',
             write: true,
             getContents: () => `
 import type { InferRegleRules, RegleCustomFieldStatus } from '@regle/core';
 import ReglePlugin from "${setupFilePathWithoutExtensionCleaned}";
-export const { inferRules, useRegle, useCollectScope, useScopedRegle } = ReglePlugin;
+export const { ${regleImports
+              .filter(({ type }) => !type)
+              .map(({ name }) => name)
+              .join(', ')} } = ReglePlugin;
 
 export type RegleFieldStatus<
   TState extends unknown = any,
@@ -65,8 +76,7 @@ export type RegleFieldStatus<
 `,
           });
 
-          const exportsNames = ['inferRules', 'useRegle', 'useCollectScope', 'useScopedRegle', 'RegleFieldStatus'];
-          exportsNames.forEach((name) => addImports({ name, as: name, from: template.dst }));
+          regleImports.forEach(({ name, type }) => addImports({ name, as: name, from: template.dst, type }));
 
           addImportsSources({
             from: '@regle/core',
