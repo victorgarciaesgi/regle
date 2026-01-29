@@ -21,7 +21,12 @@ export type InferOutput<
   TState extends MaybeRef<unknown> = InferInput<TRules>,
 > =
   isRecordLiteral<TState> extends true
-    ? DeepSafeFormState<JoinDiscriminatedUnions<Unwrap<NonNullable<TState>>>, TRules>
+    ? TRules extends MaybeRef<StandardSchemaV1<infer State>>
+      ? State
+      : DeepSafeFormState<
+          JoinDiscriminatedUnions<Unwrap<NonNullable<TState>>>,
+          TRules extends MaybeRef<ReglePartialRuleTree<Record<string, any>, any>> ? UnwrapRef<TRules> : {}
+        >
     : TState extends any[]
       ? TState[]
       : TState;

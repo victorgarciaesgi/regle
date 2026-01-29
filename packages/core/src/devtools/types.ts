@@ -1,5 +1,5 @@
 import type { PluginSetupFunction } from '@vue/devtools-kit';
-import type { $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../types';
+import type { $InternalRegleFieldStatus, $InternalRegleStatusType, SuperCompatibleRegleRoot } from '../types';
 
 export type DevtoolsV6PluginAPI = Parameters<PluginSetupFunction>[0];
 
@@ -11,6 +11,8 @@ export interface DevtoolsComponentInstance {
 
 export type FieldsDictionary = {
   [x: string]: $InternalRegleStatusType;
+} & {
+  $self?: $InternalRegleFieldStatus;
 };
 
 export interface RegleInstance {

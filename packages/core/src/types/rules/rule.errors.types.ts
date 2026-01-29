@@ -15,7 +15,7 @@ export type RegleErrorTree<
     TSchema
   >;
 } & {
-  readonly $self: string[];
+  readonly $self?: string[];
 };
 
 export type RegleIssuesTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> = {
@@ -26,7 +26,7 @@ export type RegleIssuesTree<TState = MaybeRef<Record<string, any> | any[]>, TSch
     TSchema
   >;
 } & {
-  readonly $self: RegleFieldIssue[];
+  readonly $self?: RegleFieldIssue[];
 };
 
 export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> = {

@@ -11,7 +11,7 @@ import { zodNestedRegleFixture } from './fixtures/zod.fixture';
 import { z } from 'zod/v3';
 import { inferSchema } from '@regle/schemas';
 import { zod4NestedRegleFixture } from './fixtures/zod4.fixture';
-import type { InferSafeOutput } from '@regle/core';
+import type { InferSafeOutput, InferValidOutput } from '@regle/core';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],
@@ -307,7 +307,7 @@ describe.each([
       };
 
       expectTypeOf(data).toEqualTypeOf<SafeOutput>();
-      expectTypeOf<InferSafeOutput<typeof vm.r$>>().toEqualTypeOf<SafeOutput>();
+      expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<SafeOutput>();
     }
   });
 
