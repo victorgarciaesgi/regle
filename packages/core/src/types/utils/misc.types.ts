@@ -17,9 +17,9 @@ export type NonUndefined<T> = Exclude<T, undefined>;
 
 export type PromiseReturn<T> = T extends Promise<infer U> ? U : T;
 
-export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}> =
-  | T
-  | ((value: Ref<V>, index: number) => T & TAdd);
+export type MaybeGetter<T, V = any, TAdd extends Record<string, any> = {}, TSelf extends Record<string, any> = {}> =
+  | (T & TSelf)
+  | ((value: Ref<V>, index: number) => T & TAdd & TSelf);
 
 export type MaybeComputedOrGetter<T> = MaybeRefOrComputedRef<T> | ((...args: any[]) => T);
 

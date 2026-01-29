@@ -28,22 +28,15 @@ import { createRootRegleLogic } from './shared.rootRegle';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-  TRules extends ReglePartialRuleTree<
-    Unwrap<TState extends Record<string, any> ? TState : {}>,
-    Partial<ExtendedRulesDeclarations>
-  >,
+  TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<TState>>, Partial<ExtendedRulesDeclarations>>,
   TAdditionalOptions extends Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
 > =
-  TState extends MaybeInput<PrimitiveTypes>
-    ? Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions
-    : Partial<DeepMaybeRef<RegleBehaviourOptions>> &
-        LocalRegleBehaviourOptions<
-          JoinDiscriminatedUnions<TState extends Record<string, any> ? Unwrap<TState> : {}>,
-          TState extends Record<string, any> ? (TRules extends Record<string, any> ? TRules : {}) : {},
-          TValidationGroups
-        > &
-        TAdditionalOptions;
+  TState extends Record<string, any>
+    ? Partial<DeepMaybeRef<RegleBehaviourOptions>> &
+        LocalRegleBehaviourOptions<JoinDiscriminatedUnions<TState>, TRules, TValidationGroups> &
+        TAdditionalOptions
+    : Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions;
 
 export interface useRegleFn<
   TCustomRules extends Partial<ExtendedRulesDeclarations>,
@@ -53,7 +46,11 @@ export interface useRegleFn<
 > {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<Unwrap<TState>, Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>>,
+    TRules extends ReglePartialRuleTree<
+      JoinDiscriminatedUnions<Unwrap<TState>>,
+      Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>,
+      true
+    >,
     TDecl extends RegleRuleDecl<
       NonNullable<Unwrap<TState>>,
       Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>

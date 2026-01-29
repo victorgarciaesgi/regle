@@ -57,7 +57,7 @@ export interface RegleBehaviourOptions {
 
 export interface LocalRegleBehaviourOptions<
   TState extends Record<string, any>,
-  TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>,
+  TRules extends ReglePartialRuleTree<TState>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]> = {},
 > {
   /**

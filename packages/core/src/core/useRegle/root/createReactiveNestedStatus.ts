@@ -5,6 +5,7 @@ import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
   $InternalRegleErrorTree,
+  $InternalRegleFieldStatus,
   $InternalRegleIssues,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
@@ -83,8 +84,10 @@ export function createReactiveNestedStatus({
   let $unwatchState: WatchStopHandle | null = null;
   let $unwatchGroups: WatchStopHandle | null = null;
 
+  const $selfStatus = ref<$InternalRegleFieldStatus | undefined>(undefined);
+
   async function createReactiveFieldsStatus(watchSources = true) {
-    const mapOfRulesDef = Object.entries(rulesDef.value);
+    const mapOfRulesDef = Object.entries(rulesDef.value).filter(([key]) => key !== '$self');
 
     const scopedRulesStatus = Object.fromEntries(
       mapOfRulesDef.reduce(
@@ -214,6 +217,22 @@ export function createReactiveNestedStatus({
       ...schemasRulesStatus,
       ...statesWithNoRules,
     };
+
+    if (rulesDef.value.$self) {
+      $selfStatus.value = createReactiveFieldStatus({
+        state,
+        rulesDef: computed(() => rulesDef.value.$self ?? {}),
+        path,
+        cachePath,
+        externalErrors: ref(undefined),
+        schemaErrors: ref(undefined),
+        initialState: toRef(initialState?.value ?? {}, `$self`),
+        originalState: originalState?.[`$self`],
+        fieldName: `$self`,
+        ...commonArgs,
+      });
+    }
+
     if (watchSources) {
       $watch();
     }
@@ -410,7 +429,11 @@ export function createReactiveNestedStatus({
       });
 
       const $issues = computed<Record<string, $InternalRegleIssues>>(() => {
-        const result: Record<string, $InternalRegleIssues> = {};
+        const result: Record<string, $InternalRegleIssues> = {
+          ...($selfStatus.value && {
+            $self: $selfStatus.value?.$issues ?? [],
+          }),
+        };
         for (const key in $fields.value) {
           result[key] = $fields.value[key]?.$issues as any;
         }
@@ -418,7 +441,11 @@ export function createReactiveNestedStatus({
       });
 
       const $errors = computed<Record<string, $InternalRegleErrors>>(() => {
-        const result: Record<string, $InternalRegleErrors> = {};
+        const result: Record<string, $InternalRegleErrors> = {
+          ...($selfStatus.value && {
+            $self: $selfStatus.value?.$errors ?? [],
+          }),
+        };
         for (const key in $fields.value) {
           result[key] = $fields.value[key]?.$errors;
         }
@@ -426,7 +453,11 @@ export function createReactiveNestedStatus({
       });
 
       const $silentErrors = computed<Record<string, $InternalRegleErrors>>(() => {
-        const result: Record<string, $InternalRegleErrors> = {};
+        const result: Record<string, $InternalRegleErrors> = {
+          ...($selfStatus.value && {
+            $self: $selfStatus.value?.$silentErrors ?? [],
+          }),
+        };
         for (const key in $fields.value) {
           result[key] = $fields.value[key]?.$silentErrors;
         }
@@ -491,6 +522,7 @@ export function createReactiveNestedStatus({
                     $edited,
                     $anyEdited,
                     $issues,
+                    $self: $selfStatus,
                     '~modifiers': unref(commonArgs.options),
                   })
                 );
@@ -712,6 +744,7 @@ export function createReactiveNestedStatus({
     $path: path,
     $initialValue: initialState,
     $originalValue: originalState,
+    $self: $selfStatus,
     $fields,
     $reset,
     $touch,

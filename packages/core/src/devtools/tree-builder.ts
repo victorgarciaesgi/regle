@@ -230,7 +230,14 @@ function buildNestedFieldNodes(
           isEmptyCollection = true;
         }
       } else if (isNestedRulesStatus(fieldStatus)) {
-        fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldPath);
+        fieldChildren = buildNestedFieldNodes(
+          {
+            ...fieldStatus.$fields,
+            $self: fieldStatus.$self,
+          },
+          instanceId,
+          fieldPath
+        );
       } else if (isFieldStatus(fieldStatus)) {
         fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldPath);
       }
@@ -273,7 +280,14 @@ function buildRootChildrenNodes(
         fieldChildren = buildCollectionItemNodes(fieldStatus, instanceId, fieldName);
         isCollection = true;
       } else if (isNestedRulesStatus(fieldStatus)) {
-        fieldChildren = buildNestedFieldNodes(fieldStatus.$fields, instanceId, fieldName);
+        fieldChildren = buildNestedFieldNodes(
+          {
+            ...fieldStatus.$fields,
+            $self: fieldStatus.$self,
+          },
+          instanceId,
+          fieldName
+        );
       } else if (isFieldStatus(fieldStatus)) {
         fieldChildren = buildRuleNodes(fieldStatus, instanceId, fieldName);
       }
