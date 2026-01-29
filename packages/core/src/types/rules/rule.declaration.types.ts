@@ -27,28 +27,22 @@ import type { $InternalRegleFieldStatus } from './rule.status.types';
 export type ReglePartialRuleTree<
   TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-  TRoot extends boolean = false,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-} & (TRoot extends false
-  ? {
-      $self?: MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TForm>, TCustomRules>>;
-    }
-  : {});
+} & {
+  $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
+};
 /**
  * @public
  */
 export type RegleRuleTree<
   TForm extends Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-  TRoot extends boolean = false,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-} & (TRoot extends false
-  ? {
-      $self?: MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TForm>, TCustomRules>>;
-    }
-  : {});
+} & {
+  $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
+};
 
 /**
  * @public

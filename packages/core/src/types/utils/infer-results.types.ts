@@ -9,6 +9,7 @@ import type {
 import type {
   RegleFieldStatus,
   RegleLike,
+  ReglePartialRuleTree,
   RegleRoot,
   SuperCompatibleRegleFieldStatus,
   SuperCompatibleRegleRoot,
@@ -26,7 +27,9 @@ import type { DeepPartial, JoinDiscriminatedUnions } from '../utils';
  */
 export type InferSafeOutput<TRegle extends MaybeRef<SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>> =
   UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
-    ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
+    ? TRules extends ReglePartialRuleTree<Record<string, any>, any>
+      ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
+      : never
     : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
       ? SafeFieldProperty<TState, TRules>
       : UnwrapRef<TRegle> extends RegleLike<infer TState extends Record<string, any>>

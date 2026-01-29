@@ -21,6 +21,13 @@
     },
   });
 
+  const { valid, data } = await r$.$validate();
+
+  if (valid) {
+    // TODO address should not be undefined
+    console.log(data.address);
+  }
+
   r$.address.$self;
 </script>
 

@@ -233,7 +233,7 @@ function buildNestedFieldNodes(
         fieldChildren = buildNestedFieldNodes(
           {
             ...fieldStatus.$fields,
-            $self: fieldStatus.$self,
+            ...(fieldStatus.$self && { $self: fieldStatus.$self }),
           },
           instanceId,
           fieldPath
@@ -283,7 +283,7 @@ function buildRootChildrenNodes(
         fieldChildren = buildNestedFieldNodes(
           {
             ...fieldStatus.$fields,
-            $self: fieldStatus.$self,
+            ...(fieldStatus.$self && { $self: fieldStatus.$self }),
           },
           instanceId,
           fieldName
