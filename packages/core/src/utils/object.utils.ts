@@ -23,7 +23,7 @@ export function isRefObject(obj: Ref<unknown>): obj is Ref<Record<string, any>> 
  * @returns An object containing the scope and the unwrapped value
  */
 export function unwrapGetter<T extends any>(
-  getter: MaybeGetter<T, any>,
+  getter: MaybeGetter<T, any, any, any>,
   value: Ref<any>,
   index?: number
 ): { scope: EffectScope; unwrapped: T } {

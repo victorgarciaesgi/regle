@@ -8,7 +8,6 @@ import type {
   $InternalRegleIssues,
   $InternalRegleResult,
   ExtendedRulesDeclarations,
-  ArrayElement,
   CollectionRegleBehaviourOptions,
   DeepPartial,
   ExtendOnlyRealRecord,
@@ -137,7 +136,13 @@ export type RegleStatus<
     ? {}
     : {
         [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;
-      });
+      }) &
+  (TRules['$self'] extends RegleRuleDecl
+    ? {
+        /** Represents the status of the parent object. Status only concern the object itself and not its children */
+        readonly $self: RegleFieldStatus<NonNullable<TRules['$self']>, NonNullable<TRules['$self']>, TShortcuts>;
+      }
+    : {});
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -153,6 +158,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
   $id?: string;
+  readonly $self?: $InternalRegleFieldStatus;
 }
 
 /**
@@ -185,7 +191,9 @@ export type InferRegleStatusType<
                 : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
                   ? NonNullable<TState[TKey]> extends RegleStaticImpl<infer U>
                     ? RegleFieldStatus<Raw<U>, TRule, TShortcuts>
-                    : MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+                    : TRule extends ReglePartialRuleTree<TState[TKey]>
+                      ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
+                      : MaybeVariantStatus<TState[TKey], {}, TShortcuts>
                   : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
           : NonNullable<TState[TKey]> extends Date | File
             ? RegleFieldStatus<Raw<NonNullable<TState[TKey]>>, TRule, TShortcuts>
@@ -257,7 +265,7 @@ type ComputeFieldRules<
  */
 export type RegleFieldStatus<
   TState extends any = any,
-  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
+  TRules extends RegleFormPropertyType<any, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
 > = Omit<RegleCommonStatus<TState, TRules>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
@@ -489,7 +497,7 @@ export interface $InternalRegleRuleStatus {
  */
 export type RegleCollectionStatus<
   TState extends any[] = any[],
-  TRules extends ReglePartialRuleTree<ArrayElement<TState>> = Record<string, any>,
+  TRules extends ReglePartialRuleTree<any> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState, TRules>, '$value'> & {

@@ -19,6 +19,7 @@ import type {
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
+import type { $InternalRegleFieldStatus } from './rule.status.types';
 
 /**
  * @public
@@ -26,19 +27,28 @@ import type { UnwrapRegleUniversalParams } from './rule.params.types';
 export type ReglePartialRuleTree<
   TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+  TRoot extends boolean = false,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-};
-
+} & (TRoot extends false
+  ? {
+      $self?: MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TForm>, TCustomRules>>;
+    }
+  : {});
 /**
  * @public
  */
 export type RegleRuleTree<
   TForm extends Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+  TRoot extends boolean = false,
 > = {
   [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-};
+} & (TRoot extends false
+  ? {
+      $self?: MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TForm>, TCustomRules>>;
+    }
+  : {});
 
 /**
  * @public
@@ -75,6 +85,8 @@ export type RegleComputedRules<
  */
 export type $InternalReglePartialRuleTree = {
   [x: string]: $InternalFormPropertyTypes;
+} & {
+  $self?: $InternalRegleRuleDecl;
 };
 
 /**
@@ -157,7 +169,8 @@ export type RegleCollectionEachRules<
 > = MaybeGetter<
   RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
   ArrayElement<TValue>,
-  RegleCollectionRuleDeclKeyProperty
+  RegleCollectionRuleDeclKeyProperty,
+  RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>
 >;
 
 /**
@@ -165,7 +178,12 @@ export type RegleCollectionEachRules<
  * @reference {@link RegleCollectionRuleDecl}
  */
 export type $InternalRegleCollectionRuleDecl = $InternalRegleRuleDecl & {
-  $each?: MaybeGetter<$InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty, any>;
+  $each?: MaybeGetter<
+    $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty,
+    any,
+    {},
+    { $self?: $InternalRegleFieldStatus }
+  >;
 };
 
 /**

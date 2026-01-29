@@ -179,22 +179,24 @@ export type DeepSafeFormState<
   ? {}
   : TRules extends undefined
     ? TState
-    : TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>
-      ? Prettify<
-          {
-            [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-              ? K
-              : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
-              ? MaybeOutput<M>
-              : SafeProperty<TState[K], TRules[K]>;
-          } & {
-            [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-              ? never
-              : K]-?: unknown extends SafeProperty<TState[K], TRules[K]>
-              ? unknown
-              : NonNullable<SafeProperty<TState[K], TRules[K]>>;
-          }
-        >
+    : TRules extends Record<string, RegleFormPropertyType<any, any>>
+      ? TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>
+        ? Prettify<
+            {
+              [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
+                ? K
+                : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
+                ? MaybeOutput<M>
+                : SafeProperty<TState[K], TRules[K]>;
+            } & {
+              [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
+                ? never
+                : K]-?: unknown extends SafeProperty<TState[K], TRules[K]>
+                ? unknown
+                : NonNullable<SafeProperty<TState[K], TRules[K]>>;
+            }
+          >
+        : TState
       : TState;
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
@@ -218,7 +220,10 @@ type ObjectHaveAtLeastOneRequiredField<
 > =
   TState extends Maybe<TState>
     ? {
-        [K in keyof NonNullable<TState>]-?: IsPropertyOutputRequired<NonNullable<TState>[K], TRule[K]>;
+        [K in keyof NonNullable<TState>]-?: IsPropertyOutputRequired<
+          NonNullable<TState>[K],
+          TRule[K] extends RegleFormPropertyType<any, any> ? TRule[K] : undefined
+        >;
       }[keyof TState] extends false
       ? false
       : true
@@ -271,7 +276,12 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
       ? ExtendOnlyRealRecord<TState> extends true
         ? ObjectHaveAtLeastOneRequiredField<
             NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-            TRule
+            TRule extends ReglePartialRuleTree<
+              NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+              any
+            >
+              ? TRule
+              : {}
           > extends false
           ? false
           : true

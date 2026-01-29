@@ -3,20 +3,39 @@
   import { useRegle, type JoinDiscriminatedUnions } from '@regle/core';
   import { required, minLength, email } from '@regle/rules';
 
-  const state = ref({ value: '' });
+  type State = {
+    name: string;
+    address?: {
+      street?: string;
+      city?: string;
+    };
+  };
 
-  // useRegle('', {});
+  const state = ref<State>({ name: '', address: {} });
 
-  const foo = useRegle(state, {
-    value: {
-      required,
+  const { r$ } = useRegle(state, {
+    address: {
+      $self: {
+        required,
+      },
     },
   });
+
+  r$.address.$self;
 </script>
 
 <template>
   <div class="container p-3">
     <h2>Hello Regle!</h2>
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      {{ r$.$errors }}
+      <ul id="email-errors">
+        <li v-for="error of r$.address.$self.$errors" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <style>
