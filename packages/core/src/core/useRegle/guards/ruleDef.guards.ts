@@ -43,7 +43,7 @@ export function isValidatorRulesDef(
   return !!rules.value && (isObject(rules.value) || isRefObject(rules.value));
 }
 
-export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[]> {
+export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[], false, boolean, any, any, boolean> {
   return (isObject(rule) || typeof rule === 'function') && '_validator' in rule;
 }
 

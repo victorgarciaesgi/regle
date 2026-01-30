@@ -13,6 +13,10 @@ export function simpleNestedStateWithMixedValidation() {
     contacts?: [{ name: string }];
     collection?: [{ name: string }];
     file: File;
+    address?: {
+      street?: string;
+      city?: string;
+    };
   }
 
   const condition: boolean = true as boolean;
@@ -37,5 +41,10 @@ export function simpleNestedStateWithMixedValidation() {
       required,
     },
     file: { required, otherValidation: (value) => value instanceof File },
+    address: {
+      $self: {
+        required,
+      },
+    },
   });
 }

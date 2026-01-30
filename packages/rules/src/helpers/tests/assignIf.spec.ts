@@ -261,7 +261,7 @@ describe('assignIf helper', () => {
 
     expectTypeOf(result).toEqualTypeOf<
       ComputedRef<{
-        required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+        required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
         minLength: typeof minLengthRule;
       }>
     >();

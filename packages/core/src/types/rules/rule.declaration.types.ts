@@ -208,6 +208,6 @@ export type FormRuleDeclaration<
   TAsync extends boolean = boolean,
 > =
   | InlineRuleDeclaration<TValue, TParams, TReturn>
-  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>
+  | RegleRuleDefinition<TValue, TParams, TAsync, TMetadata, any, any, boolean>
   | RegleRuleWithParamsDefinitionInput<TValue, [param?: any], TAsync, TMetadata>
   | RegleRuleWithParamsDefinitionInput<TValue, [param?: any, ...any[]], TAsync, TMetadata>;

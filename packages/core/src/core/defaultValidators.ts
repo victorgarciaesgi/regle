@@ -73,7 +73,15 @@ export type DefaultValidators = {
   hexadecimal: RegleRuleDefinition<string, [], false, boolean, string>;
   integer: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   ipv4Address: RegleRuleDefinition<string, [], false, boolean, string>;
-  literal: RegleRuleDefinition<string | number, [literal: string | number], false, boolean, string | number>;
+  literal: RegleRuleDefinition<
+    string | number,
+    [literal: string | number],
+    false,
+    boolean,
+    string | number,
+    string | number,
+    true
+  >;
   macAddress: RegleRuleWithParamsDefinition<string, [separator?: string | undefined], false, boolean>;
   maxLength: RegleRuleWithParamsDefinition<
     string | any[] | Record<PropertyKey, any>,
@@ -96,7 +104,7 @@ export type DefaultValidators = {
   numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<string | number, [options: (string | number)[]], false, boolean, string | number>;
   regex: RegleRuleWithParamsDefinition<string, [regexp: RegExp], false, boolean>;
-  required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+  required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
   sameAs: RegleRuleWithParamsDefinition<unknown, [target: unknown, otherName?: string], false, boolean>;
   string: RegleRuleDefinition<unknown, [], false, boolean, any, unknown>;
   type: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;

@@ -166,7 +166,7 @@ type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> =
   ? {
       [x: string]: {
         [K in TKey]-?: Omit<RegleRuleDecl<any, Partial<ExtendedRulesDeclarations>>, 'literal'> & {
-          literal?: RegleRuleDefinition<any, [literal: any], false, boolean, any, string | number>;
+          literal?: RegleRuleDefinition<any, [literal: any], false, boolean, any, string | number, true>;
         };
       };
     }
@@ -179,7 +179,8 @@ type PossibleLiteralTypes<T extends Record<string, any>, TKey extends keyof T> =
             false,
             boolean,
             MaybeInput<TVal>,
-            string | number
+            string | number,
+            true
           >;
         };
       };

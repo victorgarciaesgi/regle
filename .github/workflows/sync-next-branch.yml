@@ -40,4 +40,4 @@ jobs:
           fi
 
       - name: Push changes to next
-        run: git push origin next --force-with-lease
+        run: git push origin next --follow-tags --force-with-lease

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, type MaybeRef, type Ref } from 'vue';
   import { useRegle, type JoinDiscriminatedUnions } from '@regle/core';
-  import { required, minLength, email } from '@regle/rules';
+  import { required, minLength, email, literal, and } from '@regle/rules';
 
   type State = {
     name: string;
@@ -11,9 +11,12 @@
     };
   };
 
+  const foo = and(required, minLength(2));
+
   const state = ref<State>({ name: '', address: {} });
 
   const { r$ } = useRegle(state, {
+    name: { foo: and(required, minLength(2)) },
     address: {
       $self: {
         required,
@@ -25,7 +28,7 @@
 
   if (valid) {
     // TODO address should not be undefined
-    console.log(data.address);
+    console.log(data.name);
   }
 
   r$.address.$self;

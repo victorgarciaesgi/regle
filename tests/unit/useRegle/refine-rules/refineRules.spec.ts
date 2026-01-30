@@ -37,7 +37,7 @@ describe('refineRules', () => {
     const state = ref<InferInput<typeof rules>>({});
 
     expectTypeOf<ReturnType<typeof rules>['confirmPassword']>().toEqualTypeOf<{
-      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
       sameAs: RegleRuleDefinition<
         MaybeInput<string>,
         [target: MaybeInput<string>, otherName?: string | undefined],
@@ -49,7 +49,7 @@ describe('refineRules', () => {
     }>();
 
     expectTypeOf<ReturnType<typeof rules>['firstName']>().toEqualTypeOf<{
-      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
       minLength: RegleRuleDefinition<
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
@@ -191,7 +191,7 @@ describe('refineRules', () => {
               MaybeInput<string | number>,
               string | number
             >;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
             minValue: RegleRuleDefinition<
               string | number,
               [count: string | number, options?: CommonComparisonOptions | undefined],
@@ -244,7 +244,7 @@ describe('refineRules', () => {
               MaybeInput<string | number>,
               string | number
             >;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
           },
           RegleShortcutDefinition<any>
         >

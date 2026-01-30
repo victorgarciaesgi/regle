@@ -25,6 +25,10 @@ describe('$validate', () => {
         collection: {
           name: string;
         }[];
+        address: {
+          street?: string | undefined;
+          city?: string | undefined;
+        };
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
@@ -42,6 +46,10 @@ describe('$validate', () => {
         collection?: {
           name?: MaybeOutput<string>;
         }[];
+        address?: {
+          street?: MaybeOutput<string>;
+          city?: MaybeOutput<string>;
+        };
       }>();
     }
 
@@ -62,6 +70,10 @@ describe('$validate', () => {
       collection: {
         name: string;
       }[];
+      address: {
+        street?: string | undefined;
+        city?: string | undefined;
+      };
     }>();
 
     expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<{
@@ -79,6 +91,10 @@ describe('$validate', () => {
       collection: {
         name: string;
       }[];
+      address: {
+        street?: string | undefined;
+        city?: string | undefined;
+      };
     }>();
 
     const { r$ } = useRegle(
