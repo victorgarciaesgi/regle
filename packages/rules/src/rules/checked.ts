@@ -1,6 +1,5 @@
 import type { MaybeInput, RegleRuleDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { isFilled } from '../helpers';
 
 /**
  * Requires a boolean value to be `true`. This is useful for checkbox inputs like "accept terms".
@@ -20,10 +19,7 @@ export const checked: RegleRuleDefinition<boolean, [], false, boolean, MaybeInpu
   {
     type: 'checked',
     validator: (value: MaybeInput<boolean>) => {
-      if (isFilled(value)) {
-        return value === true;
-      }
-      return true;
+      return value === true;
     },
     message: 'The field must be checked',
   }

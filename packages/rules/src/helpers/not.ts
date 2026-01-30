@@ -9,6 +9,8 @@ import type {
 } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
+import { extractValidator } from './common/extractValidator';
+import { capitalize } from 'vue';
 
 /**
  * The `not` operator passes when the provided rule **fails** and fails when the rule **passes**.
@@ -53,26 +55,19 @@ export function not<
     string | string[]
   >
 ): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
-  let _type: string | undefined;
-  let validator: RegleRuleDefinitionProcessor<any, any, any>;
   let newValidator: RegleRuleDefinitionProcessor<any, any, any>;
-  let _params: any[] | undefined;
 
-  let _async: boolean;
-
-  if (typeof rule === 'function') {
-    validator = rule;
-    _async = rule.constructor.name === 'AsyncFunction';
-  } else {
-    ({ _type, validator, _params } = rule);
-    _async = rule._async;
-  }
+  const { _type, validator, _params, _async, _active } = extractValidator(rule);
 
   if (_async) {
     newValidator = async (value: any, ...params: any[]) => {
       if (isFilled(value)) {
-        const result = await validator(value, ...(params as any));
-        return !result;
+        try {
+          const result = await validator(value, ...(params as any));
+          return !result;
+        } catch {
+          return true;
+        }
       }
       return true;
     };
@@ -86,13 +81,15 @@ export function not<
   }
 
   const newRule = createRule({
-    type: 'not',
+    type: _type ? `not(${capitalize(_type)})` : undefined,
     validator: newValidator,
-    message: (message as any) ?? 'Error',
+    message: message ?? 'Error',
+    active: _active,
+    async: _async,
   }) as RegleRuleRaw;
 
-  const newParams = [...(_params ?? [])] as [];
-  newRule._params = newParams as any;
+  const newParams = [...(_params ?? [])];
+  newRule._params = newParams;
 
   if (typeof newRule === 'function') {
     const executedRule = newRule(...newParams);

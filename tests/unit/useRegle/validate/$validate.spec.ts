@@ -29,6 +29,7 @@ describe('$validate', () => {
           street?: string | undefined;
           city?: string | undefined;
         };
+        booleanField: boolean;
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
@@ -50,6 +51,7 @@ describe('$validate', () => {
           street?: MaybeOutput<string>;
           city?: MaybeOutput<string>;
         };
+        booleanField?: MaybeOutput<boolean>;
       }>();
     }
 
@@ -74,6 +76,7 @@ describe('$validate', () => {
         street?: string | undefined;
         city?: string | undefined;
       };
+      booleanField: boolean;
     }>();
 
     expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<{
@@ -95,6 +98,7 @@ describe('$validate', () => {
         street?: string | undefined;
         city?: string | undefined;
       };
+      booleanField: boolean;
     }>();
 
     const { r$ } = useRegle(

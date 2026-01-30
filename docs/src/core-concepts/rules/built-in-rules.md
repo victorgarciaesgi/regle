@@ -116,6 +116,10 @@ const state = ref<InferInput<typeof rules>>({});
 
 Requires a boolean value to be `true`. This is useful for checkbox inputs.
 
+### Note
+
+This rule does not need `required` to be set, it will assert the value is set.
+
 ```ts
 import { checked } from '@regle/rules';
 
@@ -448,6 +452,10 @@ const { r$ } = useRegle({ address: '' }, {
 ## `literal`
 
 Validates literal values.
+
+### Note
+
+This rule does not need `required` to be set, it will assert the value is set.
 
 ```ts
 import { literal } from '@regle/rules';

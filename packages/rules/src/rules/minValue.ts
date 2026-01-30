@@ -1,5 +1,5 @@
 import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
-import { createValueComparisonRule } from '../helpers/ruleHelpers';
+import { createValueComparisonRule } from './common/createComparisonRule';
 
 /**
  * Requires a field to have a specified minimum numeric value.

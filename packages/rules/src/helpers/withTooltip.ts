@@ -1,14 +1,14 @@
 import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
-  RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
 } from '@regle/core';
-import { createRule, InternalRuleType } from '@regle/core';
+import { createRule } from '@regle/core';
+import { extractValidator } from './common/extractValidator';
 
 /**
  * The `withTooltip` wrapper allows you to display additional messages for your field that aren't necessarily errors.
@@ -82,22 +82,7 @@ export function withTooltip(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>
 ): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
-  let _type: string | undefined;
-  let validator: RegleRuleDefinitionProcessor<any | Promise<any>>;
-  let _active:
-    | boolean
-    | RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, boolean>
-    | undefined;
-  let _params: any[] | undefined;
-  let _message: any;
-  let _async: boolean = false;
-
-  if (typeof rule === 'function' && !('_validator' in rule)) {
-    _type = InternalRuleType.Inline;
-    validator = rule;
-  } else {
-    ({ _type, validator, _active, _params, _message, _async } = rule);
-  }
+  const { _type, validator, _active, _params, _message, _async } = extractValidator(rule);
 
   const newRule = createRule({
     type: _type,
@@ -108,9 +93,9 @@ export function withTooltip(
     async: _async,
   }) as RegleRuleRaw;
 
-  const newParams = [...(_params ?? [])] as [];
+  const newParams = _params ?? [];
 
-  newRule._params = newParams as any;
+  newRule._params = newParams;
   newRule._tooltip_patched = true;
 
   if (typeof newRule === 'function') {

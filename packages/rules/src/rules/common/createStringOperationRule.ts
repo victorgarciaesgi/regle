@@ -1,7 +1,7 @@
 import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { isFilled } from './isFilled';
-import { isString } from './isString';
+import { isFilled } from '../../helpers/ruleHelpers/isFilled';
+import { isString } from '../../helpers/ruleHelpers/isString';
 
 export type StringOperation = 'contains' | 'startsWith' | 'endsWith';
 

@@ -1,5 +1,5 @@
 import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
-import { createStringOperationRule } from '../helpers/ruleHelpers';
+import { createStringOperationRule } from './common/createStringOperationRule';
 
 /**
  * Checks if the string starts with the specified substring.

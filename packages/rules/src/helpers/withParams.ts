@@ -2,8 +2,6 @@ import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  RegleRuleDefinitionWithMetadataProcessor,
-  RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
@@ -11,6 +9,7 @@ import type {
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
 import { type Ref } from 'vue';
+import { extractValidator } from './common/extractValidator';
 
 /**
  * The `withParams` wrapper allows your rule to depend on external parameters,
@@ -63,33 +62,28 @@ export function withParams(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray: any[]
 ): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
-  let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
-  let _params: any[] | undefined = [];
-  let _message: RegleRuleDefinitionWithMetadataProcessor<
-    any,
-    RegleRuleMetadataConsumer<any, any[]>,
-    string | string[]
-  > = '';
+  const { _type, _params, _message, _active, _async } = extractValidator(rule);
 
   if (typeof rule === 'function') {
-    _type = InternalRuleType.Inline;
     validator = (value: any | null | undefined, ...params: any[]) => {
       return rule(value, ...(params as []));
     };
-    _params = [depsArray];
   } else {
-    ({ _type, validator, _message } = rule);
-    _params = _params = rule._params?.concat(depsArray as any);
+    validator = rule.validator;
   }
 
+  const augmentedParams = (_params ?? [])?.concat(depsArray);
+
   const newRule = createRule({
-    type: InternalRuleType.Inline,
+    type: _type ?? InternalRuleType.Inline,
     validator: validator,
     message: _message,
+    active: _active,
+    async: _async,
   });
 
-  newRule._params = newRule._params?.concat(_params);
+  newRule._params = augmentedParams;
 
   return newRule(...depsArray) as any;
 }

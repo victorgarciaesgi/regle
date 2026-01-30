@@ -1,7 +1,7 @@
 import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { isFilled } from './isFilled';
-import { toNumber } from './toNumber';
+import { isFilled } from '../../helpers/ruleHelpers/isFilled';
+import { toNumber } from '../../helpers/ruleHelpers/toNumber';
 
 export type ComparisonDirection = 'min' | 'max';
 
