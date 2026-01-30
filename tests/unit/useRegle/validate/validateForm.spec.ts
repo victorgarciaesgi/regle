@@ -71,6 +71,10 @@ describe('validateForm', () => {
         collection: {
           name: string;
         }[];
+        address: {
+          street?: string | undefined;
+          city?: string | undefined;
+        };
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
@@ -88,6 +92,10 @@ describe('validateForm', () => {
         collection?: {
           name?: MaybeOutput<string>;
         }[];
+        address?: {
+          street?: MaybeOutput<string>;
+          city?: MaybeOutput<string>;
+        };
       }>();
     }
   });

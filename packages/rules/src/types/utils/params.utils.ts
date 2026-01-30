@@ -1,6 +1,15 @@
 import type { InlineRuleDeclaration, RegleRuleDefinition } from '@regle/core';
 import type { EmptyObject } from 'type-fest';
 
+type ExtractBoolean<T extends [...any[]]> = T extends [infer F, ...infer R]
+  ? F extends true
+    ? true
+    : F extends false
+      ? ExtractBoolean<R>
+      : false
+  : false;
+
+// --- Guess Async rules
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<infer V, any, any, any>
     ? [V, ...ExtractValueFromRules<R>]
@@ -17,21 +26,28 @@ type ExtractAsyncStatesFromRules<T extends any[]> = T extends [infer F, ...infer
       : [F, ...ExtractValueFromRules<R>]
   : [];
 
-type ExtractAsync<T extends [...any[]]> = T extends [infer F, ...infer R]
-  ? F extends true
-    ? true
-    : F extends false
-      ? ExtractAsync<R>
-      : false
-  : false;
+export type GuessAsyncFromRules<T extends any[]> = ExtractBoolean<ExtractAsyncStatesFromRules<T>>;
 
-export type GuessAsyncFromRules<T extends any[]> = ExtractAsync<ExtractAsyncStatesFromRules<T>>;
+// --- Guess NoEmpty rules
 
+type ExtractNoEmptyStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
+  ? F extends RegleRuleDefinition<any, any, any, any, any, any, infer NonEmpty extends boolean>
+    ? [NonEmpty, ...ExtractNoEmptyStatesFromRules<R>]
+    : [false, ...ExtractNoEmptyStatesFromRules<R>]
+  : [];
+
+export type GuessNoEmptyFromRules<T extends any[]> = ExtractBoolean<ExtractNoEmptyStatesFromRules<T>>;
+
+//
+// --- Params
 export type ExtractParamsFromRules<T extends any[]> = T extends [infer F, ...infer R]
   ? F extends RegleRuleDefinition<any, infer P, any, any>
     ? [P, ...ExtractParamsFromRules<R>]
     : [F, ...ExtractParamsFromRules<R>]
   : [];
+
+//
+// --- Metadata
 
 type MetadataBase = {
   $valid: boolean;
@@ -52,6 +68,9 @@ export type GuessMetadataFromRules<
   T extends any[],
   TMeta = ExtractMetadata<ExtractMetaDataFromRules<T>>,
 > = TMeta extends EmptyObject ? boolean : TMeta;
+
+//
+// --- Utils
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 

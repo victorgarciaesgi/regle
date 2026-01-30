@@ -22,6 +22,7 @@ export interface RegleRuleInit<
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = boolean,
   TMetadata extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TNonEmpty extends boolean = false,
 > {
   validator: (value: Maybe<TValue>, ...args: TParams) => TReturn;
   message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
@@ -29,6 +30,7 @@ export interface RegleRuleInit<
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   type?: string;
   async?: TAsync;
+  required?: TNonEmpty;
 }
 
 /**

@@ -109,7 +109,7 @@ describe('createVariant', () => {
       RegleFieldStatus<
         string | undefined,
         {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
         },
         RegleShortcutDefinition<any>
       >
@@ -136,8 +136,8 @@ describe('createVariant', () => {
         RegleFieldStatus<
           number,
           {
-            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number, string | number, true>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
             minValue: RegleRuleDefinition<
               number | string,
               [count: number | string, options?: CommonComparisonOptions | undefined],
@@ -180,7 +180,7 @@ describe('createVariant', () => {
           number,
           {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
           },
           RegleShortcutDefinition<any>
         >
@@ -197,7 +197,7 @@ describe('createVariant', () => {
       RegleFieldStatus<
         string | undefined,
         {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
         },
         RegleShortcutDefinition<any>
       >
@@ -318,7 +318,7 @@ describe('createVariant', () => {
           number,
           {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
             minValue: RegleRuleDefinition<
               number | string,
               [count: number | string, options?: CommonComparisonOptions | undefined],
@@ -342,7 +342,7 @@ describe('createVariant', () => {
           number,
           {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
             minValue: RegleRuleDefinition<
               number | string,
               [count: number | string, options?: CommonComparisonOptions | undefined],
@@ -390,7 +390,7 @@ describe('createVariant', () => {
           number,
           {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
           },
           RegleShortcutDefinition<any>
         >
@@ -408,7 +408,7 @@ describe('createVariant', () => {
           number,
           {
             numeric: RegleRuleDefinition<string | number, [], false, boolean, string | number>;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown>;
+            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
           },
           RegleShortcutDefinition<any>
         >

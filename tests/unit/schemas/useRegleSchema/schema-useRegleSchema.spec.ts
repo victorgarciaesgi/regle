@@ -11,7 +11,7 @@ import { zodNestedRegleFixture } from './fixtures/zod.fixture';
 import { z } from 'zod/v3';
 import { inferSchema } from '@regle/schemas';
 import { zod4NestedRegleFixture } from './fixtures/zod4.fixture';
-import type { InferSafeOutput, InferValidOutput } from '@regle/core';
+import type { InferValidOutput } from '@regle/core';
 
 describe.each([
   ['valibot', valibotNestedRegleFixture],

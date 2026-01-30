@@ -61,14 +61,18 @@ describe('and validator', () => {
   it('should have correct return types', () => {
     // @ts-expect-error at least one argument
     and();
-    expectTypeOf(and(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
+    expectTypeOf(and(required)).toEqualTypeOf<
+      RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>
+    >();
     expectTypeOf(and(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
         unknown,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
-        unknown
+        unknown,
+        unknown,
+        true
       >
     >();
   });

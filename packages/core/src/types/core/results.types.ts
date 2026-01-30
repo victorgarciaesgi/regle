@@ -1,4 +1,4 @@
-import type { EmptyObject, IsAny, IsUnknown } from 'type-fest';
+import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -62,15 +62,17 @@ export type RegleResult<
         ? unknown
         : IsAny<Data> extends true
           ? unknown
-          : HasNamedKeys<Data> extends true
-            ? NonNullable<Data> extends Date | File
-              ? MaybeOutput<Raw<Data>>
-              : NonNullable<Data> extends Array<infer U extends Record<string, any>>
-                ? PartialFormState<U>[]
-                : NonNullable<Data> extends Record<string, any>
-                  ? PartialFormState<NonNullable<Data>>
-                  : MaybeOutput<Data>
-            : unknown;
+          : IsEmptyObject<TRules> extends true
+            ? MaybeOutput<Data>
+            : HasNamedKeys<Data> extends true
+              ? NonNullable<Data> extends Date | File
+                ? MaybeOutput<Raw<Data>>
+                : NonNullable<Data> extends Array<infer U extends Record<string, any>>
+                  ? PartialFormState<U>[]
+                  : NonNullable<Data> extends Record<string, any>
+                    ? PartialFormState<NonNullable<Data>>
+                    : MaybeOutput<Data>
+              : unknown;
       /**
        * Collection of all the error messages, collected for all children properties and nested forms.
        *
@@ -90,15 +92,17 @@ export type RegleResult<
         ? unknown
         : IsAny<Data> extends true
           ? unknown
-          : HasNamedKeys<Data> extends true
-            ? NonNullable<Data> extends Array<infer U extends Record<string, any>>
-              ? DeepSafeFormState<U, TRules extends ReglePartialRuleTree<any> ? TRules : {}>[]
-              : NonNullable<Data> extends Date | File
-                ? SafeFieldProperty<Raw<NonNullable<Data>>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
-                : NonNullable<Data> extends Record<string, any>
-                  ? DeepSafeFormState<NonNullable<Data>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
-                  : SafeFieldProperty<Data, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
-            : unknown;
+          : IsEmptyObject<TRules> extends true
+            ? MaybeOutput<Data>
+            : HasNamedKeys<Data> extends true
+              ? NonNullable<Data> extends Array<infer U extends Record<string, any>>
+                ? DeepSafeFormState<U, TRules extends ReglePartialRuleTree<any> ? TRules : {}>[]
+                : NonNullable<Data> extends Date | File
+                  ? SafeFieldProperty<Raw<NonNullable<Data>>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+                  : NonNullable<Data> extends Record<string, any>
+                    ? DeepSafeFormState<NonNullable<Data>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+                    : SafeFieldProperty<Data, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+              : unknown;
       issues: EmptyObject;
       errors: EmptyObject;
     };
@@ -196,17 +200,21 @@ export type DeepSafeFormState<
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>
-    ? [unknown] extends UnwrapRef<TRule>['required']
-      ? NonNullable<UnwrapRef<TRule>['literal']> extends RegleRuleDefinition<any, any[], any, any, any, any>
-        ? true
-        : false
-      : NonNullable<UnwrapRef<TRule>['required']> extends UnwrapRef<TRule>['required']
-        ? UnwrapRef<TRule>['required'] extends RegleRuleDefinition<any, infer Params, any, any, any, any>
-          ? Params extends never[]
-            ? true
-            : false
-          : false
-        : false
+    ? {
+        [K in keyof UnwrapRef<TRule>]-?: UnwrapRef<TRule>[K] extends RegleRuleDefinition<
+          any,
+          any[],
+          any,
+          any,
+          any,
+          any,
+          true
+        >
+          ? true
+          : false;
+      }[keyof UnwrapRef<TRule>] extends false
+      ? false
+      : true
     : false;
 
 type ObjectHaveAtLeastOneRequiredField<
@@ -214,12 +222,14 @@ type ObjectHaveAtLeastOneRequiredField<
   TRules extends ReglePartialRuleTree<TState, any>,
 > =
   TState extends Maybe<TState>
-    ? {
+    ? ({
         [K in keyof NonNullable<TState>]-?: IsPropertyOutputRequired<
           NonNullable<TState>[K],
           TRules[K] extends RegleFormPropertyType<any, any> ? TRules[K] : {}
         >;
-      }[keyof TState] extends false
+      } & {
+        $self: IsPropertyOutputRequired<string, TRules['$self']>;
+      })[keyof TState | '$self'] extends false
       ? false
       : true
     : true;

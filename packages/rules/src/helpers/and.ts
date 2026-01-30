@@ -6,6 +6,7 @@ import type {
   UnwrapTuples,
   GuessAsyncFromRules,
   GuessMetadataFromRules,
+  GuessNoEmptyFromRules,
 } from '../types';
 
 /**
@@ -41,7 +42,10 @@ export function and<const TRules extends [FormRuleDeclaration<any, any>, ...Form
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
   GuessAsyncFromRules<TRules>,
-  GuessMetadataFromRules<TRules>
+  GuessMetadataFromRules<TRules>,
+  ExtractValueFromRules<TRules>[number],
+  ExtractValueFromRules<TRules>[number],
+  GuessNoEmptyFromRules<TRules>
 > {
   const isAnyRuleAsync = rules.some((rule) => {
     if (typeof rule === 'function') {

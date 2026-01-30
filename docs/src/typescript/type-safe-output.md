@@ -20,7 +20,9 @@ const { valid, data, errors, issues } = await r$.$validate();
 
 If your *_result_* is `true`, the **data** will be type safe.
 
-It will check if the `required` rule is present, but it will not work with `requiredIf` or `requiredUnless`, because we can't know the condition at build time.
+It will check the rules to get the ones that ensure the value is set (`required`, `literal`, `checked`)
+
+Tt will not work with `requiredIf` or `requiredUnless`, because we can't know the condition at build time.
 
 
 ```ts twoslash

@@ -23,6 +23,7 @@ export interface RegleRuleDefinition<
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   _TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
+  TNonEmpty extends boolean = boolean,
 > extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
     TFilteredValue,
@@ -35,6 +36,7 @@ export interface RegleRuleDefinition<
   type?: string;
   _value?: IsLiteral<TValue> extends true ? TValue : any;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
+  required: TNonEmpty;
 }
 
 /**
@@ -181,9 +183,10 @@ export type InferRegleRule<
   TParams extends any[] = [],
   TAsync extends boolean = false,
   TMetaData extends RegleRuleMetadataDefinition = boolean,
+  TNonEmpty extends boolean = false,
 > = [TParams] extends [[]]
-  ? RegleRuleDefinition<TValue, TParams, TAsync, TMetaData>
-  : RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetaData>;
+  ? RegleRuleDefinition<TValue, TParams, TAsync, TMetaData, TValue, TValue, TNonEmpty>
+  : RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetaData, TNonEmpty>;
 
 export type RegleRuleDefinitionProcessor<TValue extends any = any, TParams extends any[] = [], TReturn = any> = (
   value: Maybe<TValue>,
