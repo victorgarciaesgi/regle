@@ -18,7 +18,6 @@ import type {
 } from '../rules';
 import type {
   ArrayElement,
-  ExtendOnlyRealRecord,
   ExtractFromGetter,
   HasNamedKeys,
   isRecordLiteral,
@@ -34,13 +33,13 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
   ? {}
   : Prettify<
       {
-        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
+        [K in keyof TState as isRecordLiteral<TState[K]> extends true
           ? never
           : TState[K] extends Array<any>
             ? never
             : K]?: MaybeOutput<TState[K]>;
       } & {
-        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
+        [K in keyof TState as isRecordLiteral<TState[K]> extends true
           ? K
           : TState[K] extends Array<any>
             ? K
@@ -255,7 +254,7 @@ export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> |
       ? DeepSafeFormState<U, ExtractFromGetter<TRule['$each']>>[]
       : TState
     : TRule extends ReglePartialRuleTree<any, any>
-      ? ExtendOnlyRealRecord<TState> extends true
+      ? isRecordLiteral<TState> extends true
         ? DeepSafeFormState<
             NonNullable<TState> extends Record<string, any> ? JoinDiscriminatedUnions<NonNullable<TState>> : {},
             TRule
@@ -278,7 +277,7 @@ export type IsPropertyOutputRequired<TState, TRule extends RegleFormPropertyType
         : true
       : false
     : TRule extends ReglePartialRuleTree<any, any>
-      ? ExtendOnlyRealRecord<TState> extends true
+      ? isRecordLiteral<TState> extends true
         ? ObjectHaveAtLeastOneRequiredField<
             NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
             TRule extends ReglePartialRuleTree<

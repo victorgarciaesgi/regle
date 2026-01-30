@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue';
 import type { RegleCollectionRuleDecl, RegleRuleDecl } from '../rules';
-import type { ExtendOnlyRealRecord, ExtractFromGetter } from './misc.types';
+import type { ExtractFromGetter, isRecordLiteral } from './misc.types';
 
 /**
 /**
@@ -20,7 +20,7 @@ export type DeepExact<TInfer, TTree> =
 
 type ExactObject<TInfer, TTree> = {
   [K in keyof TTree]: NonNullable<TTree[K]> extends Record<string, any>
-    ? ExtendOnlyRealRecord<TTree[K]> extends true
+    ? isRecordLiteral<TTree[K]> extends true
       ? NonNullable<TTree[K]> extends MaybeRef<RegleRuleDecl>
         ? TTree[K]
         : K extends keyof TInfer

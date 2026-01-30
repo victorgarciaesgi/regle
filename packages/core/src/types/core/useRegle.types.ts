@@ -7,7 +7,7 @@ import type {
   RegleRoot,
   RegleRuleDecl,
 } from '../rules';
-import type { ExtendOnlyRealRecord, Maybe, PrimitiveTypes } from '../utils';
+import type { isRecordLiteral, Maybe, PrimitiveTypes } from '../utils';
 import type { RegleShortcutDefinition, RegleValidationGroupEntry } from './modifiers.types';
 
 /**
@@ -58,7 +58,7 @@ export type RegleSingleField<
 } & TAdditionalReturnProperties;
 
 export type DeepReactiveState<T extends Record<string, any> | unknown | undefined> =
-  ExtendOnlyRealRecord<T> extends true
+  isRecordLiteral<T> extends true
     ? {
         [K in keyof T]: InferDeepReactiveState<T[K]>;
       }

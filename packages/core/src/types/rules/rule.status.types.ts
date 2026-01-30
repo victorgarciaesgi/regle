@@ -10,7 +10,6 @@ import type {
   ExtendedRulesDeclarations,
   CollectionRegleBehaviourOptions,
   DeepPartial,
-  ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   HasNamedKeys,
@@ -39,6 +38,7 @@ import type {
   RegleValidationGroupOutput,
   ResetOptions,
   RegleResult,
+  isRecordLiteral,
 } from '..';
 
 /**
@@ -76,7 +76,7 @@ type ProcessNestedFields<
               : never
             : never
           : TKey]: IsUnion<NonNullable<TRules[TKey]>> extends true
-          ? ExtendOnlyRealRecord<TState[TKey]> extends true
+          ? isRecordLiteral<TState[TKey]> extends true
             ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
             : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
           : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
@@ -88,7 +88,7 @@ type ProcessNestedFields<
               : TKey
             : TKey
           : never]-?: IsUnion<NonNullable<TRules[TKey]>> extends true
-          ? ExtendOnlyRealRecord<TState[TKey]> extends true
+          ? isRecordLiteral<TState[TKey]> extends true
             ? MaybeVariantStatus<NonNullable<TState>[TKey], NonNullable<TRules[TKey]>, TShortcuts>
             : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
           : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>;
