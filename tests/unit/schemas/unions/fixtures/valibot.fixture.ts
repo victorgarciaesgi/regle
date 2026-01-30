@@ -45,7 +45,7 @@ export function valibotUnionsFixture() {
   });
 
   const form = reactive<Partial<v.InferInput<typeof schema>>>({
-    gift: {} as any,
+    gift: {} as v.InferInput<typeof Gift>,
   });
 
   return useRegleSchema(form, schema);

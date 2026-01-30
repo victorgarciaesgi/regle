@@ -127,7 +127,7 @@ function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
 export function resolveFieldByPath(fields: FieldsDictionary, path: string): $InternalRegleStatusType | null {
   if (!fields || !path) return null;
 
-  const segments = path.match(/[^.\[\]]+/g);
+  const segments = path.match(/[^.[\]]+/g);
   if (!segments) return null;
 
   let current: any = fields;

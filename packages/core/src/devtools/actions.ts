@@ -93,7 +93,7 @@ export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayload
     return;
   }
 
-  const [instanceId, _, fieldPath] = nodeId?.split(':');
+  const [instanceId, _, fieldPath] = nodeId?.split(':') ?? [];
   const instance = regleDevtoolsRegistry.get(instanceId);
 
   if (instance && instance.r$.$fields) {

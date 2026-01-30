@@ -1,27 +1,21 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["vue", "unicorn", "eslint"],
-  "categories": {
-    "correctness": "off"
-  },
   "env": {
     "builtin": true
-  },
-  "rules": {
-    "vue/valid-define-emits": "error",
-    "vue/valid-define-props": "error",
-    "vue/no-multiple-slot-args": "warn",
-    "curly": "off",
-    "no-unexpected-multiline": "off",
-    "unicorn/empty-brace-spaces": "off",
-    "unicorn/no-nested-ternary": "off",
-    "unicorn/number-literal-case": "off"
   },
   "ignorePatterns": ["**/.output/", "**/dist/**/*.js", "playground/**/*", "docs/.vitepress/cache/**/*"],
   "overrides": [
     {
       "files": ["**/*.ts", "*.vue", "**/*.vue", "**/*.spec.ts", "packages/**"],
       "rules": {
+        "curly": "off",
+        "vue/valid-define-emits": "error",
+        "vue/valid-define-props": "error",
+        "vue/no-multiple-slot-args": "warn",
+        "no-unexpected-multiline": "off",
+        "unicorn/empty-brace-spaces": "off",
+        "unicorn/no-nested-ternary": "off",
+        "unicorn/number-literal-case": "off",
         "no-console": [
           "error",
           {
@@ -38,10 +32,10 @@
             "disallowTypeAnnotations": false
           }
         ],
-        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
         "no-unused-vars": "warn"
       },
-      "plugins": ["import", "promise", "typescript", "eslint", "vue", "unicorn"]
+      "plugins": ["import", "promise", "typescript", "eslint", "vue", "unicorn", "vitest", "oxc", "jsdoc"]
     }
   ]
 }

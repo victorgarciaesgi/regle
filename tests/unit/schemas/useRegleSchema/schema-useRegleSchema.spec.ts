@@ -29,8 +29,6 @@ describe.each([
 
   const { vm } = createRegleComponent(regleSchema);
 
-  vm.r$.$validate;
-
   it('should have a initial state', () => {
     expect(vm.r$.$errors).toStrictEqual({
       level0: [],

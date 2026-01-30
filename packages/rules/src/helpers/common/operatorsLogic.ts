@@ -17,7 +17,7 @@ import type {
 
 type RuleResult = boolean | RegleRuleMetadataExtended;
 
-type CombineMode = 'and' | 'or';
+type CombineMode = 'and' | 'or' | 'xor';
 
 interface CombineRulesOptions {
   mode: CombineMode;
@@ -77,22 +77,41 @@ export function computeRulesResults<TRules extends FormRuleDeclaration<any, any>
 }
 
 /**
+ * Computes validity based on the combine mode
+ * @param results - Array of rule results (boolean or metadata objects)
+ * @param mode - 'and' uses every(), 'or' uses some(), 'xor' checks exactly one is valid
+ */
+function computeValidity(value: unknown, results: RuleResult[], mode: CombineMode): boolean {
+  const getValid = (result: RuleResult): boolean => {
+    if (typeof result === 'boolean') {
+      return !!result;
+    }
+    return result.$valid;
+  };
+
+  if (mode === 'xor') {
+    if (results.length > 1) {
+      const validCount = results.filter(getValid).length;
+      return validCount === 1;
+    }
+    return results.every(getValid);
+  }
+
+  const aggregator = mode === 'and' ? 'every' : 'some';
+  return results[aggregator](getValid);
+}
+
+/**
  * Computes the final metadata from rule results based on the combine mode
  * @param results - Array of rule results (boolean or metadata objects)
- * @param mode - 'and' uses every(), 'or' uses some()
+ * @param mode - 'and' uses every(), 'or' uses some(), 'xor' checks exactly one is valid
  */
-export function computeCombinedMetadata(results: RuleResult[], mode: CombineMode): RuleResult {
-  const aggregator = mode === 'and' ? 'every' : 'some';
+export function computeCombinedMetadata(value: unknown, results: RuleResult[], mode: CombineMode): RuleResult {
   const isAnyResultMetaData = results.some((s) => typeof s !== 'boolean');
 
   if (isAnyResultMetaData) {
     return {
-      $valid: results[aggregator]((result) => {
-        if (typeof result === 'boolean') {
-          return !!result;
-        }
-        return result.$valid;
-      }),
+      $valid: computeValidity(value, results, mode),
       ...results.reduce((acc, result) => {
         if (typeof result === 'boolean') {
           return acc;
@@ -102,7 +121,7 @@ export function computeCombinedMetadata(results: RuleResult[], mode: CombineMode
       }, {}),
     };
   } else {
-    return results[aggregator]((result) => !!result);
+    return computeValidity(value, results, mode);
   }
 }
 
@@ -129,13 +148,13 @@ export function combineRules<const TRules extends [FormRuleDeclaration<any, any>
 
   if (rules.length) {
     validator = isAsync
-      ? async (value: any | null | undefined, ...params: any[]) => {
+      ? async (value: unknown, ...params: any[]) => {
           const results = await Promise.all(computeRulesResults(rules, value, ...params));
-          return computeCombinedMetadata(results, mode);
+          return computeCombinedMetadata(value, results, mode);
         }
-      : (value: any | null | undefined, ...params: any[]) => {
+      : (value: unknown, ...params: any[]) => {
           const results = computeRulesResults(rules, value, ...params);
-          return computeCombinedMetadata(results, mode);
+          return computeCombinedMetadata(value, results, mode);
         };
   } else {
     // For empty rules: 'and' returns false (nothing to satisfy), 'or' also returns false (nothing passes)

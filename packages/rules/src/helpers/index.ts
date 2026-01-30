@@ -6,5 +6,6 @@ export { applyIf } from './applyIf';
 export { matchRegex, getSize, isDate, isEmpty, isFilled, isNumber, toDate, toNumber } from './ruleHelpers';
 export { and } from './and';
 export { or } from './or';
+export { xor } from './xor';
 export { not } from './not';
 export { assignIf } from './assignIf';

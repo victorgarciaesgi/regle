@@ -4,7 +4,6 @@ import type { DefaultValidators } from '../../core';
 import type {
   $InternalRegleCollectionStatus,
   $InternalRegleStatus,
-  CustomRulesDeclarationTree,
   RegleCollectionStatus,
   RegleExternalErrorTree,
   RegleFieldStatus,

@@ -1,4 +1,4 @@
-import { useRegle, type InferSafeOutput, type InferValidOutput } from '@regle/core';
+import { useRegle, type InferValidOutput } from '@regle/core';
 import { numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -41,7 +41,7 @@ describe('useRegle should work with single field validation', () => {
     const { data, valid } = await vm.r$.$validate();
 
     if (valid) {
-      expectTypeOf(data).toExtend<number>;
+      expectTypeOf(data).toExtend<number>();
     }
 
     expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<number>();
