@@ -1,8 +1,8 @@
 import type { CommonComparisonOptions, Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
-import { isFilled } from './isFilled';
-import { isNumber } from './isNumber';
-import { getSize } from './getSize';
+import { isFilled } from '../../helpers/ruleHelpers/isFilled';
+import { isNumber } from '../../helpers/ruleHelpers/isNumber';
+import { getSize } from '../../helpers/ruleHelpers/getSize';
 
 export type LengthDirection = 'min' | 'max';
 

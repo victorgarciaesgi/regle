@@ -18,9 +18,7 @@
   const { r$ } = useRegle(state, {
     name: { foo: and(required, minLength(2)) },
     address: {
-      $self: {
-        required,
-      },
+      $self: { required },
     },
   });
 

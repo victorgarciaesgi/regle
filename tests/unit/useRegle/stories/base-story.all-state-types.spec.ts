@@ -77,7 +77,7 @@ describe.each([
     expect(valid).toBe(false);
     expect(vm.r$.$errors).toStrictEqual({
       level0: [],
-      level0Boolean: ['This field is required'],
+      level0Boolean: ['The field must be checked'],
       level1: {
         child: ['Custom error'],
         level2: {

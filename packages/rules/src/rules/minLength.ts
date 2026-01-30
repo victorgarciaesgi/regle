@@ -1,6 +1,6 @@
 import type { RegleRuleWithParamsDefinition } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
-import { createLengthRule } from '../helpers/ruleHelpers';
+import { createLengthRule } from './common/createLengthRule';
 
 /**
  * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.

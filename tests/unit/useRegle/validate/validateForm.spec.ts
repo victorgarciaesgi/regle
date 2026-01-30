@@ -75,6 +75,7 @@ describe('validateForm', () => {
           street?: string | undefined;
           city?: string | undefined;
         };
+        booleanField: boolean;
       }>();
     } else {
       expectTypeOf(data).toEqualTypeOf<{
@@ -96,6 +97,7 @@ describe('validateForm', () => {
           street?: MaybeOutput<string>;
           city?: MaybeOutput<string>;
         };
+        booleanField?: MaybeOutput<boolean>;
       }>();
     }
   });

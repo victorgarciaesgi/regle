@@ -1,17 +1,14 @@
 import type {
-  RegleRuleDefinition,
-  RegleRuleDefinitionProcessor,
-  RegleRuleMetadataConsumer,
-  RegleRuleDefinitionWithMetadataProcessor,
-  RegleRuleRaw,
-  Maybe,
   FormRuleDeclaration,
   InlineRuleDeclaration,
+  Maybe,
+  RegleRuleDefinition,
+  RegleRuleRaw,
   RegleRuleWithParamsDefinitionInput,
 } from '@regle/core';
-import { createRule, InternalRuleType, unwrapRuleParameters } from '@regle/core';
+import { createRule, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
-import { isRuleDef } from '../utils/guards.utils';
+import { extractValidator } from './common/extractValidator';
 
 /**
  * The `applyIf` operator is similar to `requiredIf`, but it can be used with **any rule**.
@@ -51,24 +48,9 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
     : TRule extends RegleRuleDefinition<infer TValue, any[], infer TAsync, infer TMetadata>
       ? RegleRuleDefinition<TValue, [condition: boolean], TAsync, TMetadata>
       : TRule {
-  let _type: string | undefined;
-  let validator: RegleRuleDefinitionProcessor<any, any, any>;
-  let _params: any[] | undefined = [];
-  let _message: RegleRuleDefinitionWithMetadataProcessor<
-    any,
-    RegleRuleMetadataConsumer<any, any[]>,
-    string | string[]
-  > = '';
-  let _async: boolean = false;
+  const { _type, validator, _params, _message, _async } = extractValidator(rule);
 
-  if (typeof rule === 'function' && !('_validator' in rule)) {
-    _type = InternalRuleType.Inline;
-    validator = rule;
-    _params = [_condition];
-  } else if (isRuleDef(rule)) {
-    ({ _type, validator, _message, _async, _params } = rule);
-    _params = (_params ?? [])?.concat([_condition] as any);
-  }
+  const augmentedParams = (_params ?? []).concat([_condition]);
 
   function newValidator(value: any, ...args: any[]) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
@@ -84,18 +66,17 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
   }
 
   const newRule = createRule({
-    type: _type as any,
+    type: _type,
     validator: newValidator,
     active: newActive,
     message: _message,
     async: _async,
   }) as RegleRuleRaw;
 
-  const newParams = [...(_params ?? [])] as [];
-  newRule._params = newParams as any;
+  newRule._params = augmentedParams;
 
   if (typeof newRule === 'function') {
-    const executedRule = newRule(...newParams);
+    const executedRule = newRule(...augmentedParams);
     return executedRule as any;
   } else {
     return newRule as any;

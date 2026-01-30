@@ -1,5 +1,5 @@
 import { useRegle } from '@regle/core';
-import { required, requiredIf } from '@regle/rules';
+import { required, requiredIf, checked } from '@regle/rules';
 
 export function simpleNestedStateWithMixedValidation() {
   interface Form {
@@ -13,6 +13,7 @@ export function simpleNestedStateWithMixedValidation() {
     contacts?: [{ name: string }];
     collection?: [{ name: string }];
     file: File;
+    booleanField?: boolean;
     address?: {
       street?: string;
       city?: string;
@@ -37,6 +38,7 @@ export function simpleNestedStateWithMixedValidation() {
         name: { required },
       },
     },
+    booleanField: { checked },
     collection: {
       required,
     },

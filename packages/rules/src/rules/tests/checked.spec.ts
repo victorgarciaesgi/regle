@@ -2,8 +2,8 @@ import { checked } from '../checked';
 
 describe('checked validator', () => {
   it('should not validate undefined values', () => {
-    expect(checked.exec(null)).toBe(true);
-    expect(checked.exec(undefined)).toBe(true);
+    expect(checked.exec(null)).toBe(false);
+    expect(checked.exec(undefined)).toBe(false);
   });
 
   it('should validate true value', () => {

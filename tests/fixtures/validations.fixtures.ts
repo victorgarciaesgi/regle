@@ -24,7 +24,7 @@ export function nestedReactiveObjectValidation({ autoDirty = true, silent = fals
     form,
     {
       level0: { rule: ruleMockIsEven },
-      level0Boolean: { required, checked },
+      level0Boolean: { checked },
       level1: {
         child: { rule: ruleMockIsEven },
         level2: {
@@ -63,7 +63,7 @@ export function nestedRefObjectValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
-        level0Boolean: { required, checked },
+        level0Boolean: { checked },
 
         level1: {
           child: { rule: ruleMockIsEven },
@@ -97,7 +97,7 @@ export function nestedRefObjectValidationComputed(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
-        level0Boolean: { required, checked },
+        level0Boolean: { checked },
 
         level1: {
           child: { rule: ruleMockIsEven },
@@ -134,7 +134,7 @@ export function nestedReactiveWithRefsValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
-        level0Boolean: { required, checked },
+        level0Boolean: { checked },
 
         level1: {
           child: { rule: ruleMockIsEven },
@@ -169,7 +169,7 @@ export function nestedObjectWithRefsValidation(): ReturnRegleType {
     () =>
       ({
         level0: { rule: ruleMockIsEven },
-        level0Boolean: { required, checked },
+        level0Boolean: { checked },
 
         level1: {
           child: { rule: ruleMockIsEven },

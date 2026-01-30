@@ -1,16 +1,15 @@
-import type { Ref } from 'vue';
 import type {
   InlineRuleDeclaration,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
-  RegleRuleDefinitionWithMetadataProcessor,
-  RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinition,
   UnwrapRegleUniversalParams,
 } from '@regle/core';
 import { createRule, InternalRuleType } from '@regle/core';
+import type { Ref } from 'vue';
+import { extractValidator } from './common/extractValidator';
 
 /**
  * `withAsync` works like `withParams`, but is specifically designed for async rules that depend on external values.
@@ -52,34 +51,28 @@ export function withAsync(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray?: any[]
 ): RegleRuleWithParamsDefinition<any, any, true, any> | RegleRuleDefinition<any, any, true, any> {
-  let _type: string | undefined;
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
-  let _params: any[] | undefined = [];
-  let _message: RegleRuleDefinitionWithMetadataProcessor<
-    any,
-    RegleRuleMetadataConsumer<any, any[]>,
-    string | string[]
-  > = '';
+  const { _type, _params, _message, _active } = extractValidator(rule);
 
   if (typeof rule === 'function') {
     validator = async (value: any | null | undefined, ...params: any[]) => {
       return rule(value, ...(params as []));
     };
-    _params = [depsArray];
   } else {
-    ({ _type, _message } = rule);
-    _params = _params = rule._params?.concat(depsArray as any);
     validator = async (...args: any[]) => rule.validator(args);
   }
+
+  const augmentedParams = (_params ?? [])?.concat(depsArray);
 
   const newRule = createRule({
     type: _type ?? InternalRuleType.Async,
     validator: validator,
     message: _message,
     async: true,
+    active: _active,
   });
 
-  newRule._params = newRule._params?.concat(_params);
+  newRule._params = augmentedParams;
 
   return newRule(...(depsArray ?? [])) as any;
 }
