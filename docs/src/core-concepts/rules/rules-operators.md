@@ -6,6 +6,7 @@ description: Regle provides tools to combine and operate on different rules
 <script setup>
 import OperatorAnd from '../../parts/components/operators/OperatorAnd.vue';
 import OperatorOr from '../../parts/components/operators/OperatorOr.vue';
+import OperatorXor from '../../parts/components/operators/OperatorXor.vue';
 import OperatorNot from '../../parts/components/operators/OperatorNot.vue';
 import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vue';
 </script>
@@ -13,10 +14,11 @@ import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vu
 
 # Rules operators
 
-Regle provides tools to combine and operate on different rules. It includes four built-in operators, available in `@regle/rules`:
+Regle provides tools to combine and operate on different rules. It includes the following built-in operators, available in `@regle/rules`:
 
 - `and`
 - `or`
+- `xor`
 - `not`
 - `applyIf`
 - `assignIf`
@@ -82,6 +84,33 @@ const { r$ } = useRegle(
 Result: 
 
 <OperatorOr />
+
+
+## `xor`
+
+The `xor` operator (exclusive or) validates successfully if **exactly one** of the provided rules is valid. It fails when none or more than one rule passes.
+
+```ts
+import { useRegle } from '@regle/core';
+import { xor, contains, withMessage } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { code: '' },
+  {
+    code: {
+      myError: withMessage(
+        xor(contains('A'), contains('B')),
+        ({ $params: [charA, charB] }) =>
+          `Field should contain either "${charA}" or "${charB}", but not both`
+      ),
+    },
+  }
+);
+```
+
+Result: 
+
+<OperatorXor />
 
 
 ## `not`

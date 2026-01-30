@@ -1,10 +1,10 @@
 function getRegExpFlags(regExp: any) {
   let flags = [];
-  regExp.global && flags.push('g');
-  regExp.ignoreCase && flags.push('i');
-  regExp.multiline && flags.push('m');
-  regExp.sticky && flags.push('y');
-  regExp.unicode && flags.push('u');
+  if (regExp.global) flags.push('g');
+  if (regExp.ignoreCase) flags.push('i');
+  if (regExp.multiline) flags.push('m');
+  if (regExp.sticky) flags.push('y');
+  if (regExp.unicode) flags.push('u');
   return flags.join('');
 }
 

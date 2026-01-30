@@ -36,9 +36,9 @@ it('valibot (%s) - collections should have the correct type', () => {
 
   expectTypeOf(r$.collection).toExtend<
     RegleSchemaCollectionStatus<v.InferInput<typeof childSchema>[], RegleShortcutDefinition<any>>
-  >;
+  >();
 
   expectTypeOf(r$.collection.$each[0].grandChildren).toEqualTypeOf<
     RegleSchemaCollectionStatus<v.InferInput<typeof grandChildSchema>[], RegleShortcutDefinition<any>>
-  >;
+  >();
 });

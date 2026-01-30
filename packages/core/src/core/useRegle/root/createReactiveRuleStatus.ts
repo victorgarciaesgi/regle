@@ -190,7 +190,7 @@ export function createReactiveRuleStatus({
         return unwrapRuleParameters(rule.value._params ?? []);
       });
 
-      const $path = computed<string>(() => `${path}.${$type.value}`);
+      const $path = computed<string>(() => `${path}.${ruleKey}`);
 
       return {
         $active,

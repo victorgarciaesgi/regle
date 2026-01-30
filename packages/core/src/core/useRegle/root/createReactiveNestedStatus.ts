@@ -754,7 +754,7 @@ export function createReactiveNestedStatus({
     $clearExternalErrors,
     $extractDirtyFields,
     $abort,
-    ...(!!rootRules ? { '~modifiers': scopeState.$modifiers } : {}),
+    ...(rootRules ? { '~modifiers': scopeState.$modifiers } : {}),
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
 

@@ -150,7 +150,7 @@ describe('markStatic', () => {
     expectTypeOf(vm.r$.$value.decimal).toEqualTypeOf<Raw<RegleStaticImpl<Decimal>>>();
     expectTypeOf(vm.r$.$value.nested.wrapper).toEqualTypeOf<Raw<RegleStaticImpl<BigWrapper>>>();
 
-    vm.r$.decimal;
+    expect(vm.r$.decimal).toBeDefined();
 
     expectTypeOf(vm.r$.decimal.$value).toEqualTypeOf<MaybeOutput<Raw<Decimal>>>();
     expectTypeOf(vm.r$.decimal.$errors).toEqualTypeOf<string[]>();
