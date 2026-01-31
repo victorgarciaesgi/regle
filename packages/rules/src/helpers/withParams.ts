@@ -39,29 +39,31 @@ import { extractValidator } from './common/extractValidator';
  * @see {@link https://reglejs.dev/core-concepts/rules/rule-wrappers#withparams Documentation}
  */
 export function withParams<
+  TType extends string | unknown,
   TValue,
   TParams extends (Ref<unknown> | (() => unknown))[] = [],
   TReturn extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TValue, any[], TAsync, TMetadata>,
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn> | RegleRuleDefinition<TType, TValue, any[], TAsync, TMetadata>,
   depsArray: [...TParams]
-): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, TAsync, TMetadata>;
+): RegleRuleDefinition<TType, TValue, UnwrapRegleUniversalParams<TParams>, TAsync, TMetadata>;
 export function withParams<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   depsArray: [...TParams]
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withParams(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray: any[]
-): RegleRuleWithParamsDefinition<any, any, any, any> | RegleRuleDefinition<any, any, any, any> {
+): RegleRuleWithParamsDefinition<unknown, any, any, any, any> | RegleRuleDefinition<unknown, any, any, any, any> {
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   const { _type, _params, _message, _active, _async } = extractValidator(rule);
 

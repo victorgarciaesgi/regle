@@ -249,8 +249,8 @@ type ComputeFieldRules<
           '$each' | keyof FieldRegleBehaviourOptions
         >]: RegleRuleStatus<
           TState,
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<any, infer TParams, any> ? TParams : [],
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<any, any, any, infer TMetadata>
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, infer TParams, any> ? TParams : [],
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, any, any, infer TMetadata>
             ? TMetadata
             : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
               ? TMetadata extends Promise<infer P>

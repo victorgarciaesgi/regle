@@ -8,6 +8,7 @@ interface SameAsFn {
     target: MaybeRefOrGetter<TTarget>,
     otherName?: MaybeRefOrGetter<string>
   ): RegleRuleDefinition<
+    'sameAs',
     TTarget,
     [target: TTarget, otherName?: string],
     false,
@@ -19,6 +20,7 @@ interface SameAsFn {
     target: MaybeRefOrGetter<unknown>,
     otherName?: MaybeRefOrGetter<string>
   ): RegleRuleDefinition<
+    'sameAs',
     unknown,
     [target: any, otherName?: string],
     false,

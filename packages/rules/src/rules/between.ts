@@ -31,6 +31,7 @@ import type { CommonComparisonOptions } from '@regle/core';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#between Documentation}
  */
 export const between: RegleRuleWithParamsDefinition<
+  'between',
   number,
   [min: number, max: number, options?: CommonComparisonOptions],
   false,

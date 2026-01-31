@@ -39,6 +39,7 @@ describe('nativeEnum validator', () => {
   const nativeEnumRule = nativeEnum(Food);
   expectTypeOf(nativeEnumRule).toEqualTypeOf<
     RegleRuleDefinition<
+      'nativeEnum',
       MaybeInput<'Meat' | 'Fish'>,
       [
         enumLike: {

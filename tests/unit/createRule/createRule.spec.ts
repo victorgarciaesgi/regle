@@ -11,10 +11,11 @@ describe('createRule', () => {
         return true;
       },
       message: '',
+      type: 'test',
     });
 
     expect(rule.exec('fooo')).toBe(true);
-    expectTypeOf(rule).toMatchTypeOf<RegleRuleDefinition<unknown, [], false, true, unknown>>();
+    expectTypeOf(rule).toEqualTypeOf<RegleRuleDefinition<'test', unknown, [], false, true, unknown, unknown, false>>();
   });
 
   it('should handle metadata', () => {
@@ -23,18 +24,22 @@ describe('createRule', () => {
         return { $valid: true };
       },
       message: '',
+      type: 'test',
     });
 
     expect(rule.exec('fooo')).toBe(true);
-    expectTypeOf(rule).toMatchTypeOf<
+    expectTypeOf(rule).toEqualTypeOf<
       RegleRuleDefinition<
+        'test',
         unknown,
         [],
         false,
         {
           $valid: true;
         },
-        unknown
+        unknown,
+        unknown,
+        false
       >
     >();
   });
@@ -48,15 +53,18 @@ describe('createRule', () => {
     });
 
     expect(await rule.exec('fooo')).toBe(true);
-    expectTypeOf(rule).toMatchTypeOf<
+    expectTypeOf(rule).toEqualTypeOf<
       RegleRuleDefinition<
+        unknown,
         unknown,
         [],
         true,
         {
           $valid: true;
         },
-        unknown
+        unknown,
+        unknown,
+        false
       >
     >();
   });
@@ -85,7 +93,7 @@ describe('createRule', () => {
     expect(rule(true, true).exec('fooo')).toBe(true);
 
     expectTypeOf(rule).toEqualTypeOf<
-      RegleRuleWithParamsDefinition<unknown, [param?: any, param2?: any], false, true>
+      RegleRuleWithParamsDefinition<unknown, unknown, [param?: any, param2?: any], false, true>
     >();
   });
 
@@ -95,12 +103,13 @@ describe('createRule', () => {
         return true;
       },
       message: '',
+      type: 'test',
     });
 
     expect(rule().exec('fooo')).toBe(true);
     expect(rule(true).exec('fooo')).toBe(true);
     expect(rule(true, true).exec('fooo')).toBe(true);
 
-    expectTypeOf(rule).toEqualTypeOf<RegleRuleWithParamsDefinition<unknown, boolean[], false, true>>();
+    expectTypeOf(rule).toEqualTypeOf<RegleRuleWithParamsDefinition<'test', unknown, boolean[], false, true>>();
   });
 });

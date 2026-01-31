@@ -61,9 +61,10 @@ describe('or validator', () => {
   it('should have correct return types', () => {
     // @ts-expect-error
     or();
-    expectTypeOf(or(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
+    expectTypeOf(or(required)).toEqualTypeOf<RegleRuleDefinition<'or', unknown, [], false, boolean, unknown>>();
     expectTypeOf(or(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
+        'or',
         unknown,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,

@@ -261,7 +261,7 @@ describe('assignIf helper', () => {
 
     expectTypeOf(result).toEqualTypeOf<
       ComputedRef<{
-        required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
+        required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
         minLength: typeof minLengthRule;
       }>
     >();
@@ -314,12 +314,12 @@ describe('assignIf helper', () => {
       RegleFieldStatus<
         string,
         ComputedRef<{
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
           customRule: () => true;
         }>,
         RegleShortcutDefinition<{
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
-          customRule: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
+          customRule: RegleRuleDefinition<unknown, unknown, [], false, boolean, unknown, unknown>;
         }>
       >
     >();

@@ -131,7 +131,7 @@ describe('applyIf helper', () => {
 
   it('should have correct types', () => {
     expectTypeOf(applyIf(() => true, required)).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [condition: boolean], false, boolean, unknown>
+      RegleRuleDefinition<'required', unknown, [condition: boolean], false, boolean, unknown>
     >();
 
     expectTypeOf(
@@ -139,7 +139,7 @@ describe('applyIf helper', () => {
         () => true,
         async () => true
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [condition: boolean], true, boolean, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<'applyIf', unknown, [condition: boolean], true, boolean, unknown>>();
 
     const metadatarule = applyIf(
       () => true,
@@ -147,6 +147,7 @@ describe('applyIf helper', () => {
     );
     expectTypeOf(metadatarule).toEqualTypeOf<
       RegleRuleDefinition<
+        'applyIf',
         unknown,
         [condition: boolean],
         false,

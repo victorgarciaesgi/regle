@@ -6,8 +6,8 @@ import { getSize } from '../../helpers/ruleHelpers/getSize';
 
 export type LengthDirection = 'min' | 'max';
 
-interface CreateLengthRuleOptions {
-  type: string;
+interface CreateLengthRuleOptions<TType extends string> {
+  type: TType;
   direction: LengthDirection;
 }
 
@@ -15,10 +15,11 @@ interface CreateLengthRuleOptions {
  * Factory function to create length comparison rules (minLength/maxLength).
  * Reduces duplication between similar length rules.
  */
-export function createLengthRule({
+export function createLengthRule<TType extends string>({
   type,
   direction,
-}: CreateLengthRuleOptions): RegleRuleWithParamsDefinition<
+}: CreateLengthRuleOptions<TType>): RegleRuleWithParamsDefinition<
+  TType,
   string | any[] | Record<PropertyKey, any>,
   [limit: number, options?: CommonComparisonOptions],
   false,

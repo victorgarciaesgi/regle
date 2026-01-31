@@ -27,6 +27,7 @@ export interface UrlOptions {
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#url Documentation}
  */
 export const url: RegleRuleWithParamsDefinition<
+  'url',
   string,
   [options?: UrlOptions | undefined],
   false,

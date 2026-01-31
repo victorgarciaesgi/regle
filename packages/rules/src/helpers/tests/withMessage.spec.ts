@@ -141,12 +141,13 @@ describe('withMessage helper', () => {
   it('should have correct types', () => {
     // Correct return type with a built-in rule
     expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
-      RegleRuleDefinition<unknown, [], false, boolean, unknown>
+      RegleRuleDefinition<'required', unknown, [], false, boolean, unknown>
     >();
 
     // Correct return type with inline rule and metadata
     expectTypeOf(withMessage((_value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
+        unknown,
         unknown,
         [],
         false,
@@ -206,6 +207,7 @@ describe('withMessage helper', () => {
     // Correct type with async value returning metadata
     expectTypeOf(withMessage(async (_value) => ({ $valid: true, foo: 'bar' }), 'Required')).toEqualTypeOf<
       RegleRuleDefinition<
+        unknown,
         unknown,
         [],
         true,
@@ -282,6 +284,7 @@ describe('withMessage helper', () => {
       })
     ).toEqualTypeOf<
       RegleRuleDefinition<
+        'and',
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
@@ -297,6 +300,7 @@ describe('withMessage helper', () => {
       })
     ).toEqualTypeOf<
       RegleRuleDefinition<
+        'minLength',
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
@@ -312,6 +316,7 @@ describe('withMessage helper', () => {
 
     expectTypeOf(message).toEqualTypeOf<
       RegleRuleWithParamsDefinition<
+        'minLength',
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
@@ -336,7 +341,7 @@ describe('withMessage helper', () => {
         }),
         'Required async'
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, unknown, [], true, boolean, unknown>>();
 
     expectTypeOf(
       withMessage(
@@ -345,6 +350,6 @@ describe('withMessage helper', () => {
         }, [() => true]),
         'Required async'
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [boolean], false, true, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, unknown, [boolean], false, true, unknown>>();
   });
 });

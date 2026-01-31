@@ -21,7 +21,15 @@ import { isFilled } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#string Documentation}
  */
-export const string: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<string>, unknown> = createRule({
+export const string: RegleRuleDefinition<
+  'string',
+  unknown,
+  [],
+  false,
+  boolean,
+  MaybeInput<string>,
+  unknown
+> = createRule({
   type: 'string',
   validator: (value: MaybeInput<unknown>) => {
     if (isFilled(value)) {

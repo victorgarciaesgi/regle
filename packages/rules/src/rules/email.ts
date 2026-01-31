@@ -17,7 +17,7 @@ import { EMAIL_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#email Documentation}
  */
-export const email: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
+export const email: RegleRuleDefinition<'email', string, [], false, boolean, MaybeInput<string>> = createRule({
   type: 'email',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

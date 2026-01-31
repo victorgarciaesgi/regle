@@ -38,6 +38,7 @@ import { combineRules } from './common/operatorsLogic';
 export function or<TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
+  'or',
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
   GuessAsyncFromRules<TRules>,

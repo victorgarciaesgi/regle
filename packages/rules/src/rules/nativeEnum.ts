@@ -38,7 +38,15 @@ function getValidEnumValues(obj: any) {
  */
 export function nativeEnum<T extends EnumLike>(
   enumLike: T
-): RegleRuleDefinition<MaybeInput<T[keyof T]>, [enumLike: T], false, boolean, MaybeInput<T[keyof T]>, string | number> {
+): RegleRuleDefinition<
+  'nativeEnum',
+  MaybeInput<T[keyof T]>,
+  [enumLike: T],
+  false,
+  boolean,
+  MaybeInput<T[keyof T]>,
+  string | number
+> {
   const params = computed<EnumLike>(() => toValue(enumLike));
 
   const rule = withMessage(

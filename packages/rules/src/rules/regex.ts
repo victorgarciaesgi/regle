@@ -23,6 +23,7 @@ import { isFilled, matchRegex } from '../helpers';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#regex Documentation}
  */
 export const regex: RegleRuleWithParamsDefinition<
+  'regex',
   string | number,
   [regexp: RegExp | RegExp[]],
   false,

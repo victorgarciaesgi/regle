@@ -16,11 +16,12 @@ import { isFilled } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#required Documentation}
  */
-export const required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true> = createRule({
-  type: 'required',
-  validator: (value: unknown) => {
-    return isFilled(value);
-  },
-  message: 'This field is required',
-  required: true,
-});
+export const required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true> =
+  createRule({
+    type: 'required',
+    validator: (value: unknown) => {
+      return isFilled(value);
+    },
+    message: 'This field is required',
+    required: true,
+  });

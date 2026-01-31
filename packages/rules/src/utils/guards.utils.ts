@@ -1,6 +1,8 @@
 import type { RegleRuleDefinition } from '@regle/core';
 import { isObject } from '../../../shared/utils/object.utils';
 
-export function isRuleDef(rule: unknown): rule is RegleRuleDefinition<any, any[], false, boolean, any, any, boolean> {
+export function isRuleDef(
+  rule: unknown
+): rule is RegleRuleDefinition<unknown, unknown, unknown[], false, boolean, any, any, boolean> {
   return (isObject(rule) || typeof rule === 'function') && '_validator' in rule;
 }

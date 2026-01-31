@@ -38,33 +38,35 @@ import { extractValidator } from './common/extractValidator';
  */
 
 export function withTooltip<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withTooltip<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withTooltip<
   TValue extends any,
   TParams extends any[],
@@ -77,7 +79,7 @@ export function withTooltip<
     RegleRuleMetadataConsumer<TValue, TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleDefinition<unknown, TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withTooltip(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any>,
   newTooltip: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

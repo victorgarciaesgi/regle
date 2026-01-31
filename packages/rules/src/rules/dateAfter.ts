@@ -26,6 +26,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#dateafter Documentation}
  */
 export const dateAfter: RegleRuleWithParamsDefinition<
+  'dateAfter',
   string | Date,
   [after: MaybeInput<string | Date>, options?: CommonComparisonOptions],
   false,

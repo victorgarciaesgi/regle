@@ -15,12 +15,19 @@ import { createRule } from '@regle/core';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#checked Documentation}
  */
-export const checked: RegleRuleDefinition<boolean, [], false, boolean, MaybeInput<boolean>, boolean, true> = createRule(
-  {
-    type: 'checked',
-    validator: (value: MaybeInput<boolean>) => {
-      return value === true;
-    },
-    message: 'The field must be checked',
-  }
-);
+export const checked: RegleRuleDefinition<
+  'checked',
+  boolean,
+  [],
+  false,
+  boolean,
+  MaybeInput<boolean>,
+  boolean,
+  true
+> = createRule({
+  type: 'checked',
+  validator: (value: MaybeInput<boolean>) => {
+    return value === true;
+  },
+  message: 'The field must be checked',
+});

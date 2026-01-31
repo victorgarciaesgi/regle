@@ -18,6 +18,7 @@ import { DECIMAL_REGEX } from '../utils/regexes';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#decimal Documentation}
  */
 export const decimal: RegleRuleDefinition<
+  'decimal',
   string | number,
   [],
   false,

@@ -26,6 +26,7 @@ describe('sameAs validator', () => {
 
   expectTypeOf(sameAsRule).toEqualTypeOf<
     RegleRuleDefinition<
+      'sameAs',
       string,
       [target: string, otherName?: string | undefined],
       false,

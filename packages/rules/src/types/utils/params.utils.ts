@@ -11,7 +11,7 @@ type ExtractBoolean<T extends [...any[]]> = T extends [infer F, ...infer R]
 
 // --- Guess Async rules
 export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<infer V, any, any, any>
+  ? F extends RegleRuleDefinition<unknown, infer V, any, any, any>
     ? [V, ...ExtractValueFromRules<R>]
     : F extends InlineRuleDeclaration<infer V, any>
       ? [V, ...ExtractValueFromRules<R>]
@@ -19,7 +19,7 @@ export type ExtractValueFromRules<T extends any[]> = T extends [infer F, ...infe
   : [];
 
 type ExtractAsyncStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, any, infer A, any>
+  ? F extends RegleRuleDefinition<unknown, any, any, infer A, any>
     ? [A, ...ExtractValueFromRules<R>]
     : F extends InlineRuleDeclaration<any, any>
       ? [ReturnType<F> extends Promise<any> ? true : false, ...ExtractValueFromRules<R>]
@@ -31,7 +31,7 @@ export type GuessAsyncFromRules<T extends any[]> = ExtractBoolean<ExtractAsyncSt
 // --- Guess NoEmpty rules
 
 type ExtractNoEmptyStatesFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, any, any, any, any, any, infer NonEmpty extends boolean>
+  ? F extends RegleRuleDefinition<unknown, any, any, any, any, any, any, infer NonEmpty extends boolean>
     ? [NonEmpty, ...ExtractNoEmptyStatesFromRules<R>]
     : [false, ...ExtractNoEmptyStatesFromRules<R>]
   : [];
@@ -41,7 +41,7 @@ export type GuessNoEmptyFromRules<T extends any[]> = ExtractBoolean<ExtractNoEmp
 //
 // --- Params
 export type ExtractParamsFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, infer P, any, any>
+  ? F extends RegleRuleDefinition<unknown, any, infer P, any, any>
     ? [P, ...ExtractParamsFromRules<R>]
     : [F, ...ExtractParamsFromRules<R>]
   : [];
@@ -55,7 +55,7 @@ type MetadataBase = {
 };
 
 type ExtractMetaDataFromRules<T extends any[]> = T extends [infer F, ...infer R]
-  ? F extends RegleRuleDefinition<any, any, any, infer M extends MetadataBase>
+  ? F extends RegleRuleDefinition<unknown, any, any, any, infer M extends MetadataBase>
     ? [M, ...ExtractMetaDataFromRules<R>]
     : F extends InlineRuleDeclaration<any, any[], infer M extends MetadataBase | Promise<MetadataBase>>
       ? [M, ...ExtractMetaDataFromRules<R>]

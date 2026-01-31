@@ -17,7 +17,7 @@ import { HOSTNAME_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#hostname Documentation}
  */
-export const hostname: RegleRuleDefinition<string, [], false, boolean, unknown, string> = createRule({
+export const hostname: RegleRuleDefinition<'hostname', string, [], false, boolean, unknown, string> = createRule({
   type: 'hostname',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

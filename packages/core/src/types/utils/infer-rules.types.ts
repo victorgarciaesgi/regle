@@ -87,21 +87,21 @@ type ExtractTypeFromRules<TRules extends RegleRuleDecl<any, any>> =
       : FilterRulesWithSingleType<TRules>[keyof FilterRulesWithSingleType<TRules>];
 
 type FilterRulesWithInput<TRules extends RegleRuleDecl<any, any>> = {
-  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input>
+  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
     ? unknown extends Input
       ? never
       : K
-    : never]: TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input> ? Input : unknown;
+    : never]: TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input> ? Input : unknown;
 };
 
 type FilterRulesWithSingleType<TRules extends RegleRuleDecl<any, any>> = {
-  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input>
+  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
     ? unknown extends Input
       ? never
       : IsUnion<NonNullable<Input>> extends true
         ? never
         : K
-    : never]: TRules[K] extends RegleRuleDefinition<any, any, any, any, infer Input>
+    : never]: TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
     ? IsUnion<NonNullable<Input>> extends true
       ? unknown
       : Input

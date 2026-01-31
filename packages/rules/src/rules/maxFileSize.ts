@@ -23,6 +23,7 @@ import { formatFileSize } from '../../../shared';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#maxfilesize Documentation}
  */
 export const maxFileSize: RegleRuleWithParamsDefinition<
+  'maxFileSize',
   File,
   [maxSize: number],
   false,

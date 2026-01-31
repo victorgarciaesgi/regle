@@ -27,6 +27,7 @@ import { createRule } from '@regle/core';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#exactlength Documentation}
  */
 export const exactLength: RegleRuleWithParamsDefinition<
+  'exactLength',
   string | any[] | Record<PropertyKey, any>,
   [count: number],
   false,

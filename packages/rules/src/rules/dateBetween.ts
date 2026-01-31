@@ -27,6 +27,7 @@ import { formatLocaleDate } from '../utils/getLocale.util';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#datebetween Documentation}
  */
 export const dateBetween: RegleRuleWithParamsDefinition<
+  'dateBetween',
   string | Date,
   [before: MaybeInput<string | Date>, after: MaybeInput<string | Date>, options?: CommonComparisonOptions],
   false,

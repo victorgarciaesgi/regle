@@ -29,6 +29,7 @@ import { createLengthRule } from './common/createLengthRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#maxlength Documentation}
  */
 export const maxLength: RegleRuleWithParamsDefinition<
+  'maxLength',
   string | any[] | Record<PropertyKey, any>,
   [max: number, options?: CommonComparisonOptions],
   false,

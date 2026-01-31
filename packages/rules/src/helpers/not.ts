@@ -11,6 +11,7 @@ import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
 import { extractValidator } from './common/extractValidator';
 import { capitalize } from 'vue';
+import type { IsUnknown } from 'type-fest';
 
 /**
  * The `not` operator passes when the provided rule **fails** and fails when the rule **passes**.
@@ -42,19 +43,28 @@ import { capitalize } from 'vue';
  * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#not Documentation}
  */
 export function not<
-  TValue,
+  TType extends string | unknown = unknown,
+  TValue = unknown,
   TParams extends any[] = [],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = RegleRuleMetadataDefinition,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> | InlineRuleDeclaration<TValue, TParams, TReturn>,
+  rule:
+    | RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>
+    | InlineRuleDeclaration<TValue, TParams, TReturn>,
   message?: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata> {
+): RegleRuleDefinition<
+  IsUnknown<TType> extends true ? 'not' : `not:${TType & string}`,
+  TValue,
+  TParams,
+  TAsync,
+  TMetadata
+> {
   let newValidator: RegleRuleDefinitionProcessor<any, any, any>;
 
   const { _type, validator, _params, _async, _active } = extractValidator(rule);

@@ -20,6 +20,7 @@ import { createStringOperationRule } from './common/createStringOperationRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#contains Documentation}
  */
 export const contains: RegleRuleWithParamsDefinition<
+  'contains',
   string,
   [part: MaybeInput<string>],
   false,

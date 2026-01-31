@@ -19,8 +19,8 @@ type RuleResult = boolean | RegleRuleMetadataExtended;
 
 type CombineMode = 'and' | 'or' | 'xor';
 
-interface CombineRulesOptions {
-  mode: CombineMode;
+interface CombineRulesOptions<TType extends CombineMode | unknown = unknown> {
+  mode: TType;
   message: string;
 }
 
@@ -128,10 +128,14 @@ export function computeCombinedMetadata(value: unknown, results: RuleResult[], m
 /**
  * Creates a combined rule from multiple rules using the specified mode (and/or)
  */
-export function combineRules<const TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
+export function combineRules<
+  TType extends CombineMode,
+  const TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]],
+>(
   rules: [...TRules],
-  options: CombineRulesOptions
+  options: CombineRulesOptions<TType>
 ): RegleRuleDefinition<
+  TType,
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
   GuessAsyncFromRules<TRules>,

@@ -21,20 +21,27 @@ import { isFile } from '../../../shared/utils/isFile';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#filetype Documentation}
  */
-export const fileType: RegleRuleWithParamsDefinition<File, [accept: readonly string[]], false, boolean, unknown, File> =
-  createRule({
-    type: 'fileType',
-    validator: (value: MaybeInput<File>, accept: readonly string[]) => {
-      if (isFilled(value)) {
-        if (isFile(value)) {
-          return accept.includes(value.type);
-        }
-        return true;
+export const fileType: RegleRuleWithParamsDefinition<
+  'fileType',
+  File,
+  [accept: readonly string[]],
+  false,
+  boolean,
+  unknown,
+  File
+> = createRule({
+  type: 'fileType',
+  validator: (value: MaybeInput<File>, accept: readonly string[]) => {
+    if (isFilled(value)) {
+      if (isFile(value)) {
+        return accept.includes(value.type);
       }
       return true;
-    },
-    message({ $params: [accept] }) {
-      const filteredAccept = accept.map((type) => type.split('/')[1]).join(', ');
-      return `File type is not allowed. Allowed types are: ${filteredAccept}.`;
-    },
-  });
+    }
+    return true;
+  },
+  message({ $params: [accept] }) {
+    const filteredAccept = accept.map((type) => type.split('/')[1]).join(', ');
+    return `File type is not allowed. Allowed types are: ${filteredAccept}.`;
+  },
+});

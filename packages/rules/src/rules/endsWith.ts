@@ -18,6 +18,7 @@ import { createStringOperationRule } from './common/createStringOperationRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#endswith Documentation}
  */
 export const endsWith: RegleRuleWithParamsDefinition<
+  'endsWith',
   string,
   [part: MaybeInput<string>],
   false,
