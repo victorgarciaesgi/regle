@@ -28,6 +28,7 @@ import { createValueComparisonRule } from './common/createComparisonRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#minvalue Documentation}
  */
 export const minValue: RegleRuleWithParamsDefinition<
+  'minValue',
   number | string,
   [min: number | string, options?: CommonComparisonOptions],
   false,

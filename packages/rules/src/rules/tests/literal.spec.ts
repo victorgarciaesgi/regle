@@ -24,6 +24,6 @@ describe('literal validator', () => {
 
   const literalRule = literal('Foo');
   expectTypeOf(literalRule).toEqualTypeOf<
-    RegleRuleDefinition<'Foo', [literal: 'Foo'], false, boolean, MaybeInput<'Foo'>, string | number, true>
+    RegleRuleDefinition<'literal', 'Foo', [literal: 'Foo'], false, boolean, MaybeInput<'Foo'>, string | number, true>
   >();
 });

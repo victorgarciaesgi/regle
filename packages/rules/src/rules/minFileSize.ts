@@ -23,6 +23,7 @@ import { formatFileSize } from '../../../shared';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#minfilesize Documentation}
  */
 export const minFileSize: RegleRuleWithParamsDefinition<
+  'minFileSize',
   File,
   [minSize: number],
   false,

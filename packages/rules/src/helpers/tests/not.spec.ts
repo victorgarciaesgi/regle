@@ -30,11 +30,14 @@ describe('not validator', () => {
   });
 
   it('should have correct return types', () => {
-    expectTypeOf(not(() => true)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, true, unknown>>();
-    expectTypeOf(not(async () => true)).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+    expectTypeOf(not(() => true)).toEqualTypeOf<RegleRuleDefinition<'not', unknown, [], false, true, unknown>>();
+    expectTypeOf(not(async () => true)).toEqualTypeOf<
+      RegleRuleDefinition<'not', unknown, [], true, boolean, unknown>
+    >();
 
     expectTypeOf(not(minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
+        'not:minLength',
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
@@ -45,6 +48,7 @@ describe('not validator', () => {
 
     expectTypeOf(not(() => ({ $valid: true, foo: 'bar' }))).toEqualTypeOf<
       RegleRuleDefinition<
+        'not',
         unknown,
         [],
         false,

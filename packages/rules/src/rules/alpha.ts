@@ -25,6 +25,7 @@ import { ALPHA_REGEX, ALPHA_SYMBOL_REGEX } from '../utils/regexes';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#alpha Documentation}
  */
 export const alpha: RegleRuleWithParamsDefinition<
+  'alpha',
   string,
   [options?: CommonAlphaOptions | undefined],
   false,

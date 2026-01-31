@@ -21,7 +21,15 @@ import { isFilled, isNumber } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#number Documentation}
  */
-export const number: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<number>, unknown> = createRule({
+export const number: RegleRuleDefinition<
+  'number',
+  unknown,
+  [],
+  false,
+  boolean,
+  MaybeInput<number>,
+  unknown
+> = createRule({
   type: 'number',
   validator: (value: MaybeInput<unknown>) => {
     if (isFilled(value)) {

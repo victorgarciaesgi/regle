@@ -20,6 +20,6 @@ import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#type Documentation}
  */
-export function type<T>(): RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<T>> {
+export function type<T>(): RegleRuleDefinition<'type', unknown, [], false, boolean, MaybeInput<T>> {
   return (() => true) as any;
 }

@@ -12,6 +12,7 @@ interface OneOfFn {
   <const TValues extends NonEmptyTuple<string | number> | NonEmptyTuple<string> | NonEmptyTuple<number>>(
     options: MaybeReadonly<MaybeRefOrGetter<[...TValues]>>
   ): RegleRuleDefinition<
+    'oneOf',
     TValues[number],
     [options: TValues],
     false,
@@ -23,6 +24,7 @@ interface OneOfFn {
   (
     options: MaybeReadonly<MaybeRefOrGetter<[...[string | number, ...(string | number)[]]]>>
   ): RegleRuleDefinition<
+    'oneOf',
     string | number,
     [options: readonly [string | number, ...(string | number)[]]],
     false,

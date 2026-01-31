@@ -117,13 +117,13 @@ describe('withAsync helper', () => {
         },
         [() => 0]
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [number], true, boolean, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, unknown, [number], true, boolean, unknown>>();
 
     expectTypeOf(
       withAsync(async () => {
         return true as boolean;
       })
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, [], true, boolean, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<unknown, unknown, [], true, boolean, unknown>>();
 
     const base = ref(1);
 

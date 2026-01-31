@@ -39,6 +39,7 @@ import { combineRules } from './common/operatorsLogic';
 export function and<const TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
+  'and',
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
   GuessAsyncFromRules<TRules>,

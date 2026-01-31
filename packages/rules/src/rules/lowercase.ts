@@ -17,7 +17,7 @@ import { LOWERCASE_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#lowercase Documentation}
  */
-export const lowercase: RegleRuleDefinition<string, [], false, boolean, unknown, string> = createRule({
+export const lowercase: RegleRuleDefinition<'lowercase', string, [], false, boolean, unknown, string> = createRule({
   type: 'lowercase',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

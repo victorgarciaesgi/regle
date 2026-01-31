@@ -17,7 +17,14 @@ import { INTEGER_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#integer Documentation}
  */
-export const integer: RegleRuleDefinition<string | number, [], false, boolean, MaybeInput<number>> = createRule({
+export const integer: RegleRuleDefinition<
+  'integer',
+  string | number,
+  [],
+  false,
+  boolean,
+  MaybeInput<number>
+> = createRule({
   type: 'integer',
   validator(value: MaybeInput<number | string>) {
     if (isEmpty(value)) {

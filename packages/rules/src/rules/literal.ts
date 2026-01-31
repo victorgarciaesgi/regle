@@ -20,7 +20,16 @@ import { isFilled, withMessage, withParams } from '../helpers';
  */
 export function literal<const TValue extends string | number>(
   literal: MaybeRefOrGetter<TValue>
-): RegleRuleDefinition<TValue, [literal: TValue], false, boolean, MaybeInput<TValue>, string | number, true> {
+): RegleRuleDefinition<
+  'literal',
+  TValue,
+  [literal: TValue],
+  false,
+  boolean,
+  MaybeInput<TValue>,
+  string | number,
+  true
+> {
   const params = computed<string | number>(() => toValue(literal));
 
   const rule = withMessage(

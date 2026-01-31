@@ -34,6 +34,7 @@ describe('oneOf validator', () => {
   const oneOfRule = oneOf(['One', 'Two']);
   expectTypeOf(oneOfRule).toEqualTypeOf<
     RegleRuleDefinition<
+      'oneOf',
       'One' | 'Two',
       [options: ['One', 'Two']],
       false,
@@ -44,6 +45,6 @@ describe('oneOf validator', () => {
   >();
 
   expectTypeOf(oneOf(['One', 'Two'] as string[])).toEqualTypeOf<
-    RegleRuleDefinition<string, [options: string[]], false, boolean, MaybeInput<string>, string | number>
+    RegleRuleDefinition<'oneOf', string, [options: string[]], false, boolean, MaybeInput<string>, string | number>
   >();
 });

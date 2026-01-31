@@ -24,6 +24,7 @@ import { url, type UrlOptions } from './url';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#httpurl Documentation}
  */
 export const httpUrl: RegleRuleWithParamsDefinition<
+  'httpUrl',
   string,
   [options?: UrlOptions | undefined],
   false,

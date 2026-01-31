@@ -21,7 +21,7 @@ import { isFilled } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#date Documentation}
  */
-export const date: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<Date>, unknown> = createRule({
+export const date: RegleRuleDefinition<'date', unknown, [], false, boolean, MaybeInput<Date>, unknown> = createRule({
   type: 'date',
   validator: (value: MaybeInput<unknown>) => {
     if (isFilled(value)) {

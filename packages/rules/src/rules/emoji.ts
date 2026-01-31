@@ -16,7 +16,7 @@ import { EMOJI_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#emoji Documentation}
  */
-export const emoji: RegleRuleDefinition<string, [], false, boolean, unknown, string> = createRule({
+export const emoji: RegleRuleDefinition<'emoji', string, [], false, boolean, unknown, string> = createRule({
   type: 'emoji',
   validator(value: Maybe<string>) {
     if (isEmpty(value)) {

@@ -62,6 +62,7 @@ import { getFunctionParametersLength } from './unwrapRuleParameters';
  * @see {@link https://reglejs.dev/core-concepts/rules/reusable-rules Documentation}
  */
 export function createRule<
+  const TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
@@ -69,8 +70,8 @@ export function createRule<
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
   TNonEmpty extends boolean = false,
 >(
-  definition: RegleRuleInit<TValue, TParams, TReturn, TMetadata, TAsync, TNonEmpty>
-): InferRegleRule<TValue, TParams, TAsync, TMetadata, TNonEmpty> {
+  definition: RegleRuleInit<TType, TValue, TParams, TReturn, TMetadata, TAsync, TNonEmpty>
+): InferRegleRule<TType, TValue, TParams, TAsync, TMetadata, TNonEmpty> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
     const isAsync = definition.async ?? definition.validator.constructor.name === 'AsyncFunction';

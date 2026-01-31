@@ -73,7 +73,7 @@ describe('type utils', () => {
       RegleFieldStatus<
         string,
         {
-          email: RegleRuleDefinition<string, [], false, boolean, string>;
+          email: RegleRuleDefinition<'email', string, [], false, boolean, string>;
         },
         RegleShortcutDefinition<any>
       >
@@ -82,7 +82,7 @@ describe('type utils', () => {
       RegleFieldStatus<
         string,
         {
-          email: RegleRuleDefinition<string, [], false, boolean, string>;
+          email: RegleRuleDefinition<'email', string, [], false, boolean, string>;
         },
         RegleShortcutDefinition<any>
       >

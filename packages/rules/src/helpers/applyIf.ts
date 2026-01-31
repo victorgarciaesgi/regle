@@ -38,15 +38,22 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
   rule: TRule
 ): TRule extends InlineRuleDeclaration<infer TValue, infer TParams, infer TReturn>
   ? RegleRuleDefinition<
+      'applyIf',
       TValue,
       [...TParams, condition: boolean],
       TReturn extends Promise<any> ? true : false,
       TReturn extends Promise<infer M> ? M : TReturn
     >
-  : TRule extends RegleRuleWithParamsDefinitionInput<infer TValue, infer TParams, infer TAsync, infer TMetadata>
-    ? RegleRuleDefinition<TValue, [...TParams, condition: boolean], TAsync, TMetadata>
-    : TRule extends RegleRuleDefinition<infer TValue, any[], infer TAsync, infer TMetadata>
-      ? RegleRuleDefinition<TValue, [condition: boolean], TAsync, TMetadata>
+  : TRule extends RegleRuleWithParamsDefinitionInput<
+        infer TType,
+        infer TValue,
+        infer TParams,
+        infer TAsync,
+        infer TMetadata
+      >
+    ? RegleRuleDefinition<TType, TValue, [...TParams, condition: boolean], TAsync, TMetadata>
+    : TRule extends RegleRuleDefinition<infer TType, infer TValue, any[], infer TAsync, infer TMetadata>
+      ? RegleRuleDefinition<TType, TValue, [condition: boolean], TAsync, TMetadata>
       : TRule {
   const { _type, validator, _params, _message, _async } = extractValidator(rule);
 

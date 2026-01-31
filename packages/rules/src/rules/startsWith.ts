@@ -20,6 +20,7 @@ import { createStringOperationRule } from './common/createStringOperationRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#startswith Documentation}
  */
 export const startsWith: RegleRuleWithParamsDefinition<
+  'startsWith',
   string,
   [part: MaybeInput<string>],
   false,

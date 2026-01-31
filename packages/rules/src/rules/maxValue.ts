@@ -28,6 +28,7 @@ import { createValueComparisonRule } from './common/createComparisonRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#maxvalue Documentation}
  */
 export const maxValue: RegleRuleWithParamsDefinition<
+  'maxValue',
   number | string,
   [max: number | string, options?: CommonComparisonOptions],
   false,

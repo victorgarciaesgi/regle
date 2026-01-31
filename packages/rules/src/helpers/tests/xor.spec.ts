@@ -75,9 +75,10 @@ describe('xor validator', () => {
   it('should have correct return types', () => {
     // @ts-expect-error at least one argument
     xor();
-    expectTypeOf(xor(required)).toEqualTypeOf<RegleRuleDefinition<unknown, [], false, boolean, unknown>>();
+    expectTypeOf(xor(required)).toEqualTypeOf<RegleRuleDefinition<'xor', unknown, [], false, boolean, unknown>>();
     expectTypeOf(xor(required, email, minLength(6))).toEqualTypeOf<
       RegleRuleDefinition<
+        'xor',
         unknown,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,

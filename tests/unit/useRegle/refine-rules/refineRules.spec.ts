@@ -37,8 +37,9 @@ describe('refineRules', () => {
     const state = ref<InferInput<typeof rules>>({});
 
     expectTypeOf<ReturnType<typeof rules>['confirmPassword']>().toEqualTypeOf<{
-      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
+      required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
       sameAs: RegleRuleDefinition<
+        'sameAs',
         MaybeInput<string>,
         [target: MaybeInput<string>, otherName?: string | undefined],
         false,
@@ -49,8 +50,9 @@ describe('refineRules', () => {
     }>();
 
     expectTypeOf<ReturnType<typeof rules>['firstName']>().toEqualTypeOf<{
-      required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
+      required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
       minLength: RegleRuleDefinition<
+        'minLength',
         string | any[] | Record<PropertyKey, any>,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
@@ -155,7 +157,7 @@ describe('refineRules', () => {
       RegleFieldStatus<
         unknown,
         {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
         },
         RegleShortcutDefinition<any>
       >
@@ -166,7 +168,7 @@ describe('refineRules', () => {
         RegleFieldStatus<
           MaybeInput<string>,
           {
-            string: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<string>, unknown>;
+            string: RegleRuleDefinition<'string', unknown, [], false, boolean, MaybeInput<string>, unknown>;
           },
           RegleShortcutDefinition<any>
         >
@@ -184,6 +186,7 @@ describe('refineRules', () => {
           MaybeInput<number | string>,
           {
             numeric: RegleRuleDefinition<
+              'numeric',
               string | number,
               [],
               false,
@@ -191,8 +194,9 @@ describe('refineRules', () => {
               MaybeInput<string | number>,
               string | number
             >;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
+            required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
             minValue: RegleRuleDefinition<
+              'minValue',
               string | number,
               [count: string | number, options?: CommonComparisonOptions | undefined],
               false,
@@ -219,7 +223,7 @@ describe('refineRules', () => {
         RegleFieldStatus<
           MaybeInput<string>,
           {
-            string: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<string>, unknown>;
+            string: RegleRuleDefinition<'string', unknown, [], false, boolean, MaybeInput<string>, unknown>;
           },
           RegleShortcutDefinition<any>
         >
@@ -237,6 +241,7 @@ describe('refineRules', () => {
           MaybeInput<string | number>,
           {
             numeric: RegleRuleDefinition<
+              'numeric',
               string | number,
               [],
               false,
@@ -244,7 +249,7 @@ describe('refineRules', () => {
               MaybeInput<string | number>,
               string | number
             >;
-            required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown, true>;
+            required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
           },
           RegleShortcutDefinition<any>
         >

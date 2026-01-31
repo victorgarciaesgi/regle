@@ -38,6 +38,7 @@ import { combineRules } from './common/operatorsLogic';
 export function xor<TRules extends [FormRuleDeclaration<any, any>, ...FormRuleDeclaration<any, any>[]]>(
   ...rules: [...TRules]
 ): RegleRuleDefinition<
+  'xor',
   ExtractValueFromRules<TRules>[number],
   UnwrapTuples<ExtractParamsFromRules<TRules>>,
   GuessAsyncFromRules<TRules>,

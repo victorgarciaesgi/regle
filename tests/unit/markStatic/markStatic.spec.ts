@@ -78,7 +78,7 @@ describe('markStatic', () => {
       RegleFieldStatus<
         Raw<BigWrapper>,
         {
-          required: RegleRuleDefinition<unknown, [], false, boolean, unknown, unknown>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
           checkWrapper: (value: Maybe<Raw<BigWrapper>>) => boolean;
         },
         RegleShortcutDefinition<any>

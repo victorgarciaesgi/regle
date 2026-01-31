@@ -5,8 +5,8 @@ import { isString } from '../../helpers/ruleHelpers/isString';
 
 export type StringOperation = 'contains' | 'startsWith' | 'endsWith';
 
-interface CreateStringOperationRuleOptions {
-  type: string;
+interface CreateStringOperationRuleOptions<TType extends string | unknown> {
+  type: TType;
   operation: StringOperation;
 }
 
@@ -14,10 +14,11 @@ interface CreateStringOperationRuleOptions {
  * Factory function to create string operation rules (contains/startsWith/endsWith).
  * Reduces duplication between similar string validation rules.
  */
-export function createStringOperationRule({
+export function createStringOperationRule<TType extends string | unknown>({
   type,
   operation,
-}: CreateStringOperationRuleOptions): RegleRuleWithParamsDefinition<
+}: CreateStringOperationRuleOptions<TType>): RegleRuleWithParamsDefinition<
+  TType,
   string,
   [part: MaybeInput<string>],
   false,

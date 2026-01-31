@@ -202,6 +202,7 @@ type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undef
   TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>
     ? {
         [K in keyof UnwrapRef<TRule>]-?: UnwrapRef<TRule>[K] extends RegleRuleDefinition<
+          unknown,
           any,
           any[],
           any,

@@ -25,16 +25,17 @@ import { isFilled } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#requiredunless Documentation}
  */
-export const requiredUnless: RegleRuleWithParamsDefinition<unknown, [condition: boolean], false, boolean> = createRule({
-  type: 'required',
-  validator(value: unknown, condition: boolean) {
-    if (!condition) {
-      return isFilled(value);
-    }
-    return true;
-  },
-  message: 'This field is required',
-  active({ $params: [condition] }) {
-    return !condition;
-  },
-});
+export const requiredUnless: RegleRuleWithParamsDefinition<'required', unknown, [condition: boolean], false, boolean> =
+  createRule({
+    type: 'required',
+    validator(value: unknown, condition: boolean) {
+      if (!condition) {
+        return isFilled(value);
+      }
+      return true;
+    },
+    message: 'This field is required',
+    active({ $params: [condition] }) {
+      return !condition;
+    },
+  });

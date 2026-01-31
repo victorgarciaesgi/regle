@@ -38,33 +38,35 @@ import { extractValidator } from './common/extractValidator';
  */
 
 export function withMessage<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withMessage<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends unknown[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withMessage<
   TValue extends any,
   TParams extends any[],
@@ -77,21 +79,22 @@ export function withMessage<
     RegleRuleMetadataConsumer<TValue, TParams, TReturn extends Promise<infer M> ? M : TReturn>,
     string | string[]
   >
-): RegleRuleDefinition<TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
+): RegleRuleDefinition<unknown, TValue, TParams, TAsync, TReturn extends Promise<infer M> ? M : TReturn>;
 export function withMessage<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
 >(
-  rule: (...args: any[]) => RegleRuleDefinition<TValue, TParams, TAsync, TMetadata>,
+  rule: (...args: any[]) => RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
 export function withMessage(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

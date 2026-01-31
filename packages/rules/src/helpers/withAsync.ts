@@ -42,15 +42,20 @@ export function withAsync<
 >(
   rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
   depsArray?: [...TParams]
-): RegleRuleDefinition<TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata>;
-export function withAsync<TValue extends any, TParams extends any[], TMetadata extends RegleRuleMetadataDefinition>(
-  rule: RegleRuleWithParamsDefinition<TValue, TParams, true, TMetadata>,
+): RegleRuleDefinition<unknown, TValue, UnwrapRegleUniversalParams<TParams>, true, TMetadata>;
+export function withAsync<
+  TType extends string | unknown,
+  TValue extends any,
+  TParams extends any[],
+  TMetadata extends RegleRuleMetadataDefinition,
+>(
+  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, true, TMetadata>,
   depsArray?: [...TParams]
-): RegleRuleWithParamsDefinition<TValue, TParams, true, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, true, TMetadata>;
 export function withAsync(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   depsArray?: any[]
-): RegleRuleWithParamsDefinition<any, any, true, any> | RegleRuleDefinition<any, any, true, any> {
+): RegleRuleWithParamsDefinition<unknown, any, any, true, any> | RegleRuleDefinition<unknown, any, any, true, any> {
   let validator: RegleRuleDefinitionProcessor<any, any, any>;
   const { _type, _params, _message, _active } = extractValidator(rule);
 

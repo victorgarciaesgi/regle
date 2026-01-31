@@ -5,8 +5,8 @@ import { toNumber } from '../../helpers/ruleHelpers/toNumber';
 
 export type ComparisonDirection = 'min' | 'max';
 
-interface CreateValueComparisonRuleOptions {
-  type: string;
+interface CreateValueComparisonRuleOptions<TType extends string | unknown> {
+  type: TType;
   direction: ComparisonDirection;
 }
 
@@ -14,10 +14,11 @@ interface CreateValueComparisonRuleOptions {
  * Factory function to create value comparison rules (minValue/maxValue).
  * Reduces duplication between similar comparison rules.
  */
-export function createValueComparisonRule({
+export function createValueComparisonRule<TType extends string | unknown>({
   type,
   direction,
-}: CreateValueComparisonRuleOptions): RegleRuleWithParamsDefinition<
+}: CreateValueComparisonRuleOptions<TType>): RegleRuleWithParamsDefinition<
+  TType,
   number | string,
   [limit: number | string, options?: CommonComparisonOptions],
   false,

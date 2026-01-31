@@ -17,7 +17,14 @@ import { HEX_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#hexadecimal Documentation}
  */
-export const hexadecimal: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
+export const hexadecimal: RegleRuleDefinition<
+  'hexadecimal',
+  string,
+  [],
+  false,
+  boolean,
+  MaybeInput<string>
+> = createRule({
   type: 'hexadecimal',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

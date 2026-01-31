@@ -27,6 +27,7 @@ import { createRule } from '@regle/core';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#exactvalue Documentation}
  */
 export const exactValue: RegleRuleWithParamsDefinition<
+  'exactValue',
   number,
   [count: number],
   false,

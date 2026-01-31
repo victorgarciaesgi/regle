@@ -17,7 +17,7 @@ import { UPPERCASE_REGEX } from '../utils/regexes';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#uppercase Documentation}
  */
-export const uppercase: RegleRuleDefinition<string, [], false, boolean, unknown, string> = createRule({
+export const uppercase: RegleRuleDefinition<'uppercase', string, [], false, boolean, unknown, string> = createRule({
   type: 'uppercase',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

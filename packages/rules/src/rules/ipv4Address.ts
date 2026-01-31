@@ -33,7 +33,14 @@ function nibbleValid(nibble: string) {
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#ipv4address Documentation}
  */
-export const ipv4Address: RegleRuleDefinition<string, [], false, boolean, MaybeInput<string>> = createRule({
+export const ipv4Address: RegleRuleDefinition<
+  'ipv4Address',
+  string,
+  [],
+  false,
+  boolean,
+  MaybeInput<string>
+> = createRule({
   type: 'ipv4Address',
   validator(value: MaybeInput<string>) {
     if (isEmpty(value)) {

@@ -26,7 +26,13 @@ import { isFilled, isNumber, matchRegex } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#exactdigits Documentation}
  */
-export const exactDigits: RegleRuleWithParamsDefinition<string | number, [count: number], false, boolean> = createRule({
+export const exactDigits: RegleRuleWithParamsDefinition<
+  'exactDigits',
+  string | number,
+  [count: number],
+  false,
+  boolean
+> = createRule({
   type: 'exactDigits',
   validator: (value: Maybe<string | number>, count: number) => {
     if (isFilled(value, false) && isFilled(count)) {

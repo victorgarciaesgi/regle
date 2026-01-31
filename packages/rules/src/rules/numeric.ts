@@ -18,6 +18,7 @@ import { NUMERIC_REGEX } from '../utils/regexes';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#numeric Documentation}
  */
 export const numeric: RegleRuleDefinition<
+  'numeric',
   string | number,
   [],
   false,

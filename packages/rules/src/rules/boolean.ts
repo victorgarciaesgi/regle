@@ -21,7 +21,15 @@ import { isFilled } from '../helpers';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#boolean Documentation}
  */
-export const boolean: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<boolean>, unknown> = createRule({
+export const boolean: RegleRuleDefinition<
+  'boolean',
+  unknown,
+  [],
+  false,
+  boolean,
+  MaybeInput<boolean>,
+  unknown
+> = createRule({
   type: 'boolean',
   validator: (value: MaybeInput<unknown>) => {
     if (isFilled(value)) {

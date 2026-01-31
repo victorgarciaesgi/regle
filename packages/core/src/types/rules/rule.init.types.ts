@@ -17,7 +17,8 @@ export type RegleInitPropertyGetter<
  * createRule arguments options
  */
 export interface RegleRuleInit<
-  TValue extends any,
+  TType extends string | unknown = unknown,
+  TValue extends unknown = unknown,
   TParams extends [...any[]] = [],
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition> = boolean,
   TMetadata extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
@@ -28,7 +29,7 @@ export interface RegleRuleInit<
   message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   active?: RegleInitPropertyGetter<TValue, boolean, TParams, TMetadata>;
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
-  type?: string;
+  type?: TType;
   async?: TAsync;
   required?: TNonEmpty;
 }
@@ -38,6 +39,7 @@ export interface RegleRuleInit<
  * Rule core
  */
 export interface RegleRuleCore<
+  TType extends string | unknown,
   TValue extends any,
   TParams extends any[] = [],
   TAsync extends boolean = false,
@@ -47,7 +49,7 @@ export interface RegleRuleCore<
   message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   active?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
-  type?: string;
+  type?: TType;
   async?: boolean;
 }
 

@@ -29,6 +29,7 @@ import { createLengthRule } from './common/createLengthRule';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#minlength Documentation}
  */
 export const minLength: RegleRuleWithParamsDefinition<
+  'minLength',
   string | any[] | Record<PropertyKey, any>,
   [min: number, options?: CommonComparisonOptions],
   false,

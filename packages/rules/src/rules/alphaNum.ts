@@ -25,6 +25,7 @@ import { ALPHA_NUM_REGEX, ALPHA_NUM_SYMBOL_REGEX } from '../utils/regexes';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#alphanum Documentation}
  */
 export const alphaNum: RegleRuleWithParamsDefinition<
+  'alphaNum',
   string | number,
   [options?: CommonAlphaOptions | undefined],
   false,

@@ -23,6 +23,7 @@ import { isEmpty } from '../helpers';
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#macaddress Documentation}
  */
 export const macAddress: RegleRuleWithParamsDefinition<
+  'macAddress',
   string,
   [separator?: string | undefined],
   false,

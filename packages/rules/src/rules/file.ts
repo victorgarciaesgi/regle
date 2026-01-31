@@ -22,7 +22,7 @@ import { isFile } from '../../../shared/utils/isFile';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/built-in-rules#file Documentation}
  */
-export const file: RegleRuleDefinition<unknown, [], false, boolean, MaybeInput<File>, unknown> = createRule({
+export const file: RegleRuleDefinition<'file', unknown, [], false, boolean, MaybeInput<File>, unknown> = createRule({
   type: 'file',
   validator: (value: MaybeInput<unknown>) => {
     if (isFilled(value)) {
