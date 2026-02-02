@@ -1,17 +1,23 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRegle } from '@regle/core';
+  import { useRegle, type DumbJoinDiscriminatedUnions, type JoinDiscriminatedUnions } from '@regle/core';
   import { required, minLength, email, pipe, withAsync, isFilled, atLeastOne } from '@regle/rules';
   import { timeout } from './validations';
 
-  const state = ref<{ name: string; user?: { firstName: string; lastName: string } }>({ name: '' });
+  type State = ({ name: string } | { address: string }) & { email?: string };
+
+  type bar = JoinDiscriminatedUnions<State>;
+
+  const state = ref<State>({ name: '', email: '' });
 
   const { r$ } = useRegle(state, {
-    name: {},
-    user: {
-      $self: { required, atLeastOne: atLeastOne<{ firstName: string; lastName: string }>(['firstName', 'lastName']) },
-    },
+    address: { required },
   });
+
+  r$.$fields;
+  r$.address?.$value;
+
+  r$.$fields.email?.$value;
 
   async function submit() {
     const { valid, data } = await r$.$validate();
@@ -41,12 +47,12 @@
         v-model="r$.$value.name"
         placeholder="Type your name"
         :class="{
-          'is-valid': r$.name.$correct,
-          'is-invalid': r$.name.$error,
+          'is-valid': r$.name?.$correct,
+          'is-invalid': r$.name?.$error,
         }"
         aria-describedby="name-error"
       />
-      <pre v-if="r$.name.$pending">Pending...</pre>
+      <pre v-if="r$.name?.$pending">Pending...</pre>
       <ul id="name-errors" class="invalid-feedback">
         <li v-for="error of r$.$errors.name" :key="error">
           {{ error }}

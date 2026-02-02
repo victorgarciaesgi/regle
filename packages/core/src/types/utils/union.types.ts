@@ -1,4 +1,4 @@
-import type { UnionToIntersection, UnionToTuple } from 'type-fest';
+import type { EmptyObject, UnionToIntersection, UnionToTuple } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
 import type { HasNamedKeys } from './object.types';
 
@@ -10,16 +10,21 @@ export type JoinDiscriminatedUnions<TUnion extends unknown> =
     ? isRecordLiteral<TUnion> extends true
       ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true
         ? Prettify<
-            Partial<
-              UnionToIntersection<
-                RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
-              >
-            > &
-              Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>
+            ResolveKeys<TUnion> &
+              (Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>> extends EmptyObject
+                ? {}
+                : Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>>)
           >
         : DumbJoinDiscriminatedUnions<TUnion>
       : TUnion
     : TUnion;
+
+type ResolveKeys<TUnion extends unknown> = Partial<
+  UnionToIntersection<
+    RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
+  >
+> &
+  Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>;
 
 /**
  * Combine all members of a union type on one level and not nested.

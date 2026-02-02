@@ -1,4 +1,10 @@
-import { inferRules, useRegle, type RegleFieldStatus, type RegleShortcutDefinition } from '@regle/core';
+import {
+  inferRules,
+  useRegle,
+  type MaybeOutput,
+  type RegleFieldStatus,
+  type RegleShortcutDefinition,
+} from '@regle/core';
 import { email, minLength, required } from '@regle/rules';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
@@ -212,5 +218,46 @@ describe('useRegle should throw errors for invalid rule schema', () => {
     const state2 = ref({ foo: { bar: { value: '' } } });
     const { r$: r$3 } = useRegle(state2, { foo: { bar: { value: { required: () => true, email } } } });
     expectTypeOf(r$3.$value.foo.bar.value).toEqualTypeOf<string>();
+  });
+
+  it('should handle unions without discriminating keys', () => {
+    type State = ({ name: string } | { address: string }) & { email: string };
+
+    const state = ref<State>({ name: '', address: '', email: '' });
+    const { r$ } = useRegle(state, {
+      address: { required },
+      name: {},
+    });
+
+    expectTypeOf(r$.address?.$value).toEqualTypeOf<MaybeOutput<string>>();
+    expectTypeOf(r$.name?.$value).toEqualTypeOf<MaybeOutput<string>>();
+    expectTypeOf(r$.email?.$value).toEqualTypeOf<MaybeOutput<string>>();
+
+    expectTypeOf(r$.$value).toEqualTypeOf<{
+      email: string;
+      name?: string;
+      address?: string;
+    }>();
+  });
+
+  it('should handle nested unions without discriminating keys', () => {
+    type State = {
+      foo: {
+        bar: ({ name: string } | { address: string }) & { email?: string };
+      };
+    };
+
+    const state = ref<State>({ foo: { bar: { name: '', email: '' } } });
+    const { r$ } = useRegle(state, { foo: { bar: { name: {}, address: {} } } });
+
+    expectTypeOf(r$.foo.bar.address?.$value).toEqualTypeOf<MaybeOutput<string>>();
+    expectTypeOf(r$.foo.bar.name?.$value).toEqualTypeOf<MaybeOutput<string>>();
+    expectTypeOf(r$.foo.bar.email?.$value).toEqualTypeOf<MaybeOutput<string>>();
+
+    expectTypeOf(r$.foo.bar.$value).toEqualTypeOf<{
+      email?: string | undefined;
+      name?: string | undefined;
+      address?: string | undefined;
+    }>();
   });
 });

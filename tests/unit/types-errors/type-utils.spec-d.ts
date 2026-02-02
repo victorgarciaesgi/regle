@@ -18,14 +18,16 @@ import { computed, ref, type ComputedRef } from 'vue';
 import { z } from 'zod/v3';
 
 describe('type utils', () => {
-  it('JoinDiscriminatedUnions should bind unions correclty', () => {
+  it('JoinDiscriminatedUnions should bind unions correctly', () => {
     type Union = { name: string } & (
       | { type: 'ONE'; firstName: string }
       | { type: 'TWO'; firstName: number; lastName: string }
       | { type?: undefined }
     );
 
-    expectTypeOf<JoinDiscriminatedUnions<Union>>().toEqualTypeOf<{
+    type SimpleUnion = JoinDiscriminatedUnions<Union>;
+
+    expectTypeOf<SimpleUnion>().toEqualTypeOf<{
       name: string;
       type?: 'ONE' | 'TWO' | undefined;
       firstName?: string | number | undefined;
@@ -50,6 +52,18 @@ describe('type utils', () => {
             street: string;
           }
         | undefined;
+    }>();
+  });
+
+  it('Should handle unions without fixed keys', () => {
+    type State = ({ name?: string } | { address?: string }) & { email?: string };
+
+    type FixedUnion = JoinDiscriminatedUnions<State>;
+
+    expectTypeOf<FixedUnion>().toEqualTypeOf<{
+      address?: string | undefined;
+      email?: string | undefined;
+      name?: string | undefined;
     }>();
   });
 
