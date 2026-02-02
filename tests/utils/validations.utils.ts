@@ -30,8 +30,8 @@ export function shouldBePristineField(field?: PossibleFields, shouldBeCorrect = 
 
 export function shouldBeInvalidField(field?: PossibleFields) {
   expect(field?.$invalid).toBe(true);
-  expect(field?.$error).toBe(false);
   expect(field?.$dirty).toBe(false);
+  expect(field?.$error).toBe(false);
   if (field && !('$fields' in field) && !('$each' in field)) {
     expect(field?.$anyDirty).toBe(false);
   }

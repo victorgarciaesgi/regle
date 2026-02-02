@@ -96,6 +96,7 @@ const CommonUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)
 const AdvancedUsage: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
   { text: 'Rules metadata', link: '/advanced-usage/rule-metadata' },
   { text: 'Global configuration', link: '/advanced-usage/global-config' },
+  { text: 'Object self validation', link: '/advanced-usage/self-validation' },
   { text: 'Variants', link: '/advanced-usage/variants' },
   { text: 'Scoped validation', link: '/advanced-usage/scoped-validation' },
   { text: 'Properties shortcuts', link: '/advanced-usage/extend-properties' },

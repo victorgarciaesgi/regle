@@ -1,28 +1,16 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useRegle } from '@regle/core';
-  import { required, minLength, email, pipe, withAsync } from '@regle/rules';
+  import { required, minLength, email, pipe, withAsync, isFilled } from '@regle/rules';
   import { timeout } from './validations';
 
-  const state = ref({ name: '', email: '' });
-
-  const foo = pipe(
-    [
-      required,
-      minLength(3),
-      withAsync(async (value) => {
-        console.log('withAsync', value);
-        await timeout(2000);
-        return value !== 'foobar';
-      }),
-      email,
-    ],
-    { debounce: 1000 }
-  );
+  const state = ref<{ name: string; user?: { firstName: string; lastName: string } }>({ name: '' });
 
   const { r$ } = useRegle(state, {
-    name: foo,
-    email: { email },
+    name: {},
+    user: {
+      $self: { required, atLeastOne: (value) => isFilled(value?.firstName) || isFilled(value?.lastName) },
+    },
   });
 
   async function submit() {
@@ -30,11 +18,16 @@
     if (valid) {
       console.log(data.name);
       //               ^ string
-      console.log(data.email);
+      // console.log(data.email);
       //.              ^ string | undefined
     } else {
       console.warn('Errors: ', r$.$errors);
     }
+  }
+
+  function updateUser() {
+    console.log(r$.user);
+    // r$.user.$value = {};
   }
 </script>
 
@@ -62,7 +55,7 @@
       </ul>
     </div>
 
-    <div class="py-2 has-validation">
+    <!-- <div class="py-2 has-validation">
       <label class="form-label">Email (optional)</label>
       <input
         class="form-control"
@@ -79,9 +72,10 @@
           {{ error }}
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-primary m-2" @click="updateUser">Update User</button>
     <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
     <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
