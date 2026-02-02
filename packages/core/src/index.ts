@@ -138,4 +138,5 @@ export type {
   isEditedHandlerFn,
   LazyJoinDiscriminatedUnions,
   DumbJoinDiscriminatedUnions,
+  Prettify,
 } from './types';

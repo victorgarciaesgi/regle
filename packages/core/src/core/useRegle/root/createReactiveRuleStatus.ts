@@ -14,6 +14,7 @@ import type {
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';
+import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
 
 interface CreateReactiveRuleStatusOptions {
   state: Ref<unknown>;
@@ -208,11 +209,15 @@ export function createReactiveRuleStatus({
       } satisfies ScopeState;
     })!;
 
-    $unwatchState = watch(scopeState?.$params, () => {
-      if (!modifiers.$silent.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
-        $parse();
-      }
-    });
+    $unwatchState = watch(
+      scopeState?.$params,
+      () => {
+        if (!modifiers.$silent.value || (modifiers.$rewardEarly.value && scopeState.$fieldError.value)) {
+          $parse();
+        }
+      },
+      { deep: isVueSuperiorOrEqualTo3dotFive ? 1 : true }
+    );
   }
 
   $watch();
@@ -274,9 +279,11 @@ export function createReactiveRuleStatus({
         const validator = scopeState.$validator.value;
         const resultOrPromise = validator(state.value, ...scopeState.$params.value);
         if (resultOrPromise instanceof Promise) {
-          console.warn(
-            'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
-          );
+          if (__IS_DEV__) {
+            console.warn(
+              'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
+            );
+          }
         } else {
           if (resultOrPromise != null) {
             if (typeof resultOrPromise === 'boolean') {

@@ -10,6 +10,13 @@ import { createRule, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
 import { extractValidator } from './common/extractValidator';
 
+interface ApplyIfOptions {
+  /**
+   * ⚠️ Internal use for the `pipe` operator.
+   */
+  hideParams?: boolean;
+}
+
 /**
  * The `applyIf` operator is similar to `requiredIf`, but it can be used with **any rule**.
  * It simplifies conditional rule declarations.
@@ -35,7 +42,8 @@ import { extractValidator } from './common/extractValidator';
  */
 export function applyIf<TRule extends FormRuleDeclaration<any>>(
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
-  rule: TRule
+  rule: TRule,
+  options?: ApplyIfOptions
 ): TRule extends InlineRuleDeclaration<infer TValue, infer TParams, infer TReturn>
   ? RegleRuleDefinition<
       'applyIf',
@@ -57,7 +65,7 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
       : TRule {
   const { _type, validator, _params, _message, _async } = extractValidator(rule);
 
-  const augmentedParams = (_params ?? []).concat([_condition]);
+  const augmentedParams = (_params ?? []).concat(options?.hideParams ? [] : [_condition]);
 
   function newValidator(value: any, ...args: any[]) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);

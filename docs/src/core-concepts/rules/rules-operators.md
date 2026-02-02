@@ -9,6 +9,7 @@ import OperatorOr from '../../parts/components/operators/OperatorOr.vue';
 import OperatorXor from '../../parts/components/operators/OperatorXor.vue';
 import OperatorNot from '../../parts/components/operators/OperatorNot.vue';
 import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vue';
+import OperatorPipe from '../../parts/components/operators/OperatorPipe.vue';
 </script>
 
 
@@ -22,6 +23,7 @@ Regle provides tools to combine and operate on different rules. It includes the 
 - `not`
 - `applyIf`
 - `assignIf`
+- `pipe`
 
 These operators work with any rules you provide, but combining rules with incompatible input types may lead to errors.
 
@@ -176,3 +178,80 @@ const { r$ } = useRegle(ref({ name: '', email: '' }), {
   email: { email },
 });
 ```
+
+
+## `pipe`
+
+The `pipe` operator chains multiple rules together sequentially. Each rule only runs if all previous rules have passed. This is useful when you want to validate in a specific order and avoid running expensive validations (like async checks) until simpler ones pass.
+
+```ts
+import { useRegle } from '@regle/core';
+import { pipe, required, minLength, email } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { email: '' },
+  {
+    email: pipe(required, minLength(5), email),
+  }
+);
+// minLength only runs if required passes
+// email only runs if both required and minLength pass
+```
+
+Result: 
+
+<OperatorPipe />
+
+:::tip When to use `pipe` vs `and`
+- Use **`and`** when all rules should run simultaneously and you want all errors at once
+- Use **`pipe`** when rules should run sequentially and later rules depend on earlier ones passing (e.g., don't check email format until the field has enough characters)
+:::
+
+The `pipe` operator also works with async rules. Subsequent rules will wait for async validators to complete before running:
+
+```ts
+import { pipe, required, withAsync } from '@regle/rules';
+
+const checkEmailAvailable = withAsync(async (value) => {
+  const response = await fetch(`/api/check-email?email=${value}`);
+  return response.ok;
+});
+
+const { r$ } = useRegle(
+  { email: '' },
+  {
+    email: pipe(required, email, checkEmailAvailable),
+  }
+);
+// checkEmailAvailable only runs after required and email pass
+```
+
+### Debouncing async validators
+
+When using `pipe` with async validators, you can configure a debounce delay to prevent too many API calls while the user is typing. Use the array syntax with an options object as the second argument:
+
+
+```ts
+import { pipe, required, email, withAsync } from '@regle/rules';
+
+const checkEmailAvailable = withAsync(async (value) => {
+  const response = await fetch(`/api/check-email?email=${value}`);
+  return response.ok;
+});
+
+const { r$ } = useRegle(
+  { email: '' },
+  {
+    email: pipe(
+      [required, email, checkEmailAvailable],
+      { debounce: 300 } // Wait 300ms after last input before running async validators
+    ),
+  }
+);
+```
+
+The debounce option only affects async validators in the pipe. Synchronous validators (`required`, `email` in the example above) run immediately, while the async validator (`checkEmailAvailable`) will be debounced.
+
+:::info Default debounce
+When using `pipe` with async validators, the default debounce delay is **200ms**. You can override this by passing a custom `debounce` value in the options.
+:::
