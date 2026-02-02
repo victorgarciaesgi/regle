@@ -14,7 +14,7 @@ describe('required validator', () => {
   });
 
   it('should not validate empty objects', () => {
-    expect(required.exec({})).toBe(false);
+    expect(required.exec({})).toBe(true);
   });
 
   it('should validate nonempty objects', () => {

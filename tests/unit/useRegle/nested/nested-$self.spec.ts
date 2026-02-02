@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { useRegle } from '@regle/core';
-import { required, email, isFilled } from '@regle/rules';
+import { required, email, atLeastOne } from '@regle/rules';
 
 describe('object validation with $self', () => {
   it('should validate the object itself if only has $self rules', async () => {
@@ -9,7 +9,7 @@ describe('object validation with $self', () => {
       const state = ref<{ email: string; user?: { firstName: string; lastName: string } }>({ email: '' });
       return useRegle(state, {
         email: { required, email },
-        user: { $self: { required, atLeastOne: (value) => isFilled(value?.firstName) || isFilled(value?.lastName) } },
+        user: { $self: { required, atLeastOne } },
       });
     }
     const { vm } = createRegleComponent(selfValidation);
@@ -42,7 +42,7 @@ describe('object validation with $self', () => {
       const state = ref<{ email: string; user?: { firstName: string; lastName: string } }>({ email: '' });
       return useRegle(state, {
         email: { required, email },
-        user: { $self: { required }, firstName: { required } },
+        user: { $self: { required, atLeastOne }, firstName: { required } },
       });
     }
     const { vm } = createRegleComponent(selfValidation);

@@ -20,7 +20,7 @@ export const required: RegleRuleDefinition<'required', unknown, [], false, boole
   createRule({
     type: 'required',
     validator: (value: unknown) => {
-      return isFilled(value);
+      return isFilled(value, true, false);
     },
     message: 'This field is required',
     required: true,

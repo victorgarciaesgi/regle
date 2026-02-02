@@ -1,5 +1,6 @@
 import type { EmptyObject } from 'type-fest';
 import { isFile } from './isFile';
+import { isObject } from './object.utils';
 
 /**
  * Checks if a value is empty in any way (including arrays and objects).
@@ -33,7 +34,8 @@ import { isFile } from './isFile';
  */
 export function isEmpty(
   value: unknown,
-  considerEmptyArrayInvalid = true
+  considerEmptyArrayInvalid = true,
+  considerEmptyObjectInvalid = true
 ): value is null | undefined | [] | EmptyObject {
   if (value === undefined || value === null) {
     return true;
@@ -50,8 +52,14 @@ export function isEmpty(
       return value.length === 0;
     }
     return false;
-  } else if (typeof value === 'object' && value != null) {
-    return Object.keys(value).length === 0;
+  } else if (isObject(value)) {
+    if (value == null) {
+      return true;
+    }
+    if (considerEmptyObjectInvalid) {
+      return Object.keys(value).length === 0;
+    }
+    return false;
   }
   return !String(value).length;
 }

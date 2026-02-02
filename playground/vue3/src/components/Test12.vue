@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useRegle } from '@regle/core';
-  import { required, minLength, email, pipe, withAsync, isFilled } from '@regle/rules';
+  import { required, minLength, email, pipe, withAsync, isFilled, atLeastOne } from '@regle/rules';
   import { timeout } from './validations';
 
   const state = ref<{ name: string; user?: { firstName: string; lastName: string } }>({ name: '' });
@@ -9,7 +9,7 @@
   const { r$ } = useRegle(state, {
     name: {},
     user: {
-      $self: { required, atLeastOne: (value) => isFilled(value?.firstName) || isFilled(value?.lastName) },
+      $self: { required, atLeastOne: atLeastOne<{ firstName: string; lastName: string }>(['firstName', 'lastName']) },
     },
   });
 
@@ -26,7 +26,6 @@
   }
 
   function updateUser() {
-    console.log(r$.user);
     // r$.user.$value = {};
   }
 </script>
