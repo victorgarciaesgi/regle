@@ -91,7 +91,7 @@ export type RegleSchemaStatus<
   IsRoot extends boolean = false,
 > = Omit<RegleCommonStatus<TState>, IsRoot extends false ? '$pending' : ''> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
-  readonly $fields: ProcessNestedFields<TState, TShortcuts>;
+  readonly $fields: ProcessNestedFields<JoinDiscriminatedUnions<TState>, TShortcuts>;
   /** Collection of all issues, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -104,7 +104,7 @@ export type RegleSchemaStatus<
   readonly $silentErrors: RegleErrorTree<TState, false, true>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
-} & ProcessNestedFields<TState, TShortcuts> &
+} & ProcessNestedFields<JoinDiscriminatedUnions<TState>, TShortcuts> &
   (IsRoot extends true
     ? {
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */

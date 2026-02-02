@@ -1,4 +1,4 @@
-import type { EmptyObject, IsEmptyObject, UnionToTuple, IsUnion } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, UnionToTuple } from 'type-fest';
 import type {
   ExtendedRulesDeclarations,
   InferRegleStatusType,
@@ -9,7 +9,13 @@ import type {
   RegleRuleDefinition,
   RegleStatus,
 } from '../rules';
-import type { HasNamedKeys, LazyJoinDiscriminatedUnions, MaybeInput, TupleToPlainObj } from '../utils';
+import type {
+  HasNamedKeys,
+  JoinDiscriminatedUnions,
+  LazyJoinDiscriminatedUnions,
+  MaybeInput,
+  TupleToPlainObj,
+} from '../utils';
 import type { RegleShortcutDefinition } from './modifiers.types';
 
 /** Types to be augmented by @regle/schemas */
@@ -72,15 +78,21 @@ export type MaybeVariantStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > =
   IsUnion<NonNullable<TState>> extends true
-    ? Omit<RegleStatus<TState, TRules, TShortcuts>, '$fields'> & {
-        $fields: ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<
-          TState,
-          TRules,
+    ? IsUnion<TRules> extends true
+      ? Omit<RegleStatus<TState, TRules, TShortcuts>, '$fields'> & {
+          $fields: ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<
+            TState,
+            TRules,
+            TShortcuts
+          >];
+        } & (HasNamedKeys<TState> extends true
+            ? ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<TState, TRules, TShortcuts>]
+            : {})
+      : RegleStatus<
+          JoinDiscriminatedUnions<TState>,
+          TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<TState>>> ? TRules : EmptyObject,
           TShortcuts
-        >];
-      } & (HasNamedKeys<TState> extends true
-          ? ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<TState, TRules, TShortcuts>]
-          : {})
+        >
     : RegleStatus<TState, TRules, TShortcuts>;
 
 type ProcessChildrenFields<
