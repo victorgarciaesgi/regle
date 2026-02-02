@@ -218,6 +218,12 @@ export function createReactiveNestedStatus({
       ...statesWithNoRules,
     };
 
+    if (watchSources) {
+      $watch();
+    }
+  }
+
+  function createReactiveSelfStatus() {
     if (rulesDef.value.$self) {
       $selfStatus.value = createReactiveFieldStatus({
         state,
@@ -232,16 +238,13 @@ export function createReactiveNestedStatus({
         ...commonArgs,
       });
     }
-
-    if (watchSources) {
-      $watch();
-    }
   }
 
   const $fields: Ref<Record<string, $InternalRegleStatusType>> = commonArgs.storage.getFieldsEntry(cachePath);
 
   // Create reactive nested fields
   createReactiveFieldsStatus();
+  createReactiveSelfStatus();
 
   function define$WatchExternalErrors() {
     if (externalErrors) {
@@ -313,6 +316,7 @@ export function createReactiveNestedStatus({
           }
         },
       });
+
       const $silentValue = computed({
         get: () => state.value,
         set(value) {
@@ -342,6 +346,8 @@ export function createReactiveNestedStatus({
       });
 
       const $invalid = computed<boolean>(() => {
+        if ($selfStatus.value?.$invalid) return true;
+
         const fields = $fields.value;
         const entries = Object.entries(fields);
         if (!entries.length) return false;
@@ -360,27 +366,35 @@ export function createReactiveNestedStatus({
           return acc;
         }, []);
 
-        if (fields.length) {
+        const hasSelfRules = rulesDef.value.$self && !isEmpty(rulesDef.value.$self);
+
+        if (fields.length || hasSelfRules) {
+          const selfCorrect = $selfStatus.value?.$correct ?? true;
+          let childrenCorrect = false;
+
           if (commonArgs.schemaMode) {
-            return fields.every(([_, statusOrField]) => statusOrField.$correct);
+            childrenCorrect = fields.every(([_, statusOrField]) => statusOrField.$correct);
+          } else {
+            childrenCorrect = fields.every(([_, statusOrField]) => {
+              if (!isFieldStatus(statusOrField)) {
+                return statusOrField?.$correct;
+              }
+
+              const hasRequiredRule = 'required' in statusOrField.$rules && statusOrField.$rules.required.$active;
+
+              return hasRequiredRule
+                ? statusOrField.$correct
+                : !statusOrField.$invalid && !statusOrField.$pending && !statusOrField.$isDebouncing;
+            });
           }
 
-          return fields.every(([_, statusOrField]) => {
-            if (!isFieldStatus(statusOrField)) {
-              return statusOrField?.$correct;
-            }
-
-            const hasRequiredRule = 'required' in statusOrField.$rules && statusOrField.$rules.required.$active;
-
-            return hasRequiredRule
-              ? statusOrField.$correct
-              : !statusOrField.$invalid && !statusOrField.$pending && !statusOrField.$isDebouncing;
-          });
+          return selfCorrect && childrenCorrect;
         }
         return false;
       });
 
       const $error = computed<boolean>(() => {
+        if ($selfStatus.value?.$error) return true;
         const fields = $fields.value;
         if (!Object.keys(fields).length) return false;
 
@@ -420,6 +434,7 @@ export function createReactiveNestedStatus({
       const $localPending = ref(false);
 
       const $pending = computed<boolean>(() => {
+        if ($selfStatus.value?.$pending) return true;
         if ($localPending.value) return true;
         const fields = $fields.value;
         for (const key in fields) {
@@ -465,6 +480,7 @@ export function createReactiveNestedStatus({
       });
 
       const $edited = computed<boolean>(() => {
+        if ($selfStatus.value?.$edited) return true;
         if (!Object.keys($fields.value).length) return false;
         for (const key in $fields.value) {
           if (!$fields.value[key]?.$edited) return false;
@@ -473,6 +489,7 @@ export function createReactiveNestedStatus({
       });
 
       const $anyEdited = computed<boolean>(() => {
+        if ($selfStatus.value?.$anyEdited) return true;
         for (const key in $fields.value) {
           if ($fields.value[key]?.$anyEdited) return true;
         }
@@ -624,11 +641,14 @@ export function createReactiveNestedStatus({
     for (const field of Object.values(fields)) {
       field.$clearExternalErrors();
     }
+    $selfStatus.value?.$clearExternalErrors();
   }
 
   function $reset(options?: ResetOptions<Record<string, unknown>>, fromParent?: boolean): void {
     $unwatchExternalErrors?.();
     $unwatch();
+
+    // $selfStatus.value?.$unwatch();
 
     if (!fromParent) {
       if (options?.toOriginalState) {
@@ -654,6 +674,7 @@ export function createReactiveNestedStatus({
       for (const field of Object.values($fields.value)) {
         field?.$reset(options, true);
       }
+      $selfStatus.value?.$reset(options, true);
     }
 
     if (options?.clearExternalErrors) {
@@ -670,6 +691,7 @@ export function createReactiveNestedStatus({
     for (const field of Object.values($fields.value)) {
       field?.$touch(runCommit, withConditions);
     }
+    $selfStatus.value?.$touch(runCommit, withConditions);
   }
 
   function filterNullishFields(fields: [string, unknown][]) {
@@ -698,6 +720,7 @@ export function createReactiveNestedStatus({
     for (const field of Object.values($fields.value)) {
       field.$abort();
     }
+    $selfStatus.value?.$abort();
   }
 
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
@@ -721,11 +744,16 @@ export function createReactiveNestedStatus({
       } else {
         const data = state.value;
         $abort();
-        const results = await Promise.allSettled(
-          Object.values($fields.value).map((statusOrField) => statusOrField.$validate())
-        );
 
-        const validationResults = results.every((value) => value.status === 'fulfilled' && value?.value.valid === true);
+        const validatePromises = [
+          ...Object.values($fields.value).map((statusOrField) => statusOrField.$validate()),
+          ...($selfStatus.value ? [$selfStatus.value?.$validate()] : []),
+        ];
+        const results = await Promise.allSettled(validatePromises);
+
+        const validationResults = results.every(
+          (value) => value.status === 'fulfilled' && value?.value?.valid === true
+        );
 
         return { valid: validationResults, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
       }
