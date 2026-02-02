@@ -5,6 +5,7 @@
         v-model="r$.$value.email"
         :class="{ valid: r$.email.$correct, error: r$.email.$error }"
         placeholder="Type your email"
+        style="margin-right: 8px"
       />
       <div class="button-list inline">
         <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
