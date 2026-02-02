@@ -73,6 +73,31 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+## `atLeastOne`
+
+_**Params**_
+  - `keys?: MaybeRefOrGetter<string[]>` - Optional list of keys to check. If not provided, checks if the object has at least one filled property.
+
+_**Works with**_
+  - `Record | object`
+
+Checks if at least one key is filled in the object. Useful for object-level validation with `$self`.
+
+```ts
+import { atLeastOne } from '@regle/rules';
+
+const { r$ } = useRegle({ user: { firstName: '', lastName: '' } }, {
+  user: {
+    $self: {
+      // Check if any property is filled
+      atLeastOne,
+      // or check specific keys
+      atLeastOne: atLeastOne(['firstName', 'lastName']),
+    },
+  },
+})
+```
+
 ## `between`
 
 _**Params**_

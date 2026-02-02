@@ -30,6 +30,14 @@ import { isEmpty } from '../../../../shared';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#isfilled Documentation}
  */
-export function isFilled<T extends unknown>(value: T, considerEmptyArrayInvalid = true): value is NonNullable<T> {
-  return !isEmpty(typeof value === 'string' ? value.trim() : value, considerEmptyArrayInvalid);
+export function isFilled<T extends unknown>(
+  value: T,
+  considerEmptyArrayInvalid = true,
+  considerEmptyObjectInvalid = true
+): value is NonNullable<T> {
+  return !isEmpty(
+    typeof value === 'string' ? value.trim() : value,
+    considerEmptyArrayInvalid,
+    considerEmptyObjectInvalid
+  );
 }

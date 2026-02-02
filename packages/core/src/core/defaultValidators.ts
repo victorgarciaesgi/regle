@@ -19,6 +19,15 @@ export interface CommonAlphaOptions {
 export type DefaultValidators = {
   alpha: RegleRuleWithParamsDefinition<unknown, string, [options?: CommonAlphaOptions | undefined]>;
   alphaNum: RegleRuleWithParamsDefinition<unknown, string | number, [options?: CommonAlphaOptions | undefined]>;
+  atLeastOne: RegleRuleWithParamsDefinition<
+    unknown,
+    Record<string, unknown> | object,
+    [keys?: string[] | undefined],
+    false,
+    boolean,
+    false,
+    Record<string, unknown> | object
+  >;
   between: RegleRuleWithParamsDefinition<unknown, number, [min: Maybe<number>, max: Maybe<number>]>;
   boolean: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   checked: RegleRuleDefinition<unknown, boolean, [], false, boolean, boolean>;
