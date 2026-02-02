@@ -9,3 +9,4 @@ export { or } from './or';
 export { xor } from './xor';
 export { not } from './not';
 export { assignIf } from './assignIf';
+export { pipe } from './pipe';

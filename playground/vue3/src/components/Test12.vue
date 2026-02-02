@@ -1,49 +1,89 @@
 <script setup lang="ts">
-  import { ref, type MaybeRef, type Ref } from 'vue';
-  import { useRegle, type JoinDiscriminatedUnions } from '@regle/core';
-  import { required, minLength, email, literal, and } from '@regle/rules';
+  import { ref } from 'vue';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email, pipe, withAsync } from '@regle/rules';
+  import { timeout } from './validations';
 
-  type State = {
-    name: string;
-    address?: {
-      street?: string;
-      city?: string;
-    };
-  };
+  const state = ref({ name: '', email: '' });
 
-  const foo = and(required, minLength(2));
-
-  const state = ref<State>({ name: '', address: {} });
+  const foo = pipe(
+    [
+      required,
+      minLength(3),
+      withAsync(async (value) => {
+        console.log('withAsync', value);
+        await timeout(2000);
+        return value !== 'foobar';
+      }),
+      email,
+    ],
+    { debounce: 1000 }
+  );
 
   const { r$ } = useRegle(state, {
-    name: { foo: and(required, minLength(2)) },
-    address: {
-      $self: { required },
-    },
+    name: foo,
+    email: { email },
   });
 
-  const { valid, data } = await r$.$validate();
-
-  if (valid) {
-    // TODO address should not be undefined
-    console.log(data.name);
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+    if (valid) {
+      console.log(data.name);
+      //               ^ string
+      console.log(data.email);
+      //.              ^ string | undefined
+    } else {
+      console.warn('Errors: ', r$.$errors);
+    }
   }
-
-  r$.address.$self;
 </script>
 
 <template>
   <div class="container p-3">
     <h2>Hello Regle!</h2>
+
     <div class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      {{ r$.$errors }}
-      <ul id="email-errors">
-        <li v-for="error of r$.address.$self.$errors" :key="error">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+      />
+      <pre v-if="r$.name.$pending">Pending...</pre>
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
           {{ error }}
         </li>
       </ul>
     </div>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
 </template>
 <style>
