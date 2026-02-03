@@ -1,1 +1,1 @@
-pnpm lint-staged && pnpm format:staged && git diff --cached --name-only | xargs git add
+pnpm lint-staged && git diff --cached --name-only --diff-filter=d | xargs -r pnpm oxfmt && git diff --cached --name-only --diff-filter=d | xargs -r git add
