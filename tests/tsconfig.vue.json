@@ -4,6 +4,5 @@
     "noErrorTruncation": true,
     "paths": {}
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["./**/scoped-regle/**/*"]
+  "include": ["./**/*.vue", "./**/scoped-regle/**/*.ts"]
 }
