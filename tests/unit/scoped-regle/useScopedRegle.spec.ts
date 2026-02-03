@@ -1,375 +1,366 @@
 import { mount } from '@vue/test-utils';
 import ParentCollector from './fixtures/ParentCollector.vue';
-import { isVueSuperiorOrEqualTo3dotFive } from '../../../packages/core/src/utils';
 import { useScope5Regle } from './fixtures/scoped-config';
 import { RegleVuePlugin } from '@regle/core';
+import { vueVersion } from '../../utils/vueVersion';
 
-describe('useScopedRegle', () => {
+describe.runIf(vueVersion === '3.5')('useScopedRegle', () => {
   // Weird test bug to resolve with Vue 3.4
-  if (isVueSuperiorOrEqualTo3dotFive) {
-    const wrapper = mount(ParentCollector, {
-      attachTo: document.documentElement,
-      global: {
-        plugins: [RegleVuePlugin],
+  const wrapper = mount(ParentCollector, {
+    attachTo: document.documentElement,
+    global: {
+      plugins: [RegleVuePlugin],
+    },
+  });
+
+  it('should work with default exported scoped composables', async () => {
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.scope0R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope0R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope0R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope0R$.$correct).toBe(false);
+    expect(wrapper.vm.scope0R$.$error).toBe(false);
+    expect(wrapper.vm.scope0R$.$edited).toBe(false);
+    expect(wrapper.vm.scope0R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope0R$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope0R$.$errors).toStrictEqual([{ scope0Data: [] }]);
+    expect(wrapper.vm.scope0R$.$silentErrors).toStrictEqual([{ scope0Data: ['This field is required'] }]);
+    expect(wrapper.vm.scope0R$.$value).toStrictEqual([{ scope0Data: '' }]);
+  });
+
+  it('should behave correctly with multiple scopes', async () => {
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+
+    wrapper.vm.showScope1 = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([
+      { scope1Data: ['This field is required'] },
+      { scope1Data: ['This field is required'] },
+    ]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: '' }]);
+
+    wrapper.vm.showScope1_1 = false;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([{ scope1Data: ['This field is required'] }]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }]);
+
+    wrapper.vm.showScope1_1 = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([
+      { scope1Data: ['This field is required'] },
+      { scope1Data: ['This field is required'] },
+    ]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: '' }]);
+
+    wrapper.findAll('.scope1-input')[0].setValue('Hello');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: 'Hello' }]);
+
+    wrapper.findAll('.scope1-input')[0].setValue('');
+    wrapper.findAll('.scope1-input')[1].setValue('Hello2');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(true);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: ['This field is required'] }]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: '' }]);
+
+    wrapper.findAll('.scope1-input')[0].setValue('Hello1');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(true);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(true);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: 'Hello1' }]);
+
+    wrapper.vm.showScope2 = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(true);
+    expect(wrapper.vm.scope1R$.$edited).toBe(true);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
+    expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: 'Hello1' }]);
+
+    expect(wrapper.vm.scope2R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope2R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope2R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope2R$.$correct).toBe(false);
+    expect(wrapper.vm.scope2R$.$error).toBe(false);
+    expect(wrapper.vm.scope2R$.$edited).toBe(false);
+    expect(wrapper.vm.scope2R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope2R$.$instances).toHaveLength(3);
+    expect(wrapper.vm.scope2R$.$errors).toStrictEqual([{ scope2Data: [] }, { scope2Data: [] }, { scope2Data: [] }]);
+    expect(wrapper.vm.scope2R$.$silentErrors).toStrictEqual([
+      { scope2Data: ['This field is required'] },
+      { scope2Data: ['This field is required'] },
+      { scope2Data: ['This field is required'] },
+    ]);
+    expect(wrapper.vm.scope2R$.$value).toStrictEqual([{ scope2Data: '' }, { scope2Data: '' }, { scope2Data: '' }]);
+
+    wrapper.vm.showScope1 = false;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+
+    wrapper.vm.showScope1 = false;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+  });
+
+  it('should work with global config', async () => {
+    wrapper.vm.showScope3 = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope3R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope3R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope3R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope3R$.$error).toBe(false);
+    expect(wrapper.vm.scope3R$.$correct).toBe(false);
+    expect(wrapper.vm.scope3R$.$edited).toBe(false);
+    expect(wrapper.vm.scope3R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope3R$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope3R$.$errors).toStrictEqual([{ scope3Data: [] }]);
+    expect(wrapper.vm.scope3R$.$silentErrors).toStrictEqual([{ scope3Data: ['Custom error'] }]);
+    expect(wrapper.vm.scope3R$.$value).toStrictEqual([{ scope3Data: '' }]);
+
+    wrapper.findAll('.scope3-input')[0].setValue('Hello');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope3R$.$dirty).toBe(true);
+    expect(wrapper.vm.scope3R$.$anyDirty).toBe(true);
+    expect(wrapper.vm.scope3R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope3R$.$correct).toBe(true);
+    expect(wrapper.vm.scope3R$.$error).toBe(false);
+    expect(wrapper.vm.scope3R$.$edited).toBe(true);
+    expect(wrapper.vm.scope3R$.$anyEdited).toBe(true);
+    expect(wrapper.vm.scope3R$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope3R$.$errors).toStrictEqual([{ scope3Data: [] }]);
+    expect(wrapper.vm.scope3R$.$value).toStrictEqual([{ scope3Data: 'Hello' }]);
+  });
+
+  it('should work with namespaces', async () => {
+    wrapper.vm.showScope1Namespace = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1NamespaceR$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
+    expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([{ scope4Namespace: ['This field is required'] }]);
+    expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
+
+    wrapper.vm.scopeNamespace = 'other';
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+
+    wrapper.vm.scopeNamespace = 'scope';
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1NamespaceR$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
+    expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
+    expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
+    expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([{ scope4Namespace: ['This field is required'] }]);
+    expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
+
+    wrapper.vm.showScope1Namespace = false;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope1R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope1R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope1R$.$correct).toBe(false);
+    expect(wrapper.vm.scope1R$.$error).toBe(false);
+    expect(wrapper.vm.scope1R$.$edited).toBe(false);
+    expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
+    expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+  });
+
+  it('should handle the `asRecord` option', async () => {
+    expect(wrapper.vm.scope5R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope5R$.$invalid).toBe(false);
+    expect(wrapper.vm.scope5R$.$correct).toBe(false);
+    expect(wrapper.vm.scope5R$.$error).toBe(false);
+    expect(wrapper.vm.scope5R$.$edited).toBe(false);
+    expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
+    expect(wrapper.vm.scope5R$.$instances).toStrictEqual({});
+    expect(wrapper.vm.scope5R$.$errors).toStrictEqual({});
+    expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({});
+    expect(wrapper.vm.scope5R$.$value).toStrictEqual({});
+
+    wrapper.vm.showScope5 = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scope5R$.$dirty).toBe(false);
+    expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope5R$.$invalid).toBe(true);
+    expect(wrapper.vm.scope5R$.$correct).toBe(false);
+    expect(wrapper.vm.scope5R$.$error).toBe(false);
+    expect(wrapper.vm.scope5R$.$edited).toBe(false);
+    expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
+    expect(Object.keys(wrapper.vm.scope5R$.$instances)).toHaveLength(1);
+    expect(wrapper.vm.scope5R$.$instances.scope5.$name).toBe('scope5');
+    expect(wrapper.vm.scope5R$.$errors).toStrictEqual({
+      scope5: {
+        scope5Record: [],
+      },
+    });
+    expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({
+      scope5: { scope5Record: ['This field is required'] },
+    });
+    expect(wrapper.vm.scope5R$.$value).toStrictEqual({
+      scope5: {
+        scope5Record: '',
       },
     });
 
-    it('should work with default exported scoped composables', async () => {
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.scope0R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope0R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope0R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope0R$.$correct).toBe(false);
-      expect(wrapper.vm.scope0R$.$error).toBe(false);
-      expect(wrapper.vm.scope0R$.$edited).toBe(false);
-      expect(wrapper.vm.scope0R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope0R$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope0R$.$errors).toStrictEqual([{ scope0Data: [] }]);
-      expect(wrapper.vm.scope0R$.$silentErrors).toStrictEqual([{ scope0Data: ['This field is required'] }]);
-      expect(wrapper.vm.scope0R$.$value).toStrictEqual([{ scope0Data: '' }]);
-    });
+    expect(wrapper.vm.scope5R$.$value.scope5.scope5Record).toBe('');
 
-    it('should behave correctly with multiple scopes', async () => {
-      await wrapper.vm.$nextTick();
+    // @ts-expect-error no 3rd argument
+    useScope5Regle({}, {});
+    // @ts-expect-error no `id` option
+    useScope5Regle({}, {}, {});
+    // ✅
+    useScope5Regle({}, {}, { id: 'foo' });
+  });
 
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
+  it('should collect multiple namespaces', async () => {
+    wrapper.vm.showScope1Namespace = true;
+    await wrapper.vm.$nextTick();
 
-      wrapper.vm.showScope1 = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([
-        { scope1Data: ['This field is required'] },
-        { scope1Data: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: '' }]);
-
-      wrapper.vm.showScope1_1 = false;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([{ scope1Data: ['This field is required'] }]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }]);
-
-      wrapper.vm.showScope1_1 = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([
-        { scope1Data: ['This field is required'] },
-        { scope1Data: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: '' }]);
-
-      wrapper.findAll('.scope1-input')[0].setValue('Hello');
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: '' }, { scope1Data: 'Hello' }]);
-
-      wrapper.findAll('.scope1-input')[0].setValue('');
-      wrapper.findAll('.scope1-input')[1].setValue('Hello2');
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(true);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([
-        { scope1Data: [] },
-        { scope1Data: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: '' }]);
-
-      wrapper.findAll('.scope1-input')[0].setValue('Hello1');
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(true);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(true);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: 'Hello1' }]);
-
-      wrapper.vm.showScope2 = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(true);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(true);
-      expect(wrapper.vm.scope1R$.$edited).toBe(true);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(true);
-      expect(wrapper.vm.scope1R$.$instances).toHaveLength(2);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([{ scope1Data: [] }, { scope1Data: [] }]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([{ scope1Data: 'Hello2' }, { scope1Data: 'Hello1' }]);
-
-      expect(wrapper.vm.scope2R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope2R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope2R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope2R$.$correct).toBe(false);
-      expect(wrapper.vm.scope2R$.$error).toBe(false);
-      expect(wrapper.vm.scope2R$.$edited).toBe(false);
-      expect(wrapper.vm.scope2R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope2R$.$instances).toHaveLength(3);
-      expect(wrapper.vm.scope2R$.$errors).toStrictEqual([{ scope2Data: [] }, { scope2Data: [] }, { scope2Data: [] }]);
-      expect(wrapper.vm.scope2R$.$silentErrors).toStrictEqual([
-        { scope2Data: ['This field is required'] },
-        { scope2Data: ['This field is required'] },
-        { scope2Data: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope2R$.$value).toStrictEqual([{ scope2Data: '' }, { scope2Data: '' }, { scope2Data: '' }]);
-
-      wrapper.vm.showScope1 = false;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
-
-      wrapper.vm.showScope1 = false;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
-    });
-
-    it('should work with global config', async () => {
-      wrapper.vm.showScope3 = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope3R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope3R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope3R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope3R$.$error).toBe(false);
-      expect(wrapper.vm.scope3R$.$correct).toBe(false);
-      expect(wrapper.vm.scope3R$.$edited).toBe(false);
-      expect(wrapper.vm.scope3R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope3R$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope3R$.$errors).toStrictEqual([{ scope3Data: [] }]);
-      expect(wrapper.vm.scope3R$.$silentErrors).toStrictEqual([{ scope3Data: ['Custom error'] }]);
-      expect(wrapper.vm.scope3R$.$value).toStrictEqual([{ scope3Data: '' }]);
-
-      wrapper.findAll('.scope3-input')[0].setValue('Hello');
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope3R$.$dirty).toBe(true);
-      expect(wrapper.vm.scope3R$.$anyDirty).toBe(true);
-      expect(wrapper.vm.scope3R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope3R$.$correct).toBe(true);
-      expect(wrapper.vm.scope3R$.$error).toBe(false);
-      expect(wrapper.vm.scope3R$.$edited).toBe(true);
-      expect(wrapper.vm.scope3R$.$anyEdited).toBe(true);
-      expect(wrapper.vm.scope3R$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope3R$.$errors).toStrictEqual([{ scope3Data: [] }]);
-      expect(wrapper.vm.scope3R$.$value).toStrictEqual([{ scope3Data: 'Hello' }]);
-    });
-
-    it('should work with namespaces', async () => {
-      wrapper.vm.showScope1Namespace = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1NamespaceR$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
-      expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([
-        { scope4Namespace: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
-
-      wrapper.vm.scopeNamespace = 'other';
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
-
-      wrapper.vm.scopeNamespace = 'scope';
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1NamespaceR$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$invalid).toBe(true);
-      expect(wrapper.vm.scope1NamespaceR$.$error).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$correct).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$edited).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1NamespaceR$.$instances).toHaveLength(1);
-      expect(wrapper.vm.scope1NamespaceR$.$errors).toStrictEqual([{ scope4Namespace: [] }]);
-      expect(wrapper.vm.scope1NamespaceR$.$silentErrors).toStrictEqual([
-        { scope4Namespace: ['This field is required'] },
-      ]);
-      expect(wrapper.vm.scope1NamespaceR$.$value).toStrictEqual([{ scope4Namespace: '' }]);
-
-      wrapper.vm.showScope1Namespace = false;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope1R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope1R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope1R$.$correct).toBe(false);
-      expect(wrapper.vm.scope1R$.$error).toBe(false);
-      expect(wrapper.vm.scope1R$.$edited).toBe(false);
-      expect(wrapper.vm.scope1R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope1R$.$instances).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$errors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$silentErrors).toStrictEqual([]);
-      expect(wrapper.vm.scope1R$.$value).toStrictEqual([]);
-    });
-
-    it('should handle the `asRecord` option', async () => {
-      expect(wrapper.vm.scope5R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope5R$.$invalid).toBe(false);
-      expect(wrapper.vm.scope5R$.$correct).toBe(false);
-      expect(wrapper.vm.scope5R$.$error).toBe(false);
-      expect(wrapper.vm.scope5R$.$edited).toBe(false);
-      expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
-      expect(wrapper.vm.scope5R$.$instances).toStrictEqual({});
-      expect(wrapper.vm.scope5R$.$errors).toStrictEqual({});
-      expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({});
-      expect(wrapper.vm.scope5R$.$value).toStrictEqual({});
-
-      wrapper.vm.showScope5 = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope5R$.$dirty).toBe(false);
-      expect(wrapper.vm.scope5R$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope5R$.$invalid).toBe(true);
-      expect(wrapper.vm.scope5R$.$correct).toBe(false);
-      expect(wrapper.vm.scope5R$.$error).toBe(false);
-      expect(wrapper.vm.scope5R$.$edited).toBe(false);
-      expect(wrapper.vm.scope5R$.$anyEdited).toBe(false);
-      expect(Object.keys(wrapper.vm.scope5R$.$instances)).toHaveLength(1);
-      expect(wrapper.vm.scope5R$.$instances.scope5.$name).toBe('scope5');
-      expect(wrapper.vm.scope5R$.$errors).toStrictEqual({
-        scope5: {
-          scope5Record: [],
-        },
-      });
-      expect(wrapper.vm.scope5R$.$silentErrors).toStrictEqual({
-        scope5: { scope5Record: ['This field is required'] },
-      });
-      expect(wrapper.vm.scope5R$.$value).toStrictEqual({
-        scope5: {
-          scope5Record: '',
-        },
-      });
-
-      expect(wrapper.vm.scope5R$.$value.scope5.scope5Record).toBe('');
-
-      // @ts-expect-error no 3rd argument
-      useScope5Regle({}, {});
-      // @ts-expect-error no `id` option
-      useScope5Regle({}, {}, {});
-      // ✅
-      useScope5Regle({}, {}, { id: 'foo' });
-    });
-
-    it('should collect multiple namespaces', async () => {
-      wrapper.vm.showScope1Namespace = true;
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.vm.scope6NamespaceR$.$dirty).toBe(false);
-      expect(wrapper.vm.scope6NamespaceR$.$anyDirty).toBe(false);
-      expect(wrapper.vm.scope6NamespaceR$.$invalid).toBe(true);
-      expect(wrapper.vm.scope6NamespaceR$.$correct).toBe(false);
-      expect(wrapper.vm.scope6NamespaceR$.$error).toBe(false);
-      expect(wrapper.vm.scope6NamespaceR$.$edited).toBe(false);
-      expect(wrapper.vm.scope6NamespaceR$.$anyEdited).toBe(false);
-      expect(Object.keys(wrapper.vm.scope6NamespaceR$.$instances)).toHaveLength(2);
-      expect(wrapper.vm.scope6NamespaceR$.$errors).toStrictEqual([
-        {
-          scope4Namespace: [],
-        },
-        {
-          scope4Namespace: [],
-        },
-      ]);
-    });
-  }
+    expect(wrapper.vm.scope6NamespaceR$.$dirty).toBe(false);
+    expect(wrapper.vm.scope6NamespaceR$.$anyDirty).toBe(false);
+    expect(wrapper.vm.scope6NamespaceR$.$invalid).toBe(true);
+    expect(wrapper.vm.scope6NamespaceR$.$correct).toBe(false);
+    expect(wrapper.vm.scope6NamespaceR$.$error).toBe(false);
+    expect(wrapper.vm.scope6NamespaceR$.$edited).toBe(false);
+    expect(wrapper.vm.scope6NamespaceR$.$anyEdited).toBe(false);
+    expect(Object.keys(wrapper.vm.scope6NamespaceR$.$instances)).toHaveLength(2);
+    expect(wrapper.vm.scope6NamespaceR$.$errors).toStrictEqual([
+      {
+        scope4Namespace: [],
+      },
+      {
+        scope4Namespace: [],
+      },
+    ]);
+  });
 
   it('should be empty', () => {
     expect(true).toBe(true);

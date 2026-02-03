@@ -2,7 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "noErrorTruncation": true,
+    "skipLibCheck": true,
     "paths": {}
   },
-  "include": ["./**/*.vue", "./**/scoped-regle/**/*.ts"]
+  "include": ["./**/*.vue", "./unit/**/scoped-regle/**/*.ts"],
+  "exclude": ["./packages/**/*", "node_modules"]
 }

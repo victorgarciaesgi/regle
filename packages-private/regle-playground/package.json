@@ -14,7 +14,7 @@
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.3",
+    "@vitejs/plugin-vue": "6.0.4",
     "execa": "9.6.1",
     "vite": "catalog:"
   }

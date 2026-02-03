@@ -10,6 +10,8 @@ export default defineConfig({
     '@vue/compiler-dom-3.4',
     '@vue/server-renderer-3.4',
     'pinia-2.2.5',
+    '@vue/devtools-kit',
+    '@vue/devtools-api',
   ],
   includeLocked: true,
   interactive: true,

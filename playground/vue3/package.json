@@ -25,7 +25,7 @@
     "@tsconfig/node20": "^20.1.8",
     "@types/node": "^24.10.9",
     "@typescript/native-preview": "latest",
-    "@vitejs/plugin-vue": "^6.0.3",
+    "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
     "npm-run-all2": "^8.0.4",
     "type-fest": "catalog:",
