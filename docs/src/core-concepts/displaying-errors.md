@@ -89,6 +89,63 @@ Result:
 
 
 
+## Get errors by path
+
+If you need to access errors for a specific field using a dot-notation path, you can use the `getErrors` utility. This is useful when you need to programmatically access errors or when building reusable input components.
+
+```ts
+import { getErrors, useRegle } from '@regle/core';
+import { required, email } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { user: { email: '' }, contacts: [{ name: '' }] },
+  {
+    user: { email: { required, email } },
+    contacts: { $each: { name: { required } } }
+  }
+);
+
+await r$.$validate();
+
+// Access nested errors with dot notation
+const emailErrors = getErrors(r$, 'user.email');
+// ['This field is required']
+
+// Access collection item errors
+const contactErrors = getErrors(r$, 'contacts.$each.0.name');
+// ['This field is required']
+```
+
+:::tip
+The path parameter is **type-safe** - TypeScript will autocomplete available paths and show an error if you try to access a path that doesn't exist or isn't a field with errors.
+:::
+
+
+## Get issues by path
+
+Similar to `getErrors`, the `getIssues` utility returns detailed validation issues including metadata like the rule name and custom properties.
+
+```ts
+import { getIssues, useRegle } from '@regle/core';
+import { required, minLength } from '@regle/rules';
+
+const { r$ } = useRegle(
+  { user: { name: '' } },
+  { user: { name: { required, minLength: minLength(3) } } }
+);
+
+await r$.$validate();
+
+const nameIssues = getIssues(r$, 'user.name');
+// [{
+//   $message: 'This field is required',
+//   $property: 'name',
+//   $rule: 'required',
+//   $type: 'required'
+// }]
+```
+
+
 ## Display flat errors
 
 If you want to display the complete list of errors of a form, or the total count of errors, you can use the `flatErrors` utility.

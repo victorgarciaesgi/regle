@@ -240,6 +240,7 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
   silent = false,
   immediateDirty = false,
 } = {}) {
+  const condition = ref(true);
   const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
     modifiers: {
       autoDirty,
@@ -256,18 +257,21 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
     contacts: [{ name: '' }],
   });
 
-  return useCustomRegle(form, {
-    email: { required: required, email: email },
-    user: {
-      firstName: { required },
-      lastName: { required },
-    },
-    contacts: {
-      $each: {
-        name: { required },
+  return {
+    condition,
+    ...useCustomRegle(form, {
+      email: { required: required, email: email },
+      user: {
+        firstName: { required },
+        lastName: { required },
       },
-    },
-  });
+      contacts: {
+        $each: {
+          name: { required },
+        },
+      },
+    }),
+  };
 }
 
 export function simpleNestedStateWithComputedValidation() {

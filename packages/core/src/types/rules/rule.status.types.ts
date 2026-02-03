@@ -1,21 +1,21 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or } from 'type-fest';
-import type { MaybeRef, Raw, UnwrapNestedRefs, UnwrapRef } from 'vue';
+import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
   $InternalRegleErrors,
   $InternalRegleIssues,
   $InternalRegleResult,
-  ExtendedRulesDeclarations,
   CollectionRegleBehaviourOptions,
+  ComputeFieldRules,
   DeepPartial,
+  ExtendedRulesDeclarations,
   ExtendOnlyRealRecord,
   ExtractFromGetter,
   FieldRegleBehaviourOptions,
   HasNamedKeys,
   InferOutput,
-  InlineRuleDeclaration,
   JoinDiscriminatedUnions,
   MaybeInput,
   MaybeOutput,
@@ -26,19 +26,19 @@ import type {
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
+  RegleFieldIssue,
   RegleFieldResult,
   RegleFormPropertyType,
   RegleIssuesTree,
   ReglePartialRuleTree,
+  RegleResult,
   RegleRuleDecl,
-  RegleRuleDefinition,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
   RegleStaticImpl,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
-  RegleResult,
 } from '..';
 
 /**
@@ -110,13 +110,13 @@ export type RegleStatus<
    *
    * Only contains issues from properties where $dirty equals true.
    */
-  readonly $issues: RegleIssuesTree<TState>;
+  readonly $issues: RegleIssuesTree<TState, false, TRules>;
   /**
    * Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true.
    * */
-  readonly $errors: RegleErrorTree<TState>;
+  readonly $errors: RegleErrorTree<TState, false>;
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState>;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
@@ -214,51 +214,6 @@ export type $InternalRegleStatusType =
   | $InternalRegleCollectionStatus
   | $InternalRegleStatus
   | $InternalRegleFieldStatus;
-
-export type RegleFieldIssue<
-  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
-> = {
-  readonly $property: string;
-  readonly $type?: string;
-  readonly $message: string;
-} & (IsEmptyObject<TRules> extends true
-  ? {
-      readonly $rule: string;
-    }
-  : {
-      [K in keyof ComputeFieldRules<any, TRules>]: ComputeFieldRules<any, TRules>[K] extends {
-        $metadata: infer TMetadata;
-      }
-        ? K extends string
-          ? { readonly $rule: K } & (TMetadata extends boolean ? { readonly $rule: string } : TMetadata)
-          : { readonly $rule: string }
-        : { readonly $rule: string };
-    }[keyof ComputeFieldRules<any, TRules>]);
-
-type ComputeFieldRules<
-  TState extends any,
-  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>>>,
-> =
-  IsEmptyObject<UnwrapRef<TRules>> extends true
-    ? {
-        readonly [x: string]: RegleRuleStatus<TState, any[], any>;
-      }
-    : {
-        readonly [TRuleKey in keyof Omit<
-          UnwrapRef<TRules>,
-          '$each' | keyof FieldRegleBehaviourOptions
-        >]: RegleRuleStatus<
-          TState,
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, infer TParams, any> ? TParams : [],
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, any, any, infer TMetadata>
-            ? TMetadata
-            : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
-              ? TMetadata extends Promise<infer P>
-                ? P
-                : TMetadata
-              : boolean
-        >;
-      };
 
 /**
  * @public

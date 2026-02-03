@@ -6,6 +6,8 @@ export {
   defineRules,
   extendRegleConfig,
   flatErrors,
+  getErrors,
+  getIssues,
   inferRules,
   mergeRegles,
   narrowVariant,

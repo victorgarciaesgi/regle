@@ -1,38 +1,25 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRegle, type DumbJoinDiscriminatedUnions, type JoinDiscriminatedUnions } from '@regle/core';
-  import { required, minLength, email, pipe, withAsync, isFilled, atLeastOne } from '@regle/rules';
-  import { timeout } from './validations';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-  type State = ({ name: string } | { address: string }) & { email?: string };
-
-  type bar = JoinDiscriminatedUnions<State>;
-
-  const state = ref<State>({ name: '', email: '' });
+  const state = ref({ name: '', email: '' });
 
   const { r$ } = useRegle(state, {
-    address: { required },
+    name: { required, minLength: minLength(4) },
+    email: { email },
   });
-
-  r$.$fields;
-  r$.address?.$value;
-
-  r$.$fields.email?.$value;
 
   async function submit() {
     const { valid, data } = await r$.$validate();
     if (valid) {
       console.log(data.name);
       //               ^ string
-      // console.log(data.email);
+      console.log(data.email);
       //.              ^ string | undefined
     } else {
       console.warn('Errors: ', r$.$errors);
     }
-  }
-
-  function updateUser() {
-    // r$.user.$value = {};
   }
 </script>
 
@@ -47,12 +34,11 @@
         v-model="r$.$value.name"
         placeholder="Type your name"
         :class="{
-          'is-valid': r$.name?.$correct,
-          'is-invalid': r$.name?.$error,
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
         }"
         aria-describedby="name-error"
       />
-      <pre v-if="r$.name?.$pending">Pending...</pre>
       <ul id="name-errors" class="invalid-feedback">
         <li v-for="error of r$.$errors.name" :key="error">
           {{ error }}
@@ -60,7 +46,7 @@
       </ul>
     </div>
 
-    <!-- <div class="py-2 has-validation">
+    <div class="py-2 has-validation">
       <label class="form-label">Email (optional)</label>
       <input
         class="form-control"
@@ -77,10 +63,9 @@
           {{ error }}
         </li>
       </ul>
-    </div> -->
+    </div>
 
     <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-primary m-2" @click="updateUser">Update User</button>
     <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
     <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
