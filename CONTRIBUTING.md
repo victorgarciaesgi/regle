@@ -30,7 +30,7 @@ You can run a Vue 3 and Nuxt playground using:
 
 1. Run
    - `pnpm run test:dev` to run runtime tests in watch mode
-   - `pnpm run test:dts` to run all the typecheck tests
+   - `pnpm run test:typecheck` to run all the typecheck tests
    - `pnpm run test` to run all the test suite
 
 You can additionally run all TS related typechecking and type unit tests using:
