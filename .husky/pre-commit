@@ -1,4 +1,2 @@
-FILES=$(git diff --cached --name-only --diff-filter=d -- '*.js' '*.ts' '*.vue')
-[ -z "$FILES" ] && exit 0
 pnpm lint-staged || exit 1
-echo "$FILES" | xargs pnpm oxfmt && echo "$FILES" | xargs git add
+git diff --cached --name-only --diff-filter=d -z -- '*.js' '*.ts' '*.vue' | xargs -0 -r sh -c 'pnpm oxfmt "$@" && git add "$@"' sh

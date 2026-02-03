@@ -66,7 +66,7 @@ export function computeRulesResults<TRules extends FormRuleDeclaration<any, any>
       paramIndex++;
     } else {
       const paramsLength = rule._params?.length ?? 0;
-      $rules.push(rule.validator(value, ...params.slice(paramIndex, paramsLength)));
+      $rules.push(rule.validator(value, ...params.slice(paramIndex, paramIndex + paramsLength)));
       if (paramsLength) {
         paramIndex += paramsLength;
       }
