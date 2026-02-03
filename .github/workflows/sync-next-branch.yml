@@ -1,4 +1,4 @@
-name: Sync Next Branch
+name: sync-next-branch
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Generate changelog
+name: changelog
 
 permissions:
   contents: write
@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 jobs:

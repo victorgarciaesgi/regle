@@ -1,4 +1,4 @@
-name: Commit lint
+name: commit-lint
 
 on: [push, pull_request]
 
