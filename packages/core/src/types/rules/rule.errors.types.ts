@@ -81,11 +81,9 @@ export type RegleValidationErrors<
       ? any
       : NonNullable<TState> extends Array<infer U>
         ? TSchema extends false
-          ? U extends Record<string, any>
-            ? TExternal extends false
-              ? RegleCollectionErrors<U, TIssue, TSchema>
-              : RegleExternalCollectionErrors<U, TIssue, TSchema>
-            : ErrorMessageOrIssue<TIssue, TRules>
+          ? TExternal extends false
+            ? RegleCollectionErrors<U, TIssue, TSchema>
+            : RegleExternalCollectionErrors<U, TIssue, TSchema>
           : RegleCollectionErrors<U, TIssue, TSchema>
         : NonNullable<TState> extends Date | File
           ? ErrorMessageOrIssue<TIssue, TRules>
@@ -153,7 +151,7 @@ export type RegleCollectionErrors<
 };
 
 export type RegleExternalCollectionErrors<
-  TState extends Record<string, any>,
+  TState extends unknown,
   TIssue extends boolean = false,
   TSchema extends boolean = false,
 > = {

@@ -41,6 +41,7 @@ export function simpleNestedStateWithMixedValidation() {
     booleanField: { checked },
     collection: {
       required,
+      $each: {},
     },
     file: { required, otherValidation: (value) => value instanceof File },
     address: {

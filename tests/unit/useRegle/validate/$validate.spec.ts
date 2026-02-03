@@ -23,7 +23,7 @@ describe('$validate', () => {
           name: string;
         }[];
         collection: {
-          name: string;
+          name?: MaybeOutput<string>;
         }[];
         address: {
           street?: string | undefined;
@@ -70,7 +70,7 @@ describe('$validate', () => {
         name: string;
       }[];
       collection: {
-        name: string;
+        name?: MaybeOutput<string>;
       }[];
       address: {
         street?: string | undefined;
@@ -92,7 +92,7 @@ describe('$validate', () => {
         name: string;
       }[];
       collection: {
-        name: string;
+        name?: MaybeOutput<string>;
       }[];
       address: {
         street?: string | undefined;

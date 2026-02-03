@@ -27,11 +27,31 @@ describe('collections of primitives', () => {
 
     shouldBeValidField(vm.r$.collection);
 
-    // @ts-expect-error
-    expect(vm.r$.collection.$each).toBeUndefined();
-    expect(vm.r$.$errors.collection).toStrictEqual([]);
+    expect(vm.r$.collection.$each).toStrictEqual([]);
+    expect(vm.r$.$errors.collection.$self).toStrictEqual([]);
 
-    expectTypeOf(vm.r$.collection.$errors).toEqualTypeOf<string[]>();
-    expectTypeOf(vm.r$.$errors.collection).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.collection.$errors.$self).toEqualTypeOf<string[]>();
+    expectTypeOf(vm.r$.$errors.collection.$self).toEqualTypeOf<string[]>();
+  });
+
+  it('should enforce the use of the `$each` rule when the collection is nullable', async () => {
+    const form = ref({
+      collection: null as number[] | null,
+    });
+
+    useRegle(form, {
+      // @ts-expect-error - $each not present
+      collection: {
+        minLength: minLength(4),
+      },
+    });
+
+    // ✅ Good
+    useRegle(form, {
+      collection: {
+        minLength: minLength(4),
+        $each: {},
+      },
+    });
   });
 });

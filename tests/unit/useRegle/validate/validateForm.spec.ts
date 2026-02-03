@@ -69,7 +69,7 @@ describe('validateForm', () => {
           name: string;
         }[];
         collection: {
-          name: string;
+          name?: MaybeOutput<string>;
         }[];
         address: {
           street?: string | undefined;
