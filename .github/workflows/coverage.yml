@@ -1,4 +1,4 @@
-name: Unit tests coverage
+name: coverage
 
 on:
   workflow_run:
