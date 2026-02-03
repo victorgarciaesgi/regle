@@ -821,7 +821,7 @@ export function createReactiveChildrenStatus({
   rulesDef,
   ...properties
 }: CreateReactiveChildrenStatus): $InternalRegleStatusType | undefined {
-  if (isCollectionRulesDef(rulesDef, properties.state, properties.schemaMode)) {
+  if (isCollectionRulesDef(rulesDef, properties.state)) {
     return createReactiveCollectionStatus({
       rulesDef,
       ...properties,

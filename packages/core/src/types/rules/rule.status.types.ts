@@ -173,14 +173,12 @@ export type InferRegleStatusType<
   HasNamedKeys<TState> extends true
     ? [TState[TKey]] extends [undefined | null]
       ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-      : NonNullable<TState[TKey]> extends Array<infer U extends Record<string, any>>
-        ? U extends Record<string, any>
-          ? TRule extends RegleCollectionRuleDefinition<any, any>
-            ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
-              ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
-              : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-            : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
-          : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+      : NonNullable<TState[TKey]> extends Array<unknown>
+        ? TRule extends RegleCollectionRuleDefinition<any, any>
+          ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any>
+            ? RegleCollectionStatus<TState[TKey], ExtractFromGetter<TRule['$each']>, TRule, TShortcuts>
+            : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
+          : RegleCollectionStatus<TState[TKey], {}, TRule, TShortcuts>
         : TRule extends ReglePartialRuleTree<any>
           ? NonNullable<TState[TKey]> extends Array<any>
             ? RegleFieldStatus<TState[TKey], TRule, TShortcuts>
@@ -452,7 +450,7 @@ export interface $InternalRegleRuleStatus {
  */
 export type RegleCollectionStatus<
   TState extends any[] = any[],
-  TRules extends ReglePartialRuleTree<any> = Record<string, any>,
+  TRules extends ReglePartialRuleTree<Record<string, any>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<RegleCommonStatus<TState, TRules>, '$value'> & {

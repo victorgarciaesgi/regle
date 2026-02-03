@@ -6,6 +6,7 @@ import type {
   JoinDiscriminatedUnions,
   Maybe,
   MaybeGetter,
+  MaybeNullable,
   MaybeRefOrComputedRef,
   RegleStatic,
   RemoveIndexSignature,
@@ -20,6 +21,7 @@ import type {
 } from './rule.definition.type';
 import type { UnwrapRegleUniversalParams } from './rule.params.types';
 import type { $InternalRegleFieldStatus } from './rule.status.types';
+import type { IsAny } from 'type-fest';
 
 /**
  * @public
@@ -142,6 +144,32 @@ export type RegleCollectionRuleDeclKeyProperty = {
   $key?: PropertyKey;
 };
 
+type CollectionEachRuleDecl<
+  TValue = any[],
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+> =
+  IsAny<TValue> extends true
+    ? {
+        $each?: RegleCollectionEachRules<TValue, TCustomRules>;
+      }
+    : MaybeNullable<TValue> extends true
+      ? {
+          /**
+           * Rules for each item in the collection
+           *
+           * ⚠️ `$each` is required here because your array is potentially undefined.
+           * Regle can't guess the type of the array if it's undefined.
+           * Having an empty `$each: {}` is the only way to tell Regle that the array is a collection.
+           */
+          $each: RegleCollectionEachRules<TValue, TCustomRules>;
+        }
+      : {
+          /**
+           * Rules for each item in the collection
+           */
+          $each?: RegleCollectionEachRules<TValue, TCustomRules>;
+        };
+
 /**
  * @public
  */
@@ -149,12 +177,9 @@ export type RegleCollectionRuleDecl<
   TValue = any[],
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > =
-  | ({
-      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
-    } & RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions>)
-  | ({
-      $each?: RegleCollectionEachRules<TValue, TCustomRules>;
-    } & CollectionRegleBehaviourOptions);
+  | (CollectionEachRuleDecl<TValue, TCustomRules> &
+      RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions>)
+  | (CollectionEachRuleDecl<TValue, TCustomRules> & CollectionRegleBehaviourOptions);
 
 /** @public */
 export type RegleCollectionEachRules<

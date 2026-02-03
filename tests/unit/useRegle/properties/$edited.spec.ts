@@ -176,19 +176,19 @@ describe('$edited', () => {
 
     const { vm } = createRegleComponent(regleWithPrimitivesArray);
 
-    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$self.$edited).toBe(false);
     expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('foo');
     await vm.$nextTick();
 
-    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$self.$edited).toBe(true);
     expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(0, 1);
     await vm.$nextTick();
 
-    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$self.$edited).toBe(false);
     expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('foo');
@@ -196,13 +196,13 @@ describe('$edited', () => {
 
     await vm.$nextTick();
 
-    expect(vm.r$.collection.$edited).toBe(false);
+    expect(vm.r$.collection.$self.$edited).toBe(false);
     expect(vm.r$.collection.$anyEdited).toBe(false);
 
     vm.r$.$value.collection.push('bar');
     await vm.$nextTick();
 
-    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$self.$edited).toBe(true);
     expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(1, 1);
@@ -233,7 +233,7 @@ describe('$edited', () => {
     vm.r$.$value.collection.push({ id: 1, name: 'foo' });
     await vm.$nextTick();
 
-    expect(vm.r$.collection.$edited).toBe(true);
+    expect(vm.r$.collection.$self.$edited).toBe(true);
     expect(vm.r$.collection.$anyEdited).toBe(true);
 
     vm.r$.$value.collection.splice(0, 1);
