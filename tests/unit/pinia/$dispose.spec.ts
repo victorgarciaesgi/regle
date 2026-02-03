@@ -3,9 +3,9 @@ import { required } from '@regle/rules';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } from 'pinia';
 import { defineComponent, nextTick, ref } from 'vue';
-import { isVueSuperiorOrEqualTo3dotFive } from '../../../packages/core/src/utils';
+import { vueVersion } from '../../utils/vueVersion';
 
-describe.runIf(isVueSuperiorOrEqualTo3dotFive)('$dispose', () => {
+describe.runIf(vueVersion === '3.5')('$dispose', () => {
   const useStore = defineStore('store', () => {
     const { r$ } = useRegle(
       { name: 'Hello', nested: { child: '' }, collection: [{ name: '' }] },

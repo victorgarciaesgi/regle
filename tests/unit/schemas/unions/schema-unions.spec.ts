@@ -1,7 +1,6 @@
 import type { MaybeOutput, RegleShortcutDefinition } from '@regle/core';
 import { narrowVariant } from '@regle/core';
 import { type RegleSchemaFieldStatus } from '@regle/schemas';
-import { isVueSuperiorOrEqualTo3dotFive } from '../../../../packages/core/src/utils';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -11,6 +10,7 @@ import {
 } from '../../../utils/validations.utils';
 import { MyEnum, valibotUnionsFixture } from './fixtures/valibot.fixture';
 import { zod4UnionsFixture } from './fixtures/zod4.fixture';
+import { vueVersion } from '../../../utils/vueVersion';
 
 describe.each([
   ['valibot', valibotUnionsFixture],
@@ -77,7 +77,7 @@ describe.each([
     await vm.$nextTick();
     await vm.$nextTick();
 
-    if (isVueSuperiorOrEqualTo3dotFive) {
+    if (vueVersion === '3.5') {
       shouldBeValidField(vm.r$.gift);
       expect(vm.r$.$value.gift?.type).toBe('Shares');
       shouldBeValidField(vm.r$.gift?.company);
@@ -131,7 +131,7 @@ describe.each([
     vm.r$.$value.union = false;
     await vm.$nextTick();
 
-    if (isVueSuperiorOrEqualTo3dotFive) {
+    if (vueVersion === '3.5') {
       shouldBeErrorField(vm.r$.enum);
       shouldBeErrorField(vm.r$.nativeEnum);
       shouldBeErrorField(vm.r$.union);
