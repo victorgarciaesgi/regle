@@ -1,7 +1,11 @@
-import type { MaybeRef } from 'vue';
+import type { MaybeRef, UnwrapRef } from 'vue';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
-import type { RegleFieldIssue } from './rule.status.types';
-import type { IsAny } from 'type-fest';
+import type { RegleRuleStatus } from './rule.status.types';
+import type { EmptyObject, IsAny, IsEmptyObject } from 'type-fest';
+import type { InlineRuleDeclaration, RegleFormPropertyType, ReglePartialRuleTree } from './rule.declaration.types';
+import type { ExtendedRulesDeclarations } from './rule.custom.types';
+import type { FieldRegleBehaviourOptions } from '../core';
+import type { RegleRuleDefinition } from './rule.definition.type';
 
 export type RegleErrorTree<
   TState = MaybeRef<Record<string, any> | any[]>,
@@ -18,12 +22,21 @@ export type RegleErrorTree<
   readonly $self?: string[];
 };
 
-export type RegleIssuesTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> = {
+export type RegleIssuesTree<
+  TState = MaybeRef<Record<string, any> | any[]>,
+  TSchema extends boolean = false,
+  TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
+> = {
   readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
     JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
     false,
     true,
-    TSchema
+    TSchema,
+    K extends keyof TRules
+      ? TRules[K] extends RegleFormPropertyType<Record<string, any>>
+        ? TRules[K]
+        : EmptyObject
+      : EmptyObject
   >;
 } & {
   readonly $self?: RegleFieldIssue[];
@@ -51,13 +64,17 @@ export type RegleExternalSchemaErrorTree<
   >;
 };
 
-type ErrorMessageOrIssue<TIssue extends boolean> = TIssue extends true ? RegleFieldIssue[] : string[];
+type ErrorMessageOrIssue<
+  TIssue extends boolean,
+  TRules extends RegleFormPropertyType<Record<string, any>> = EmptyObject,
+> = TIssue extends true ? RegleFieldIssue<TRules>[] : string[];
 
 export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
   TIssue extends boolean = false,
   TSchema extends boolean = false,
+  TRules extends RegleFormPropertyType<Record<string, any>> = EmptyObject,
 > =
   HasNamedKeys<TState> extends true
     ? IsAny<TState> extends true
@@ -68,18 +85,63 @@ export type RegleValidationErrors<
             ? TExternal extends false
               ? RegleCollectionErrors<U, TIssue, TSchema>
               : RegleExternalCollectionErrors<U, TIssue, TSchema>
-            : ErrorMessageOrIssue<TIssue>
+            : ErrorMessageOrIssue<TIssue, TRules>
           : RegleCollectionErrors<U, TIssue, TSchema>
         : NonNullable<TState> extends Date | File
-          ? ErrorMessageOrIssue<TIssue>
+          ? ErrorMessageOrIssue<TIssue, TRules>
           : NonNullable<TState> extends Record<string, any>
             ? IsRegleStatic<NonNullable<TState>> extends true
-              ? ErrorMessageOrIssue<TIssue>
+              ? ErrorMessageOrIssue<TIssue, TRules>
               : TExternal extends false
                 ? RegleErrorTree<TState, TIssue, TSchema>
                 : RegleExternalErrorTree<TState, TSchema>
-            : ErrorMessageOrIssue<TIssue>
+            : ErrorMessageOrIssue<TIssue, TRules>
     : any;
+
+export type RegleFieldIssue<
+  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
+> = {
+  readonly $property: string;
+  readonly $type?: string;
+  readonly $message: string;
+} & (IsEmptyObject<TRules> extends true
+  ? {
+      readonly $rule: string;
+    }
+  : {
+      [K in keyof ComputeFieldRules<any, TRules>]: ComputeFieldRules<any, TRules>[K] extends {
+        $metadata: infer TMetadata;
+      }
+        ? K extends string
+          ? { readonly $rule: K } & (TMetadata extends boolean ? { readonly $rule: string } : TMetadata)
+          : { readonly $rule: string }
+        : { readonly $rule: string };
+    }[keyof ComputeFieldRules<any, TRules>]);
+
+export type ComputeFieldRules<
+  TState extends any,
+  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>>>,
+> =
+  IsEmptyObject<UnwrapRef<TRules>> extends true
+    ? {
+        readonly [x: string]: RegleRuleStatus<TState, any[], any>;
+      }
+    : {
+        readonly [TRuleKey in keyof Omit<
+          UnwrapRef<TRules>,
+          '$each' | keyof FieldRegleBehaviourOptions
+        >]: RegleRuleStatus<
+          TState,
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, infer TParams, any> ? TParams : [],
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, any, any, infer TMetadata>
+            ? TMetadata
+            : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
+              ? TMetadata extends Promise<infer P>
+                ? P
+                : TMetadata
+              : boolean
+        >;
+      };
 
 export type RegleCollectionErrors<
   TState extends any,

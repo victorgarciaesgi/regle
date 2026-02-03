@@ -30,7 +30,7 @@ type ExactObject<TInfer, TTree> = {
     : TTree[K];
 };
 
-type TypeError<Msg> = {
+export type TypeError<Msg> = {
   [' TypeError']: Msg;
 };
 

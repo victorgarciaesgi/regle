@@ -1,3 +1,4 @@
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { isObject } from '../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
@@ -5,7 +6,6 @@ import type {
   $InternalRegleFieldStatus,
   RegleFieldIssue,
 } from '../../types';
-import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 type TempRegleFieldIssue = {
   $property: string;
@@ -33,6 +33,7 @@ export function extractRulesIssues({
     } else {
       return null;
     }
+
     const issue: TempRegleFieldIssue = {
       $message: message,
       $property: field.fieldName,

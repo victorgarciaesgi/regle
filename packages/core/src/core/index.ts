@@ -7,6 +7,8 @@ export {
   type useRegleFn,
   type inferRulesFn,
   markStatic,
+  getErrors,
+  getIssues,
 } from './useRegle';
 export { defineRegleConfig, extendRegleConfig } from './defineRegleConfig';
 export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions } from './defaultValidators';
