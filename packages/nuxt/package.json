@@ -60,6 +60,7 @@
     "nuxt": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "unbuild": "3.6.1",
     "vitest": "catalog:",
     "vue": "catalog:",
