@@ -196,6 +196,10 @@ Collect all metadata of validators (errors, messages etc).
 
 This represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form.
 
+### `$self`
+- Type: `RegleFieldStatus`
+Represents the status of the object itself. You can have validation rules on the object like `required`, this field represents the isolated status of the object.
+
 
 ## Specific properties for collections
 
