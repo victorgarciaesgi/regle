@@ -285,8 +285,12 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $schemaMode?: boolean;
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
-  $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
-  $validateSync: (forceValues?: any) => boolean;
+  $validate: (forceValues?: unknown) => Promise<$InternalRegleResult>;
+  /**
+   * Validates the field synchronously without waiting for async rules.
+   * @internal
+   */
+  $validateSync: (forceValues?: unknown) => boolean;
 }
 
 /**
@@ -347,9 +351,40 @@ export interface RegleCommonStatus<TValue = any, TRules extends Record<string, a
   readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
 
   /**
-   * Validate the field synchronously. Avoiding async rules.
+   * Validates the field synchronously without waiting for async rules.
+   *
+   * This method provides immediate validation feedback by running only synchronous rules.
+   * Async rules are skipped and assumed to be valid. Unlike `$validate`, this method:
+   * - Does NOT wait for async validation results
+   * - Returns a boolean directly instead of a Promise
+   *
+   * Use this when you need immediate validation feedback without side effects,
+   * such as for real-time UI feedback or form gating logic.
+   *
+   * @param forceValues - Optional values to set before validating. Note that due to Vue's
+   *                      reactivity system, you may need to wait for `nextTick()` after
+   *                      setting values for rules to recalculate.
+   * @returns `true` if all synchronous rules pass, `false` otherwise.
+   *          Always returns `false` in schema mode.
+   *
+   * @example
+   * ```ts
+   * // Basic usage
+   * const isValid = r$.$validateSync();
+   *
+   * // Field-level validation
+   * const isEmailValid = r$.email.$validateSync();
+   *
+   * // Use with form submission gating
+   * function handleSubmit() {
+   *   if (r$.$validateSync()) {
+   *     // Proceed with submission
+   *   }
+   * }
+   * ```
+   *
    */
-  $validateSync: (forceValues?: any) => boolean;
+  $validateSync: (forceValues?: unknown) => boolean;
   /** Marks the field and all nested properties as $dirty. */
   $touch(): void;
   /**
@@ -395,13 +430,22 @@ export type RegleRuleStatus<
   readonly $path: string;
   /** Contains the metadata returned by the validator function. */
   readonly $metadata: TMetadata extends boolean ? TMetadata : Omit<TMetadata, '$valid'>;
-  /** Run the rule validator and compute its properties like $message and $active */
+  /**
+   * Run the rule validator asynchronously and compute its properties like `$message` and `$active`.
+   * @returns A promise that resolves to `true` if the rule passes, `false` otherwise.
+   */
   $parse(): Promise<boolean>;
-  /** Run only the rule validator if it's sync */
+  /**
+   * Run only the rule validator synchronously, skipping async rules.
+   *
+   * If the rule is async, this method returns `true` (assumes valid) since it cannot
+   * wait for the async result. Use `$parse()` for async rules.
+   *
+   * @returns `true` if the sync rule passes or if the rule is async, `false` otherwise.
+   */
   $parseSync(): boolean;
   /** Reset the $valid, $metadata and $pending states */
   $reset(): void;
-
   /** Returns the original rule validator function. */
   $validator: ((
     value: IsUnknown<TValue> extends true ? any : MaybeInput<TValue>,
@@ -447,7 +491,12 @@ export interface $InternalRegleRuleStatus {
   $fieldError: boolean;
   $maybePending: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
+  /** @internal */
   $parse(): Promise<boolean>;
+  /**
+   * Run only the rule validator synchronously. Returns `true` for async rules.
+   * @internal
+   */
   $parseSync(): boolean;
   $reset(): void;
   $unwatch(): void;

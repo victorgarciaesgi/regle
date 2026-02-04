@@ -274,6 +274,9 @@ export function createReactiveRuleStatus({
     >,
     logWarning: boolean = true
   ): boolean {
+    if (isRuleDef(rule.value) && rule.value._async) {
+      return true;
+    }
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
     if (resultOrPromise instanceof Promise) {
       if (__IS_DEV__ && logWarning) {
@@ -319,6 +322,11 @@ export function createReactiveRuleStatus({
     }
   }
 
+  /**
+   * Runs the rule validator synchronously.
+   * If the rule is async, returns true (assumes valid) since it cannot wait.
+   * @returns true if the sync rule passes or rule is async, false otherwise
+   */
   function $parseSync(): boolean {
     try {
       $validating.value = true;

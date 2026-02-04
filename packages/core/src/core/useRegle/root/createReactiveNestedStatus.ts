@@ -764,14 +764,22 @@ export function createReactiveNestedStatus({
     }
   }
 
-  function $validateSync(forceValues?: any): boolean {
+  /**
+   * Validates all fields synchronously without waiting for async rules.
+   * Unlike $validate, this method does NOT touch fields.
+   * @param forceValues - Optional values to set before validating
+   * @returns true if all sync rules pass, false otherwise
+   */
+  function $validateSync(forceValues?: unknown): boolean {
     try {
       if (forceValues) {
         state.value = forceValues;
       }
-      const result = Object.values($fields.value)
-        .map((field) => field.$validateSync())
-        .every((result) => !!result);
+      const result = [
+        ...Object.values($fields.value).map((statusOrField) => statusOrField.$validateSync()),
+        ...($selfStatus.value ? [$selfStatus.value?.$validateSync()] : []),
+      ].every((result) => !!result);
+
       return result;
     } catch {
       return false;

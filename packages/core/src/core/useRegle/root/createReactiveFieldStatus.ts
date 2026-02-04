@@ -754,10 +754,19 @@ export function createReactiveFieldStatus({
     }
   }
 
+  /**
+   * Validates the field synchronously by running $parseSync on all rules.
+   * Async rules are skipped and assumed valid.
+   * @param forceValues - Optional value to set before validating
+   * @returns true if all sync rules pass, false if any fail or in schema mode
+   */
   function $validateSync(forceValues?: any): boolean {
     try {
       if (forceValues) {
         state.value = forceValues;
+      }
+      if (!scopeState.$dirty.value) {
+        scopeState.$dirty.value = true;
       }
       if (schemaMode) {
         return false;
