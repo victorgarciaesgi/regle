@@ -93,7 +93,7 @@ Result:
 
 If you need to access errors for a specific field using a dot-notation path, you can use the `getErrors` utility. This is useful when you need to programmatically access errors or when building reusable input components.
 
-```ts
+```ts twoslash
 import { getErrors, useRegle } from '@regle/core';
 import { required, email } from '@regle/rules';
 
@@ -125,7 +125,7 @@ The path parameter is **type-safe** - TypeScript will autocomplete available pat
 
 Similar to `getErrors`, the `getIssues` utility returns detailed validation issues including metadata like the rule name and custom properties.
 
-```ts
+```ts twoslash
 import { getIssues, useRegle } from '@regle/core';
 import { required, minLength } from '@regle/rules';
 
