@@ -38,9 +38,11 @@ export interface useRegleSchemaFn<
     ...params: [
       state: MaybeRef<DeepPartial<NoInferLegacy<TState>>> | DeepReactiveState<DeepPartial<NoInferLegacy<TState>>>,
       rulesFactory: MaybeRef<TSchema>,
-      ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TSchema, TAdditionalOptions>> extends true
-        ? [options: useRegleSchemaFnOptions<NoInferLegacy<TSchema>, TAdditionalOptions>]
-        : [options?: useRegleSchemaFnOptions<NoInferLegacy<TSchema>, TAdditionalOptions>]),
+      ...(HaveAnyRequiredProps<
+        useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>
+      > extends true
+        ? [options: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>]
+        : [options?: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>]),
     ]
   ): NonNullable<TState> extends PrimitiveTypes
     ? RegleSingleFieldSchema<NonNullable<TState>, TSchema, TShortcuts, TAdditionalReturnProperties>
