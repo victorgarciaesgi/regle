@@ -23,8 +23,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Fetch all branches
-        run: git fetch origin
+      - name: Fetch all branches and tags
+        run: git fetch origin --tags
 
       - name: Checkout next branch
         run: git checkout next
@@ -41,3 +41,10 @@ jobs:
 
       - name: Push changes to next
         run: git push origin next --follow-tags --force-with-lease
+
+      - name: Sync tags to main
+        run: |
+          git checkout main
+          git pull origin main
+          # Push all tags that exist on commits in main
+          git push origin --tags
