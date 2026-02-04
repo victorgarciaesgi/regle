@@ -130,7 +130,7 @@ importers:
         version: 4.3.1
       '@pinia/testing':
         specifier: 1.0.3
-        version: 1.0.3(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))
+        version: 1.0.3(pinia@2.2.5(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -145,10 +145,10 @@ importers:
         version: 7.0.0-dev.20260303.1
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
-        version: 6.0.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
+        version: 6.0.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.4.38(typescript@5.9.3))
       '@vitejs/plugin-vue-jsx':
         specifier: 'catalog:'
-        version: 5.1.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
+        version: 5.1.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.4.38(typescript@5.9.3))
       '@vitest/coverage-istanbul':
         specifier: 4.0.18
         version: 4.0.18(vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -196,7 +196,7 @@ importers:
         version: 1.50.0
       pinia-2.2.5:
         specifier: 'catalog:'
-        version: pinia@2.2.5(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
+        version: pinia@2.2.5(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3))
       playwright:
         specifier: 'catalog:'
         version: 1.58.2
@@ -483,7 +483,7 @@ importers:
     dependencies:
       '@pinia/nuxt':
         specifier: 'catalog:'
-        version: 0.11.3(magicast@0.3.5)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))
+        version: 0.11.3(magicast@0.3.5)(pinia@3.0.4(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))
       '@regle/nuxt':
         specifier: workspace:*
         version: link:../..
@@ -492,7 +492,7 @@ importers:
         version: 3.0.0
       pinia:
         specifier: 'catalog:'
-        version: 3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
+        version: 3.0.4(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3))
 
   packages/rules:
     dependencies:
@@ -10601,10 +10601,10 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.1
       '@parcel/watcher-win32-x64': 2.5.1
 
-  '@pinia/nuxt@0.11.3(magicast@0.3.5)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))':
+  '@pinia/nuxt@0.11.3(magicast@0.3.5)(pinia@3.0.4(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))':
     dependencies:
       '@nuxt/kit': 4.3.1(magicast@0.3.5)
-      pinia: 3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
+      pinia: 3.0.4(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3))
     transitivePeerDependencies:
       - magicast
 
@@ -10614,6 +10614,10 @@ snapshots:
       pinia: 3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
     transitivePeerDependencies:
       - magicast
+
+  '@pinia/testing@1.0.3(pinia@2.2.5(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))':
+    dependencies:
+      pinia: 2.2.5(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3))
 
   '@pinia/testing@1.0.3(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))':
     dependencies:
@@ -11353,6 +11357,18 @@ snapshots:
       - rollup
       - supports-color
 
+  '@vitejs/plugin-vue-jsx@5.1.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.4.38(typescript@5.9.3))':
+    dependencies:
+      '@babel/core': 7.29.0
+      '@babel/plugin-syntax-typescript': 7.28.6(@babel/core@7.29.0)
+      '@babel/plugin-transform-typescript': 7.28.6(@babel/core@7.29.0)
+      '@rolldown/pluginutils': 1.0.0-rc.5
+      '@vue/babel-plugin-jsx': 2.0.1(@babel/core@7.29.0)
+      vite: 7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2)
+      vue: 3.4.38(typescript@5.9.3)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-vue-jsx@5.1.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))':
     dependencies:
       '@babel/core': 7.29.0
@@ -11369,6 +11385,12 @@ snapshots:
     dependencies:
       vite: 5.4.19(@types/node@24.10.13)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)
       vue: 3.5.28(typescript@5.9.3)
+
+  '@vitejs/plugin-vue@6.0.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.4.38(typescript@5.9.3))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.0-rc.2
+      vite: 7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2)
+      vue: 3.4.38(typescript@5.9.3)
 
   '@vitejs/plugin-vue@6.0.4(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.1)(sass@1.97.3)(terser@5.39.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))':
     dependencies:
@@ -11654,11 +11676,11 @@ snapshots:
       '@vue/shared': 3.5.28
       csstype: 3.2.3
 
-  '@vue/server-renderer@3.4.38(vue@3.5.28(typescript@5.9.3))':
+  '@vue/server-renderer@3.4.38(vue@3.4.38(typescript@5.9.3))':
     dependencies:
       '@vue/compiler-ssr': 3.4.38
       '@vue/shared': 3.4.38
-      vue: 3.5.28(typescript@5.9.3)
+      vue: 3.4.38(typescript@5.9.3)
 
   '@vue/server-renderer@3.5.28(vue@3.5.28(typescript@5.9.3))':
     dependencies:
@@ -15112,11 +15134,11 @@ snapshots:
 
   pify@2.3.0: {}
 
-  pinia@2.2.5(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)):
+  pinia@2.2.5(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
-      vue: 3.5.28(typescript@5.9.3)
-      vue-demi: 0.14.10(vue@3.5.28(typescript@5.9.3))
+      vue: 3.4.38(typescript@5.9.3)
+      vue-demi: 0.14.10(vue@3.4.38(typescript@5.9.3))
     optionalDependencies:
       typescript: 5.9.3
 
@@ -15129,6 +15151,13 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - '@vue/composition-api'
+
+  pinia@3.0.4(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)):
+    dependencies:
+      '@vue/devtools-api': 7.7.9
+      vue: 3.4.38(typescript@5.9.3)
+    optionalDependencies:
+      typescript: 5.9.3
 
   pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)):
     dependencies:
@@ -16877,6 +16906,10 @@ snapshots:
 
   vue-component-type-helpers@3.2.5: {}
 
+  vue-demi@0.14.10(vue@3.4.38(typescript@5.9.3)):
+    dependencies:
+      vue: 3.4.38(typescript@5.9.3)
+
   vue-demi@0.14.10(vue@3.5.28(typescript@5.9.3)):
     dependencies:
       vue: 3.5.28(typescript@5.9.3)
@@ -16946,7 +16979,7 @@ snapshots:
       '@vue/compiler-dom': 3.4.38
       '@vue/compiler-sfc': 3.4.38
       '@vue/runtime-dom': 3.4.38
-      '@vue/server-renderer': 3.4.38(vue@3.5.28(typescript@5.9.3))
+      '@vue/server-renderer': 3.4.38(vue@3.4.38(typescript@5.9.3))
       '@vue/shared': 3.4.38
     optionalDependencies:
       typescript: 5.9.3
