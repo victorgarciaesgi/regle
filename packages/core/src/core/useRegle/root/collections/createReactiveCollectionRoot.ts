@@ -620,6 +620,24 @@ export function createReactiveCollectionStatus({
     }
   }
 
+  function $validateSync(forceValues?: any): boolean {
+    if (forceValues) {
+      state.value = forceValues;
+    }
+    try {
+      const result = [
+        $selfStatus.value.$validateSync(forceValues),
+        ...$eachStatus.value.map((status) => {
+          return status.$validateSync();
+        }),
+      ].every((result) => !!result);
+
+      return result;
+    } catch {
+      return false;
+    }
+  }
+
   function $clearExternalErrors() {
     $selfStatus.value.$clearExternalErrors();
     $eachStatus.value.forEach(($each) => {
@@ -658,6 +676,7 @@ export function createReactiveCollectionStatus({
     $initialValue: initialState,
     $originalValue: originalState,
     $validate,
+    $validateSync,
     $unwatch,
     $watch,
     $touch,

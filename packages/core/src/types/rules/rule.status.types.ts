@@ -286,6 +286,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
+  $validateSync: (forceValues?: any) => boolean;
 }
 
 /**
@@ -345,6 +346,10 @@ export interface RegleCommonStatus<TValue = any, TRules extends Record<string, a
    */
   readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
 
+  /**
+   * Validate the field synchronously. Avoiding async rules.
+   */
+  $validateSync: (forceValues?: any) => boolean;
   /** Marks the field and all nested properties as $dirty. */
   $touch(): void;
   /**
@@ -392,8 +397,11 @@ export type RegleRuleStatus<
   readonly $metadata: TMetadata extends boolean ? TMetadata : Omit<TMetadata, '$valid'>;
   /** Run the rule validator and compute its properties like $message and $active */
   $parse(): Promise<boolean>;
+  /** Run only the rule validator if it's sync */
+  $parseSync(): boolean;
   /** Reset the $valid, $metadata and $pending states */
   $reset(): void;
+
   /** Returns the original rule validator function. */
   $validator: ((
     value: IsUnknown<TValue> extends true ? any : MaybeInput<TValue>,
@@ -440,6 +448,7 @@ export interface $InternalRegleRuleStatus {
   $maybePending: boolean;
   $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   $parse(): Promise<boolean>;
+  $parseSync(): boolean;
   $reset(): void;
   $unwatch(): void;
   $watch(): void;

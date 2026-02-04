@@ -754,6 +754,23 @@ export function createReactiveFieldStatus({
     }
   }
 
+  function $validateSync(forceValues?: any): boolean {
+    try {
+      if (forceValues) {
+        state.value = forceValues;
+      }
+      if (schemaMode) {
+        return false;
+      }
+      const result = Object.values($rules.value)
+        .map((rule) => rule.$parseSync())
+        .every((result) => !!result);
+      return result;
+    } catch {
+      return false;
+    }
+  }
+
   function $extractDirtyFields(filterNullishValues: boolean = true): unknown | null | { _null: true } {
     if (scopeState.$dirty.value) {
       return state.value;
@@ -806,6 +823,7 @@ export function createReactiveFieldStatus({
     $reset,
     $touch,
     $validate,
+    $validateSync,
     $unwatch,
     $watch,
     $extractDirtyFields,
