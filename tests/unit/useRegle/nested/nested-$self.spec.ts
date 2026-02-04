@@ -31,6 +31,9 @@ describe('object validation with $self', () => {
     expect(vm.r$.user.$self.$invalid).toBe(true);
     expect(vm.r$.user.$self.$correct).toBe(false);
 
+    const { valid } = await vm.r$.$validate();
+    expect(valid).toBe(false);
+
     vm.r$.user.$value = { firstName: 'John', lastName: 'Doe' };
     await vm.$nextTick();
     expect(vm.r$.user.$invalid).toBe(false);
