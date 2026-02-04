@@ -266,6 +266,36 @@ export function createReactiveRuleStatus({
     return ruleResult;
   }
 
+  function computeSyncResult(
+    validator: RegleRuleDefinitionProcessor<
+      any,
+      any,
+      RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>
+    >,
+    logWarning: boolean = true
+  ): boolean {
+    const resultOrPromise = validator(state.value, ...scopeState.$params.value);
+    if (resultOrPromise instanceof Promise) {
+      if (__IS_DEV__ && logWarning) {
+        console.warn(
+          'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
+        );
+      }
+      return true;
+    } else {
+      if (resultOrPromise != null) {
+        if (typeof resultOrPromise === 'boolean') {
+          return resultOrPromise;
+        } else {
+          const { $valid, ...rest } = resultOrPromise;
+          $metadata.value = rest;
+          return $valid;
+        }
+      }
+      return true;
+    }
+  }
+
   async function $parse(): Promise<boolean> {
     try {
       $validating.value = true;
@@ -277,24 +307,7 @@ export function createReactiveRuleStatus({
         ruleResult = await computeAsyncResult();
       } else {
         const validator = scopeState.$validator.value;
-        const resultOrPromise = validator(state.value, ...scopeState.$params.value);
-        if (resultOrPromise instanceof Promise) {
-          if (__IS_DEV__) {
-            console.warn(
-              'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
-            );
-          }
-        } else {
-          if (resultOrPromise != null) {
-            if (typeof resultOrPromise === 'boolean') {
-              ruleResult = resultOrPromise;
-            } else {
-              const { $valid, ...rest } = resultOrPromise;
-              ruleResult = $valid;
-              $metadata.value = rest;
-            }
-          }
-        }
+        ruleResult = computeSyncResult(validator);
       }
       $valid.value = ruleResult;
       return ruleResult;
@@ -303,6 +316,17 @@ export function createReactiveRuleStatus({
     } finally {
       $validating.value = false;
       $maybePending.value = false;
+    }
+  }
+
+  function $parseSync(): boolean {
+    try {
+      $validating.value = true;
+      return computeSyncResult(scopeState.$validator.value);
+    } catch {
+      return false;
+    } finally {
+      $validating.value = false;
     }
   }
 
@@ -330,6 +354,7 @@ export function createReactiveRuleStatus({
     $maybePending,
     $validating,
     $parse,
+    $parseSync,
     $unwatch,
     $watch,
     $reset,

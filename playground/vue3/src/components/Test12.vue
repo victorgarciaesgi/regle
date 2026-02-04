@@ -1,57 +1,80 @@
-<template>
-  <div class="demo-container">
-    <div class="list">
-      <div v-for="(item, index) of r$.collection.$each" :key="item.$id" class="item">
-        <div class="field">
-          <input
-            v-model="item.$value.name"
-            :class="{ valid: item.name.$correct, error: item.name.$error }"
-            placeholder="Type an item value"
-          />
-
-          <div v-if="form.collection.length > 1" class="delete" @click="form.collection.splice(index, 1)">🗑️</div>
-        </div>
-
-        <ul v-if="item.name.$errors.length">
-          <li v-for="error of item.name.$errors" :key="error">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <ul v-if="r$.$errors.collection.$self.length">
-      <li v-for="error of r$.$errors.collection.$self" :key="error">
-        {{ error }}
-      </li>
-    </ul>
-
-    <div class="button-list">
-      <button type="button" @click="form.collection.push({ name: '' })">🆕 Add item</button>
-      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <button class="primary" type="button" @click="r$.$validate()">Submit</button>
-      <code class="status" :status="r$.$correct"></code>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-  import { useRegle } from '@regle/core';
   import { ref } from 'vue';
-  import { minLength, required } from '@regle/rules';
+  import { useRegle } from '@regle/core';
+  import { required, minLength, email } from '@regle/rules';
 
-  const form = ref<{ collection: Array<{ name: string }> | null }>({
-    collection: null,
+  const state = ref({ name: '', email: '' });
+
+  const { r$ } = useRegle(state, {
+    name: { required, minLength: minLength(4) },
+    email: { email },
   });
 
-  const { r$ } = useRegle(form, {
-    collection: {
-      // $rewardEarly avoid the error being display too soon
-      $rewardEarly: true,
-      minLength: minLength(4),
-      $each: {},
-    },
-  });
+  function updateName(value: string) {
+    const valid = r$.name.$validateSync();
+  }
+
+  async function submit() {
+    const { valid, data } = await r$.$validate();
+    if (valid) {
+      console.log(data.name);
+      //               ^ string
+      console.log(data.email);
+      //.              ^ string | undefined
+    } else {
+      console.warn('Errors: ', r$.$errors);
+    }
+  }
 </script>
 
-<style lang="scss"></style>
+<template>
+  <div class="container p-3">
+    <h2>Hello Regle!</h2>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Name</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.name"
+        placeholder="Type your name"
+        :class="{
+          'is-valid': r$.name.$correct,
+          'is-invalid': r$.name.$error,
+        }"
+        aria-describedby="name-error"
+        @update:model-value="updateName"
+      />
+      <ul id="name-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.name" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="py-2 has-validation">
+      <label class="form-label">Email (optional)</label>
+      <input
+        class="form-control"
+        v-model="r$.$value.email"
+        placeholder="Type your email"
+        :class="{
+          'is-valid': r$.email.$correct,
+          'is-invalid': r$.email.$error,
+        }"
+        aria-describedby="email-error"
+      />
+      <ul id="email-errors" class="invalid-feedback">
+        <li v-for="error of r$.$errors.email" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary m-2" @click="submit">Submit</button>
+    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
+    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+  </div>
+</template>
+<style>
+  @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
+</style>

@@ -37,7 +37,7 @@ export type SuperCompatibleRegleStatus = {
   readonly $errors: Record<string, RegleValidationErrors<any, false>>;
   readonly $silentErrors: Record<string, RegleValidationErrors<any, false>>;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
-  $validate?: () => Promise<SuperCompatibleRegleResult>;
+  $validate?: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
   $reset: (options?: ResetOptions<unknown>) => void;
   [x: string]: any;
 };
@@ -56,7 +56,7 @@ export type SuperCompatibleRegleRuleStatus = Omit<
   | '$maybePending'
 >;
 
-type SuperCompatibleRegleCommonStatus = Omit<RegleCommonStatus, '$pending'> & {
+type SuperCompatibleRegleCommonStatus = Omit<RegleCommonStatus, '$pending' | '$validateSync'> & {
   $pending?: boolean;
 };
 export interface SuperCompatibleRegleFieldStatus extends SuperCompatibleRegleCommonStatus {
@@ -69,12 +69,12 @@ export interface SuperCompatibleRegleFieldStatus extends SuperCompatibleRegleCom
   readonly $errors: string[];
   readonly $inactive: boolean;
   readonly $silentErrors: string[];
-  $extractDirtyFields: (filterNullishValues?: boolean) => any;
-  $validate?: () => Promise<SuperCompatibleRegleResult>;
+  $validate?: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
+  $validateSync?: (...args: any[]) => boolean;
 }
 export interface SuperCompatibleRegleCollectionStatus extends Omit<
   SuperCompatibleRegleStatus,
-  '$fields' | '$issues' | '$errors' | '$silentErrors'
+  '$fields' | '$issues' | '$errors' | '$silentErrors' | 'extractDirtyFields'
 > {
   readonly $self: SuperCompatibleRegleFieldStatus;
   readonly $each: Array<SuperCompatibleRegleStatus | SuperCompatibleRegleFieldStatus>;
@@ -83,7 +83,8 @@ export interface SuperCompatibleRegleCollectionStatus extends Omit<
   readonly $silentErrors: SuperCompatibleRegleCollectionErrors;
   readonly $externalErrors?: string[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
-  $validate?: () => Promise<SuperCompatibleRegleResult>;
+  $validate?: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
+  $validateSync?: (...args: any[]) => boolean;
 }
 
 export type SuperCompatibleRegleCollectionErrors = $InternalRegleCollectionErrors;

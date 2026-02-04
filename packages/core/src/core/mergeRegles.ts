@@ -46,6 +46,7 @@ export type MergedRegles<
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TValue>[];
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TRegles['$value']) => Promise<MergedReglesResult<TRegles>>;
+  $validateSync: (forceValues?: TRegles['$value']) => boolean;
 } & (HasNamedKeys<TRegles> extends true ? { [K in keyof TRegles]: TRegles[K] } : {});
 
 export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record<string, unknown>[]> = Omit<

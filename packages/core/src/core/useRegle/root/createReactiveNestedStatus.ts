@@ -764,6 +764,20 @@ export function createReactiveNestedStatus({
     }
   }
 
+  function $validateSync(forceValues?: any): boolean {
+    try {
+      if (forceValues) {
+        state.value = forceValues;
+      }
+      const result = Object.values($fields.value)
+        .map((field) => field.$validateSync())
+        .every((result) => !!result);
+      return result;
+    } catch {
+      return false;
+    }
+  }
+
   const { $shortcuts, $localPending: _$localPending, ...restScopeState } = scopeState;
 
   const fullStatus = reactive({
@@ -782,6 +796,7 @@ export function createReactiveNestedStatus({
     $clearExternalErrors,
     $extractDirtyFields,
     $abort,
+    $validateSync,
     ...(rootRules ? { '~modifiers': scopeState.$modifiers } : {}),
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
