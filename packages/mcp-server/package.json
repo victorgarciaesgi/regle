@@ -45,7 +45,7 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "build:docs": "tsx scripts/build-docs-data.ts",
     "build": "pnpm run build:docs && tsdown",
     "lint": "oxlint",
@@ -63,6 +63,7 @@
     "dotenv": "17.3.1",
     "tsdown": "catalog:",
     "tsx": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:"
   }
 }
