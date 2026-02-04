@@ -1,4 +1,4 @@
-import type { RegleComputedRules } from '@regle/core';
+import type { RegleComputedRules, RegleExternalErrorTree } from '@regle/core';
 import {
   defineRegleConfig,
   inferRules,
@@ -13,7 +13,7 @@ import {
 } from '@regle/core';
 import { email, minLength, required, withMessage } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
-import type { Ref } from 'vue';
+import type { Ref, WritableComputedRef } from 'vue';
 import { computed, ref, type ComputedRef } from 'vue';
 import { z } from 'zod/v3';
 
@@ -222,5 +222,49 @@ describe('type utils - misc', () => {
     }));
 
     useCustomRegle(form, rules);
+  });
+
+  it('should not infer state type from external errors', () => {
+    interface Location {
+      administrativeAreaLevel1?: string;
+      administrativeAreaLevel1Code?: string;
+      administrativeAreaLevel2?: string;
+      administrativeAreaLevel2Code?: string;
+      administrativeAreaLevel3?: string;
+      administrativeAreaLevel3Code?: string;
+      administrativeAreaLevel4?: string;
+      administrativeAreaLevel4Code?: string;
+      city?: string;
+      country?: string;
+      countryCode?: string;
+      formattedAddress?: string;
+      loc?: { latitude: number; longitude: number };
+      region?: string;
+      remoteAllowed?: boolean;
+      street?: string;
+      street2?: string;
+      zipCode?: string;
+    }
+    const state = ref<Partial<Location>>({} as any);
+    const form: WritableComputedRef<Partial<Location>, Partial<Location>> = computed({
+      get() {
+        return state.value;
+      },
+      set(value) {
+        state.value = value;
+      },
+    });
+
+    const { r$ } = useRegle(
+      form,
+      {},
+      {
+        externalErrors: ref({}) as ComputedRef<RegleExternalErrorTree>,
+      }
+    );
+
+    expectTypeOf(r$.formattedAddress?.$value).toEqualTypeOf<string | undefined>();
+
+    expectTypeOf(r$.administrativeAreaLevel1?.$value).toEqualTypeOf<string | undefined>();
   });
 });

@@ -19,6 +19,7 @@ import type {
   Maybe,
   MaybeComputedOrGetter,
   MaybeInput,
+  NoInferLegacy,
   PrimitiveTypes,
   Unwrap,
   UnwrapSimple,
@@ -66,8 +67,8 @@ export interface useRegleFn<
       ...(HaveAnyRequiredProps<
         useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>
       > extends true
-        ? [options: useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>]
-        : [options?: useRegleFnOptions<Unwrap<TState>, TRules, TAdditionalOptions, TValidationGroups>]),
+        ? [options: useRegleFnOptions<Unwrap<NoInferLegacy<TState>>, TRules, TAdditionalOptions, TValidationGroups>]
+        : [options?: useRegleFnOptions<Unwrap<NoInferLegacy<TState>>, TRules, TAdditionalOptions, TValidationGroups>]),
     ]
   ): NonNullable<Unwrap<TState>> extends PrimitiveTypes
     ? RegleSingleField<NonNullable<Unwrap<TState>>, TDecl, TShortcuts, TAdditionalReturnProperties>
