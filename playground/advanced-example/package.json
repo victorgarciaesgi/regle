@@ -1,6 +1,6 @@
 {
   "name": "regle-advanced-example",
-  "version": "1.18.2-beta.2",
+  "version": "1.18.2",
   "private": true,
   "type": "module",
   "scripts": {
