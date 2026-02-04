@@ -20,8 +20,11 @@ import { computed, getCurrentScope, isRef, onScopeDispose, ref, unref, watch } f
 import { cloneDeep, getDotPath, isObject, merge, setObjectError } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 
-export type useRegleSchemaFnOptions<TAdditionalOptions extends Record<string, any>> = Omit<
-  Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<Record<string, any>, {}, never>,
+export type useRegleSchemaFnOptions<
+  TSchema extends Record<string, any>,
+  TAdditionalOptions extends Record<string, any>,
+> = Omit<
+  Partial<DeepMaybeRef<RegleBehaviourOptions>> & LocalRegleBehaviourOptions<TSchema, {}, never>,
   'validationGroups' | 'lazy'
 > &
   RegleSchemaBehaviourOptions &
@@ -35,9 +38,9 @@ export interface useRegleSchemaFn<
     ...params: [
       state: MaybeRef<DeepPartial<NoInferLegacy<TState>>> | DeepReactiveState<DeepPartial<NoInferLegacy<TState>>>,
       rulesFactory: MaybeRef<TSchema>,
-      ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TAdditionalOptions>> extends true
-        ? [options: useRegleSchemaFnOptions<TAdditionalOptions>]
-        : [options?: useRegleSchemaFnOptions<TAdditionalOptions>]),
+      ...(HaveAnyRequiredProps<useRegleSchemaFnOptions<TSchema, TAdditionalOptions>> extends true
+        ? [options: useRegleSchemaFnOptions<NoInferLegacy<TSchema>, TAdditionalOptions>]
+        : [options?: useRegleSchemaFnOptions<NoInferLegacy<TSchema>, TAdditionalOptions>]),
     ]
   ): NonNullable<TState> extends PrimitiveTypes
     ? RegleSingleFieldSchema<NonNullable<TState>, TSchema, TShortcuts, TAdditionalReturnProperties>
