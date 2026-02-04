@@ -620,6 +620,12 @@ export function createReactiveCollectionStatus({
     }
   }
 
+  /**
+   * Validates the collection and all its items synchronously.
+   * Validates both $self rules and each item's rules.
+   * @param forceValues - Optional array value to set before validating
+   * @returns true if all sync rules pass for $self and all items, false otherwise
+   */
   function $validateSync(forceValues?: any): boolean {
     if (forceValues) {
       state.value = forceValues;

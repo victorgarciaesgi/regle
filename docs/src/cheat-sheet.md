@@ -33,7 +33,8 @@ const { r$ } = useRegle(
 | `r$.x.$error` | Field has errors | `v-if="r$.email.$error"` |
 | `r$.x.$correct` | Field is dirty and valid | `v-if="r$.email.$correct"` |
 | `r$.x.$dirty` | Field was touched | `v-if="r$.email.$dirty"` |
-| `r$.$validate()` | Validate form | `await r$.$validate()` |
+| `r$.$validate()` | Validate form (async) | `await r$.$validate()` |
+| `r$.$validateSync()` | Validate form (sync, skips async rules) | `r$.$validateSync()` |
 | `r$.$reset()` | Reset form | `r$.$reset()` |
 
 ## Common Rules

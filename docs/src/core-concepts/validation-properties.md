@@ -146,6 +146,34 @@ It returns a promise that will either resolve to `false` or a Headless copy of y
 
 The first argument is optional and can be used to assign a new state before validating. It's equivalent to use `r$.$value = x` and `r$.$validate();`.
 
+### `$validateSync` 
+- Type: `(forceValues?: TState) => boolean`
+
+Validates the form synchronously without waiting for async rules. This method:
+- Does **NOT** wait for async validation results (async rules are skipped and assumed valid)
+- Returns a `boolean` directly instead of a `Promise`
+
+Use this when you need immediate validation feedback without side effects, such as for real-time UI feedback or form gating logic.
+
+```ts
+// Basic usage
+const isValid = r$.$validateSync();
+
+// Field-level validation
+const isEmailValid = r$.email.$validateSync();
+
+// Use with form submission gating
+function handleSubmit() {
+  if (r$.$validateSync()) {
+    // Proceed with submission
+  }
+}
+```
+
+:::warning
+Since `$validateSync` skips async rules, use `$validate()` when you need to ensure all validations (including async) have passed before submission.
+:::
+
 ### `$extractDirtyFields` 
 - Type: `(filterNullishValues = true) => DeepPartial<TState>`
 
