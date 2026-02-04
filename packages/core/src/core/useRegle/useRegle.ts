@@ -77,12 +77,7 @@ export interface useRegleFn<
         : [options?: useRegleFnOptions<Unwrap<NoInferLegacy<TState>>, TRules, TAdditionalOptions, TValidationGroups>]),
     ]
   ): NonNullable<Unwrap<TState>> extends PrimitiveTypes
-    ? RegleSingleField<
-        WidenPrimitiveLiterals<NonNullable<Unwrap<TState>>>,
-        TDecl,
-        TShortcuts,
-        TAdditionalReturnProperties
-      >
+    ? RegleSingleField<WidenPrimitiveLiterals<Unwrap<TState>>, TDecl, TShortcuts, TAdditionalReturnProperties>
     : Regle<
         Unwrap<TState> extends Record<string, any> ? Unwrap<TState> : {},
         UnwrapSimple<TRules> extends Record<string, any> ? UnwrapSimple<TRules> : {},

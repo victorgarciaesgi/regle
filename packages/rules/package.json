@@ -35,7 +35,7 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",
@@ -52,6 +52,7 @@
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
