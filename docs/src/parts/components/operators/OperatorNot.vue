@@ -11,7 +11,7 @@
         </ul>
       </div>
 
-      <div>
+      <div class="field">
         <input
           v-model="r$.$value.newPassword"
           type="password"
@@ -26,9 +26,11 @@
         </ul>
       </div>
 
-      <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
-      <button class="primary" type="button" @click="r$.$validate()">Submit</button>
-      <code class="status" :status="r$.$correct"></code>
+      <div>
+        <button type="button" @click="r$.$reset({ toInitialState: true })">Reset</button>
+        <button class="primary" type="button" @click="r$.$validate()">Submit</button>
+        <code class="status" :status="r$.$correct"></code>
+      </div>
     </div>
   </div>
 </template>
@@ -44,10 +46,7 @@
       required,
     },
     newPassword: {
-      notEqual: withMessage(
-        not(sameAs(() => form.value.oldPassword)),
-        'Your new password password must not be the same as your old password'
-      ),
+      notEqual: withMessage(not(sameAs(() => form.value.oldPassword)), 'Your passwords must be different'),
     },
   });
 </script>

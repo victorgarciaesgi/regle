@@ -9,7 +9,9 @@ import OperatorOr from '../../parts/components/operators/OperatorOr.vue';
 import OperatorXor from '../../parts/components/operators/OperatorXor.vue';
 import OperatorNot from '../../parts/components/operators/OperatorNot.vue';
 import OperatorApplyIf from '../../parts/components/operators/OperatorApplyIf.vue';
+import OperatorAssignIf from '../../parts/components/operators/OperatorAssignIf.vue';
 import OperatorPipe from '../../parts/components/operators/OperatorPipe.vue';
+import OperatorPipeAsync from '../../parts/components/operators/OperatorPipeAsync.vue';
 </script>
 
 
@@ -132,7 +134,7 @@ const { r$ } = useRegle(form, {
   newPassword: {
     notEqual: withMessage(
       not(sameAs(() => form.value.oldPassword)),
-      'Your confirm new password must not be the same as your old password'
+      'Your passwords must be different'
     ),
   },
 });
@@ -178,6 +180,10 @@ const { r$ } = useRegle(ref({ name: '', email: '' }), {
   email: { email },
 });
 ```
+
+Result: 
+
+<OperatorAssignIf />
 
 
 ## `pipe`
@@ -249,6 +255,10 @@ const { r$ } = useRegle(
   }
 );
 ```
+
+Result:
+
+<OperatorPipeAsync />
 
 The debounce option only affects async validators in the pipe. Synchronous validators (`required`, `email` in the example above) run immediately, while the async validator (`checkEmailAvailable`) will be debounced.
 
