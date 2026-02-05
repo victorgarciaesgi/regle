@@ -97,7 +97,7 @@ const props = defineProps<{
 
 ### Manually typing your state and rules
 
-If you happen to have no way of importing the type, you can style use `RegleRoot` type, that will allow you to manually type your state and rules.
+If you happen to have no way of importing the type, you can still use `RegleRoot` type, that will allow you to manually type your state and rules.
 
 
 ```vue [MyForm.vue]

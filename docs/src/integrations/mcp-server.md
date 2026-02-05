@@ -6,7 +6,9 @@ description: Integrate Regle MCP with your favorite AI assistant
 
 # MCP Server
 
-Regle offers an MCP server that can be used to get documentation and autocomplete in your favorite AI assistant editor.
+[MCP (Model Context Protocol)](https://modelcontextprotocol.io/) is an open standard that enables AI assistants to interact with external tools and data sources. 
+
+Regle offers an MCP server that can be used to get documentation and autocomplete in your favorite AI assistant editor. This allows your AI assistant to understand Regle's API and help you write validation rules more effectively.
 
 The MCP server provides the following features:
 

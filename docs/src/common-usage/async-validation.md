@@ -14,7 +14,7 @@ Async rules can perform these tasks, and they update the `$pending` state whenev
 
 
 :::tip
-By default, all async rules will be debounced by `200ms`. It can be overriden with the `$debounce` modifier.
+By default, all async rules will be debounced by `200ms`. It can be overridden with the `$debounce` modifier.
 :::
 
 ## Inline Async rule

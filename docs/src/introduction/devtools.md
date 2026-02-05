@@ -76,7 +76,7 @@ const { r$ } = useRegle({ name: '' }, {
 
 ## Devtools demo
 
-You can go in any of the [Stablitz exemples](/examples/index) and open the devtools by clicking on the <span data-title="vue"></span> "Open Devtools" button in the bottom middle of the page.
+You can go in any of the [StackBlitz examples](/examples/index) and open the devtools by clicking on the <span data-title="vue"></span> "Open Devtools" button in the bottom middle of the page.
 
 ### Vite Devtools Integration
 

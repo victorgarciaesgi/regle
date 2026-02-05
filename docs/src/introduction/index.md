@@ -21,7 +21,7 @@ Regle is a type-safe, headless form validation library that lets you write valid
 - **🔒 Type Safe**: Full TypeScript inference means autocomplete everywhere and catch errors at compile time
 - **🌳 Model-Based**: Your validation tree matches your data model—no mental gymnastics required  
 - **🔌 Headless**: Works with any UI framework, CSS library, or design system
-- **🔍 Devtools**: Built-in Vue devtools extention for easy debugging and testing.
+- **🔍 Devtools**: Built-in Vue devtools extension for easy debugging and testing.
 - **📦 Modular**: Use built-in rules or create custom ones that fit your exact needs
 - **⚡ Performance**: Efficient reactivity system that only updates what changed
 - **🛠 Developer Experience**: If you've used Vuelidate, you'll feel right at home

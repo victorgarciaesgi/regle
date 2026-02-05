@@ -179,7 +179,7 @@ By default, Regle doesn't allow any transforms on the state.
 Modifiers like `default`, `catch` or `transform` will not impact the validation.
 
 If you want to allow the schema to update your form state you can use the `syncState` option.  
-The state will only be pacthed is the parse is successful.
+The state will only be patched is the parse is successful.
 
 ```ts
 type RegleSchemaBehaviourOptions = {

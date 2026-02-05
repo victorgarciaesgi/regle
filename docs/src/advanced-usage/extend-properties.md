@@ -38,7 +38,6 @@ r$.name.$isRe
 //          ^|
 ```
 
-
 ## Extending nested object properties
 
 
