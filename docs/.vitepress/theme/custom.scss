@@ -266,6 +266,10 @@ pre.json {
     }
   }
 
+  .field {
+    max-width: 190px;
+  }
+
   ul:not(.text-red-400) {
     margin-bottom: 0;
     color: var(--vp-c-form-error);
