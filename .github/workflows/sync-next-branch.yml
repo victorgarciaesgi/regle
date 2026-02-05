@@ -40,7 +40,7 @@ jobs:
           fi
 
       - name: Push changes to next
-        run: git push origin next --follow-tags --force-with-lease
+        run: git push origin next --tags --force-with-lease
 
       - name: Sync tags to main
         run: |
