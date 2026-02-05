@@ -12,7 +12,7 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "@resvg/resvg-js": "2.6.2",
-    "@shikijs/vitepress-twoslash": "3.21.0",
+    "@shikijs/vitepress-twoslash": "3.22.0",
     "@tailwindcss/forms": "0.5.11",
     "@types/lodash-es": "4.17.12",
     "arktype": "catalog:",
@@ -29,7 +29,7 @@
     "vite": "catalog:",
     "vitepress": "1.6.4",
     "vitepress-plugin-group-icons": "1.7.1",
-    "vitepress-plugin-llms": "1.10.0",
+    "vitepress-plugin-llms": "1.11.0",
     "vue": "catalog:",
     "zod": "catalog:"
   }

@@ -20,5 +20,5 @@ export default defineConfig({
   install: true,
   ignorePaths: ['**/node_modules/**'],
   ignoreOtherWorkspaces: true,
-  maturityPeriod: 1,
+  maturityPeriod: 2,
 });

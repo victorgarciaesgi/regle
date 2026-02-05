@@ -22,7 +22,7 @@ minimumReleaseAgeExclude:
   - lodash-es
 
 catalog:
-  '@types/node': 24.1.0
+  '@types/node': 24.10.10
   # Vue
   vue: 3.5.27
   '@vue/reactivity': 3.5.27
