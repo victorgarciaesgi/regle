@@ -1,7 +1,7 @@
 import type { RegleFieldStatus, RegleRuleDefinition, RegleShortcutDefinition } from '@regle/core';
 import { createRule, defineRegleConfig, RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
-import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue';
+import { computed, defineComponent, nextTick, ref } from 'vue';
 import { isFilled, withMessage } from '..';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
 import { email, minLength, required } from '../../rules';
@@ -259,12 +259,10 @@ describe('assignIf helper', () => {
 
     const result = assignIf(condition, rules);
 
-    expectTypeOf(result).toEqualTypeOf<
-      ComputedRef<{
-        required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
-        minLength: typeof minLengthRule;
-      }>
-    >();
+    expectTypeOf(result).toEqualTypeOf<{
+      required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
+      minLength: typeof minLengthRule;
+    }>();
   });
 
   it('should work with falsy conditions', async () => {
@@ -313,13 +311,13 @@ describe('assignIf helper', () => {
     expectTypeOf(r$.name).toEqualTypeOf<
       RegleFieldStatus<
         string,
-        ComputedRef<{
-          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
+        {
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
           customRule: () => true;
-        }>,
+        },
         RegleShortcutDefinition<{
-          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown>;
-          customRule: RegleRuleDefinition<unknown, unknown, [], false, boolean, unknown, unknown>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, boolean>;
+          customRule: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, boolean>;
         }>
       >
     >();

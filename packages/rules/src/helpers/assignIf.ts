@@ -45,10 +45,8 @@ export function assignIf<
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
   rules: MaybeRefOrGetter<TRulesDelc>,
   otherwiseRules?: MaybeRefOrGetter<TRulesDelc>
-): ComputedRef<TRulesDelc> {
-  return computed(() => {
-    let trueRules = mapRulesWithCondition(_condition, rules, true);
-    let falseRules = otherwiseRules ? mapRulesWithCondition(_condition, otherwiseRules, false) : [];
-    return Object.fromEntries([...trueRules, ...falseRules]);
-  });
+): TRulesDelc {
+  let trueRules = mapRulesWithCondition(_condition, rules, true);
+  let falseRules = otherwiseRules ? mapRulesWithCondition(_condition, otherwiseRules, false) : [];
+  return Object.fromEntries([...trueRules, ...falseRules]);
 }
