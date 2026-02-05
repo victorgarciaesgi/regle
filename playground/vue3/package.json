@@ -22,8 +22,8 @@
   },
   "devDependencies": {
     "@andypf/json-viewer": "2.2.0",
-    "@tsconfig/node20": "^20.1.8",
-    "@types/node": "^24.10.9",
+    "@tsconfig/node20": "^20.1.9",
+    "@types/node": "^24.10.10",
     "@typescript/native-preview": "latest",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
