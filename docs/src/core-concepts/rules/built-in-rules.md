@@ -63,6 +63,7 @@ _**Params**_
 Allows only alphanumeric characters.
 
 ```ts
+import { useRegle } from '@regle/core';
 import { alphaNum } from '@regle/rules';
 
 const { r$ } = useRegle({ name: '' }, {
@@ -70,7 +71,8 @@ const { r$ } = useRegle({ name: '' }, {
     alphaNum,
     // or
     alphaNum: alphaNum({ allowSymbols: true }),
-})
+  },
+});
 ```
 
 ## `atLeastOne`
@@ -231,7 +233,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 })
 ```
 
-## `dateBetweeen`
+## `dateBetween`
 
 _**Params**_
  - `before: Ref<string | Date> | string | Date | () => string | Date`
@@ -510,10 +512,8 @@ _**Params**_
 Validates MAC addresses. Call as a function to specify a custom separator (e.g., ':' or an empty string for 00ff1122334455).
 
 ```ts
-// @noErrors
+import { useRegle } from '@regle/core';
 import { macAddress } from '@regle/rules';
-
-const maxCount = ref(6);
 
 const { r$ } = useRegle({ address: '' }, {
   address: {
@@ -521,7 +521,7 @@ const { r$ } = useRegle({ address: '' }, {
     // or
     macAddress: macAddress('-')
   },
-})
+});
 ```
 
 ## `maxFileSize`

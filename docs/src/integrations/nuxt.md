@@ -81,7 +81,7 @@ export default defineRegleNuxtPlugin(() => {
 ```
 
 
-This will inject the fellowing composables to your auto-imports and `#imports`, loaded with your custom error messages and rules: 
+This will inject the following composables to your auto-imports and `#imports`, loaded with your custom error messages and rules: 
 
 - `useRegle` 
 - `inferRules` 

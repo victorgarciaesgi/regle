@@ -24,26 +24,27 @@ The `$reset` method is available on every nested instance of field of a form. So
 
 ### Options
 
+The `$reset` method accepts an options object with the following properties:
 
-### `toInitialState`
+#### `toInitialState`
 - **Type:** `boolean`
 - **Description:**  
   Reset validation status and reset form state to its initial state.  
   Initial state is different from the original state, as it can be mutated when using `$reset`. This serves as the base comparison for `$edited`.  
   ⚠️ This doesn't work if the state is a `reactive` object.
 
-### `toOriginalState`
+#### `toOriginalState`
 - **Type:** `boolean`
 - **Description:**  
   Reset validation status and reset form state to its original state.  
   Original state is the unmutated state that was passed to the form when it was initialized.
 
-### `toState`
+#### `toState`
 - **Type:** `TState` or `() => TState`
 - **Description:**  
   Reset validation status and reset form state to the given state. Also sets the new state as the new initial state.
 
-### `clearExternalErrors`
+#### `clearExternalErrors`
 - **Type:** `boolean`
 - **Description:**  
   Clears the `$externalErrors` state back to an empty object.
@@ -107,5 +108,7 @@ const { r$ } = useRegle(
 );
 </script>
 ```
+
+Result:
 
 <ResetBasic />

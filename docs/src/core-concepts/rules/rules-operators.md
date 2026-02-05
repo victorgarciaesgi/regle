@@ -150,7 +150,9 @@ Result:
 The `applyIf` operator is similar to `requiredIf`, but it can be used with any rule. It simplifies conditional rule declarations.
 
 ```ts
+import { useRegle } from '@regle/core';
 import { minLength, applyIf } from '@regle/rules';
+import { ref } from 'vue';
 
 const condition = ref(false);
 
@@ -160,6 +162,8 @@ const { r$ } = useRegle({name: ''}, {
   },
 });
 ```
+
+Result:
 
 <OperatorApplyIf />
 
@@ -171,7 +175,9 @@ It allows to apply multiple rules to a field conditionally.
 
 
 ```ts
+import { useRegle } from '@regle/core';
 import { required, email, minLength, assignIf } from '@regle/rules';
+import { ref } from 'vue';
 
 const condition = ref(false);
 

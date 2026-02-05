@@ -103,7 +103,7 @@ type State = InferInput<typeof rules>;
 
 `useRules` is a composable that allows you to write your rules in a more declarative way.
 
-It works exactly like `useRegle`, but it doesn't accept a state parameter, it will create a emp from the rules.
+It works exactly like `useRegle`, but it doesn't accept a state parameter, it will create an empty state from the rules.
 
 ```ts twoslash
 
@@ -114,6 +114,10 @@ const r$ = useRules({
   name: { required, string },
 });
 ```
+
+Result:
+
+<UseRulesExample />
 
 ## `refineRules`
 

@@ -13,7 +13,7 @@ If your app includes multiple forms, it can be helpful to define a global config
 
 ## Replace built-in rules messages
 
-Each `@regle/rules` rule provides a default error message. You may may not want to call `withMessage` every time you need to use one with a custom error message.
+Each `@regle/rules` rule provides a default error message. You may not want to call `withMessage` every time you need to use one with a custom error message.
 
 `defineRegleConfig` allows you to redefine the default messages of built-in rules.
 
@@ -24,8 +24,8 @@ import { withMessage, minLength, required } from '@regle/rules';
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     required: withMessage(required, 'You need to provide a value'),
-    minLength: withMessage(minLength, ({ $value, $params: [max] }) => {
-      return `Minimum length is ${max}. Current length: ${$value?.length}`;
+    minLength: withMessage(minLength, ({ $value, $params: [min] }) => {
+      return `Minimum length is ${min}. Current length: ${$value?.length}`;
     })
   })
 })
