@@ -1,4 +1,3 @@
-import type { RequiredDeep } from 'type-fest';
 import type { Ref } from 'vue';
 import type { DefaultValidators } from '../../core';
 import type {
@@ -12,6 +11,7 @@ import type {
 } from '../rules';
 import type { DeepMaybeRef, OmitByType, Unwrap } from '../utils';
 import type { isEditedHandlerFn } from './overrides.types';
+import type { RequiredDeep } from 'type-fest';
 
 export interface RegleBehaviourOptions {
   /**

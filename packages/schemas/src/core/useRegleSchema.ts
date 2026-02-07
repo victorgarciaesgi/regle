@@ -54,14 +54,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
   shortcuts?: RegleShortcutDefinition | undefined;
   overrides?: GlobalConfigOverrides;
 }): useRegleSchemaFn<TShortcuts> {
-  const { options, shortcuts, overrides } = params ?? {};
-
-  const globalOptions: RegleBehaviourOptions = {
-    autoDirty: options?.autoDirty,
-    lazy: options?.lazy,
-    rewardEarly: options?.rewardEarly,
-    clearExternalErrorsOnChange: options?.clearExternalErrorsOnChange,
-  };
+  const { options: modifiers, shortcuts, overrides } = params ?? {};
 
   function useRegleSchema(
     state: MaybeRef<Record<string, any>> | DeepReactiveState<Record<string, any>> | PrimitiveTypes,
@@ -77,7 +70,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     const { onUpdate: syncOnUpdate = false, onValidate: syncOnValidate = false } = syncState;
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
-      ...globalOptions,
+      ...modifiers,
       ...defaultOptions,
     } as any;
 

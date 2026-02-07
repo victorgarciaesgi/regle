@@ -9,7 +9,9 @@ export type DefaultValidatorsTree = {
   [K in keyof DefaultValidators]: RegleRuleRawInput<any, any[], boolean, any> | undefined;
 };
 
-export type ExtendedRulesDeclarations = CustomRulesDeclarationTree & DefaultValidatorsTree;
+export interface CustomRules {}
+
+export type ExtendedRulesDeclarations = CustomRulesDeclarationTree & DefaultValidatorsTree & CustomRules;
 
 /** @deprecated Use {@link ExtendedRulesDeclarations} instead */
 export type AllRulesDeclarations = ExtendedRulesDeclarations;

@@ -5,6 +5,7 @@ import type {
   $InternalRegleCollectionErrors,
   $InternalRegleCollectionIssues,
   $InternalRegleErrors,
+  $InternalRegleErrorTree,
   $InternalRegleIssues,
   $InternalRegleResult,
   CollectionRegleBehaviourOptions,
@@ -148,6 +149,7 @@ export type RegleStatus<
  * @reference {@link RegleStatus}
  */
 export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
+  readonly $externalErrors?: $InternalRegleErrorTree;
   $fields: {
     [x: string]: $InternalRegleStatusType;
   };
@@ -550,7 +552,7 @@ export type RegleCollectionStatus<
  */
 export interface $InternalRegleCollectionStatus extends Omit<
   $InternalRegleStatus,
-  '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers'
+  '$fields' | '$issues' | '$errors' | '$silentErrors' | '~modifiers' | '$externalErrors'
 > {
   readonly $self: $InternalRegleFieldStatus;
   readonly $each: Array<$InternalRegleStatusType>;

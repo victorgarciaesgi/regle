@@ -10,7 +10,7 @@ export {
   getErrors,
   getIssues,
 } from './useRegle';
-export { defineRegleConfig, extendRegleConfig } from './defineRegleConfig';
+export { defineRegleConfig, extendRegleConfig, defineRegleOptions } from './defineRegleConfig';
 export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions } from './defaultValidators';
 export { mergeRegles, type MergedRegles, type MergedScopedRegles } from './mergeRegles';
 export {

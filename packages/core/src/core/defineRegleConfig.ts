@@ -194,3 +194,28 @@ export function extendRegleConfig<
 
   return { useRegle: useRegle as any, inferRules };
 }
+
+/**
+ * Define a global Regle options to customize the validation behavior across your application.
+ * It's meant to be used with the Regle Vue plugin.
+ *
+ * @param options - Configuration options
+ * @returns The configuration options
+ *
+ * @example
+ * ```ts
+ * import { defineRegleOptions } from '@regle/core';
+ *
+ * const regleOptions = defineRegleOptions({
+ *   modifiers: {
+ *     lazy: true,
+ *     rewardEarly: true
+ *   }
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
+ */
+export function defineRegleOptions<T extends GlobalConfigOptions<any, any>>(options: T): T {
+  return options;
+}

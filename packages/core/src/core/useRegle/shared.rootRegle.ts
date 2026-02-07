@@ -1,5 +1,5 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { computed, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
+import { computed, inject, isRef, ref, shallowRef, triggerRef, watchEffect, type ComputedRef } from 'vue';
 import { type DeepMaybeRef, type LocalRegleBehaviourOptions, type RegleBehaviourOptions } from '../..';
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
@@ -12,6 +12,7 @@ import type {
 import type { PrimitiveTypes } from '../../types/utils';
 import { tryOnScopeDispose } from '../../utils';
 import { useRootStorage } from './root';
+import { regleConfigSymbol } from '../../constants';
 
 interface RootRegleOptions {
   state: Ref<Record<string, any> | PrimitiveTypes>;
@@ -39,8 +40,33 @@ export function createRootRegleLogic({
       ? undefined
       : computed(() => rulesFactory);
 
-  const resolvedOptions: ResolvedRegleBehaviourOptions = {
+  /**
+   * Options injected by the plugin
+   */
+  const pluginOptions = inject(regleConfigSymbol, undefined) ?? {};
+
+  const mergedGlobalOptions = {
+    ...pluginOptions.modifiers,
     ...globalOptions,
+  };
+
+  const mergedCustomRules = () => ({
+    ...pluginOptions.rules?.(),
+    ...customRules?.(),
+  });
+
+  const mergedShortcuts = {
+    ...pluginOptions.shortcuts,
+    ...shortcuts,
+  };
+
+  const mergedOverrides = {
+    ...pluginOptions.overrides,
+    ...overrides,
+  };
+
+  const resolvedOptions: ResolvedRegleBehaviourOptions = {
+    ...mergedGlobalOptions,
     ...options,
   } as any;
 
@@ -69,9 +95,9 @@ export function createRootRegleLogic({
     options: resolvedOptions,
     initialState,
     originalState,
-    customRules,
-    shortcuts,
-    overrides,
+    customRules: mergedCustomRules,
+    shortcuts: mergedShortcuts,
+    overrides: mergedOverrides,
   });
 
   return regle;

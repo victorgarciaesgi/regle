@@ -413,7 +413,7 @@ export function createReactiveNestedStatus({
 
       const $silent = computed<boolean>(() => {
         if (unref(commonArgs.options.silent) != null) {
-          return unref(commonArgs.options.silent);
+          return unref(commonArgs.options.silent) === true;
         } else if ($rewardEarly.value) {
           return true;
         }
@@ -422,9 +422,30 @@ export function createReactiveNestedStatus({
 
       const $autoDirty = computed<boolean>(() => {
         if (unref(commonArgs.options.autoDirty) != null) {
-          return unref(commonArgs.options.autoDirty);
+          return unref(commonArgs.options.autoDirty) === true;
         }
         return true;
+      });
+
+      const $immediateDirty = computed<boolean>(() => {
+        if (unref(commonArgs.options.immediateDirty) != null) {
+          return unref(commonArgs.options.immediateDirty) === true;
+        }
+        return false;
+      });
+
+      const $lazy = computed<boolean>(() => {
+        if (unref(commonArgs.options.lazy) != null) {
+          return unref(commonArgs.options.lazy) === true;
+        }
+        return false;
+      });
+
+      const $clearExternalErrorsOnChange = computed<boolean>(() => {
+        if (unref(commonArgs.options.clearExternalErrorsOnChange) != null) {
+          return unref(commonArgs.options.clearExternalErrorsOnChange) === true;
+        }
+        return false;
       });
 
       const $ready = computed<boolean>(() => {
@@ -501,10 +522,11 @@ export function createReactiveNestedStatus({
       const $modifiers = computed<RegleBehaviourOptions>(() => {
         return {
           autoDirty: $autoDirty.value,
-          lazy: unref(commonArgs.options.lazy) ?? false,
+          lazy: $lazy.value,
           rewardEarly: $rewardEarly.value,
           silent: $silent.value,
-          clearExternalErrorsOnChange: unref(commonArgs.options.clearExternalErrorsOnChange) ?? false,
+          clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+          immediateDirty: $immediateDirty.value,
           id: unref(commonArgs.options.id),
         };
       });
@@ -795,6 +817,7 @@ export function createReactiveNestedStatus({
     $initialValue: initialState,
     $originalValue: originalState,
     $self: $selfStatus,
+    $externalErrors: externalErrors,
     $fields,
     $reset,
     $touch,
