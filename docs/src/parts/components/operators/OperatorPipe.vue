@@ -20,8 +20,8 @@
 
     <div class="info" v-if="r$.email.$dirty">
       <p v-if="r$.email.$rules.required.$valid">✓ Required passed</p>
-      <p v-if="r$.email.$rules.minLength.$valid">✓ MinLength passed</p>
-      <p v-if="r$.email.$rules.email.$valid">✓ Email format passed</p>
+      <p v-if="r$.email.$rules.minLength.$active && r$.email.$rules.minLength.$valid">✓ MinLength passed</p>
+      <p v-if="r$.email.$rules.email.$active && r$.email.$rules.email.$valid">✓ Email format passed</p>
     </div>
   </div>
 </template>
