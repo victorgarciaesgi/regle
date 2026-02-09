@@ -1,6 +1,6 @@
 ---
 name: regle-typescript
-description: TypeScript integration for Regle form validation -- type-safe output, typing rules schemas, typing component props. Use when you need type-safe form validation output, typed rule schemas, or typed component props with Regle.
+description: TypeScript support for type-safe Regle form validation, rules, and component props.
 ---
 
 # Regle TypeScript

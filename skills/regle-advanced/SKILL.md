@@ -1,6 +1,6 @@
 ---
 name: regle-advanced
-description: Advanced Regle patterns for Vue.js form validation -- collections, async validation, server errors, global config, variants, scoped validation, schema libraries (Zod, Valibot, ArkType). Use when building complex forms or integrating Regle with schema libraries.
+description: Advanced patterns for Regle form validation, including arrays, async, server errors, global config, variants, scoped validation, and schema integration.
 ---
 
 # Regle Advanced Patterns

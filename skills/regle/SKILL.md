@@ -1,11 +1,26 @@
 ---
 name: regle
-description: Regle is a type-safe, headless form validation library for Vue.js. Use when building forms with validation in Vue 3, defining validation rules, creating custom validators, or displaying form errors.
+description: Core skills for using Regle form validation in Vue.js. Provides setup, validation rules, and usage patterns.
 ---
 
 # Regle
 
 Regle is a type-safe, model-based, headless form validation library for Vue 3. It provides full TypeScript inference, reactive validation, and works with any UI framework or design system.
+
+
+## MCP Server
+
+Regle provides an MCP server that can be used to get documentation and autocomplete for Regle. If it's available, use it to get up-to-date information on the API.
+
+```json
+{
+  "mcpServers": {
+    "regle": {
+      "command": "npx",
+      "args": ["@regle/mcp-server"]
+    }
+  }
+}
 
 ## Installation
 
