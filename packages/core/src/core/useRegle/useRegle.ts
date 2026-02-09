@@ -47,14 +47,8 @@ export interface useRegleFn<
 > {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<
-      JoinDiscriminatedUnions<Unwrap<TState>>,
-      Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>
-    >,
-    TDecl extends RegleRuleDecl<
-      NonNullable<Unwrap<TState>>,
-      Partial<ExtendedRulesDeclarations> & Partial<TCustomRules>
-    >,
+    TRules extends ReglePartialRuleTree<JoinDiscriminatedUnions<Unwrap<TState>>, Partial<ExtendedRulesDeclarations>>,
+    TDecl extends RegleRuleDecl<NonNullable<Unwrap<TState>>, Partial<ExtendedRulesDeclarations>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [

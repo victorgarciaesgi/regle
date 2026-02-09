@@ -1,23 +1,13 @@
-import './assets/main.css';
-
-import { createApp } from 'vue';
-import App from './App.vue';
-import '@andypf/json-viewer';
-import { createPinia } from 'pinia';
-import {
-  createRule,
-  defineRegleOptions,
-  RegleVuePlugin,
-  type RegleCollectionStatus,
-  type RegleFieldStatus,
-  type RegleStatus,
-} from '@regle/core';
+import { mount } from '@vue/test-utils';
+import { defineComponent } from 'vue';
+import { defineRegleOptions, RegleVuePlugin, useRegle, createRule } from '@regle/core';
 import { required, withMessage } from '@regle/rules';
 
 const customRule = createRule({
-  validator: (value: any) => value === 'custom',
+  validator: (value: unknown, args: number) => value === 'custom',
   message: 'Custom rule',
 });
+
 declare module '@regle/core' {
   interface CustomRules {
     customRule: typeof customRule;
@@ -32,8 +22,6 @@ declare module '@regle/core' {
     $isEmpty: boolean;
   }
 }
-
-const pinia = createPinia();
 
 const options = defineRegleOptions({
   rules: () => ({
@@ -55,9 +43,25 @@ const options = defineRegleOptions({
   },
 });
 
-const app = createApp(App);
-app.use(pinia);
+describe('augmenting rules with plugin config', () => {
+  it('should be able to use custom rules', () => {
+    const component = defineComponent({
+      setup() {
+        const { r$ } = useRegle({ name: '' }, { name: { required, customRule: customRule(1) } });
 
-app.use(RegleVuePlugin, options);
+        useRegle({ name: '' }, { name: { required, minLength: required } });
 
-app.mount('#app');
+        return {
+          r$,
+        };
+      },
+      template: '<div></div>',
+    });
+
+    const vm = mount(component, {
+      global: {
+        plugins: [[RegleVuePlugin, { options }]],
+      },
+    });
+  });
+});

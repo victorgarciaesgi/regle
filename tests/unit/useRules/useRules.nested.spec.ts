@@ -107,7 +107,7 @@ describe('nested validations', () => {
           name: { required, string },
         },
       },
-      testDate: { required, dateAfter: dateBefore(new Date(2000, 1, 1), { allowEqual: false }) },
+      testDate: { required, dateBefore: dateBefore(new Date(2000, 1, 1), { allowEqual: false }) },
       testFile: { required, type: type<File>() },
     };
 

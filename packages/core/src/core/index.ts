@@ -11,7 +11,7 @@ export {
   getIssues,
 } from './useRegle';
 export { defineRegleConfig, extendRegleConfig, defineRegleOptions } from './defineRegleConfig';
-export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions } from './defaultValidators';
+export type { DefaultValidators, CommonComparisonOptions, CommonAlphaOptions, UrlOptions } from './defaultValidators';
 export { mergeRegles, type MergedRegles, type MergedScopedRegles } from './mergeRegles';
 export {
   createScopedUseRegle,

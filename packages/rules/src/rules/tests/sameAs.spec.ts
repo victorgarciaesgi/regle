@@ -31,8 +31,9 @@ describe('sameAs validator', () => {
       [target: string, otherName?: string | undefined],
       false,
       boolean,
-      MaybeInput<string>,
-      string
+      string,
+      unknown,
+      false
     >
   >();
 });

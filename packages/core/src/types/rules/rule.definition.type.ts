@@ -25,10 +25,13 @@ export interface RegleRuleDefinition<
   _TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
   TNonEmpty extends boolean = boolean,
-> extends RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData> {
+>
+  extends
+    RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetaData>,
+    RegleRuleDefinitionLight<TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
     TFilteredValue,
-    TParams,
+    [...TParams, ...any[]],
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
   message: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
@@ -39,6 +42,17 @@ export interface RegleRuleDefinition<
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
   required: TNonEmpty;
 }
+
+export type RegleRuleDefinitionLight<
+  TParams extends any[] = [],
+  TAsync extends boolean = boolean,
+  TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
+> = {
+  value: unknown;
+  params: [...TParams, ...unknown[]];
+  async: TAsync;
+  metadata: TMetaData;
+};
 
 /**
  * @internal
@@ -63,11 +77,13 @@ export type RegleRuleWithParamsDefinition<
   TMetadata extends RegleRuleMetadataDefinition = boolean,
   TInput = unknown,
   TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
-> = RegleRuleCore<TType, TFilteredValue, TParams, TAsync, TMetadata> &
-  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
+  TNonEmpty extends boolean = false,
+> = RegleRuleCore<TType, TFilteredValue, TParams, TAsync, TMetadata, TNonEmpty> &
+  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> &
+  RegleRuleDefinitionLight<TParams, TAsync, TMetadata> & {
     (
       ...params: RegleUniversalParams<TParams>
-    ): RegleRuleDefinition<TType, TFilteredValue, TParams, TAsync, TMetadata, TInput>;
+    ): RegleRuleDefinition<TType, TFilteredValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>;
   } & (TParams extends [param?: any, ...any[]]
     ? {
         exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
@@ -193,7 +209,7 @@ export type InferRegleRule<
   TNonEmpty extends boolean = false,
 > = [TParams] extends [[]]
   ? RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetaData, TValue, TValue, TNonEmpty>
-  : RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetaData, TNonEmpty>;
+  : RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetaData, TValue, TValue, TNonEmpty>;
 
 export type RegleRuleDefinitionProcessor<TValue extends any = any, TParams extends any[] = [], TReturn = any> = (
   value: Maybe<TValue>,

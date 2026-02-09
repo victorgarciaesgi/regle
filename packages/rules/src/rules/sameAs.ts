@@ -13,7 +13,9 @@ interface SameAsFn {
     [target: TTarget, otherName?: string],
     false,
     boolean,
-    TTarget extends MaybeInput<infer M> ? M : MaybeInput<TTarget>
+    TTarget extends MaybeInput<infer M> ? M : MaybeInput<TTarget>,
+    unknown,
+    false
   >;
   /** Keep this definition without generics for inference */
   (
@@ -25,7 +27,9 @@ interface SameAsFn {
     [target: any, otherName?: string],
     false,
     boolean,
-    unknown extends MaybeInput<infer M> ? M : MaybeInput<unknown>
+    unknown extends MaybeInput<infer M> ? M : MaybeInput<unknown>,
+    unknown,
+    false
   >;
 }
 

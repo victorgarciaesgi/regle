@@ -23,6 +23,7 @@ export {
   defineRegleOptions,
   type CommonAlphaOptions,
   type CommonComparisonOptions,
+  type UrlOptions,
   type CreateScopedUseRegleOptions,
   type inferRulesFn,
   type MergedRegles,
@@ -143,4 +144,7 @@ export type {
   LazyJoinDiscriminatedUnions,
   DumbJoinDiscriminatedUnions,
   Prettify,
+  CustomFieldProperties,
+  CustomNestedProperties,
+  CustomCollectionProperties,
 } from './types';

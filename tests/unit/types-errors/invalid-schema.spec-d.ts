@@ -31,7 +31,7 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       RegleFieldStatus<
         string,
         {
-          required: () => true;
+          required: () => boolean;
         },
         RegleShortcutDefinition<any>
       >
@@ -202,8 +202,8 @@ describe('useRegle should throw errors for invalid rule schema', () => {
   });
 
   it('Known rules with inline validator returning metadata ✅', () => {
-    const { r$ } = useRegle({ name: '' }, { name: { required: (_value) => ({ $valid: true, customMeta: 'bar' }) } });
-    expectTypeOf(r$.name.$rules.required.$metadata).toEqualTypeOf<{ customMeta: string }>();
+    const { r$ } = useRegle({ name: '' }, { name: { required2: (_value) => ({ $valid: true, customMeta: 'bar' }) } });
+    expectTypeOf(r$.name.$rules.required2.$metadata).toEqualTypeOf<{ customMeta: string }>();
   });
 
   it('should not error when having a state property named "value"', () => {

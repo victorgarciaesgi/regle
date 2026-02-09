@@ -10,6 +10,9 @@ import type {
   $InternalRegleResult,
   CollectionRegleBehaviourOptions,
   ComputeFieldRules,
+  CustomCollectionProperties,
+  CustomFieldProperties,
+  CustomNestedProperties,
   DeepPartial,
   ExtendedRulesDeclarations,
   ExtendOnlyRealRecord,
@@ -101,7 +104,7 @@ type ProcessNestedFields<
  */
 export type RegleStatus<
   TState extends object | Record<string, any> | undefined = Record<string, any>,
-  TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
+  TRules extends ReglePartialRuleTree<NonNullable<TState>, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
 > = RegleCommonStatus<TState, TRules> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
@@ -133,6 +136,7 @@ export type RegleStatus<
         : any
   ) => Promise<RegleResult<JoinDiscriminatedUnions<TState>, TRules>>;
 } & ProcessNestedFields<TState, TRules, TShortcuts> &
+  CustomNestedProperties &
   ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -263,7 +267,8 @@ export type RegleFieldStatus<
   $validate: (forceValues?: IsUnknown<TState> extends true ? any : TState) => Promise<RegleFieldResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: ComputeFieldRules<TState, TRules>;
-} & ([TShortcuts['fields']] extends [never]
+} & CustomFieldProperties &
+  ([TShortcuts['fields']] extends [never]
     ? {}
     : {
         [K in keyof TShortcuts['fields']]: ReturnType<NonNullable<TShortcuts['fields']>[K]>;
@@ -540,7 +545,8 @@ export type RegleCollectionStatus<
   $validate: (
     value?: JoinDiscriminatedUnions<TState>
   ) => Promise<RegleCollectionResult<TState, JoinDiscriminatedUnions<TRules>>>;
-} & ([TShortcuts['collections']] extends [never]
+} & CustomCollectionProperties &
+  ([TShortcuts['collections']] extends [never]
     ? {}
     : {
         [K in keyof TShortcuts['collections']]: ReturnType<NonNullable<TShortcuts['collections']>[K]>;

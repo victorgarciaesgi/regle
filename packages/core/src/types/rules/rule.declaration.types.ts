@@ -16,6 +16,7 @@ import type {
 import type { DefaultValidatorsTree, ExtendedRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
+  RegleRuleDefinitionLight,
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
@@ -126,7 +127,13 @@ export type RegleRuleDecl<
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<DefaultValidatorsTree>,
   TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions<TValue>,
 > = TOptions & {
-  [TKey in keyof RemoveIndexSignature<TCustomRules>]?: FormRuleDeclaration<TValue, any[]>;
+  [TKey in keyof RemoveIndexSignature<TCustomRules>]?: NonNullable<TCustomRules[TKey]> extends RegleRuleDefinitionLight<
+    infer TParams,
+    infer TAsync,
+    infer TMetadata
+  >
+    ? RegleRuleDefinitionLight<TParams, boolean, TMetadata> | InlineRuleDeclaration<TValue, TParams, any>
+    : TCustomRules[TKey];
 } & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
 
 /**
