@@ -129,6 +129,10 @@ const Integrations: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
     text: 'MCP Server',
     link: '/integrations/mcp-server',
   },
+  {
+    text: 'Agent Skills',
+    link: '/integrations/agent-skills',
+  },
 ];
 
 const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [

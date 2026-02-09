@@ -35,7 +35,9 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <a target='_blank' href="https://play.reglejs.dev"><img width="180" src="https://raw.githubusercontent.com/victorgarciaesgi/regle/refs/heads/main/.github/images/regle-playground-button.svg" /></a> | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/simple-example?file=examples/simple-example/src/App.vue&configPath=examples/simple-example) | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example) |
 
-## 🤖 MCP Server
+## 🤖 AI Integration
+
+### MCP Server
 
 <a href="https://cursor.com/en-US/install-mcp?name=regle&config=eyJjb21tYW5kIjoibnB4IEByZWdsZS9tY3Atc2VydmVyIn0%3D" alt="Install MCP Server">
   <picture>
@@ -44,6 +46,28 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
   </picture>
 </a>
 
+Or add it manually to your `.cursor/mcp.json` or `.mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "regle": {
+      "command": "npx",
+      "args": ["@regle/mcp-server"]
+    }
+  }
+}
+```
+
+### Agent Skills
+
+Install [Agent Skills](https://skills.sh/) to give your AI coding agent Regle expertise:
+
+```bash
+npx skills add victorgarciaesgi/regle
+```
+
+
 ## ✨ Features
 
 - 🔌 **Headless**: Plug any UI or markup to the validation.
@@ -51,6 +75,7 @@ It's heavily inspired by Vuelidate and aims to replace it in modern apps.
 - 🌳 **Model based**: Your validation tree structure matches the data model.
 - 🔍 **Devtools**: Built-in Vue devtools extention for easy debugging and testing.
 - 🤖 **MCP Server**: MCP server for easy documentation and autocomplete.
+- 🧠 **Agent Skills**: [Agent Skills](https://skills.sh/) for AI coding agents.
 - 🎨 **Style Agnostic**: Works with any CSS framework or plain CSS.
 - 📦 **Modular design**: Expand Regle properties or default validation rules.
 - 🔄 **Async validation**: Handle asynchronous validations and pending states with ease.
