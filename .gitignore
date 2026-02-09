@@ -57,6 +57,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Installed agent skills (local dev tools, not for distribution)
+.agents/
+
 # TypeScript v1 declaration files
 typings/
 
