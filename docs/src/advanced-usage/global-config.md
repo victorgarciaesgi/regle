@@ -88,7 +88,7 @@ While `useRegle` allows you to use any rule key, adding custom rules to the glob
 const someAsyncCall = async () => await Promise.resolve(true);
 // ---cut---
 // @noErrors
-import { defineRegleConfig, createRule, Maybe } from '@regle/core';
+import { defineRegleConfig, createRule, type Maybe } from '@regle/core';
 import { withMessage, isFilled } from '@regle/rules';
 
 const asyncEmail = createRule({
@@ -247,8 +247,7 @@ const { r$ } = useRegle(form, {
 
 To get full type-safety and autocompletion with the declarative approach, you can augment Regle's interfaces using TypeScript module augmentation. This lets the default `useRegle` composable know about your custom rules and shortcut properties.
 
-```ts
-// regle.d.ts (or in your main.ts)
+```ts [regle.config.ts]
 import { createRule } from '@regle/core';
 
 const customRule = createRule({

@@ -1,7 +1,9 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { isRef, ref } from 'vue';
 import type {
+  CustomRulesDeclarationTree,
   DeepReactiveState,
+  DefaultValidatorsTree,
   ExtendedRulesDeclarations,
   LocalRegleBehaviourOptions,
   Regle,
@@ -29,7 +31,7 @@ import { createRootRegleLogic } from './shared.rootRegle';
 
 export type useRegleFnOptions<
   TState extends Record<string, any> | MaybeInput<PrimitiveTypes>,
-  TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<TState>>, Partial<ExtendedRulesDeclarations>>,
+  TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<TState>>, CustomRulesDeclarationTree>,
   TAdditionalOptions extends Record<string, any>,
   TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
 > =
@@ -47,8 +49,11 @@ export interface useRegleFn<
 > {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<JoinDiscriminatedUnions<Unwrap<TState>>, Partial<ExtendedRulesDeclarations>>,
-    TDecl extends RegleRuleDecl<NonNullable<Unwrap<TState>>, Partial<ExtendedRulesDeclarations>>,
+    TRules extends ReglePartialRuleTree<
+      JoinDiscriminatedUnions<Unwrap<TState>>,
+      Partial<ExtendedRulesDeclarations & Omit<TCustomRules, keyof DefaultValidatorsTree>>
+    >,
+    TDecl extends RegleRuleDecl<NonNullable<Unwrap<TState>>, Partial<ExtendedRulesDeclarations & TCustomRules>>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [

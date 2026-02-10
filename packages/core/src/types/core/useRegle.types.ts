@@ -45,7 +45,7 @@ export type Regle<
  */
 export type RegleSingleField<
   TState extends Maybe<PrimitiveTypes> = any,
-  TRules extends RegleRuleDecl<NonNullable<TState>> = EmptyObject,
+  TRules extends RegleRuleDecl<NonNullable<TState>, CustomRulesDeclarationTree> = EmptyObject,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
