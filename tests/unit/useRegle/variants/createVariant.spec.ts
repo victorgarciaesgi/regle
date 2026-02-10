@@ -428,6 +428,52 @@ describe('createVariant', () => {
     }
   });
 
+  it('should correctly with nullable nested variants', async () => {
+    function createNullableNestedVariantRegle() {
+      type Form = {
+        nested2?: { name: string; definedName: string; maybeUndefinedName?: string } & (
+          | { type: 'ONE'; oneValue: number; oneName: string }
+          | { type: 'TWO'; twoValue: number; twoName: string }
+          | { type?: undefined }
+        );
+      };
+      const form = ref<Form>({
+        nested2: {
+          name: '',
+          definedName: '',
+        },
+      });
+
+      const { r$ } = useRegle(form, () => {
+        const variant = createVariant(() => form.value.nested2, 'type', [
+          { type: { literal: literal('TWO') }, twoValue: { numeric, required } },
+          { type: { literal: literal('ONE') }, oneValue: { numeric, required, minValue: minValue(4) } },
+          { type: { required } },
+        ]);
+
+        return {
+          nested2: {
+            name: { required },
+            ...variant.value,
+          },
+        };
+      });
+      return { r$ };
+    }
+    const { vm } = createRegleComponent(createNullableNestedVariantRegle);
+
+    if (narrowVariant(vm.r$.nested2, 'type', 'ONE')) {
+      expect(vm.r$.nested2.oneName).toBe(undefined);
+
+      expectTypeOf(vm.r$.nested2.$value.type).toEqualTypeOf<'ONE'>();
+      expectTypeOf(vm.r$.nested2.$value.oneValue).toEqualTypeOf<number | undefined>();
+
+      expectTypeOf(vm.r$.nested2.oneName).toEqualTypeOf<
+        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+      >();
+    }
+  });
+
   it('should invoke variantToRef directly', async () => {
     const { vm } = createRegleComponent(() => createRootVariantRegle('ONE'));
 
