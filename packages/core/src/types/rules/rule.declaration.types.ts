@@ -129,10 +129,12 @@ export type RegleRuleDecl<
 > = TOptions & {
   [TKey in keyof RemoveIndexSignature<TCustomRules>]?: NonNullable<TCustomRules[TKey]> extends RegleRuleDefinitionLight<
     infer TParams,
-    infer TAsync,
+    boolean,
     infer TMetadata
   >
-    ? RegleRuleDefinitionLight<TParams, boolean, TMetadata> | InlineRuleDeclaration<TValue, TParams, any>
+    ?
+        | RegleRuleDefinitionLight<[...TParams, ...unknown[]], boolean, TMetadata>
+        | InlineRuleDeclaration<TValue, [...TParams, ...unknown[]], any>
     : TCustomRules[TKey];
 } & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
 

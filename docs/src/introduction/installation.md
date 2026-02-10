@@ -7,7 +7,7 @@ title: Installation
 ## Prerequisites
 
 Required
-- [Vue](https://vuejs.org/) <span data-title="vue"></span>  `3.3+`.
+- [Vue](https://vuejs.org/) <span data-title="vue"></span>  `3.4+`.
 - [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span>  `5.1+`. 
   - Compatible with plain javascript.
 - Text Editor with Vue syntax support.
@@ -67,6 +67,9 @@ app.use(RegleVuePlugin); // <--
 
 app.mount('#app');
 ```
+
+You can provide options to the RegleVuePlugin to customize global config.
+See [Global configuration](/advanced-usage/global-config#declarative) for more details.
 
 
 ## MCP server

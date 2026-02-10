@@ -1,7 +1,6 @@
 import type { EmptyObject, Merge } from 'type-fest';
 import { merge } from '../../../shared';
 import type {
-  CustomRulesDeclarationTree,
   ExtendedRulesDeclarations,
   GlobalConfigOverrides,
   RegleBehaviourOptions,

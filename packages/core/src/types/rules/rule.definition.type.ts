@@ -31,7 +31,7 @@ export interface RegleRuleDefinition<
     RegleRuleDefinitionLight<TParams, TAsync, TMetaData> {
   validator: RegleRuleDefinitionProcessor<
     TFilteredValue,
-    [...TParams, ...any[]],
+    [...TParams, ...unknown[]],
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
   message: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
@@ -44,12 +44,12 @@ export interface RegleRuleDefinition<
 }
 
 export type RegleRuleDefinitionLight<
-  TParams extends any[] = [],
+  TParams extends [...unknown[]] = [],
   TAsync extends boolean = boolean,
   TMetaData extends RegleRuleMetadataDefinition = RegleRuleMetadataDefinition,
 > = {
   value: unknown;
-  params: [...TParams, ...unknown[]];
+  params: [...TParams];
   async: TAsync;
   metadata: TMetaData;
 };

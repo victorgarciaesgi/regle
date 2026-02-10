@@ -156,6 +156,9 @@ describe('useRegle should throw errors for invalid rule schema', () => {
       },
     }));
 
+    // @ts-expect-error Incompatible rule property ❌
+    useRegle({ name: '' }, { name: { minLength: required } });
+
     // @ts-expect-error Incorrect property ❌
     useRegle({ collection: [{ name: '' }] }, () => ({
       collection: {

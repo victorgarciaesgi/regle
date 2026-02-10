@@ -1,5 +1,5 @@
+import type { RegleRuleDefinition } from '@regle/core';
 import { sameAs } from '../sameAs';
-import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
 
 describe('sameAs validator', () => {
   it('should not validate different values', () => {
