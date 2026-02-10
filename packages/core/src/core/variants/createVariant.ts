@@ -131,10 +131,10 @@ export function narrowVariant<
     };
     $value: unknown;
   },
-  const TKey extends keyof TRoot,
+  const TKey extends keyof Omit<NonNullable<TRoot>, `$${string}` | `~${string}`>,
   const TValue extends LazyJoinDiscriminatedUnions<
     Exclude<
-      TRoot[TKey],
+      NonNullable<TRoot>[TKey],
       | RegleCollectionStatus<any, any, any>
       | RegleStatus<any, any, any>
       | NarrowVariantExtracts[keyof NarrowVariantExtracts]
@@ -146,9 +146,10 @@ export function narrowVariant<
   root: TRoot | undefined,
   discriminantKey: TKey,
   discriminantValue: TValue
-): root is NarrowVariant<TRoot, TKey, TValue> {
+): root is NarrowVariant<NonNullable<TRoot>, TKey, TValue> {
   return (
     !!root &&
+    discriminantKey in root &&
     isObject(root[discriminantKey]) &&
     '$value' in root[discriminantKey] &&
     root[discriminantKey]?.$value === discriminantValue

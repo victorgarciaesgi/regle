@@ -79,18 +79,24 @@ export type MaybeVariantStatus<
 > =
   IsUnion<NonNullable<TState>> extends true
     ? IsUnion<TRules> extends true
-      ? Omit<RegleStatus<TState, TRules, TShortcuts>, '$fields'> & {
-          $fields: ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<
-            TState,
+      ? Omit<RegleStatus<NonNullable<TState>, TRules, TShortcuts>, '$fields'> & {
+          $fields: ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts>[keyof ProcessChildrenFields<
+            NonNullable<TState>,
             TRules,
             TShortcuts
           >];
-        } & (HasNamedKeys<TState> extends true
-            ? ProcessChildrenFields<TState, TRules, TShortcuts>[keyof ProcessChildrenFields<TState, TRules, TShortcuts>]
+        } & (HasNamedKeys<NonNullable<TState>> extends true
+            ? ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts>[keyof ProcessChildrenFields<
+                NonNullable<TState>,
+                TRules,
+                TShortcuts
+              >]
             : {})
       : RegleStatus<
-          JoinDiscriminatedUnions<TState>,
-          TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<TState>>> ? TRules : EmptyObject,
+          JoinDiscriminatedUnions<NonNullable<TState>>,
+          TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<NonNullable<TState>>>>
+            ? TRules
+            : EmptyObject,
           TShortcuts
         >
     : RegleStatus<TState, TRules, TShortcuts>;
