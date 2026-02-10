@@ -44,13 +44,15 @@ export interface RegleRuleCore<
   TParams extends any[] = [],
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
+  TNonEmpty extends boolean = false,
 > {
   validator: (value: Maybe<TValue>, ...args: TParams) => TAsync extends false ? TMetadata : Promise<TMetadata>;
   message: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
-  active?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
+  active?: RegleInitPropertyGetter<TValue, boolean, TParams, TMetadata>;
   tooltip?: RegleInitPropertyGetter<TValue, string | string[], TParams, TMetadata>;
   type?: TType;
   async?: boolean;
+  required?: TNonEmpty;
 }
 
 /**

@@ -45,7 +45,8 @@ describe('refineRules', () => {
         false,
         boolean,
         MaybeInput<string>,
-        MaybeInput<string>
+        unknown,
+        false
       >;
     }>();
 
@@ -54,11 +55,12 @@ describe('refineRules', () => {
       minLength: RegleRuleDefinition<
         'minLength',
         string | any[] | Record<PropertyKey, any>,
-        [count: number, options?: CommonComparisonOptions | undefined],
+        [min: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         unknown,
-        string | any[] | Record<PropertyKey, any>
+        string | any[] | Record<PropertyKey, any>,
+        false
       >;
     }>();
 

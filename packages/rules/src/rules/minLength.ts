@@ -1,4 +1,4 @@
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
@@ -33,7 +33,8 @@ export const minLength: RegleRuleWithParamsDefinition<
   string | any[] | Record<PropertyKey, any>,
   [min: number, options?: CommonComparisonOptions],
   false,
-  boolean
+  boolean,
+  MaybeInput<string | any[] | Record<PropertyKey, any>>
 > = createLengthRule({
   type: 'minLength',
   direction: 'min',

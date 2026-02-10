@@ -5,5 +5,5 @@
     "paths": {}
   },
   "include": ["./**/*.ts"],
-  "exclude": ["./**/scoped-regle/**/*"]
+  "exclude": ["./**/scoped-regle/**/*", "./plugin-config-tests/**/*"]
 }

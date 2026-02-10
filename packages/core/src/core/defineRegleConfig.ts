@@ -1,7 +1,6 @@
-import type { Merge } from 'type-fest';
+import type { EmptyObject, Merge } from 'type-fest';
 import { merge } from '../../../shared';
 import type {
-  CustomRulesDeclarationTree,
   ExtendedRulesDeclarations,
   GlobalConfigOverrides,
   RegleBehaviourOptions,
@@ -9,9 +8,10 @@ import type {
 } from '../types';
 import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
+import type { DefaultValidators } from './defaultValidators';
 
 export interface GlobalConfigOptions<
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = CustomRulesDeclarationTree,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = EmptyObject,
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > {
   /**
@@ -115,8 +115,8 @@ export function defineRegleConfig<
   shortcuts,
   overrides,
 }: GlobalConfigOptions<TCustomRules, TShortcuts>): {
-  useRegle: useRegleFn<TCustomRules, TShortcuts>;
-  inferRules: inferRulesFn<TCustomRules>;
+  useRegle: useRegleFn<Omit<TCustomRules, keyof DefaultValidators>, TShortcuts>;
+  inferRules: inferRulesFn<Omit<TCustomRules, keyof DefaultValidators>>;
   useRules: useRulesFn<TCustomRules, TShortcuts>;
 } {
   const useRegle = createUseRegleComposable<TCustomRules, TShortcuts>({ rules, modifiers, shortcuts, overrides });
@@ -193,4 +193,29 @@ export function extendRegleConfig<
   const inferRules = createInferRuleHelper<TCustomRules>();
 
   return { useRegle: useRegle as any, inferRules };
+}
+
+/**
+ * Define a global Regle options to customize the validation behavior across your application.
+ * It's meant to be used with the Regle Vue plugin.
+ *
+ * @param options - Configuration options
+ * @returns The configuration options
+ *
+ * @example
+ * ```ts
+ * import { defineRegleOptions } from '@regle/core';
+ *
+ * const regleOptions = defineRegleOptions({
+ *   modifiers: {
+ *     lazy: true,
+ *     rewardEarly: true
+ *   }
+ * });
+ * ```
+ *
+ * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
+ */
+export function defineRegleOptions<T extends GlobalConfigOptions<any, RegleShortcutDefinition<any>>>(options: T): T {
+  return options;
 }

@@ -30,4 +30,5 @@ export const checked: RegleRuleDefinition<
     return value === true;
   },
   message: 'The field must be checked',
+  required: true,
 });

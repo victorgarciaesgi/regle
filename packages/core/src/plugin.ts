@@ -1,7 +1,8 @@
 import type { Plugin } from 'vue';
 import { version } from '../package.json';
 import { createDevtools } from './devtools/devtools';
-import { regleSymbol } from './constants';
+import { regleConfigSymbol, regleSymbol } from './constants';
+import type { GlobalConfigOptions } from './core/defineRegleConfig';
 
 /**
  * Vue plugin to enable Regle devtools integration with Vue Devtools.
@@ -26,8 +27,12 @@ import { regleSymbol } from './constants';
  * @see {@link https://reglejs.dev/introduction/devtools Documentation}
  */
 export const RegleVuePlugin: Plugin = {
-  install(app) {
+  install(app, options?: GlobalConfigOptions) {
     app.provide(regleSymbol, version);
+
+    if (options) {
+      app.provide(regleConfigSymbol, options);
+    }
 
     if (typeof window !== 'undefined' && __USE_DEVTOOLS__) {
       createDevtools(app);

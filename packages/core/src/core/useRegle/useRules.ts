@@ -85,16 +85,7 @@ export function createUseRulesComposable<
   TCustomRules extends Partial<ExtendedRulesDeclarations>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(options?: GlobalConfigOptions<TCustomRules, TShortcuts>): useRulesFn<TCustomRules, TShortcuts> {
-  const { rules: customRules, modifiers, shortcuts, overrides } = options ?? {};
-
-  const globalOptions: RegleBehaviourOptions = {
-    autoDirty: modifiers?.autoDirty,
-    lazy: modifiers?.lazy,
-    rewardEarly: modifiers?.rewardEarly,
-    silent: modifiers?.silent,
-    clearExternalErrorsOnChange: modifiers?.clearExternalErrorsOnChange,
-    immediateDirty: modifiers?.immediateDirty,
-  };
+  const { rules: customRules, modifiers = {}, shortcuts, overrides } = options ?? {};
 
   function useRules(
     rulesFactory: Record<string, any> | ((...args: any[]) => Record<string, any>) | ComputedRef<Record<string, any>>,
@@ -113,7 +104,7 @@ export function createUseRulesComposable<
       state: processedState,
       rulesFactory: definedRules,
       options,
-      globalOptions,
+      globalOptions: modifiers,
       customRules,
       shortcuts,
       overrides,

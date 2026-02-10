@@ -141,7 +141,7 @@ describe('withMessage helper', () => {
   it('should have correct types', () => {
     // Correct return type with a built-in rule
     expectTypeOf(withMessage(required, 'Required')).toEqualTypeOf<
-      RegleRuleDefinition<'required', unknown, [], false, boolean, unknown>
+      RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>
     >();
 
     // Correct return type with inline rule and metadata
@@ -305,7 +305,9 @@ describe('withMessage helper', () => {
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
-        string | any[] | Record<PropertyKey, any>
+        string | any[] | Record<PropertyKey, any>,
+        string | any[] | Record<PropertyKey, any>,
+        false
       >
     >();
 

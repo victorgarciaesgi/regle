@@ -44,14 +44,17 @@ export function withMessage<
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TInput extends unknown = unknown,
+  TFilteredValue = any,
+  TNonEmpty extends boolean = false,
 >(
-  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>;
 export function withMessage<
   TType extends string | unknown,
   TValue extends any,
@@ -59,14 +62,17 @@ export function withMessage<
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TInput extends unknown = unknown,
+  TFilteredValue = any,
+  TNonEmpty extends boolean = false,
 >(
-  rule: RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>,
+  rule: RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>;
+): RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>;
 export function withMessage<
   TValue extends any,
   TParams extends any[],
@@ -87,14 +93,19 @@ export function withMessage<
   TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = TReturn extends Promise<any> ? true : false,
+  TInput extends unknown = unknown,
+  TFilteredValue = any,
+  TNonEmpty extends boolean = false,
 >(
-  rule: (...args: any[]) => RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata>,
+  rule: (
+    ...args: any[]
+  ) => RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<
     TValue,
     RegleRuleMetadataConsumer<TValue, TParams, TMetadata>,
     string | string[]
   >
-): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata>;
+): RegleRuleWithParamsDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>;
 export function withMessage(
   rule: RegleRuleRaw<any, any, any, any> | InlineRuleDeclaration<any, any, any>,
   newMessage: RegleRuleDefinitionWithMetadataProcessor<any, RegleRuleMetadataConsumer<any, any[]>, string | string[]>

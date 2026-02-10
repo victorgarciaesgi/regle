@@ -1,5 +1,5 @@
 import type { ExtendedRulesDeclarations, Maybe, RegleRuleDecl } from '@regle/core';
-import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue';
+import { toValue, type MaybeRefOrGetter } from 'vue';
 import { isObject } from '../../../shared';
 import { applyIf } from './applyIf';
 

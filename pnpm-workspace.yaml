@@ -8,6 +8,7 @@ packages:
   - packages/mcp-server
   - packages-private/regle-playground
   - tests
+  - tests/regle-plugin-config-tests
   - docs
   - playground/vue3
   - playground/nuxt

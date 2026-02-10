@@ -35,7 +35,7 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "vue-tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",

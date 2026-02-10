@@ -1,4 +1,4 @@
-import type { EnumLike, Maybe, MaybeInput, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type { EnumLike, MaybeInput, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
 
 export interface CommonComparisonOptions {
   /**
@@ -16,6 +16,13 @@ export interface CommonAlphaOptions {
   allowSymbols?: boolean;
 }
 
+export interface UrlOptions {
+  /**
+   * Optional regex for validating the URL protocol
+   */
+  protocol?: RegExp;
+}
+
 export type DefaultValidators = {
   alpha: RegleRuleWithParamsDefinition<unknown, string, [options?: CommonAlphaOptions | undefined]>;
   alphaNum: RegleRuleWithParamsDefinition<unknown, string | number, [options?: CommonAlphaOptions | undefined]>;
@@ -28,15 +35,19 @@ export type DefaultValidators = {
     false,
     Record<string, unknown> | object
   >;
-  between: RegleRuleWithParamsDefinition<unknown, number, [min: Maybe<number>, max: Maybe<number>]>;
+  between: RegleRuleWithParamsDefinition<
+    unknown,
+    number,
+    [min: number, max: number, options?: CommonComparisonOptions]
+  >;
   boolean: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   checked: RegleRuleDefinition<unknown, boolean, [], false, boolean, boolean>;
-  contains: RegleRuleWithParamsDefinition<unknown, string, [part: Maybe<string>], false, boolean>;
+  contains: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
   date: RegleRuleDefinition<unknown, unknown, [], false, boolean, MaybeInput<Date>, unknown>;
   dateAfter: RegleRuleWithParamsDefinition<
     unknown,
     string | Date,
-    [after: Maybe<string | Date>, options?: CommonComparisonOptions],
+    [after: MaybeInput<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -51,7 +62,7 @@ export type DefaultValidators = {
   dateBefore: RegleRuleWithParamsDefinition<
     unknown,
     string | Date,
-    [before: Maybe<string | Date>, options?: CommonComparisonOptions],
+    [before: MaybeInput<string | Date>, options?: CommonComparisonOptions],
     false,
     | true
     | {
@@ -66,13 +77,13 @@ export type DefaultValidators = {
   dateBetween: RegleRuleWithParamsDefinition<
     unknown,
     string | Date,
-    [before: Maybe<string | Date>, after: Maybe<string | Date>, options?: CommonComparisonOptions],
+    [before: MaybeInput<string | Date>, after: MaybeInput<string | Date>, options?: CommonComparisonOptions],
     false,
     boolean
   >;
   decimal: RegleRuleDefinition<unknown, string | number, [], false, boolean, string | number>;
   email: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
-  endsWith: RegleRuleWithParamsDefinition<unknown, string, [part: Maybe<string>], false, boolean>;
+  endsWith: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
   exactLength: RegleRuleWithParamsDefinition<
     unknown,
     string | any[] | Record<PropertyKey, any>,
@@ -82,7 +93,7 @@ export type DefaultValidators = {
   >;
   exactValue: RegleRuleWithParamsDefinition<unknown, number, [count: number], false, boolean>;
   file: RegleRuleDefinition<unknown, unknown, [], false, boolean, MaybeInput<File>, unknown>;
-  fileType: RegleRuleWithParamsDefinition<unknown, unknown, [accept: string[]], false, boolean>;
+  fileType: RegleRuleWithParamsDefinition<unknown, File, [accept: readonly string[]], false, boolean>;
   hexadecimal: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
   integer: RegleRuleDefinition<unknown, string | number, [], false, boolean, string | number>;
   ipv4Address: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
@@ -100,7 +111,7 @@ export type DefaultValidators = {
   maxLength: RegleRuleWithParamsDefinition<
     unknown,
     string | any[] | Record<PropertyKey, any>,
-    [count: number, options?: CommonComparisonOptions],
+    [max: number, options?: CommonComparisonOptions],
     false,
     boolean
   >;
@@ -109,14 +120,18 @@ export type DefaultValidators = {
     unknown,
     [maxSize: number],
     false,
-    boolean,
+    | true
+    | {
+        $valid: boolean;
+        fileSize: number;
+      },
     MaybeInput<File>,
     unknown
   >;
   maxValue: RegleRuleWithParamsDefinition<
     unknown,
-    number,
-    [count: number, options?: CommonComparisonOptions],
+    number | string,
+    [max: number | string, options?: CommonComparisonOptions],
     false,
     boolean
   >;
@@ -125,21 +140,26 @@ export type DefaultValidators = {
     unknown,
     [minSize: number],
     false,
-    boolean,
+    | true
+    | {
+        $valid: boolean;
+        fileSize: number;
+      },
     MaybeInput<File>,
     unknown
   >;
   minLength: RegleRuleWithParamsDefinition<
     unknown,
     string | any[] | Record<PropertyKey, any>,
-    [count: number, options?: CommonComparisonOptions],
+    [min: number, options?: CommonComparisonOptions],
     false,
-    boolean
+    boolean,
+    string | any[] | Record<PropertyKey, any>
   >;
   minValue: RegleRuleWithParamsDefinition<
     unknown,
-    number,
-    [count: number, options?: CommonComparisonOptions],
+    number | string,
+    [min: number | string, options?: CommonComparisonOptions],
     false,
     boolean
   >;
@@ -147,11 +167,19 @@ export type DefaultValidators = {
   number: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   numeric: RegleRuleDefinition<unknown, string | number, [], false, boolean, string | number>;
   oneOf: RegleRuleDefinition<unknown, string | number, [options: (string | number)[]], false, boolean, string | number>;
-  regex: RegleRuleWithParamsDefinition<unknown, string, [regexp: RegExp], false, boolean>;
+  regex: RegleRuleWithParamsDefinition<unknown, string | number, [regexp: RegExp | RegExp[]], false, boolean>;
   required: RegleRuleDefinition<unknown, unknown, [], false, boolean, unknown, unknown, true>;
-  sameAs: RegleRuleWithParamsDefinition<unknown, unknown, [target: unknown, otherName?: string], false, boolean>;
+  sameAs: RegleRuleWithParamsDefinition<unknown, unknown, [target: any, otherName?: string], false, boolean>;
   string: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   type: RegleRuleDefinition<unknown, unknown, [], false, boolean, unknown, unknown>;
-  startsWith: RegleRuleWithParamsDefinition<unknown, string, [part: Maybe<string>], false, boolean>;
-  url: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
+  startsWith: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
+  url: RegleRuleWithParamsDefinition<
+    unknown,
+    string,
+    [options?: UrlOptions | undefined],
+    false,
+    boolean,
+    unknown,
+    string
+  >;
 };
