@@ -143,9 +143,7 @@ export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {
   /**
    * Allow you to customize the properties for every parent of a nested object
    */
-  nested?: ShortcutCommonFn<
-    RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules> & Partial<DefaultValidators>>>
-  >;
+  nested?: ShortcutCommonFn<RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules>>>>;
   /**
    * Allow you to customize the properties for every parent of a collection
    */

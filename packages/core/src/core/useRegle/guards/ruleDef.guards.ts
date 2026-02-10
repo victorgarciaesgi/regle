@@ -44,7 +44,7 @@ export function isRuleDef(
   return (isObject(rule) || typeof rule === 'function') && '_validator' in rule;
 }
 
-export function isFormRuleDefinition(rule: Ref<unknown>): rule is Ref<RegleRuleDefinition<any, any>> {
+export function isFormRuleDefinition(rule: Ref<unknown>): rule is Ref<RegleRuleDefinition<any, any, any, any>> {
   if (typeof rule.value === 'function') {
     if ('_validator' in rule.value) {
       return true;

@@ -10,6 +10,7 @@ import type {
   $InternalRegleResult,
   $InternalRegleSchemaCollectionErrors,
   CollectionRegleBehaviourOptions,
+  isEditedHandlerFn,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../../types';
@@ -408,7 +409,7 @@ export function createReactiveCollectionStatus({
         if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
         } else if (unref(options.rewardEarly) != null) {
-          return unref(options.rewardEarly);
+          return unref(options.rewardEarly) === true;
         }
         return false;
       });
@@ -419,7 +420,7 @@ export function createReactiveCollectionStatus({
         } else if ($localOptions.value.$silent != null) {
           return $localOptions.value.$silent;
         } else if (unref(options.silent) != null) {
-          return unref(options.silent);
+          return unref(options.silent) === true;
         } else return false;
       });
 
@@ -427,9 +428,27 @@ export function createReactiveCollectionStatus({
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
         } else if (unref(options.autoDirty) != null) {
-          return unref(options.autoDirty);
+          return unref(options.autoDirty) === true;
         }
         return true;
+      });
+
+      const $immediateDirty = computed<boolean>(() => {
+        if ($localOptions.value.$immediateDirty != null) {
+          return $localOptions.value.$immediateDirty;
+        } else if (unref(options.immediateDirty) != null) {
+          return unref(options.immediateDirty) === true;
+        }
+        return false;
+      });
+
+      const $isEdited = computed<isEditedHandlerFn<unknown> | undefined>(() => {
+        if ($localOptions.value.$isEdited != null) {
+          return $localOptions.value.$isEdited;
+        } else if (overrides?.isEdited != null) {
+          return overrides.isEdited;
+        }
+        return undefined;
       });
 
       const $name = computed<string>(() => fieldName ?? options.id ?? 'root');
@@ -437,11 +456,14 @@ export function createReactiveCollectionStatus({
       const $modifiers = computed<CollectionRegleBehaviourOptions>(() => {
         return {
           $deepCompare: $localOptions.value.$deepCompare ?? false,
+          $debounce: $localOptions.value.$debounce ?? 0,
           $lazy: $localOptions.value.$lazy ?? false,
           $rewardEarly: $rewardEarly.value,
           $autoDirty: $autoDirty.value,
           $silent: $silent.value,
           $clearExternalErrorsOnChange: $localOptions.value.$clearExternalErrorsOnChange ?? false,
+          $immediateDirty: $immediateDirty.value,
+          $isEdited: $isEdited.value,
         };
       });
 

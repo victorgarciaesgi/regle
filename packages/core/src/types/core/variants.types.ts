@@ -49,7 +49,7 @@ export type NarrowVariant<
       | RegleFieldStatus<TValue, any, any>
       | RegleFieldStatus<MaybeInput<TValue>, any, any>
       | (IsEmptyObject<NarrowVariantFieldExtracts<TValue>> extends true
-          ? EmptyObject
+          ? 'foo'
           : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
   }
 > & {
@@ -60,7 +60,7 @@ export type NarrowVariant<
         | RegleFieldStatus<TValue, any, any>
         | RegleFieldStatus<MaybeInput<TValue>, any, any>
         | (IsEmptyObject<NarrowVariantFieldExtracts<TValue>> extends true
-            ? EmptyObject
+            ? 'bar'
             : NarrowVariantFieldExtracts<TValue>[keyof NarrowVariantFieldExtracts<TValue>]);
     }
   > & {

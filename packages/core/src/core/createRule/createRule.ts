@@ -71,7 +71,7 @@ export function createRule<
   TNonEmpty extends boolean = false,
 >(
   definition: RegleRuleInit<TType, TValue, TParams, TReturn, TMetadata, TAsync, TNonEmpty>
-): InferRegleRule<TType, TValue, TParams, TAsync, TMetadata, TNonEmpty> {
+): InferRegleRule<TType, TValue, TParams, TAsync, TMetadata, TNonEmpty extends true ? true : false> {
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
     const isAsync = definition.async ?? definition.validator.constructor.name === 'AsyncFunction';

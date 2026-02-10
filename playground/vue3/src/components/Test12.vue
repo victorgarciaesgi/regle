@@ -1,18 +1,25 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRegle } from '@regle/core';
-  import { required, minLength, email } from '@regle/rules';
+  import { defineRegleConfig, useRegle } from '@regle/core';
+  import { required, minLength, email, withMessage } from '@regle/rules';
 
   const state = ref({ name: '', email: '' });
 
-  const { r$ } = useRegle(state, {
+  const externalErrors = ref({});
+
+  const { useRegle: useCustomRegle } = defineRegleConfig({
+    rules: () => ({
+      required: withMessage(required, 'Coucou 2'),
+    }),
+    modifiers: {
+      autoDirty: false,
+    },
+  });
+
+  const { r$ } = useCustomRegle(state, {
     name: { required, minLength: minLength(4) },
     email: { email },
   });
-
-  function updateName(value: string) {
-    const valid = r$.name.$validateSync();
-  }
 
   async function submit() {
     const { valid, data } = await r$.$validate();
@@ -42,7 +49,6 @@
           'is-invalid': r$.name.$error,
         }"
         aria-describedby="name-error"
-        @update:model-value="updateName"
       />
       <ul id="name-errors" class="invalid-feedback">
         <li v-for="error of r$.$errors.name" :key="error">

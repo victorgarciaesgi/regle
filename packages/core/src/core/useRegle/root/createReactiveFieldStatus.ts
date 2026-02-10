@@ -19,6 +19,7 @@ import type {
   $InternalRegleRuleStatus,
   CollectionRegleBehaviourOptions,
   FieldRegleBehaviourOptions,
+  isEditedHandlerFn,
   RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
@@ -254,7 +255,7 @@ export function createReactiveFieldStatus({
         if ($localOptions.value.$lazy != null) {
           return $localOptions.value.$lazy;
         } else if (unref(options.lazy) != null) {
-          return unref(options.lazy);
+          return unref(options.lazy) === true;
         }
         return false;
       });
@@ -263,25 +264,25 @@ export function createReactiveFieldStatus({
         if ($localOptions.value.$immediateDirty != null) {
           return $localOptions.value.$immediateDirty;
         } else if (unref(options.immediateDirty) != null) {
-          return unref(options.immediateDirty);
+          return unref(options.immediateDirty) === true;
         }
         return false;
       });
 
       const $rewardEarly = computed<boolean>(() => {
         if ($localOptions.value.$rewardEarly != null) {
-          return $localOptions.value.$rewardEarly;
+          return !!$localOptions.value.$rewardEarly;
         } else if (unref(options.rewardEarly) != null) {
-          return unref(options.rewardEarly);
+          return unref(options.rewardEarly) === true;
         }
         return false;
       });
 
       const $clearExternalErrorsOnChange = computed<boolean>(() => {
         if ($localOptions.value.$clearExternalErrorsOnChange != null) {
-          return $localOptions.value.$clearExternalErrorsOnChange;
+          return !!$localOptions.value.$clearExternalErrorsOnChange;
         } else if (unref(options.clearExternalErrorsOnChange) != null) {
-          return unref(options.clearExternalErrorsOnChange);
+          return unref(options.clearExternalErrorsOnChange) === true;
         } else if ($silent.value) {
           return false;
         }
@@ -294,17 +295,28 @@ export function createReactiveFieldStatus({
         } else if ($localOptions.value.$silent != null) {
           return $localOptions.value.$silent;
         } else if (unref(options.silent) != null) {
-          return unref(options.silent);
-        } else return false;
+          return unref(options.silent) === true;
+        } else {
+          return false;
+        }
       });
 
       const $autoDirty = computed<boolean>(() => {
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
         } else if (unref(options.autoDirty) != null) {
-          return unref(options.autoDirty);
+          return unref(options.autoDirty) === true;
         }
         return true;
+      });
+
+      const $isEdited = computed<isEditedHandlerFn<unknown> | undefined>(() => {
+        if ($localOptions.value.$isEdited != null) {
+          return $localOptions.value.$isEdited;
+        } else if (overrides?.isEdited != null) {
+          return overrides.isEdited;
+        }
+        return undefined;
       });
 
       const $validating = computed(() => {
@@ -380,10 +392,8 @@ export function createReactiveFieldStatus({
 
       watchEffect(() => {
         if ($dirty.value) {
-          if ($localOptions.value.$isEdited) {
-            $edited.value = $localOptions.value.$isEdited(state.value, initialState.value, isEditedHandler);
-          } else if (overrides?.isEdited) {
-            $edited.value = overrides.isEdited(state.value, initialState.value, isEditedHandler);
+          if ($isEdited.value) {
+            $edited.value = $isEdited.value(state.value, initialState.value, isEditedHandler);
           } else {
             $edited.value = isEditedHandler(state.value, initialState.value);
           }
@@ -466,6 +476,8 @@ export function createReactiveFieldStatus({
           $autoDirty: $autoDirty.value,
           $silent: $silent.value,
           $clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+          $immediateDirty: $immediateDirty.value,
+          $isEdited: $isEdited.value,
         };
       });
 
