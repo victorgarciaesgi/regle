@@ -1,7 +1,10 @@
+import { defineRegleConfig, useRegle, type RegleRuleDefinition, type MaybeInput } from '@regle/core';
 import { oneOf } from '../oneOf';
-import type { RegleRuleDefinition, MaybeInput } from '@regle/core';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('oneOf validator', () => {
+describe('oneOf exec', () => {
   it('should not validate invalid value', () => {
     expect(oneOf(['One', 'Two']).exec(5)).toBe(false);
   });
@@ -47,4 +50,55 @@ describe('oneOf validator', () => {
   expectTypeOf(oneOf(['One', 'Two'] as string[])).toEqualTypeOf<
     RegleRuleDefinition<'oneOf', string, [options: string[]], false, boolean, MaybeInput<string>, string | number>
   >();
+});
+
+describe('oneOf on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' as string | number }, { name: { oneOf: oneOf(['One', 'Two']) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'Three';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be one of the following: One, Two']);
+
+    vm.r$.name.$value = 'One';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'Three';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be one of the following: One, Two']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('oneOf on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          oneOf: withMessage(oneOf, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
+  });
 });

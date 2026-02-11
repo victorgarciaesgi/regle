@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { url } from '../url';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('url validator', () => {
+describe('url exec', () => {
   it('should validate empty string', () => {
     expect(url.exec('')).toBe(true);
   });
@@ -106,5 +110,56 @@ describe('url validator', () => {
     expect(url({ protocol: /^ftp$/ }).exec('https://example.com')).toBe(false);
     expect(url({ protocol: /^ftp$/ }).exec('ftp://example.com')).toBe(true);
     expect(url({ protocol: /^ftp$/ }).exec('mailto:test@example.com')).toBe(false);
+  });
+});
+
+describe('url on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { url } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'notaurl';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be a valid URL']);
+
+    vm.r$.name.$value = 'http://example.com';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'notaurl';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be a valid URL']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('url on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          url: withMessage(url, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

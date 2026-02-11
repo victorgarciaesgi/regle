@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { required } from '../required';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('required validator', () => {
+describe('required exec', () => {
   it('should not validate empty string', () => {
     expect(required.exec('')).toBe(false);
   });
@@ -59,5 +63,56 @@ describe('required validator', () => {
 
   it('should not validate invalid date', () => {
     expect(required.exec(new Date('a'))).toBe(false);
+  });
+});
+
+describe('required on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { required } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'hello';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+
+    vm.r$.name.$value = 'hello';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+
+    vm.r$.name.$value = 'hello';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+  });
+});
+
+describe('required on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          required: withMessage(required, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

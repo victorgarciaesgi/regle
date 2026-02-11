@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { minValue } from '../minValue';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('minValue validator', () => {
+describe('minValue exec', () => {
   it('should validate min number', () => {
     expect(minValue(5).exec(5)).toBe(true);
   });
@@ -33,5 +37,51 @@ describe('minValue validator', () => {
   it('should skip with NaN values', () => {
     expect(minValue('ezfzef').exec(5)).toBe(true);
     expect(minValue(5).exec('ezfmjze')).toBe(true);
+  });
+});
+
+describe('minValue on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ count: 0 }, { count: { minValue: minValue(5) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.count.$value = 3;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(true);
+    expect(vm.r$.count.$errors).toStrictEqual(['The value must be greater than or equal to 5']);
+
+    vm.r$.count.$value = 6;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+
+    vm.r$.count.$value = undefined;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+
+    vm.r$.count.$value = 3;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(true);
+    expect(vm.r$.count.$errors).toStrictEqual(['The value must be greater than or equal to 5']);
+
+    vm.r$.count.$value = null as any;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+  });
+});
+
+describe('minValue on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          minValue: withMessage(minValue, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

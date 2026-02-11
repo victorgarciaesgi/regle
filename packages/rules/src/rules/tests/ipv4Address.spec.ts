@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { ipv4Address } from '../ipv4Address';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('ipv4Address validator', () => {
+describe('ipv4Address exec', () => {
   it('should validate undefined', () => {
     expect(ipv4Address.exec(undefined)).toBe(true);
   });
@@ -63,5 +67,56 @@ describe('ipv4Address validator', () => {
 
   it('should not validate masks', () => {
     expect(ipv4Address.exec('10.0.0.1/24')).toBe(false);
+  });
+});
+
+describe('ipv4Address on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { ipv4Address } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = '999.999.999.999';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value is not a valid IPv4 address']);
+
+    vm.r$.name.$value = '127.0.0.1';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = '999.999.999.999';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value is not a valid IPv4 address']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('ipv4Address on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          ipv4Address: withMessage(ipv4Address, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

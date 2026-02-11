@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { hexadecimal } from '../hexadecimal';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('hexadecimal validator', () => {
+describe('hexadecimal exec', () => {
   it('should validate undefined', () => {
     expect(hexadecimal.exec(undefined)).toBe(true);
   });
@@ -44,5 +48,56 @@ describe('hexadecimal validator', () => {
   it('should validate hexadecimal values', () => {
     expect(hexadecimal.exec('ABCDEF')).toBe(true);
     expect(hexadecimal.exec('c0ffee03')).toBe(true);
+  });
+});
+
+describe('hexadecimal on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { hexadecimal } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'xyz';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be hexadecimal']);
+
+    vm.r$.name.$value = 'c0ffee';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'xyz';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be hexadecimal']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('hexadecimal on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          hexadecimal: withMessage(hexadecimal, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

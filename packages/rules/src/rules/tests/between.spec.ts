@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { between } from '../between';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('between validator', () => {
+describe('between exec', () => {
   it('should validate empty string', () => {
     expect(between(2, 3).exec(2)).toBe(true);
   });
@@ -79,5 +83,51 @@ describe('between validator', () => {
   it('should skip non numbers', () => {
     expect(between(3, 16).exec('hello' as any)).toBe(true);
     expect(between(3, 16).exec({ hello: 'world' } as any)).toBe(true);
+  });
+});
+
+describe('between on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ count: 0 }, { count: { between: between(5, 10) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.count.$value = 3;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(true);
+    expect(vm.r$.count.$errors).toStrictEqual(['The value must be between 5 and 10']);
+
+    vm.r$.count.$value = 7;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+
+    vm.r$.count.$value = undefined;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+
+    vm.r$.count.$value = 3;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(true);
+    expect(vm.r$.count.$errors).toStrictEqual(['The value must be between 5 and 10']);
+
+    vm.r$.count.$value = null as any;
+    await nextTick();
+    expect(vm.r$.count.$error).toBe(false);
+    expect(vm.r$.count.$errors).toStrictEqual([]);
+  });
+});
+
+describe('between on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          between: withMessage(between, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

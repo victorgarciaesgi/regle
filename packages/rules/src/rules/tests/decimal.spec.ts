@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { decimal } from '../decimal';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('decimal validator', () => {
+describe('decimal exec', () => {
   it('should validate undefined', () => {
     expect(decimal.exec(undefined)).toBe(true);
   });
@@ -65,5 +69,56 @@ describe('decimal validator', () => {
 
   it('should not validate decimal numbers without trailing digits', () => {
     expect(decimal.exec('1.')).toBe(false);
+  });
+});
+
+describe('decimal on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { decimal } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'abc';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be decimal']);
+
+    vm.r$.name.$value = '123.45';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'abc';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must be decimal']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('decimal on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          decimal: withMessage(decimal, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });
