@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { exactDigits } from '../exactDigits';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 
-describe('exactDigits validator', () => {
+describe('exactDigits exec', () => {
   it('should validate empty string', () => {
     expect(exactDigits(5).exec('')).toBe(true);
   });
@@ -84,5 +88,56 @@ describe('exactDigits validator', () => {
 
   it('should not validate digits when count is 0', () => {
     expect(exactDigits(0).exec('1')).toBe(false);
+  });
+});
+
+describe('exactDigits on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { exactDigits: exactDigits(5) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = '123';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value should have exactly 5 digits']);
+
+    vm.r$.name.$value = '12345';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = '123';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value should have exactly 5 digits']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('exactDigits on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          exactDigits: withMessage(exactDigits, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

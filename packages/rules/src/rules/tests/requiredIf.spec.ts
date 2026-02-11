@@ -1,7 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { requiredIf } from '../requiredIf';
-import { ref } from 'vue';
+import { createRegleComponent } from './utils';
+import { nextTick, ref } from 'vue';
+import { withMessage } from '../..';
 
-describe('requiredIf validator', () => {
+describe('requiredIf exec', () => {
   it('should not validate empty string when functional condition is met', () => {
     expect(requiredIf(true).exec('')).toBe(false);
   });
@@ -31,5 +34,51 @@ describe('requiredIf validator', () => {
     prop.value = true;
     expect(requiredIf(prop).exec('')).toBe(false);
     expect(requiredIf(prop).exec('1')).toBe(true);
+  });
+});
+
+describe('requiredIf on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      const condition = ref(true);
+      return {
+        ...useRegle({ name: '' }, { name: { requiredIf: requiredIf(condition) } }),
+        condition,
+      };
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$touch();
+
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+
+    vm.r$.name.$value = 'hello';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+
+    vm.condition = false;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('requiredIf on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          requiredIf: withMessage(requiredIf, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

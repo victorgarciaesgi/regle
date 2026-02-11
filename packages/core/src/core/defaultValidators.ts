@@ -103,7 +103,7 @@ export type DefaultValidators = {
     [literal: string | number],
     false,
     boolean,
-    string | number,
+    MaybeInput<string | number>,
     string | number,
     true
   >;

@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
+import { withMessage } from '../..';
 import { macAddress } from '../macAddress';
 
-describe('macAddress validator', () => {
+describe('macAddress exec', () => {
   it('should validate undefined', () => {
     expect(macAddress().exec(undefined)).toBe(true);
   });
@@ -99,5 +103,56 @@ describe('macAddress validator', () => {
 
   it('should not validate too long mac with empty separator', () => {
     expect(macAddress('').exec('00000000000000000')).toBe(false);
+  });
+});
+
+describe('macAddress on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { macAddress } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'not-a-mac';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value is not a valid MAC Address']);
+
+    vm.r$.name.$value = '00:00:00:00:00:00';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = undefined;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'not-a-mac';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value is not a valid MAC Address']);
+
+    vm.r$.name.$value = '';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = null as any;
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('macAddress on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          macAddress: withMessage(macAddress, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });

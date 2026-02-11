@@ -25,13 +25,13 @@ import { isFilled, matchRegex } from '../helpers';
 export const regex: RegleRuleWithParamsDefinition<
   'regex',
   string | number,
-  [regexp: RegExp | RegExp[]],
+  [regexp: RegExp | readonly RegExp[]],
   false,
   boolean,
   MaybeInput<string | number>
 > = createRule({
   type: 'regex',
-  validator(value: MaybeInput<string | number>, regexp: RegExp | RegExp[]) {
+  validator(value: MaybeInput<string | number>, regexp: RegExp | readonly RegExp[]) {
     if (isFilled(value)) {
       const filteredRegexp = Array.isArray(regexp) ? regexp : [regexp];
       return matchRegex(value, ...filteredRegexp);

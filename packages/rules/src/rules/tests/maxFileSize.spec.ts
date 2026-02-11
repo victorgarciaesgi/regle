@@ -1,6 +1,10 @@
+import { defineRegleConfig, useRegle } from '@regle/core';
 import { maxFileSize } from '../maxFileSize';
+import { withMessage } from '../..';
+import { createRegleComponent } from './utils';
+import { nextTick } from 'vue';
 
-describe('maxFileSize validator', () => {
+describe('maxFileSize exec', () => {
   it('should not validate undefined values', () => {
     expect(maxFileSize(1000).exec(null)).toBe(true);
     expect(maxFileSize(1000).exec(undefined)).toBe(true);
@@ -38,5 +42,33 @@ describe('maxFileSize validator', () => {
     expect(maxFileSize(1000).exec('string' as any)).toBe(true);
     expect(maxFileSize(1000).exec({ size: 500 } as any)).toBe(true);
     expect(maxFileSize(1000).exec([1, 2, 3] as any)).toBe(true);
+  });
+});
+
+describe('maxFileSize on useRegle', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle({ file: null as File | null }, { file: { maxFileSize: maxFileSize(1000) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.file.$touch();
+
+    vm.r$.file.$value = new File([new ArrayBuffer(2000)], 'test.txt');
+    await nextTick();
+    expect(vm.r$.file.$error).toBe(true);
+    expect(vm.r$.file.$errors).toStrictEqual(['File size (1.95 kb) cannot exceed 1000 bytes']);
+  });
+});
+
+describe('maxFileSize on defineRegleConfig', () => {
+  it('should work with defineRegleConfig', async () => {
+    expect(() =>
+      defineRegleConfig({
+        rules: () => ({
+          maxFileSize: withMessage(maxFileSize, 'New message'),
+        }),
+      })
+    ).not.toThrowError();
   });
 });
