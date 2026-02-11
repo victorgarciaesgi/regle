@@ -1,14 +1,14 @@
 import { type ComputedRef, type MaybeRef } from 'vue';
 import type {
-  ExtendedRulesDeclarations,
   DeepReactiveState,
   DefaultValidatorsTree,
+  ExtendedRulesDeclarationsOverrides,
   ReglePartialRuleTree,
   RegleRuleDecl,
 } from '../../types';
 import type { Maybe, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
 
-export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarations>> {
+export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>> {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
     TRules extends ReglePartialRuleTree<
@@ -27,7 +27,7 @@ export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarat
 }
 
 export function createInferRuleHelper<
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
 >(): inferRulesFn<TCustomRules> {
   function inferRules(
     state: Record<string, any>,

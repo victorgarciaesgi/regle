@@ -4,6 +4,7 @@ import { computed, isRef, ref } from 'vue';
 import { isEmpty, isObject } from '../../../../shared';
 import type {
   ExtendedRulesDeclarations,
+  ExtendedRulesDeclarationsOverrides,
   LocalRegleBehaviourOptions,
   RegleBehaviourOptions,
   RegleFieldStatus,
@@ -56,7 +57,7 @@ export type useRulesFnOptions<
   >;
 
 export interface useRulesFn<
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > {
   <
@@ -82,7 +83,7 @@ export interface useRulesFn<
 }
 
 export function createUseRulesComposable<
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(options?: GlobalConfigOptions<TCustomRules, TShortcuts>): useRulesFn<TCustomRules, TShortcuts> {
   const { rules: customRules, modifiers = {}, shortcuts, overrides } = options ?? {};

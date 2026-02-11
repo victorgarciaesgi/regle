@@ -1,17 +1,17 @@
 import type { EmptyObject, Merge } from 'type-fest';
 import { merge } from '../../../shared';
 import type {
-  ExtendedRulesDeclarations,
+  ExtendedRulesDeclarationsOverrides,
   GlobalConfigOverrides,
   RegleBehaviourOptions,
   RegleShortcutDefinition,
 } from '../types';
+import type { DefaultValidators } from './defaultValidators';
 import { createUseRegleComposable, createUseRulesComposable, type useRegleFn, type useRulesFn } from './useRegle';
 import { createInferRuleHelper, type inferRulesFn } from './useRegle/inferRules';
-import type { DefaultValidators } from './defaultValidators';
 
 export interface GlobalConfigOptions<
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = EmptyObject,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides> = EmptyObject,
   TShortcuts extends RegleShortcutDefinition<any> = never,
 > {
   /**
@@ -108,7 +108,7 @@ export interface GlobalConfigOptions<
  */
 export function defineRegleConfig<
   TShortcuts extends RegleShortcutDefinition<TCustomRules>,
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
 >({
   rules,
   modifiers,
@@ -157,10 +157,10 @@ export function defineRegleConfig<
  * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
  */
 export function extendRegleConfig<
-  TRootCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TRootCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TRootShortcuts extends RegleShortcutDefinition<{}>,
   TShortcuts extends RegleShortcutDefinition<Merge<TRootCustomRules, TCustomRules>>,
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
 >(
   regle: useRegleFn<TRootCustomRules, TRootShortcuts>,
   { rules, modifiers, shortcuts, overrides }: GlobalConfigOptions<TCustomRules, TShortcuts>
@@ -216,6 +216,8 @@ export function extendRegleConfig<
  *
  * @see {@link https://reglejs.dev/advanced-usage/global-config Documentation}
  */
-export function defineRegleOptions<T extends GlobalConfigOptions<any, RegleShortcutDefinition<any>>>(options: T): T {
+export function defineRegleOptions<
+  T extends GlobalConfigOptions<Partial<ExtendedRulesDeclarationsOverrides>, RegleShortcutDefinition<any>>,
+>(options: T): T {
   return options;
 }

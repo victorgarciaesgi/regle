@@ -6,7 +6,11 @@ export type CustomRulesDeclarationTree = {
 };
 
 export type DefaultValidatorsTree = {
-  [K in keyof DefaultValidators]: DefaultValidators[K] | undefined;
+  [K in keyof DefaultValidators]: DefaultValidators[K] extends (...args: any[]) => infer U ? U : DefaultValidators[K];
+};
+
+export type DefaultValidatorsTreeOverrides = {
+  [K in keyof DefaultValidators]: DefaultValidators[K] | ((...args: any[]) => DefaultValidators[K]);
 };
 
 /**
@@ -15,6 +19,9 @@ export type DefaultValidatorsTree = {
 export interface CustomRules {}
 
 export type ExtendedRulesDeclarations = CustomRulesDeclarationTree & DefaultValidatorsTree & CustomRules;
+export type ExtendedRulesDeclarationsOverrides = CustomRulesDeclarationTree &
+  DefaultValidatorsTreeOverrides &
+  CustomRules;
 
 /** @deprecated Use {@link ExtendedRulesDeclarations} instead */
 export type AllRulesDeclarations = ExtendedRulesDeclarations;

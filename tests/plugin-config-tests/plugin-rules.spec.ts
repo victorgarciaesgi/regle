@@ -1,5 +1,18 @@
 import { createRule, defineRegleOptions, RegleVuePlugin, useRegle, type Maybe } from '@regle/core';
-import { and, applyIf, isFilled, minValue, not, or, required, sameAs, withMessage } from '@regle/rules';
+import {
+  and,
+  applyIf,
+  isFilled,
+  maxFileSize,
+  minFileSize,
+  minValue,
+  not,
+  oneOf,
+  or,
+  required,
+  sameAs,
+  withMessage,
+} from '@regle/rules';
 import { mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 
@@ -36,6 +49,9 @@ declare module '@regle/core' {
 const options = defineRegleOptions({
   rules: () => ({
     minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
+    oneOf: withMessage(oneOf, ({ $params: [options] }) => `Patched options:${options}`),
+    minFileSize: withMessage(minFileSize, ({ $params: [min] }) => `Patched min:${min}`),
+    maxFileSize: withMessage(maxFileSize, ({ $params: [max] }) => `Patched max:${max}`),
     sameAs: withMessage(sameAs, ({ $params: [_, otherName] }) => {
       return `Not same as ${otherName}`;
     }),

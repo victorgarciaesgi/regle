@@ -4,10 +4,10 @@ import { type DeepMaybeRef, type LocalRegleBehaviourOptions, type RegleBehaviour
 import { cloneDeep, isObject } from '../../../../shared';
 import type {
   $InternalReglePartialRuleTree,
-  ExtendedRulesDeclarations,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
   GlobalConfigOverrides,
+  ExtendedRulesDeclarationsOverrides,
 } from '../../types';
 import type { PrimitiveTypes } from '../../types/utils';
 import { tryOnScopeDispose } from '../../utils';
@@ -20,7 +20,7 @@ interface RootRegleOptions {
   options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
     LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, any>;
   globalOptions: RegleBehaviourOptions;
-  customRules?: () => Partial<ExtendedRulesDeclarations>;
+  customRules?: () => Partial<ExtendedRulesDeclarationsOverrides>;
   shortcuts?: RegleShortcutDefinition | undefined;
   overrides: GlobalConfigOverrides | undefined;
 }

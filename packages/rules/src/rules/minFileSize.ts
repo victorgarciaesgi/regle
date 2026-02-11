@@ -32,7 +32,7 @@ export const minFileSize: RegleRuleWithParamsDefinition<
       $valid: boolean;
       fileSize: number;
     },
-  unknown,
+  MaybeInput<File>,
   File
 > = createRule({
   type: 'minFileSize',

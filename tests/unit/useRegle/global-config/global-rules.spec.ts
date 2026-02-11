@@ -1,5 +1,17 @@
 import { defineRegleConfig, extendRegleConfig, type Maybe } from '@regle/core';
-import { and, applyIf, minValue, not, or, required, sameAs, withMessage } from '@regle/rules';
+import {
+  and,
+  applyIf,
+  maxFileSize,
+  minFileSize,
+  minValue,
+  not,
+  oneOf,
+  or,
+  required,
+  sameAs,
+  withMessage,
+} from '@regle/rules';
 import { ref } from 'vue';
 import { ruleMockIsEven, ruleMockMetadata } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -7,6 +19,9 @@ import { createRegleComponent } from '../../../utils/test.utils';
 const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
     minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
+    minFileSize: withMessage(minFileSize, ({ $params: [min] }) => `Patched min:${min}`),
+    maxFileSize: withMessage(maxFileSize, ({ $params: [max] }) => `Patched max:${max}`),
+    oneOf: withMessage(oneOf, ({ $params: [options] }) => `Patched options:${options}`),
     sameAs: withMessage(sameAs, ({ $params: [_, otherName] }) => {
       return `Not same as ${otherName}`;
     }),

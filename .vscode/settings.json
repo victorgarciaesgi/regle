@@ -7,5 +7,26 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "typescript.experimental.useTsgo": false
+  "typescript.experimental.useTsgo": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
 }
