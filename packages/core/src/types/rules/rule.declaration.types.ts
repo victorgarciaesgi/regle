@@ -20,7 +20,7 @@ import type {
   RegleRuleMetadataDefinition,
   RegleRuleWithParamsDefinitionInput,
 } from './rule.definition.type';
-import type { UnwrapRegleUniversalParams } from './rule.params.types';
+import type { ParamsToLooseParams, UnwrapRegleUniversalParams } from './rule.params.types';
 import type { $InternalRegleFieldStatus } from './rule.status.types';
 import type { IsAny } from 'type-fest';
 
@@ -133,8 +133,8 @@ export type RegleRuleDecl<
     infer TMetadata
   >
     ?
-        | RegleRuleDefinitionLight<[...TParams, ...unknown[]], boolean, TMetadata>
-        | InlineRuleDeclaration<TValue, [...TParams, ...unknown[]], any>
+        | RegleRuleDefinitionLight<ParamsToLooseParams<TParams>, boolean, TMetadata>
+        | InlineRuleDeclaration<TValue, ParamsToLooseParams<TParams>, any>
     : TCustomRules[TKey];
 } & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
 

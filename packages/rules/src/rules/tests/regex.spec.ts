@@ -1,7 +1,7 @@
 import { defineRegleConfig, useRegle } from '@regle/core';
 import { createRegleComponent } from './utils';
 import { nextTick } from 'vue';
-import { withMessage } from '../..';
+import { applyIf, withMessage } from '../..';
 import { regex } from '../regex';
 
 describe('regex exec', () => {
@@ -53,6 +53,31 @@ describe('regex on useRegle', () => {
     await nextTick();
     expect(vm.r$.name.$error).toBe(false);
     expect(vm.r$.name.$errors).toStrictEqual([]);
+  });
+});
+
+describe('regex on useRegle with multiple patterns', () => {
+  it('should work with useRegle', async () => {
+    function formComponent() {
+      return useRegle(
+        { name: '', foo: '' },
+        {
+          name: { regex: regex([/[a-z]+$/, /\d{3}/]) },
+          foo: { regex: applyIf(() => true, regex([/[a-z]+$/, /\d{3}/])) },
+        }
+      );
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'a123b';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
+
+    vm.r$.name.$value = 'abdcde';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['The value must match the required pattern']);
   });
 });
 

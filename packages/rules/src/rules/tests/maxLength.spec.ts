@@ -2,7 +2,7 @@ import { defineRegleConfig, useRegle } from '@regle/core';
 import { maxLength } from '../maxLength';
 import { createRegleComponent } from './utils';
 import { nextTick } from 'vue';
-import { withMessage } from '../..';
+import { applyIf, withMessage } from '../..';
 
 describe('maxLength exec', () => {
   it('should validate empty string', () => {
@@ -81,7 +81,10 @@ describe('maxLength exec', () => {
 describe('maxLength on useRegle', () => {
   it('should work with useRegle', async () => {
     function formComponent() {
-      return useRegle({ name: '' }, { name: { maxLength: maxLength(5) } });
+      return useRegle(
+        { name: '', foo: '' },
+        { name: { maxLength: maxLength(5) }, foo: { maxLength: applyIf(() => true, maxLength(5)) } }
+      );
     }
     const { vm } = createRegleComponent(formComponent);
 

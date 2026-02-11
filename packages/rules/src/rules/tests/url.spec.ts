@@ -2,7 +2,7 @@ import { defineRegleConfig, useRegle } from '@regle/core';
 import { url } from '../url';
 import { createRegleComponent } from './utils';
 import { nextTick } from 'vue';
-import { withMessage } from '../..';
+import { applyIf, withMessage } from '../..';
 
 describe('url exec', () => {
   it('should validate empty string', () => {
@@ -116,7 +116,7 @@ describe('url exec', () => {
 describe('url on useRegle', () => {
   it('should work with useRegle', async () => {
     function formComponent() {
-      return useRegle({ name: '' }, { name: { url } });
+      return useRegle({ name: '', foo: '' }, { name: { url }, foo: { url: applyIf(() => true, url) } });
     }
     const { vm } = createRegleComponent(formComponent);
 
