@@ -1,5 +1,5 @@
 import { computed, getCurrentInstance, onMounted, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { ExtendedRulesDeclarations, Regle, ScopedInstancesRecord } from '../../types';
+import type { ExtendedRulesDeclarationsOverrides, Regle, ScopedInstancesRecord } from '../../types';
 import { randomId, tryOnScopeDispose } from '../../utils';
 import { useRegle, type useRegleFn } from '../useRegle';
 import type { RequireAtLeastOne } from 'type-fest';
@@ -20,7 +20,7 @@ export type UseScopedRegleOptions<TAsRecord extends boolean> = {
   : {});
 
 export function createUseScopedRegleComposable<
-  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarations>>,
+  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarationsOverrides>>,
 >(
   instances: Ref<ScopedInstancesRecord>,
   customUseRegle?: TCustomRegle

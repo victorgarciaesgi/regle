@@ -1,5 +1,5 @@
 import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
-import type { ExtendedRulesDeclarations, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
+import type { ExtendedRulesDeclarationsOverrides, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
@@ -53,12 +53,12 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
  * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
  */
 export function createScopedUseRegle<
-  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarations>>,
+  TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarationsOverrides>>,
   TAsRecord extends boolean = false,
   TReturnedRegle extends useRegleFn<any, any, any, any> = TCustomRegle extends useRegleFn<infer A, infer B>
     ? useRegleFn<A, B, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>
     : useRegleFn<
-        Partial<ExtendedRulesDeclarations>,
+        Partial<ExtendedRulesDeclarationsOverrides>,
         any,
         { dispose: () => void; register: () => void },
         UseScopedRegleOptions<TAsRecord>
@@ -158,7 +158,7 @@ const useCollectScope: <TValue extends Record<string, unknown>[] = Record<string
  * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
  */
 const useScopedRegle: useRegleFn<
-  Partial<ExtendedRulesDeclarations>,
+  Partial<ExtendedRulesDeclarationsOverrides>,
   never,
   {
     dispose: () => void;

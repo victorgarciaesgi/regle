@@ -117,7 +117,7 @@ export type DefaultValidators = {
   >;
   maxFileSize: RegleRuleWithParamsDefinition<
     unknown,
-    unknown,
+    File,
     [maxSize: number],
     false,
     | true
@@ -126,7 +126,7 @@ export type DefaultValidators = {
         fileSize: number;
       },
     MaybeInput<File>,
-    unknown
+    File
   >;
   maxValue: RegleRuleWithParamsDefinition<
     unknown,
@@ -137,7 +137,7 @@ export type DefaultValidators = {
   >;
   minFileSize: RegleRuleWithParamsDefinition<
     unknown,
-    unknown,
+    File,
     [minSize: number],
     false,
     | true
@@ -146,7 +146,7 @@ export type DefaultValidators = {
         fileSize: number;
       },
     MaybeInput<File>,
-    unknown
+    File
   >;
   minLength: RegleRuleWithParamsDefinition<
     unknown,
@@ -166,8 +166,16 @@ export type DefaultValidators = {
   nativeEnum: RegleRuleDefinition<unknown, string | number, [enumLike: EnumLike], false, boolean, string | number>;
   number: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   numeric: RegleRuleDefinition<unknown, string | number, [], false, boolean, string | number>;
-  oneOf: RegleRuleDefinition<unknown, string | number, [options: (string | number)[]], false, boolean, string | number>;
-  regex: RegleRuleWithParamsDefinition<unknown, string | number, [regexp: RegExp | RegExp[]], false, boolean>;
+  oneOf: RegleRuleDefinition<
+    unknown,
+    string | number,
+    [options: readonly [string | number, ...(string | number)[]]],
+    false,
+    boolean,
+    MaybeInput<string | number>,
+    string | number
+  >;
+  regex: RegleRuleWithParamsDefinition<unknown, string | number, [regexp: RegExp | readonly RegExp[]], false, boolean>;
   required: RegleRuleDefinition<unknown, unknown, [], false, boolean, unknown, unknown, true>;
   sameAs: RegleRuleWithParamsDefinition<unknown, unknown, [target: any, otherName?: string], false, boolean>;
   string: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;

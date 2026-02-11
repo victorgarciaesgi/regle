@@ -5,6 +5,7 @@ import type {
   DeepReactiveState,
   DefaultValidatorsTree,
   ExtendedRulesDeclarations,
+  ExtendedRulesDeclarationsOverrides,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
@@ -42,7 +43,7 @@ export type useRegleFnOptions<
     : Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions;
 
 export interface useRegleFn<
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TShortcuts extends RegleShortcutDefinition<any> = never,
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
@@ -82,7 +83,7 @@ export interface useRegleFn<
 }
 
 export function createUseRegleComposable<
-  TCustomRules extends Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(options?: GlobalConfigOptions<TCustomRules, TShortcuts>): useRegleFn<TCustomRules, TShortcuts> {
   const { rules: customRules, modifiers = {}, shortcuts, overrides } = options ?? {};
