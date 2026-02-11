@@ -1,5 +1,5 @@
-import type { Maybe } from '../utils';
 import type { MaybeRefOrGetter } from 'vue';
+import type { Maybe } from '../utils';
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 
@@ -31,3 +31,18 @@ export type UnwrapRegleUniversalParams<T extends MaybeRefOrGetter[] = [], F = Cr
           ) => any
         : never
     >;
+
+/**
+ * Transform a tuple of parameters to a tuple of parameters and loose parameters
+ *
+ * [foo: string, bar?: number] => [foo: string, bar?: number, ...unknown[]]
+ *
+ * @param TParams - The tuple of parameters
+ * @param TLoose - The tuple of loose parameters
+ * @returns The tuple of parameters and loose parameters
+ */
+export type ParamsToLooseParams<TParams extends any[], TLoose extends unknown[] = unknown[]> = TParams extends []
+  ? [...TLoose]
+  : TParams extends [infer TFirst, ...infer TRest]
+    ? [TFirst, ...TRest, ...TLoose]
+    : [...TParams, ...TLoose];

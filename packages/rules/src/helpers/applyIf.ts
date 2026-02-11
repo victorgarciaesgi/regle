@@ -2,6 +2,7 @@ import type {
   FormRuleDeclaration,
   InlineRuleDeclaration,
   Maybe,
+  ParamsToLooseParams,
   RegleRuleDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinitionInput,
@@ -48,20 +49,30 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
   ? RegleRuleDefinition<
       'applyIf',
       TValue,
-      [...TParams, condition: boolean],
+      ParamsToLooseParams<TParams, [condition: boolean]>,
       TReturn extends Promise<any> ? true : false,
       TReturn extends Promise<infer M> ? M : TReturn
     >
-  : TRule extends RegleRuleWithParamsDefinitionInput<
+  : TRule extends RegleRuleDefinition<
         infer TType,
         infer TValue,
         infer TParams,
         infer TAsync,
-        infer TMetadata
+        infer TMetadata,
+        any,
+        any,
+        any
       >
-    ? RegleRuleDefinition<TType, TValue, [...TParams, condition: boolean], TAsync, TMetadata>
-    : TRule extends RegleRuleDefinition<infer TType, infer TValue, any[], infer TAsync, infer TMetadata>
-      ? RegleRuleDefinition<TType, TValue, [condition: boolean], TAsync, TMetadata>
+    ? RegleRuleDefinition<TType, TValue, ParamsToLooseParams<[...TParams], [condition: boolean]>, TAsync, TMetadata>
+    : TRule extends RegleRuleWithParamsDefinitionInput<
+          infer TType,
+          infer TValue,
+          infer TParams,
+          infer TAsync,
+          infer TMetadata,
+          any
+        >
+      ? RegleRuleDefinition<TType, TValue, ParamsToLooseParams<[...TParams], [condition: boolean]>, TAsync, TMetadata>
       : TRule {
   const { _type, validator, _params, _message, _async } = extractValidator(rule);
 

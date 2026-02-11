@@ -1,8 +1,8 @@
 import { defineRegleConfig, useRegle } from '@regle/core';
+import { nextTick } from 'vue';
+import { applyIf, withMessage } from '../..';
 import { minLength } from '../minLength';
 import { createRegleComponent } from './utils';
-import { nextTick } from 'vue';
-import { withMessage } from '../..';
 
 describe('minLength exec', () => {
   it('should validate empty string', () => {
@@ -65,7 +65,10 @@ describe('minLength exec', () => {
 describe('minLength on useRegle', () => {
   it('should work with useRegle', async () => {
     function formComponent() {
-      return useRegle({ name: '' }, { name: { minLength: minLength(5) } });
+      return useRegle(
+        { name: '', foo: '' },
+        { name: { minLength: minLength(5) }, foo: { minLength: applyIf(() => true, minLength(5)) } }
+      );
     }
     const { vm } = createRegleComponent(formComponent);
 
