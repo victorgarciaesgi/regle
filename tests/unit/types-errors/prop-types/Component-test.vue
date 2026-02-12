@@ -11,6 +11,7 @@
     RegleFieldStatus,
     InferRegleShortcuts,
     RegleRuleStatus,
+    RegleRuleMetadataDefinition,
   } from '@regle/core';
   import type { useCustomRegle } from './prop-types.config';
 
@@ -68,7 +69,7 @@
   expectTypeOf(props.customStringField.$isRequired).toEqualTypeOf<boolean>();
 
   expectTypeOf(props.customStringField.$rules.myCustomRule).toEqualTypeOf<
-    RegleRuleStatus<string, [], boolean> | undefined
+    RegleRuleStatus<string, [], RegleRuleMetadataDefinition> | undefined
   >();
 
   //-

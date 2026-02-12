@@ -29,7 +29,7 @@ export type DefaultValidators = {
   atLeastOne: RegleRuleWithParamsDefinition<
     unknown,
     Record<string, unknown> | object,
-    [keys?: string[] | undefined],
+    [keys?: readonly string[] | undefined],
     false,
     boolean,
     false,

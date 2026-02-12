@@ -6,15 +6,23 @@ import { getSize, isFilled } from '../helpers';
 interface AtLeastOneFn extends RegleRuleWithParamsDefinition<
   'atLeastOne',
   Record<string, unknown> | object,
-  [keys?: string[] | undefined],
+  [keys?: readonly string[] | undefined],
   false,
   boolean,
   false,
   Record<string, unknown> | object
 > {
   <T extends Maybe<Record<string, unknown> | object> = Record<string, unknown>>(
-    keys?: MaybeRefOrGetter<(keyof NoInfer<T> & string)[]>
-  ): RegleRuleDefinition<'atLeastOne', T, [keys?: (keyof NoInfer<T> & string)[] | undefined], false, boolean, false, T>;
+    keys?: MaybeRefOrGetter<readonly (keyof NoInfer<T> & string)[] | undefined>
+  ): RegleRuleDefinition<
+    'atLeastOne',
+    T,
+    [keys?: readonly (keyof NoInfer<T> & string)[] | undefined],
+    false,
+    boolean,
+    false,
+    T
+  >;
 }
 
 /**
@@ -39,7 +47,7 @@ interface AtLeastOneFn extends RegleRuleWithParamsDefinition<
  */
 export const atLeastOne: AtLeastOneFn = createRule({
   type: 'atLeastOne',
-  validator: (value: Maybe<Record<string, unknown> | object>, keys?: string[]) => {
+  validator: (value: Maybe<Record<string, unknown> | object>, keys?: readonly string[] | undefined) => {
     if (isFilled(value, true, false) && isObject(value)) {
       if (keys?.length) {
         return keys.some((key) => isFilled(value[key]));
