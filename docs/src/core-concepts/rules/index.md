@@ -1,105 +1,132 @@
 ---
 title: Rules
+description: Rules are the building blocks of validation in Regle. Learn how to create reusable and inline rules.
 ---
 
 # Rules
 
-Rules are the core concept of Regle (and also it's name 🙄).
+Rules are the core building block of Regle (and also its name).
 
-A rule is created using either:
+A rule takes a value (and optional parameters) as input and returns a validation result as output.
 
-- An inline function
-- `createRule`
+The **result** can be either:
 
-A rule takes the value (and optional parameters) as input and returns a result as output.
+- A `boolean`
+- An object containing at least `{ $valid: boolean }` (allowing you to attach [metadata](/advanced-usage/rule-metadata))
 
-The **result** can either be:
+## Reusable rules with `createRule`
 
-- `boolean`
-- An object containing at least the `{ $valid: boolean }` property.
+The recommended way to write rules in Regle is with `createRule`. It provides a structured definition that includes the validator logic, an error message, and optional configuration — all in one place.
 
-The boolean represents the result of the validation.
+```ts
+import { createRule, type Maybe } from '@regle/core';
+import { isFilled } from '@regle/rules';
+
+export const mustBe = createRule({
+  validator(value: Maybe<string>, expected: string) {
+    if (isFilled(value)) {
+      return value === expected;
+    }
+    return true;
+  },
+  message: ({ $params: [expected] }) => `The value must be '${expected}'`,
+});
+
+// Rule can now accept reactive parameters
+const expected = ref('foo');
+
+const { r$ } = useRegle({ name: '' }, {
+  name: {
+    mustBe: mustBe(expected),
+    // or
+    mustBe: mustBe(() => expected.value),
+  },
+});
+```
+
+Rules created with `createRule` can accept reactive parameters, return custom metadata, run async logic, and more.
 
 :::tip
-You can jump directly to the [createRule section](/core-concepts/rules/reusable-rules) to see more advanced features.
+Head to the [Reusable rules](/core-concepts/rules/reusable-rules) page for the full guide on `createRule`, including parameters, reactivity, async rules, and metadata.
 :::
 
 ## Inline rules
 
-You can write inline rules as simple functions that receive the value being evaluated as a parameter. Use the `InlineRuleDeclaration` type helper for enhanced type safety.
+For quick, one-off validations, you can write rules directly as inline functions. The function receives the current field value as its first argument.
 
-Simple rule
+Simple rule:
+
 ```ts
-const { r$ } = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
-    simpleRule: (value) => value === 'regle'
-  }
+    simpleRule: (value) => value === 'regle',
+  },
 })
 ```
 
-Async rule
-``` ts
-const { r$ } = useRegle({name: ''}, {
+Async rule:
+
+```ts
+const { r$ } = useRegle({ name: '' }, {
   name: {
-    asyncRule: async (value) => await someAsyncCall()
-  }
+    asyncRule: async (value) => await someAsyncCall(),
+  },
 })
 ```
 
-Rule with metadata
+Rule with metadata:
 
 ```ts
-const { r$ } = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     metadataRule: (value) => ({
       $valid: value === 'regle',
-      foo: 'bar'
-    })
-  }
+      foo: 'bar',
+    }),
+  },
 })
-
 ```
 
 ## Adding error messages
 
-Any rule can be wrapped with the `withMessage` helper to provide error messages.
+Any rule — inline or reusable — can be wrapped with the `withMessage` helper to associate an error message with it.
 
 ```ts
-const { r$ } = useRegle({name: ''}, {
+import { withMessage } from '@regle/rules';
+
+const { r$ } = useRegle({ name: '' }, {
   name: {
-    foo: withMessage((value: Maybe<string>) => value === "foo", "Value must be 'foo'"),
-  }
+    foo: withMessage((value: Maybe<string>) => value === 'foo', "Value must be 'foo'"),
+  },
 })
 ```
 
 :::tip
-You can read more informations on wrappers [here](/core-concepts/rules/rule-wrappers)
+Learn more about `withMessage` and other wrappers in the [Rule wrappers](/core-concepts/rules/rule-wrappers) section.
 :::
 
 ## Handling `optional` and `required` rules
 
-In the **Regle** pattern (borrowed from Vuelidate), all rules are by default optional.
+In Regle (borrowed from Vuelidate), all rules are **optional by default**. This means a rule will only run when the field has a value.
 
-That means they will only run if a value is defined.
+The only exceptions are:
 
-To enforce a required field, you just have to add the `required` validator or any of it's variations.
+- `required`
+- `checked`
+- `literal`
 
-This allow to separate the core rule logic of how a field should look and whether or not it's required.
+This separation keeps the validation logic clean: you define *how* a field should be validated independently from *whether* it's mandatory.
 
-It will also output better errors.
-
-
-It's advised to keep this logic in mind when writing custom rules.
-
+When writing custom rules, follow the same convention by checking if the value is filled before validating:
 
 ```ts
-import {isFilled} from '@regle/rules'
+import { isFilled } from '@regle/rules';
 
-const { r$ } = useRegle({name: ''}, {
+const { r$ } = useRegle({ name: '' }, {
   name: {
     mustBeFoo: (value) => {
-      return isFilled(value) && value === 'foo'
-    }
-  }
+      return isFilled(value) && value === 'foo';
+    },
+  },
 })
 ```

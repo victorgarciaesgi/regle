@@ -1,4 +1,12 @@
-import { createRule, type RegleRuleDefinition, type RegleRuleWithParamsDefinition } from '@regle/core';
+import {
+  createRule,
+  type RegleRuleDefinition,
+  type RegleRuleWithParamsDefinition,
+  type Maybe,
+  useRegle,
+} from '@regle/core';
+import { createRegleComponent } from '../../utils/test.utils';
+import { nextTick } from 'vue';
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
@@ -82,7 +90,7 @@ describe('createRule', () => {
 
   it('should recognize multiple parameters with default', async () => {
     const rule = createRule({
-      validator(_value, _param = false, _param2 = true) {
+      validator(_value: unknown, _param: boolean = false, _param2: boolean = true) {
         return true;
       },
       message: '',
@@ -93,7 +101,7 @@ describe('createRule', () => {
     expect(rule(true, true).exec('fooo')).toBe(true);
 
     expectTypeOf(rule).toEqualTypeOf<
-      RegleRuleWithParamsDefinition<unknown, unknown, [param?: any, param2?: any], false, true>
+      RegleRuleWithParamsDefinition<unknown, unknown, [param?: boolean, param2?: boolean], false, true>
     >();
   });
 
@@ -111,5 +119,35 @@ describe('createRule', () => {
     expect(rule(true, true).exec('fooo')).toBe(true);
 
     expectTypeOf(rule).toEqualTypeOf<RegleRuleWithParamsDefinition<'test', unknown, boolean[], false, true>>();
+  });
+
+  it('should use validator default parameter in message when omitted', async () => {
+    const rule = createRule({
+      type: 'rule',
+      validator(value: Maybe<string>, prefix: string = 'bar') {
+        return {
+          $valid: !!value && value.startsWith(prefix),
+          prefix,
+        };
+      },
+      message: ({ prefix }) => `Value must start with ${prefix}`,
+    });
+
+    function formComponent() {
+      return useRegle({ name: '' }, { name: { rule } });
+    }
+
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.name.$value = 'foobar';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(true);
+    expect(vm.r$.name.$errors).toStrictEqual(['Value must start with bar']);
+    expectTypeOf(vm.r$.name.$rules.rule.$metadata).toEqualTypeOf<{ prefix: string }>();
+
+    vm.r$.name.$value = 'barfoo';
+    await nextTick();
+    expect(vm.r$.name.$error).toBe(false);
+    expect(vm.r$.name.$errors).toStrictEqual([]);
   });
 });

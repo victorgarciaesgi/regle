@@ -1,5 +1,6 @@
 ---
 title: Reusable rules
+description: Create reusable, type-safe validation rules with createRule — supporting parameters, reactivity, async logic, and metadata.
 ---
 
 <script setup>
@@ -189,6 +190,27 @@ useRegle(state, rules);
 
 ```
 :::
+
+### Default values
+
+You can set default value directly in the rule declaration. Be sure to type it correctly.
+
+There will be difference in implementation if you want to access the parameter value in the message factory function as a function scope is undereadble from outside its scope.
+
+You'll have to return explicitly the default value in the validator function, and declare the parameter as metadata.
+
+```ts
+export const myValidator = createRule({
+  validator: (value: Maybe<number>, arg: number = 0) => {
+    return {
+      $valid: value === arg,
+      arg,
+    };
+  },
+  message: ({ arg }) => `The value must be ${arg}`,
+});
+```
+
 
 ### Active property
 

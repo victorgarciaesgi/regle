@@ -13,7 +13,7 @@ const CoreConcepts: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren
   {
     text: 'Rules',
     items: [
-      { text: 'Writing a rule', link: '/core-concepts/rules/' },
+      { text: 'Overview', link: '/core-concepts/rules/' },
       {
         text: 'Reusable rules',
         link: '/core-concepts/rules/reusable-rules',
