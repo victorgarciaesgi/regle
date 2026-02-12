@@ -1,5 +1,6 @@
 ---
 title: Built-in rules
+description: Reference for all built-in validation rules available in the @regle/rules package.
 ---
 
 # Built-in rules

@@ -2,7 +2,12 @@ import type { MaybeRef, UnwrapRef } from 'vue';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
 import type { RegleRuleStatus } from './rule.status.types';
 import type { EmptyObject, IsAny, IsEmptyObject } from 'type-fest';
-import type { InlineRuleDeclaration, RegleFormPropertyType, ReglePartialRuleTree } from './rule.declaration.types';
+import type {
+  FormRuleDeclaration,
+  InlineRuleDeclaration,
+  RegleFormPropertyType,
+  ReglePartialRuleTree,
+} from './rule.declaration.types';
 import type { ExtendedRulesDeclarations } from './rule.custom.types';
 import type { FieldRegleBehaviourOptions } from '../core';
 import type { RegleRuleDefinition } from './rule.definition.type';
@@ -131,12 +136,12 @@ export type ComputeFieldRules<
         >]: RegleRuleStatus<
           TState,
           UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, infer TParams, any> ? TParams : [],
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, any, any, infer TMetadata>
+          UnwrapRef<TRules>[TRuleKey] extends FormRuleDeclaration<any, any[], any, infer TMetadata>
             ? TMetadata
-            : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TMetadata>
-              ? TMetadata extends Promise<infer P>
+            : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TReturn>
+              ? TReturn extends Promise<infer P>
                 ? P
-                : TMetadata
+                : TReturn
               : boolean
         >;
       };

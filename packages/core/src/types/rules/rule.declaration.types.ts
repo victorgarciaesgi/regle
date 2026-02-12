@@ -136,7 +136,7 @@ export type RegleRuleDecl<
         | RegleRuleDefinitionLight<ParamsToLooseParams<TParams>, boolean, TMetadata>
         | InlineRuleDeclaration<TValue, ParamsToLooseParams<TParams>, any>
     : TCustomRules[TKey];
-} & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
+} & { [x: string]: FormRuleDeclaration<TValue, any[], any, any> | boolean | number | undefined };
 
 /**
  * @internal

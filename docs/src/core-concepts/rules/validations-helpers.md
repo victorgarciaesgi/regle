@@ -1,5 +1,6 @@
 ---
 title: Validations helpers
+description: Utility functions for writing custom rules — type guards, size helpers, and value coercion.
 ---
 
 # Validations helpers
