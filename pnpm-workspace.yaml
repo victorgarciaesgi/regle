@@ -23,15 +23,15 @@ minimumReleaseAgeExclude:
   - lodash-es
 
 catalog:
-  '@types/node': 24.10.10
+  '@types/node': 24.10.13
   # Vue
-  vue: 3.5.27
-  '@vue/reactivity': 3.5.27
-  '@vue/runtime-core': 3.5.27
-  '@vue/runtime-dom': 3.5.27
-  '@vue/shared': 3.5.27
-  '@vue/compiler-dom': 3.5.27
-  '@vue/server-renderer': 3.5.27
+  vue: 3.5.28
+  '@vue/reactivity': 3.5.28
+  '@vue/runtime-core': 3.5.28
+  '@vue/runtime-dom': 3.5.28
+  '@vue/shared': 3.5.28
+  '@vue/compiler-dom': 3.5.28
+  '@vue/server-renderer': 3.5.28
 
   # Vue 3.4
   vue-3.4: npm:vue@3.4.38
@@ -50,22 +50,22 @@ catalog:
   pinia-2.2.5: npm:pinia@2.2.5
 
   # Nuxt
-  nuxt: 4.3.0
-  '@nuxt/kit': 4.3.0
-  '@nuxt/schema': 4.3.0
+  nuxt: 4.3.1
+  '@nuxt/kit': 4.3.1
+  '@nuxt/schema': 4.3.1
 
   # Devtools
   typescript: 5.9.3
   '@total-typescript/ts-reset': 0.6.1
-  tsdown: 0.20.1
-  type-fest: 5.4.3
+  tsdown: 0.20.3
+  type-fest: 5.4.4
   'tsx': 4.21.0
 
   # Testing
 
-  playwright: 1.58.1
-  playwright-core: 1.58.1
-  '@playwright/test': 1.58.1
+  playwright: 1.58.2
+  playwright-core: 1.58.2
+  '@playwright/test': 1.58.2
   vitest: 4.0.18
   '@vue/test-utils': 2.4.6
 
