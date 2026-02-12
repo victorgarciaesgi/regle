@@ -57,7 +57,7 @@
     },
     {
       checked: { checked: checked },
-      firstName: { required, myCustomRule: () => true },
+      firstName: { required, myCustomRule: required },
     }
   );
 </script>

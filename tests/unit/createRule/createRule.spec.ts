@@ -7,6 +7,7 @@ import {
 } from '@regle/core';
 import { createRegleComponent } from '../../utils/test.utils';
 import { nextTick } from 'vue';
+import { alpha, minLength } from '@regle/rules';
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
@@ -133,8 +134,11 @@ describe('createRule', () => {
       message: ({ prefix }) => `Value must start with ${prefix}`,
     });
 
+    // @ts-expect-error minLength not called
+    useRegle({ name: '' }, { name: { minLength: minLength } });
+
     function formComponent() {
-      return useRegle({ name: '' }, { name: { rule } });
+      return useRegle({ name: '' }, { name: { rule: rule() } });
     }
 
     const { vm } = createRegleComponent(formComponent);

@@ -1,3 +1,4 @@
+import type { IsAny } from 'type-fest';
 import type { Raw, Ref } from 'vue';
 import type { useRegleFn } from '../../core';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
@@ -22,7 +23,6 @@ import type {
 } from './rule.definition.type';
 import type { ParamsToLooseParams, UnwrapRegleUniversalParams } from './rule.params.types';
 import type { $InternalRegleFieldStatus } from './rule.status.types';
-import type { IsAny } from 'type-fest';
 
 /**
  * @public
@@ -136,7 +136,7 @@ export type RegleRuleDecl<
         | RegleRuleDefinitionLight<ParamsToLooseParams<TParams>, boolean, TMetadata>
         | InlineRuleDeclaration<TValue, ParamsToLooseParams<TParams>, any>
     : TCustomRules[TKey];
-} & { [x: string]: FormRuleDeclaration<TValue, any[], any, any> | boolean | number | undefined };
+} & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
 
 /**
  * @internal

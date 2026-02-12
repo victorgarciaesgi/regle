@@ -114,22 +114,30 @@ export function useStorage() {
         return false;
       } else if (typeof newRuleElement === 'string') {
         return false;
-      } else if (!newRuleElement._params) {
-        return true;
       } else {
-        return newRuleElement._params?.every((paramKey, index) => {
-          if (
-            typeof storedRuleElement === 'number' ||
-            typeof storedRuleElement === 'boolean' ||
-            typeof storedRuleElement === 'string'
-          ) {
+        if ('_params' in newRuleElement) {
+          if (!newRuleElement._params) {
             return true;
-          } else {
-            const storedParams = unwrapRuleParameters(storedRuleElement._params as any[]);
-            const newParams = unwrapRuleParameters(newRuleElement._params as any[]);
-            return storedParams?.[index] === newParams?.[index];
+          } else if (Array.isArray(newRuleElement._params)) {
+            return newRuleElement._params?.every((paramKey, index) => {
+              if (
+                typeof storedRuleElement === 'number' ||
+                typeof storedRuleElement === 'boolean' ||
+                typeof storedRuleElement === 'string'
+              ) {
+                return true;
+              } else {
+                const storedRuleElementParams =
+                  '_params' in storedRuleElement && Array.isArray(storedRuleElement._params)
+                    ? storedRuleElement._params
+                    : [];
+                const storedParams = unwrapRuleParameters(storedRuleElementParams);
+                const newParams = unwrapRuleParameters(newRuleElement._params as any[]);
+                return storedParams?.[index] === newParams?.[index];
+              }
+            });
           }
-        });
+        }
       }
     });
   }

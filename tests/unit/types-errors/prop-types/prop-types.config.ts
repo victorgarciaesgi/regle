@@ -1,9 +1,9 @@
 import { defineRegleConfig } from '@regle/core';
-import { withMessage } from '@regle/rules';
+import { required, withMessage } from '@regle/rules';
 
 export const { useRegle: useCustomRegle } = defineRegleConfig({
   rules: () => ({
-    myCustomRule: withMessage(() => true, ''),
+    myCustomRule: withMessage(required, ''),
   }),
   shortcuts: {
     fields: {
