@@ -1,7 +1,22 @@
-import type { ExtendedRulesDeclarations, Maybe, RegleRuleDecl } from '@regle/core';
+import type { ExtendedRulesDeclarations, Maybe, RegleRuleDecl, RegleRuleDefinition } from '@regle/core';
 import { toValue, type MaybeRefOrGetter } from 'vue';
 import { isObject } from '../../../shared';
 import { applyIf } from './applyIf';
+
+type MapRulesToUnsafeRules<TRules extends RegleRuleDecl<any, any>> = {
+  [K in keyof TRules]: TRules[K] extends RegleRuleDefinition<
+    infer TType,
+    infer TValue,
+    infer TParams,
+    infer TAsync,
+    infer TMetadata,
+    infer TInput,
+    infer TFilteredValue,
+    boolean
+  >
+    ? RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, false>
+    : TRules[K];
+};
 
 function mapRulesWithCondition(
   condition: MaybeRefOrGetter<Maybe<boolean>>,
@@ -45,7 +60,7 @@ export function assignIf<
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
   rules: MaybeRefOrGetter<TRulesDelc>,
   otherwiseRules?: MaybeRefOrGetter<TRulesDelc>
-): TRulesDelc {
+): MapRulesToUnsafeRules<TRulesDelc> {
   let trueRules = mapRulesWithCondition(_condition, rules, true);
   let falseRules = otherwiseRules ? mapRulesWithCondition(_condition, otherwiseRules, false) : [];
   return Object.fromEntries([...trueRules, ...falseRules]);

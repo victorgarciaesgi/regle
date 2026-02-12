@@ -260,7 +260,7 @@ describe('assignIf helper', () => {
     const result = assignIf(condition, rules);
 
     expectTypeOf(result).toEqualTypeOf<{
-      required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
+      required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, false>;
       minLength: typeof minLengthRule;
     }>();
   });
@@ -312,7 +312,7 @@ describe('assignIf helper', () => {
       RegleFieldStatus<
         string,
         {
-          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
+          required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, false>;
           customRule: () => true;
         },
         RegleShortcutDefinition<{
