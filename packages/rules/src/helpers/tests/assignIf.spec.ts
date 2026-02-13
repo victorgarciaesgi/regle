@@ -363,4 +363,14 @@ describe('assignIf helper', () => {
 
     expect(vm.r$.$errors.name).toStrictEqual(['The value must be at least 5 characters long']);
   });
+
+  it('should keep non-rule entries untouched', async () => {
+    const result = assignIf(() => true, {
+      required,
+      arbitraryEntry: 42 as any,
+    } as any);
+
+    expect((result as any).arbitraryEntry).toBe(42);
+    expect((result as any).required).toBeDefined();
+  });
 });

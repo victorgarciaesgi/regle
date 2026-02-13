@@ -25,6 +25,15 @@ describe('not validator', () => {
   it('should validate with async false function', async () => {
     expect(await not(async () => false).exec('test')).toBe(true);
   });
+
+  it('should validate when async rule throws', async () => {
+    expect(
+      await not(async () => {
+        throw new Error('boom');
+      }).exec('test')
+    ).toBe(true);
+  });
+
   it('should validate with `false` function on empty input', () => {
     expect(not(() => false).exec('')).toBe(true);
   });

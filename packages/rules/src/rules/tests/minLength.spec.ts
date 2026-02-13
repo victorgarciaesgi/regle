@@ -102,6 +102,22 @@ describe('minLength on useRegle', () => {
     expect(vm.r$.name.$error).toBe(false);
     expect(vm.r$.name.$errors).toStrictEqual([]);
   });
+
+  it('should return list-specific message for arrays', async () => {
+    function formComponent() {
+      return useRegle({ items: [] as number[] }, { items: { minLength: minLength(2) } });
+    }
+    const { vm } = createRegleComponent(formComponent);
+
+    vm.r$.items.$value = [1];
+    await nextTick();
+
+    expect(vm.r$.items.$error).toBe(true);
+    expect(vm.r$.items.$errors).toStrictEqual({
+      $self: ['The list must have at least 2 items'],
+      $each: [],
+    });
+  });
 });
 
 describe('minLength on defineRegleConfig', () => {
