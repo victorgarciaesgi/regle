@@ -1,5 +1,5 @@
-import type { RegleRuleCore } from './rule.init.types';
-import type { RegleUniversalParams } from './rule.params.types';
+import type { RegleRuleCore, RegleRuleCoreInput } from './rule.init.types';
+import type { HasOptionalParams, RegleUniversalParams } from './rule.params.types';
 import type { RegleInternalRuleDefs } from './rule.internal.types';
 import type {
   $InternalRegleRuleStatus,
@@ -34,13 +34,13 @@ export interface RegleRuleDefinition<
     [...TParams, ...unknown[]],
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
-  message: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
-  active: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean;
-  tooltip: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
+  message: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[]) | string | string[];
+  active?: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean) | boolean;
+  tooltip?: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[]) | string | string[];
   type?: TType;
   _value?: IsLiteral<TValue> extends true ? TValue : any;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
-  required: TNonEmpty;
+  required?: TNonEmpty;
 }
 
 export type RegleRuleDefinitionLight<
@@ -84,7 +84,7 @@ export type RegleRuleWithParamsDefinition<
     (
       ...params: RegleUniversalParams<TParams>
     ): RegleRuleDefinition<TType, TFilteredValue, TParams, TAsync, TMetadata, TInput, TFilteredValue, TNonEmpty>;
-  } & (TParams extends [param?: any, ...any[]]
+  } & (HasOptionalParams<TParams> extends true
     ? {
         exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
       }
@@ -97,13 +97,10 @@ export type RegleRuleWithParamsDefinitionInput<
   TAsync extends boolean = false,
   TMetadata extends RegleRuleMetadataDefinition = boolean,
   TFilteredValue extends any = TValue extends Date & File & (infer M) ? M : TValue,
-> = RegleRuleCore<TType, TFilteredValue, TParams, TAsync, TMetadata> &
-  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> &
-  (TParams extends [param?: any, ...any[]]
-    ? {
-        exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
-      }
-    : {});
+> = RegleRuleCoreInput<TType, TFilteredValue, TParams, TAsync, TMetadata> &
+  RegleInternalRuleDefs<TFilteredValue, TParams, TAsync, TMetadata> & {
+    exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+  };
 
 export type RegleRuleMetadataExtended = {
   $valid: boolean;

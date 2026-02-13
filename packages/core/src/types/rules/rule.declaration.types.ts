@@ -241,7 +241,7 @@ export type FormRuleDeclaration<
   TMetadata extends RegleRuleMetadataDefinition = TReturn extends Promise<infer M> ? M : TReturn,
   TAsync extends boolean = boolean,
 > =
-  | InlineRuleDeclaration<TValue, TParams, TReturn>
-  | RegleRuleDefinition<unknown, TValue, TParams, TAsync, TMetadata, any, any, boolean>
   | RegleRuleWithParamsDefinitionInput<unknown, TValue, [param?: any], TAsync, TMetadata>
-  | RegleRuleWithParamsDefinitionInput<unknown, TValue, [param?: any, ...any[]], TAsync, TMetadata>;
+  | RegleRuleDefinition<unknown, TValue, TParams, TAsync, TMetadata, any, any, boolean>
+  | RegleRuleWithParamsDefinitionInput<unknown, TValue, [param?: any, ...any[]], TAsync, TMetadata>
+  | InlineRuleDeclaration<TValue, TParams, TReturn>;

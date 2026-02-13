@@ -46,3 +46,9 @@ export type ParamsToLooseParams<TParams extends any[], TLoose extends unknown[] 
   : TParams extends [infer TFirst, ...infer TRest]
     ? [TFirst, ...TRest, ...TLoose]
     : [...TParams, ...TLoose];
+
+export type HasOptionalParams<T extends any[]> = T extends [param?: any, ...any[]]
+  ? T[0] extends NonNullable<T[0]>
+    ? false
+    : true
+  : false;

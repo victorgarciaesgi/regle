@@ -135,10 +135,10 @@ describe('createRule', () => {
     });
 
     // @ts-expect-error minLength not called
-    useRegle({ name: '' }, { name: { minLength: minLength } });
+    useRegle({ name: '' }, { name: { minLength: minLength.exec } });
 
     function formComponent() {
-      return useRegle({ name: '' }, { name: { rule: rule() } });
+      return useRegle({ name: '' }, { name: { rule: rule } });
     }
 
     const { vm } = createRegleComponent(formComponent);
