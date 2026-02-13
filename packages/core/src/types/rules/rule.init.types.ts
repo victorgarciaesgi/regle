@@ -4,7 +4,6 @@ import type {
   RegleRuleMetadataConsumer,
   RegleRuleMetadataDefinition,
 } from './rule.definition.type';
-import type { NonEmptyObject } from 'type-fest';
 
 export type RegleInitPropertyGetter<
   TValue,
