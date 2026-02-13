@@ -1,4 +1,4 @@
-import { inferRules, RegleVuePlugin, useRegle, type Maybe } from '@regle/core';
+import { inferRules, InternalRuleType, RegleVuePlugin, createRule, useRegle, type Maybe } from '@regle/core';
 import { mount } from '@vue/test-utils';
 import { computed, defineComponent, ref } from 'vue';
 import { withParams } from '../withParams';
@@ -143,5 +143,23 @@ describe('withParams helper', () => {
         return '';
       }
     );
+  });
+
+  it('should fallback to inline type and empty params for rule defs', () => {
+    const customRule = createRule({
+      type: 'custom',
+      validator(value: unknown, min: number) {
+        return Number(value) >= min;
+      },
+      message: 'Error',
+    });
+
+    customRule._type = undefined as any;
+    customRule._params = undefined as any;
+
+    const wrappedRule = withParams(customRule as any, []);
+
+    expect(wrappedRule.type).toBe(InternalRuleType.Inline);
+    expect(wrappedRule.exec(2)).toBe(false);
   });
 });

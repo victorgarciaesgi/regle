@@ -244,4 +244,47 @@ describe('pipe', () => {
     expect(vm.r$.$pending).toBe(false);
     expect(vm.r$.email.$rules.anonymous2.$valid).toBe(true);
   });
+
+  it('should invalidate non-async rules that return a promise', async () => {
+    const unexpectedAsyncMock = vi.fn((value: Maybe<string>) => Promise.resolve(Boolean(value)));
+
+    const { vm } = mount(
+      defineComponent({
+        template: '<div></div>',
+        setup() {
+          const { r$ } = useRegle(
+            { email: '' },
+            { email: pipe(required, (value) => unexpectedAsyncMock(value), email) }
+          );
+          return { r$ };
+        },
+      })
+    );
+
+    vm.r$.email.$value = 'test@example.com';
+    await nextTick();
+    await flushPromises();
+
+    expect(unexpectedAsyncMock).toHaveBeenCalledOnce();
+    expect(vm.r$.email.$rules.anonymous1.$valid).toBe(false);
+    expect(emailValidatorMock).not.toHaveBeenCalledWith('test@example.com');
+    expect(vm.r$.email.$invalid).toBe(true);
+  });
+
+  it('should cleanup pipe scopes on component unmount', async () => {
+    const wrapper = mount(
+      defineComponent({
+        template: '<div></div>',
+        setup() {
+          const { r$ } = useRegle({ email: '' }, { email: pipe(required, email) });
+          return { r$ };
+        },
+      })
+    );
+
+    await nextTick();
+    expect(wrapper.vm.r$.email.$rules.required).toBeDefined();
+
+    expect(() => wrapper.unmount()).not.toThrow();
+  });
 });

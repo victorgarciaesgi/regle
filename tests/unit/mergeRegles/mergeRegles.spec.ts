@@ -181,4 +181,100 @@ describe('mergeRegles', () => {
     expectTypeOf(dirtyFields[2]).toBeObject();
     expect(vm.r$Merged.$extractDirtyFields()).toStrictEqual([{}, {}, {}]);
   });
+
+  it('should validate with force values and handle rejected validations', async () => {
+    const firstValidate = vi.fn(async () => ({ valid: true, data: { foo: 'bar' } }));
+    const secondValidate = vi.fn(async () => Promise.reject(new Error('Validation failed')));
+
+    const firstRegle = {
+      $value: { foo: 'a' },
+      $silentValue: { foo: 'a' },
+      $dirty: false,
+      $anyDirty: false,
+      $invalid: false,
+      $correct: true,
+      $error: false,
+      $pending: false,
+      $ready: true,
+      $edited: false,
+      $anyEdited: false,
+      $issues: {},
+      $silentIssues: {},
+      $errors: {},
+      $silentErrors: {},
+      $extractDirtyFields: () => ({}),
+      $clearExternalErrors: () => {},
+      $reset: () => {},
+      $touch: () => {},
+      $validate: firstValidate,
+    };
+
+    const secondRegle = {
+      $value: { foo: 'b' },
+      $silentValue: { foo: 'b' },
+      $dirty: false,
+      $anyDirty: false,
+      $invalid: false,
+      $correct: true,
+      $error: false,
+      $pending: false,
+      $ready: true,
+      $edited: false,
+      $anyEdited: false,
+      $issues: {},
+      $silentIssues: {},
+      $errors: {},
+      $silentErrors: {},
+      $extractDirtyFields: () => ({}),
+      $clearExternalErrors: () => {},
+      $reset: () => {},
+      $touch: () => {},
+      $validate: secondValidate,
+    };
+
+    const merged = mergeRegles({ firstRegle, secondRegle } as any);
+    const result = await merged.$validate({
+      firstRegle: { foo: 'forced-a' },
+      secondRegle: { foo: 'forced-b' },
+    } as any);
+
+    expect(firstRegle.$value).toStrictEqual({ foo: 'forced-a' });
+    expect(secondRegle.$value).toStrictEqual({ foo: 'forced-b' });
+    expect(result.valid).toBe(false);
+    expect(firstValidate).toHaveBeenCalledOnce();
+    expect(secondValidate).toHaveBeenCalledOnce();
+  });
+
+  it('should return invalid state when validation throws synchronously', async () => {
+    const throwingRegle = {
+      $value: { foo: 'a' },
+      $silentValue: { foo: 'a' },
+      $dirty: false,
+      $anyDirty: false,
+      $invalid: false,
+      $correct: true,
+      $error: false,
+      $pending: false,
+      $ready: true,
+      $edited: false,
+      $anyEdited: false,
+      $issues: { foo: ['sync-failure'] },
+      $silentIssues: {},
+      $errors: { foo: ['sync-failure'] },
+      $silentErrors: {},
+      $extractDirtyFields: () => ({}),
+      $clearExternalErrors: () => {},
+      $reset: () => {},
+      $touch: () => {},
+      $validate: () => {
+        throw new Error('sync');
+      },
+    };
+
+    const merged = mergeRegles({ throwingRegle } as any);
+    const result = await merged.$validate();
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toStrictEqual({ throwingRegle: { foo: ['sync-failure'] } });
+  });
 });

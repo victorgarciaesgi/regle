@@ -1,10 +1,11 @@
 import type { Maybe, RegleRuleDefinition } from '@regle/core';
-import { RegleVuePlugin, useRegle } from '@regle/core';
+import { InternalRuleType, RegleVuePlugin, createRule, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { timeout } from '../../../../../tests/utils';
 import { withAsync } from '../withAsync';
 import { withMessage } from '../withMessage';
+import { minLength } from '../../rules';
 
 describe('withAsync helper', () => {
   const mountComponent = () => {
@@ -107,6 +108,28 @@ describe('withAsync helper', () => {
     });
 
     expect(await rule.exec(null)).toBe(false);
+  });
+
+  it('should wrap raw rule objects', async () => {
+    expect(() => withAsync(minLength(2) as any)).toThrowError();
+  });
+
+  it('should fallback to async type and empty params for rule defs', async () => {
+    const customRule = createRule({
+      type: 'custom',
+      validator(value: unknown, min: number) {
+        return Number(value) >= min;
+      },
+      message: 'Error',
+    });
+
+    customRule._type = undefined as any;
+    customRule._params = undefined as any;
+
+    const wrappedRule = withAsync(customRule as any, []);
+
+    expect(wrappedRule.type).toBe(InternalRuleType.Async);
+    expect(await wrappedRule.exec(2)).toBe(false);
   });
 
   it('should have correct types', () => {
