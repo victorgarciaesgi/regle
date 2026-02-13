@@ -352,6 +352,6 @@ describe('withMessage helper', () => {
         }, [() => true]),
         'Required async'
       )
-    ).toEqualTypeOf<RegleRuleDefinition<unknown, unknown, [boolean], false, true, unknown>>();
+    ).toEqualTypeOf<RegleRuleDefinition<undefined, unknown, [boolean], false, true, unknown, unknown, boolean>>();
   });
 });
