@@ -131,7 +131,7 @@ export function withMessage(
       executedRule._message_patched = true;
       return executedRule;
     }
-    return newRule as RegleRuleWithParamsDefinition;
+    return newRule as RegleRuleWithParamsDefinition<any, any, any, any, any, any, any, any>;
   } else {
     return newRule as RegleRuleDefinition;
   }

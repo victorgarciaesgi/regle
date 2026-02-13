@@ -34,9 +34,9 @@ export interface RegleRuleDefinition<
     [...TParams, ...unknown[]],
     TAsync extends false ? TMetaData : Promise<TMetaData>
   >;
-  message: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[]) | string | string[];
-  active?: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean) | boolean;
-  tooltip?: ((metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[]) | string | string[];
+  message: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
+  active?: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => boolean;
+  tooltip?: (metadata: PossibleRegleRuleMetadataConsumer<TFilteredValue>) => string | string[];
   type?: TType;
   _value?: IsLiteral<TValue> extends true ? TValue : any;
   exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetaData : Promise<TMetaData>;
