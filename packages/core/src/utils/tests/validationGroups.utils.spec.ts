@@ -1,7 +1,4 @@
-import {
-  mergeArrayGroupProperties,
-  mergeBooleanGroupProperties,
-} from '../../../packages/core/src/utils/validationGroups.utils';
+import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../validationGroups.utils';
 
 describe('validationGroups.utils', () => {
   it('should merge boolean properties', () => {

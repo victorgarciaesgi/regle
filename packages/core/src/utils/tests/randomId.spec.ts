@@ -1,4 +1,4 @@
-import { randomId } from '../../../packages/core/src/utils/randomId';
+import { randomId } from '../randomId';
 
 describe('randomId', () => {
   afterEach(() => {
