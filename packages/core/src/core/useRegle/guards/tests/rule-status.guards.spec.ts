@@ -5,7 +5,7 @@ import {
   isNestedExternalErrorStatus,
   isNestedRulesStatus,
   isRuleStatus,
-} from '../../../packages/core/src/core/useRegle/guards/rule.status.guards';
+} from '../rule.status.guards';
 
 describe('rule.status.guards', () => {
   it('should detect nested, collection and field statuses', () => {

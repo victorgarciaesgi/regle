@@ -69,6 +69,17 @@ export default defineConfig({
         extends: true,
         test: {
           alias,
+          name: `Core tests - Vue ${vueVersion}.x`,
+          root: './packages/core',
+          environment: 'happy-dom',
+          include: ['**/*.spec.ts'],
+        },
+      },
+      {
+        plugins: [vue()],
+        extends: true,
+        test: {
+          alias,
           name: `Rules tests - Vue ${vueVersion}.x`,
           root: './packages/rules',
           environment: 'happy-dom',
