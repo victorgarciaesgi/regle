@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.19.0",
+  "version": "1.19.1",
   "description": "Headless form validation library for Vue",
   "keywords": [
     "regle",
