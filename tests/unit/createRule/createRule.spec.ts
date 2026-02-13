@@ -1,13 +1,13 @@
 import {
   createRule,
+  type Maybe,
   type RegleRuleDefinition,
   type RegleRuleWithParamsDefinition,
-  type Maybe,
   useRegle,
 } from '@regle/core';
-import { createRegleComponent } from '../../utils/test.utils';
+import { minLength } from '@regle/rules';
 import { nextTick } from 'vue';
-import { alpha, minLength } from '@regle/rules';
+import { createRegleComponent } from '../../utils/test.utils';
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
