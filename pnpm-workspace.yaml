@@ -20,6 +20,7 @@ minimumReleaseAgeExclude:
   - tsdown
   - oxlint
   - '@typescript/native-preview'
+  - '@typescript/native-preview-darwin-arm64'
 
 catalog:
   '@types/node': 24.10.13
@@ -56,7 +57,7 @@ catalog:
 
   # Devtools
   typescript: 5.9.3
-  '@typescript/native-preview': 7.0.0-dev.20260203.1
+  '@typescript/native-preview': 7.0.0-dev.20260215.1
   '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.20.3
   type-fest: 5.4.4
