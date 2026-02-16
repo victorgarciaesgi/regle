@@ -703,9 +703,17 @@ _**Params**_
 ```ts
 import { oneOf } from '@regle/rules';
 
+const foodEnum = {
+  Fish: 'Fish',
+  Meat: 'Meat',
+  Bone: 'Bone',
+} as const;
+
 const { r$ } = useRegle({ aliment: 'Fish' }, {
   aliment: {
-    oneOf: oneOf(['Fish', 'Meat', 'Bone'])
+    oneOf: oneOf(['Fish', 'Meat', 'Bone']),
+    // or
+    oneOf: oneOf(foodEnum),
   },
 })
 ```

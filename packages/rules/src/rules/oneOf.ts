@@ -8,7 +8,22 @@ import {
 import { type MaybeRefOrGetter } from 'vue';
 import { isFilled } from '../helpers';
 
+export type EnumOneOfLike<TValue extends unknown> = {
+  readonly [k: string]: TValue;
+};
+
 interface OneOfFn {
+  <TEnum extends EnumOneOfLike<unknown>>(
+    options: TEnum
+  ): RegleRuleDefinition<
+    'oneOf',
+    TEnum[keyof TEnum],
+    [options: TEnum[keyof TEnum]],
+    false,
+    boolean,
+    MaybeInput<TEnum[keyof TEnum]>,
+    string | number
+  >;
   <const TValues extends NonEmptyTuple<string | number> | NonEmptyTuple<string> | NonEmptyTuple<number>>(
     options: MaybeReadonly<MaybeRefOrGetter<[...TValues]>>
   ): RegleRuleDefinition<
@@ -22,7 +37,7 @@ interface OneOfFn {
   >;
   /** Keep this definition without generics for inference */
   (
-    options: MaybeReadonly<MaybeRefOrGetter<[...[string | number, ...(string | number)[]]]>>
+    options: MaybeReadonly<MaybeRefOrGetter<[...[string | number, ...(string | number)[]]]>> | EnumOneOfLike<unknown>
   ): RegleRuleDefinition<
     'oneOf',
     string | number,
@@ -54,12 +69,22 @@ interface OneOfFn {
  */
 export const oneOf: OneOfFn = createRule({
   type: 'oneOf',
-  validator(value: MaybeInput<string | number>, options: [string | number, ...(string | number)[]]) {
+  validator(
+    value: MaybeInput<string | number>,
+    options: [string | number, ...(string | number)[]] | EnumOneOfLike<unknown>
+  ) {
     if (isFilled(value) && isFilled(options, false)) {
-      return options.includes(value);
+      if (Array.isArray(options)) {
+        return options.includes(value);
+      } else {
+        return Object.values(options).includes(value);
+      }
     }
 
     return true;
   },
-  message: ({ $params: [options] }) => `The value must be one of the following: ${options.join(', ')}`,
+  message: ({ $params: [options] }) => {
+    const optionsValues = Array.isArray(options) ? options : Object.values(options);
+    return `The value must be one of the following: ${optionsValues.join(', ')}`;
+  },
 }) as any;

@@ -40,7 +40,7 @@ export function nativeEnum<T extends EnumLike>(
   enumLike: T
 ): RegleRuleDefinition<
   'nativeEnum',
-  MaybeInput<T[keyof T]>,
+  T[keyof T],
   [enumLike: T],
   false,
   boolean,

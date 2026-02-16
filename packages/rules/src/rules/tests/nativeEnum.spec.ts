@@ -43,7 +43,7 @@ describe('nativeEnum exec', () => {
   expectTypeOf(nativeEnumRule).toEqualTypeOf<
     RegleRuleDefinition<
       'nativeEnum',
-      MaybeInput<'Meat' | 'Fish'>,
+      'Meat' | 'Fish',
       [
         enumLike: {
           readonly Meat: 'Meat';

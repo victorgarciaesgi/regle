@@ -34,6 +34,36 @@ describe('oneOf exec', () => {
     expect(oneOf(undefined as any).exec(5)).toBe(true);
   });
 
+  it('should work with enumLikes', () => {
+    const enumLike = {
+      One: 'One',
+      Two: 'Two',
+    } as const;
+
+    const oneOfRule = oneOf(enumLike);
+    expectTypeOf(oneOfRule).toEqualTypeOf<
+      RegleRuleDefinition<
+        'oneOf',
+        'One' | 'Two',
+        [options: 'One' | 'Two'],
+        false,
+        boolean,
+        MaybeInput<'One' | 'Two'>,
+        string | number,
+        boolean
+      >
+    >();
+    expect(oneOfRule.exec('One')).toBe(true);
+
+    expect(oneOfRule.exec('Two')).toBe(true);
+    expect(oneOfRule.exec(undefined)).toBe(true);
+    expect(oneOfRule.exec(5)).toBe(false);
+    expect(oneOfRule.exec('Three')).toBe(false);
+    expect(oneOfRule.exec('')).toBe(true);
+    expect(oneOfRule.exec(null as any)).toBe(true);
+    expect(oneOfRule.exec(undefined as any)).toBe(true);
+  });
+
   const oneOfRule = oneOf(['One', 'Two']);
   expectTypeOf(oneOfRule).toEqualTypeOf<
     RegleRuleDefinition<
