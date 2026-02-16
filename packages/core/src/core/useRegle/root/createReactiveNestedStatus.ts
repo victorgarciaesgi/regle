@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect, isRef } from 'vue';
+import { computed, effectScope, isRef, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -19,8 +19,7 @@ import type {
   RegleValidationGroupOutput,
   ResetOptions,
 } from '../../../types';
-import { mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../utils';
-import { isRefObject } from '../../../utils';
+import { isRefObject, mergeArrayGroupProperties, mergeBooleanGroupProperties } from '../../../utils';
 import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isStatic, isValidatorRulesDef } from '../guards';
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';

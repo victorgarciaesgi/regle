@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
 import {
   abortablePromise,
   cloneDeep,
@@ -757,6 +757,8 @@ export function createReactiveFieldStatus({
         Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()))
       );
       const results = await promise;
+
+      await nextTick();
 
       const validationResults = results.every((value) => value.status === 'fulfilled' && value.value === true);
 
