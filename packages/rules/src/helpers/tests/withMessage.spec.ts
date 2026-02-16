@@ -2,7 +2,7 @@ import type { CommonComparisonOptions, Maybe, RegleRuleDefinition, RegleRuleWith
 import { createRule, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
-import { dateBefore, email, minLength, oneOf, required, sameAs } from '../../rules';
+import { dateBefore, email, minLength, oneOf, required, sameAs, type EnumOneOfLike } from '../../rules';
 import { and } from '../and';
 import { isFilled } from '../ruleHelpers';
 import { withAsync } from '../withAsync';
@@ -332,7 +332,9 @@ describe('withMessage helper', () => {
     });
 
     withMessage(oneOf, ({ $params: [options] }) => {
-      expectTypeOf(options).toEqualTypeOf<readonly [string | number, ...(string | number)[]] | string>();
+      expectTypeOf(options).toEqualTypeOf<
+        readonly [string | number, ...(string | number)[]] | EnumOneOfLike<unknown>
+      >();
       return 'test';
     });
 
