@@ -169,7 +169,7 @@ export type DefaultValidators = {
   oneOf: RegleRuleDefinition<
     unknown,
     string | number,
-    [options: readonly [string | number, ...(string | number)[]]],
+    [options: readonly [string | number, ...(string | number)[]] | string],
     false,
     boolean,
     MaybeInput<string | number>,

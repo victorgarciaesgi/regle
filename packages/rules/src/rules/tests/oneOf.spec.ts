@@ -83,6 +83,14 @@ describe('oneOf exec', () => {
 });
 
 describe('oneOf on useRegle', () => {
+  it('should work with useRegle and enumLike', async () => {
+    const enumLike = {
+      One: 'One',
+      Two: 'Two',
+    } as const;
+    return useRegle({ name: '' as keyof typeof enumLike | undefined }, { name: { oneOf: oneOf(enumLike) } });
+  });
+
   it('should work with useRegle', async () => {
     function formComponent() {
       return useRegle({ name: '' as string | number }, { name: { oneOf: oneOf(['One', 'Two']) } });
