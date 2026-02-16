@@ -332,7 +332,7 @@ describe('withMessage helper', () => {
     });
 
     withMessage(oneOf, ({ $params: [options] }) => {
-      expectTypeOf(options).toEqualTypeOf<readonly [string | number, ...(string | number)[]]>();
+      expectTypeOf(options).toEqualTypeOf<readonly [string | number, ...(string | number)[]] | string>();
       return 'test';
     });
 

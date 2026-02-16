@@ -23,6 +23,10 @@ export interface UrlOptions {
   protocol?: RegExp;
 }
 
+type EnumOneOfLike<TValue extends unknown> = {
+  readonly [k: string]: TValue;
+};
+
 export type DefaultValidators = {
   alpha: RegleRuleWithParamsDefinition<unknown, string, [options?: CommonAlphaOptions | undefined]>;
   alphaNum: RegleRuleWithParamsDefinition<unknown, string | number, [options?: CommonAlphaOptions | undefined]>;
@@ -169,7 +173,7 @@ export type DefaultValidators = {
   oneOf: RegleRuleDefinition<
     unknown,
     string | number,
-    [options: readonly [string | number, ...(string | number)[]] | string],
+    [options: readonly [string | number, ...(string | number)[]] | EnumOneOfLike<unknown>],
     false,
     boolean,
     MaybeInput<string | number>,

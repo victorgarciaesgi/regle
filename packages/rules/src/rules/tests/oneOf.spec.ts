@@ -45,7 +45,7 @@ describe('oneOf exec', () => {
       RegleRuleDefinition<
         'oneOf',
         'One' | 'Two',
-        [options: 'One' | 'Two'],
+        [options: typeof enumLike],
         false,
         boolean,
         MaybeInput<'One' | 'Two'>,

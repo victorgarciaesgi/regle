@@ -18,7 +18,7 @@ interface OneOfFn {
   ): RegleRuleDefinition<
     'oneOf',
     TEnum[keyof TEnum],
-    [options: TEnum[keyof TEnum]],
+    [options: TEnum],
     false,
     boolean,
     MaybeInput<TEnum[keyof TEnum]>,
@@ -41,7 +41,7 @@ interface OneOfFn {
   ): RegleRuleDefinition<
     'oneOf',
     string | number,
-    [options: readonly [string | number, ...(string | number)[]] | string],
+    [options: readonly [string | number, ...(string | number)[]] | EnumOneOfLike<unknown>],
     false,
     boolean,
     MaybeInput<string | number>,
