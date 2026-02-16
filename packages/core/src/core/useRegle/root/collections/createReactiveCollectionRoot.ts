@@ -442,6 +442,24 @@ export function createReactiveCollectionStatus({
         return false;
       });
 
+      const $clearExternalErrorsOnChange = computed<boolean>(() => {
+        if ($localOptions.value.$clearExternalErrorsOnChange != null) {
+          return $localOptions.value.$clearExternalErrorsOnChange;
+        } else if (unref(options.clearExternalErrorsOnChange) != null) {
+          return unref(options.clearExternalErrorsOnChange) === true;
+        }
+        return true;
+      });
+
+      const $clearExternalErrorsOnValidate = computed<boolean>(() => {
+        if ($localOptions.value.$clearExternalErrorsOnValidate != null) {
+          return $localOptions.value.$clearExternalErrorsOnValidate;
+        } else if (unref(options.clearExternalErrorsOnValidate) != null) {
+          return unref(options.clearExternalErrorsOnValidate) === true;
+        }
+        return true;
+      });
+
       const $isEdited = computed<isEditedHandlerFn<unknown> | undefined>(() => {
         if ($localOptions.value.$isEdited != null) {
           return $localOptions.value.$isEdited;
@@ -461,7 +479,8 @@ export function createReactiveCollectionStatus({
           $rewardEarly: $rewardEarly.value,
           $autoDirty: $autoDirty.value,
           $silent: $silent.value,
-          $clearExternalErrorsOnChange: $localOptions.value.$clearExternalErrorsOnChange ?? false,
+          $clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+          $clearExternalErrorsOnValidate: $clearExternalErrorsOnValidate.value,
           $immediateDirty: $immediateDirty.value,
           $isEdited: $isEdited.value,
         };

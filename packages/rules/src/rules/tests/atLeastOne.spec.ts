@@ -35,6 +35,8 @@ describe('atLeastOne on useRegle', () => {
     const { vm } = createRegleComponent(formComponent);
 
     await vm.r$.$validate();
+    await nextTick();
+
     expect(vm.r$.unknownObject.$error).toBe(true);
     expect(vm.r$.data.$error).toBe(true);
     expect(vm.r$.unknownObject.$self.$errors).toStrictEqual(['At least one item is required']);

@@ -26,7 +26,7 @@ export type ResetOptions<TState extends unknown> = RequireOneOrNone<
     /**
      * Clears the $externalErrors state back to an empty object.
      *
-     * @default false
+     * @default true
      */
     clearExternalErrors?: boolean;
     /**

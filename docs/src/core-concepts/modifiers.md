@@ -88,6 +88,16 @@ __Default__: `true`
 This mode is similar to `rewardEarly`, but only applies to external errors.
 Setting it to `false` will keep the server errors until `$clearExternalErrors` is called.
 
+
+### `clearExternalErrorsOnValidate`
+
+__Type__: `boolean`
+
+__Default__: `true`
+
+This mode is similar to `clearExternalErrorsOnChange`, but for the `$validate` and `$validateSync` methods.
+Setting it to `false` will keep the server errors until `$clearExternalErrors` is called manually, or the `externalErrors` is set again.
+
 ### `validationGroups`
 
 __Type__: `(fields) => Record<string, (RegleFieldStatus |RegleCollectionStatus)[]>`

@@ -26,7 +26,7 @@ export interface RegleBehaviourOptions {
    */
   autoDirty?: boolean | undefined;
   /**
-   * Only update error status when calling `$validate`.
+   * Only update error status when calling `$validate` or `$validateSync`.
    * Will not display errors as you type
    * @default false
    *
@@ -35,7 +35,7 @@ export interface RegleBehaviourOptions {
    */
   silent?: boolean | undefined;
   /**
-   * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()`
+   * The fields will turn valid when they are, but not invalid unless calling `r$.$validate()` or `$validateSync`
    * @default false
    */
   rewardEarly?: boolean | undefined;
@@ -47,6 +47,12 @@ export interface RegleBehaviourOptions {
    * @default true
    */
   clearExternalErrorsOnChange?: boolean | undefined;
+  /**
+   * Define whether the external errors should be cleared when calling `$validate` or `$validateSync`
+   *
+   * @default true
+   */
+  clearExternalErrorsOnValidate?: boolean | undefined;
   /**
    * Set the dirty state to true when the form is initialized.
    * @default false

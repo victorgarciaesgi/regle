@@ -75,6 +75,22 @@ describe('external errors', () => {
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
+    await vm.r$.$validate();
+    await nextTick();
+
+    expect(vm.externalErrors).toStrictEqual({});
+    shouldBeUnRuledCorrectField(vm.r$.root);
+
+    vm.externalErrors = {
+      root: ['Server Error'],
+      nested: { name1: { name2: ['Server Error'] } },
+      collection: {
+        $each: [{}, { item: ['Server Error'] }],
+      },
+    };
+
+    await vm.$nextTick();
+
     vm.r$.$value.root = 'foo';
     vm.r$.$value.nested.name1.name2 = 'foo';
     vm.r$.$value.collection[1].item = 'foo';

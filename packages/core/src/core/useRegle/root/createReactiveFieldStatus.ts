@@ -75,6 +75,7 @@ export function createReactiveFieldStatus({
     $autoDirty: ComputedRef<boolean>;
     $silent: ComputedRef<boolean>;
     $clearExternalErrorsOnChange: ComputedRef<boolean>;
+    $clearExternalErrorsOnValidate: ComputedRef<boolean>;
     $immediateDirty: ComputedRef<boolean>;
     $issues: ComputedRef<RegleFieldIssue[]>;
     $silentIssues: ComputedRef<RegleFieldIssue[]>;
@@ -289,6 +290,15 @@ export function createReactiveFieldStatus({
         return true;
       });
 
+      const $clearExternalErrorsOnValidate = computed<boolean>(() => {
+        if ($localOptions.value.$clearExternalErrorsOnValidate != null) {
+          return !!$localOptions.value.$clearExternalErrorsOnValidate;
+        } else if (unref(options.clearExternalErrorsOnValidate) != null) {
+          return unref(options.clearExternalErrorsOnValidate) === true;
+        }
+        return true;
+      });
+
       const $silent = computed<boolean>(() => {
         if ($rewardEarly.value) {
           return true;
@@ -476,6 +486,7 @@ export function createReactiveFieldStatus({
           $autoDirty: $autoDirty.value,
           $silent: $silent.value,
           $clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+          $clearExternalErrorsOnValidate: $clearExternalErrorsOnValidate.value,
           $immediateDirty: $immediateDirty.value,
           $isEdited: $isEdited.value,
         };
@@ -541,6 +552,7 @@ export function createReactiveFieldStatus({
         $autoDirty,
         $silent,
         $clearExternalErrorsOnChange,
+        $clearExternalErrorsOnValidate,
         $anyDirty,
         $edited,
         $anyEdited,
@@ -785,6 +797,11 @@ export function createReactiveFieldStatus({
       if (schemaMode) {
         return false;
       }
+
+      if (scopeState.$clearExternalErrorsOnValidate.value) {
+        $clearExternalErrors();
+      }
+
       const result = Object.values($rules.value)
         .map((rule) => rule.$parseSync())
         .every((result) => !!result);
@@ -826,6 +843,7 @@ export function createReactiveFieldStatus({
     $autoDirty,
     $rewardEarly,
     $clearExternalErrorsOnChange,
+    $clearExternalErrorsOnValidate,
     $haveAnyAsyncRule,
     $debounce,
     $lazy,

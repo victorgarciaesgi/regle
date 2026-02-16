@@ -66,6 +66,7 @@ export function createReactiveNestedStatus({
     $issues: ComputedRef<Record<string, $InternalRegleIssues>>;
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
+    $clearExternalErrorsOnValidate: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<$InternalRegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
@@ -447,6 +448,13 @@ export function createReactiveNestedStatus({
         return false;
       });
 
+      const $clearExternalErrorsOnValidate = computed<boolean>(() => {
+        if (unref(commonArgs.options.clearExternalErrorsOnValidate) != null) {
+          return unref(commonArgs.options.clearExternalErrorsOnValidate) === true;
+        }
+        return true;
+      });
+
       const $ready = computed<boolean>(() => {
         return !($invalid.value || $pending.value);
       });
@@ -525,6 +533,7 @@ export function createReactiveNestedStatus({
           rewardEarly: $rewardEarly.value,
           silent: $silent.value,
           clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
+          clearExternalErrorsOnValidate: $clearExternalErrorsOnValidate.value,
           immediateDirty: $immediateDirty.value,
           id: unref(commonArgs.options.id),
         };
@@ -619,6 +628,7 @@ export function createReactiveNestedStatus({
         $issues,
         $errors,
         $silentErrors,
+        $clearExternalErrorsOnValidate,
         $ready,
         $name,
         $shortcuts,
@@ -658,11 +668,9 @@ export function createReactiveNestedStatus({
   }
 
   function $clearExternalErrors() {
-    const fields = $fields.value;
-    for (const field of Object.values(fields)) {
-      field.$clearExternalErrors();
+    if (externalErrors && !isEmpty(externalErrors.value)) {
+      externalErrors.value = {};
     }
-    $selfStatus.value?.$clearExternalErrors();
   }
 
   function $reset(options?: ResetOptions<Record<string, unknown>>, fromParent?: boolean): void {
@@ -698,7 +706,7 @@ export function createReactiveNestedStatus({
       $selfStatus.value?.$reset(options, true);
     }
 
-    if (options?.clearExternalErrors) {
+    if (options?.clearExternalErrors === false) {
       $clearExternalErrors();
     }
 
@@ -765,6 +773,10 @@ export function createReactiveNestedStatus({
       } else {
         const data = state.value;
         $abort();
+
+        if (scopeState.$clearExternalErrorsOnValidate.value) {
+          $clearExternalErrors();
+        }
 
         const validatePromises = [
           ...Object.values($fields.value).map((statusOrField) => statusOrField.$validate()),

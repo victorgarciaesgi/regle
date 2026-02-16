@@ -115,7 +115,27 @@ async function submit() {
 
 By default, when you set the external errors, Regle will keep them until the form is validated or modified again.
 
-You can modify this behavior by setting the `clearExternalErrorsOnChange` modifier to `false`.
+This behaviors can be modified with this options:
+
+
+### `clearExternalErrors`
+
+```ts
+r$.$reset({ clearExternalErrors: false });
+```
+
+### `clearExternalErrorsOnValidate`
+
+```ts
+import { useRegle } from '@regle/core';
+
+const { r$ } = useRegle(form, {}, { 
+  externalErrors, 
+  clearExternalErrorsOnValidate: false 
+})
+```
+
+### `clearExternalErrorsOnChange`
 
 ```ts
 import { useRegle } from '@regle/core';
@@ -125,6 +145,8 @@ const { r$ } = useRegle(form, {}, {
   clearExternalErrorsOnChange: false 
 })
 ```
+
+### `clearExternalErrors`
 
 You can also clear the errors manually by calling the `$clearExternalErrors` method.
 
