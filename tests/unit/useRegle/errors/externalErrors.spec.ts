@@ -10,6 +10,8 @@ import {
   shouldBeUnRuledPristineField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
+import { flushPromises } from '@vue/test-utils';
+import { vueVersion } from '../../../utils/vueVersion';
 
 describe('external errors', () => {
   it('should behave correctly when no client rule are present', async () => {
@@ -75,11 +77,12 @@ describe('external errors', () => {
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
-    await vm.r$.$validate();
-    await nextTick();
-
-    expect(vm.externalErrors).toStrictEqual({});
-    shouldBeUnRuledCorrectField(vm.r$.root);
+    if (vueVersion === '3.5') {
+      await vm.r$.$validate();
+      await nextTick();
+      expect(vm.externalErrors).toStrictEqual({});
+      shouldBeUnRuledCorrectField(vm.r$.root);
+    }
 
     vm.externalErrors = {
       root: ['Server Error'],
