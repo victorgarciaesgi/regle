@@ -10,7 +10,6 @@ import {
   shouldBeUnRuledPristineField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
-import { flushPromises } from '@vue/test-utils';
 import { vueVersion } from '../../../utils/vueVersion';
 
 describe('external errors', () => {

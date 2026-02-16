@@ -1,39 +1,28 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { createRule, useRegle, type MaybeInput } from '@regle/core';
-  import { required, minLength, email } from '@regle/rules';
-
-  function foo(value: MaybeInput<string>, prefix = 'bar') {
-    return {
-      $valid: !!value && value.startsWith(prefix),
-      prefix,
-    };
-  }
+  import { useRegle, useRules } from '@regle/core';
+  import { required, minLength, email, string } from '@regle/rules';
+  import { useRegleSchema } from '@regle/schemas';
 
   const state = ref({ name: '', email: '' });
 
-  const rule = createRule({
-    type: 'default',
-    validator(value: MaybeInput<string>, prefix: string = 'bar') {
-      return {
-        $valid: !!value && value.startsWith(prefix),
-        prefix,
-      };
-    },
-    message: ({ prefix }) => `Value must start with ${prefix}`,
-  });
+  const externalErrors = ref({});
 
-  const { r$ } = useRegle(state, {
-    name: { required, rule },
-    email: { email },
-  });
+  const schema = useRules({ username: { required, string: string } });
+
+  const { r$ } = useRegleSchema({ username: '' }, schema);
 
   async function submit() {
     const { valid, data } = await r$.$validate();
+    console.log('valid', valid);
     if (valid) {
-      console.log(data.name);
-      //               ^ string
-      console.log(data.email);
+      externalErrors.value = {
+        name: ['Name is required'],
+        email: ['Email is required'],
+      };
+      // console.log(data.name);
+      // //               ^ string
+      // console.log(data.email);
       //.              ^ string | undefined
     } else {
       console.warn('Errors: ', r$.$errors);
@@ -45,7 +34,7 @@
   <div class="container p-3">
     <h2>Hello Regle!</h2>
 
-    <div class="py-2 has-validation">
+    <!-- <div class="py-2 has-validation">
       <label class="form-label">Name</label>
       <input
         class="form-control"
@@ -81,7 +70,7 @@
           {{ error }}
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <button class="btn btn-primary m-2" @click="submit">Submit</button>
     <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>

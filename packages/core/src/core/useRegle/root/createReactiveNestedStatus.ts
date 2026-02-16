@@ -808,6 +808,11 @@ export function createReactiveNestedStatus({
       if (forceValues) {
         state.value = forceValues;
       }
+
+      if (scopeState.$clearExternalErrorsOnValidate.value) {
+        $clearExternalErrors();
+      }
+
       const result = [
         ...Object.values($fields.value).map((statusOrField) => statusOrField.$validateSync()),
         ...($selfStatus.value ? [$selfStatus.value?.$validateSync()] : []),

@@ -3,18 +3,24 @@ import { required, string } from '@regle/rules';
 import { useRegleSchema } from '@regle/schemas';
 import { nextTick } from 'vue';
 import { shouldBePristineField, shouldBeValidField } from '../../utils/validations.utils';
+import { createRegleComponent } from '../../utils/test.utils';
 
 describe('useRules schema', () => {
   it('should be able to use itself as aschema', async () => {
-    const schema = useRules({ username: { required, string } });
+    function useRulesSchema() {
+      const schema = useRules({ username: { required, string } });
 
-    const { r$ } = useRegleSchema({ username: '' }, schema);
+      const { r$ } = useRegleSchema({ username: '' }, schema);
+      return { r$ };
+    }
 
-    shouldBePristineField(r$.username);
+    const { vm } = createRegleComponent(useRulesSchema);
 
-    r$.$value.username = 'foo';
+    shouldBePristineField(vm.r$.username);
+
+    vm.r$.$value.username = 'foo';
     await nextTick();
 
-    shouldBeValidField(r$.username);
+    shouldBeValidField(vm.r$.username);
   });
 });

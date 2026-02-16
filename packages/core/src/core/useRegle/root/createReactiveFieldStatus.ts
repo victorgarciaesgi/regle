@@ -735,32 +735,13 @@ export function createReactiveFieldStatus({
           };
         }
       }
+
       const data = state.value;
 
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
-      } else if (
-        !scopeState.$silent.value &&
-        scopeState.$dirty.value &&
-        !scopeState.$pending.value &&
-        !$isDebouncing.value &&
-        !scopeState.$haveAnyAsyncRule.value
-      ) {
-        return {
-          valid: !scopeState.$error.value,
-          data,
-          errors: scopeState.$errors.value,
-          issues: scopeState.$issues.value,
-        };
       }
-      if (schemaMode) {
-        return {
-          valid: !schemaErrors?.value?.length,
-          data,
-          errors: scopeState.$errors.value,
-          issues: scopeState.$issues.value,
-        };
-      } else if (isEmpty($rules.value)) {
+      if (isEmpty($rules.value)) {
         return { valid: true, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
       }
 
@@ -798,13 +779,10 @@ export function createReactiveFieldStatus({
         return false;
       }
 
-      if (scopeState.$clearExternalErrorsOnValidate.value) {
-        $clearExternalErrors();
-      }
-
       const result = Object.values($rules.value)
         .map((rule) => rule.$parseSync())
         .every((result) => !!result);
+
       return result;
     } catch {
       return false;

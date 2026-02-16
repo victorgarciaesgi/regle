@@ -257,6 +257,9 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
           if (resolvedOptions.silent) {
             return;
           }
+          if (computedSchema.value['~standard'].vendor === 'regle') {
+            return;
+          }
           computeErrors();
         },
         { deep: true }
