@@ -35,7 +35,7 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit --stableTypeOrdering",
+    "typecheck": "tsgo --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts --watch",

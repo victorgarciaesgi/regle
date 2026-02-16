@@ -148,4 +148,5 @@ export type {
   CustomNestedProperties,
   CustomCollectionProperties,
   ParamsToLooseParams,
+  RegleRuleDefinitionLight,
 } from './types';
