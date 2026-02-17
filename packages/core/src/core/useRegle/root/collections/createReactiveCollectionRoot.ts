@@ -457,7 +457,7 @@ export function createReactiveCollectionStatus({
         } else if (unref(options.clearExternalErrorsOnValidate) != null) {
           return unref(options.clearExternalErrorsOnValidate) === true;
         }
-        return true;
+        return false;
       });
 
       const $isEdited = computed<isEditedHandlerFn<unknown> | undefined>(() => {

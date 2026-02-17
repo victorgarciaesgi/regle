@@ -452,7 +452,7 @@ export function createReactiveNestedStatus({
         if (unref(commonArgs.options.clearExternalErrorsOnValidate) != null) {
           return unref(commonArgs.options.clearExternalErrorsOnValidate) === true;
         }
-        return true;
+        return false;
       });
 
       const $ready = computed<boolean>(() => {

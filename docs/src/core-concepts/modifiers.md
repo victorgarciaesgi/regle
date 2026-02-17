@@ -93,7 +93,7 @@ Setting it to `false` will keep the server errors until `$clearExternalErrors` i
 
 __Type__: `boolean`
 
-__Default__: `true`
+__Default__: `false`
 
 This mode is similar to `clearExternalErrorsOnChange`, but for the `$validate` and `$validateSync` methods.
 Setting it to `false` will keep the server errors until `$clearExternalErrors` is called manually, or the `externalErrors` is set again.

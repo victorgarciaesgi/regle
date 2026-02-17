@@ -76,20 +76,14 @@ describe('external errors', () => {
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Error']);
 
-    if (vueVersion === '3.5') {
-      await vm.r$.$validate();
-      await nextTick();
-      expect(vm.externalErrors).toStrictEqual({});
-      shouldBeUnRuledCorrectField(vm.r$.root);
-    }
+    const { valid } = await vm.r$.$validate();
 
-    vm.externalErrors = {
-      root: ['Server Error'],
-      nested: { name1: { name2: ['Server Error'] } },
-      collection: {
-        $each: [{}, { item: ['Server Error'] }],
-      },
-    };
+    // Validation is true because all local rules are valid, this doesn't count external errors
+    expect(valid).toBe(true);
+
+    if (vueVersion === '3.5') {
+      await nextTick();
+    }
 
     await vm.$nextTick();
 

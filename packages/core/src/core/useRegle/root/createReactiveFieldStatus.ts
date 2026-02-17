@@ -296,7 +296,7 @@ export function createReactiveFieldStatus({
         } else if (unref(options.clearExternalErrorsOnValidate) != null) {
           return unref(options.clearExternalErrorsOnValidate) === true;
         }
-        return true;
+        return false;
       });
 
       const $silent = computed<boolean>(() => {

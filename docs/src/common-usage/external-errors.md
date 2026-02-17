@@ -131,7 +131,7 @@ import { useRegle } from '@regle/core';
 
 const { r$ } = useRegle(form, {}, { 
   externalErrors, 
-  clearExternalErrorsOnValidate: false 
+  clearExternalErrorsOnValidate: true 
 })
 ```
 
