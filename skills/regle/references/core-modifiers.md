@@ -22,6 +22,7 @@ const { r$ } = useRegle({}, {}, {
 | `rewardEarly` | `boolean` | `false` | Once valid, stay valid until `$validate` (reward-early-punish-late). Disables `autoDirty` |
 | `externalErrors` | `RegleExternalErrorTree` | -- | Server-side errors. See server errors reference |
 | `clearExternalErrorsOnChange` | `boolean` | `true` | Clear external errors on value change |
+| `clearExternalErrorsOnValidate` | `boolean` | `false` | Clear external errors when `$validate` / `$validateSync` runs |
 
 ### Validation groups
 
@@ -81,4 +82,17 @@ const { r$ } = useRegle({ collection: [] }, {
     $each: { name: { required } },
   },
 });
+```
+
+## External errors quick notes
+
+- `externalErrors` can be a nested tree matching your form shape, or a dot-path object like `Record<string, string[]>`.
+- Collections with server-only validation should still declare collection shape in rules:
+
+```ts
+const { r$ } = useRegle(
+  { collection: [] },
+  { collection: { $each: {} } },
+  { externalErrors }
+);
 ```

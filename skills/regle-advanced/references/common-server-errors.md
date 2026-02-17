@@ -49,16 +49,38 @@ async function submit() {
 
 ## Clearing errors
 
-By default, external errors clear when the form value changes. Change this behavior:
+By default, external errors can be cleared by change/validate cycles depending on options.
+
+### `clearExternalErrorsOnChange`
+
+Default: `true`.
 
 ```ts
 const { r$ } = useRegle(form, {}, {
   externalErrors,
   clearExternalErrorsOnChange: false, // Keep errors until manually cleared
 });
+```
 
+### `clearExternalErrorsOnValidate`
+
+Default: `false`.
+
+```ts
+const { r$ } = useRegle(form, {}, {
+  externalErrors,
+  clearExternalErrorsOnValidate: true, // Clear on $validate / $validateSync
+});
+```
+
+### Manual clear and reset behavior
+
+```ts
 // Manual clear
 r$.$clearExternalErrors();
+
+// Keep external errors on reset
+r$.$reset({ clearExternalErrors: false });
 ```
 
 ## Collections with external errors
@@ -69,4 +91,14 @@ Declare `$each` (even empty) for Regle to treat the array as a collection:
 const { r$ } = useRegle({ collection: [] }, {
   collection: { $each: {} },
 }, { externalErrors });
+```
+
+## Testing async server-error flows
+
+When asserting right after validation in component tests:
+
+```ts
+await r$.$validate();
+await nextTick();
+await flushPromises();
 ```
