@@ -42,8 +42,8 @@
     "format:staged": "oxfmt"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.4.1",
-    "@commitlint/config-conventional": "20.4.1",
+    "@commitlint/cli": "20.4.2",
+    "@commitlint/config-conventional": "20.4.2",
     "@commitlint/types": "20.4.0",
     "@nuxt/kit": "catalog:",
     "@nuxt/schema": "catalog:",
@@ -61,22 +61,22 @@
     "changelogithub": "14.0.0",
     "corepack": "0.34.6",
     "env-cmd": "11.0.0",
-    "happy-dom": "20.6.1",
+    "happy-dom": "20.7.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
     "nuxt": "catalog:",
-    "oxfmt": "0.28.0",
-    "oxlint": "1.46.0",
+    "oxfmt": "0.35.0",
+    "oxlint": "1.50.0",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
-    "rolldown": "1.0.0-rc.2",
+    "rolldown": "1.0.0-rc.5",
     "semver": "7.7.4",
     "std-env": "3.10.0",
     "taze": "19.9.2",
     "tsdown": "catalog:",
     "tsx": "catalog:",
-    "turbo": "2.8.3",
+    "turbo": "2.8.10",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
@@ -109,5 +109,5 @@
     "node": ">=22",
     "pnpm": ">=10.14.0"
   },
-  "packageManager": "pnpm@10.29.2"
+  "packageManager": "pnpm@10.30.1"
 }

@@ -43,9 +43,9 @@ catalog:
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
 
   # Vue Ecosystem
-  vue-router: 5.0.2
-  vue-tsc: 3.2.4
-  vue-eslint-parser: 10.2.0
+  vue-router: 5.0.3
+  vue-tsc: 3.2.5
+  vue-eslint-parser: 10.4.0
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5
 
@@ -80,6 +80,6 @@ catalog:
   zod: 4.3.6
 
   # Front
-  tailwindcss: 4.1.18
+  tailwindcss: 4.2.1
   check-password-strength: 3.0.0
   sass: 1.97.3
