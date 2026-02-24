@@ -4,6 +4,7 @@ import type {
   Maybe,
   ParamsToLooseParams,
   RegleRuleDefinition,
+  RegleRuleMetadataConsumer,
   RegleRuleRaw,
   RegleRuleWithParamsDefinitionInput,
 } from '@regle/core';
@@ -74,7 +75,7 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
         >
       ? RegleRuleDefinition<TType, TValue, ParamsToLooseParams<[...TParams], [condition: boolean]>, TAsync, TMetadata>
       : TRule {
-  const { _type, validator, _params, _message, _async } = extractValidator(rule);
+  const { _type, validator, _params, _message, _async, _active } = extractValidator(rule);
 
   const augmentedParams = (_params ?? []).concat(options?.hideParams ? [] : [_condition]);
 
@@ -86,9 +87,16 @@ export function applyIf<TRule extends FormRuleDeclaration<any>>(
     return true;
   }
 
-  function newActive() {
+  function newActive(metadata: RegleRuleMetadataConsumer<any, any[]>) {
     const [condition] = unwrapRuleParameters<[boolean]>([_condition]);
-    return condition;
+    if (condition) {
+      if (typeof _active === 'function') {
+        return _active(metadata);
+      } else {
+        return _active ?? true;
+      }
+    }
+    return false;
   }
 
   const newRule = createRule({

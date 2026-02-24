@@ -15,17 +15,14 @@
 
   const state = ref({ firstName: '', lastName: '', checked: false });
 
-  const foo = pipe(
-    requiredIf(() => state.value.checked),
-    minLength(4)
-  );
+  const count = ref(8);
 
   const { r$ } = useRegle(state, () => {
     return {
       firstName: { required: requiredIf(() => state.value.checked), minLength: minLength(4) },
       lastName: pipe(
         requiredIf(() => state.value.checked),
-        minLength(4)
+        minLength(count)
       ), // requiredIf allways true
     };
   });

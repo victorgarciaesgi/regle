@@ -1,6 +1,6 @@
 import { useRegle, type Maybe } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, nextTick } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { email, minLength, required, withAsync } from '../..';
 import { timeout } from '../../../../../tests/utils';
 import { pipe } from '../pipe';
@@ -277,6 +277,49 @@ describe('pipe', () => {
     expect(vm.r$.email.$rules.anonymous1.$valid).toBe(false);
     expect(emailValidatorMock).not.toHaveBeenCalledWith('test@example.com');
     expect(vm.r$.email.$invalid).toBe(true);
+  });
+
+  it('should update when rules with dynamic parameters change', async () => {
+    const { vm } = mount(
+      defineComponent({
+        template: '<div></div>',
+        setup() {
+          const minCount = ref(3);
+          const { r$ } = useRegle({ name: '' }, { name: pipe(required, minLength(minCount)) });
+          return { r$, minCount };
+        },
+      })
+    );
+
+    vm.r$.name.$value = 'ab';
+    await nextTick();
+
+    expect(vm.r$.name.$rules.minLength.$valid).toBe(false);
+    expect(vm.r$.name.$invalid).toBe(true);
+
+    vm.r$.name.$value = 'abc';
+    await nextTick();
+
+    expect(vm.r$.name.$rules.minLength.$valid).toBe(true);
+    expect(vm.r$.name.$invalid).toBe(false);
+
+    vm.minCount = 5;
+    await nextTick();
+
+    expect(vm.r$.name.$rules.minLength.$valid).toBe(false);
+    expect(vm.r$.name.$invalid).toBe(true);
+
+    vm.r$.name.$value = 'abcde';
+    await nextTick();
+
+    expect(vm.r$.name.$rules.minLength.$valid).toBe(true);
+    expect(vm.r$.name.$invalid).toBe(false);
+
+    vm.minCount = 2;
+    await nextTick();
+
+    expect(vm.r$.name.$rules.minLength.$valid).toBe(true);
+    expect(vm.r$.name.$invalid).toBe(false);
   });
 
   it('should cleanup pipe scopes on component unmount', async () => {

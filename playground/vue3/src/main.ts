@@ -40,7 +40,7 @@ const options = defineRegleOptions({
     required: withMessage(required, 'Coucou'),
   }),
   modifiers: {
-    autoDirty: false,
+    autoDirty: true,
   },
   shortcuts: {
     fields: {

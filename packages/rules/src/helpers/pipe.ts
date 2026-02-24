@@ -2,7 +2,6 @@ import {
   createRule,
   InternalRuleType,
   type FormRuleDeclaration,
-  type MaybeInput,
   type Prettify,
   type RegleRuleDefinition,
   type RegleRuleDefinitionProcessor,
@@ -10,9 +9,9 @@ import {
 } from '@regle/core';
 import type { IsTuple } from 'type-fest';
 import { computed, effectScope, onScopeDispose, ref, type ComputedRef, type EffectScope, type Ref } from 'vue';
+import { debounce, isObject } from '../../../shared';
 import { applyIf } from './applyIf';
 import { extractValidator } from './common/extractValidator';
-import { debounce, isObject } from '../../../shared';
 
 type PipeTupleToObject<TArray extends unknown[]> = {
   [Key in keyof TArray as TArray[Key] extends RegleRuleDefinition<infer TType extends string, any, any>

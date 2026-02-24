@@ -4,11 +4,7 @@ import type { FieldRegleBehaviourOptions } from '../core';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
 import type { ExtendedRulesDeclarations } from './rule.custom.types';
 import type { InlineRuleDeclaration, RegleFormPropertyType, ReglePartialRuleTree } from './rule.declaration.types';
-import type {
-  RegleRuleDefinition,
-  RegleRuleDefinitionLight,
-  RegleRuleMetadataDefinition,
-} from './rule.definition.type';
+import type { RegleRuleDefinitionLight, RegleRuleMetadataDefinition } from './rule.definition.type';
 import type { RegleRuleStatus } from './rule.status.types';
 
 export type RegleErrorTree<

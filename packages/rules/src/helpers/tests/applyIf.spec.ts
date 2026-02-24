@@ -3,7 +3,7 @@ import { createRule, RegleVuePlugin, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../../../tests/utils/test.utils';
-import { alpha, minLength, required, url } from '../../rules';
+import { alpha, minLength, required, requiredIf, url } from '../../rules';
 import { applyIf } from '../applyIf';
 import { isFilled } from '../ruleHelpers';
 
@@ -86,6 +86,59 @@ describe('applyIf helper', () => {
     await nextTick();
     expect(vm.r$.$errors.email).toStrictEqual(['This field is required']);
     expect(vm.r$.$error).toBe(true);
+  });
+
+  it('should work correctly with requiredIf rule', async () => {
+    const { vm } = createRegleComponent(() => {
+      const form = ref({
+        name: '',
+        applyCondition: false,
+        requiredCondition: false,
+      });
+
+      return useRegle(form, () => ({
+        name: {
+          required: applyIf(
+            () => form.value.applyCondition,
+            requiredIf(() => form.value.requiredCondition)
+          ),
+        },
+      }));
+    });
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
+
+    vm.r$.name.$touch();
+    await nextTick();
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
+
+    vm.r$.$value.requiredCondition = true;
+    await nextTick();
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
+
+    vm.r$.$value.applyCondition = true;
+    await nextTick();
+
+    expect(vm.r$.$errors.name).toStrictEqual(['This field is required']);
+    expect(vm.r$.$error).toBe(true);
+
+    vm.r$.$value.requiredCondition = false;
+    await nextTick();
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
+
+    vm.r$.$value.requiredCondition = true;
+    vm.r$.$value.name = 'hello';
+    await nextTick();
+
+    expect(vm.r$.$errors.name).toStrictEqual([]);
+    expect(vm.r$.$error).toBe(false);
   });
 
   it('should not add too much params other validators using it', async () => {
