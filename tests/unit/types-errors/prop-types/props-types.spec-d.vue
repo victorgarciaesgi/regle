@@ -9,6 +9,7 @@
     :enforced-rules-field="r$.firstName"
     :enforced-multiple-rules-field="r$.firstName"
     :enforced-custom-rules-field="r$2.firstName"
+    :enforced-custom-rules-with-params-field="r$2.firstName"
   />
   <!-- @vue-expect-error wrong props -->
   <ComponentTest v-bind="fakeProps" :unknown-field="r$" />
@@ -28,7 +29,7 @@
   /* oxlint-disable-next-line */
   import ComponentTest from './Component-test.vue';
   import { checked, minLength, required, sameAs } from '@regle/rules';
-  import { useCustomRegle } from './prop-types.config';
+  import { customRuleWithParams, useCustomRegle } from './prop-types.config';
   import type { ComponentProps } from 'vue-component-type-helpers';
 
   type Props = ComponentProps<typeof ComponentTest>;
@@ -57,7 +58,7 @@
     },
     {
       checked: { checked: checked },
-      firstName: { required, myCustomRule: required },
+      firstName: { required, myCustomRule: required, customRuleWithParams: customRuleWithParams() },
     }
   );
 </script>

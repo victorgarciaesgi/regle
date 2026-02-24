@@ -29,6 +29,11 @@
       RegleEnforceRequiredRules<'required' | 'minLength'>
     >;
     enforcedCustomRulesField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined, 'myCustomRule'>;
+    enforcedCustomRulesWithParamsField: RegleCustomFieldStatus<
+      typeof useCustomRegle,
+      string | undefined,
+      'customRuleWithParams'
+    >;
   }>();
 
   // -
@@ -96,6 +101,14 @@
 
   //-
   expectTypeOf(props.enforcedCustomRulesField.$test).toEqualTypeOf<boolean>();
+
+  //-
+  expectTypeOf(props.enforcedCustomRulesWithParamsField.$rules.customRuleWithParams).toEqualTypeOf<
+    RegleRuleStatus<string | undefined, [param1?: boolean], true>
+  >();
+  expectTypeOf(props.enforcedCustomRulesWithParamsField.$rules.customRuleWithParams.$params).toEqualTypeOf<
+    [param1?: boolean]
+  >();
 </script>
 
 <style lang="scss" scoped></style>
