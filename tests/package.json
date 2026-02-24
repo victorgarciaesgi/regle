@@ -19,7 +19,7 @@
     "valibot": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.2.4",
+    "vue-component-type-helpers": "3.2.5",
     "zod": "catalog:"
   }
 }
