@@ -134,7 +134,7 @@ export type ComputeFieldRules<
           '$each' | keyof FieldRegleBehaviourOptions
         >]: RegleRuleStatus<
           TState,
-          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinition<unknown, any, infer TParams, any> ? TParams : [],
+          UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinitionLight<infer TParams, any> ? TParams : [],
           UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinitionLight<any, any, infer TMetadata>
             ? TMetadata
             : UnwrapRef<TRules>[TRuleKey] extends InlineRuleDeclaration<any, any[], infer TReturn>
