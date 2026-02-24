@@ -2,6 +2,7 @@ import {
   createRule,
   InternalRuleType,
   type FormRuleDeclaration,
+  type MaybeInput,
   type Prettify,
   type RegleRuleDefinition,
   type RegleRuleDefinitionProcessor,
@@ -16,7 +17,7 @@ import { debounce, isObject } from '../../../shared';
 type PipeTupleToObject<TArray extends unknown[]> = {
   [Key in keyof TArray as TArray[Key] extends RegleRuleDefinition<infer TType extends string, any, any>
     ? `${TType & string}`
-    : `anonymous${Key & (`${number}` | (IsTuple<TArray> extends true ? never : number))}`]: TArray[Key];
+    : `anonymous${Key & (`${number}` | (IsTuple<TArray> extends true ? never : number))}`]: TArray[Key & string];
 };
 
 type TRulesTuple = [FormRuleDeclaration<any>, ...FormRuleDeclaration<any>[]];
@@ -113,7 +114,7 @@ function createTrackedValidator({
  * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#pipe Documentation}
  */
 export function pipe<const TRulesDelc extends [FormRuleDeclaration<any>, ...FormRuleDeclaration<any>[]]>(
-  ...rules: TRulesDelc
+  ...rules: [...TRulesDelc]
 ): Prettify<PipeTupleToObject<TRulesDelc>>;
 export function pipe<const TRulesDelc extends [FormRuleDeclaration<any>, ...FormRuleDeclaration<any>[]]>(
   rules: TRulesDelc,

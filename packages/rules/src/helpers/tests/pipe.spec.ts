@@ -24,6 +24,14 @@ describe('pipe', () => {
     expect(result).toBeInstanceOf(Object);
   });
 
+  it('should have correct types', () => {
+    const minLengthRule = minLength(3);
+    const result = pipe(minLengthRule, email);
+
+    expectTypeOf(result.minLength).toEqualTypeOf<typeof minLengthRule>();
+    expectTypeOf(result.email).toEqualTypeOf<typeof email>();
+  });
+
   const emailValidatorMock = vi.fn((value) => email.exec(value));
   email.validator = emailValidatorMock;
 
