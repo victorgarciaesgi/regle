@@ -2,8 +2,14 @@
   "name": "nuxt-test",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "dev:prepare": "nuxt prepare"
+  },
   "dependencies": {
     "@regle/nuxt": "workspace:*",
-    "check-password-strength": "catalog:"
+    "check-password-strength": "catalog:",
+    "pinia": "catalog:",
+    "@pinia/nuxt": "catalog:"
   }
 }

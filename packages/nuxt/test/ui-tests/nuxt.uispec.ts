@@ -60,3 +60,14 @@ test('Nuxt app should be rendered correctly', async ({ goto, page }) => {
   await page.locator('[data-testid=acceptTC] input').check();
   expect(await page.$('[data-testid=acceptTC] .errors')).toBeNull();
 });
+
+test('Regle store instance hydrates correctly in Pinia', async ({ goto, page }) => {
+  await goto('/store', { waitUntil: 'hydration' });
+
+  // Server should render and client should hydrate without payload serialization crashes.
+  await expect(page.locator('#__nuxt')).toContainText('false');
+
+  // Ensure Nuxt payload does not leak non-serializable Regle internals.
+  const piniaPayload = await page.evaluate(() => JSON.stringify((window as any).__NUXT__?.payload?.pinia ?? {}));
+  expect(piniaPayload).not.toContain('processShortcuts');
+});

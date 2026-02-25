@@ -21,6 +21,7 @@ export {
   useRules,
   markStatic,
   defineRegleOptions,
+  isRegleInstance,
   type CommonAlphaOptions,
   type CommonComparisonOptions,
   type UrlOptions,

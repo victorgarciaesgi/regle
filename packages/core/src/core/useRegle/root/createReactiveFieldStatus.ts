@@ -829,7 +829,7 @@ export function createReactiveFieldStatus({
   } = scopeState;
   // oxlint-enable typescript-eslint/no-unused-vars
 
-  return reactive({
+  const fullStatus = reactive({
     ...restScope,
     $externalErrors: externalErrors,
     $value: state,
@@ -852,4 +852,8 @@ export function createReactiveFieldStatus({
     '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
+
+  Object.defineProperty(fullStatus, Symbol.for('regle:instance'), { value: true });
+
+  return fullStatus;
 }
