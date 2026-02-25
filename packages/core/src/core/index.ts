@@ -24,3 +24,4 @@ export {
 export { createVariant, narrowVariant, variantToRef } from './variants';
 export { defineRules, refineRules } from './refineRules';
 export { useRules, type useRulesFn } from './useRegle/useRules';
+export { isRegleInstance } from '../utils';

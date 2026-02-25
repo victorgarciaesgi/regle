@@ -3,6 +3,16 @@ import { effectScope, type Ref } from 'vue';
 import { isObject } from '../../../shared';
 import type { MaybeGetter } from '../types';
 
+const REGLE_SYMBOL = Symbol.for('regle:instance');
+
+/**
+ * Checks if a value is a Regle instance (`r$`).
+ * Useful for integrations (e.g. Pinia) that need to identify Regle objects.
+ */
+export function isRegleInstance(value: unknown): boolean {
+  return value != null && typeof value === 'object' && REGLE_SYMBOL in value;
+}
+
 /**
  * Checks if a Vue Ref is an object.
  *

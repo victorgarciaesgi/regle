@@ -48,6 +48,7 @@ catalog:
   vue-eslint-parser: 10.4.0
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5
+  '@pinia/nuxt': 0.11.3
 
   # Nuxt
   nuxt: 4.3.1

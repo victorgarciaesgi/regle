@@ -848,6 +848,8 @@ export function createReactiveNestedStatus({
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;
 
+  Object.defineProperty(fullStatus, Symbol.for('regle:instance'), { value: true });
+
   watchEffect(() => {
     // Cleanup previous field properties
     for (const key of Object.keys(fullStatus).filter((key) => !key.startsWith('$') && !key.startsWith('~'))) {
