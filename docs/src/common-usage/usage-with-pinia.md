@@ -98,3 +98,7 @@ export const usePiniaStore = defineStore('pinia-store', () => {
   return { r$: skipHydrate(r$) };
 });
 ```
+
+:::info
+If you are using Nuxt, you can use the `@regle/nuxt` module that will automatically skip the hydration of the `r$` property.
+:::
