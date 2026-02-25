@@ -6,6 +6,7 @@ import type {
   DefaultValidatorsTree,
   ExtendedRulesDeclarations,
   ExtendedRulesDeclarationsOverrides,
+  FieldOnlyRegleBehaviourOptions,
   LocalRegleBehaviourOptions,
   Regle,
   RegleBehaviourOptions,
@@ -40,7 +41,7 @@ export type useRegleFnOptions<
     ? Partial<DeepMaybeRef<RegleBehaviourOptions>> &
         LocalRegleBehaviourOptions<JoinDiscriminatedUnions<TState>, TRules, TValidationGroups> &
         TAdditionalOptions
-    : Partial<DeepMaybeRef<RegleBehaviourOptions>> & TAdditionalOptions;
+    : Partial<DeepMaybeRef<RegleBehaviourOptions & FieldOnlyRegleBehaviourOptions>> & TAdditionalOptions;
 
 export interface useRegleFn<
   TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,

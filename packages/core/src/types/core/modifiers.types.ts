@@ -93,6 +93,18 @@ export interface LocalRegleBehaviourOptions<
   id?: string | undefined;
 }
 
+export type FieldOnlyRegleBehaviourOptions = {
+  /**
+   * Set external errors for the field.
+   */
+  externalErrors?: Ref<string[]>;
+  /**
+   * A unique identifier for the Regle instance in the devtools.
+   * @default undefined
+   */
+  id?: string | undefined;
+};
+
 export type RegleValidationGroupEntry = RegleFieldStatus<any, any> | undefined;
 
 export interface RegleValidationGroupOutput {

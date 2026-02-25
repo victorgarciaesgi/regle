@@ -797,4 +797,37 @@ describe('external errors', () => {
     expect(vm.r$.base.players.$each[0].shoes.$each[0].name.$errors).toStrictEqual([]);
     expect(vm.r$.base.players.$each[0].shoes.$each[0].id.$errors).toStrictEqual(['Server Error']);
   });
+
+  it('should work with a single field useRegle call', async () => {
+    function singleFieldRegle() {
+      const externalErrors = ref<string[]>([]);
+      const value = ref('');
+
+      return {
+        externalErrors,
+        ...useRegle(value, { required }, { externalErrors }),
+      };
+    }
+    const { vm } = createRegleComponent(singleFieldRegle);
+
+    await nextTick();
+
+    shouldBeInvalidField(vm.r$);
+    expect(vm.r$.$errors).toStrictEqual([]);
+
+    vm.r$.$touch();
+    vm.externalErrors = ['Server Error'];
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$);
+    expect(vm.r$.$errors).toStrictEqual(['This field is required', 'Server Error']);
+
+    vm.r$.$value = 'foo';
+
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$);
+    expect(vm.r$.$errors).toStrictEqual([]);
+  });
 });
