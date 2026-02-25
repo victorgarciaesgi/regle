@@ -1,16 +1,15 @@
 import { defineNuxtPlugin } from 'nuxt/app';
-import type { Pinia } from 'pinia';
 
 /**
- * Strips non-serializable properties from Pinia's Regle state.
- * Without this, SSR fails because `r$` contains functions, effect scopes, etc.
- * Uses `enforce: 'post'` to guarantee `$pinia` is available regardless of module order.
+ * Marks Regle instances with Pinia's skipHydrate so SSR payload
+ * doesn't try to serialize non-serializable internals.
  */
 export default defineNuxtPlugin({
   name: 'regle-pinia',
   enforce: 'post',
   async setup(nuxtApp) {
-    const pinia = nuxtApp.$pinia as Pinia;
+    const pinia = nuxtApp.$pinia;
+
     if (!pinia) return;
 
     const REGLE_SYMBOL = Symbol.for('regle:instance');

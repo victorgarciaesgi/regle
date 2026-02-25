@@ -2,12 +2,12 @@ import type { useCollectScope as defaultUseCollectScope } from '@regle/core';
 import {
   type useRegleFn,
   type inferRulesFn,
-  type AllRulesDeclarations,
+  type ExtendedRulesDeclarationsOverrides,
   type RegleShortcutDefinition,
 } from '@regle/core';
 
 export declare function defineRegleNuxtPlugin<
-  TCustomRules extends Partial<AllRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>,
   TShortcuts extends RegleShortcutDefinition<any>,
 >(
   setup: () => {

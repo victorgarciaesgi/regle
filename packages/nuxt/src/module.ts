@@ -21,19 +21,17 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'regle',
   },
   defaults: {},
-  async setup(options, nuxt) {
+  async setup(options) {
     const { resolve } = createResolver(import.meta.url);
 
     addPlugin({
-      src: resolve('runtime/plugins/regle.plugin.js'),
+      src: resolve('runtime/plugins/regle.plugin'),
       mode: 'client',
     });
 
     addPlugin({
       src: resolve('runtime/plugins/regle-pinia.plugin'),
     });
-
-    nuxt.options.build.transpile.push(resolve('runtime/plugins/regle-pinia.plugin'));
 
     if (options.setupFile) {
       try {
