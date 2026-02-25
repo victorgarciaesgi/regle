@@ -149,4 +149,5 @@ export type {
   CustomNestedProperties,
   CustomCollectionProperties,
   ParamsToLooseParams,
+  ExtendedRulesDeclarationsOverrides,
 } from './types';
