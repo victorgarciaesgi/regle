@@ -483,6 +483,7 @@ export function createReactiveCollectionStatus({
           $clearExternalErrorsOnValidate: $clearExternalErrorsOnValidate.value,
           $immediateDirty: $immediateDirty.value,
           $isEdited: $isEdited.value,
+          $disabled: toValue(options.disabled) ?? false,
         };
       });
 

@@ -1,5 +1,5 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
-import { isRef, ref } from 'vue';
+import { computed, isRef, ref, toValue } from 'vue';
 import { toReactive } from '../../../../shared';
 import type {
   CustomRulesDeclarationTree,
@@ -107,6 +107,8 @@ export function createUseRegleComposable<
   ): Regle<Record<string, any>, Record<string, any>, any, any> {
     const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any> | PrimitiveTypes>;
 
+    const isDisabled = computed(() => toValue(options?.disabled) ?? false);
+
     const regle = createRootRegleLogic({
       state: processedState,
       rulesFactory,
@@ -118,7 +120,7 @@ export function createUseRegleComposable<
     });
 
     return {
-      r$: toReactive(regle) as any,
+      r$: toReactive(regle, isDisabled) as any,
     };
   }
 

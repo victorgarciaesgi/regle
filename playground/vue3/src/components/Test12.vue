@@ -8,11 +8,8 @@
   const disabled = ref(true);
 
   const { r$ } = useRegle(
-    state,
-    {
-      name: { required, minLength: minLength(4) },
-      email: { email },
-    },
+    '',
+    { required },
     {
       disabled,
     }
@@ -20,15 +17,15 @@
 
   async function submit() {
     if (!r$) return;
-    const { valid, data } = await r$?.$validate();
-    if (valid) {
-      console.log(data.name);
-      //               ^ string
-      console.log(data.email);
-      //.              ^ string | undefined
-    } else {
-      console.warn('Errors: ', r$.$errors);
-    }
+    // const { valid, data } = await r$?.$validate();
+    // if (valid) {
+    //   console.log(data.name);
+    //   //               ^ string
+    //   console.log(data.email);
+    //   //.              ^ string | undefined
+    // } else {
+    //   console.warn('Errors: ', r$.$errors);
+    // }
   }
 </script>
 
@@ -43,35 +40,16 @@
       <label class="form-label">Name</label>
       <input
         class="form-control"
-        v-model="r$.$value.name"
+        v-model="r$.$value"
         placeholder="Type your name"
         :class="{
-          'is-valid': r$.name.$correct,
-          'is-invalid': r$.name.$error,
+          'is-valid': r$.$correct,
+          'is-invalid': r$.$error,
         }"
         aria-describedby="name-error"
       />
       <ul id="name-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.name" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-
-    <div v-if="r$" class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.email"
-        placeholder="Type your email"
-        :class="{
-          'is-valid': r$.email.$correct,
-          'is-invalid': r$.email.$error,
-        }"
-        aria-describedby="email-error"
-      />
-      <ul id="email-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.email" :key="error">
+        <li v-for="error of r$.$errors" :key="error">
           {{ error }}
         </li>
       </ul>

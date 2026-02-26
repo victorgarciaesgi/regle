@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { ComputedRef, MaybeRef, Raw } from 'vue';
-import { computed, isRef, ref } from 'vue';
+import { computed, isRef, ref, toValue } from 'vue';
 import { isEmpty, isObject, toReactive } from '../../../../shared';
 import type {
   ExtendedRulesDeclarations,
@@ -15,9 +15,9 @@ import type {
   RegleValidationGroupEntry,
 } from '../../types';
 import type { DeepMaybeRef, InferInput, JoinDiscriminatedUnions, PrimitiveTypes, Unwrap } from '../../types/utils';
+import type { GlobalConfigOptions } from '../defineRegleConfig';
 import { isRuleDef } from './guards';
 import { createRootRegleLogic } from './shared.rootRegle';
-import type { GlobalConfigOptions } from '../defineRegleConfig';
 
 function createEmptyRuleState(rules: RegleUnknownRulesTree | RegleRuleDecl): Record<string, any> | any {
   const result: Record<string, any> = {};
@@ -101,6 +101,8 @@ export function createUseRulesComposable<
 
     const processedState = ref(createEmptyRuleState(definedRules?.value as any));
 
+    const isDisabled = computed(() => toValue(options?.disabled) ?? false);
+
     const regle = createRootRegleLogic({
       state: processedState,
       rulesFactory: definedRules,
@@ -111,7 +113,7 @@ export function createUseRulesComposable<
       overrides,
     });
 
-    return toReactive(regle) as any;
+    return toReactive(regle, isDisabled) as any;
   }
 
   return useRules as any;

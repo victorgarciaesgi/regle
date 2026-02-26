@@ -1,24 +1,31 @@
 import type { CustomInspectorNode, InspectorNodeTag } from '@vue/devtools-kit';
+import { isEmpty } from '../../../shared';
 import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus } from '../core/useRegle/guards';
 import type {
   $InternalRegleCollectionStatus,
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   $InternalRegleStatusType,
-  RegleBehaviourOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { COLORS, TOOLTIP_LABELS_FIELDS, TOOLTIP_LABELS_NESTED, TOOLTIP_LABELS_RULES } from './constants';
 import type { FieldsDictionary, RegleInstance } from './types';
 import { createFieldNodeId, createRuleNodeId } from './utils';
-import { isEmpty } from '../../../shared';
 
 function buildNodeTags(
   fieldOrR$: $InternalRegleStatusType | SuperCompatibleRegleRoot,
   componentName?: string
 ): InspectorNodeTag[] {
   const tags: InspectorNodeTag[] = [];
-  const isDisabled = (fieldOrR$['~modifiers'] as RegleBehaviourOptions)?.disabled ?? false;
+
+  let isDisabled = false;
+  if (isFieldStatus(fieldOrR$)) {
+    isDisabled = fieldOrR$['~modifiers']?.$disabled ?? false;
+  } else if (isNestedRulesStatus(fieldOrR$)) {
+    isDisabled = fieldOrR$['~modifiers']?.disabled ?? false;
+  } else if (isCollectionRulesStatus(fieldOrR$)) {
+    isDisabled = fieldOrR$['~modifiers']?.$disabled ?? false;
+  }
 
   const isOptional = isFieldStatus(fieldOrR$)
     ? (('required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active) || isEmpty(fieldOrR$.$rules)) &&

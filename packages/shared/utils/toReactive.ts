@@ -1,20 +1,22 @@
-import type { UnwrapNestedRefs } from 'vue';
-// eslint-disable-next-line no-restricted-imports
+import type { Ref, UnwrapNestedRefs } from 'vue';
 import { isRef, reactive, unref, type MaybeRef } from 'vue';
 
 /**
  * Converts ref to reactive.
  *
- * @see https://vueuse.org/toReactive
  * @param objectRef A ref of object
+ * @param isDisabled A ref to check if the object is disabled
  */
-export function toReactive<T extends object>(objectRef: MaybeRef<T>): UnwrapNestedRefs<T> {
+export function toReactive<T extends object>(objectRef: MaybeRef<T>, isDisabled: Ref<boolean>): UnwrapNestedRefs<T> {
   if (!isRef(objectRef)) return reactive(objectRef);
 
   const proxy = new Proxy(
     {},
     {
       get(_, p, receiver) {
+        if (isDisabled.value && p !== `$value`) {
+          return Reflect.get(_, p, receiver);
+        }
         if (objectRef.value === undefined) return undefined;
         return unref(Reflect.get(objectRef.value, p, receiver));
       },

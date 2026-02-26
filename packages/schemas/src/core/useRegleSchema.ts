@@ -163,6 +163,8 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       });
     }
 
+    const isDisabled = computed(() => toValue(resolvedOptions.disabled) ?? false);
+
     regle = useRootStorage({
       scopeRules: computed(() => ({})),
       state: processedState,
@@ -177,7 +179,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     });
 
     return {
-      r$: toReactive(regle) as any,
+      r$: toReactive(regle, isDisabled) as any,
     };
   }
 

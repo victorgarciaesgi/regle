@@ -57,7 +57,6 @@ export function useRootStorage({
   let $unwatchExternalErrors: WatchStopHandle | undefined;
   let $unwatchComputedExternalErrors: WatchStopHandle | undefined;
   let $unwatchDisabled: WatchStopHandle | undefined;
-  let unregisterRegleInstance: () => void;
 
   function defineDisabledWatchSource() {
     $unwatchDisabled = watch(
@@ -69,7 +68,6 @@ export function useRootStorage({
           createRegleInstance();
           defineExternalErrorsWatchSource();
           defineComputedExternalErrorsWatchSource();
-          registerDevtools();
         }
       }
     );
@@ -169,7 +167,6 @@ export function useRootStorage({
     regle.value?.$unwatch();
     $unwatchComputedExternalErrors?.();
     $unwatchExternalErrors?.();
-    unregisterRegleInstance?.();
   }
 
   if (getCurrentScope()) {
@@ -181,7 +178,7 @@ export function useRootStorage({
 
   function registerDevtools() {
     if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
-      unregisterRegleInstance = registerRegleInstance(regle.value as any, { name: toValue(options.id) });
+      registerRegleInstance(regle.value as any, { name: toValue(options.id) });
     }
   }
 
