@@ -5,6 +5,8 @@ export { between } from './between';
 export { boolean } from './boolean';
 export { checked } from './checked';
 export { contains } from './contains';
+export { containsSpecialCharacter } from './containsSpecialCharacter';
+export { containsUppercase } from './containsUppercase';
 export { date } from './date';
 export { dateAfter } from './dateAfter';
 export { dateBefore } from './dateBefore';

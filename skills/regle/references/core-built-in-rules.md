@@ -17,6 +17,8 @@ import { required, email, minLength } from '@regle/rules';
 | `alpha` | Alphabetic only. Option: `allowSymbols` | `{ alpha }` or `{ alpha: alpha({ allowSymbols: true }) }` |
 | `alphaNum` | Alphanumeric only. Option: `allowSymbols` | `{ alphaNum }` |
 | `contains` | Contains substring | `{ contains: contains('regle') }` |
+| `containsSpecialCharacter` | At least N special characters (default 1) | `{ containsSpecialCharacter }` or `{ containsSpecialCharacter: containsSpecialCharacter(2) }` |
+| `containsUppercase` | At least N uppercase letters (default 1) | `{ containsUppercase }` or `{ containsUppercase: containsUppercase(2) }` |
 | `startsWith` | Starts with string | `{ startsWith: startsWith('foo') }` |
 | `endsWith` | Ends with string | `{ endsWith: endsWith('bar') }` |
 | `regex` | Matches one or more regexps | `{ regex: regex(/^foo/) }` |

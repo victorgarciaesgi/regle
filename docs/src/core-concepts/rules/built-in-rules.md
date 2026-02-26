@@ -173,6 +173,44 @@ const { r$ } = useRegle({ bestLib: '' }, {
 })
 ```
 
+## `containsSpecialCharacter`
+
+_**Params**_
+- `minCharactersCount?: Ref<number> | number | () => number`
+
+Requires a string to contain at least a number of special characters.
+
+```ts
+import { containsSpecialCharacter } from '@regle/rules';
+
+const { r$ } = useRegle({ password: '' }, {
+  password: {
+    containsSpecialCharacter,
+    // or with a custom minimum
+    containsSpecialCharacter: containsSpecialCharacter(2),
+  },
+})
+```
+
+## `containsUppercase`
+
+_**Params**_
+- `minUppercaseCount?: Ref<number> | number | () => number`
+
+Requires a string to contain at least a number of uppercase letters.
+
+```ts
+import { containsUppercase } from '@regle/rules';
+
+const { r$ } = useRegle({ password: '' }, {
+  password: {
+    containsUppercase,
+    // or with a custom minimum
+    containsUppercase: containsUppercase(2),
+  },
+})
+```
+
 ## `date`
 
 Requires a value to be a native Date constructor. Mainly used for typing.

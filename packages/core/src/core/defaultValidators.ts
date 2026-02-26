@@ -47,6 +47,20 @@ export type DefaultValidators = {
   boolean: RegleRuleDefinition<unknown, unknown, [], false, boolean, any, unknown>;
   checked: RegleRuleDefinition<unknown, boolean, [], false, boolean, boolean>;
   contains: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
+  containsSpecialCharacter: RegleRuleWithParamsDefinition<
+    unknown,
+    string,
+    [minCharactersCount?: number | undefined],
+    false,
+    { $valid: boolean; minCharactersCount: number }
+  >;
+  containsUppercase: RegleRuleWithParamsDefinition<
+    unknown,
+    string,
+    [minUppercaseCount?: number | undefined],
+    false,
+    { $valid: boolean; minUppercaseCount: number }
+  >;
   date: RegleRuleDefinition<unknown, unknown, [], false, boolean, MaybeInput<Date>, unknown>;
   dateAfter: RegleRuleWithParamsDefinition<
     unknown,
