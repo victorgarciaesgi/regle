@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, isRef, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, isRef, reactive, ref, toRef, toValue, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -122,7 +122,7 @@ export function createReactiveNestedStatus({
     );
 
     const externalRulesStatus = Object.fromEntries(
-      Object.entries(unref(externalErrors) ?? {})
+      Object.entries(toValue(externalErrors) ?? {})
         .filter(([key, errors]) => !(key in rulesDef.value) && !!errors)
         .map(([key]) => {
           const stateRef = toRef(state.value ?? {}, key);
@@ -151,7 +151,7 @@ export function createReactiveNestedStatus({
     );
 
     const schemasRulesStatus = Object.fromEntries(
-      Object.entries(unref(schemaErrors) ?? {}).map(([key]) => {
+      Object.entries(toValue(schemaErrors) ?? {}).map(([key]) => {
         // Pre-compute path values to avoid repeated string operations
         const computedPath = path ? `${path}.${key}` : key;
         const computedCachePath = cachePath ? `${cachePath}.${key}` : key;
@@ -405,15 +405,15 @@ export function createReactiveNestedStatus({
       });
 
       const $rewardEarly = computed<boolean | undefined>(() => {
-        if (unref(commonArgs.options.rewardEarly) != null) {
-          return unref(commonArgs.options.rewardEarly);
+        if (toValue(commonArgs.options.rewardEarly) != null) {
+          return toValue(commonArgs.options.rewardEarly);
         }
         return false;
       });
 
       const $silent = computed<boolean>(() => {
-        if (unref(commonArgs.options.silent) != null) {
-          return unref(commonArgs.options.silent) === true;
+        if (toValue(commonArgs.options.silent) != null) {
+          return toValue(commonArgs.options.silent) === true;
         } else if ($rewardEarly.value) {
           return true;
         }
@@ -421,36 +421,36 @@ export function createReactiveNestedStatus({
       });
 
       const $autoDirty = computed<boolean>(() => {
-        if (unref(commonArgs.options.autoDirty) != null) {
-          return unref(commonArgs.options.autoDirty) === true;
+        if (toValue(commonArgs.options.autoDirty) != null) {
+          return toValue(commonArgs.options.autoDirty) === true;
         }
         return true;
       });
 
       const $immediateDirty = computed<boolean>(() => {
-        if (unref(commonArgs.options.immediateDirty) != null) {
-          return unref(commonArgs.options.immediateDirty) === true;
+        if (toValue(commonArgs.options.immediateDirty) != null) {
+          return toValue(commonArgs.options.immediateDirty) === true;
         }
         return false;
       });
 
       const $lazy = computed<boolean>(() => {
-        if (unref(commonArgs.options.lazy) != null) {
-          return unref(commonArgs.options.lazy) === true;
+        if (toValue(commonArgs.options.lazy) != null) {
+          return toValue(commonArgs.options.lazy) === true;
         }
         return false;
       });
 
       const $clearExternalErrorsOnChange = computed<boolean>(() => {
-        if (unref(commonArgs.options.clearExternalErrorsOnChange) != null) {
-          return unref(commonArgs.options.clearExternalErrorsOnChange) === true;
+        if (toValue(commonArgs.options.clearExternalErrorsOnChange) != null) {
+          return toValue(commonArgs.options.clearExternalErrorsOnChange) === true;
         }
         return false;
       });
 
       const $clearExternalErrorsOnValidate = computed<boolean>(() => {
-        if (unref(commonArgs.options.clearExternalErrorsOnValidate) != null) {
-          return unref(commonArgs.options.clearExternalErrorsOnValidate) === true;
+        if (toValue(commonArgs.options.clearExternalErrorsOnValidate) != null) {
+          return toValue(commonArgs.options.clearExternalErrorsOnValidate) === true;
         }
         return false;
       });
@@ -535,7 +535,8 @@ export function createReactiveNestedStatus({
           clearExternalErrorsOnChange: $clearExternalErrorsOnChange.value,
           clearExternalErrorsOnValidate: $clearExternalErrorsOnValidate.value,
           immediateDirty: $immediateDirty.value,
-          id: unref(commonArgs.options.id),
+          id: toValue(commonArgs.options.id),
+          disabled: toValue(commonArgs.options.disabled),
         };
       });
 
@@ -570,7 +571,7 @@ export function createReactiveNestedStatus({
                     $anyEdited,
                     $issues,
                     $self: $selfStatus,
-                    '~modifiers': unref(commonArgs.options),
+                    '~modifiers': unref(commonArgs.options) as any,
                   })
                 );
               });

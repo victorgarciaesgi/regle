@@ -1,5 +1,5 @@
-import type { MaybeRef } from 'vue';
-import { unref } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
+import { toValue } from 'vue';
 
 /**
  * Returns the length/size of any data type. Works with strings, arrays, objects and numbers.
@@ -25,8 +25,8 @@ import { unref } from 'vue';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize Documentation}
  */
-export function getSize(value: MaybeRef<string | any[] | Record<string, any> | number>): number {
-  const _value = unref(value);
+export function getSize(value: MaybeRefOrGetter<string | any[] | Record<string, any> | number>): number {
+  const _value = toValue(value);
   if (Array.isArray(_value)) return _value.length;
   if (typeof _value === 'object') {
     return Object.keys(_value).length;

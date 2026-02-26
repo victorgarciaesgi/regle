@@ -5,6 +5,7 @@ import type {
   $InternalRegleFieldStatus,
   $InternalRegleRuleStatus,
   $InternalRegleStatusType,
+  RegleBehaviourOptions,
   SuperCompatibleRegleRoot,
 } from '../types';
 import { COLORS, TOOLTIP_LABELS_FIELDS, TOOLTIP_LABELS_NESTED, TOOLTIP_LABELS_RULES } from './constants';
@@ -17,6 +18,7 @@ function buildNodeTags(
   componentName?: string
 ): InspectorNodeTag[] {
   const tags: InspectorNodeTag[] = [];
+  const isDisabled = (fieldOrR$['~modifiers'] as RegleBehaviourOptions)?.disabled ?? false;
 
   const isOptional = isFieldStatus(fieldOrR$)
     ? (('required' in fieldOrR$.$rules && !fieldOrR$.$rules.required.$active) || isEmpty(fieldOrR$.$rules)) &&
@@ -47,6 +49,15 @@ function buildNodeTags(
       textColor: COLORS.PENDING.text,
       backgroundColor: COLORS.PENDING.bg,
       tooltip: isNestedOrCollection ? TOOLTIP_LABELS_NESTED.PENDING : TOOLTIP_LABELS_FIELDS.PENDING,
+    });
+  }
+
+  if (isDisabled) {
+    tags.push({
+      label: 'disabled',
+      textColor: COLORS.DISABLED.text,
+      backgroundColor: COLORS.DISABLED.bg,
+      tooltip: TOOLTIP_LABELS_FIELDS.DISABLED,
     });
   }
 

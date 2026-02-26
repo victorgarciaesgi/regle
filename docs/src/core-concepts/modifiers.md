@@ -37,6 +37,35 @@ __Default__: `false`
 
 Set the dirty state to true when the form is initialized.
 
+### `disabled`
+
+__Type__: `boolean`
+
+__Default__: `false`
+
+Temporarily pauses Regle reactivity and validation computation.
+
+When `disabled` is `true`, state changes still happen, but validation status does not update until you enable it again.
+
+```ts
+import { ref } from 'vue';
+import { useRegle } from '@regle/core';
+import { required } from '@regle/rules';
+
+const disabled = ref(false);
+
+const { r$ } = useRegle(
+  { name: '' },
+  { name: { required } },
+  { disabled }
+);
+
+disabled.value = true;
+r$.$value.name = 'John'; // value updates, validation is paused
+
+disabled.value = false; // validation reactivity resumes
+```
+
 
 ### `silent`
 

@@ -1,5 +1,6 @@
 import type { ComputedRef, MaybeRef, MaybeRefOrGetter, Ref } from 'vue';
 import { isRef, ref } from 'vue';
+import { toReactive } from '../../../../shared';
 import type {
   CustomRulesDeclarationTree,
   DeepReactiveState,
@@ -108,7 +109,7 @@ export function createUseRegleComposable<
     });
 
     return {
-      r$: regle.regle as any,
+      r$: toReactive(regle) as any,
     };
   }
 

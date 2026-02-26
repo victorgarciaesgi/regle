@@ -39,6 +39,10 @@ export const COLORS = {
     text: 0x000000,
     bg: 0xb0b6be,
   },
+  DISABLED: {
+    text: 0xef4444,
+    bg: 0xe5e7eb,
+  },
 } as const;
 
 export const TOOLTIP_LABELS_FIELDS = {
@@ -50,6 +54,7 @@ export const TOOLTIP_LABELS_FIELDS = {
   PENDING: 'Field is pending',
   INACTIVE: 'Field is inactive',
   OPTIONAL: 'Field is not required',
+  DISABLED: 'Validation reactivity is paused by the disabled modifier',
 } as const;
 
 export const TOOLTIP_LABELS_NESTED = {

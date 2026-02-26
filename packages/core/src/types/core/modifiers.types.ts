@@ -58,6 +58,11 @@ export interface RegleBehaviourOptions {
    * @default false
    */
   immediateDirty?: boolean | undefined;
+  /**
+   * Disable all the computation
+   * @default false
+   */
+  disabled?: boolean | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<

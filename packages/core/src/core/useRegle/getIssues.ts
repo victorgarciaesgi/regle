@@ -1,7 +1,7 @@
 import type { Get, IsStringLiteral, Paths } from 'type-fest';
+import { toValue, type MaybeRefOrGetter } from 'vue';
 import { getDotPath } from '../../../../shared';
 import type { RegleFieldIssue, SuperCompatibleRegleRoot, SuperCompatibleRegleStatus } from '../../types';
-import { unref, type MaybeRef } from 'vue';
 
 /**
  * Retrieves detailed validation issues for a specific field using a dot-notation path.
@@ -44,8 +44,8 @@ export function getIssues<
   TRegle extends SuperCompatibleRegleRoot | SuperCompatibleRegleStatus,
   TPath extends Paths<TRegle['$issues']>,
 >(
-  r$: MaybeRef<TRegle>,
+  r$: MaybeRefOrGetter<TRegle>,
   path: TPath | (string & {})
 ): IsStringLiteral<TPath> extends true ? Get<TRegle['$issues'], TPath & string> : RegleFieldIssue[] | undefined {
-  return getDotPath(unref(r$).$issues, String(path));
+  return getDotPath(toValue(r$).$issues, String(path));
 }

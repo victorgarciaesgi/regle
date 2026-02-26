@@ -111,8 +111,8 @@ export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 /**
  * To be used by `useRegle` like composables.
  */
-export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): void {
-  if (typeof window === 'undefined') return;
+export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): () => void {
+  if (typeof window === 'undefined') return () => {};
 
   if (__USE_DEVTOOLS__) {
     // Skip devtools logic when running in a test environment
@@ -132,7 +132,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
             process.env.PLAYWRIGHT_TEST)));
 
     if (isTestEnv) {
-      return;
+      return () => {};
     }
     const regleVersion = inject(regleSymbol, undefined);
 
@@ -146,7 +146,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
       console.warn(
         `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
       );
-      return;
+      return () => {};
     }
   }
 
@@ -165,7 +165,11 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
     filePath,
   });
 
-  tryOnScopeDispose(() => {
+  function unregister() {
     regleDevtoolsRegistry.unregister(id);
-  });
+  }
+
+  tryOnScopeDispose(unregister);
+
+  return unregister;
 }

@@ -1,4 +1,4 @@
-import type { MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
+import type { MaybeRef, MaybeRefOrGetter, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { RegleStatic, RegleStaticImpl } from './static.types';
 import type { MaybeRefOrComputedRef } from './object.types';
 import type { IsNullable, IsOptional, Or } from 'type-fest';
@@ -55,7 +55,7 @@ export type OmitByType<T extends Record<string, any>, U> = {
 };
 
 export type DeepMaybeRef<T extends Record<string, any>> = {
-  [K in keyof T]: MaybeRef<T[K]>;
+  [K in keyof T]: MaybeRefOrGetter<T[K]>;
 };
 
 export type ExcludeByType<T, U> = {

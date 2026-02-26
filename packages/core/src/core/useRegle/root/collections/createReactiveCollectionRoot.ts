@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, toValue, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty } from '../../../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
@@ -408,8 +408,8 @@ export function createReactiveCollectionStatus({
       const $rewardEarly = computed<boolean>(() => {
         if ($localOptions.value.$rewardEarly != null) {
           return $localOptions.value.$rewardEarly;
-        } else if (unref(options.rewardEarly) != null) {
-          return unref(options.rewardEarly) === true;
+        } else if (toValue(options.rewardEarly) != null) {
+          return toValue(options.rewardEarly) === true;
         }
         return false;
       });
@@ -419,16 +419,16 @@ export function createReactiveCollectionStatus({
           return true;
         } else if ($localOptions.value.$silent != null) {
           return $localOptions.value.$silent;
-        } else if (unref(options.silent) != null) {
-          return unref(options.silent) === true;
+        } else if (toValue(options.silent) != null) {
+          return toValue(options.silent) === true;
         } else return false;
       });
 
       const $autoDirty = computed<boolean>(() => {
         if ($localOptions.value.$autoDirty != null) {
           return $localOptions.value.$autoDirty;
-        } else if (unref(options.autoDirty) != null) {
-          return unref(options.autoDirty) === true;
+        } else if (toValue(options.autoDirty) != null) {
+          return toValue(options.autoDirty) === true;
         }
         return true;
       });
@@ -436,8 +436,8 @@ export function createReactiveCollectionStatus({
       const $immediateDirty = computed<boolean>(() => {
         if ($localOptions.value.$immediateDirty != null) {
           return $localOptions.value.$immediateDirty;
-        } else if (unref(options.immediateDirty) != null) {
-          return unref(options.immediateDirty) === true;
+        } else if (toValue(options.immediateDirty) != null) {
+          return toValue(options.immediateDirty) === true;
         }
         return false;
       });
@@ -445,8 +445,8 @@ export function createReactiveCollectionStatus({
       const $clearExternalErrorsOnChange = computed<boolean>(() => {
         if ($localOptions.value.$clearExternalErrorsOnChange != null) {
           return $localOptions.value.$clearExternalErrorsOnChange;
-        } else if (unref(options.clearExternalErrorsOnChange) != null) {
-          return unref(options.clearExternalErrorsOnChange) === true;
+        } else if (toValue(options.clearExternalErrorsOnChange) != null) {
+          return toValue(options.clearExternalErrorsOnChange) === true;
         }
         return true;
       });
@@ -454,8 +454,8 @@ export function createReactiveCollectionStatus({
       const $clearExternalErrorsOnValidate = computed<boolean>(() => {
         if ($localOptions.value.$clearExternalErrorsOnValidate != null) {
           return $localOptions.value.$clearExternalErrorsOnValidate;
-        } else if (unref(options.clearExternalErrorsOnValidate) != null) {
-          return unref(options.clearExternalErrorsOnValidate) === true;
+        } else if (toValue(options.clearExternalErrorsOnValidate) != null) {
+          return toValue(options.clearExternalErrorsOnValidate) === true;
         }
         return false;
       });

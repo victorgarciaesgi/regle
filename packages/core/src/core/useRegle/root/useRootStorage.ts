@@ -1,5 +1,7 @@
 import type { Ref, WatchStopHandle } from 'vue';
-import { getCurrentScope, onScopeDispose, reactive, ref, toValue, watch } from 'vue';
+import { getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
+import { dotPathObjectToNested } from '../../../../../shared';
+import { registerRegleInstance } from '../../../devtools';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
@@ -7,17 +9,15 @@ import type {
   $InternalRegleShortcutDefinition,
   $InternalRegleStatusType,
   CustomRulesDeclarationTree,
+  GlobalConfigOverrides,
   PrimitiveTypes,
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
-  GlobalConfigOverrides,
 } from '../../../types';
 import { useStorage } from '../../useStorage';
 import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
-import { dotPathObjectToNested } from '../../../../../shared';
-import { registerRegleInstance } from '../../../devtools';
 
 /**
  * @internal
@@ -56,7 +56,24 @@ export function useRootStorage({
 
   let $unwatchExternalErrors: WatchStopHandle | undefined;
   let $unwatchComputedExternalErrors: WatchStopHandle | undefined;
+  let $unwatchDisabled: WatchStopHandle | undefined;
+  let unregisterRegleInstance: () => void;
 
+  function defineDisabledWatchSource() {
+    $unwatchDisabled = watch(
+      () => toValue(options.disabled),
+      async (disabled) => {
+        if (disabled) {
+          unwatchRegle();
+        } else {
+          createRegleInstance();
+          defineExternalErrorsWatchSource();
+          defineComputedExternalErrorsWatchSource();
+          registerDevtools();
+        }
+      }
+    );
+  }
   function defineExternalErrorsWatchSource() {
     $unwatchExternalErrors = watch(
       () => options.externalErrors?.value,
@@ -91,62 +108,84 @@ export function useRootStorage({
     );
   }
 
-  defineExternalErrorsWatchSource();
+  function createRegleInstance() {
+    if (isNestedRulesDef(state, scopeRules)) {
+      regle.value = createReactiveNestedStatus({
+        rootRules: scopeRules,
+        rulesDef: scopeRules,
+        state: state as Ref<Record<string, any>>,
+        customMessages: customRules?.(),
+        storage,
+        options,
+        externalErrors: computedExternalErrors,
+        validationGroups: options.validationGroups as any,
+        initialState: initialState as Ref<Record<string, any>>,
+        originalState: originalState as Record<string, any>,
+        shortcuts: shortcuts as $InternalRegleShortcutDefinition,
+        fieldName: undefined,
+        path: '',
+        cachePath: '',
+        schemaErrors,
+        rootSchemaErrors: schemaErrors,
+        schemaMode,
+        onValidate,
+        overrides,
+      });
+    } else if (isValidatorRulesDef(scopeRules)) {
+      regle.value = createReactiveFieldStatus({
+        rulesDef: scopeRules,
+        state: state as Ref<Record<string, any>>,
+        customMessages: customRules?.(),
+        storage,
+        options,
+        externalErrors: computedExternalErrors as any,
+        initialState,
+        originalState: originalState,
+        shortcuts: shortcuts as $InternalRegleShortcutDefinition,
+        fieldName: undefined,
+        path: '',
+        cachePath: '',
+        schemaMode,
+        schemaErrors,
+        onValidate,
+        overrides,
+      });
+    }
+  }
 
-  if (isNestedRulesDef(state, scopeRules)) {
-    regle.value = createReactiveNestedStatus({
-      rootRules: scopeRules,
-      rulesDef: scopeRules,
-      state: state as Ref<Record<string, any>>,
-      customMessages: customRules?.(),
-      storage,
-      options,
-      externalErrors: computedExternalErrors,
-      validationGroups: options.validationGroups as any,
-      initialState: initialState as Ref<Record<string, any>>,
-      originalState: originalState as Record<string, any>,
-      shortcuts: shortcuts as $InternalRegleShortcutDefinition,
-      fieldName: undefined,
-      path: '',
-      cachePath: '',
-      schemaErrors,
-      rootSchemaErrors: schemaErrors,
-      schemaMode,
-      onValidate,
-      overrides,
+  createRegleInstance();
+
+  if (toValue(options.disabled)) {
+    nextTick().then(() => {
+      regle.value?.$unwatch();
     });
-  } else if (isValidatorRulesDef(scopeRules)) {
-    regle.value = createReactiveFieldStatus({
-      rulesDef: scopeRules,
-      state: state as Ref<Record<string, any>>,
-      customMessages: customRules?.(),
-      storage,
-      options,
-      externalErrors: computedExternalErrors as any,
-      initialState,
-      originalState: originalState,
-      shortcuts: shortcuts as $InternalRegleShortcutDefinition,
-      fieldName: undefined,
-      path: '',
-      cachePath: '',
-      schemaMode,
-      schemaErrors,
-      onValidate,
-      overrides,
-    });
+  } else {
+    defineExternalErrorsWatchSource();
+  }
+
+  defineDisabledWatchSource();
+
+  function unwatchRegle() {
+    regle.value?.$unwatch();
+    $unwatchComputedExternalErrors?.();
+    $unwatchExternalErrors?.();
+    unregisterRegleInstance?.();
   }
 
   if (getCurrentScope()) {
     onScopeDispose(() => {
-      regle.value?.$unwatch();
-      $unwatchComputedExternalErrors?.();
-      $unwatchExternalErrors?.();
+      unwatchRegle();
+      $unwatchDisabled?.();
     });
   }
 
-  if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
-    registerRegleInstance(regle.value as any, { name: toValue(options.id) });
+  function registerDevtools() {
+    if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
+      unregisterRegleInstance = registerRegleInstance(regle.value as any, { name: toValue(options.id) });
+    }
   }
 
-  return reactive({ regle });
+  registerDevtools();
+
+  return regle;
 }

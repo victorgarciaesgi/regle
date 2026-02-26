@@ -75,7 +75,7 @@ const { r$ } = useRegle(
 | Built-in Rules | All validation rules from `@regle/rules` | [core-built-in-rules](references/core-built-in-rules.md) |
 | Validation Properties | `$invalid`, `$dirty`, `$error`, `$errors`, `$pending`, `$validate`, `$touch`, `$reset` | [core-validation-properties](references/core-validation-properties.md) |
 | Displaying Errors | Showing errors, custom messages, `getErrors`, `flatErrors` | [core-displaying-errors](references/core-displaying-errors.md) |
-| Modifiers | `autoDirty`, `lazy`, `silent`, `rewardEarly`, `validationGroups`, per-field modifiers | [core-modifiers](references/core-modifiers.md) |
+| Modifiers | `autoDirty`, `lazy`, `silent`, `rewardEarly`, `disabled`, `validationGroups`, per-field modifiers | [core-modifiers](references/core-modifiers.md) |
 
 ## Rules
 

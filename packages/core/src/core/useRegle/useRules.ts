@@ -1,7 +1,7 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { ComputedRef, MaybeRef, Raw } from 'vue';
 import { computed, isRef, ref } from 'vue';
-import { isEmpty, isObject } from '../../../../shared';
+import { isEmpty, isObject, toReactive } from '../../../../shared';
 import type {
   ExtendedRulesDeclarations,
   ExtendedRulesDeclarationsOverrides,
@@ -111,7 +111,7 @@ export function createUseRulesComposable<
       overrides,
     });
 
-    return regle.regle as any;
+    return toReactive(regle) as any;
   }
 
   return useRules as any;

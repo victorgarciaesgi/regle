@@ -1,7 +1,7 @@
-import type { Get, Paths, IsStringLiteral } from 'type-fest';
+import type { Get, IsStringLiteral, Paths } from 'type-fest';
+import { toValue, type MaybeRefOrGetter } from 'vue';
 import { getDotPath } from '../../../../shared';
 import type { SuperCompatibleRegleRoot, SuperCompatibleRegleStatus } from '../../types';
-import { unref, type MaybeRef } from 'vue';
 
 /**
  * Retrieves error messages for a specific field using a dot-notation path.
@@ -40,8 +40,8 @@ export function getErrors<
   TRegle extends SuperCompatibleRegleRoot | SuperCompatibleRegleStatus,
   TPath extends Paths<TRegle['$errors']> | (string & {}),
 >(
-  r$: MaybeRef<TRegle>,
+  r$: MaybeRefOrGetter<TRegle>,
   path: TPath
 ): IsStringLiteral<TPath> extends true ? Get<TRegle['$errors'], TPath & string> : string[] | undefined {
-  return getDotPath(unref(r$).$errors, String(path));
+  return getDotPath(toValue(r$).$errors, String(path));
 }

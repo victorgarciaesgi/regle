@@ -5,7 +5,6 @@ import {
   ref,
   toRef,
   toValue,
-  unref,
   watch,
   type MaybeRef,
   type MaybeRefOrGetter,
@@ -78,7 +77,7 @@ export function createVariant<
       if ((variant as any)[discriminantKey] && 'literal' in (variant as any)[discriminantKey]) {
         const literalRule = variant[discriminantKey]['literal'];
         if (isRuleDef(literalRule)) {
-          return unref(literalRule._params?.[0]) === watchableRoot.value;
+          return toValue(literalRule._params?.[0]) === watchableRoot.value;
         }
       }
     });

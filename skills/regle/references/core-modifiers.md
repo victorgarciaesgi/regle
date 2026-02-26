@@ -20,6 +20,7 @@ const { r$ } = useRegle({}, {}, {
 | `silent` | `boolean` | `false` | Only show errors after manual `$touch` or `$validate` |
 | `lazy` | `boolean` | `false` | Only run rules when the field is dirty |
 | `rewardEarly` | `boolean` | `false` | Once valid, stay valid until `$validate` (reward-early-punish-late). Disables `autoDirty` |
+| `disabled` | `boolean` | `false` | Pause Regle watchers/computed and validation computation. State updates continue and validation resumes when re-enabled |
 | `externalErrors` | `RegleExternalErrorTree` | -- | Server-side errors. See server errors reference |
 | `clearExternalErrorsOnChange` | `boolean` | `true` | Clear external errors on value change |
 | `clearExternalErrorsOnValidate` | `boolean` | `false` | Clear external errors when `$validate` / `$validateSync` runs |

@@ -15,10 +15,13 @@ import type {
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { MaybeRef, Raw, Ref, UnwrapNestedRefs, WatchHandle } from 'vue';
-import { computed, getCurrentScope, isRef, onScopeDispose, ref, unref, watch } from 'vue';
-import { cloneDeep, getDotPath, isObject, merge, setObjectError } from '../../../shared';
+import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
+import { computed, effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, unref, watch } from 'vue';
+import { toReactive } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
+import { type SchemaIssueWithArrayValue } from './useRegleSchema/issues.mapper';
+import { createSchemaState } from './useRegleSchema/state.factory';
+import { createSchemaValidationRunner } from './useRegleSchema/validation.runner';
 
 export type useRegleSchemaFnOptions<
   TSchema extends Record<string, any>,
@@ -29,6 +32,7 @@ export type useRegleSchemaFnOptions<
 > &
   RegleSchemaBehaviourOptions &
   TAdditionalOptions;
+
 export interface useRegleSchemaFn<
   TShortcuts extends RegleShortcutDefinition<any> = never,
   TAdditionalReturnProperties extends Record<string, any> = {},
@@ -63,10 +67,11 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
       RegleSchemaBehaviourOptions
   ): RegleSchema<Record<string, any>, StandardSchemaV1, RegleShortcutDefinition> {
-    const computedSchema = computed(() => unref(schema));
+    if (!unref(schema)?.['~standard']) {
+      throw new Error(`Only "standard-schema" compatible libraries are supported`);
+    }
 
     const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};
-
     const { onUpdate: syncOnUpdate = false, onValidate: syncOnValidate = false } = syncState;
 
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
@@ -74,210 +79,76 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       ...defaultOptions,
     } as any;
 
-    const isSingleField = computed(() => !isObject(processedState.value));
-
-    const processedState = (isRef(state) ? state : ref(state)) as Ref<Record<string, any>>;
-
-    const initialState = ref(
-      isObject(processedState.value) ? { ...cloneDeep(processedState.value) } : cloneDeep(processedState.value)
-    );
-
-    const originalState = isObject(processedState.value)
-      ? { ...cloneDeep(processedState.value) }
-      : cloneDeep(processedState.value);
+    const { processedState, isSingleField, initialState, originalState } = createSchemaState(state);
 
     const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
-    const previousIssues = ref<readonly (StandardSchemaV1.Issue & { $currentArrayValue?: any })[]>([]);
+    const previousIssues = ref<readonly SchemaIssueWithArrayValue[]>([]);
 
-    let onValidate: (() => Promise<$InternalRegleResult>) | undefined = undefined;
+    let schemaScope: ReturnType<typeof effectScope> | undefined;
+    let runner: ReturnType<typeof createSchemaValidationRunner> | undefined;
 
-    function getPropertiesFromIssue(issue: StandardSchemaV1.Issue) {
-      let $path = getIssuePath(issue);
-      const lastItem = issue.path?.[issue.path.length - 1];
-      const lastItemKey = typeof lastItem === 'object' ? lastItem.key : lastItem;
-      const isArray =
-        (typeof lastItem === 'object' && 'value' in lastItem ? Array.isArray(lastItem.value) : false) ||
-        ('type' in issue ? issue.type === 'array' : false) ||
-        Array.isArray(getDotPath(processedState.value, $path));
-
-      return { isArray, $path, lastItemKey, lastItem };
-    }
-
-    function getIssuePath(issue: StandardSchemaV1.Issue) {
-      return issue.path?.map((item) => (typeof item === 'object' ? item.key : item.toString())).join('.') ?? '';
-    }
-
-    function getIssueLastPathKey(issue: StandardSchemaV1.Issue) {
-      const lastItem = issue.path?.at(-1);
-      return typeof lastItem === 'object' ? lastItem.key : lastItem;
-    }
-
-    function getParentArrayPath(issue: StandardSchemaV1.Issue) {
-      const lastItem = issue.path?.at(-1);
-      const isNestedPath =
-        typeof lastItem === 'object' ? typeof lastItem.key === 'string' : typeof lastItem === 'string';
-      const index = issue.path?.findLastIndex((item) =>
-        typeof item === 'object' ? typeof item.key === 'number' : typeof item === 'number'
-      );
-      if (!isNestedPath && index === -1) {
-        return undefined;
-      }
-      if (index != null) {
-        const truncatedPath = issue.path?.slice(0, index + 1);
-        return { ...issue, path: truncatedPath };
-      }
-      return undefined;
-    }
-
-    // ---- Schema mode
-    if (!computedSchema.value?.['~standard']) {
-      throw new Error(`Only "standard-schema" compatible libraries are supported`);
-    }
-
-    function filterIssues(
-      issues: readonly (StandardSchemaV1.Issue & { $currentArrayValue?: any })[],
-      isValidate = false
-    ): readonly StandardSchemaV1.Issue[] {
-      if (!isValidate && resolvedOptions.rewardEarly) {
-        if (previousIssues.value.length) {
-          let remappedPreviousIssues = previousIssues.value.reduce((acc, prevIssue) => {
-            if (
-              '$currentArrayValue' in prevIssue &&
-              isObject(prevIssue.$currentArrayValue) &&
-              '$id' in prevIssue.$currentArrayValue
-            ) {
-              const previousItemId = prevIssue.$currentArrayValue.$id;
-              const previousLastPathKey = getIssueLastPathKey(prevIssue);
-              const previousArrayIssue = issues.find(
-                (currentIssue) =>
-                  currentIssue?.$currentArrayValue?.['$id'] === previousItemId &&
-                  getIssueLastPathKey(currentIssue) === previousLastPathKey
-              );
-              if (previousArrayIssue) {
-                acc.push({ ...prevIssue, path: previousArrayIssue?.path ?? [] });
-              }
-            } else {
-              if (issues.some((i) => getIssuePath(i) === getIssuePath(prevIssue))) {
-                acc.push(prevIssue);
-              }
-            }
-            return acc;
-          }, [] as StandardSchemaV1.Issue[]);
-
-          return remappedPreviousIssues;
-        }
-        return [];
-      }
-      return issues;
-    }
-
-    function issuesToRegleErrors(result: StandardSchemaV1.Result<unknown>, isValidate = false) {
-      const output = {};
-      const mappedIssues = result.issues?.map((issue) => {
-        const parentArrayPath = getParentArrayPath(issue);
-        if (parentArrayPath) {
-          const $currentArrayValue = getDotPath(processedState.value, getIssuePath(parentArrayPath));
-          Object.defineProperty(issue, '$currentArrayValue', {
-            value: $currentArrayValue,
-            enumerable: true,
-            configurable: true,
-            writable: true,
-          });
-        }
-
-        return issue;
+    function createRunner() {
+      return createSchemaValidationRunner({
+        processedState,
+        getSchema: () => unref(schema),
+        isSingleField,
+        customErrors,
+        previousIssues,
+        resolvedOptions,
+        syncOnUpdate,
+        syncOnValidate,
       });
-
-      const filteredIssues: readonly StandardSchemaV1.Issue[] = filterIssues(mappedIssues ?? [], isValidate);
-
-      if (mappedIssues?.length) {
-        const issues = filteredIssues.map((issue) => {
-          let { isArray, $path, lastItemKey } = getPropertiesFromIssue(issue);
-
-          return {
-            ...issue,
-            $path: $path,
-            isArray,
-            $property: lastItemKey,
-            $rule: 'schema',
-            $message: issue.message,
-          };
-        });
-
-        issues.forEach(({ isArray, $path, ...issue }) => {
-          setObjectError(output, $path, [issue], isArray);
-        });
-
-        previousIssues.value = issues;
-      } else {
-        previousIssues.value = [];
-      }
-      return output;
     }
 
-    async function computeErrors(isValidate = false) {
-      let result = computedSchema.value['~standard'].validate(processedState.value);
-      if (result instanceof Promise) {
-        result = await result;
-      }
+    function startSchemaRuntime() {
+      schemaScope?.stop();
+      schemaScope = effectScope();
+      schemaScope.run(() => {
+        runner = createRunner();
+        runner.defineWatchState();
+        void runner.computeErrors();
+      });
+    }
 
-      if (isSingleField.value) {
-        const filteredIssues = filterIssues(result.issues ?? [], isValidate);
-        customErrors.value =
-          filteredIssues?.map((issue) => ({
-            $message: issue.message,
-            $property: issue.path?.[issue.path.length - 1]?.toString() ?? '-',
-            $rule: 'schema',
-            ...issue,
-          })) ?? [];
-      } else {
-        customErrors.value = issuesToRegleErrors(result, isValidate);
-      }
+    function stopSchemaRuntime() {
+      runner?.stopWatching();
+      runner = undefined;
+      schemaScope?.stop();
+      schemaScope = undefined;
+    }
 
-      if (!result.issues) {
-        if ((isValidate && syncOnValidate) || (!isValidate && syncOnUpdate)) {
-          unWatchState?.();
-          if (isObject(processedState.value)) {
-            processedState.value = merge(processedState.value, result.value as any);
-          } else {
-            processedState.value = result.value as any;
-          }
-          defineWatchState();
+    startSchemaRuntime();
+
+    // Keep schema runtime aligned with disabled: stop all schema reactivity when disabled, recreate when enabled.
+    const unwatchDisabled = watch(
+      () => toValue(resolvedOptions.disabled),
+      (disabled) => {
+        if (disabled) {
+          stopSchemaRuntime();
+        } else {
+          startSchemaRuntime();
         }
       }
-      return result;
+    );
+
+    if (toValue(resolvedOptions.disabled)) {
+      nextTick().then(() => {
+        stopSchemaRuntime();
+      });
     }
 
-    let unWatchState: WatchHandle;
+    let regle: ReturnType<typeof useRootStorage> | undefined;
 
-    function defineWatchState() {
-      unWatchState = watch(
-        [processedState, computedSchema],
-        () => {
-          if (resolvedOptions.silent) {
-            return;
-          }
-          if (computedSchema.value['~standard'].vendor === 'regle') {
-            return;
-          }
-          computeErrors();
-        },
-        { deep: true }
-      );
-    }
-
-    defineWatchState();
-    computeErrors();
-
-    onValidate = async () => {
+    const onValidate = async (): Promise<$InternalRegleResult> => {
       try {
-        const result = await computeErrors(true);
-        regle?.regle?.$touch();
+        const validationRunner = runner ?? createRunner();
+        const result = await validationRunner.computeErrors(true);
+        regle?.value?.$touch();
 
         return {
           valid: !result.issues?.length,
           data: processedState.value,
-          errors: regle?.regle?.$errors,
+          errors: regle?.value?.$errors,
           issues: customErrors.value,
         };
       } catch (e) {
@@ -287,11 +158,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     if (getCurrentScope()) {
       onScopeDispose(() => {
-        unWatchState();
+        unwatchDisabled();
+        stopSchemaRuntime();
       });
     }
 
-    const regle = useRootStorage({
+    regle = useRootStorage({
       scopeRules: computed(() => ({})),
       state: processedState,
       options: resolvedOptions,
@@ -303,8 +175,9 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       onValidate,
       overrides,
     });
+
     return {
-      r$: regle.regle as any,
+      r$: toReactive(regle) as any,
     };
   }
 

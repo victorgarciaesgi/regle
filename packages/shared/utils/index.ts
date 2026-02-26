@@ -9,3 +9,4 @@ export * from './isEqual';
 export * from './isFile';
 export * from './abortablePromise';
 export * from './format';
+export * from './toReactive';
