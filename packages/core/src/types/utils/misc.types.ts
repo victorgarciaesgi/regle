@@ -63,6 +63,15 @@ export type ExcludeByType<T, U> = {
 };
 
 export type PrimitiveTypes = string | number | boolean | bigint | Date | File;
+export type WidenPrimitiveLiterals<T> = T extends string
+  ? string
+  : T extends number
+    ? number
+    : T extends boolean
+      ? boolean
+      : T extends bigint
+        ? bigint
+        : T;
 
 export type isRecordLiteral<T extends unknown> =
   NonNullable<T> extends Date | File | RegleStatic<unknown> | RegleStaticImpl<unknown>

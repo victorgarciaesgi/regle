@@ -28,6 +28,7 @@ import type {
   PrimitiveTypes,
   Unwrap,
   UnwrapSimple,
+  WidenPrimitiveLiterals,
 } from '../../types/utils';
 import type { GlobalConfigOptions } from '../defineRegleConfig';
 import { createRootRegleLogic } from './shared.rootRegle';
@@ -56,7 +57,10 @@ export interface useRegleFn<
       JoinDiscriminatedUnions<Unwrap<TState>>,
       Partial<ExtendedRulesDeclarations & Omit<TCustomRules, keyof DefaultValidatorsTree>>
     >,
-    TDecl extends RegleRuleDecl<NonNullable<Unwrap<TState>>, Partial<ExtendedRulesDeclarations & TCustomRules>>,
+    TDecl extends RegleRuleDecl<
+      WidenPrimitiveLiterals<NonNullable<Unwrap<TState>>>,
+      Partial<ExtendedRulesDeclarations & TCustomRules>
+    >,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
   >(
     ...params: [
@@ -73,7 +77,12 @@ export interface useRegleFn<
         : [options?: useRegleFnOptions<Unwrap<NoInferLegacy<TState>>, TRules, TAdditionalOptions, TValidationGroups>]),
     ]
   ): NonNullable<Unwrap<TState>> extends PrimitiveTypes
-    ? RegleSingleField<NonNullable<Unwrap<TState>>, TDecl, TShortcuts, TAdditionalReturnProperties>
+    ? RegleSingleField<
+        WidenPrimitiveLiterals<NonNullable<Unwrap<TState>>>,
+        TDecl,
+        TShortcuts,
+        TAdditionalReturnProperties
+      >
     : Regle<
         Unwrap<TState> extends Record<string, any> ? Unwrap<TState> : {},
         UnwrapSimple<TRules> extends Record<string, any> ? UnwrapSimple<TRules> : {},

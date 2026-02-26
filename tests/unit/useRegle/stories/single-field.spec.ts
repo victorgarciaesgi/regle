@@ -1,4 +1,4 @@
-import { useRegle, type InferValidOutput } from '@regle/core';
+import { useRegle, type InferValidOutput, type MaybeOutput } from '@regle/core';
 import { numeric, required } from '@regle/rules';
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
@@ -45,5 +45,11 @@ describe('useRegle should work with single field validation', () => {
     }
 
     expectTypeOf<InferValidOutput<typeof vm.r$>>().toEqualTypeOf<number>();
+  });
+
+  it('should not infer the state as const', () => {
+    const { r$ } = useRegle('', { required, numeric });
+
+    expectTypeOf(r$.$value).toEqualTypeOf<MaybeOutput<string>>();
   });
 });
