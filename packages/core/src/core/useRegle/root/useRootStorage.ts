@@ -67,7 +67,6 @@ export function useRootStorage({
         } else {
           createRegleInstance();
           defineExternalErrorsWatchSource();
-          defineComputedExternalErrorsWatchSource();
         }
       }
     );
