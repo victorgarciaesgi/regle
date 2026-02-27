@@ -116,6 +116,7 @@ export function createReactiveFieldStatus({
     additionalRules.value = rules ?? {};
     storage.addAdditionalRulesEntry(cachePath, rules ?? {});
     createRuleProcessor();
+    $commit();
   }
 
   function createRuleProcessor() {
@@ -149,10 +150,16 @@ export function createReactiveFieldStatus({
     }
 
     $rules.value = Object.fromEntries(entries);
+
+    storage.addRuleDeclEntry(cachePath, rules);
   }
 
-  function createReactiveRulesResult() {
-    const declaredRules = rulesDef.value as RegleRuleDecl<unknown, any>;
+  function createRuleDeclEntry():
+    | {
+        valid: boolean;
+      }
+    | undefined {
+    const declaredRules = { ...rulesDef.value, ...additionalRules.value };
     const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
 
     const options: Record<string, unknown> = {};
@@ -162,6 +169,12 @@ export function createReactiveFieldStatus({
       }
     }
     $localOptions.value = options;
+
+    return storeResult;
+  }
+
+  function createReactiveRulesResult() {
+    const storeResult = createRuleDeclEntry();
 
     $watch();
 
@@ -182,7 +195,7 @@ export function createReactiveFieldStatus({
       }
     }
 
-    storage.addRuleDeclEntry(cachePath, declaredRules);
+    storage.addRuleDeclEntry(cachePath, rulesDef.value);
   }
 
   function define$commit() {
