@@ -261,6 +261,8 @@ export type RegleFieldStatus<
   readonly $tooltips: string[];
   /** Represents the inactive status. Is true when this state have empty rules */
   readonly $inactive: boolean;
+  /** Adds a new rule to the field. */
+  addRules: (rules: RegleRuleDecl) => void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -291,6 +293,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $isDebouncing: boolean;
   readonly $schemaMode?: boolean;
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
+  addRules: (rules: RegleRuleDecl) => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: unknown) => Promise<$InternalRegleResult>;
   /**

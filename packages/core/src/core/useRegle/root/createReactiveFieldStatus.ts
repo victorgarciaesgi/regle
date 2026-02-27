@@ -110,21 +110,16 @@ export function createReactiveFieldStatus({
 
   const $isDebouncing = ref(false);
 
-  function createReactiveRulesResult() {
-    const declaredRules = rulesDef.value as RegleRuleDecl<unknown, any>;
-    const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
+  const additionalRules = ref<RegleRuleDecl<unknown, any>>(storage.getAdditionalRulesEntry(cachePath) ?? {});
 
-    const options: Record<string, unknown> = {};
-    for (const key in declaredRules) {
-      if (key.startsWith('$')) {
-        options[key] = declaredRules[key];
-      }
-    }
-    $localOptions.value = options;
+  function addRules(rules: RegleRuleDecl) {
+    additionalRules.value = rules ?? {};
+    storage.addAdditionalRulesEntry(cachePath, rules ?? {});
+    createRuleProcessor();
+  }
 
-    $watch();
-
-    const rules = rulesDef.value;
+  function createRuleProcessor() {
+    const rules = { ...rulesDef.value, ...additionalRules.value };
     const entries: [string, $InternalRegleRuleStatus][] = [];
 
     for (const ruleKey in rules) {
@@ -154,6 +149,23 @@ export function createReactiveFieldStatus({
     }
 
     $rules.value = Object.fromEntries(entries);
+  }
+
+  function createReactiveRulesResult() {
+    const declaredRules = rulesDef.value as RegleRuleDecl<unknown, any>;
+    const storeResult = storage.checkRuleDeclEntry(cachePath, declaredRules);
+
+    const options: Record<string, unknown> = {};
+    for (const key in declaredRules) {
+      if (key.startsWith('$')) {
+        options[key] = declaredRules[key];
+      }
+    }
+    $localOptions.value = options;
+
+    $watch();
+
+    createRuleProcessor();
 
     scopeState.processShortcuts();
 
@@ -448,7 +460,7 @@ export function createReactiveFieldStatus({
       const $name = computed<string>(() => fieldName ?? options.id ?? 'root');
 
       const $inactive = computed<boolean>(() => {
-        return !schemaMode && !Object.keys(rulesDef.value).some((key) => !key.startsWith('$'));
+        return !schemaMode && !Object.keys($rules.value).some((key) => !key.startsWith('$'));
       });
 
       const $correct = computed<boolean>(() => {
@@ -849,6 +861,7 @@ export function createReactiveFieldStatus({
     $extractDirtyFields,
     $clearExternalErrors,
     $abort,
+    addRules,
     $schemaMode: schemaMode,
     '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
