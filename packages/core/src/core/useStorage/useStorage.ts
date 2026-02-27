@@ -21,6 +21,7 @@ export function useStorage() {
   const collectionsStorage = shallowRef(new Map<string, Ref<Array<$InternalRegleStatusType>>>());
   const dirtyStorage = shallowRef(new Map<string, boolean>());
   const ruleStatusStorage = shallowRef(new Map<string, StoredRuleStatus>());
+  const additionalRulesStorage = shallowRef(new Map<string, RegleRuleDecl<any, any>>());
 
   const arrayStatusStorage = shallowRef(new Map<string, $InternalRegleStatusType>());
 
@@ -44,6 +45,15 @@ export function useStorage() {
       collectionsStorage.value.set($path, $each);
       return $each;
     }
+  }
+
+  // Additional rules
+  function addAdditionalRulesEntry($path: string, rules: RegleRuleDecl<any, any>) {
+    additionalRulesStorage.value.set($path, rules);
+  }
+
+  function getAdditionalRulesEntry($path: string) {
+    return additionalRulesStorage.value.get($path);
   }
 
   // Collections
@@ -179,5 +189,7 @@ export function useStorage() {
     addArrayStatus,
     deleteArrayStatus,
     arrayStatusStorage,
+    addAdditionalRulesEntry,
+    getAdditionalRulesEntry,
   };
 }
