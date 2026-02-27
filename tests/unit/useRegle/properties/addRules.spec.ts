@@ -1,5 +1,5 @@
 import { useRegle } from '@regle/core';
-import { email, minLength, required } from '@regle/rules';
+import { email, minLength, required, containsUppercase } from '@regle/rules';
 import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 
@@ -48,5 +48,21 @@ describe('addRules', () => {
     expect(vm.r$.email.$rules.email).toBeDefined();
     expect('required' in vm.r$.email.$rules).toBe(false);
     expect('minLength' in vm.r$.email.$rules).toBe(true);
+  });
+
+  it('triggers $commit when rules are added', async () => {
+    const { vm } = createRegleComponent(() => {
+      const form = ref({ name: '' });
+
+      return useRegle(form, {
+        name: {},
+      });
+    });
+
+    vm.r$.name.addRules({ containsUppercase: containsUppercase });
+
+    await nextTick();
+
+    expect(vm.r$.name.$rules.containsUppercase.$metadata.minUppercaseCount).toBe(1);
   });
 });
