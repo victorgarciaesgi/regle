@@ -112,11 +112,18 @@ export function createReactiveFieldStatus({
 
   const additionalRules = ref<RegleRuleDecl<unknown, any>>(storage.getAdditionalRulesEntry(cachePath) ?? {});
 
-  function addRules(rules: RegleRuleDecl) {
+  function $addRules(rules: RegleRuleDecl) {
     additionalRules.value = rules ?? {};
     storage.addAdditionalRulesEntry(cachePath, rules ?? {});
     createRuleProcessor();
     $commit();
+  }
+
+  /**
+   * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
+   */
+  function addRules(rules: RegleRuleDecl) {
+    $addRules(rules);
   }
 
   function createRuleProcessor() {
@@ -874,6 +881,7 @@ export function createReactiveFieldStatus({
     $extractDirtyFields,
     $clearExternalErrors,
     $abort,
+    $addRules,
     addRules,
     $schemaMode: schemaMode,
     '~modifiers': scopeState.$modifiers,

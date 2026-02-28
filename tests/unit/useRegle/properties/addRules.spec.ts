@@ -3,7 +3,7 @@ import { email, minLength, required, containsUppercase } from '@regle/rules';
 import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 
-describe('addRules', () => {
+describe('$addRules', () => {
   it('merges additional field rules with declared rules', async () => {
     const { vm } = createRegleComponent(() => {
       const form = ref({ email: '' });
@@ -16,7 +16,7 @@ describe('addRules', () => {
     expect(vm.r$.email.$rules.email).toBeDefined();
     expect('required' in vm.r$.email.$rules).toBe(false);
 
-    vm.r$.email.addRules({ required });
+    vm.r$.email.$addRules({ required });
     await nextTick();
 
     expect(vm.r$.email.$rules.email).toBeDefined();
@@ -36,13 +36,13 @@ describe('addRules', () => {
       });
     });
 
-    vm.r$.email.addRules({ required });
+    vm.r$.email.$addRules({ required });
     await nextTick();
 
     expect(vm.r$.email.$rules.email).toBeDefined();
     expect('required' in vm.r$.email.$rules).toBe(true);
 
-    vm.r$.email.addRules({ minLength: minLength(8) });
+    vm.r$.email.$addRules({ minLength: minLength(8) });
     await nextTick();
 
     expect(vm.r$.email.$rules.email).toBeDefined();
@@ -59,10 +59,22 @@ describe('addRules', () => {
       });
     });
 
-    vm.r$.name.addRules({ containsUppercase: containsUppercase });
+    vm.r$.name.$addRules({ containsUppercase: containsUppercase });
 
     await nextTick();
 
     expect(vm.r$.name.$rules.containsUppercase.$metadata.minUppercaseCount).toBe(1);
+  });
+
+  it('deprecated addRules still works and delegates to $addRules', async () => {
+    const { vm } = createRegleComponent(() => {
+      const form = ref({ email: '' });
+      return useRegle(form, { email: { email } });
+    });
+
+    expect('required' in vm.r$.email.$rules).toBe(false);
+    vm.r$.email.addRules({ required });
+    await nextTick();
+    expect('required' in vm.r$.email.$rules).toBe(true);
   });
 });

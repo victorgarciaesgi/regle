@@ -261,7 +261,12 @@ export type RegleFieldStatus<
   readonly $tooltips: string[];
   /** Represents the inactive status. Is true when this state have empty rules */
   readonly $inactive: boolean;
-  /** Adds a new rule to the field. */
+  /** Adds runtime rules to the field. */
+  $addRules: (rules: RegleRuleDecl) => void;
+  /**
+   * Adds runtime rules to the field.
+   * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
+   */
   addRules: (rules: RegleRuleDecl) => void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
@@ -293,6 +298,8 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $isDebouncing: boolean;
   readonly $schemaMode?: boolean;
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
+  $addRules: (rules: RegleRuleDecl) => void;
+  /** @deprecated Use `$addRules` instead. */
   addRules: (rules: RegleRuleDecl) => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: unknown) => Promise<$InternalRegleResult>;

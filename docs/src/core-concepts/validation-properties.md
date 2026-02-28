@@ -200,12 +200,11 @@ For more information about the `$reset` method, check the [reseting forms sectio
 
 Clears the $externalResults state back to an empty object.
 
-### `addRules`
+### `$addRules`
 - Type: `(rules: RegleRuleDecl) => void`
 
 Adds runtime rules to the current field status.
 This is useful when a child component receives a `RegleFieldStatus` and needs to attach its own field-specific validation rules.
-
 
 :::warning
 This is convenient for children components to add rules to their parent field status, but you will lose a bit of type safety.
@@ -216,11 +215,18 @@ const { r$ } = useRegle(form, {
   password: {},
 });
 
-r$.password.addRules({
+r$.password.$addRules({
   required,
   minLength: minLength(8),
 });
 ```
+
+### `addRules` (deprecated)
+- Type: `(rules: RegleRuleDecl) => void`
+
+:::warning Deprecated
+Use `$addRules` instead. This alias will be removed in a future version.
+:::
 
 
 

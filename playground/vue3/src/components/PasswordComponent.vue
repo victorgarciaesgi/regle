@@ -18,5 +18,5 @@
     field: RegleFieldStatus<string>;
   }>();
 
-  props.field.addRules({ required, minLength: minLength(8), containsUppercase: containsUppercase });
+  props.field.$addRules({ required, minLength: minLength(8), containsUppercase: containsUppercase });
 </script>
