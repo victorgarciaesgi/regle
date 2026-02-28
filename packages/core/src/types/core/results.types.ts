@@ -176,27 +176,34 @@ export type $InternalRegleResult = {
 export type DeepSafeFormState<
   TState extends Record<string, any>,
   TRules extends ReglePartialRuleTree<Record<string, any>, CustomRulesDeclarationTree> | undefined,
-> = [unknown] extends [TState]
-  ? {}
-  : TRules extends undefined
-    ? TState
-    : TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>
-      ? Prettify<
-          {
-            [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-              ? K
-              : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
-              ? MaybeOutput<M>
-              : SafeProperty<TState[K], TRules[K]>;
-          } & {
-            [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-              ? never
-              : K]-?: unknown extends SafeProperty<TState[K], TRules[K]>
-              ? unknown
-              : NonNullable<SafeProperty<TState[K], TRules[K]>>;
-          }
-        >
-      : TState;
+> =
+  IsUnknown<TState> extends true
+    ? {}
+    : IsAny<TState> extends true
+      ? unknown
+      : TRules extends undefined
+        ? TState
+        : HasNamedKeys<TState> extends true
+          ? TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>
+            ? Prettify<
+                {
+                  [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
+                    ? K
+                    : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
+                    ? MaybeOutput<M>
+                    : SafeProperty<TState[K], TRules[K]>;
+                } & {
+                  [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
+                    ? never
+                    : K]-?: IsUnknown<SafeProperty<TState[K], TRules[K]>> extends true
+                    ? unknown
+                    : IsAny<TState[K]> extends true
+                      ? unknown
+                      : NonNullable<SafeProperty<TState[K], TRules[K]>>;
+                }
+              >
+            : TState
+          : TState;
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>

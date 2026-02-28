@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "dev": "echo 'no dev'",
     "test": "echo 'no tests'"
   },
@@ -11,6 +11,7 @@
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "vue": "catalog:"
   }
 }

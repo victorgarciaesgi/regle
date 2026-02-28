@@ -150,4 +150,5 @@ export type {
   CustomCollectionProperties,
   ParamsToLooseParams,
   ExtendedRulesDeclarationsOverrides,
+  RegleRuleDefinitionLight,
 } from './types';

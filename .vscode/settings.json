@@ -7,7 +7,7 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "typescript.experimental.useTsgo": false,
+  "typescript.experimental.useTsgo": true,
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },

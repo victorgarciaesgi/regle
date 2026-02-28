@@ -5,8 +5,10 @@ import type {
   ParamsToLooseParams,
   RegleRuleDefinition,
   RegleRuleMetadataConsumer,
+  RegleRuleMetadataDefinition,
   RegleRuleRaw,
   RegleRuleWithParamsDefinitionInput,
+  MaybeInput,
 } from '@regle/core';
 import { createRule, unwrapRuleParameters } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
@@ -42,39 +44,91 @@ interface ApplyIfOptions {
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/rules-operators#applyif Documentation}
  */
-export function applyIf<TRule extends FormRuleDeclaration<any>>(
+export function applyIf<
+  TType extends string | unknown,
+  TValue,
+  TParams extends [param?: any, ...any[]],
+  TAsync extends boolean,
+  TMetadata extends RegleRuleMetadataDefinition,
+>(
   _condition: MaybeRefOrGetter<Maybe<boolean>>,
-  rule: TRule,
+  rule: RegleRuleWithParamsDefinitionInput<TType, TValue, TParams, TAsync, TMetadata, any>,
   options?: ApplyIfOptions
-): TRule extends InlineRuleDeclaration<infer TValue, infer TParams, infer TReturn>
-  ? RegleRuleDefinition<
-      'applyIf',
-      TValue,
-      ParamsToLooseParams<TParams, [condition: boolean]>,
-      TReturn extends Promise<any> ? true : false,
-      TReturn extends Promise<infer M> ? M : TReturn
-    >
-  : TRule extends RegleRuleDefinition<
-        infer TType,
-        infer TValue,
-        infer TParams,
-        infer TAsync,
-        infer TMetadata,
-        any,
-        any,
-        any
-      >
-    ? RegleRuleDefinition<TType, TValue, ParamsToLooseParams<[...TParams], [condition: boolean]>, TAsync, TMetadata>
-    : TRule extends RegleRuleWithParamsDefinitionInput<
-          infer TType,
-          infer TValue,
-          infer TParams,
-          infer TAsync,
-          infer TMetadata,
-          any
-        >
-      ? RegleRuleDefinition<TType, TValue, ParamsToLooseParams<[...TParams], [condition: boolean]>, TAsync, TMetadata>
-      : TRule {
+): RegleRuleDefinition<
+  TType,
+  TValue,
+  ParamsToLooseParams<[...TParams]>,
+  TAsync,
+  TMetadata,
+  MaybeInput<TValue>,
+  TValue,
+  false
+>;
+export function applyIf<
+  TType extends string | unknown,
+  TValue,
+  TParams extends any[],
+  TAsync extends boolean,
+  TMetadata extends RegleRuleMetadataDefinition,
+>(
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rule: RegleRuleWithParamsDefinitionInput<TType, TValue, TParams, TAsync, TMetadata, any>,
+  options?: ApplyIfOptions
+): RegleRuleDefinition<
+  TType,
+  TValue,
+  ParamsToLooseParams<[...TParams]>,
+  TAsync,
+  TMetadata,
+  MaybeInput<TValue>,
+  TValue,
+  false
+>;
+
+export function applyIf<
+  TValue,
+  TParams extends any[],
+  TReturn extends RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>,
+>(
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rule: InlineRuleDeclaration<TValue, TParams, TReturn>,
+  options?: ApplyIfOptions
+): RegleRuleDefinition<
+  'applyIf',
+  TValue,
+  ParamsToLooseParams<TParams>,
+  TReturn extends Promise<any> ? true : false,
+  TReturn extends Promise<infer M> ? M : TReturn,
+  MaybeInput<TValue>,
+  TValue,
+  false
+>;
+export function applyIf<
+  TType extends string | unknown,
+  TValue,
+  TParams extends any[],
+  TAsync extends boolean,
+  TMetadata extends RegleRuleMetadataDefinition,
+>(
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rule: RegleRuleDefinition<TType, TValue, TParams, TAsync, TMetadata, any, any, any>,
+  options?: ApplyIfOptions
+): RegleRuleDefinition<
+  TType,
+  TValue,
+  ParamsToLooseParams<[...TParams]>,
+  TAsync,
+  TMetadata,
+  MaybeInput<TValue>,
+  TValue,
+  false
+>;
+
+export function applyIf(
+  _condition: MaybeRefOrGetter<Maybe<boolean>>,
+  rule: FormRuleDeclaration<any>,
+  options?: ApplyIfOptions
+): FormRuleDeclaration<any> {
   const { _type, validator, _params, _message, _async, _active } = extractValidator(rule);
 
   const augmentedParams = (_params ?? []).concat(options?.hideParams ? [] : [_condition]);
