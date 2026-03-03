@@ -1,4 +1,4 @@
-import type { EmptyObject } from 'type-fest';
+import type { EmptyObject, IsAny, IsUnknown } from 'type-fest';
 import type { MaybeRef, Raw } from 'vue';
 import type {
   CustomRulesDeclarationTree,
@@ -58,17 +58,25 @@ export type RegleSingleField<
 } & TAdditionalReturnProperties;
 
 export type DeepReactiveState<T extends Record<string, any> | unknown | undefined> =
-  ExtendOnlyRealRecord<T> extends true
-    ? {
-        [K in keyof T]: InferDeepReactiveState<T[K]>;
-      }
-    : never;
+  IsAny<T> extends true
+    ? any
+    : IsUnknown<T> extends true
+      ? never
+      : ExtendOnlyRealRecord<T> extends true
+        ? {
+            [K in keyof T]: InferDeepReactiveState<T[K]>;
+          }
+        : never;
 
 export type InferDeepReactiveState<TState> =
-  NonNullable<TState> extends Array<infer U extends Record<string, any>>
-    ? DeepReactiveState<U[]>
-    : NonNullable<TState> extends Date | File
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
       ? MaybeRef<TState>
-      : NonNullable<TState> extends Record<string, any>
-        ? DeepReactiveState<TState>
-        : MaybeRef<TState>;
+      : NonNullable<TState> extends Array<infer U extends Record<string, any>>
+        ? DeepReactiveState<U[]>
+        : NonNullable<TState> extends Date | File
+          ? MaybeRef<TState>
+          : NonNullable<TState> extends Record<string, any>
+            ? DeepReactiveState<TState>
+            : MaybeRef<TState>;

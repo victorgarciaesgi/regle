@@ -1,4 +1,4 @@
-import type { EmptyObject, IsEmptyObject, IsUnion, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsAny, IsEmptyObject, IsUnion, IsUnknown, UnionToTuple } from 'type-fest';
 import type {
   ExtendedRulesDeclarations,
   InferRegleStatusType,
