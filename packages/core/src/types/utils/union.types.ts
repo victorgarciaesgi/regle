@@ -1,4 +1,4 @@
-import type { EmptyObject, UnionToIntersection, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsAny, IsUnknown, UnionToIntersection, UnionToTuple } from 'type-fest';
 import type { isRecordLiteral, NonUndefined, Prettify } from './misc.types';
 import type { HasNamedKeys } from './object.types';
 
@@ -6,18 +6,22 @@ import type { HasNamedKeys } from './object.types';
  * Combine all members of a union type, merging types for each key, and keeping loose types
  */
 export type JoinDiscriminatedUnions<TUnion extends unknown> =
-  HasNamedKeys<TUnion> extends true
-    ? isRecordLiteral<TUnion> extends true
-      ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true
-        ? Prettify<
-            ResolveKeys<TUnion> &
-              (Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>> extends EmptyObject
-                ? {}
-                : Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>>)
-          >
-        : DumbJoinDiscriminatedUnions<TUnion>
-      : TUnion
-    : TUnion;
+  IsAny<TUnion> extends true
+    ? any
+    : IsUnknown<TUnion> extends true
+      ? TUnion
+      : HasNamedKeys<TUnion> extends true
+        ? isRecordLiteral<TUnion> extends true
+          ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true
+            ? Prettify<
+                ResolveKeys<TUnion> &
+                  (Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>> extends EmptyObject
+                    ? {}
+                    : Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>>)
+              >
+            : DumbJoinDiscriminatedUnions<TUnion>
+          : TUnion
+        : TUnion;
 
 type ResolveKeys<TUnion extends unknown> = Partial<
   UnionToIntersection<

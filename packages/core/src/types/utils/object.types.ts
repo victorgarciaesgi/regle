@@ -1,4 +1,4 @@
-import type { IsUnion } from 'type-fest';
+import type { IsAny, IsUnion, IsUnknown } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
 import type { RegleStaticImpl } from './static.types';
@@ -71,12 +71,16 @@ type ProcessHasNamedKeys<T> = {
  * Convert a nested object to a deeply nested partial object.
  */
 export type DeepPartial<T> =
-  T extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T extends Date | File | RegleStaticImpl<unknown>
-      ? T
-      : T extends Record<string, any>
-        ? {
-            [K in keyof T]?: DeepPartial<T[K]> | undefined;
-          }
-        : T | undefined;
+  IsAny<T> extends true
+    ? any
+    : IsUnknown<T> extends true
+      ? unknown
+      : T extends Array<infer U>
+        ? Array<DeepPartial<U>>
+        : T extends Date | File | RegleStaticImpl<unknown>
+          ? T
+          : T extends Record<string, any>
+            ? {
+                [K in keyof T]?: DeepPartial<T[K]> | undefined;
+              }
+            : T | undefined;

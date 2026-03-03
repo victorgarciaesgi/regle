@@ -1,4 +1,4 @@
-import type { IsUnion, UnionToTuple } from 'type-fest';
+import type { IsAny, IsUnion, IsUnknown, UnionToTuple } from 'type-fest';
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { RegleCollectionEachRules, ReglePartialRuleTree, RegleRuleDecl, RegleRuleDefinition } from '../rules';
 import type { ExtractFromGetter, isRecordLiteral, Prettify, Unwrap, UnwrapSimple } from './misc.types';
@@ -20,16 +20,20 @@ export type InferOutput<
     | MaybeRef<StandardSchemaV1<any>>,
   TState extends MaybeRef<unknown> = InferInput<TRules>,
 > =
-  isRecordLiteral<TState> extends true
-    ? TRules extends MaybeRef<StandardSchemaV1<infer State>>
-      ? State
-      : DeepSafeFormState<
-          JoinDiscriminatedUnions<Unwrap<NonNullable<TState>>>,
-          TRules extends MaybeRef<ReglePartialRuleTree<Record<string, any>, any>> ? UnwrapRef<TRules> : {}
-        >
-    : TState extends any[]
-      ? TState[]
-      : TState;
+  IsAny<TRules> extends true
+    ? any
+    : IsUnknown<TRules> extends true
+      ? unknown
+      : isRecordLiteral<TState> extends true
+        ? TRules extends MaybeRef<StandardSchemaV1<infer State>>
+          ? State
+          : DeepSafeFormState<
+              JoinDiscriminatedUnions<Unwrap<NonNullable<TState>>>,
+              TRules extends MaybeRef<ReglePartialRuleTree<Record<string, any>, any>> ? UnwrapRef<TRules> : {}
+            >
+        : TState extends any[]
+          ? TState[]
+          : TState;
 
 /**
  * Infer input type from a rules object
@@ -45,39 +49,48 @@ export type InferInput<
     | MaybeRef<StandardSchemaV1<any>>,
   TMarkMaybe extends boolean = true,
 > =
-  TRules extends MaybeRef<StandardSchemaV1<infer State>>
-    ? State
-    : IsUnion<UnwrapSimple<TRules>> extends true
-      ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
-      : TMarkMaybe extends true
-        ? Prettify<
-            {
-              [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
-                ? K
-                : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-            } & {
-              [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
-                ? never
-                : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-            }
-          >
-        : Prettify<{
-            [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-          }>;
+  IsAny<TRules> extends true
+    ? any
+    : IsUnknown<TRules> extends true
+      ? any
+      : TRules extends MaybeRef<StandardSchemaV1<infer State>>
+        ? State
+        : IsUnion<UnwrapSimple<TRules>> extends true
+          ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
+          : TMarkMaybe extends true
+            ? Prettify<
+                {
+                  [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+                    ? K
+                    : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+                } & {
+                  [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+                    ? never
+                    : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+                }
+              >
+            : Prettify<{
+                [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+              }>;
 
-type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> = TRule extends {
-  $each: RegleCollectionEachRules<any, any>;
-}
-  ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any, any>
-    ? InferInput<ExtractFromGetter<TRule['$each']>, TMarkMaybe>[]
-    : any[]
-  : TRule extends MaybeRef<RegleRuleDecl<any, any>>
-    ? [ExtractTypeFromRules<UnwrapRef<TRule>>] extends [never]
+type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> =
+  IsAny<TRule> extends true
+    ? any
+    : IsUnknown<TRule> extends true
       ? unknown
-      : ExtractTypeFromRules<UnwrapRef<TRule>>
-    : TRule extends ReglePartialRuleTree<any, any>
-      ? InferInput<TRule, TMarkMaybe>
-      : string;
+      : TRule extends {
+            $each: RegleCollectionEachRules<any, any>;
+          }
+        ? ExtractFromGetter<TRule['$each']> extends ReglePartialRuleTree<any, any>
+          ? InferInput<ExtractFromGetter<TRule['$each']>, TMarkMaybe>[]
+          : any[]
+        : TRule extends MaybeRef<RegleRuleDecl<any, any>>
+          ? [ExtractTypeFromRules<UnwrapRef<TRule>>] extends [never]
+            ? unknown
+            : ExtractTypeFromRules<UnwrapRef<TRule>>
+          : TRule extends ReglePartialRuleTree<any, any>
+            ? InferInput<TRule, TMarkMaybe>
+            : string;
 
 type ExtractTypeFromRules<TRules extends RegleRuleDecl<any, any>> =
   FilterRulesWithInput<TRules> extends { type: infer Input }
