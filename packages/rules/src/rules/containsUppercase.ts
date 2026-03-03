@@ -1,4 +1,5 @@
-import { isFilled, regex } from '@regle/rules';
+import { isFilled } from '../helpers/ruleHelpers';
+import { regex } from './regex';
 import { createRule, type MaybeInput, type RegleRuleWithParamsDefinition } from '@regle/core';
 
 /**
