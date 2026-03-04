@@ -12,6 +12,7 @@ export { dateAfter } from './dateAfter';
 export { dateBefore } from './dateBefore';
 export { dateBetween } from './dateBetween';
 export { decimal } from './decimal';
+export { domain } from './domain';
 export { email } from './email';
 export { emoji } from './emoji';
 export { endsWith } from './endsWith';
