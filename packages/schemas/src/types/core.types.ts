@@ -16,7 +16,7 @@ import type {
   RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsAny, IsUnknown } from 'type-fest';
+import type { EmptyObject } from 'type-fest';
 import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
@@ -123,25 +123,21 @@ export type RegleSchemaStatus<
  * @public
  */
 export type InferRegleSchemaStatusType<TState extends unknown, TShortcuts extends RegleShortcutDefinition = {}> =
-  IsAny<TState> extends true
-    ? RegleSchemaFieldStatus<any, TShortcuts>
-    : IsUnknown<TState> extends true
-      ? RegleCommonStatus<unknown>
-      : NonNullable<TState> extends Array<any>
-        ? RegleSchemaCollectionStatus<NonNullable<TState>, TShortcuts>
-        : NonNullable<TState> extends Date | File
-          ? RegleSchemaFieldStatus<TState, TShortcuts>
-          : unknown extends TState
-            ? RegleSchemaFieldStatus<TState extends EmptyObject ? unknown : TState, TShortcuts>
-            : NonNullable<TState> extends Record<string, any>
-              ? NonNullable<NonNullable<TState>> extends RegleStaticImpl<infer U>
-                ? RegleSchemaFieldStatus<Raw<U>, TShortcuts>
-                : MaybeSchemaVariantStatus<
-                    NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
-                    StandardSchemaV1,
-                    TShortcuts
-                  >
-              : RegleSchemaFieldStatus<TState, TShortcuts>;
+  NonNullable<TState> extends Array<any>
+    ? RegleSchemaCollectionStatus<NonNullable<TState>, TShortcuts>
+    : NonNullable<TState> extends Date | File
+      ? RegleSchemaFieldStatus<TState, TShortcuts>
+      : unknown extends TState
+        ? RegleSchemaFieldStatus<TState extends EmptyObject ? unknown : TState, TShortcuts>
+        : NonNullable<TState> extends Record<string, any>
+          ? NonNullable<NonNullable<TState>> extends RegleStaticImpl<infer U>
+            ? RegleSchemaFieldStatus<Raw<U>, TShortcuts>
+            : MaybeSchemaVariantStatus<
+                NonNullable<TState> extends Record<string, any> ? NonNullable<TState> : {},
+                StandardSchemaV1,
+                TShortcuts
+              >
+          : RegleSchemaFieldStatus<TState, TShortcuts>;
 
 /**
  * @public

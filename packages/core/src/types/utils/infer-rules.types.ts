@@ -23,7 +23,7 @@ export type InferOutput<
   IsAny<TRules> extends true
     ? any
     : IsUnknown<TRules> extends true
-      ? unknown
+      ? any
       : isRecordLiteral<TState> extends true
         ? TRules extends MaybeRef<StandardSchemaV1<infer State>>
           ? State
@@ -77,7 +77,7 @@ type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> =
   IsAny<TRule> extends true
     ? any
     : IsUnknown<TRule> extends true
-      ? unknown
+      ? any
       : TRule extends {
             $each: RegleCollectionEachRules<any, any>;
           }
