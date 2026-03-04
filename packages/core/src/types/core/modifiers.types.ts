@@ -158,19 +158,34 @@ export type ShortcutCommonFn<T extends Record<string, any>> = {
   [x: string]: (element: Omit<OmitByType<T, Function>, '~standard'>) => unknown;
 };
 
+type ShortcutFieldStatus<TCustomRules extends Record<string, any>> = RegleFieldStatus<
+  any,
+  Partial<TCustomRules> & Partial<DefaultValidators>
+>;
+
+type ShortcutNestedStatus<TCustomRules extends Record<string, any>> = RegleStatus<
+  Record<string, any>,
+  ReglePartialRuleTree<any, Partial<TCustomRules>>
+>;
+
+type ShortcutCollectionStatus<TCustomRules extends Record<string, any>> = RegleCollectionStatus<
+  any[],
+  Partial<TCustomRules> & Partial<DefaultValidators>
+>;
+
 export type RegleShortcutDefinition<TCustomRules extends Record<string, any> = {}> = {
   /**
    * Allow you to customize the properties for every field
    */
-  fields?: ShortcutCommonFn<RegleFieldStatus<any, Partial<TCustomRules> & Partial<DefaultValidators>>>;
+  fields?: ShortcutCommonFn<ShortcutFieldStatus<TCustomRules>>;
   /**
    * Allow you to customize the properties for every parent of a nested object
    */
-  nested?: ShortcutCommonFn<RegleStatus<Record<string, any>, ReglePartialRuleTree<any, Partial<TCustomRules>>>>;
+  nested?: ShortcutCommonFn<ShortcutNestedStatus<TCustomRules>>;
   /**
    * Allow you to customize the properties for every parent of a collection
    */
-  collections?: ShortcutCommonFn<RegleCollectionStatus<any[], Partial<TCustomRules> & Partial<DefaultValidators>>>;
+  collections?: ShortcutCommonFn<ShortcutCollectionStatus<TCustomRules>>;
 };
 
 export type $InternalRegleShortcutDefinition = {
