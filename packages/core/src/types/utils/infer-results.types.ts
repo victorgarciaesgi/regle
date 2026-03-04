@@ -1,4 +1,3 @@
-import type { IsAny } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapRef } from 'vue';
 import type {
   DataTypeRegleErrors,
@@ -27,17 +26,15 @@ import type { DeepPartial, JoinDiscriminatedUnions } from '../utils';
  * @deprecated Use {@link InferValidOutput} instead
  */
 export type InferSafeOutput<TRegle extends MaybeRef<SuperCompatibleRegleRoot | SuperCompatibleRegleFieldStatus>> =
-  IsAny<TRegle> extends true
-    ? any
-    : UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
-      ? TRules extends ReglePartialRuleTree<Record<string, any>, any>
-        ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
-        : never
-      : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
-        ? SafeFieldProperty<TState, TRules>
-        : UnwrapRef<TRegle> extends RegleLike<infer TState extends Record<string, any>>
-          ? TState
-          : never;
+  UnwrapRef<TRegle> extends Raw<RegleRoot<infer TState extends Record<string, any>, infer TRules, any, any>>
+    ? TRules extends ReglePartialRuleTree<Record<string, any>, any>
+      ? DeepSafeFormState<JoinDiscriminatedUnions<TState>, TRules>
+      : never
+    : UnwrapRef<TRegle> extends RegleFieldStatus<infer TState, infer TRules>
+      ? SafeFieldProperty<TState, TRules>
+      : UnwrapRef<TRegle> extends RegleLike<infer TState extends Record<string, any>>
+        ? TState
+        : never;
 
 /**
  * Infer safe output from any `r$` instance

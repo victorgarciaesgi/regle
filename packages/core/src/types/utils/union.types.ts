@@ -9,7 +9,7 @@ export type JoinDiscriminatedUnions<TUnion extends unknown> =
   IsAny<TUnion> extends true
     ? any
     : IsUnknown<TUnion> extends true
-      ? TUnion
+      ? any
       : HasNamedKeys<TUnion> extends true
         ? isRecordLiteral<TUnion> extends true
           ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true

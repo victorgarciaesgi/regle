@@ -1,4 +1,4 @@
-import type { IsAny, IsUnknown } from 'type-fest';
+import type { IsUnknown } from 'type-fest';
 import type { Raw } from 'vue';
 import type { isRecordLiteral } from './misc.types';
 
@@ -14,21 +14,13 @@ export type UnwrapRegleStatic<T> = T extends RegleStaticImpl<infer U> ? U : T;
 export type IsRegleStatic<T> = T extends RegleStaticImpl<T> ? true : false;
 
 export type UnwrapStatic<T> =
-  IsAny<T> extends true
-    ? any
-    : IsUnknown<T> extends true
-      ? any
-      : NonNullable<T> extends RegleStaticImpl<infer U>
-        ? Raw<U>
-        : UnwrapStaticSimple<T>;
+  IsUnknown<T> extends true ? any : NonNullable<T> extends RegleStaticImpl<infer U> ? Raw<U> : UnwrapStaticSimple<T>;
 
 type UnwrapStaticSimple<T> =
-  IsAny<T> extends true
-    ? any
-    : NonNullable<T> extends Array<infer U>
-      ? Array<UnwrapStatic<U>>
-      : isRecordLiteral<NonNullable<T>> extends true
-        ? {
-            [K in keyof T]: UnwrapStatic<T[K]>;
-          }
-        : T;
+  NonNullable<T> extends Array<infer U>
+    ? Array<UnwrapStatic<U>>
+    : isRecordLiteral<NonNullable<T>> extends true
+      ? {
+          [K in keyof T]: UnwrapStatic<T[K]>;
+        }
+      : T;
