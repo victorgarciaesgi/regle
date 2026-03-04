@@ -1,4 +1,4 @@
-import type { IsUnion } from 'type-fest';
+import type { IsAny, IsUnion, IsUnknown } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { DeepReactiveState } from '../core';
 import type { RegleStaticImpl } from './static.types';
@@ -57,7 +57,13 @@ export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
 export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };
 
 export type HasNamedKeys<T> =
-  IsUnion<T> extends true ? ProcessHasNamedKeys<LazyJoinDiscriminatedUnions<T>> : ProcessHasNamedKeys<T>;
+  IsAny<T> extends true
+    ? false
+    : IsUnknown<T> extends true
+      ? false
+      : IsUnion<T> extends true
+        ? ProcessHasNamedKeys<LazyJoinDiscriminatedUnions<T>>
+        : ProcessHasNamedKeys<T>;
 
 type ProcessHasNamedKeys<T> = {
   [K in keyof NonNullable<T>]: K extends string ? (string extends K ? never : K) : never;
@@ -71,12 +77,16 @@ type ProcessHasNamedKeys<T> = {
  * Convert a nested object to a deeply nested partial object.
  */
 export type DeepPartial<T> =
-  T extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T extends Date | File | RegleStaticImpl<unknown>
-      ? T
-      : T extends Record<string, any>
-        ? {
-            [K in keyof T]?: DeepPartial<T[K]> | undefined;
-          }
-        : T | undefined;
+  IsAny<T> extends true
+    ? any
+    : IsUnknown<T> extends true
+      ? any
+      : T extends Array<infer U>
+        ? Array<DeepPartial<U>>
+        : T extends Date | File | RegleStaticImpl<unknown>
+          ? T
+          : T extends Record<string, any>
+            ? {
+                [K in keyof T]?: DeepPartial<T[K]> | undefined;
+              }
+            : T | undefined;

@@ -207,22 +207,24 @@ export type DeepSafeFormState<
 
 type FieldHaveRequiredRule<TRule extends RegleFormPropertyType<any, any> | undefined = never> =
   TRule extends MaybeRefOrComputedRef<RegleRuleDecl<any, any>>
-    ? {
-        [K in keyof UnwrapRef<TRule>]-?: UnwrapRef<TRule>[K] extends RegleRuleDefinition<
-          unknown,
-          any,
-          any[],
-          any,
-          any,
-          any,
-          any,
-          true
-        >
-          ? true
-          : false;
-      }[keyof UnwrapRef<TRule>] extends false
-      ? false
-      : true
+    ? UnwrapRef<TRule> extends infer TRuleResolved extends Record<string, any>
+      ? {
+          [K in keyof TRuleResolved]-?: TRuleResolved[K] extends RegleRuleDefinition<
+            unknown,
+            any,
+            any[],
+            any,
+            any,
+            any,
+            any,
+            true
+          >
+            ? true
+            : false;
+        }[keyof TRuleResolved] extends false
+        ? false
+        : true
+      : false
     : false;
 
 type ObjectHaveAtLeastOneRequiredField<
