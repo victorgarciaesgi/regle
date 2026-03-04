@@ -100,6 +100,7 @@ export type DefaultValidators = {
     boolean
   >;
   decimal: RegleRuleDefinition<unknown, string | number, [], false, boolean, string | number>;
+  domain: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
   email: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
   endsWith: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
   exactLength: RegleRuleWithParamsDefinition<

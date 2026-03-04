@@ -311,6 +311,19 @@ const { r$ } = useRegle({ price: 0 }, {
 ```
 
 
+## `domain`
+
+Validates domain names only (for example `example.com` or `sub.example.com`).
+
+```ts
+import { domain } from '@regle/rules';
+
+const { r$ } = useRegle({ siteDomain: '' }, {
+  siteDomain: { domain },
+})
+```
+
+
 ## `email`
 
 Validates email addresses. Always verify on the server to ensure the address is real and not already in use.
