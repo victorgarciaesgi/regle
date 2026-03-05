@@ -25,7 +25,7 @@ function mapRulesWithCondition(
 ) {
   return Object.entries(toValue(rules)).map(([key, rule]) => {
     if (typeof rule === 'function' || (isObject(rule) && '_validator' in rule)) {
-      return [key, applyIf(trueCheck ? condition : () => !toValue(condition), rule)];
+      return [key, applyIf(trueCheck ? condition : () => !toValue(condition), rule as any)];
     }
     return [key, rule];
   });

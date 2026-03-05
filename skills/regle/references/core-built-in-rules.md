@@ -26,6 +26,7 @@ import { required, email, minLength } from '@regle/rules';
 | `uppercase` | All uppercase | `{ uppercase }` |
 | `url` | Valid URL. Option: `protocol` regex | `{ url }` |
 | `httpUrl` | Valid HTTP URL. Option: `protocol` regex | `{ httpUrl }` |
+| `domain` | Valid domain name only | `{ domain }` |
 | `hostname` | Valid hostname | `{ hostname }` |
 | `emoji` | Valid emoji | `{ emoji }` |
 | `hexadecimal` | Valid hexadecimal | `{ hexadecimal }` |

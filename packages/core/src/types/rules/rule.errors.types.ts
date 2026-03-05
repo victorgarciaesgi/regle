@@ -1,4 +1,4 @@
-import type { EmptyObject, IsAny, IsEmptyObject } from 'type-fest';
+import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown } from 'type-fest';
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { FieldRegleBehaviourOptions } from '../core';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
@@ -11,58 +11,78 @@ export type RegleErrorTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TIssue extends boolean = false,
   TSchema extends boolean = false,
-> = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    false,
-    TIssue,
-    TSchema
-  >;
-} & {
-  readonly $self?: string[];
-};
+> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      : {
+          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
+            JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+            false,
+            TIssue,
+            TSchema
+          >;
+        } & {
+          readonly $self?: string[];
+        };
 
 export type RegleIssuesTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TSchema extends boolean = false,
   TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
-> = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    false,
-    true,
-    TSchema,
-    K extends keyof TRules
-      ? TRules[K] extends RegleFormPropertyType<Record<string, any>>
-        ? TRules[K]
-        : EmptyObject
-      : EmptyObject
-  >;
-} & {
-  readonly $self?: RegleFieldIssue[];
-};
+> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      : {
+          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]: RegleValidationErrors<
+            JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+            false,
+            true,
+            TSchema,
+            K extends keyof TRules
+              ? TRules[K] extends RegleFormPropertyType<Record<string, any>>
+                ? TRules[K]
+                : EmptyObject
+              : EmptyObject
+          >;
+        } & {
+          readonly $self?: RegleFieldIssue[];
+        };
 
-export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    true,
-    TSchema
-  >;
-} & {
-  readonly $self?: RegleFieldIssue[];
-};
+export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      : {
+          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+            JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+            true,
+            TSchema
+          >;
+        } & {
+          readonly $self?: RegleFieldIssue[];
+        };
 
 export type RegleExternalSchemaErrorTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TSchema extends boolean = false,
-> = {
-  readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
-    JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
-    true,
-    true,
-    TSchema
-  >;
-};
+> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      : {
+          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+            JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+            true,
+            true,
+            TSchema
+          >;
+        };
 
 type ErrorMessageOrIssue<
   TIssue extends boolean,
@@ -76,25 +96,27 @@ export type RegleValidationErrors<
   TSchema extends boolean = false,
   TRules extends RegleFormPropertyType<Record<string, any>> = EmptyObject,
 > =
-  HasNamedKeys<TState> extends true
-    ? IsAny<TState> extends true
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
       ? any
-      : NonNullable<TState> extends Array<infer U>
-        ? TSchema extends false
-          ? TExternal extends false
-            ? RegleCollectionErrors<U, TIssue, TSchema>
-            : RegleExternalCollectionErrors<U, TIssue, TSchema>
-          : RegleCollectionErrors<U, TIssue, TSchema>
-        : NonNullable<TState> extends Date | File
-          ? ErrorMessageOrIssue<TIssue, TRules>
-          : NonNullable<TState> extends Record<string, any>
-            ? IsRegleStatic<NonNullable<TState>> extends true
-              ? ErrorMessageOrIssue<TIssue, TRules>
-              : TExternal extends false
-                ? RegleErrorTree<TState, TIssue, TSchema>
-                : RegleExternalErrorTree<TState, TSchema>
-            : ErrorMessageOrIssue<TIssue, TRules>
-    : any;
+      : HasNamedKeys<TState> extends true
+        ? NonNullable<TState> extends Array<infer U>
+          ? TSchema extends false
+            ? TExternal extends false
+              ? RegleCollectionErrors<U, TIssue, TSchema>
+              : RegleExternalCollectionErrors<U, TIssue, TSchema>
+            : RegleCollectionErrors<U, TIssue, TSchema>
+          : NonNullable<TState> extends Date | File
+            ? ErrorMessageOrIssue<TIssue, TRules>
+            : NonNullable<TState> extends Record<string, any>
+              ? IsRegleStatic<NonNullable<TState>> extends true
+                ? ErrorMessageOrIssue<TIssue, TRules>
+                : TExternal extends false
+                  ? RegleErrorTree<TState, TIssue, TSchema>
+                  : RegleExternalErrorTree<TState, TSchema>
+              : ErrorMessageOrIssue<TIssue, TRules>
+        : any;
 
 export type RegleFieldIssue<
   TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,

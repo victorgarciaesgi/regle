@@ -79,19 +79,11 @@ export type MaybeVariantStatus<
 > =
   IsUnion<NonNullable<TState>> extends true
     ? IsUnion<TRules> extends true
-      ? Omit<RegleStatus<NonNullable<TState>, TRules, TShortcuts>, '$fields'> & {
-          $fields: ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts>[keyof ProcessChildrenFields<
-            NonNullable<TState>,
-            TRules,
-            TShortcuts
-          >];
-        } & (HasNamedKeys<NonNullable<TState>> extends true
-            ? ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts>[keyof ProcessChildrenFields<
-                NonNullable<TState>,
-                TRules,
-                TShortcuts
-              >]
-            : {})
+      ? ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts> extends infer TChildren
+        ? Omit<RegleStatus<NonNullable<TState>, TRules, TShortcuts>, '$fields'> & {
+            $fields: TChildren[keyof TChildren];
+          } & (HasNamedKeys<NonNullable<TState>> extends true ? TChildren[keyof TChildren] : {})
+        : never
       : RegleStatus<
           JoinDiscriminatedUnions<NonNullable<TState>>,
           TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<NonNullable<TState>>>>
@@ -102,15 +94,22 @@ export type MaybeVariantStatus<
     : RegleStatus<TState, TRules, TShortcuts>;
 
 /** Helper type to extract state tuple item at index */
-type StateTupleItem<TState, TIndexInt extends number> =
-  UnionToTuple<TState>[TIndexInt] extends Record<string, any> ? UnionToTuple<TState>[TIndexInt] : never;
+type StateTupleItem<TStateTuple extends readonly any[], TIndexInt extends number> =
+  TStateTuple[TIndexInt] extends Record<string, any> ? TStateTuple[TIndexInt] : never;
 
 /** Helper type to extract NonNullable state tuple item */
-type NonNullableStateTupleItem<TState, TIndexInt extends number> = NonNullable<StateTupleItem<TState, TIndexInt>>;
+type NonNullableStateTupleItem<TStateTuple extends readonly any[], TIndexInt extends number> = NonNullable<
+  StateTupleItem<TStateTuple, TIndexInt>
+>;
 
 /** Helper type to find the corresponding variant rule */
-type VariantRuleForKey<TState, TRules, TIndexInt extends number, TKey> =
-  FindCorrespondingVariant<StateTupleItem<TState, TIndexInt>, UnionToTuple<TRules>> extends [infer U]
+type VariantRuleForKey<
+  TStateTuple extends readonly any[],
+  TRulesTuple extends readonly any[],
+  TIndexInt extends number,
+  TKey,
+> =
+  FindCorrespondingVariant<StateTupleItem<TStateTuple, TIndexInt>, TRulesTuple> extends [infer U]
     ? TKey extends keyof U
       ? U[TKey]
       : EmptyObject
@@ -120,45 +119,50 @@ type ProcessChildrenFields<
   TState extends Record<string, any> | undefined,
   TRules extends ReglePartialRuleTree<NonNullable<TState>>,
   TShortcuts extends RegleShortcutDefinition = {},
-> = {
-  [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
-    ? {
-        // Defined keys
-        [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
-          VariantRuleForKey<TState, TRules, TIndexInt, TKey>
-        > extends true
-          ? TKey extends keyof TState
-            ? TState[TKey] extends NonNullable<TState[TKey]>
-              ? TKey
-              : never
-            : never
-          : TKey]-?: InferRegleStatusType<
-          VariantRuleForKey<TState, TRules, TIndexInt, TKey>,
-          NonNullableStateTupleItem<TState, TIndexInt>,
-          TKey,
-          TShortcuts
-        >;
-      } & {
-        // Maybe undefined keys
-        [TKey in keyof UnionToTuple<TState>[TIndexInt] as IsEmptyObject<
-          VariantRuleForKey<TState, TRules, TIndexInt, TKey>
-        > extends true
-          ? TKey extends keyof TState
-            ? TState[TKey] extends NonNullable<TState[TKey]>
-              ? never
-              : TKey
-            : TKey
-          : never]?: InferRegleStatusType<
-          VariantRuleForKey<TState, TRules, TIndexInt, TKey>,
-          NonNullableStateTupleItem<TState, TIndexInt>,
-          TKey,
-          TShortcuts
-        >;
-      }
+> =
+  UnionToTuple<TState> extends infer TStateTuple extends readonly any[]
+    ? UnionToTuple<TRules> extends infer TRulesTuple extends readonly any[]
+      ? {
+          [TIndex in keyof TupleToPlainObj<TStateTuple>]: TIndex extends `${infer TIndexInt extends number}`
+            ? {
+                // Defined keys
+                [TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
+                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
+                > extends true
+                  ? TKey extends keyof TState
+                    ? TState[TKey] extends NonNullable<TState[TKey]>
+                      ? TKey
+                      : never
+                    : never
+                  : TKey]-?: InferRegleStatusType<
+                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>,
+                  NonNullableStateTupleItem<TStateTuple, TIndexInt>,
+                  TKey,
+                  TShortcuts
+                >;
+              } & {
+                // Maybe undefined keys
+                [TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
+                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
+                > extends true
+                  ? TKey extends keyof TState
+                    ? TState[TKey] extends NonNullable<TState[TKey]>
+                      ? never
+                      : TKey
+                    : TKey
+                  : never]?: InferRegleStatusType<
+                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>,
+                  NonNullableStateTupleItem<TStateTuple, TIndexInt>,
+                  TKey,
+                  TShortcuts
+                >;
+              }
+            : {};
+        }
+      : {}
     : {};
-};
 
-type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends any[]> = TRules extends [
+type FindCorrespondingVariant<TState extends Record<string, any>, TRules extends readonly any[]> = TRules extends [
   infer F,
   ...infer R,
 ]

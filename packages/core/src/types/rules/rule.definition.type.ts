@@ -10,8 +10,7 @@ import type {
 } from '.';
 import type { ArrayElement, ExcludeByType, Maybe, MaybeGetter } from '../utils';
 import type { CollectionRegleBehaviourOptions } from '../core';
-
-type IsLiteral<T> = string extends T ? false : true;
+import type { IsAny, IsLiteral } from 'type-fest';
 
 /**
  * Returned typed of rules created with `createRule`
@@ -88,7 +87,11 @@ export type RegleRuleWithParamsDefinition<
     ? {
         exec: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
       }
-    : {});
+    : IsAny<TParams[number]> extends true
+      ? {
+          exec?: (value: Maybe<TFilteredValue>) => TAsync extends false ? TMetadata : Promise<TMetadata>;
+        }
+      : {});
 
 export type RegleRuleWithParamsDefinitionInput<
   TType extends string | unknown = unknown,

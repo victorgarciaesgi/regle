@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.19.16",
+  "version": "1.20.0",
   "description": "Regle nuxt module",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
@@ -60,6 +60,7 @@
     "nuxt": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "unbuild": "3.6.1",
     "vitest": "catalog:",
     "vue": "catalog:",

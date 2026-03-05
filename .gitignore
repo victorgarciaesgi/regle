@@ -29,6 +29,7 @@ lib
 .output
 .DS_Store
 .turbo
+.profiles
 
 docs/.vitepress/dist
 docs/.vitepress/cache

@@ -1,7 +1,6 @@
 export * from './array.types';
 export * from './misc.types';
 export * from './props.types';
-export * from './mismatch.types';
 export * from './object.types';
 export * from './infer-rules.types';
 export * from './infer-results.types';

@@ -1,5 +1,6 @@
 import { createRule, type MaybeInput, type RegleRuleWithParamsDefinition } from '@regle/core';
-import { isFilled, regex } from '@regle/rules';
+import { isFilled } from '../helpers/ruleHelpers';
+import { regex } from './regex';
 
 /**
  * Requires a string field to contain at least a given number of special characters.
