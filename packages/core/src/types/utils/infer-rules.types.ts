@@ -55,23 +55,23 @@ export type InferInput<
       ? any
       : TRules extends MaybeRef<StandardSchemaV1<infer State>>
         ? State
-        : IsUnion<UnwrapSimple<TRules>> extends true
-          ? InferTupleUnionInput<UnionToTuple<UnwrapSimple<TRules>>>[number]
-          : TMarkMaybe extends true
-            ? Prettify<
-                {
-                  [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+        : UnwrapSimple<TRules> extends infer TRulesUnwrapped
+          ? IsUnion<TRulesUnwrapped> extends true
+            ? InferTupleUnionInput<UnionToTuple<TRulesUnwrapped>>[number]
+            : TMarkMaybe extends true
+              ? {
+                  [K in keyof TRulesUnwrapped as TRulesUnwrapped[K] extends MaybeRef<RegleRuleDecl<any, any>>
                     ? K
-                    : never]?: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+                    : never]?: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
                 } & {
-                  [K in keyof UnwrapSimple<TRules> as UnwrapSimple<TRules>[K] extends MaybeRef<RegleRuleDecl<any, any>>
+                  [K in keyof TRulesUnwrapped as TRulesUnwrapped[K] extends MaybeRef<RegleRuleDecl<any, any>>
                     ? never
-                    : K]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
+                    : K]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
                 }
-              >
-            : Prettify<{
-                [K in keyof UnwrapSimple<TRules>]: ProcessInputChildren<UnwrapSimple<TRules>[K], TMarkMaybe>;
-              }>;
+              : {
+                  [K in keyof TRulesUnwrapped]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
+                }
+          : never;
 
 type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> =
   IsAny<TRule> extends true
@@ -85,40 +85,37 @@ type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> =
           ? InferInput<ExtractFromGetter<TRule['$each']>, TMarkMaybe>[]
           : any[]
         : TRule extends MaybeRef<RegleRuleDecl<any, any>>
-          ? [ExtractTypeFromRules<UnwrapRef<TRule>>] extends [never]
-            ? unknown
-            : ExtractTypeFromRules<UnwrapRef<TRule>>
+          ? ExtractTypeFromRules<UnwrapRef<TRule>> extends infer TRuleInput
+            ? [TRuleInput] extends [never]
+              ? unknown
+              : TRuleInput
+            : unknown
           : TRule extends ReglePartialRuleTree<any, any>
             ? InferInput<TRule, TMarkMaybe>
             : string;
 
 type ExtractTypeFromRules<TRules extends RegleRuleDecl<any, any>> =
-  FilterRulesWithInput<TRules> extends { type: infer Input }
-    ? Input
-    : [FilterRulesWithSingleType<TRules>[keyof FilterRulesWithSingleType<TRules>]] extends [never]
-      ? FilterRulesWithInput<TRules>[keyof FilterRulesWithInput<TRules>]
-      : FilterRulesWithSingleType<TRules>[keyof FilterRulesWithSingleType<TRules>];
+  FilterRulesWithInput<TRules> extends infer TFilteredWithInput extends Record<string, any>
+    ? TFilteredWithInput extends { type: infer Input }
+      ? Input
+      : FilterRulesWithSingleType<TRules> extends infer TFilteredWithSingleType extends Record<string, any>
+        ? [TFilteredWithSingleType[keyof TFilteredWithSingleType]] extends [never]
+          ? TFilteredWithInput[keyof TFilteredWithInput]
+          : TFilteredWithSingleType[keyof TFilteredWithSingleType]
+        : never
+    : never;
+
+type RuleInput<TRule> = TRule extends RegleRuleDefinition<unknown, any, any, any, any, infer Input> ? Input : unknown;
+type KnownRuleInput<TRule> = unknown extends RuleInput<TRule> ? never : RuleInput<TRule>;
+type SingleKnownRuleInput<TRule> =
+  IsUnion<NonNullable<KnownRuleInput<TRule>>> extends true ? never : KnownRuleInput<TRule>;
 
 type FilterRulesWithInput<TRules extends RegleRuleDecl<any, any>> = {
-  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
-    ? unknown extends Input
-      ? never
-      : K
-    : never]: TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input> ? Input : unknown;
+  [K in keyof TRules as KnownRuleInput<TRules[K]> extends never ? never : K]: KnownRuleInput<TRules[K]>;
 };
 
 type FilterRulesWithSingleType<TRules extends RegleRuleDecl<any, any>> = {
-  [K in keyof TRules as TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
-    ? unknown extends Input
-      ? never
-      : IsUnion<NonNullable<Input>> extends true
-        ? never
-        : K
-    : never]: TRules[K] extends RegleRuleDefinition<unknown, any, any, any, any, infer Input>
-    ? IsUnion<NonNullable<Input>> extends true
-      ? unknown
-      : Input
-    : unknown;
+  [K in keyof TRules as SingleKnownRuleInput<TRules[K]> extends never ? never : K]: SingleKnownRuleInput<TRules[K]>;
 };
 
 type InferTupleUnionInput<T extends any[]> = T extends [infer F extends ReglePartialRuleTree, ...infer R]

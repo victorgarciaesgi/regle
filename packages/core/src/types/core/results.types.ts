@@ -244,7 +244,7 @@ type ObjectHaveAtLeastOneRequiredField<
       : true
     : true;
 
-type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends RegleCollectionRuleDecl<TState>> =
+type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends RegleCollectionRuleDecl<any>> =
   TState extends Maybe<TState>
     ?
         | FieldHaveRequiredRule<
@@ -260,17 +260,17 @@ type ArrayHaveAtLeastOneRequiredField<TState extends Maybe<any[]>, TRule extends
 
 export type SafeProperty<TState, TRule extends RegleFormPropertyType<any, any> | undefined> = unknown extends TState
   ? unknown
-  : TRule extends RegleCollectionRuleDecl<any, any>
+  : [TRule] extends [RegleCollectionRuleDecl<any, any>]
     ? TState extends Array<infer U extends Record<string, any>>
       ? DeepSafeFormState<U, ExtractFromGetter<TRule['$each']>>[]
       : TState
-    : TRule extends ReglePartialRuleTree<any, any>
+    : [TRule] extends [ReglePartialRuleTree<any, any>]
       ? ExtendOnlyRealRecord<TState> extends true
         ? DeepSafeFormState<
             NonNullable<TState> extends Record<string, any> ? JoinDiscriminatedUnions<NonNullable<TState>> : {},
             TRule
           >
-        : TRule extends MaybeRef<RegleRuleDecl<any, any>>
+        : [TRule] extends [MaybeRef<RegleRuleDecl<any, any>>]
           ? FieldHaveRequiredRule<UnwrapRef<TRule>> extends true
             ? TState
             : MaybeOutput<TState>
