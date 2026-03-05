@@ -1,6 +1,6 @@
 {
   "name": "@regle/mcp-server",
-  "version": "1.20.0-preview.5",
+  "version": "1.20.0",
   "description": "MCP Server for Regle",
   "keywords": [
     "ai",
