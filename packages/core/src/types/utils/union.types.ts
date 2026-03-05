@@ -12,23 +12,29 @@ export type JoinDiscriminatedUnions<TUnion extends unknown> =
       ? any
       : HasNamedKeys<TUnion> extends true
         ? isRecordLiteral<TUnion> extends true
-          ? HasCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>> extends true
-            ? Prettify<
-                ResolveKeys<TUnion> &
-                  (Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>> extends EmptyObject
-                    ? {}
-                    : Omit<DumbJoinDiscriminatedUnions<TUnion>, keyof ResolveKeys<TUnion>>)
-              >
-            : DumbJoinDiscriminatedUnions<TUnion>
+          ? NonNullable<TUnion> extends infer TNonNull
+            ? NormalizeUnion<TNonNull> extends infer TNormalized extends Record<string, any>
+              ? HasCommonKey<UnionToTuple<TNonNull>, keyof TNormalized> extends true
+                ? ResolveKeys<TUnion> extends infer TResolved extends Record<string, any>
+                  ? DumbJoinDiscriminatedUnions<TUnion> extends infer TDumbJoin
+                    ? Omit<TDumbJoin, keyof TResolved> extends infer TLoose
+                      ? Prettify<TResolved & (TLoose extends EmptyObject ? {} : TLoose)>
+                      : never
+                    : never
+                  : never
+                : DumbJoinDiscriminatedUnions<TUnion>
+              : never
+            : never
           : TUnion
         : TUnion;
 
-type ResolveKeys<TUnion extends unknown> = Partial<
-  UnionToIntersection<
-    RemoveCommonKey<UnionToTuple<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>[number]
-  >
-> &
-  Pick<NormalizeUnion<NonNullable<TUnion>>, keyof NormalizeUnion<NonNullable<TUnion>>>;
+type ResolveKeys<TUnion extends unknown> =
+  NonNullable<TUnion> extends infer TNonNull
+    ? NormalizeUnion<TNonNull> extends infer TNormalized extends Record<string, any>
+      ? Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TNonNull>, keyof TNormalized>[number]>> &
+          Pick<TNormalized, keyof TNormalized>
+      : never
+    : never;
 
 /**
  * Combine all members of a union type on one level and not nested.
@@ -39,10 +45,12 @@ export type LazyJoinDiscriminatedUnions<TUnion extends unknown> =
     : IsUnknown<TUnion> extends true
       ? any
       : isRecordLiteral<TUnion> extends true
-        ? Prettify<
-            Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TUnion>, keyof NonNullable<TUnion>>[number]>> &
-              Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>
-          >
+        ? NonNullable<TUnion> extends infer TNonNull extends Record<string, any>
+          ? Prettify<
+              Partial<UnionToIntersection<RemoveCommonKey<UnionToTuple<TNonNull>, keyof TNonNull>[number]>> &
+                Pick<TNonNull, keyof TNonNull>
+            >
+          : never
         : TUnion;
 
 export type DumbJoinDiscriminatedUnions<TUnion extends unknown> =
@@ -51,7 +59,9 @@ export type DumbJoinDiscriminatedUnions<TUnion extends unknown> =
     : IsUnknown<TUnion> extends true
       ? any
       : isRecordLiteral<TUnion> extends true
-        ? Prettify<Partial<UnionToIntersection<TUnion>> & Pick<NonNullable<TUnion>, keyof NonNullable<TUnion>>>
+        ? NonNullable<TUnion> extends infer TNonNull extends Record<string, any>
+          ? Prettify<Partial<UnionToIntersection<TNonNull>> & Pick<TNonNull, keyof TNonNull>>
+          : never
         : TUnion;
 
 type RemoveCommonKey<T extends readonly any[], K extends PropertyKey> = T extends [infer F, ...infer R]
