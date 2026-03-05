@@ -22,15 +22,15 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
 
 catalog:
-  '@types/node': 24.10.13
+  '@types/node': 24.11.0
   # Vue
-  vue: 3.5.28
-  '@vue/reactivity': 3.5.28
-  '@vue/runtime-core': 3.5.28
-  '@vue/runtime-dom': 3.5.28
-  '@vue/shared': 3.5.28
-  '@vue/compiler-dom': 3.5.28
-  '@vue/server-renderer': 3.5.28
+  vue: 3.5.29
+  '@vue/reactivity': 3.5.29
+  '@vue/runtime-core': 3.5.29
+  '@vue/runtime-dom': 3.5.29
+  '@vue/shared': 3.5.29
+  '@vue/compiler-dom': 3.5.29
+  '@vue/server-renderer': 3.5.29
 
   # Vue 3.4
   vue-3.4: npm:vue@3.4.38
@@ -56,7 +56,7 @@ catalog:
 
   # Devtools
   typescript: 5.9.3
-  '@typescript/native-preview': 7.0.0-dev.20260303.1
+  '@typescript/native-preview': 7.0.0-dev.20260305.1
   '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.20.3
   type-fest: 5.4.4

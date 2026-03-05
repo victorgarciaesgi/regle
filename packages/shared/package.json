@@ -8,10 +8,10 @@
     "test": "echo 'no tests'"
   },
   "devDependencies": {
+    "@typescript/native-preview": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "@typescript/native-preview": "catalog:",
     "vue": "catalog:"
   }
 }

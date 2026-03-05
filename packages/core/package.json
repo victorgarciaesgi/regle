@@ -62,11 +62,11 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "@vue/devtools-kit": "7.7.9",
     "@vue/test-utils": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
-    "@typescript/native-preview": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"

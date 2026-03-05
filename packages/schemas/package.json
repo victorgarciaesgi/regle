@@ -50,11 +50,11 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "@vue/test-utils": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "@typescript/native-preview": "catalog:",
     "valibot": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",

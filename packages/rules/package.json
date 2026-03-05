@@ -47,12 +47,12 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "@typescript/native-preview": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"

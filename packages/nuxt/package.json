@@ -57,10 +57,10 @@
     "@nuxt/test-utils": "4.0.0",
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "nuxt": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "@typescript/native-preview": "catalog:",
     "unbuild": "3.6.1",
     "vitest": "catalog:",
     "vue": "catalog:",
@@ -68,7 +68,7 @@
   },
   "optionalDependencies": {
     "@regle/schemas": "workspace:*",
-    "pinia": ">=2.0.0"
+    "pinia": ">=3.0.4"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
