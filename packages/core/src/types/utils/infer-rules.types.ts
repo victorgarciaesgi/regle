@@ -55,22 +55,24 @@ export type InferInput<
       ? any
       : TRules extends MaybeRef<StandardSchemaV1<infer State>>
         ? State
-        : UnwrapSimple<TRules> extends infer TRulesUnwrapped
+        : UnwrapSimple<TRules> extends infer TRulesUnwrapped extends Record<string, any>
           ? IsUnion<TRulesUnwrapped> extends true
             ? InferTupleUnionInput<UnionToTuple<TRulesUnwrapped>>[number]
             : TMarkMaybe extends true
-              ? {
-                  [K in keyof TRulesUnwrapped as TRulesUnwrapped[K] extends MaybeRef<RegleRuleDecl<any, any>>
-                    ? K
-                    : never]?: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
-                } & {
-                  [K in keyof TRulesUnwrapped as TRulesUnwrapped[K] extends MaybeRef<RegleRuleDecl<any, any>>
-                    ? never
-                    : K]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
-                }
-              : {
+              ? Prettify<
+                  {
+                    [K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
+                      ? K
+                      : never]?: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
+                  } & {
+                    [K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
+                      ? never
+                      : K]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
+                  }
+                >
+              : Prettify<{
                   [K in keyof TRulesUnwrapped]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
-                }
+                }>
           : never;
 
 type ProcessInputChildren<TRule extends unknown, TMarkMaybe extends boolean> =
