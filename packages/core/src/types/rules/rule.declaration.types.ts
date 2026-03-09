@@ -4,6 +4,7 @@ import type { useRegleFn } from '../../core';
 import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
 import type {
   ArrayElement,
+  HasNamedKeys,
   JoinDiscriminatedUnions,
   Maybe,
   MaybeGetter,
@@ -30,22 +31,28 @@ import type { $InternalRegleFieldStatus } from './rule.status.types';
 export type ReglePartialRuleTree<
   TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-> = {
-  [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-} & {
-  $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
-};
+> =
+  HasNamedKeys<TForm> extends true
+    ? {
+        [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+      } & {
+        $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
+      }
+    : RegleUnknownRulesTree;
 /**
  * @public
  */
 export type RegleRuleTree<
   TForm extends Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-> = {
-  [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-} & {
-  $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
-};
+> =
+  HasNamedKeys<TForm> extends true
+    ? {
+        [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
+      } & {
+        $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
+      }
+    : RegleUnknownRulesTree;
 
 /**
  * @public

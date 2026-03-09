@@ -54,19 +54,19 @@
       'App.vue': AppVue,
 
       'tsconfig.json': `
-      {
-        "compilerOptions": {
-          "allowJs": true,
-          "checkJs": true,
-          "jsx": "Preserve",
-          "target": "ESNext",
-          "module": "ESNext",
-          "moduleResolution": "Bundler",
-          "allowImportingTsExtensions": true,
-          "strict": true
-        }
-      }
-    `,
+            {
+              "compilerOptions": {
+                "allowJs": true,
+                "checkJs": true,
+                "jsx": "Preserve",
+                "target": "ESNext",
+                "module": "ESNext",
+                "moduleResolution": "Bundler",
+                "allowImportingTsExtensions": true,
+                "strict": true
+              }
+            }
+          `,
     });
   }
 
