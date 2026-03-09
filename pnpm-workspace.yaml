@@ -22,7 +22,7 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
 
 catalog:
-  '@types/node': 24.11.0
+  '@types/node': 24.12.0
   # Vue
   vue: 3.5.29
   '@vue/reactivity': 3.5.29
@@ -76,7 +76,7 @@ catalog:
   '@vitejs/plugin-vue-jsx': 5.1.4
 
   # Schemas libraries
-  arktype: 2.1.29
+  arktype: 2.2.0
   valibot: 1.2.0
   zod: 4.3.6
 

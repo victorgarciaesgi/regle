@@ -1,5 +1,5 @@
 import type { Ref, UnwrapNestedRefs } from 'vue';
-import { isRef, nextTick, onMounted, reactive, ref, unref, type MaybeRef } from 'vue';
+import { getCurrentInstance, isRef, nextTick, onMounted, reactive, ref, unref, type MaybeRef } from 'vue';
 
 /**
  * Converts ref to reactive.
@@ -11,14 +11,16 @@ export function toReactive<T extends object>(objectRef: MaybeRef<T>, isDisabled:
   if (!isRef(objectRef)) return reactive(objectRef);
   const firstRun = ref(false);
 
-  onMounted(async () => {
-    await nextTick();
-    if (typeof window !== 'undefined') {
-      window.requestAnimationFrame(() => {
-        firstRun.value = true;
-      });
-    }
-  });
+  if (getCurrentInstance()) {
+    onMounted(async () => {
+      await nextTick();
+      if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(() => {
+          firstRun.value = true;
+        });
+      }
+    });
+  }
 
   const proxy = new Proxy(
     {},

@@ -24,7 +24,10 @@
     shortcutsField?: RegleFieldStatus<string, any, InferRegleShortcuts<typeof useCustomRegle>>;
     customStringField: RegleCustomFieldStatus<typeof useCustomRegle, string>;
     enforcedRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required'>>;
-    enforcedMultipleRulesField: RegleFieldStatus<string | undefined, RegleEnforceRequiredRules<'required' | 'minLength'>>;
+    enforcedMultipleRulesField: RegleFieldStatus<
+      string | undefined,
+      RegleEnforceRequiredRules<'required' | 'minLength'>
+    >;
     enforcedCustomRulesField: RegleCustomFieldStatus<typeof useCustomRegle, string | undefined, 'myCustomRule'>;
     enforcedCustomRulesWithParamsField: RegleCustomFieldStatus<
       typeof useCustomRegle,

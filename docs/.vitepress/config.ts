@@ -413,6 +413,7 @@ export default defineConfig({
     config(md) {
       md.use(groupIconMdPlugin);
     },
+    languages: ['ts', 'vue'] as any,
   },
   vite: {
     plugins: [

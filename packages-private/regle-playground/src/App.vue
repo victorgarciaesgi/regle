@@ -52,7 +52,6 @@
     store.setFiles({
       ...store.getFiles(),
       'App.vue': AppVue,
-
       'tsconfig.json': `
             {
               "compilerOptions": {
