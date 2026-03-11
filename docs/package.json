@@ -12,7 +12,7 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "@resvg/resvg-js": "2.6.2",
-    "@shikijs/vitepress-twoslash": "4.0.1",
+    "@shikijs/vitepress-twoslash": "4.0.2",
     "@tailwindcss/forms": "0.5.11",
     "@types/lodash-es": "4.17.12",
     "arktype": "catalog:",

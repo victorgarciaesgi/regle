@@ -71,7 +71,7 @@
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
-    "rolldown": "1.0.0-rc.5",
+    "rolldown": "1.0.0-rc.8",
     "semver": "7.7.4",
     "std-env": "3.10.0",
     "taze": "19.10.0",
