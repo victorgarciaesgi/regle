@@ -49,7 +49,7 @@ Or add to your `.cursor/mcp.json`
 For Claude Code, run the following command:
 
 ```bash
-claude mcp add regle --scope project '{"command":"npx","args":["-y","@regle/mcp-server"]}'
+claude mcp add-json regle --scope project '{"command":"npx","args":["-y","@regle/mcp-server"]}'
 ```
 
 
