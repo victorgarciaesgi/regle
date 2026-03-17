@@ -71,24 +71,20 @@ export function useRootStorage({
       }
     );
   }
-  function defineExternalErrorsWatchSource() {
-    $unwatchExternalErrors = watch(
-      () => options.externalErrors?.value,
-      () => {
-        $unwatchComputedExternalErrors?.();
-        if (
-          options.externalErrors?.value &&
-          Object.keys(options.externalErrors.value).some((key) => key.includes('.'))
-        ) {
-          computedExternalErrors.value = dotPathObjectToNested(options.externalErrors.value);
-        } else {
-          computedExternalErrors.value = options.externalErrors?.value as any;
-        }
 
-        defineComputedExternalErrorsWatchSource();
-      },
-      { immediate: true, deep: true }
-    );
+  function handleExternalErrorsChange() {
+    $unwatchComputedExternalErrors?.();
+    if (options.externalErrors?.value && Object.keys(options.externalErrors.value).some((key) => key.includes('.'))) {
+      computedExternalErrors.value = dotPathObjectToNested(options.externalErrors.value);
+    } else {
+      computedExternalErrors.value = options.externalErrors?.value ?? {};
+    }
+
+    defineComputedExternalErrorsWatchSource();
+  }
+
+  function defineExternalErrorsWatchSource() {
+    $unwatchExternalErrors = watch(() => options.externalErrors?.value, handleExternalErrorsChange, { deep: true });
   }
 
   function defineComputedExternalErrorsWatchSource() {
@@ -149,6 +145,8 @@ export function useRootStorage({
       });
     }
   }
+
+  handleExternalErrorsChange();
 
   createRegleInstance();
 

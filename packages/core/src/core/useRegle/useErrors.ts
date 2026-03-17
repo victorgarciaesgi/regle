@@ -55,7 +55,7 @@ export function extractRulesIssues({
   }, []);
 
   const externalIssues =
-    field.$error && field.$externalErrors
+    field.$error && field.$externalErrors && Array.isArray(field.$externalErrors)
       ? field.$externalErrors.map((error) => ({
           $message: error,
           $property: field.fieldName,
