@@ -18,7 +18,9 @@ packages:
 minimumReleaseAge: 1440 # 24 hours
 minimumReleaseAgeExclude:
   - tsdown
-  - oxlint
+  - 'oxlint'
+  - '@oxlint*'
+  - 'oxfmt*'
   - '@typescript/native-preview*'
 
 catalog:
@@ -50,13 +52,13 @@ catalog:
   '@pinia/nuxt': 0.11.3
 
   # Nuxt
-  nuxt: 4.3.1
-  '@nuxt/kit': 4.3.1
-  '@nuxt/schema': 4.3.1
+  nuxt: 4.4.2
+  '@nuxt/kit': 4.4.2
+  '@nuxt/schema': 4.4.2
 
   # Devtools
   typescript: 5.9.3
-  '@typescript/native-preview': 7.0.0-dev.20260311.1
+  '@typescript/native-preview': 7.0.0-dev.20260317.1
   '@total-typescript/ts-reset': 0.6.1
   tsdown: 0.20.3
   type-fest: 5.4.4
@@ -67,13 +69,13 @@ catalog:
   playwright: 1.58.2
   playwright-core: 1.58.2
   '@playwright/test': 1.58.2
-  vitest: 4.0.18
+  vitest: 4.1.0
   '@vue/test-utils': 2.4.6
 
   # Vite
   vite: 7.3.1
-  '@vitejs/plugin-vue': 6.0.4
-  '@vitejs/plugin-vue-jsx': 5.1.4
+  '@vitejs/plugin-vue': 6.0.5
+  '@vitejs/plugin-vue-jsx': 5.1.5
 
   # Schemas libraries
   arktype: 2.2.0
@@ -83,4 +85,4 @@ catalog:
   # Front
   tailwindcss: 4.2.1
   check-password-strength: 3.0.0
-  sass: 1.97.3
+  sass: 1.98.0
