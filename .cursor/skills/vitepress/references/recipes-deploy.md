@@ -84,9 +84,7 @@ Enable GitHub Pages in repository settings → Pages → Source: "GitHub Actions
 For pnpm, add before setup-node:
 
 ```yaml
-- uses: pnpm/action-setup@v4
-  with:
-    version: 9
+- uses: pnpm/action-setup@v5
 ```
 
 ## Netlify / Vercel / Cloudflare Pages

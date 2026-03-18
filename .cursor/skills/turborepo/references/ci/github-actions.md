@@ -37,13 +37,13 @@ jobs:
 ### pnpm
 
 ```yaml
-- uses: pnpm/action-setup@v3
+- uses: pnpm/action-setup@v5
   with:
-    version: 9
+    version: latest
 
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@v5
   with:
-    node-version: 20
+    node-version: 24
     cache: 'pnpm'
 
 - run: pnpm install --frozen-lockfile
@@ -139,13 +139,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v5
         with:
-          version: 9
+          version: latest
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install dependencies

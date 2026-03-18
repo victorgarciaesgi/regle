@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -16,11 +16,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-
-      - name: Set node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
+      - uses: ./.github/actions/install-node
 
       - run: npx changelogithub
         env:
