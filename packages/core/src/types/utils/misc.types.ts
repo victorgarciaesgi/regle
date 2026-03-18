@@ -16,6 +16,8 @@ export type MaybeNull<T> = T | null;
 export type MaybeReadonly<T> = T | Readonly<T>;
 export type NonUndefined<T> = Exclude<T, undefined>;
 
+export type MaybeOrPartial<T> = T extends Record<string, any> ? Partial<T> : MaybeOutput<T>;
+
 export type MaybeNullable<T> = Or<IsNullable<T>, IsOptional<T>>;
 
 export type PromiseReturn<T> = T extends Promise<infer U> ? U : T;

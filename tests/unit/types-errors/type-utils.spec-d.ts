@@ -267,4 +267,27 @@ describe('type utils - misc', () => {
 
     expectTypeOf(r$.administrativeAreaLevel1?.$value).toEqualTypeOf<string | undefined>();
   });
+
+  it('Generic types should accept any regle instance', () => {
+    interface Form {
+      name: string;
+      email: string;
+    }
+    const form = ref<Form>({ name: '', email: '' });
+    const { r$ } = useRegle(form, { name: { required }, email: { email } });
+
+    function whatever(form: RegleStatus<Form>) {
+      return form;
+    }
+
+    function whatever2(form: RegleRoot<Form>) {
+      return form;
+    }
+
+    // Should not error
+    whatever2(r$);
+
+    // Should not error
+    whatever(r$);
+  });
 });
