@@ -1,40 +1,93 @@
 <script setup lang="ts">
+  import { createVariant, narrowVariant, useRegle } from '@regle/core';
+  import { literal, minLength, number, required, string } from '@regle/rules';
   import { ref } from 'vue';
-  import { useRegle } from '@regle/core';
-  import { required, minLength, email } from '@regle/rules';
-  import PasswordComponent from './PasswordComponent.vue';
+  import { type UnionToTuple, type IsUnion } from 'type-fest';
 
-  const state = ref({ name: '', email: '', password: '' });
+  interface TierFixed {
+    type: 'fixed';
+    messages: string[];
+    audienceUUIDs: string[];
+    rewards: string[];
+  }
+
+  interface TierTiered {
+    type: 'tiered';
+    messages: string[];
+    audienceUUIDs: string[];
+    tieredRewards: {
+      stepID: string;
+      triggerValue: string;
+      rewards: string[];
+    };
+  }
+
+  type Tier = TierFixed | TierTiered;
+
+  interface FormState {
+    name: string;
+    tiers: Tier[];
+  }
+
+  const state = ref<FormState>({ name: '', tiers: [] });
 
   const { r$ } = useRegle(state, {
     name: { required, minLength: minLength(4) },
-    email: { email },
+    tiers: {
+      minLength: minLength(1),
+      required,
+      $each: (item) => {
+        const tierTypeVariant = createVariant(() => item.value, 'type', [
+          {
+            type: { literal: literal('fixed') },
+            messages: { $each: {}, minLength: minLength(1) },
+            audienceUUIDs: { $each: { string }, minLength: minLength(1) },
+            rewards: { $each: {}, minLength: minLength(1), required },
+          },
+          {
+            type: { literal: literal('tiered') },
+            messages: { $each: {}, minLength: minLength(1) },
+            audienceUUIDs: { $each: { string }, minLength: minLength(1) },
+            tieredRewards: {
+              stepID: { required, number },
+              triggerValue: { required, string },
+              rewards: { $each: {}, minLength: minLength(1) },
+            },
+          },
+        ]);
+        return tierTypeVariant.value;
+      },
+    },
   });
 
-  async function submit() {
-    const { valid, data } = await r$.$validate();
-    if (valid) {
-      console.log(data.name);
-      //               ^ string
-      console.log(data.email);
-      //.              ^ string | undefined
-    } else {
-      console.warn('Errors: ', r$.$errors);
-    }
-  }
+  type foo =
+    | {
+        type: 'fixed';
+        messages: string[];
+        audienceUUIDs: string[];
+        rewards: string[];
+      }
+    | {
+        type: 'tiered';
+        messages: string[];
+        audienceUUIDs: string[];
+        tieredRewards: {
+          stepID: string;
+          triggerValue: string;
+          rewards: string[];
+        };
+      }[][number];
 </script>
 
 <template>
   <div class="container p-3">
     <h2>Hello Regle!</h2>
 
-    <PasswordComponent :password="state.password" :field="r$.password" />
-
     <div class="py-2 has-validation">
       <label class="form-label">Name</label>
       <input
-        class="form-control"
         v-model="r$.$value.name"
+        class="form-control"
         placeholder="Type your name"
         :class="{
           'is-valid': r$.name.$correct,
@@ -49,27 +102,18 @@
       </ul>
     </div>
 
-    <div class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.email"
-        placeholder="Type your email"
-        :class="{
-          'is-valid': r$.email.$correct,
-          'is-invalid': r$.email.$error,
-        }"
-        aria-describedby="email-error"
-      />
-      <ul id="email-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.email" :key="error">
-          {{ error }}
-        </li>
-      </ul>
+    <div v-for="tier in r$.tiers.$each" :key="tier.$id">
+      {{ tier. }}
+      <div v-if="narrowVariant(tier, 'type', 'fixed')">
+        {{ tier.rewards }}
+        <!-- how to narrow here -->
+      </div>
+
+      <div v-if="narrowVariant(tier, 'type', 'tiered')">
+        {{ tier.tieredRewards.$value }}
+      </div>
     </div>
 
-    <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
     <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
   </div>
 </template>
