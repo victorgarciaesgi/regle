@@ -52,9 +52,9 @@ catalog:
   '@pinia/nuxt': 0.11.3
 
   # Nuxt
-  nuxt: 4.4.2
-  '@nuxt/kit': 4.4.2
-  '@nuxt/schema': 4.4.2
+  nuxt: 4.3.1
+  '@nuxt/kit': 4.3.1
+  '@nuxt/schema': 4.3.1
 
   # Devtools
   typescript: 5.9.3

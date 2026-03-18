@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          registry-url: "https://registry.npmjs.org"
+          registry-url: 'https://registry.npmjs.org'
       - name: Update npm
         run: npm install -g npm@latest
       - name: Install dependencies
