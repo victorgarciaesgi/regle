@@ -1,4 +1,4 @@
-import type { EmptyObject, IsEmptyObject, IsUnion, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, Or, UnionToTuple } from 'type-fest';
 import type {
   ExtendedRulesDeclarations,
   InferRegleStatusType,
@@ -76,11 +76,16 @@ export type MaybeVariantStatus<
   TState extends Record<string, any> | undefined = Record<string, any>,
   TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
+  TIsUnionOverride extends boolean = false,
+  /**
+   * Workaround for $each variants, TS generic can't detect if the Rules are an union when type is too nested, to the tuple is passed from parent
+   */
+  TRulesTuple extends any[] = UnionToTuple<TRules>,
 > =
   IsUnion<NonNullable<TState>> extends true
-    ? IsUnion<TRules> extends true
-      ? ProcessChildrenFields<NonNullable<TState>, TRules, TShortcuts> extends infer TChildren
-        ? Omit<RegleStatus<NonNullable<TState>, TRules, TShortcuts>, '$fields'> & {
+    ? Or<TIsUnionOverride, IsUnion<TRules>> extends true
+      ? ProcessChildrenFields<NonNullable<TState>, TRulesTuple[number], TShortcuts> extends infer TChildren
+        ? Omit<RegleStatus<NonNullable<TState>, TRulesTuple[number], TShortcuts>, '$fields'> & {
             $fields: TChildren[keyof TChildren];
           } & (HasNamedKeys<NonNullable<TState>> extends true ? TChildren[keyof TChildren] : {})
         : never

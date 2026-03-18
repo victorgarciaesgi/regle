@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -176,6 +176,8 @@ export type InferRegleStatusType<
   TState extends Record<PropertyKey, any> = any,
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
+  isUnionOverride extends boolean = false,
+  TRulesTuple extends any[] = UnionToTuple<TRule>,
 > =
   HasNamedKeys<TState> extends true
     ? [TState[TKey]] extends [undefined | null]
@@ -197,8 +199,8 @@ export type InferRegleStatusType<
                   ? NonNullable<TState[TKey]> extends RegleStaticImpl<infer U>
                     ? RegleFieldStatus<Raw<U>, TRule, TShortcuts>
                     : TRule extends ReglePartialRuleTree<TState[TKey]>
-                      ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts>
-                      : MaybeVariantStatus<TState[TKey], {}, TShortcuts>
+                      ? MaybeVariantStatus<TState[TKey], TRule, TShortcuts, isUnionOverride, TRulesTuple>
+                      : MaybeVariantStatus<TState[TKey], {}, TShortcuts, isUnionOverride, TRulesTuple>
                   : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
           : NonNullable<TState[TKey]> extends Date | File
             ? RegleFieldStatus<Raw<NonNullable<TState[TKey]>>, TRule, TShortcuts>
@@ -538,7 +540,7 @@ export type RegleCollectionStatus<
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: MaybeOutput<TState>;
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
-  readonly $each: Array<InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts>>;
+  readonly $each: InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts, IsUnion<TRules>>[];
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $self: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   /**
