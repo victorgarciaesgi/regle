@@ -15,7 +15,7 @@
     "run:vitest:vue-3.5": "vitest",
     "run:vitest:vue-3.4": "env-cmd -e 'vue-3.4' -- vitest",
     "unit-tests:run": "pnpm run:vitest:vue-3.5 run && pnpm run:vitest:vue-3.4 run",
-    "test": "pnpm build && pnpm lint && pnpm format:check && pnpm typecheck && pnpm unit-tests:run && pnpm test:typecheck && pnpm ui-tests:run",
+    "test": "pnpm build && pnpm lint && pnpm fmt:check && pnpm typecheck && pnpm unit-tests:run && pnpm test:typecheck && pnpm ui-tests:run",
     "test:coverage": "pnpm build:sourcemaps && TEST_TRACE=true vitest run --coverage",
     "test:dev": "TEST_TRACE=true pnpm run:vitest:vue-3.5",
     "test:typecheck:vue": "vue-tsc --noEmit --project ./tests/tsconfig.vue.json",
@@ -38,8 +38,8 @@
     "lint:fix": "oxlint --fix",
     "lint:github": "oxlint --format=github",
     "lint:staged": "oxlint --fix",
-    "format:check": "oxfmt --check",
-    "format:staged": "oxfmt"
+    "fmt:check": "oxfmt --check",
+    "fmt": "oxfmt"
   },
   "devDependencies": {
     "@commitlint/cli": "20.5.0",
@@ -66,7 +66,7 @@
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
     "nuxt": "catalog:",
-    "oxfmt": "0.35.0",
+    "oxfmt": "0.41.0",
     "oxlint": "1.56.0",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",

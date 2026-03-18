@@ -3,5 +3,5 @@
  * @type {import('lint-staged').Configuration}
  */
 export default {
-  '*.{js,ts,vue}': [`pnpm format:staged`, `pnpm lint:staged`],
+  '*.{js,ts,vue}': [`pnpm fmt`, `pnpm lint:staged`],
 };

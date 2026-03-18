@@ -63,15 +63,21 @@ export type RegleResult<
         : IsAny<Data> extends true
           ? unknown
           : IsEmptyObject<TRules> extends true
-            ? MaybeOutput<Data>
+            ? Data extends Record<string, any>
+              ? PartialFormState<Data>
+              : MaybeOutput<Data>
             : HasNamedKeys<Data> extends true
-              ? NonNullable<Data> extends Date | File
-                ? MaybeOutput<Raw<Data>>
-                : NonNullable<Data> extends Array<infer U extends Record<string, any>>
-                  ? PartialFormState<U>[]
-                  : NonNullable<Data> extends Record<string, any>
-                    ? PartialFormState<NonNullable<Data>>
-                    : MaybeOutput<Data>
+              ? HasNamedKeys<TRules> extends true
+                ? NonNullable<Data> extends Date | File
+                  ? MaybeOutput<Raw<Data>>
+                  : NonNullable<Data> extends Array<infer U extends Record<string, any>>
+                    ? PartialFormState<U>[]
+                    : NonNullable<Data> extends Record<string, any>
+                      ? PartialFormState<NonNullable<Data>>
+                      : MaybeOutput<Data>
+                : Data extends Record<string, any>
+                  ? PartialFormState<Data>
+                  : MaybeOutput<Data>
               : unknown;
       /**
        * Collection of all the error messages, collected for all children properties and nested forms.
@@ -93,15 +99,21 @@ export type RegleResult<
         : IsAny<Data> extends true
           ? unknown
           : IsEmptyObject<TRules> extends true
-            ? MaybeOutput<Data>
+            ? Data extends Record<string, any>
+              ? PartialFormState<Data>
+              : MaybeOutput<Data>
             : HasNamedKeys<Data> extends true
-              ? NonNullable<Data> extends Array<infer U extends Record<string, any>>
-                ? DeepSafeFormState<U, TRules extends ReglePartialRuleTree<any> ? TRules : {}>[]
-                : NonNullable<Data> extends Date | File
-                  ? SafeFieldProperty<Raw<NonNullable<Data>>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
-                  : NonNullable<Data> extends Record<string, any>
-                    ? DeepSafeFormState<NonNullable<Data>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
-                    : SafeFieldProperty<Data, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+              ? HasNamedKeys<TRules> extends true
+                ? NonNullable<Data> extends Array<infer U extends Record<string, any>>
+                  ? DeepSafeFormState<U, TRules extends ReglePartialRuleTree<any> ? TRules : {}>[]
+                  : NonNullable<Data> extends Date | File
+                    ? SafeFieldProperty<Raw<NonNullable<Data>>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+                    : NonNullable<Data> extends Record<string, any>
+                      ? DeepSafeFormState<NonNullable<Data>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+                      : SafeFieldProperty<Data, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
+                : Data extends Record<string, any>
+                  ? PartialFormState<Data>
+                  : MaybeOutput<Data>
               : unknown;
       issues: EmptyObject;
       errors: EmptyObject;

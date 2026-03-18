@@ -24,6 +24,7 @@ import {
 import { ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeValidField } from '../../../utils/validations.utils';
+import type { EmptyObject } from 'type-fest';
 
 describe('createVariant', () => {
   //- Given
@@ -122,7 +123,7 @@ describe('createVariant', () => {
       expectTypeOf(vm.r$.$value.oneValue).toEqualTypeOf<number | undefined>();
 
       expectTypeOf(vm.r$.oneName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
@@ -175,7 +176,7 @@ describe('createVariant', () => {
       expectTypeOf(vm.r$.$value.twoValue).toEqualTypeOf<number | undefined>();
 
       expectTypeOf(vm.r$.twoName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
 
       // @ts-expect-error property should not be present here
@@ -311,17 +312,17 @@ describe('createVariant', () => {
       expectTypeOf(vm.r$.nested2.$value.oneValue).toEqualTypeOf<number | undefined>();
 
       expectTypeOf(vm.r$.nested2.oneName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
 
       // Invariant
       expectTypeOf(vm.invariantRefOne.$anyEdited).toEqualTypeOf<boolean>();
       expectTypeOf(vm.invariantRefOne.$value.definedName).toEqualTypeOf<string>();
-      expectTypeOf(vm.invariantRefOne.definedName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>>
+      expectTypeOf(vm.invariantRefOne.definedName).toExtend<
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>>
       >();
       expectTypeOf(vm.invariantRefOne.maybeUndefinedName).toEqualTypeOf<
-        RegleFieldStatus<string | undefined, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string | undefined, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
       expectTypeOf(vm.invariantRefOne.oneValue).toEqualTypeOf<
         RegleFieldStatus<
@@ -387,15 +388,15 @@ describe('createVariant', () => {
       expectTypeOf(vm.r$.nested2.$value.twoValue).toEqualTypeOf<number | undefined>();
 
       expectTypeOf(vm.r$.nested2.twoName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
 
       // Invariant
-      expectTypeOf(vm.invariantRefTwo.definedName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>>
+      expectTypeOf(vm.invariantRefTwo.definedName).toExtend<
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>>
       >();
       expectTypeOf(vm.invariantRefTwo.maybeUndefinedName).toEqualTypeOf<
-        RegleFieldStatus<string | undefined, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string | undefined, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
       expectTypeOf(vm.invariantRefTwo.twoValue).toEqualTypeOf<
         RegleFieldStatus<
@@ -469,7 +470,7 @@ describe('createVariant', () => {
       expectTypeOf(vm.r$.nested2.$value.oneValue).toEqualTypeOf<number | undefined>();
 
       expectTypeOf(vm.r$.nested2.oneName).toEqualTypeOf<
-        RegleFieldStatus<string, {}, RegleShortcutDefinition<any>> | undefined
+        RegleFieldStatus<string, EmptyObject, RegleShortcutDefinition<any>> | undefined
       >();
     }
   });

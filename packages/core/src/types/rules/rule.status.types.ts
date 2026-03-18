@@ -22,6 +22,7 @@ import type {
   InferOutput,
   JoinDiscriminatedUnions,
   MaybeInput,
+  MaybeOrPartial,
   MaybeOutput,
   MaybeVariantStatus,
   RegleBehaviourOptions,
@@ -313,9 +314,12 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
 /**
  * @public
  */
-export interface RegleCommonStatus<TValue = any, TRules extends Record<string, any> = never> extends StandardSchemaV1<
+export interface RegleCommonStatus<
+  TValue = any,
+  TRules extends Record<string, any> = Record<string, any>,
+> extends StandardSchemaV1<
   TValue,
-  [TRules] extends [never] ? TValue : InferOutput<TRules, TValue>
+  HasNamedKeys<TRules> extends true ? InferOutput<TRules, TValue> : MaybeOrPartial<TValue>
 > {
   /** Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
