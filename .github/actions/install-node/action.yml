@@ -1,0 +1,21 @@
+name: Install Node.js
+description: Set up Node.js with pnpm via Corepack and configure dependency cache
+
+runs:
+  using: composite
+  steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v5
+      with:
+        version: 10.31.0
+        run_install: false
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Enable Corepack
+      run: corepack enable
+      shell: bash
