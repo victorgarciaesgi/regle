@@ -198,7 +198,20 @@ For more information about the `$reset` method, check the [reseting forms sectio
 ### `$clearExternalErrors` 
 - Type: `() => void`
 
-Clears the $externalResults state back to an empty object.
+Clears the `$externalErrors` state back to an empty object.
+
+### `$setExternalErrors`
+- Type: `(errors: RegleExternalErrorTree<TState> | Record<string, string[]>) => void`
+
+Sets external errors from either a nested object or dot-path keys.
+This method is available on the root `r$`, and works with or without passing the `externalErrors` option to `useRegle`.
+
+```ts
+r$.$setExternalErrors({
+  email: ['Email already exists'],
+  'user.firstName': ['First name already exists'],
+});
+```
 
 ### `$addRules`
 - Type: `(rules: RegleRuleDecl) => void`

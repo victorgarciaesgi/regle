@@ -9,6 +9,8 @@ import type {
   RegleCollectionErrors,
   RegleCommonStatus,
   RegleErrorTree,
+  RegleExternalCollectionErrors,
+  RegleExternalSchemaErrorTree,
   RegleFieldIssue,
   RegleIssuesTree,
   RegleRuleStatus,
@@ -102,6 +104,8 @@ export type RegleSchemaStatus<
   readonly $errors: RegleErrorTree<TState, false, true>;
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState, false, true>;
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: RegleExternalSchemaErrorTree<TState>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ProcessNestedFields<JoinDiscriminatedUnions<TState>, TShortcuts> &
@@ -185,6 +189,8 @@ export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcu
   readonly $rules: {
     [`~validator`]: RegleRuleStatus<TState, []>;
   };
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: string[]): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ([TShortcuts['fields']] extends [never]
@@ -216,6 +222,9 @@ export type RegleSchemaCollectionStatus<TState extends any[], TShortcuts extends
   readonly $errors: RegleCollectionErrors<TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: RegleCollectionErrors<TState>;
+  /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: RegleExternalCollectionErrors<TState>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
 } & ([TShortcuts['collections']] extends [never]

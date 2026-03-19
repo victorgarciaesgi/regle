@@ -830,4 +830,90 @@ describe('external errors', () => {
     shouldBeValidField(vm.r$);
     expect(vm.r$.$errors).toStrictEqual([]);
   });
+
+  it('should set and sync external errors with root $setExternalErrors when externalErrors option is provided', async () => {
+    const { vm } = createRegleComponent(nestedExternalErrorsWithRules);
+
+    vm.r$.$touch();
+    vm.r$.$setExternalErrors({
+      root: ['Server Error'],
+      'nested.name1.name2': ['Server Error'],
+      'collection.1.item': ['Server Error'],
+    });
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
+
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
+  });
+
+  it('should support root $setExternalErrors without externalErrors option', async () => {
+    function nestedRulesWithoutExternalErrorsOption() {
+      interface Form {
+        name: string;
+        nested: { value: string };
+      }
+
+      const form = ref<Form>({
+        name: '',
+        nested: { value: '' },
+      });
+
+      return useRegle(form, {
+        name: { required },
+        nested: { value: { required } },
+      });
+    }
+
+    const { vm } = createRegleComponent(nestedRulesWithoutExternalErrorsOption);
+
+    vm.r$.$touch();
+    vm.r$.$setExternalErrors({
+      name: ['Server Error'],
+      'nested.value': ['Server Error'],
+    });
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.name);
+    shouldBeErrorField(vm.r$.nested.value);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.value.$errors).toStrictEqual(['This field is required', 'Server Error']);
+
+    vm.r$.$clearExternalErrors();
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.name);
+    shouldBeErrorField(vm.r$.nested.value);
+    expect(vm.r$.name.$errors).toStrictEqual(['This field is required']);
+    expect(vm.r$.nested.value.$errors).toStrictEqual(['This field is required']);
+  });
+
+  it.only('should support root $setExternalErrors with single field root and no externalErrors option', async () => {
+    function singleFieldWithoutExternalErrorsOption() {
+      const value = ref('');
+      return useRegle(value, { required });
+    }
+
+    const { vm } = createRegleComponent(singleFieldWithoutExternalErrorsOption);
+
+    vm.r$.$touch();
+    vm.r$.$setExternalErrors(['Server Error']);
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$);
+    expect(vm.r$.$errors).toStrictEqual(['This field is required', 'Server Error']);
+
+    vm.r$.$value = 'foo';
+    await vm.$nextTick();
+
+    shouldBeValidField(vm.r$);
+    expect(vm.r$.$errors).toStrictEqual([]);
+  });
 });

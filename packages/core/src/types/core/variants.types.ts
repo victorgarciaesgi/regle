@@ -1,4 +1,4 @@
-import type { EmptyObject, IsEmptyObject, IsUnion, Or, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, Or, UnionToTuple, IsNever } from 'type-fest';
 import type {
   ExtendedRulesDeclarations,
   InferRegleStatusType,
@@ -80,15 +80,24 @@ export type MaybeVariantStatus<
   /**
    * Workaround for $each variants, TS generic can't detect if the Rules are an union when type is too nested, to the tuple is passed from parent
    */
-  TRulesTuple extends any[] = UnionToTuple<TRules>,
+  TRulesTuple extends any[] = never,
 > =
   IsUnion<NonNullable<TState>> extends true
     ? Or<TIsUnionOverride, IsUnion<TRules>> extends true
-      ? ProcessChildrenFields<NonNullable<TState>, TRulesTuple[number], TShortcuts> extends infer TChildren
-        ? Omit<RegleStatus<NonNullable<TState>, TRulesTuple[number], TShortcuts>, '$fields'> & {
-            $fields: TChildren[keyof TChildren];
-          } & (HasNamedKeys<NonNullable<TState>> extends true ? TChildren[keyof TChildren] : {})
-        : never
+      ? (IsNever<TRulesTuple> extends true ? TRules : TRulesTuple[number]) extends infer RulesUnionTuple extends
+          ReglePartialRuleTree<NonNullable<TState>>
+        ? ProcessChildrenFields<NonNullable<TState>, RulesUnionTuple, TShortcuts> extends infer TChildren
+          ? Omit<RegleStatus<NonNullable<TState>, RulesUnionTuple, TShortcuts>, '$fields'> & {
+              $fields: TChildren[keyof TChildren];
+            } & (HasNamedKeys<NonNullable<TState>> extends true ? TChildren[keyof TChildren] : {})
+          : never
+        : RegleStatus<
+            JoinDiscriminatedUnions<NonNullable<TState>>,
+            TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<NonNullable<TState>>>>
+              ? TRules
+              : EmptyObject,
+            TShortcuts
+          >
       : RegleStatus<
           JoinDiscriminatedUnions<NonNullable<TState>>,
           TRules extends ReglePartialRuleTree<NonNullable<JoinDiscriminatedUnions<NonNullable<TState>>>>

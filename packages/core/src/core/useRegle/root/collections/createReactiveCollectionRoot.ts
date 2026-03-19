@@ -11,6 +11,7 @@ import type {
   $InternalRegleSchemaCollectionErrors,
   CollectionRegleBehaviourOptions,
   isEditedHandlerFn,
+  RegleExternalCollectionErrors,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../../types';
@@ -686,6 +687,12 @@ export function createReactiveCollectionStatus({
     }
   }
 
+  function $setExternalErrors(errors: RegleExternalCollectionErrors<unknown[]>) {
+    if (externalErrors?.value) {
+      externalErrors.value = errors;
+    }
+  }
+
   function $clearExternalErrors() {
     $selfStatus.value.$clearExternalErrors();
     $eachStatus.value.forEach(($each) => {
@@ -732,6 +739,7 @@ export function createReactiveCollectionStatus({
     $abort,
     $extractDirtyFields,
     $clearExternalErrors,
+    $setExternalErrors,
     '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleCollectionStatus;

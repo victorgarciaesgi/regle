@@ -45,12 +45,12 @@ async function submit() {
   const {valid} = await r$.$validate();
 
   if (valid) {
-    externalErrors.value = {
+    r$.$setExternalErrors({
       email: ["Email already exists"],
       name: {
         pseudo: ["Pseudo already exists"]
       },
-    }
+    })
   }
 }
 ```
@@ -101,14 +101,44 @@ async function submit() {
   const {valid} = await r$.$validate();
 
   if (valid) {
-    externalErrors.value = {
+    r$.$setExternalErrors({
       email: ["Email already exists"],
       "name.pseudo": ["Pseudo already exists"],
       "collection.0.name": ["Name already exists"]
-    }
+    })
   }
 }
 ``` 
+
+## Without the `externalErrors` option
+
+`r$.$setExternalErrors` also works when you don't provide the `externalErrors` option.
+Regle stores those errors internally.
+
+```ts
+const form = reactive({
+  email: '',
+  name: {
+    pseudo: '',
+  },
+})
+
+const { r$ } = useRegle(form, {
+  email: { required },
+  name: { pseudo: { required } },
+})
+
+async function submit() {
+  const { valid } = await r$.$validate();
+
+  if (!valid) return;
+
+  r$.$setExternalErrors({
+    email: ['Email already exists'],
+    'name.pseudo': ['Pseudo already exists'],
+  });
+}
+```
 
 
 ## Clearing errors
@@ -146,7 +176,7 @@ const { r$ } = useRegle(form, {}, {
 })
 ```
 
-### `clearExternalErrors`
+### `$clearExternalErrors()`
 
 You can also clear the errors manually by calling the `$clearExternalErrors` method.
 

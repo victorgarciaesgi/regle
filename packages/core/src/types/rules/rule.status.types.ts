@@ -31,6 +31,8 @@ import type {
   RegleCollectionRuleDecl,
   RegleCollectionRuleDefinition,
   RegleErrorTree,
+  RegleExternalCollectionErrors,
+  RegleExternalErrorTree,
   RegleFieldIssue,
   RegleFieldResult,
   RegleFormPropertyType,
@@ -124,6 +126,8 @@ export type RegleStatus<
   readonly $errors: RegleErrorTree<TState, false>;
   /** Collection of all the error messages, collected for all children properties. */
   readonly $silentErrors: RegleErrorTree<TState>;
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: RegleExternalErrorTree<TState>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -177,7 +181,7 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
   isUnionOverride extends boolean = false,
-  TRulesTuple extends any[] = UnionToTuple<TRule>,
+  TRulesTuple extends any[] = never,
 > =
   HasNamedKeys<TState> extends true
     ? [TState[TKey]] extends [undefined | null]
@@ -209,7 +213,13 @@ export type InferRegleStatusType<
               : NonNullable<TState[TKey]> extends Record<PropertyKey, any>
                 ? NonNullable<TState[TKey]> extends RegleStaticImpl<infer U>
                   ? RegleFieldStatus<Raw<U>, TRule, TShortcuts>
-                  : MaybeVariantStatus<TState[TKey], ReglePartialRuleTree<TState[TKey]>, TShortcuts>
+                  : MaybeVariantStatus<
+                      TState[TKey],
+                      ReglePartialRuleTree<TState[TKey]>,
+                      TShortcuts,
+                      isUnionOverride,
+                      []
+                    >
                 : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
     : RegleCommonStatus<unknown>;
 
@@ -271,6 +281,8 @@ export type RegleFieldStatus<
    * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
    */
   addRules: (rules: RegleRuleDecl) => void;
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: string[]): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -427,6 +439,7 @@ export interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$to
   $watch(): void;
   $reset(options?: ResetOptions<any>, fromParent?: boolean): void;
   $abort(): void;
+  $setExternalErrors(errors: RegleExternalErrorTree<unknown>): void;
 }
 
 /**
@@ -540,7 +553,14 @@ export type RegleCollectionStatus<
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: MaybeOutput<TState>;
   /** Collection of status of every item in your collection. Each item will be a field you can access, or map on it to display your elements. */
-  readonly $each: InferRegleStatusType<NonNullable<TRules>, NonNullable<TState>, number, TShortcuts, IsUnion<TRules>>[];
+  readonly $each: InferRegleStatusType<
+    NonNullable<TRules>,
+    NonNullable<TState>,
+    number,
+    TShortcuts,
+    IsUnion<TRules>,
+    UnionToTuple<TRules>
+  >[];
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
   readonly $self: RegleFieldStatus<TState, TFieldRule, TShortcuts>;
   /**
@@ -555,6 +575,8 @@ export type RegleCollectionStatus<
   readonly $errors: RegleCollectionErrors<TState>;
   /** Collection of all the error messages, collected for all children properties and nested forms.  */
   readonly $silentErrors: RegleCollectionErrors<TState>;
+  /** Sets the external errors for the field. */
+  $setExternalErrors(errors: RegleExternalCollectionErrors<TState>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */

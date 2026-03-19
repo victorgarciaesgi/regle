@@ -27,7 +27,8 @@ export function getRemainingProperties(obj: Record<string, any>, excludeKeys: st
       key,
       value: value,
       editable: false,
-    }));
+    }))
+    .sort((a, b) => a.key.localeCompare(b.key));
 }
 
 export function parseFieldNodeId(nodeId: string): { instanceId: string; fieldName: string } | null {
