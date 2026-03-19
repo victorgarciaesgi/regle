@@ -14,7 +14,6 @@ runs:
       uses: actions/setup-node@v5
       with:
         node-version-file: .nvmrc
-        cache: pnpm
 
     - name: Enable Corepack
       run: corepack enable
