@@ -894,7 +894,7 @@ describe('external errors', () => {
     expect(vm.r$.nested.value.$errors).toStrictEqual(['This field is required']);
   });
 
-  it.only('should support root $setExternalErrors with single field root and no externalErrors option', async () => {
+  it('should support root $setExternalErrors with single field root and no externalErrors option', async () => {
     function singleFieldWithoutExternalErrorsOption() {
       const value = ref('');
       return useRegle(value, { required });
