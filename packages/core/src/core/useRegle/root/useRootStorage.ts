@@ -1,6 +1,6 @@
 import type { Ref, WatchStopHandle } from 'vue';
 import { getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
-import { dotPathObjectToNested } from '../../../../../shared';
+import { dotPathObjectToNested, isObject } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
 import type {
   $InternalRegleErrorTree,
@@ -52,7 +52,7 @@ export function useRootStorage({
   const storage = useStorage();
 
   const regle = ref<$InternalRegleStatusType>();
-  const computedExternalErrors = ref<$InternalRegleErrorTree | undefined>();
+  const computedExternalErrors = ref<$InternalRegleErrorTree | undefined | string[]>();
 
   let $unwatchExternalErrors: WatchStopHandle | undefined;
   let $unwatchComputedExternalErrors: WatchStopHandle | undefined;
@@ -72,12 +72,16 @@ export function useRootStorage({
     );
   }
 
-  function handleExternalErrorsChange() {
+  function handleExternalErrorsChange(newErrors: $InternalRegleErrorTree | undefined | string[]) {
     $unwatchComputedExternalErrors?.();
-    if (options.externalErrors?.value && Object.keys(options.externalErrors.value).some((key) => key.includes('.'))) {
-      computedExternalErrors.value = dotPathObjectToNested(options.externalErrors.value);
-    } else {
-      computedExternalErrors.value = options.externalErrors?.value ?? {};
+    if (newErrors) {
+      if (isObject(newErrors) && Object.keys(newErrors).some((key) => key.includes('.'))) {
+        computedExternalErrors.value = dotPathObjectToNested(newErrors);
+      } else if (Array.isArray(newErrors)) {
+        computedExternalErrors.value = newErrors;
+      } else {
+        computedExternalErrors.value = newErrors ?? {};
+      }
     }
 
     defineComputedExternalErrorsWatchSource();
@@ -90,11 +94,12 @@ export function useRootStorage({
   function defineComputedExternalErrorsWatchSource() {
     $unwatchComputedExternalErrors = watch(
       () => computedExternalErrors.value,
-      () => {
+      (newErrors) => {
         $unwatchExternalErrors?.();
         if (options.externalErrors?.value) {
-          options.externalErrors.value = computedExternalErrors.value as any;
+          options.externalErrors.value = newErrors as any;
         }
+        handleExternalErrorsChange(newErrors);
         defineExternalErrorsWatchSource();
       },
       { deep: true }
@@ -110,7 +115,7 @@ export function useRootStorage({
         customMessages: customRules?.(),
         storage,
         options,
-        externalErrors: computedExternalErrors,
+        externalErrors: computedExternalErrors as Ref<$InternalRegleErrorTree>,
         validationGroups: options.validationGroups as any,
         initialState: initialState as Ref<Record<string, any>>,
         originalState: originalState as Record<string, any>,
@@ -131,7 +136,7 @@ export function useRootStorage({
         customMessages: customRules?.(),
         storage,
         options,
-        externalErrors: computedExternalErrors as any,
+        externalErrors: computedExternalErrors as Ref<string[]>,
         initialState,
         originalState: originalState,
         shortcuts: shortcuts as $InternalRegleShortcutDefinition,
@@ -146,7 +151,7 @@ export function useRootStorage({
     }
   }
 
-  handleExternalErrorsChange();
+  handleExternalErrorsChange(options.externalErrors?.value);
 
   createRegleInstance();
 

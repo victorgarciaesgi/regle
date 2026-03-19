@@ -5,6 +5,7 @@ import type {
   PromiseReturn,
   RegleCommonStatus,
   RegleResult,
+  RegleStatus,
   RegleValidationErrors,
   ResetOptions,
   SuperCompatibleRegleRoot,
@@ -321,10 +322,29 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     return Object.values(regles).map((regle) => regle.$extractDirtyFields(filterNullishValues));
   }
 
+  function $setExternalErrors(errors: string[]) {
+    Object.values(regles).forEach((regle) => {
+      regle.$setExternalErrors(errors);
+    });
+  }
+
   function $clearExternalErrors() {
     Object.values(regles).forEach((regle) => {
       regle.$clearExternalErrors();
     });
+  }
+
+  function $validateSync(forceValues?: any): boolean {
+    try {
+      if (forceValues) {
+        $value.value = forceValues;
+      }
+      return Object.values(regles).every((regle) => {
+        return regle.$validateSync(forceValues);
+      });
+    } catch {
+      return false;
+    }
   }
 
   async function $validate(forceValues?: any): Promise<RegleResult<any, any> & { errors: any; issues: any }> {
@@ -375,9 +395,14 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $reset,
     $touch,
     $validate,
+    $validateSync,
     $extractDirtyFields,
     $clearExternalErrors,
-  } as any);
+    $setExternalErrors,
+  } as Record<
+    keyof Omit<RegleStatus, '$initialValue' | '$originalValue' | '$path' | '$name' | '$id' | '~standard' | '$fields'>,
+    any
+  >);
 
   watchEffect(() => {
     if (scoped) {
@@ -394,5 +419,5 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     }
   });
 
-  return fullStatus;
+  return fullStatus as any;
 }

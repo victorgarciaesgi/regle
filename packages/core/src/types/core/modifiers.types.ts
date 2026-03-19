@@ -75,6 +75,8 @@ export interface LocalRegleBehaviourOptions<
    *
    * Useful for integrating errors from a backend or other validation sources.
    * External errors can be assigned using a reactive object or a Ref, and will be merged into the `$externalErrors` and `$errors` properties for each field.
+   * You can also call `r$.$setExternalErrors(...)` directly without providing this option.
+   * Pass this option when the same external errors ref needs to be owned and synchronized outside of Regle.
    *
    * More details: https://reglejs.dev/advanced-usage/external-errors
    */

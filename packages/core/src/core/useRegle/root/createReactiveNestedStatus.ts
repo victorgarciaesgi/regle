@@ -15,6 +15,7 @@ import type {
   $InternalRegleStatus,
   $InternalRegleStatusType,
   RegleBehaviourOptions,
+  RegleExternalErrorTree,
   RegleValidationGroupEntry,
   RegleValidationGroupOutput,
   ResetOptions,
@@ -668,6 +669,12 @@ export function createReactiveNestedStatus({
     }
   }
 
+  function $setExternalErrors(errors: RegleExternalErrorTree<unknown>) {
+    if (externalErrors) {
+      externalErrors.value = errors;
+    }
+  }
+
   function $clearExternalErrors() {
     if (externalErrors && !isEmpty(externalErrors.value)) {
       externalErrors.value = {};
@@ -841,6 +848,7 @@ export function createReactiveNestedStatus({
     $validate,
     $unwatch,
     $watch,
+    $setExternalErrors,
     $clearExternalErrors,
     $extractDirtyFields,
     $abort,

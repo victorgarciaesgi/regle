@@ -29,6 +29,11 @@ function buildFieldState(fieldStatus: $InternalRegleFieldStatus): CustomInspecto
     '$fields',
     '$modifiers',
     '$deepCompare',
+    '$clearExternalErrorsOnValidate',
+    '$silent',
+    '$isArrayOrRegleStatic',
+    '$schemaMode',
+    '$immediateDirty',
   ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
@@ -109,7 +114,14 @@ function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
     state['State'] = priorityProperties;
   }
 
-  const remainingProperties = getRemainingProperties(r$, [...PRIORITY_KEYS.ROOT, '$fields', '$modifiers', '$path']);
+  const remainingProperties = getRemainingProperties(r$, [
+    ...PRIORITY_KEYS.ROOT,
+    '$fields',
+    '$modifiers',
+    '$path',
+    '$clearExternalErrorsOnValidate',
+    '$silent',
+  ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
   }

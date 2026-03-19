@@ -833,6 +833,12 @@ export function createReactiveFieldStatus({
     return null;
   }
 
+  function $setExternalErrors(errors: string[]) {
+    if (externalErrors) {
+      externalErrors.value = errors;
+    }
+  }
+
   function $clearExternalErrors() {
     if (externalErrors?.value?.length) {
       externalErrors.value = [];
@@ -885,6 +891,7 @@ export function createReactiveFieldStatus({
     addRules,
     $schemaMode: schemaMode,
     '~modifiers': scopeState.$modifiers,
+    $setExternalErrors,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
 
