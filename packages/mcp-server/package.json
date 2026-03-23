@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.27.1",
-    "posthog-node": "5.28.2",
+    "posthog-node": "5.28.5",
     "zod": "catalog:"
   },
   "devDependencies": {
