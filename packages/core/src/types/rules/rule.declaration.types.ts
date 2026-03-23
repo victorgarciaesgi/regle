@@ -33,9 +33,15 @@ export type ReglePartialRuleTree<
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-} & {
+} & SelfObjectValidationDecl<TForm, TCustomRules>;
+
+type SelfObjectValidationDecl<
+  TForm extends Record<string, any> = Record<string, any>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+> = {
   $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
 };
+
 /**
  * @public
  */
@@ -46,9 +52,7 @@ export type RegleRuleTree<
   HasNamedKeys<TForm> extends true
     ? {
         [TKey in keyof TForm]: RegleFormPropertyType<TForm[TKey], TCustomRules>;
-      } & {
-        $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
-      }
+      } & SelfObjectValidationDecl<TForm, TCustomRules>
     : RegleUnknownRulesTree;
 
 /**
