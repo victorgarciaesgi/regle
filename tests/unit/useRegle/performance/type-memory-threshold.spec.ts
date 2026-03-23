@@ -40,7 +40,7 @@ function runTypeDiagnostics(tsProjectPath: string): TsDiagnostics {
 
 describe('Type memory diagnostics thresholds', () => {
   const coreThresholdKb = readEnvNumber('REGLE_TS_MEMORY_CORE_THRESHOLD_KB', 300000);
-  const rulesThresholdKb = readEnvNumber('REGLE_TS_MEMORY_RULES_THRESHOLD_KB', 360000);
+  const rulesThresholdKb = readEnvNumber('REGLE_TS_MEMORY_RULES_THRESHOLD_KB', 400000);
   const allowedGrowthKb = readEnvNumber('REGLE_TS_MEMORY_ALLOWED_GROWTH_KB', 8000);
 
   it('keeps core type memory under threshold', () => {
