@@ -10,6 +10,7 @@ import type {
   MaybeGetter,
   MaybeNullable,
   MaybeRefOrComputedRef,
+  PrimitiveTypes,
   RegleStatic,
   RemoveIndexSignature,
   Unwrap,
@@ -102,19 +103,17 @@ export type RegleFormPropertyType<
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
 > = [NonNullable<TValue>] extends [never]
   ? MaybeRefOrComputedRef<RegleRuleDecl<TValue, TCustomRules>>
-  : NonNullable<TValue> extends Array<any>
-    ? RegleCollectionRuleDecl<TValue, TCustomRules>
-    : NonNullable<TValue> extends Date
-      ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
-      : NonNullable<TValue> extends File
-        ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
-        : NonNullable<TValue> extends Ref<infer V>
-          ? RegleFormPropertyType<V, TCustomRules>
-          : NonNullable<TValue> extends Record<string, any>
-            ? NonNullable<TValue> extends RegleStatic<infer U>
-              ? MaybeRefOrComputedRef<RegleRuleDecl<Raw<U>, TCustomRules>>
-              : ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
-            : MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
+  : NonNullable<TValue> extends PrimitiveTypes
+    ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
+    : NonNullable<TValue> extends Array<any>
+      ? RegleCollectionRuleDecl<TValue, TCustomRules>
+      : NonNullable<TValue> extends Ref<infer V>
+        ? RegleFormPropertyType<V, TCustomRules>
+        : NonNullable<TValue> extends Record<string, any>
+          ? NonNullable<TValue> extends RegleStatic<infer U>
+            ? MaybeRefOrComputedRef<RegleRuleDecl<Raw<U>, TCustomRules>>
+            : ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
+          : MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
 
 /**
  * @internal

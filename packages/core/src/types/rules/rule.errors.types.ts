@@ -149,10 +149,9 @@ export type ComputeFieldRules<
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;
       }
     : {
-        readonly [TRuleKey in keyof Omit<
-          UnwrapRef<TRules>,
-          '$each' | keyof FieldRegleBehaviourOptions
-        >]: RegleRuleStatus<
+        readonly [TRuleKey in keyof UnwrapRef<TRules> as TRuleKey extends '$each' | keyof FieldRegleBehaviourOptions
+          ? never
+          : TRuleKey]: RegleRuleStatus<
           TState,
           UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinitionLight<infer TParams, any> ? TParams : [],
           UnwrapRef<TRules>[TRuleKey] extends RegleRuleDefinitionLight<any, any, infer TMetadata>
