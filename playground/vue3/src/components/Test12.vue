@@ -3,10 +3,10 @@
   import { useRegle } from '@regle/core';
   import { required, minLength, email } from '@regle/rules';
 
-  const state = ref({ name: '', email: '' });
+  const state = ref({ name: new Date(1995, 1, 1), email: '' });
 
   const { r$ } = useRegle(state, {
-    name: { required, minLength: minLength(4) },
+    name: { required },
     email: { email },
   });
 
@@ -35,14 +35,17 @@
       <label class="form-label">Name</label>
       <input
         class="form-control"
-        v-model="r$.$value.name"
+        type="date"
+        :value="r$.$value.name.toISOString().split('T')[0]"
         placeholder="Type your name"
         :class="{
           'is-valid': r$.name.$correct,
           'is-invalid': r$.name.$error,
         }"
         aria-describedby="name-error"
+        @change="r$.$value.name = new Date($event.target?.value)"
       />
+      Edited: {{ r$.name.$edited }}
       <ul id="name-errors" class="invalid-feedback">
         <li v-for="error of r$.$errors.name" :key="error">
           {{ error }}
