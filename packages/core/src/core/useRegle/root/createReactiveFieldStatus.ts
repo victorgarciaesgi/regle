@@ -422,7 +422,7 @@ export function createReactiveFieldStatus({
 
       function isEditedHandler(currentValue: unknown, initialValue: unknown): boolean {
         if (initialValue instanceof Date && currentValue instanceof Date) {
-          return toDate(initialValue).getDate() !== toDate(currentValue).getDate();
+          return toDate(initialValue).getTime() !== toDate(currentValue).getTime();
         } else if (initialValue == null) {
           // Keep empty string as the same value of undefined|null
           return !!currentValue;

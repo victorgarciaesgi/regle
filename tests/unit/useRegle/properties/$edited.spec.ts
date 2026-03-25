@@ -2,7 +2,7 @@ import { useRegle } from '@regle/core';
 import { simpleNestedStateWithMixedValidation } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { minLength } from '@regle/rules';
-import { addDays } from 'date-fns';
+import { addDays, addMonths } from 'date-fns';
 
 describe('$edited', () => {
   it('should be true when value is not the same as initial one', async () => {
@@ -160,6 +160,22 @@ describe('$edited', () => {
 
     expect(vm.r$.file.$edited).toBe(true);
     expect(vm.r$.file.$anyEdited).toBe(true);
+  });
+
+  it('should correctly detect change of month with same day', async () => {
+    function regleWithSameDay() {
+      return useRegle({ date: new Date(2026, 2, 25) }, {});
+    }
+
+    const { vm } = createRegleComponent(regleWithSameDay);
+
+    expect(vm.r$.date.$edited).toBe(false);
+    expect(vm.r$.date.$anyEdited).toBe(false);
+
+    vm.r$.$value.date = addMonths(new Date(2026, 2, 25), 1);
+    await vm.$nextTick();
+
+    expect(vm.r$.date.$edited).toBe(true);
   });
 
   it('should correctly compare array of primitives', async () => {
