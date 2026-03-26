@@ -168,7 +168,38 @@ This helper returns `NaN` if the input cannot be coerced, which is technically s
 It can be safe to also check for `isNaN` additionally.
 :::
 
+```ts
+import { createRule, type Maybe } from '@regle/core';
+import { isFilled, toNumber } from '@regle/rules';
+
+const minValue = createRule({
+  validator(value: Maybe<string | number>, min: number) {
+    if (isFilled(value)) {
+      const num = toNumber(value);
+      return !isNaN(num) && num >= min;
+    }
+    return true;
+  },
+  message: ({ $params: [min] }) => `Value must be at least ${min}`,
+});
+```
 
 ### `toDate`
 
 This utility will coerce any string, number or Date value into a Date using the `Date` constructor.
+
+```ts
+import { createRule, type Maybe } from '@regle/core';
+import { isFilled, toDate } from '@regle/rules';
+
+const afterToday = createRule({
+  validator(value: Maybe<string | Date>) {
+    if (isFilled(value)) {
+      const date = toDate(value);
+      return date > new Date();
+    }
+    return true;
+  },
+  message: 'Date must be in the future',
+});
+```

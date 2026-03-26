@@ -13,8 +13,9 @@ To illustrate the issue, consider the following example:
 ```ts
 import { ref, computed } from 'vue';
 import { withMessage } from '@regle/rules';
-import { type Maybe, type RegleComputedRules } from '@regle/core';
+import { useRegle, type Maybe, type RegleComputedRules } from '@regle/core';
 
+const form = ref({ items: [{ weight: 0 }] });
 const condition = ref(false)
 
 const weight = (greeting: string) => {

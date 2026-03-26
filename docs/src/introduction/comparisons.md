@@ -35,7 +35,7 @@ While VeeValidate supports typed schemas using libraries like Zod, Yup, or Valib
 
 ## Tanstack Forms
 
-I love Tanstack products and what he's doing is so great for the JS community, specially making their tools framework agnostic.
+I love Tanstack products and what they're doing is so great for the JS community, especially making their tools framework agnostic.
 
 As for Tanstack Forms, I feel the API for Vue keeps too much syntax logic from the React counterpart. 
 It doesn't take advantage of the Vue composition API enough.
@@ -48,7 +48,7 @@ You can compare the [Regle playground](https://play.reglejs.dev) and the [Tansta
 
 ## Formkit & VueForms
 
-Formkit and VueForms is centered around DOM components.
+Formkit and VueForms are centered around DOM components.
 Regle is headless and data-driven, so you can work with your state anywhere you want.
 
 Working exclusively with a data-driven model enables stronger type safety and a better developer experience.
@@ -58,5 +58,5 @@ Regle is an alternative to Formkit and VueForms if you don't want the UI and val
 ## Formwerk
 
 From Formwerk website: `[Formwerk] is ideal for those building internal UI design systems or UI libraries intended for other developers.`.
-The focus is not on validation, but on building a scalable UI around the form fields, so it differs completly in usage.
+The focus is not on validation, but on building a scalable UI around the form fields, so it differs completely in usage.
 Formwerk also offers the same feature to validate forms using Standard Schema Spec (Zod, Valibot, Arktype)

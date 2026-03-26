@@ -60,7 +60,7 @@ export function useMyForm() {
 // ---cut---
 // @noErrors
 import Child from './Child.vue';
-import { useMyForm } from './myForm';
+import { useMyForm } from './useMyForm';
 
 const { r$ } = useMyForm();
 </script>
@@ -79,7 +79,7 @@ const { r$ } = useMyForm();
 // @include: useMyForm
 // ---cut---
 // @noErrors
-import type { useMyForm } from './myForm';
+import type { useMyForm } from './useMyForm';
 import type { InferRegleRoot } from '@regle/core';
 
 const props = defineProps<{

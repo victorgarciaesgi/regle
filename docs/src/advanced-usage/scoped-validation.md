@@ -20,7 +20,7 @@ Problems with Vuelidate's approach:
  - Have to play with `$scope` and `$stopPropagation` to avoid unwanted behaviour
 
 
-Regle's solution solves all this problems
+Regle's solution solves all these problems
 
 
 ## Collecting validation with `useCollectScope` and `useScopedRegle`
@@ -283,7 +283,7 @@ import { useScopedRegleItem } from './scoped-config';
 
 const { r$ } = useScopedRegleItem(
   { firstName: '' }, 
-  { firstName: { required } }
+  { firstName: { required } },
   { id: 'child1' }
 );
 </script>

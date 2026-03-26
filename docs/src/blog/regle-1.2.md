@@ -18,7 +18,7 @@ outline:
 ![regle 1.2 banner](/blog/regle-1.2-banner.png)
 
 
-Regle is beginning to gain some serious traction recently. Since I released Regle `1.1`, I've seen the number of stars and views on the documentation continualy increasing.
+Regle is beginning to gain some serious traction recently. Since I released Regle `1.1`, I've seen the number of stars and views on the documentation continually increasing.
 
 Thanks to the <a  href="https://github.com/victorgarciaesgi/regle"><img style="display:inline; vertical-align: middle" src="https://img.shields.io/github/stars/victorgarciaesgi/regle"/></a> stargazers so far, and <a  href="https://www.npmjs.com/package/@regle/core"><img style="display:inline; vertical-align: middle" alt="npm download" src="https://img.shields.io/npm/dt/@regle/core.svg"/></a> downloads!
 
@@ -27,7 +27,7 @@ It's really rewarding to see people use and love something you spent time on, an
 Having more and more people on your library also bring a lot of pressure.   
 Of course I still don't have as many users as other libraries or `Vuelidate`, but you feel like you cannot disappoint the people using it from the early stages.  
 
-I personnaly am extremely cautious about updates and tests, as Regle is used in some complex forms at my company [Malt](https://malt.fr) <span data-title='malt'></span>.
+I personally am extremely cautious about updates and tests, as Regle is used in some complex forms at my company [Malt](https://malt.fr) <span data-title='malt'></span>.
 
 
 
@@ -37,7 +37,7 @@ First of all a little disclaimer, this update contains necessary 🚨 **breaking
 
 I know this is not following semver, but this wasn't enough to justify releasing a `2.0`.
 
-Sorry in advance to everyone impacted by this, even thought the changes are minimal and should impact only a zero to a fraction of the users.
+Sorry in advance to everyone impacted by this, even though the changes are minimal and should impact only a zero to a fraction of the users.
 
 - You can check the [releases notes here](https://github.com/victorgarciaesgi/regle/releases/tag/v1.2.0)
 
@@ -70,7 +70,7 @@ type State = InferInput<typeof rules>;
 
 ### `refineRules`
 
-In Regle, rules can depend on the state, this helps declare dynamic rules without having cylcic types problems.  
+In Regle, rules can depend on the state, this helps declare dynamic rules without having cyclic types problems.  
 
 
 ```ts
@@ -99,7 +99,7 @@ You can check the [full docs here](/common-usage/standard-schema)
 
 While existing, the `@regle/nuxt` was really lacking features and wasn't bringing anything valuable.
 
-Fellowing this [feature request](https://github.com/victorgarciaesgi/regle/issues/117), this updates will finally take advantages of Nuxt awesome module system.
+Following this [feature request](https://github.com/victorgarciaesgi/regle/issues/117), this updates will finally take advantages of Nuxt awesome module system.
 
 The idea is to enable the injection of your global configuration into Nuxt auto-imports.
 
@@ -194,7 +194,7 @@ const { r$ } = useRegleSchema(
 
 When I created Regle, I tried to match as much as possible how **Vuelidate** behaved.
 
-Unfortunetly, my implementation of `autoDirty` was wrong. It was a different behaviour of the one in Vuelidate.
+Unfortunately, my implementation of `autoDirty` was wrong. It was a different behaviour of the one in Vuelidate.
 
 This updates introduce a breaking change, changing `autoDirty` to only affect the `$dirty` state.
 

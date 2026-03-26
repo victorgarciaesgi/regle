@@ -118,7 +118,7 @@ const {r$} = useRegle({foo: ''}, {
     // or
     myValidator: myValidator(5),
     // or
-    myValidator: myValidator(5, 'foo');
+    myValidator: myValidator(5, 'foo'),
   }
 })
 ```
@@ -195,7 +195,7 @@ useRegle(state, rules);
 
 You can set default value directly in the rule declaration. Be sure to type it correctly.
 
-There will be difference in implementation if you want to access the parameter value in the message factory function as a function scope is undereadble from outside its scope.
+There will be difference in implementation if you want to access the parameter value in the message factory function as a function scope is unreadable from outside its scope.
 
 You'll have to return explicitly the default value in the validator function, and declare the parameter as metadata.
 
@@ -250,7 +250,7 @@ const yesOrNo = ref('No');
 
 const { r$ } = useRegle({name: ''}, {
   name: {
-    myConditionalRule: myConditionalRule(yesOrNo);
+    myConditionalRule: myConditionalRule(yesOrNo),
   }
 })
 
@@ -288,7 +288,7 @@ const { r$ } = useRegle({name: ''}, {
   <div>
     <!-- Here we can use $active to know if the rule is enabled -->
     <input 
-      v-model='form.name'
+      v-model='r$.$value.name'
       :placeholder='`Type your name${r$.name.$rules.required.$active ? "*": ""}`'
     />
 

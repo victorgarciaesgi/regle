@@ -81,7 +81,7 @@ const { r$ } = useRegleSchema({ name: '' }, type({
 :::warning
 Limitations from the core behaviour
 
-Using schema libraries uses a different mechanism than the core "rules" one. Regle will parse the entire tree instead of doing it per-field. Than means that properties or methods are not available in nested values:
+Using schema libraries uses a different mechanism than the core "rules" one. Regle will parse the entire tree instead of doing it per-field. That means that properties or methods are not available in nested values:
 
 - `$validate` (only at root)
 - `$pending` (only at root)
@@ -119,7 +119,7 @@ const schema = computed(() =>
   inferSchema(form, z.object({
     firstName: z.string(),
     /** 
-     * Important to keep track of the depency change
+     * Important to keep track of the dependency change
      * Without it, the validator wouldn't run if `firstName` changed
     */
     lastName: withDeps(
@@ -150,7 +150,7 @@ const schema = computed(() =>
   inferSchema(form, v.object({
     firstName: v.string(),
     /** 
-     * Important to keep track of the depency change
+     * Important to keep track of the dependency change
      * Without it, the validator wouldn't run if `firstName` changed
     */
     lastName: withDeps(

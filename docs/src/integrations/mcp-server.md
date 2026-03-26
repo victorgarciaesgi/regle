@@ -53,4 +53,18 @@ claude mcp add-json regle --scope project '{"command":"npx","args":["-y","@regle
 ```
 
 
+## Claude Desktop
+
+For Claude Desktop, add the following to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "regle": {
+      "command": "npx",
+      "args": ["-y", "@regle/mcp-server"]
+    }
+  }
+}
+```
 
