@@ -3,6 +3,54 @@ title: Built-in rules
 description: Reference for all built-in validation rules available in the @regle/rules package.
 ---
 
+<script setup>
+import AlphaDemo from './components/AlphaDemo.vue';
+import AlphaNumDemo from './components/AlphaNumDemo.vue';
+import AtLeastOneDemo from './components/AtLeastOneDemo.vue';
+import BetweenDemo from './components/BetweenDemo.vue';
+import CheckedDemo from './components/CheckedDemo.vue';
+import ContainsDemo from './components/ContainsDemo.vue';
+import ContainsSpecialCharacterDemo from './components/ContainsSpecialCharacterDemo.vue';
+import ContainsUppercaseDemo from './components/ContainsUppercaseDemo.vue';
+import DateAfterDemo from './components/DateAfterDemo.vue';
+import DateBeforeDemo from './components/DateBeforeDemo.vue';
+import DateBetweenDemo from './components/DateBetweenDemo.vue';
+import DecimalDemo from './components/DecimalDemo.vue';
+import DomainDemo from './components/DomainDemo.vue';
+import EmailDemo from './components/EmailDemo.vue';
+import EmojiDemo from './components/EmojiDemo.vue';
+import EndsWithDemo from './components/EndsWithDemo.vue';
+import ExactDigitsDemo from './components/ExactDigitsDemo.vue';
+import ExactLengthDemo from './components/ExactLengthDemo.vue';
+import ExactValueDemo from './components/ExactValueDemo.vue';
+import FileTypeDemo from './components/FileTypeDemo.vue';
+import HexadecimalDemo from './components/HexadecimalDemo.vue';
+import HostnameDemo from './components/HostnameDemo.vue';
+import HttpUrlDemo from './components/HttpUrlDemo.vue';
+import IntegerDemo from './components/IntegerDemo.vue';
+import Ipv4AddressDemo from './components/Ipv4AddressDemo.vue';
+import LiteralDemo from './components/LiteralDemo.vue';
+import LowercaseDemo from './components/LowercaseDemo.vue';
+import MacAddressDemo from './components/MacAddressDemo.vue';
+import MaxFileSizeDemo from './components/MaxFileSizeDemo.vue';
+import MaxLengthDemo from './components/MaxLengthDemo.vue';
+import MaxValueDemo from './components/MaxValueDemo.vue';
+import MinFileSizeDemo from './components/MinFileSizeDemo.vue';
+import MinLengthDemo from './components/MinLengthDemo.vue';
+import MinValueDemo from './components/MinValueDemo.vue';
+import NativeEnumDemo from './components/NativeEnumDemo.vue';
+import NumericDemo from './components/NumericDemo.vue';
+import OneOfDemo from './components/OneOfDemo.vue';
+import RegexDemo from './components/RegexDemo.vue';
+import RequiredDemo from './components/RequiredDemo.vue';
+import RequiredIfDemo from './components/RequiredIfDemo.vue';
+import RequiredUnlessDemo from './components/RequiredUnlessDemo.vue';
+import SameAsDemo from './components/SameAsDemo.vue';
+import StartsWithDemo from './components/StartsWithDemo.vue';
+import UppercaseDemo from './components/UppercaseDemo.vue';
+import UrlDemo from './components/UrlDemo.vue';
+</script>
+
 # Built-in rules
 
 All built-in rules are available through the `@regle/rules` package.
@@ -56,6 +104,8 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<AlphaDemo />
+
 ## `alphaNum`
 
 _**Params**_
@@ -75,6 +125,8 @@ const { r$ } = useRegle({ name: '' }, {
   },
 });
 ```
+
+<AlphaNumDemo />
 
 ## `atLeastOne`
 
@@ -101,6 +153,8 @@ const { r$ } = useRegle({ user: { firstName: '', lastName: '' } }, {
 })
 ```
 
+<AtLeastOneDemo />
+
 ## `between`
 
 _**Params**_
@@ -124,6 +178,8 @@ const { r$ } = useRegle({ count: 0 }, {
   },
 })
 ```
+
+<BetweenDemo />
 
 ## `boolean`
 
@@ -156,6 +212,8 @@ const { r$ } = useRegle({ confirm: false }, {
 })
 ```
 
+<CheckedDemo />
+
 ## `contains`
 
 _**Params**_
@@ -172,6 +230,8 @@ const { r$ } = useRegle({ bestLib: '' }, {
   },
 })
 ```
+
+<ContainsDemo />
 
 ## `containsSpecialCharacter`
 
@@ -192,6 +252,8 @@ const { r$ } = useRegle({ password: '' }, {
 })
 ```
 
+<ContainsSpecialCharacterDemo />
+
 ## `containsUppercase`
 
 _**Params**_
@@ -210,6 +272,8 @@ const { r$ } = useRegle({ password: '' }, {
   },
 })
 ```
+
+<ContainsUppercaseDemo />
 
 ## `date`
 
@@ -249,6 +313,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 })
 ```
 
+<DateAfterDemo />
 
 ## `dateBefore`
 _**Params**_
@@ -271,6 +336,8 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
   },
 })
 ```
+
+<DateBeforeDemo />
 
 ## `dateBetween`
 
@@ -297,6 +364,7 @@ const { r$ } = useRegle({ birthday: null as Date | null }, {
 })
 ```
 
+<DateBetweenDemo />
 
 ## `decimal`
 
@@ -310,6 +378,7 @@ const { r$ } = useRegle({ price: 0 }, {
 })
 ```
 
+<DecimalDemo />
 
 ## `domain`
 
@@ -323,6 +392,7 @@ const { r$ } = useRegle({ siteDomain: '' }, {
 })
 ```
 
+<DomainDemo />
 
 ## `email`
 
@@ -336,6 +406,7 @@ const { r$ } = useRegle({ email: '' }, {
 })
 ```
 
+<EmailDemo />
 
 ## `emoji`
 
@@ -349,6 +420,7 @@ const { r$ } = useRegle({ emoji: '' }, {
 })
 ```
 
+<EmojiDemo />
 
 ## `endsWith`
 
@@ -365,6 +437,7 @@ const { r$ } = useRegle({ firstName: '' }, {
 })
 ```
 
+<EndsWithDemo />
 
 ## `exactDigits`
 _**Params**_
@@ -388,6 +461,7 @@ const { r$ } = useRegle({ digits: '' }, {
 })
 ```
 
+<ExactDigitsDemo />
 
 ## `exactLength`
 
@@ -410,6 +484,7 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<ExactLengthDemo />
 
 ## `exactValue`
 
@@ -431,6 +506,8 @@ const { r$ } = useRegle({ count: 0 }, {
   },
 })
 ```
+
+<ExactValueDemo />
 
 ## `file`
 
@@ -459,6 +536,7 @@ const { r$ } = useRegle({ file: null as File | null }, {
 })
 ```
 
+<FileTypeDemo />
 
 ## `hexadecimal`
 
@@ -472,6 +550,7 @@ const { r$ } = useRegle({ hexadecimal: '' }, {
 })
 ```
 
+<HexadecimalDemo />
 
 ## `hostname`
 
@@ -485,6 +564,7 @@ const { r$ } = useRegle({ siteHost: '' }, {
 })
 ```
 
+<HostnameDemo />
 
 ## `httpUrl`
 
@@ -503,6 +583,8 @@ const { r$ } = useRegle({ bestUrl: '' }, {
 })
 ```
 
+<HttpUrlDemo />
+
 ## `integer`
 
 Allows only integers (positive and negative).
@@ -515,6 +597,7 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+<IntegerDemo />
 
 ## `ipv4Address`
 
@@ -527,6 +610,8 @@ const { r$ } = useRegle({ address: '' }, {
   address: { ipv4Address },
 })
 ```
+
+<Ipv4AddressDemo />
 
 ## `literal`
 
@@ -544,6 +629,8 @@ const { r$ } = useRegle({ value: '' }, {
 })
 ```
 
+<LiteralDemo />
+
 ## `lowercase`
 
 Validates lowercase strings.
@@ -555,6 +642,8 @@ const { r$ } = useRegle({ name: '' }, {
   name: { lowercase },
 })
 ```
+
+<LowercaseDemo />
 
 ## `macAddress`
 
@@ -576,6 +665,8 @@ const { r$ } = useRegle({ address: '' }, {
 });
 ```
 
+<MacAddressDemo />
+
 ## `maxFileSize`
 
 Requires a value to be a file with a maximum size.
@@ -588,6 +679,7 @@ const { r$ } = useRegle({ file: null as File | null }, {
 })
 ```
 
+<MaxFileSizeDemo />
 
 ## `maxLength`
 
@@ -615,6 +707,8 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<MaxLengthDemo />
+
 ## `maxValue`
 
 _**Params**_
@@ -638,6 +732,8 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+<MaxValueDemo />
+
 ## `minFileSize`
 
 Requires a value to be a file with a minimum size.
@@ -650,6 +746,7 @@ const { r$ } = useRegle({ file: null as File | null }, {
 })
 ```
 
+<MinFileSizeDemo />
 
 ## `minLength`
 
@@ -676,6 +773,8 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<MinLengthDemo />
+
 ## `minValue`
 
 _**Params**_
@@ -701,6 +800,8 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+<MinValueDemo />
+
 ## `nativeEnum`
 
 Validate against a native Typescript enum value. Similar to Zod's `nativeEnum`
@@ -716,6 +817,8 @@ const { r$ } = useRegle({ type: '' }, {
   type: { nativeEnum: nativeEnum(Foo) },
 })
 ```
+
+<NativeEnumDemo />
 
 ## `number`
 
@@ -743,6 +846,7 @@ const { r$ } = useRegle({ count: 0 }, {
 })
 ```
 
+<NumericDemo />
 
 ## `oneOf`
 
@@ -769,6 +873,8 @@ const { r$ } = useRegle({ aliment: 'Fish' }, {
 })
 ```
 
+<OneOfDemo />
+
 ## `regex`
 
 _**Params**_
@@ -787,6 +893,7 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<RegexDemo />
 
 ## `required`
 
@@ -799,6 +906,8 @@ const {r$} = useRegle({name: ''}, {
   name: {required},
 })
 ```
+
+<RequiredDemo />
 
 ## `requiredIf`
 
@@ -821,6 +930,8 @@ const { r$ } = useRegle(form, {
   },
 })
 ```
+
+<RequiredIfDemo />
 
 ## `requiredUnless`
 
@@ -845,6 +956,7 @@ const { r$ } = useRegle(form, {
 })
 ```
 
+<RequiredUnlessDemo />
 
 ## `sameAs`
 
@@ -869,6 +981,8 @@ const { r$ } = useRegle(form, {
 })
 ```
 
+<SameAsDemo />
+
 ## `startsWith`
 
 _**Params**_
@@ -885,6 +999,8 @@ const { r$ } = useRegle({ bestLib: '' }, {
   },
 })
 ```
+
+<StartsWithDemo />
 
 ## `string`
 
@@ -930,6 +1046,8 @@ const { r$ } = useRegle({ name: '' }, {
 })
 ```
 
+<UppercaseDemo />
+
 ## `url`
 
 _**Params**_
@@ -946,3 +1064,5 @@ const { r$ } = useRegle({ bestUrl: '' }, {
   bestUrl: { url: url({ protocol: /^https?$/ }) },
 })
 ```
+
+<UrlDemo />

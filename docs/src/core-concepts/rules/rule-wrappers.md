@@ -114,6 +114,20 @@ The `withTooltip` wrapper allows you to display additional messages for your fie
 
 Tooltips are aggregated and accessible via `xxx.$tooltips`.
 
+```ts
+import { withTooltip } from '@regle/rules';
+
+const { r$ } = useRegle({ password: '' }, {
+  password: {
+    strong: withTooltip(
+      (value) => !!value && value.length >= 8,
+      'Password should be at least 8 characters'
+    ),
+  }
+})
+
+// Access tooltips in template: r$.password.$tooltips
+```
 
 ## Chaining wrappers
 

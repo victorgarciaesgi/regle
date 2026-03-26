@@ -207,7 +207,7 @@ Regle supported ESM & CJS builds, but after reading [Antfu's article on shipping
 ### 🚀 Features
 
 - `InferSafeOutput` type to infer safe form values
-- Variants and discriminated unions support [#82](https://github.com/victorgarciaesgi/regle/issues/86)
+- Variants and discriminated unions support [#86](https://github.com/victorgarciaesgi/regle/issues/86)
 - Allow rules with optional parameters to be used without function execution [#96](https://github.com/victorgarciaesgi/regle/issues/96)
 - Zod 4 support
 - Dropped CommonJS support

@@ -106,7 +106,7 @@ __Side effect__: disable `$autoDirty` when `true`.
 
 Enables the `reward-early-punish-late` mode of Regle. This mode will not set fields as invalid once they are valid, unless manually triggered by `$validate` method.
 
-This will have no effect only if you use `autoDirty: true`.
+This has no effect when `autoDirty` is set to `true` (the default). Set `autoDirty: false` for `rewardEarly` to take effect.
 
 ### `clearExternalErrorsOnChange`
 

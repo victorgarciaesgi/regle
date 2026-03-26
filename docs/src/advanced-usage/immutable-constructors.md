@@ -48,7 +48,8 @@ function handleDecimalInput(event: Event) {
 When using Regle with `@regle/schemas`, you will have to also declare the static constructor in the schema.
 
 ```ts
-import { markStatic, useRegleSchema } from '@regle/core'
+import { markStatic } from '@regle/core'
+import { useRegleSchema } from '@regle/schemas'
 import { z } from 'zod'
 
 const StaticDecimal = markStatic(Decimal)
@@ -69,7 +70,7 @@ You can use the `isStatic` helper to check if a value is a static value.
 ```ts
 import { isStatic } from '@regle/core';
 
-const isStatic = isStatic(r$.$value.decimal); // true
+const result = isStatic(r$.$value.decimal); // true
 ```
 
 

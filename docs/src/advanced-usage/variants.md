@@ -18,7 +18,7 @@ Regle variants offer a way to simply declare and use this discriminated unions, 
 
 ## `createVariant`
 
-The first first step to Regle variants is to have a type that includes a discriminated variant.
+The first step to Regle variants is to have a type that includes a discriminated variant.
 
 ```ts twoslash include form-types
 type FormStateLoginType = 
@@ -98,7 +98,7 @@ Let's take the previous example again:
     
     <div v-else-if="narrowVariant(r$, 'type', 'GITHUB')">
       <!-- `username` is now a known field in this block -->
-      <input v-model="r$.username.$value" placeholder='Email'/>
+      <input v-model="r$.username.$value" placeholder='Username'/>
       <Errors :errors="r$.username.$errors"/>
  //                                 ^? 
     </div>
@@ -196,7 +196,7 @@ In the component:
     
     <div v-else-if="narrowVariant(r$.login, 'type', 'GITHUB')">
       <!-- `username` is now a known field in this block -->
-      <input v-model="r$.login.username.$value" placeholder='Email'/>
+      <input v-model="r$.login.username.$value" placeholder='Username'/>
       <Errors :errors="r$.login.username.$errors"/>
     </div>
 
@@ -230,7 +230,7 @@ The **ref** will be reactive and already typed as the variant you defined, while
 ```vue twoslash [Github.vue]
 <template>
     <div v-if="githubVariant$">
-      <input v-model="githubVariant$.username.$value" placeholder='Email'/>
+      <input v-model="githubVariant$.username.$value" placeholder='Username'/>
       <Errors :errors="githubVariant$.username.$errors"/>
     </div>
 </template>

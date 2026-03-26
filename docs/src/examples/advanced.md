@@ -7,7 +7,7 @@ aside: false
 
 You can play with the code of this example in the stackblitz sandbox.
 
-Don't forgot to install the `Vue` extension in the online IDE.
+Don't forget to install the `Vue` extension in the online IDE.
 
 <a target='_blank' href="https://stackblitz.com/~/github.com/victorgarciaesgi/regle-examples/tree/main/examples/advanced-example?file=examples/advanced-example/src/App.vue&configPath=examples/advanced-example">
   <img

@@ -57,10 +57,10 @@ const result = await schema['~standard'].validate({ name: '' });
 </template>
 <script setup lang="ts">
 import { useRules } from '@regle/core';
-import { required, string } from '@regle/rules';
+import { required, email, string } from '@regle/rules';
 
 const r$ = useRules({
-  name: { string, required }
+  email: { string, required, email }
 })
 </script>
 ```

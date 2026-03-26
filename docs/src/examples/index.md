@@ -1,4 +1,4 @@
-# Exemples
+# Examples
 
 ## Playground
 

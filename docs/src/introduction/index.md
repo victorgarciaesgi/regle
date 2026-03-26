@@ -10,7 +10,7 @@ import QuickUsage from '../parts/components/QuickUsage.vue';
 
 ## What is Regle?
 
-If you've ever built a forms and wrote repetitive validation logic, struggling with complex error states, or losing type safety along the way, Regle is the perfect solution.
+If you've ever built forms and wrote repetitive validation logic, struggling with complex error states, or losing type safety along the way, Regle is the perfect solution.
 
 Regle is a type-safe, headless form validation library that lets you write validation rules that mirror your data structure. Think of it as the perfect evolution of Vuelidate, but with modern TypeScript support and a more intuitive API.
 

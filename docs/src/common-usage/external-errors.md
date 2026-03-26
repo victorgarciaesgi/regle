@@ -145,7 +145,7 @@ async function submit() {
 
 By default, when you set the external errors, Regle will keep them until the form is validated or modified again.
 
-This behaviors can be modified with this options:
+This behavior can be modified with these options:
 
 
 ### `clearExternalErrors`
