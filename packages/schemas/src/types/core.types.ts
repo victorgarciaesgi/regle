@@ -24,7 +24,7 @@ import type { MaybeSchemaVariantStatus } from './variants.types';
 
 export type RegleSchema<
   TState extends Record<string, any>,
-  TSchema extends StandardSchemaV1,
+  TSchema extends StandardSchemaV1 = StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -38,7 +38,7 @@ export type RegleSchema<
 
 export type RegleSingleFieldSchema<
   TState extends Maybe<PrimitiveTypes>,
-  TSchema extends StandardSchemaV1,
+  TSchema extends StandardSchemaV1 = StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   TAdditionalReturnProperties extends Record<string, any> = {},
 > = {
@@ -182,7 +182,7 @@ export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcu
    */
   readonly $silentIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
-  readonly $externalErrors?: string[];
+  readonly $externalErrors: string[];
   /** Represents the inactive status. Is true when this state have empty rules */
   readonly $inactive: boolean;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
@@ -204,7 +204,7 @@ export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcu
  */
 export type RegleSchemaCollectionStatus<TState extends any[], TShortcuts extends RegleShortcutDefinition = {}> = Omit<
   RegleSchemaFieldStatus<TState, TShortcuts>,
-  '$errors' | '$silentErrors' | '$validate'
+  '$errors' | '$silentErrors'
 > & {
   /** Collection of status for every item in your collection. Each item will be a field you can access or iterate to display your elements. */
   readonly $each: Array<InferRegleSchemaStatusType<ArrayElement<TState>, TShortcuts>>;
