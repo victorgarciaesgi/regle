@@ -1,6 +1,6 @@
 ---
-title: Regle, the best way to handle form validation in Vue?
-description: Why Regle is the spiritualsuccessor to Vuelidate, and how it fits modern Vue and Nuxt forms better than component-first validation patterns.
+title: Regle, the best way to handle form validation in Vue
+description: Why Regle is the spiritual successor to Vuelidate, and how it fits modern Vue and Nuxt forms better than component-first validation patterns.
 author:
   name: Victor Garcia
 date: 2026-03-16
@@ -9,18 +9,11 @@ outline:
   level: 2
 ---
 
-# Regle, the best way to handle form validation in Vue?
+# Regle, the best way to handle form validation in Vue
 *March 16, 2026*
 
 <p align="center">
   <img
-    class="light-only"
-    src="/blog/regle-headless-validation-vue-nuxt/logo-regle-full.svg"
-    alt="Regle logo"
-    width="520"
-  />
-  <img
-    class="dark-only"
     src="/blog/regle-headless-validation-vue-nuxt/logo-regle-full-reversed.svg"
     alt="Regle logo"
     width="520"
@@ -193,6 +186,17 @@ const { r$ } = useRegle(state, {
 
 No manual cleanup dance, no local error maps to reset by hand.
 
+##  Developer experience
+
+Along with all the available features, the strength of Regle is the developer experience.
+
+- **Type safety**: Strong typing across the full validation tree
+- **Devtools**: Built-in Vue devtools extension for easy debugging and testing.
+- **Nuxt module**: Auto-import for your global configuration.
+
+<p align="center">
+  <img src="/screenshots/devtools.png" alt="Regle Vue Devtools Screenshot" style="max-width: 700px; width: 100%;">
+</p>
 
 
 ## Conclusion
@@ -201,9 +205,5 @@ That is why Regle feels practical in real apps: the flow evolves naturally from 
 
 Regle has a lot of features, here are some of the most useful ones:
 
-- [Schemas libraries integration (Zod, Valibot, ArkType, ...)](https://reglejs.dev/integrations/schemas-libraries/)
-- [Array validation](https://reglejs.dev/common-usage/collections)
-- [Nuxt integration](https://reglejs.dev/integrations/nuxt/)
-- [Scoped validation](https://reglejs.dev/advanced-usage/scoped-validation/)
-- [Rules metadata](https://reglejs.dev/advanced-usage/rule-metadata/)
-- [Async validation](https://reglejs.dev/common-usage/async-validation/)
+- [Regle documentation](https://reglejs.dev)
+- [Github](https://github.com/victorgarciaesgi/regle)
