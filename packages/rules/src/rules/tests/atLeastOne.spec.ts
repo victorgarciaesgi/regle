@@ -9,6 +9,7 @@ describe('atLeastOne exec', () => {
     expect(atLeastOne.exec({ firstName: 'John', lastName: 'Doe' })).toBe(true);
     expect(atLeastOne.exec({ firstName: 'John' })).toBe(true);
     expect(atLeastOne.exec({ lastName: 'Doe' })).toBe(true);
+    expect(atLeastOne.exec({ firstName: '', lastName: '', email: '' })).toBe(false);
     expect(atLeastOne.exec({})).toBe(false);
     expect(atLeastOne.exec(undefined)).toBe(true);
   });

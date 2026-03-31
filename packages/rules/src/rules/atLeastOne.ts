@@ -52,7 +52,7 @@ export const atLeastOne: AtLeastOneFn = createRule({
       if (keys?.length) {
         return keys.some((key) => isFilled(value[key]));
       }
-      return getSize(value) > 0;
+      return Object.values(value).some((value) => isFilled(value));
     }
     return true;
   },

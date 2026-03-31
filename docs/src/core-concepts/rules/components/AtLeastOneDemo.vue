@@ -11,11 +11,9 @@
         label="First name"
         placeholder="First name"
       />
-      <button type="button" @click="clearFirstName">Clear first name</button>
     </div>
     <br />
     <DemoField v-model="r$.$value.user.lastName" :field="r$.user.lastName" label="Last name" placeholder="Last name" />
-    <button type="button" @click="clearLastName">Clear last name</button>
     <ul v-if="r$.user.$self?.$errors.length">
       <li v-for="error of r$.user.$self.$errors" :key="error">{{ error }}</li>
     </ul>
@@ -36,16 +34,8 @@
     { user: { firstName: '', lastName: '' } as User },
     {
       user: {
-        $self: { atLeastOne },
+        $self: { atLeastOne: atLeastOne(['firstName', 'lastName']) },
       },
     }
   );
-
-  function clearFirstName() {
-    delete r$.$value.user.firstName;
-  }
-
-  function clearLastName() {
-    delete r$.$value.user.lastName;
-  }
 </script>
