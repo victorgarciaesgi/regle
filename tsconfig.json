@@ -3,7 +3,6 @@
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "composite": false,
-    "downlevelIteration": true,
     "erasableSyntaxOnly": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

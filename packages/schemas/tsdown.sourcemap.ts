@@ -4,7 +4,9 @@ import { defaultExternals, defaultOptions, productionBuildPlugins } from '../../
 export default defineConfig({
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
-  external: [...defaultExternals, '@regle/core'],
+  deps: {
+    neverBundle: [...defaultExternals, '@regle/core'],
+  },
   sourcemap: true,
   treeshake: {
     moduleSideEffects: false,

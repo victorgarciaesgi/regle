@@ -4,7 +4,9 @@ import { defaultExternals, defaultOptions, productionBuildPlugins } from '../../
 export default defineConfig({
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
-  external: [...defaultExternals, '@vue/devtools-api'],
+  deps: {
+    neverBundle: [...defaultExternals, '@vue/devtools-api'],
+  },
   sourcemap: true,
   treeshake: {
     moduleSideEffects: false,

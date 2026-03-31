@@ -6,7 +6,9 @@ const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
   dts: true,
-  external: [...defaultExternals, '@vue/devtools-api'],
+  deps: {
+    neverBundle: [...defaultExternals, '@vue/devtools-api'],
+  },
   sourcemap: true,
   watch: ['./src', '../shared/utils'],
   plugins: [...devBuildPlugins],

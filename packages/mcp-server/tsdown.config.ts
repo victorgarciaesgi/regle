@@ -9,7 +9,9 @@ const sharedOptions: UserConfig = {
   treeshake: true,
   outExtensions: () => ({ js: '.js' }),
   entry: { 'regle-mcp-server': 'src/index.ts' },
-  external: ['zod', '@modelcontextprotocol/sdk'],
+  deps: {
+    neverBundle: ['zod', '@modelcontextprotocol/sdk'],
+  },
   banner: {
     js: '#!/usr/bin/env node',
   },

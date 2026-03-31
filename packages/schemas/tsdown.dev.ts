@@ -7,7 +7,9 @@ const sharedOptions: UserConfig = {
   entry: { 'regle-schemas': 'src/index.ts' },
   dts: true,
   clean: false,
-  external: [...defaultExternals, '@regle/core'],
+  deps: {
+    neverBundle: [...defaultExternals, '@regle/core'],
+  },
   watch: ['./src', '../shared/utils'],
   plugins: [...devBuildPlugins],
 };

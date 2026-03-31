@@ -52,7 +52,9 @@ export const defaultOptions: UserConfig = {
     return inputOptions;
   },
   outputOptions(outputOptions) {
-    outputOptions.legalComments = 'inline';
+    outputOptions.comments = {
+      legal: true,
+    };
     return outputOptions;
   },
 };

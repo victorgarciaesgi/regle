@@ -13,7 +13,9 @@ const { name, version } = pkg;
 const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-schemas': 'src/index.ts' },
-  external: [...defaultExternals, '@regle/core'],
+  deps: {
+    neverBundle: [...defaultExternals, '@regle/core'],
+  },
   banner: defineBanner({ name, version }),
 };
 

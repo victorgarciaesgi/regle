@@ -26,13 +26,13 @@ minimumReleaseAgeExclude:
 catalog:
   '@types/node': 24.12.0
   # Vue
-  vue: 3.5.30
-  '@vue/reactivity': 3.5.30
-  '@vue/runtime-core': 3.5.30
-  '@vue/runtime-dom': 3.5.30
-  '@vue/shared': 3.5.30
-  '@vue/compiler-dom': 3.5.30
-  '@vue/server-renderer': 3.5.30
+  vue: 3.5.31
+  '@vue/reactivity': 3.5.31
+  '@vue/runtime-core': 3.5.31
+  '@vue/runtime-dom': 3.5.31
+  '@vue/shared': 3.5.31
+  '@vue/compiler-dom': 3.5.31
+  '@vue/server-renderer': 3.5.31
 
   # Vue 3.4
   vue-3.4: npm:vue@3.4.38
@@ -57,10 +57,10 @@ catalog:
   '@nuxt/schema': 4.3.1
 
   # Devtools
-  typescript: 5.9.3
-  '@typescript/native-preview': 7.0.0-dev.20260317.1
+  typescript: 6.0.2
+  '@typescript/native-preview': 7.0.0-dev.20260331.1
   '@total-typescript/ts-reset': 0.6.1
-  tsdown: 0.21.4
+  tsdown: 0.21.7
   type-fest: 5.5.0
   'tsx': 4.21.0
 
@@ -69,11 +69,11 @@ catalog:
   playwright: 1.58.2
   playwright-core: 1.58.2
   '@playwright/test': 1.58.2
-  vitest: 4.1.0
+  vitest: 4.1.2
   '@vue/test-utils': 2.4.6
 
   # Vite
-  vite: 7.3.1
+  vite: 8.0.3
   '@vitejs/plugin-vue': 6.0.5
   '@vitejs/plugin-vue-jsx': 5.1.5
 

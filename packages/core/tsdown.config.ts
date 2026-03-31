@@ -13,7 +13,9 @@ const { name, version } = pkg;
 const sharedOptions: UserConfig = {
   ...defaultOptions,
   entry: { 'regle-core': 'src/index.ts' },
-  external: [...defaultExternals, '@vue/devtools-api'],
+  deps: {
+    neverBundle: [...defaultExternals, '@vue/devtools-api'],
+  },
   banner: defineBanner({ name, version }),
 };
 
