@@ -3,7 +3,7 @@
 Last updated: 2026-03-18  
 Commit: `385227b9`  
 Node: `v24.14.0`  
-pnpm: `10.31.0`
+pnpm: `10.33.0`
 
 ## @regle/core (`tsc --extendedDiagnostics`)
 
