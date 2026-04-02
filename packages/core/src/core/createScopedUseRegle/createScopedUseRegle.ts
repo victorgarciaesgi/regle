@@ -1,10 +1,10 @@
 import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
 import type { ExtendedRulesDeclarationsOverrides, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
+import type { MergedScopedRegles } from '../mergeRegles';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
-import { createUseScopedRegleComposable, type UseScopedRegleOptions } from './useScopedRegle';
-import type { MergedScopedRegles } from '../mergeRegles';
+import { createUseScopedRegleComposable, type useScopedRegleFn } from './useScopedRegle';
 
 export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any>, TAsRecord extends boolean> = {
   /**
@@ -56,13 +56,8 @@ export function createScopedUseRegle<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarationsOverrides>>,
   TAsRecord extends boolean = false,
   TReturnedRegle extends useRegleFn<any, any, any, any> = TCustomRegle extends useRegleFn<infer A, infer B>
-    ? useRegleFn<A, B, { dispose: () => void; register: () => void }, UseScopedRegleOptions<TAsRecord>>
-    : useRegleFn<
-        Partial<ExtendedRulesDeclarationsOverrides>,
-        any,
-        { dispose: () => void; register: () => void },
-        UseScopedRegleOptions<TAsRecord>
-      >,
+    ? useScopedRegleFn<A, B, TAsRecord>
+    : useScopedRegleFn<Partial<ExtendedRulesDeclarationsOverrides>, any, TAsRecord>,
 >(
   options?: CreateScopedUseRegleOptions<TCustomRegle, TAsRecord>
 ): {
@@ -157,16 +152,6 @@ const useCollectScope: <TValue extends Record<string, unknown>[] = Record<string
  *
  * @see {@link https://reglejs.dev/advanced-usage/scoped-validation Documentation}
  */
-const useScopedRegle: useRegleFn<
-  Partial<ExtendedRulesDeclarationsOverrides>,
-  never,
-  {
-    dispose: () => void;
-    register: () => void;
-  },
-  {
-    namespace?: MaybeRefOrGetter<string>;
-  }
-> = _useScopedRegle;
+const useScopedRegle: useScopedRegleFn<Partial<ExtendedRulesDeclarationsOverrides>, never, boolean> = _useScopedRegle;
 
 export { useCollectScope, useScopedRegle };
