@@ -761,11 +761,18 @@ export function createReactiveNestedStatus({
   }
 
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
+    if (forceValues) {
+      state.value = forceValues;
+    }
+    await nextTick();
+    return $validateWithoutRaceconditions();
+  }
+
+  async function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
     try {
       if (forceValues) {
         state.value = forceValues;
       }
-      await nextTick();
       if (commonArgs.schemaMode) {
         if (commonArgs.onValidate) {
           $touch(false);
@@ -788,8 +795,8 @@ export function createReactiveNestedStatus({
         }
 
         const validatePromises = [
-          ...Object.values($fields.value).map((statusOrField) => statusOrField.$validate()),
-          ...($selfStatus.value ? [$selfStatus.value?.$validate()] : []),
+          ...Object.values($fields.value).map((statusOrField) => statusOrField.$validateWithoutRaceconditions()),
+          ...($selfStatus.value ? [$selfStatus.value?.$validateWithoutRaceconditions()] : []),
         ];
         const results = await Promise.allSettled(validatePromises);
 
@@ -854,6 +861,7 @@ export function createReactiveNestedStatus({
     $extractDirtyFields,
     $abort,
     $validateSync,
+    $validateWithoutRaceconditions,
     ...(rootRules ? { '~modifiers': scopeState.$modifiers } : {}),
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleStatus;

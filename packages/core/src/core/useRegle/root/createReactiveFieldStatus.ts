@@ -751,6 +751,14 @@ export function createReactiveFieldStatus({
   }
 
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
+    if (forceValues) {
+      state.value = forceValues;
+    }
+    return $validateWithoutRaceconditions();
+  }
+
+  /** @internal */
+  async function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
     try {
       if (forceValues) {
         state.value = forceValues;
@@ -882,6 +890,7 @@ export function createReactiveFieldStatus({
     $touch,
     $validate,
     $validateSync,
+    $validateWithoutRaceconditions,
     $unwatch,
     $watch,
     $extractDirtyFields,

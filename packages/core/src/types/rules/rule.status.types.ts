@@ -174,6 +174,7 @@ export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly '~modifiers'?: RegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => Record<string, any>;
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
+  $validateWithoutRaceconditions: (forceValues?: any) => Promise<$InternalRegleResult>;
   $id?: string;
   readonly $self?: $InternalRegleFieldStatus | undefined;
 }
@@ -331,6 +332,8 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
    * @internal
    */
   $validateSync: (forceValues?: unknown) => boolean;
+  /** Validate without the await nextTick */
+  $validateWithoutRaceconditions: (forceValues?: unknown) => Promise<$InternalRegleResult>;
 }
 
 /**
@@ -615,4 +618,6 @@ export interface $InternalRegleCollectionStatus extends Omit<
   readonly '~modifiers'?: CollectionRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;
+  /** Validate without the await nextTick */
+  $validateWithoutRaceconditions: (forceValues?: any) => Promise<$InternalRegleResult>;
 }

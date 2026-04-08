@@ -640,13 +640,20 @@ export function createReactiveCollectionStatus({
     if (forceValues) {
       state.value = forceValues;
     }
+    return $validateWithoutRaceconditions();
+  }
+
+  async function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
+    if (forceValues) {
+      state.value = forceValues;
+    }
     const data = state.value;
     try {
       $abort();
       const results = await Promise.allSettled([
-        $selfStatus.value.$validate(forceValues),
+        $selfStatus.value.$validateWithoutRaceconditions(forceValues),
         ...$eachStatus.value.map((status) => {
-          return status.$validate();
+          return status.$validateWithoutRaceconditions();
         }),
       ]);
 
@@ -732,6 +739,7 @@ export function createReactiveCollectionStatus({
     $originalValue: originalState,
     $validate,
     $validateSync,
+    $validateWithoutRaceconditions,
     $unwatch,
     $watch,
     $touch,
