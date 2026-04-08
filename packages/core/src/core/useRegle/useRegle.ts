@@ -124,6 +124,7 @@ export function createUseRegleComposable<
 
 /**
  * `useRegle` serves as the foundation for validation logic.
+ *
  * It transforms your data and validation rules into a powerful, reactive validation system.
  *
  * @param state - Your form data (plain object, ref, reactive object, or structure with nested refs)
