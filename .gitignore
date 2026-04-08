@@ -32,6 +32,9 @@ lib
 .turbo
 .profiles
 
+# nektos/act — local secret file (never commit)
+.secrets*
+
 docs/.vitepress/dist
 docs/.vitepress/cache
 docs/.vitepress/assets-cache
