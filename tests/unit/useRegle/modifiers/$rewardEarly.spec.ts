@@ -36,8 +36,7 @@ describe('$rewardEarly', () => {
           collection: [{ name: 2 }],
         },
       };
-      vm.r$.$validate();
-      await vm.$nextTick();
+      await vm.r$.$validate();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(4);
 
       shouldBeValidField(vm.r$.level0);
@@ -76,8 +75,7 @@ describe('$rewardEarly', () => {
     it('works with nested objects', async () => {
       const { vm } = createRegleComponent(() => nestedReactiveObjectValidation({ rewardEarly: true }));
 
-      vm.r$.$validate();
-      await vm.$nextTick();
+      await vm.r$.$validate();
       expect(mockedValidations.isEven).toHaveBeenCalledTimes(4);
 
       vm.r$.$value.level0 = 1; // 0 is already even, so this wont trigger

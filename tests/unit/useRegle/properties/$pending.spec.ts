@@ -215,8 +215,9 @@ describe('$pending', () => {
     vm.r$.$value.email = 'test@test.com';
     vi.advanceTimersByTime(200);
     vm.r$.$validate();
+    await nextTick();
 
-    vi.advanceTimersByTime(2000);
+    await vi.advanceTimersByTime(2000);
 
     expect(validateFn).toHaveBeenCalledTimes(1);
   });

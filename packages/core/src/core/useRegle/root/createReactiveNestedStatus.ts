@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, isRef, reactive, ref, toRef, toValue, unref, watch, watchEffect } from 'vue';
+import { computed, effectScope, isRef, nextTick, reactive, ref, toRef, toValue, unref, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -765,6 +765,7 @@ export function createReactiveNestedStatus({
       if (forceValues) {
         state.value = forceValues;
       }
+      await nextTick();
       if (commonArgs.schemaMode) {
         if (commonArgs.onValidate) {
           $touch(false);
