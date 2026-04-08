@@ -27,7 +27,7 @@ __Type__: `boolean`
 
 __Default__: `true`
 
-Automatically set the dirty set without the need of `$value` or `$touch`.
+Automatically set the dirty state to `true` when the value changes.
 
 ### `immediateDirty`
 
@@ -35,7 +35,7 @@ __Type__: `boolean`
 
 __Default__: `false`
 
-Set the dirty state to true when the form is initialized.
+Set the dirty state to `true` when the form is initialized.
 
 ### `disabled`
 
