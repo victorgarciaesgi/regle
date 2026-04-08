@@ -1,5 +1,7 @@
 import { useRegle, type InferSafeOutput, type InferValidOutput, type MaybeOutput } from '@regle/core';
 import { email, minLength, required } from '@regle/rules';
+import { mount } from '@vue/test-utils';
+import { defineComponent, ref, toRef } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { simpleNestedStateWithMixedValidation } from './fixtures';
 
@@ -114,5 +116,62 @@ describe('$validate', () => {
       expectTypeOf(result.data.name).toEqualTypeOf<string>();
       expectTypeOf(result.data.email).toEqualTypeOf<string | undefined>();
     }
+  });
+
+  it('should work with race conditions on value update', async () => {
+    const ChildComponent = defineComponent({
+      template: `<div>
+        <input id="email" type="text" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />
+      </div>`,
+      props: { modelValue: { type: String, required: true } },
+      emits: ['update:modelValue'],
+      setup(props, { expose }) {
+        const modelValue = toRef(props, 'modelValue');
+        const { r$ } = useRegle(modelValue, { email });
+
+        expose({ r$ });
+        return { r$ };
+      },
+    });
+
+    let confirmResolve: ((value: boolean | PromiseLike<boolean>) => void) | null = null;
+
+    function waitUntilEventHappens() {
+      return new Promise((resolve) => {
+        confirmResolve = resolve;
+      });
+    }
+
+    const testComponent = defineComponent({
+      template: `<div>
+        <ChildComponent ref="childRef" v-model="emailModel" @update:model-value="updateEmail" />
+      </div>`,
+      components: { ChildComponent },
+      setup() {
+        const childRef = ref<InstanceType<typeof ChildComponent>>();
+        const emailModel = ref('');
+        const isMailValid = ref(false);
+
+        async function updateEmail() {
+          if (!childRef.value) return;
+
+          const { valid } = await childRef.value.r$.$validate();
+          isMailValid.value = valid;
+          confirmResolve?.(valid);
+        }
+
+        return { updateEmail, childRef, emailModel, isMailValid };
+      },
+    });
+    const wrapper = mount(testComponent);
+
+    const emailInput = wrapper.find('#email');
+    await emailInput.setValue('test');
+    await waitUntilEventHappens();
+    expect(wrapper.vm.isMailValid).toBe(false);
+
+    await emailInput.setValue('test@test.com');
+    await waitUntilEventHappens();
+    expect(wrapper.vm.isMailValid).toBe(true);
   });
 });

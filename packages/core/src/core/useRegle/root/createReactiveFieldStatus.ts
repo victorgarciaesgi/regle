@@ -754,6 +754,7 @@ export function createReactiveFieldStatus({
     if (forceValues) {
       state.value = forceValues;
     }
+    await nextTick();
     return $validateWithoutRaceconditions();
   }
 
