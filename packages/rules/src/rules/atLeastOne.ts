@@ -1,7 +1,7 @@
 import { createRule, type Maybe, type RegleRuleDefinition, type RegleRuleWithParamsDefinition } from '@regle/core';
 import type { MaybeRefOrGetter } from 'vue';
 import { isObject } from '../../../shared';
-import { getSize, isFilled } from '../helpers';
+import { isFilled } from '../helpers';
 
 interface AtLeastOneFn extends RegleRuleWithParamsDefinition<
   'atLeastOne',

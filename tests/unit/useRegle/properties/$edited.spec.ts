@@ -162,6 +162,28 @@ describe('$edited', () => {
     expect(vm.r$.file.$anyEdited).toBe(true);
   });
 
+  it('should mark nullable boolean as edited when moving from null to true', async () => {
+    function regleWithNullableBoolean() {
+      return useRegle({ hasValue: null as boolean | null }, {});
+    }
+
+    const { vm } = createRegleComponent(regleWithNullableBoolean);
+
+    vm.r$.$value.hasValue = true;
+    await vm.$nextTick();
+
+    expect(vm.r$.hasValue.$edited).toBe(true);
+    expect(vm.r$.$edited).toBe(true);
+    expect(vm.r$.$anyEdited).toBe(true);
+
+    vm.r$.$value.hasValue = false;
+    await vm.$nextTick();
+
+    expect(vm.r$.hasValue.$edited).toBe(true);
+    expect(vm.r$.$edited).toBe(true);
+    expect(vm.r$.$anyEdited).toBe(true);
+  });
+
   it('should correctly detect change of month with same day', async () => {
     function regleWithSameDay() {
       return useRegle({ date: new Date(2026, 2, 25) }, {});

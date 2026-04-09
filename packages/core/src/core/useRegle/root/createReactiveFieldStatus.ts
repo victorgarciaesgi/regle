@@ -424,8 +424,9 @@ export function createReactiveFieldStatus({
         if (initialValue instanceof Date && currentValue instanceof Date) {
           return toDate(initialValue).getTime() !== toDate(currentValue).getTime();
         } else if (initialValue == null) {
-          // Keep empty string as the same value of undefined|null
-          return !!currentValue;
+          // Keep empty string as the same value of undefined|null,
+          // but preserve falsy values like false/0 as edited.
+          return currentValue != null && currentValue !== '';
         } else if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
           return !isEqual(currentValue, initialValue, $localOptions.value.$deepCompare);
         }
