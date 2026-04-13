@@ -11,7 +11,7 @@ import {
   type RegleShortcutDefinition,
   type RegleStatus,
 } from '@regle/core';
-import { email, minLength, required, withMessage } from '@regle/rules';
+import { dateAfter, email, minLength, required, withMessage } from '@regle/rules';
 import { useRegleSchema, type RegleSchemaFieldStatus } from '@regle/schemas';
 import type { Ref, WritableComputedRef } from 'vue';
 import { computed, ref, type ComputedRef } from 'vue';
@@ -299,7 +299,9 @@ describe('type utils - misc', () => {
       companyName?: string;
       vatNumber?: string;
       projectStartDate?: Date;
+      projectEndDate?: Date;
     };
+
     const form = ref<Form>({
       billingContact: '',
       otherBillingContacts: [],
@@ -307,13 +309,16 @@ describe('type utils - misc', () => {
       companyName: '',
       vatNumber: '',
       projectStartDate: new Date(),
+      projectEndDate: new Date(),
     });
+
     const { r$ } = useRegle(form, {
       billingContact: { required },
       billingPostalAddress: { required },
       companyName: { required },
       vatNumber: { required },
-      projectStartDate: { required },
+      projectStartDate: { dateAfter: dateAfter(new Date()) },
+      projectEndDate: { required },
     });
 
     function whatever(form: RegleRoot<Form>) {
