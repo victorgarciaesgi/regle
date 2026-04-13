@@ -63,8 +63,8 @@ export type RegleResult<
         : IsAny<Data> extends true
           ? unknown
           : IsEmptyObject<TRules> extends true
-            ? Data extends Record<string, any>
-              ? PartialFormState<Data>
+            ? isRecordLiteral<Data> extends true
+              ? PartialFormState<Data extends Record<string, any> ? Data : {}>
               : MaybeOutput<Data>
             : HasNamedKeys<Data> extends true
               ? HasNamedKeys<TRules> extends true
@@ -75,8 +75,8 @@ export type RegleResult<
                     : NonNullable<Data> extends Record<string, any>
                       ? PartialFormState<NonNullable<Data>>
                       : MaybeOutput<Data>
-                : Data extends Record<string, any>
-                  ? PartialFormState<Data>
+                : isRecordLiteral<Data> extends true
+                  ? PartialFormState<Data extends Record<string, any> ? Data : {}>
                   : MaybeOutput<Data>
               : unknown;
       /**

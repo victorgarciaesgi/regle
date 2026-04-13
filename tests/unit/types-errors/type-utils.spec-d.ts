@@ -290,4 +290,38 @@ describe('type utils - misc', () => {
     // Should not error
     whatever(r$);
   });
+
+  it('RegleRoot type should accept any regle matching the input type, even undefined rules', () => {
+    type Form = {
+      billingContact: string;
+      otherBillingContacts?: Array<string>;
+      billingPostalAddress?: string;
+      companyName?: string;
+      vatNumber?: string;
+      projectStartDate?: Date;
+    };
+    const form = ref<Form>({
+      billingContact: '',
+      otherBillingContacts: [],
+      billingPostalAddress: '',
+      companyName: '',
+      vatNumber: '',
+      projectStartDate: new Date(),
+    });
+    const { r$ } = useRegle(form, {
+      billingContact: { required },
+      billingPostalAddress: { required },
+      companyName: { required },
+      vatNumber: { required },
+      projectStartDate: { required },
+    });
+
+    function whatever(form: RegleRoot<Form>) {
+      form.projectStartDate?.$validate();
+      return form;
+    }
+
+    // Should not error
+    whatever(r$);
+  });
 });
