@@ -104,7 +104,7 @@ export function createUseRegleComposable<
 
     const isDisabled = computed(() => toValue(options?.disabled) ?? false);
 
-    const regle = createRootRegleLogic({
+    const { regle, bindToCurrentScope } = createRootRegleLogic({
       state: processedState,
       rulesFactory,
       options,
@@ -115,7 +115,7 @@ export function createUseRegleComposable<
     });
 
     return {
-      r$: toReactive(regle, isDisabled) as any,
+      r$: toReactive(regle, isDisabled, bindToCurrentScope) as any,
     };
   }
 
