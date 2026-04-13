@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsAny, IsEmptyObject, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -96,15 +96,25 @@ type ProcessNestedFields<
               : never
             : never
           : TKey]: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
-      } & {
-        readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-          ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
-            ? IsEmptyObject<TRules[TKey]> extends true
-              ? never
-              : TKey
-            : TKey
-          : never]-?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
-      }
+      } & (IsEmptyObject<TRules> extends true
+        ? {
+            readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+              ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
+                ? IsEmptyObject<TRules[TKey]> extends true
+                  ? never
+                  : TKey
+                : TKey
+              : never]?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
+          }
+        : {
+            readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+              ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
+                ? IsEmptyObject<TRules[TKey]> extends true
+                  ? never
+                  : TKey
+                : TKey
+              : never]-?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
+          })
     : {};
 
 /**
