@@ -1,6 +1,6 @@
 {
   "name": "@regle/rules",
-  "version": "1.21.8",
+  "version": "1.22.0",
   "description": "Collection of rules and helpers for Regle",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
