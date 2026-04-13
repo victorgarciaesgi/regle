@@ -15,7 +15,7 @@ import type {
 } from '@regle/core';
 import { useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
+import type { EffectScope, MaybeRef, Raw, UnwrapNestedRefs, WatchStopHandle } from 'vue';
 import { computed, effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, unref, watch } from 'vue';
 import { toReactive } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
@@ -83,9 +83,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     const customErrors = ref<Raw<RegleExternalSchemaErrorTree> | RegleFieldIssue[]>({});
     const previousIssues = ref<readonly SchemaIssueWithArrayValue[]>([]);
+    const attachedScopes = new Set<EffectScope>();
+    let isSchemaRuntimeEnabled = false;
 
     let schemaScope: ReturnType<typeof effectScope> | undefined;
     let runner: ReturnType<typeof createSchemaValidationRunner> | undefined;
+    let unwatchDisabled: WatchStopHandle | undefined;
 
     function createRunner() {
       return createSchemaValidationRunner({
@@ -117,24 +120,38 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       schemaScope = undefined;
     }
 
-    startSchemaRuntime();
+    function startManagedSchemaRuntime() {
+      if (isSchemaRuntimeEnabled) return;
 
-    // Keep schema runtime aligned with disabled: stop all schema reactivity when disabled, recreate when enabled.
-    const unwatchDisabled = watch(
-      () => toValue(resolvedOptions.disabled),
-      (disabled) => {
-        if (disabled) {
-          stopSchemaRuntime();
-        } else {
-          startSchemaRuntime();
+      isSchemaRuntimeEnabled = true;
+      startSchemaRuntime();
+
+      // Keep schema runtime aligned with disabled: stop all schema reactivity when disabled, recreate when enabled.
+      unwatchDisabled = watch(
+        () => toValue(resolvedOptions.disabled),
+        (disabled) => {
+          if (disabled) {
+            stopSchemaRuntime();
+          } else {
+            startSchemaRuntime();
+          }
         }
-      }
-    );
+      );
 
-    if (toValue(resolvedOptions.disabled)) {
-      nextTick().then(() => {
-        stopSchemaRuntime();
-      });
+      if (toValue(resolvedOptions.disabled)) {
+        nextTick().then(() => {
+          stopSchemaRuntime();
+        });
+      }
+    }
+
+    function stopManagedSchemaRuntime() {
+      if (!isSchemaRuntimeEnabled) return;
+
+      isSchemaRuntimeEnabled = false;
+      unwatchDisabled?.();
+      unwatchDisabled = undefined;
+      stopSchemaRuntime();
     }
 
     let regle: ReturnType<typeof useRootStorage> | undefined;
@@ -143,12 +160,12 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       try {
         const validationRunner = runner ?? createRunner();
         const result = await validationRunner.computeErrors(true);
-        regle?.value?.$touch();
+        regle?.regle.value?.$touch();
 
         return {
           valid: !result.issues?.length,
           data: processedState.value,
-          errors: regle?.value?.$errors,
+          errors: regle?.regle.value?.$errors,
           issues: customErrors.value,
         };
       } catch (e) {
@@ -156,14 +173,27 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       }
     };
 
-    if (getCurrentScope()) {
+    function bindSchemaToCurrentScope() {
+      const currentScope = getCurrentScope();
+
+      if (!currentScope || attachedScopes.has(currentScope)) return;
+
+      if (!isSchemaRuntimeEnabled) {
+        startManagedSchemaRuntime();
+      }
+
+      attachedScopes.add(currentScope);
       onScopeDispose(() => {
-        unwatchDisabled();
-        stopSchemaRuntime();
+        attachedScopes.delete(currentScope);
+        if (!attachedScopes.size) {
+          stopManagedSchemaRuntime();
+        }
       });
     }
 
     const isDisabled = computed(() => toValue(resolvedOptions.disabled) ?? false);
+
+    startManagedSchemaRuntime();
 
     regle = useRootStorage({
       scopeRules: computed(() => ({})),
@@ -178,8 +208,13 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       overrides,
     });
 
+    bindSchemaToCurrentScope();
+
     return {
-      r$: toReactive(regle, isDisabled) as any,
+      r$: toReactive(regle.regle, isDisabled, () => {
+        bindSchemaToCurrentScope();
+        regle?.bindToCurrentScope();
+      }) as any,
     };
   }
 

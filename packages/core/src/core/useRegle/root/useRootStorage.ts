@@ -1,5 +1,5 @@
-import type { Ref, WatchStopHandle } from 'vue';
-import { getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
+import type { EffectScope, Ref, WatchStopHandle } from 'vue';
+import { effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
 import { dotPathObjectToNested, isObject } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
 import type {
@@ -50,6 +50,9 @@ export function useRootStorage({
   overrides: GlobalConfigOverrides | undefined;
 }) {
   const storage = useStorage();
+  const isEnabled = ref(false);
+  const attachedScopes = new Set<EffectScope>();
+  let rootScope: EffectScope | undefined;
 
   const regle = ref<$InternalRegleStatusType>();
   const computedExternalErrors = ref<$InternalRegleErrorTree | undefined | string[]>();
@@ -151,19 +154,11 @@ export function useRootStorage({
     }
   }
 
-  handleExternalErrorsChange(options.externalErrors?.value);
-
-  createRegleInstance();
-
-  if (toValue(options.disabled)) {
-    nextTick().then(() => {
-      regle.value?.$unwatch();
-    });
-  } else {
-    defineExternalErrorsWatchSource();
+  function clearWatchHandles() {
+    $unwatchComputedExternalErrors = undefined;
+    $unwatchExternalErrors = undefined;
+    $unwatchDisabled = undefined;
   }
-
-  defineDisabledWatchSource();
 
   function unwatchRegle() {
     regle.value?.$unwatch();
@@ -171,12 +166,58 @@ export function useRootStorage({
     $unwatchExternalErrors?.();
   }
 
-  if (getCurrentScope()) {
-    onScopeDispose(() => {
-      unwatchRegle();
-      $unwatchDisabled?.();
+  function startRootStorage() {
+    if (isEnabled.value) return;
+
+    isEnabled.value = true;
+    rootScope = effectScope(true);
+    rootScope.run(() => {
+      handleExternalErrorsChange(options.externalErrors?.value);
+
+      createRegleInstance();
+
+      if (toValue(options.disabled)) {
+        nextTick().then(() => {
+          regle.value?.$unwatch();
+        });
+      } else {
+        defineExternalErrorsWatchSource();
+      }
+
+      defineDisabledWatchSource();
     });
   }
+
+  function stopRootStorage() {
+    if (!isEnabled.value) return;
+
+    isEnabled.value = false;
+    unwatchRegle();
+    $unwatchDisabled?.();
+    clearWatchHandles();
+    rootScope?.stop();
+    rootScope = undefined;
+  }
+
+  function bindToCurrentScope() {
+    const currentScope = getCurrentScope();
+
+    if (!currentScope || attachedScopes.has(currentScope)) return;
+    if (!isEnabled.value) {
+      startRootStorage();
+    }
+
+    attachedScopes.add(currentScope);
+    onScopeDispose(() => {
+      attachedScopes.delete(currentScope);
+      if (!attachedScopes.size) {
+        stopRootStorage();
+      }
+    });
+  }
+
+  startRootStorage();
+  bindToCurrentScope();
 
   function registerDevtools() {
     if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
@@ -186,5 +227,8 @@ export function useRootStorage({
 
   registerDevtools();
 
-  return regle;
+  return {
+    regle,
+    bindToCurrentScope,
+  };
 }

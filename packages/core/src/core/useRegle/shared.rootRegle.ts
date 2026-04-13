@@ -89,7 +89,7 @@ export function createRootRegleLogic({
     unwatchRules?.();
   });
 
-  const regle = useRootStorage({
+  const { regle, bindToCurrentScope } = useRootStorage({
     scopeRules: watchableRulesGetters as ComputedRef<$InternalReglePartialRuleTree>,
     state: state,
     options: resolvedOptions,
@@ -100,5 +100,8 @@ export function createRootRegleLogic({
     overrides: mergedOverrides,
   });
 
-  return regle;
+  return {
+    regle,
+    bindToCurrentScope,
+  };
 }

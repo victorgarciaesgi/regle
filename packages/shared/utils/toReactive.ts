@@ -6,9 +6,17 @@ import { getCurrentInstance, isRef, nextTick, onMounted, reactive, ref, unref, t
  *
  * @param objectRef A ref of object
  * @param isDisabled A ref to check if the object is disabled
+ * @param onAccess A callback called before each proxy operation
  */
-export function toReactive<T extends object>(objectRef: MaybeRef<T>, isDisabled: Ref<boolean>): UnwrapNestedRefs<T> {
-  if (!isRef(objectRef)) return reactive(objectRef);
+export function toReactive<T extends object>(
+  objectRef: MaybeRef<T>,
+  isDisabled: Ref<boolean>,
+  onAccess?: () => void
+): UnwrapNestedRefs<T> {
+  if (!isRef(objectRef)) {
+    onAccess?.();
+    return reactive(objectRef);
+  }
   const firstRun = ref(false);
 
   if (getCurrentInstance()) {
@@ -26,6 +34,7 @@ export function toReactive<T extends object>(objectRef: MaybeRef<T>, isDisabled:
     {},
     {
       get(_, p, receiver) {
+        onAccess?.();
         if (isDisabled.value && p !== `$value` && firstRun.value) {
           return Reflect.get(_, p, receiver);
         }
@@ -33,22 +42,27 @@ export function toReactive<T extends object>(objectRef: MaybeRef<T>, isDisabled:
         return unref(Reflect.get(objectRef.value, p, receiver));
       },
       set(_, p, value) {
+        onAccess?.();
         if (isRef((objectRef.value as any)[p]) && !isRef(value)) (objectRef.value as any)[p].value = value;
         else (objectRef.value as any)[p] = value;
         return true;
       },
       deleteProperty(_, p) {
+        onAccess?.();
         return Reflect.deleteProperty(objectRef.value, p);
       },
       has(_, p) {
+        onAccess?.();
         if (objectRef.value === undefined) return false;
         return Reflect.has(objectRef.value, p);
       },
       ownKeys() {
+        onAccess?.();
         if (objectRef.value === undefined) return [];
         return Object.keys(objectRef.value);
       },
       getOwnPropertyDescriptor() {
+        onAccess?.();
         return {
           enumerable: true,
           configurable: true,
