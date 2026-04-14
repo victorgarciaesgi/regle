@@ -1,7 +1,7 @@
-import type { MaybeRef, MaybeRefOrGetter, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
-import type { RegleStatic, RegleStaticImpl } from './static.types';
-import type { MaybeRefOrComputedRef } from './object.types';
 import type { IsNullable, IsOptional, Or } from 'type-fest';
+import type { MaybeRef, MaybeRefOrGetter, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
+import type { MaybeRefOrComputedRef } from './object.types';
+import type { RegleStatic, RegleStaticImpl } from './static.types';
 
 export type Prettify<T> = T extends infer R
   ? {
@@ -15,6 +15,8 @@ export type MaybeOutput<T = any> = T | undefined;
 export type MaybeNull<T> = T | null;
 export type MaybeReadonly<T> = T | Readonly<T>;
 export type NonUndefined<T> = Exclude<T, undefined>;
+
+export type isUndefinedOrNull<T> = Or<IsOptional<T>, IsNullable<T>>;
 
 export type MaybeOrPartial<T> = T extends Record<string, any> ? Partial<T> : MaybeOutput<T>;
 

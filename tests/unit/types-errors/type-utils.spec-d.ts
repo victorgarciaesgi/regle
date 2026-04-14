@@ -323,6 +323,8 @@ describe('type utils - misc', () => {
 
     function whatever(form: RegleRoot<Form>) {
       form.projectStartDate?.$validate();
+      expectTypeOf(form.projectStartDate?.$dirty).toEqualTypeOf<boolean | undefined>();
+      expectTypeOf(form.billingContact.$dirty).toEqualTypeOf<boolean>();
       return form;
     }
 

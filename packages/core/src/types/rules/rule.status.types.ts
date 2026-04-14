@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUndefined, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,
@@ -20,6 +20,7 @@ import type {
   FieldRegleBehaviourOptions,
   HasNamedKeys,
   InferOutput,
+  isUndefinedOrNull,
   JoinDiscriminatedUnions,
   MaybeInput,
   MaybeOrPartial,
@@ -104,7 +105,9 @@ type ProcessNestedFields<
                   ? never
                   : TKey
                 : TKey
-              : never]?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
+              : never]:
+              | ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>
+              | (isUndefinedOrNull<TState[TKey]> extends true ? undefined : never);
           }
         : {
             readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
