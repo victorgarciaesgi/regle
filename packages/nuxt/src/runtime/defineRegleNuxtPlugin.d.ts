@@ -4,6 +4,7 @@ import {
   type inferRulesFn,
   type ExtendedRulesDeclarationsOverrides,
   type RegleShortcutDefinition,
+  type useScopedRegleFn,
 } from '@regle/core';
 
 export declare function defineRegleNuxtPlugin<
