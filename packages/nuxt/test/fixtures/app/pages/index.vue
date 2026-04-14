@@ -123,7 +123,7 @@
   import MyTextArea from '../components/MyTextArea.vue';
   import Password from '../components/Password.vue';
   import { checkPseudo, strongPassword } from '../regle-config';
-  import { useRegle } from '#imports';
+  import { useRegle, useScopedRegle } from '#imports';
 
   type Form = {
     user: {
