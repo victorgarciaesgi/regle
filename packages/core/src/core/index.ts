@@ -20,6 +20,7 @@ export {
   type CreateScopedUseRegleOptions,
   type UseScopedRegleOptions,
   type useCollectScopeFn,
+  type useScopedRegleFn,
 } from './createScopedUseRegle';
 export { createVariant, narrowVariant, variantToRef } from './variants';
 export { defineRules, refineRules } from './refineRules';

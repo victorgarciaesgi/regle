@@ -33,6 +33,7 @@ export {
   type useRegleFn,
   type useRulesFn,
   type UseScopedRegleOptions,
+  type useScopedRegleFn,
 } from './core';
 export { RegleVuePlugin } from './plugin';
 export { InternalRuleType } from './types';
