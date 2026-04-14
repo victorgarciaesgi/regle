@@ -10,7 +10,7 @@ import { useRegle, type useRegleFn } from '../useRegle';
 import type { RequireAtLeastOne } from 'type-fest';
 
 export type UseScopedRegleOptions<TAsRecord extends boolean> = {
-  namespace?: MaybeRefOrGetter<string>;
+  namespace?: MaybeRefOrGetter<string | undefined>;
 } & (TAsRecord extends true
   ? RequireAtLeastOne<
       {
