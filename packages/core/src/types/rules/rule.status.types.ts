@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsEmptyObject, IsUndefined, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
+import type { EmptyObject, IsEmptyObject, IsUnion, IsUnknown, Or, UnionToTuple } from 'type-fest';
 import type { MaybeRef, Raw, UnwrapNestedRefs } from 'vue';
 import type {
   $InternalRegleCollectionErrors,

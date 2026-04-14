@@ -1,4 +1,3 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "exclude": ["../../src/**/*"]
+  "extends": "./.nuxt/tsconfig.json"
 }
