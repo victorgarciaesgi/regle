@@ -18,6 +18,6 @@ export declare function defineRegleNuxtPlugin<
 ): {
   useRegle: useRegleFn<TCustomRules, TShortcuts>;
   inferRules: inferRulesFn<TCustomRules>;
-  useScopedRegle: useScopedRegleFn<TCustomRules, TShortcuts>;
+  useScopedRegle: useScopedRegleFn<TCustomRules, TShortcuts, false>;
   useCollectScope: typeof defaultUseCollectScope;
 };
