@@ -206,6 +206,7 @@ describe('$pending', () => {
         },
         {
           lazy: true,
+          autoDirty: false,
         }
       );
     }

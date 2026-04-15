@@ -113,6 +113,7 @@ describe('useRegle with async rules and Object refs', async () => {
     expect(vm.r$.level0Async.$pending).toBe(true);
 
     vi.advanceTimersByTime(1000);
+    await nextTick();
     await flushPromises();
 
     expect(vm.r$.$errors.level0Async).toStrictEqual(['Custom error']);

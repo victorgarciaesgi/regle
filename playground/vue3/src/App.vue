@@ -4,7 +4,7 @@
   <!-- <ZodForm /> -->
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
-  <Test34 />
+  <Test12 />
   <!-- <Test13 /> -->
   <!-- <Test12 /> -->
   <!-- <Test15></Test15> -->
@@ -18,7 +18,6 @@
   import ValibotForm from './components/ValibotForm.vue';
   import ZodValibotTypes from './components/ZodValibotTypes.vue';
   import ArkTypeForm from './components/ArkTypeForm.vue';
-  import Test34 from './components/Test34/Test34.vue';
   import ZodForm from './components/ZodForm.vue';
   import { useRegle } from '@regle/core';
   import { required, minLength, email } from '@regle/rules';

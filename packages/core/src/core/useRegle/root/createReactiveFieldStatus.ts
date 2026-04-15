@@ -781,6 +781,24 @@ export function createReactiveFieldStatus({
 
       const data = state.value;
 
+      if (
+        scopeState.$autoDirty.value &&
+        !scopeState.$silent.value &&
+        scopeState.$dirty.value &&
+        !scopeState.$validating.value &&
+        !scopeState.$pending.value &&
+        !$isDebouncing.value &&
+        !isEmpty($rules.value)
+      ) {
+        // Value have already been validated, so we can return the result immediately
+        return {
+          valid: !scopeState.$invalid.value,
+          data,
+          errors: scopeState.$errors.value,
+          issues: scopeState.$issues.value,
+        };
+      }
+
       if (!scopeState.$dirty.value) {
         scopeState.$dirty.value = true;
       }
@@ -789,6 +807,7 @@ export function createReactiveFieldStatus({
       }
 
       $abort();
+
       const { promise } = registerValidateAbortablePromise(
         Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()))
       );
