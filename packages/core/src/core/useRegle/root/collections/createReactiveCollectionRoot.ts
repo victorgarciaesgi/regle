@@ -21,7 +21,7 @@ import { isNestedRulesStatus, isRuleDef } from '../../guards';
 import type { CommonResolverOptions, CommonResolverScopedState, StateWithId } from '../common/common-types';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createStandardSchema } from '../standard-schemas';
-import { createCollectionElement } from './createReactiveCollectionElement';
+import { createCollectionElement, type CollectionIndexTrackers } from './createReactiveCollectionElement';
 
 interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
@@ -88,6 +88,9 @@ export function createReactiveCollectionStatus({
 
   const $selfStatus = ref({}) as Ref<$InternalRegleFieldStatus>;
   const $eachStatus = storage.getCollectionsEntry(path);
+  // Keeps per-element index refs so that reused elements follow their new position
+  // (see createCollectionElement + the reuse path of `updateStatus`).
+  const currentIndexes: CollectionIndexTrackers = new Map();
 
   immediateScopeState = immediateScope.run(() => {
     const isPrimitiveArray = computed(() => {
@@ -166,6 +169,7 @@ export function createReactiveCollectionStatus({
             fieldName,
             schemaMode,
             overrides,
+            currentIndexes,
           });
 
           if (element) {
@@ -176,6 +180,7 @@ export function createReactiveCollectionStatus({
         .filter((each) => !!each);
     } else {
       $eachStatus.value = [];
+      currentIndexes.clear();
     }
 
     $selfStatus.value = createReactiveFieldStatus({
@@ -201,6 +206,7 @@ export function createReactiveCollectionStatus({
   function updateStatus() {
     if (Array.isArray(state.value) && (!immediateScopeState.isPrimitiveArray.value || schemaMode)) {
       const previousStatus = cloneDeep($eachStatus.value);
+      const survivingIds = new Set<string>();
 
       $eachStatus.value = state.value
         .map((value, index) => {
@@ -208,6 +214,14 @@ export function createReactiveCollectionStatus({
           if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
             const existingStatus = storage.getArrayStatus($id.value, value.$id);
             if (existingStatus) {
+              // Keep the reactive index tracker in sync with the new position so that
+              // `$schemaErrors` lookups inside the element follow the current location
+              // after swaps/reorderings (see createCollectionElement).
+              const indexRef = currentIndexes.get(value.$id);
+              if (indexRef) {
+                indexRef.value = index;
+              }
+              survivingIds.add(value.$id);
               existingStatus.$value = currentValue;
               return existingStatus;
             }
@@ -238,9 +252,11 @@ export function createReactiveCollectionStatus({
               fieldName,
               schemaMode,
               overrides,
+              currentIndexes,
             });
 
             if (element) {
+              if (element.$id) survivingIds.add(element.$id);
               return element;
             }
             return null;
@@ -253,8 +269,16 @@ export function createReactiveCollectionStatus({
         .forEach((_, index) => {
           storage.deleteArrayStatus($id.value, index.toString());
         });
+
+      // Drop index trackers for items that no longer exist in the array.
+      for (const trackedId of currentIndexes.keys()) {
+        if (!survivingIds.has(trackedId)) {
+          currentIndexes.delete(trackedId);
+        }
+      }
     } else {
       $eachStatus.value = [];
+      currentIndexes.clear();
     }
   }
 
