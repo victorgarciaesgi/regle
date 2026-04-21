@@ -67,7 +67,7 @@
     "lint-staged": "16.4.0",
     "nuxt": "catalog:",
     "oxfmt": "0.46.0",
-    "oxlint": "1.61.0",
+    "oxlint": "1.58.0",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
