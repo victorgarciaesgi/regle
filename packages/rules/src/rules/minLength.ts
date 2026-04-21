@@ -3,7 +3,7 @@ import type { CommonComparisonOptions } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
 /**
- * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
+ * Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects, numbers, and strings.
  *
  * @param min - The minimum length
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
@@ -30,11 +30,11 @@ import { createLengthRule } from './common/createLengthRule';
  */
 export const minLength: RegleRuleWithParamsDefinition<
   'minLength',
-  string | any[] | Record<PropertyKey, any>,
+  string | number | any[] | Record<PropertyKey, any>,
   [min: number, options?: CommonComparisonOptions],
   false,
   boolean,
-  MaybeInput<string | any[] | Record<PropertyKey, any>>
+  MaybeInput<string | number | any[] | Record<PropertyKey, any>>
 > = createLengthRule({
   type: 'minLength',
   direction: 'min',

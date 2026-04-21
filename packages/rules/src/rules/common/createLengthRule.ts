@@ -20,7 +20,7 @@ export function createLengthRule<TType extends string>({
   direction,
 }: CreateLengthRuleOptions<TType>): RegleRuleWithParamsDefinition<
   TType,
-  string | any[] | Record<PropertyKey, any>,
+  string | number | any[] | Record<PropertyKey, any>,
   [limit: number, options?: CommonComparisonOptions],
   false,
   boolean
@@ -46,7 +46,7 @@ export function createLengthRule<TType extends string>({
   return createRule({
     type,
     validator: (
-      value: Maybe<string | Record<PropertyKey, any> | any[]>,
+      value: Maybe<string | number | Record<PropertyKey, any> | any[]>,
       limit: number,
       options?: CommonComparisonOptions
     ) => {
