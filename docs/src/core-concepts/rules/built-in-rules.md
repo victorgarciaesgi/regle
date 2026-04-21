@@ -468,7 +468,7 @@ const { r$ } = useRegle({ digits: '' }, {
 _**Params**_
   - `count: Ref<number> | number | () => number`
 
-Requires the input value to have a strict specified length, inclusive. Works with arrays, objects and strings.
+Requires the input value to have a strict specified length, inclusive. Works with arrays, objects, numbers, and strings.
 
 ```ts
 import { exactLength } from '@regle/rules';
@@ -691,7 +691,7 @@ _**Works with**_
   - `Array | Record | string | number`
 
 
-Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
+Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects, numbers, and strings.
 
 ```ts
 import { maxLength } from '@regle/rules';
@@ -757,7 +757,7 @@ _**Params**_
 _**Works with**_
   - `Array | Record | string | number`
 
-Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
+Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects, numbers, and strings.
 
 ```ts
 import { minLength } from '@regle/rules';

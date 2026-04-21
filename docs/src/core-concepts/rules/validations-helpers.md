@@ -120,18 +120,15 @@ const rule = createRule({
 ### `getSize`
 
 This helper will return the length of any data type you pass.
-It works with strings, arrays, objects and numbers.
+It works with strings, numbers, arrays, objects and empty values.
 
 ```ts
 import { createRule, type Maybe } from '@regle/core';
-import { isFilled, getSize } from '@regle/rules';
+import { getSize } from '@regle/rules';
 
 const rule = createRule({
   validator(value: Maybe<string | Array<number>>) {
-    if (isFilled(value)) {
-      return getSize(value) > 6;
-    }
-    return true;
+    return getSize(value) > 6;
   },
   message: 'Error'
 })
