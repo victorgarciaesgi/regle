@@ -54,14 +54,14 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.27.1",
-    "posthog-node": "5.28.5",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "posthog-node": "5.29.2",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
-    "dotenv": "17.3.1",
+    "dotenv": "17.4.2",
     "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"

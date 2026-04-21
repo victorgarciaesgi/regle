@@ -8,13 +8,13 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@vue/repl": "4.7.1",
+    "@vue/repl": "4.7.2",
     "file-saver": "2.0.5",
     "jszip": "3.10.1",
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.5",
+    "@vitejs/plugin-vue": "6.0.6",
     "execa": "9.6.1",
     "vite": "catalog:"
   }

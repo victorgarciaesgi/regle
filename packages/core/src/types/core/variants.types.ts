@@ -80,7 +80,7 @@ export type MaybeVariantStatus<
   /**
    * Workaround for $each variants, TS generic can't detect if the Rules are an union when type is too nested, to the tuple is passed from parent
    */
-  TRulesTuple extends any[] = never,
+  TRulesTuple extends readonly any[] = never,
 > =
   IsUnion<NonNullable<TState>> extends true
     ? Or<TIsUnionOverride, IsUnion<TRules>> extends true
