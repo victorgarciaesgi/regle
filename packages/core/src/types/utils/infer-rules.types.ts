@@ -120,6 +120,6 @@ type FilterRulesWithSingleType<TRules extends RegleRuleDecl<any, any>> = {
   [K in keyof TRules as SingleKnownRuleInput<TRules[K]> extends never ? never : K]: SingleKnownRuleInput<TRules[K]>;
 };
 
-type InferTupleUnionInput<T extends any[]> = T extends [infer F extends ReglePartialRuleTree, ...infer R]
+type InferTupleUnionInput<T extends readonly any[]> = T extends [infer F extends ReglePartialRuleTree, ...infer R]
   ? [InferInput<F, true>, ...InferTupleUnionInput<R>]
   : [];

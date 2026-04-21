@@ -201,7 +201,7 @@ export type InferRegleStatusType<
   TKey extends PropertyKey = string,
   TShortcuts extends RegleShortcutDefinition = {},
   isUnionOverride extends boolean = false,
-  TRulesTuple extends any[] = never,
+  TRulesTuple extends readonly any[] = never,
 > =
   HasNamedKeys<TState> extends true
     ? [TState[TKey]] extends [undefined | null]
