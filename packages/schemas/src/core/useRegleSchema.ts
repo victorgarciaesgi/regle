@@ -164,7 +164,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
         return {
           valid: !result.issues?.length,
-          data: processedState.value,
+          data: !result.issues ? result.value : processedState.value,
           errors: regle?.regle.value?.$errors,
           issues: customErrors.value,
         };

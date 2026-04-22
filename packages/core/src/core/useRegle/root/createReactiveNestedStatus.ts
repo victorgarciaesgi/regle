@@ -292,13 +292,17 @@ export function createReactiveNestedStatus({
 
     if (rootSchemaErrors) {
       $unwatchSchemaErrors?.();
+      // Schema errors are reassigned on every validation run (customErrors.value = newObject).
+      // Children already get fresh error slices through `computed(() => schemaErrors?.value?.[key])`,
+      // so we only need to rebuild the tree when the SHAPE (top-level keys) changes –
+      // e.g. a new field suddenly has errors for the first time.
       $unwatchSchemaErrors = watch(
-        rootSchemaErrors,
+        () => (rootSchemaErrors.value ? Object.keys(rootSchemaErrors.value).sort().join('\u0000') : ''),
         () => {
           $unwatch();
           createReactiveFieldsStatus();
         },
-        { deep: true, flush: 'post' }
+        { flush: 'post' }
       );
     }
 

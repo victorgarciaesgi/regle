@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.23.0",
+  "version": "1.23.2",
   "description": "Regle nuxt module",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@nuxt/module-builder": "1.0.2",
-    "@nuxt/test-utils": "4.0.0",
+    "@nuxt/test-utils": "4.0.2",
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",

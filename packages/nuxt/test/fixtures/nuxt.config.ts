@@ -11,4 +11,9 @@ export default defineNuxtConfig({
   regle: {
     setupFile: '~/regle-config.ts',
   },
+  vite: {
+    optimizeDeps: {
+      include: ['check-password-strength'],
+    },
+  },
 });

@@ -6,7 +6,7 @@
   "ignorePatterns": ["**/.output/", "**/dist/**/*.js", "playground/**/*", "docs/.vitepress/cache/**/*"],
   "overrides": [
     {
-      "files": ["**/*.ts", "*.vue", "**/*.vue", "**/*.spec.ts", "packages/**"],
+      "files": ["**/*.ts", "*.vue", "**/*.vue", "**/*.spec.ts", "packages/**", "**/*.json", "**/*.jsonc"],
       "rules": {
         "curly": "off",
         "vue/valid-define-emits": "error",

@@ -16,6 +16,7 @@ export type {
   RegleSchemaStatus,
   RegleSingleFieldSchema,
   RegleSchemaBehaviourOptions,
+  MaybeSchemaVariantStatus,
 } from './types';
 
 import './overrides';
