@@ -8,7 +8,7 @@ import {
 } from '../../../utils/validations.utils';
 import { valibotNestedRegleFixture } from './fixtures/valibot.fixture';
 import { zodNestedRegleFixture } from './fixtures/zod.fixture';
-import { z } from 'zod/v3';
+import { z } from 'zod/v4';
 import { inferSchema } from '@regle/schemas';
 import { zod4NestedRegleFixture } from './fixtures/zod4.fixture';
 import type { InferValidOutput } from '@regle/core';
