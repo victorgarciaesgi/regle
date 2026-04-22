@@ -120,7 +120,6 @@ const rule = createRule({
 ### `getSize`
 
 This helper determines the size of strings, numbers, arrays, and objects.
-It works with strings, numbers, arrays and objects.
 
 ```ts
 import { createRule, type Maybe } from '@regle/core';
