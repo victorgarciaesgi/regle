@@ -1,6 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { toValue } from 'vue';
-import type { Maybe } from '@regle/core';
+import type { Maybe, MeasurableValue } from '@regle/core';
 import { isEmpty } from '../../../../shared';
 
 /**
@@ -24,7 +24,7 @@ import { isEmpty } from '../../../../shared';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize Documentation}
  */
-export function getSize(value: MaybeRefOrGetter<Maybe<string | number | any[] | Record<string, any>>>): number {
+export function getSize(value: MaybeRefOrGetter<Maybe<MeasurableValue>>): number {
   const _value = toValue(value);
   if (isEmpty(_value)) {
     return 0;

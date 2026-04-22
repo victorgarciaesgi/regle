@@ -3,6 +3,8 @@ import type { Maybe } from '../utils';
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 
+export type MeasurableValue<T extends any = any> = string | number | T[] | Record<PropertyKey, T>;
+
 /**
  * Transform normal parameters tuple declaration to a rich tuple declaration
  *

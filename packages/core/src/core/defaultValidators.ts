@@ -1,4 +1,10 @@
-import type { EnumLike, MaybeInput, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '../types';
+import type {
+  EnumLike,
+  MaybeInput,
+  MeasurableValue,
+  RegleRuleDefinition,
+  RegleRuleWithParamsDefinition,
+} from '../types';
 
 export interface CommonComparisonOptions {
   /**
@@ -103,13 +109,7 @@ export type DefaultValidators = {
   domain: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
   email: RegleRuleDefinition<unknown, string, [], false, boolean, string>;
   endsWith: RegleRuleWithParamsDefinition<unknown, string, [part: MaybeInput<string>], false, boolean>;
-  exactLength: RegleRuleWithParamsDefinition<
-    unknown,
-    string | any[] | Record<PropertyKey, any>,
-    [count: number],
-    false,
-    boolean
-  >;
+  exactLength: RegleRuleWithParamsDefinition<unknown, MeasurableValue, [count: number], false, boolean>;
   exactValue: RegleRuleWithParamsDefinition<unknown, number, [count: number], false, boolean>;
   file: RegleRuleDefinition<unknown, unknown, [], false, boolean, MaybeInput<File>, unknown>;
   fileType: RegleRuleWithParamsDefinition<unknown, File, [accept: readonly string[]], false, boolean>;
@@ -129,7 +129,7 @@ export type DefaultValidators = {
   macAddress: RegleRuleWithParamsDefinition<unknown, string, [separator?: string | undefined], false, boolean>;
   maxLength: RegleRuleWithParamsDefinition<
     unknown,
-    string | any[] | Record<PropertyKey, any>,
+    MeasurableValue,
     [max: number, options?: CommonComparisonOptions],
     false,
     boolean
@@ -169,11 +169,11 @@ export type DefaultValidators = {
   >;
   minLength: RegleRuleWithParamsDefinition<
     unknown,
-    string | any[] | Record<PropertyKey, any>,
+    MeasurableValue,
     [min: number, options?: CommonComparisonOptions],
     false,
     boolean,
-    string | any[] | Record<PropertyKey, any>
+    MeasurableValue
   >;
   minValue: RegleRuleWithParamsDefinition<
     unknown,

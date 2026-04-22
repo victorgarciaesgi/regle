@@ -63,6 +63,7 @@ export type {
   MaybeOutput,
   MaybeReadonly,
   MaybeVariantStatus,
+  MeasurableValue,
   NarrowVariant,
   NoInferLegacy,
   NonEmptyTuple,

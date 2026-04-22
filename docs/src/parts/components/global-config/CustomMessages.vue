@@ -28,7 +28,8 @@
     rules: () => ({
       required: withMessage(required, 'You need to provide a value'),
       minLength: withMessage(minLength, ({ $value, $params: [count] }) => {
-        return `Minimum length is ${count}. Current length: ${$value?.length}`;
+        const length = typeof $value === 'number' ? String($value).length : $value?.length;
+        return `Minimum length is ${count}. Current length: ${length}`;
       }),
     }),
   });

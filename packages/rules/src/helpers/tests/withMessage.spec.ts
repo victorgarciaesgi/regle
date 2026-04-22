@@ -1,4 +1,10 @@
-import type { CommonComparisonOptions, Maybe, RegleRuleDefinition, RegleRuleWithParamsDefinition } from '@regle/core';
+import type {
+  CommonComparisonOptions,
+  Maybe,
+  RegleRuleDefinition,
+  RegleRuleWithParamsDefinition,
+  MeasurableValue,
+} from '@regle/core';
 import { createRule, useRegle } from '@regle/core';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, nextTick, ref } from 'vue';
@@ -286,11 +292,11 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         'and',
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
-        string | any[] | Record<PropertyKey, any>
+        MeasurableValue
       >
     >();
 
@@ -302,28 +308,30 @@ describe('withMessage helper', () => {
     ).toEqualTypeOf<
       RegleRuleDefinition<
         'minLength',
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
-        string | any[] | Record<PropertyKey, any>,
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
+        MeasurableValue,
         false
       >
     >();
 
     const message = withMessage(minLength, ({ $value, $params: [count] }) => {
       expectTypeOf(count).toEqualTypeOf<number>();
-      return `Minimum length is ${count}. Current length: ${$value?.length}`;
+      const length = typeof $value === 'number' ? String($value).length : $value?.length;
+      return `Minimum length is ${count}. Current length: ${length}`;
     });
 
     expectTypeOf(message).toEqualTypeOf<
       RegleRuleWithParamsDefinition<
         'minLength',
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
         [count: number, options?: CommonComparisonOptions | undefined],
         false,
-        boolean
+        boolean,
+        MeasurableValue
       >
     >();
 

@@ -1,4 +1,4 @@
-import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import type { CommonComparisonOptions } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
@@ -30,11 +30,11 @@ import { createLengthRule } from './common/createLengthRule';
  */
 export const minLength: RegleRuleWithParamsDefinition<
   'minLength',
-  string | number | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [min: number, options?: CommonComparisonOptions],
   false,
   boolean,
-  MaybeInput<string | number | any[] | Record<PropertyKey, any>>
+  MaybeInput<MeasurableValue>
 > = createLengthRule({
   type: 'minLength',
   direction: 'min',

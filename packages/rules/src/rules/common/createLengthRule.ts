@@ -1,4 +1,4 @@
-import type { CommonComparisonOptions, Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { CommonComparisonOptions, Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import { createRule } from '@regle/core';
 import { isFilled } from '../../helpers/ruleHelpers/isFilled';
 import { isNumber } from '../../helpers/ruleHelpers/isNumber';
@@ -20,7 +20,7 @@ export function createLengthRule<TType extends string>({
   direction,
 }: CreateLengthRuleOptions<TType>): RegleRuleWithParamsDefinition<
   TType,
-  string | number | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [limit: number, options?: CommonComparisonOptions],
   false,
   boolean
@@ -45,11 +45,7 @@ export function createLengthRule<TType extends string>({
 
   return createRule({
     type,
-    validator: (
-      value: Maybe<string | number | Record<PropertyKey, any> | any[]>,
-      limit: number,
-      options?: CommonComparisonOptions
-    ) => {
+    validator: (value: Maybe<MeasurableValue>, limit: number, options?: CommonComparisonOptions) => {
       const { allowEqual = true } = options ?? {};
       if (isFilled(value, false) && isFilled(limit)) {
         if (isNumber(limit)) {

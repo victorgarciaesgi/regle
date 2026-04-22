@@ -1,5 +1,5 @@
 import { isFilled, isNumber, getSize } from '../helpers';
-import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import { createRule } from '@regle/core';
 
 /**
@@ -28,13 +28,13 @@ import { createRule } from '@regle/core';
  */
 export const exactLength: RegleRuleWithParamsDefinition<
   'exactLength',
-  string | number | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [count: number],
   false,
   boolean
 > = createRule({
   type: 'exactLength',
-  validator: (value: Maybe<string | number | any[] | Record<PropertyKey, any>>, count: number) => {
+  validator: (value: Maybe<MeasurableValue>, count: number) => {
     if (isFilled(value, false) && isFilled(count)) {
       if (isNumber(count)) {
         return getSize(value) === count;

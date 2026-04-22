@@ -1,5 +1,4 @@
-import type { MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
-import type { CommonComparisonOptions } from '@regle/core';
+import type { MaybeInput, RegleRuleWithParamsDefinition, CommonComparisonOptions, MeasurableValue } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
 /**
@@ -30,11 +29,11 @@ import { createLengthRule } from './common/createLengthRule';
  */
 export const maxLength: RegleRuleWithParamsDefinition<
   'maxLength',
-  string | number | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [max: number, options?: CommonComparisonOptions],
   false,
   boolean,
-  MaybeInput<string | number | any[] | Record<PropertyKey, any>>
+  MaybeInput<MeasurableValue>
 > = createLengthRule({
   type: 'maxLength',
   direction: 'max',
