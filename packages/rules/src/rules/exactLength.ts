@@ -3,7 +3,7 @@ import type { Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@reg
 import { createRule } from '@regle/core';
 
 /**
- * Requires the input value to have a strict specified length. Works with arrays, objects, strings and numbers.
+ * Requires the input value to have a strict specified length. Works with arrays, objects, numbers, and strings.
  *
  * @param count - The exact required length
  *

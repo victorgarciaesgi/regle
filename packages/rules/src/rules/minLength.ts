@@ -1,5 +1,4 @@
-import type { MaybeInput, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
-import type { CommonComparisonOptions } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, CommonComparisonOptions, MeasurableValue } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
 /**
@@ -33,8 +32,7 @@ export const minLength: RegleRuleWithParamsDefinition<
   MeasurableValue,
   [min: number, options?: CommonComparisonOptions],
   false,
-  boolean,
-  MaybeInput<MeasurableValue>
+  boolean
 > = createLengthRule({
   type: 'minLength',
   direction: 'min',

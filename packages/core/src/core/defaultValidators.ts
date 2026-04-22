@@ -172,8 +172,7 @@ export type DefaultValidators = {
     MeasurableValue,
     [min: number, options?: CommonComparisonOptions],
     false,
-    boolean,
-    MeasurableValue
+    boolean
   >;
   minValue: RegleRuleWithParamsDefinition<
     unknown,
