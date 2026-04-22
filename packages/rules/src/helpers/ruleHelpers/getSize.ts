@@ -1,13 +1,12 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { toValue } from 'vue';
-import type { Maybe, MeasurableValue } from '@regle/core';
-import { isEmpty } from '../../../../shared';
+import type { MeasurableValue } from '@regle/core';
 
 /**
- * Returns the length/size of any data type. Works with strings, arrays, objects and numbers.
+ * Returns the length of strings, numbers, arrays, or number of keys for objects.
  *
  * @param value - The value to get the size of
- * @returns The length of strings/numbers/arrays, number of keys for objects, or zero on empty values
+ * @returns The length of strings, numbers, arrays, and number of keys for objects
  *
  * @example
  * ```ts
@@ -16,7 +15,10 @@ import { isEmpty } from '../../../../shared';
  *
  * const rule = createRule({
  *   validator(value: Maybe<string | Array<number>>) {
- *     return getSize(value) > 6;
+ *     if (isFilled(value)) {
+ *       return getSize(value) > 6;
+ *     }
+ *     return true;
  *   },
  *   message: 'Error'
  * })
@@ -24,10 +26,10 @@ import { isEmpty } from '../../../../shared';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize Documentation}
  */
-export function getSize(value: MaybeRefOrGetter<Maybe<MeasurableValue>>): number {
+export function getSize(value: MaybeRefOrGetter<MeasurableValue>): number {
   const _value = toValue(value);
-  if (isEmpty(_value)) {
-    return 0;
+  if (_value instanceof Set || _value instanceof Map) {
+    return _value.size;
   }
   if (Array.isArray(_value)) {
     return _value.length;
