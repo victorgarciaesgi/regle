@@ -3,6 +3,20 @@ import type { Maybe } from '../utils';
 
 type CreateFn<T extends any[]> = (...args: T) => any;
 
+/**
+ * Represents values that can be measured in terms of size or length.
+ *
+ * Supported types include:
+ * - `string`: measured by character length
+ * - `number`: measured by digit length when converted to string
+ * - `T[]`: measured by array length
+ * - `Record<PropertyKey, T>`: measured by number of own enumerable keys
+ *
+ * This type is primarily used by {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize getSize function}
+ * and related rules to ensure inputs are restricted to measurable values.
+ *
+ * @template T - The element type for arrays and object property values
+ */
 export type MeasurableValue<T extends any = any> = string | number | T[] | Record<PropertyKey, T>;
 
 /**
