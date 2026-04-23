@@ -1,11 +1,12 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { toValue } from 'vue';
+import type { MeasurableValue } from '@regle/core';
 
 /**
- * Returns the length/size of any data type. Works with strings, arrays, objects and numbers.
+ * Returns the length of strings, numbers, arrays, or number of keys for objects.
  *
  * @param value - The value to get the size of
- * @returns The length of strings/arrays, number of keys for objects, or the number itself
+ * @returns The length of strings, numbers, arrays, and number of keys for objects
  *
  * @example
  * ```ts
@@ -25,17 +26,19 @@ import { toValue } from 'vue';
  *
  * @see {@link https://reglejs.dev/core-concepts/rules/validations-helpers#getsize Documentation}
  */
-export function getSize(value: MaybeRefOrGetter<string | any[] | Record<string, any> | number>): number {
+export function getSize(value: MaybeRefOrGetter<MeasurableValue>): number {
   const _value = toValue(value);
-  if (Array.isArray(_value)) return _value.length;
+  if (_value instanceof Set || _value instanceof Map) {
+    return _value.size;
+  }
+  if (Array.isArray(_value)) {
+    return _value.length;
+  }
   if (typeof _value === 'object') {
     return Object.keys(_value).length;
   }
-  if (typeof _value === 'number') {
-    if (isNaN(_value)) {
-      return 0;
-    }
-    return _value;
+  if (Number.isNaN(_value)) {
+    return 0;
   }
   return String(_value).length;
 }

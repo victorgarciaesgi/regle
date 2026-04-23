@@ -6,6 +6,7 @@ import {
   type MaybeInput,
   type RegleFieldIssue,
   type RegleRuleDefinition,
+  type MeasurableValue,
 } from '@regle/core';
 import { email, minLength, required } from '@regle/rules';
 import { ref, toRef } from 'vue';
@@ -155,12 +156,12 @@ describe('getIssues', () => {
         email: RegleRuleDefinition<'email', string, [], false, boolean, MaybeInput<string>, string, boolean>;
         minLength: RegleRuleDefinition<
           'minLength',
-          string | any[] | Record<PropertyKey, any>,
+          MeasurableValue,
           [min: number, options?: CommonComparisonOptions | undefined],
           false,
           boolean,
           unknown,
-          string | any[] | Record<PropertyKey, any>,
+          MeasurableValue,
           boolean
         >;
       }>[]

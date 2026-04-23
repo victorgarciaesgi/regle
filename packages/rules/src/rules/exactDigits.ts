@@ -3,7 +3,7 @@ import { createRule } from '@regle/core';
 import { isFilled, isNumber, matchRegex } from '../helpers';
 
 /**
- * Requires the input value to have a strict specified length. Works with arrays, objects and strings.
+ * Requires the input value to have a strict specified number of digits. Works with strings and numbers.
  *
  * @param count - The exact required length
  *

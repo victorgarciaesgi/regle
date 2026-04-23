@@ -119,8 +119,7 @@ const rule = createRule({
 
 ### `getSize`
 
-This helper will return the length of any data type you pass.
-It works with strings, arrays, objects and numbers.
+This helper determines the size of strings, numbers, arrays, and objects.
 
 ```ts
 import { createRule, type Maybe } from '@regle/core';

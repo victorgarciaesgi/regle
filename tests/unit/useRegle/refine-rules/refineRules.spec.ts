@@ -8,6 +8,7 @@ import {
   type InferInput,
   type MaybeInput,
   type MaybeOutput,
+  type MeasurableValue,
   type RegleFieldStatus,
   type RegleRuleDefinition,
   type RegleShortcutDefinition,
@@ -54,12 +55,12 @@ describe('refineRules', () => {
       required: RegleRuleDefinition<'required', unknown, [], false, boolean, unknown, unknown, true>;
       minLength: RegleRuleDefinition<
         'minLength',
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
         [min: number, options?: CommonComparisonOptions | undefined],
         false,
         boolean,
         unknown,
-        string | any[] | Record<PropertyKey, any>,
+        MeasurableValue,
         false
       >;
     }>();

@@ -1,9 +1,9 @@
 import { isFilled, isNumber, getSize } from '../helpers';
-import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
+import type { Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import { createRule } from '@regle/core';
 
 /**
- * Requires the input value to have a strict specified length. Works with arrays, objects and strings.
+ * Requires the input value to have a strict specified length. Works with arrays, objects, numbers, and strings.
  *
  * @param count - The exact required length
  *
@@ -28,13 +28,13 @@ import { createRule } from '@regle/core';
  */
 export const exactLength: RegleRuleWithParamsDefinition<
   'exactLength',
-  string | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [count: number],
   false,
   boolean
 > = createRule({
   type: 'exactLength',
-  validator: (value: Maybe<string | Record<PropertyKey, any> | any[]>, count: number) => {
+  validator: (value: Maybe<MeasurableValue>, count: number) => {
     if (isFilled(value, false) && isFilled(count)) {
       if (isNumber(count)) {
         return getSize(value) === count;
