@@ -11,7 +11,7 @@ import { defineComponent, nextTick, ref } from 'vue';
 import { dateBefore, email, minLength, oneOf, required, sameAs } from '../../rules';
 import type { EnumOneOfLike } from '../../rules/oneOf';
 import { and } from '../and';
-import { isFilled } from '../ruleHelpers';
+import { getSize, isFilled } from '../ruleHelpers';
 import { withAsync } from '../withAsync';
 import { withMessage } from '../withMessage';
 import { withParams } from '../withParams';
@@ -320,7 +320,7 @@ describe('withMessage helper', () => {
 
     const message = withMessage(minLength, ({ $value, $params: [count] }) => {
       expectTypeOf(count).toEqualTypeOf<number>();
-      const length = typeof $value === 'number' ? String($value).length : $value?.length;
+      const length = $value ? getSize($value) : 0;
       return `Minimum length is ${count}. Current length: ${length}`;
     });
 
