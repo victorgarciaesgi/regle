@@ -1,9 +1,8 @@
-import type { RegleRuleWithParamsDefinition } from '@regle/core';
-import type { CommonComparisonOptions } from '@regle/core';
+import type { RegleRuleWithParamsDefinition, CommonComparisonOptions, MeasurableValue } from '@regle/core';
 import { createLengthRule } from './common/createLengthRule';
 
 /**
- * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
+ * Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects, numbers, and strings.
  *
  * @param max - The maximum length
  * @param options - Optional configuration (e.g., `{ allowEqual: false }`)
@@ -30,7 +29,7 @@ import { createLengthRule } from './common/createLengthRule';
  */
 export const maxLength: RegleRuleWithParamsDefinition<
   'maxLength',
-  string | any[] | Record<PropertyKey, any>,
+  MeasurableValue,
   [max: number, options?: CommonComparisonOptions],
   false,
   boolean
