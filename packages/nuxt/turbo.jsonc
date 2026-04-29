@@ -4,12 +4,12 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".nuxt/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
     "build:sourcemaps": {
       "dependsOn": ["^build:sourcemaps"],
       "outputs": ["dist/**", ".nuxt/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     }
   }
 }

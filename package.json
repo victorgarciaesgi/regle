@@ -5,7 +5,7 @@
   "description": "Headless model-based form validation library for Vue.js",
   "scripts": {
     "prepare": "FORCE_COLOR=1 turbo run turbo:postinstall",
-    "turbo:postinstall": "corepack install && husky",
+    "turbo:postinstall": "corepack install && husky install && playwright install",
     "release": "pnpm install && pnpm test && pnpm typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "typecheck": "turbo run typecheck",
@@ -25,6 +25,7 @@
     "ui-tests:run": "turbo run playwright:ci",
     "ui-tests:test": "playwright test --reporter=junit",
     "playwright:ci": "playwright test",
+    "playwright:install": "playwright install",
     "docs:dev": "turbo run dev --filter='docs'",
     "docs:build": "turbo run build --filter='docs'",
     "docs:preview": "turbo run preview --filter='docs'",
@@ -108,7 +109,7 @@
   },
   "engines": {
     "node": ">=22",
-    "pnpm": ">=10.14.0"
+    "pnpm": ">=11.0.0-rc.5"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@11.0.0-rc.5"
 }

@@ -32,7 +32,6 @@
     "access": "public"
   },
   "scripts": {
-    "turbo:postinstall": "pnpm exec playwright install",
     "prepack": "nuxt-module-build build",
     "dev": "nuxt-module-build build --stub",
     "dev:playground": "nuxi dev playground",

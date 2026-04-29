@@ -1,17 +1,20 @@
 {
   "$schema": "https://turborepo.org/schema.v2.json",
+  "futureFlags": {
+    "errorsOnlyShowHash": true
+  },
   "tasks": {
     // -- Build
     "@regle/core#build": {
       "outputs": ["dist/**"],
-      "outputLogs": "new-only",
+      "outputLogs": "errors-only",
       "inputs": ["$TURBO_DEFAULT$", "!README.md", "!eslint.config.mjs", "src/**/*.ts", "tsdown.config.ts"]
     },
     // @regle/nuxt specific build at `packages/nuxt/turbo.json`
     "build": {
       "dependsOn": ["@regle/core#build"],
       "outputs": ["dist/**"],
-      "outputLogs": "new-only",
+      "outputLogs": "errors-only",
       "inputs": [
         "$TURBO_DEFAULT$",
         "!README.md",
@@ -24,7 +27,7 @@
     "build:sourcemaps": {
       "dependsOn": ["@regle/core#build:sourcemaps"],
       "outputs": ["dist/**"],
-      "outputLogs": "new-only",
+      "outputLogs": "errors-only",
       "inputs": [
         "$TURBO_DEFAULT$",
         "!README.md",
@@ -37,12 +40,12 @@
     "regle-playground#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
     // -- Coverage build
     "@regle/core#build:sourcemaps": {
       "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
 
     // -- Dev
@@ -75,12 +78,12 @@
     "docs#build": {
       "dependsOn": ["^build"],
       "outputs": [".vitepress/dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
     "docs#preview": {
       "dependsOn": ["^build"],
       "outputs": [".vitepress/dist/**"],
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
 
     // -- Typecheck && Lint
@@ -95,11 +98,10 @@
     },
 
     // -- Misc
-    "turbo:postinstall": {
-      "outputLogs": "new-only"
-    },
     "//#turbo:postinstall": {
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only",
+      "inputs": ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"],
+      "outputs": []
     }
   }
 }
