@@ -67,6 +67,7 @@ catalog:
 
 engineStrict: true
 optimisticRepeatInstall: false
+verifyDepsBeforeRun: false
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - tsdown

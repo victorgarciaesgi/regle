@@ -99,7 +99,7 @@
 
     // -- Misc
     "//#turbo:postinstall": {
-      "outputLogs": "errors-only",
+      "outputLogs": "new-only",
       "inputs": ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"],
       "outputs": []
     }
