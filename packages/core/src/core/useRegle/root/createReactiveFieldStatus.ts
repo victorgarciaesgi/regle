@@ -31,6 +31,11 @@ import type { CommonResolverOptions, CommonResolverScopedState } from './common/
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
 import { createStandardSchema } from './standard-schemas';
 import { isStatic } from '../guards';
+import {
+  resolveImmediateDirtyMode,
+  shouldApplyFieldImmediateDirty,
+  type ResolvedImmediateDirtyMode,
+} from './common/immediateDirty';
 
 const DEFAULT_DEBOUNCE_TIME = 200;
 
@@ -43,6 +48,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   onUnwatch?: () => void;
   $isArray?: boolean;
   initialState: Ref<unknown | undefined>;
+  rootInitialState?: Ref<unknown>;
   originalState: unknown | undefined;
   onValidate?: () => Promise<$InternalRegleResult>;
 }
@@ -62,6 +68,7 @@ export function createReactiveFieldStatus({
   onUnwatch,
   $isArray,
   initialState,
+  rootInitialState,
   originalState,
   shortcuts,
   overrides,
@@ -76,7 +83,7 @@ export function createReactiveFieldStatus({
     $silent: ComputedRef<boolean>;
     $clearExternalErrorsOnChange: ComputedRef<boolean>;
     $clearExternalErrorsOnValidate: ComputedRef<boolean>;
-    $immediateDirty: ComputedRef<boolean>;
+    $immediateDirty: ComputedRef<ResolvedImmediateDirtyMode>;
     $issues: ComputedRef<RegleFieldIssue[]>;
     $silentIssues: ComputedRef<RegleFieldIssue[]>;
     $errors: ComputedRef<string[]>;
@@ -293,11 +300,11 @@ export function createReactiveFieldStatus({
         return false;
       });
 
-      const $immediateDirty = computed<boolean>(() => {
+      const $immediateDirty = computed<ResolvedImmediateDirtyMode>(() => {
         if ($localOptions.value.$immediateDirty != null) {
-          return $localOptions.value.$immediateDirty;
+          return resolveImmediateDirtyMode($localOptions.value.$immediateDirty);
         } else if (toValue(options.immediateDirty) != null) {
-          return toValue(options.immediateDirty) === true;
+          return resolveImmediateDirtyMode(toValue(options.immediateDirty));
         }
         return false;
       });
@@ -666,6 +673,19 @@ export function createReactiveFieldStatus({
 
   createReactiveRulesResult();
 
+  function applyImmediateDirty(): void {
+    if (
+      shouldApplyFieldImmediateDirty(
+        scopeState.$immediateDirty.value,
+        initialState.value,
+        rootInitialState?.value ?? initialState.value,
+        path === ''
+      )
+    ) {
+      scopeState.$dirty.value = true;
+    }
+  }
+
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     abortCommit();
     $clearExternalErrors();
@@ -712,6 +732,8 @@ export function createReactiveFieldStatus({
         rule.$parse();
       }
     }
+
+    applyImmediateDirty();
   }
 
   function abortCommit() {
@@ -878,9 +900,7 @@ export function createReactiveFieldStatus({
     $commitHandler();
   }
 
-  if (scopeState.$immediateDirty.value) {
-    scopeState.$dirty.value = true;
-  }
+  applyImmediateDirty();
 
   // oxlint-disable typescript-eslint/no-unused-vars
   const {

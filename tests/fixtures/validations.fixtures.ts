@@ -1,4 +1,4 @@
-import type { RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
+import type { RegleBehaviourOptions, RegleComputedRules, ReglePartialRuleTree } from '@regle/core';
 import { defineRegleConfig, useRegle } from '@regle/core';
 import { checked, email, required } from '@regle/rules';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
@@ -200,6 +200,11 @@ export function simpleNestedStateWithMixedValidation({
   silent = false,
   rewardEarly = false,
   immediateDirty = false,
+}: {
+  autoDirty?: boolean;
+  silent?: boolean;
+  rewardEarly?: boolean;
+  immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const form = ref({
     email: '',
@@ -239,6 +244,10 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
   autoDirty = true,
   silent = false,
   immediateDirty = false,
+}: {
+  autoDirty?: boolean;
+  silent?: boolean;
+  immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const condition = ref(true);
   const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({

@@ -31,11 +31,15 @@ Automatically set the dirty state to `true` when the value changes.
 
 ### `immediateDirty`
 
-__Type__: `boolean`
+__Type__: `boolean | 'eager' | 'non-empty' | 'lazy-non-empty'`
 
 __Default__: `false`
 
 Set the dirty state to `true` when the form is initialized.
+
+- `true` or `'eager'`: touch the whole form on mount.
+- `'non-empty'`: touch the whole form on mount only if one of the initial values is non-empty.
+- `'lazy-non-empty'`: touch only the fields that are non-empty on mount.
 
 ### `disabled`
 

@@ -16,7 +16,7 @@ const { r$ } = useRegle({}, {}, {
 | Modifier | Type | Default | Description |
 |----------|------|---------|-------------|
 | `autoDirty` | `boolean` | `true` | Automatically set dirty state on value change |
-| `immediateDirty` | `boolean` | `false` | Set dirty to `true` on init |
+| `immediateDirty` | `boolean \| 'eager' \| 'non-empty' \| 'lazy-non-empty'` | `false` | Set dirty on init. `true`/`'eager'` touches all fields, `'non-empty'` touches all fields when any initial value is non-empty, and `'lazy-non-empty'` only touches non-empty fields |
 | `silent` | `boolean` | `false` | Only show errors after manual `$touch` or `$validate` |
 | `lazy` | `boolean` | `false` | Only run rules when the field is dirty |
 | `rewardEarly` | `boolean` | `false` | Once valid, stay valid until `$validate` (reward-early-punish-late). Disables `autoDirty` |
@@ -70,7 +70,7 @@ const { r$ } = useRegle({ name: '' }, {
 | `$lazy` | `boolean` | Override global `lazy` |
 | `$silent` | `boolean` | Override global `silent` |
 | `$rewardEarly` | `boolean` | Override global `rewardEarly` |
-| `$immediateDirty` | `boolean` | Override global `immediateDirty` |
+| `$immediateDirty` | `boolean \| 'eager' \| 'non-empty' \| 'lazy-non-empty'` | Override global `immediateDirty` |
 | `$debounce` | `number` | Debounce rule execution (ms). Async rules default to 200ms |
 | `$isEdited` | `(current, initial, defaultFn) => boolean` | Custom `$edited` comparison |
 

@@ -4,13 +4,13 @@
   <!-- <ZodForm /> -->
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
-  <!-- <Test12 /> -->
+  <Test12 />
   <!-- <Test13 /> -->
   <!-- <Test12 /> -->
   <!-- <Test15></Test15> -->
   <!-- <Parent /> -->
   <!-- <ParentNested /> -->
-  <Issue333 />
+  <!-- <Issue333 /> -->
 </template>
 
 <script setup lang="ts">

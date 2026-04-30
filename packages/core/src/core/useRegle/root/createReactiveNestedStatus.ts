@@ -25,6 +25,11 @@ import { isCollectionRulesDef, isFieldStatus, isNestedRulesDef, isStatic, isVali
 import { createReactiveCollectionStatus } from './collections/createReactiveCollectionRoot';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
+import {
+  resolveImmediateDirtyMode,
+  shouldApplyImmediateDirty,
+  type ResolvedImmediateDirtyMode,
+} from './common/immediateDirty';
 import { createStandardSchema } from './standard-schemas';
 
 interface CreateReactiveNestedStatus extends CommonResolverOptions {
@@ -36,6 +41,7 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
   schemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
   rootSchemaErrors?: Ref<Partial<$InternalRegleSchemaErrorTree> | undefined>;
+  rootInitialState?: Ref<unknown> | undefined;
   schemaMode: boolean | undefined;
   onValidate?: () => Promise<$InternalRegleResult>;
   validationGroups?:
@@ -51,6 +57,7 @@ export function createReactiveNestedStatus({
   rootRules,
   externalErrors,
   schemaErrors,
+  rootInitialState,
   rootSchemaErrors,
   validationGroups,
   initialState,
@@ -59,6 +66,7 @@ export function createReactiveNestedStatus({
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   interface ScopeState extends CommonResolverScopedState {
+    $immediateDirty: ComputedRef<ResolvedImmediateDirtyMode>;
     $value: ComputedRef<any>;
     $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
@@ -432,9 +440,9 @@ export function createReactiveNestedStatus({
         return true;
       });
 
-      const $immediateDirty = computed<boolean>(() => {
+      const $immediateDirty = computed<ResolvedImmediateDirtyMode>(() => {
         if (toValue(commonArgs.options.immediateDirty) != null) {
-          return toValue(commonArgs.options.immediateDirty) === true;
+          return resolveImmediateDirtyMode(toValue(commonArgs.options.immediateDirty));
         }
         return false;
       });
@@ -640,6 +648,7 @@ export function createReactiveNestedStatus({
         $shortcuts,
         $groups,
         $silentValue,
+        $immediateDirty,
         $edited,
         $anyEdited,
         $localPending,
@@ -685,6 +694,19 @@ export function createReactiveNestedStatus({
     }
   }
 
+  function applyImmediateDirty(): void {
+    if (
+      scopeState.$immediateDirty.value !== 'lazy-non-empty' &&
+      shouldApplyImmediateDirty(
+        scopeState.$immediateDirty.value,
+        initialState.value,
+        rootInitialState?.value ?? initialState.value
+      )
+    ) {
+      $touch(true, false);
+    }
+  }
+
   function $reset(options?: ResetOptions<Record<string, unknown>>, fromParent?: boolean): void {
     $unwatchExternalErrors?.();
     $unwatch();
@@ -725,6 +747,7 @@ export function createReactiveNestedStatus({
     define$WatchExternalErrors();
     if (!fromParent) {
       createReactiveFieldsStatus();
+      applyImmediateDirty();
     }
   }
 
@@ -843,6 +866,8 @@ export function createReactiveNestedStatus({
       return false;
     }
   }
+
+  applyImmediateDirty();
 
   const { $shortcuts, $localPending: _$localPending, ...restScopeState } = scopeState;
 
