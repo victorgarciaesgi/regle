@@ -1,6 +1,6 @@
 {
   "name": "@regle/schemas",
-  "version": "1.24.0",
+  "version": "1.24.1-beta.1",
   "description": "Schemas adapter for Regle",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
