@@ -2,9 +2,11 @@
   import Sun from './icons/Sun.vue';
   import Moon from './icons/Moon.vue';
   import Share from './icons/Share.vue';
+  import Download from './icons/Download.vue';
   import GitHub from './icons/GitHub.vue';
   import type { ReplStore } from '@vue/repl';
   import VersionSelect from './VersionSelect.vue';
+  import { downloadProject } from './download/download';
 
   const props = defineProps<{
     store: ReplStore;
@@ -53,6 +55,9 @@
       <button title="Toggle dark mode" class="toggle-dark" @click="toggleDark">
         <Sun class="light" />
         <Moon class="dark" />
+      </button>
+      <button title="Download project as zip" class="download" @click="downloadProject(store)">
+        <Download />
       </button>
       <button title="Copy sharable URL" class="share" @click="copyLink">
         <Share />
@@ -128,7 +133,7 @@
   }
 
   @media (max-width: 770px) {
-    btn.download {
+    button.download {
       display: none;
     }
   }
