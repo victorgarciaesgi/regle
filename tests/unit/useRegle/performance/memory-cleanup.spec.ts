@@ -165,6 +165,41 @@ describe('Memory and cleanup behavior', () => {
     expect(true).toBe(true);
   });
 
+  /**
+   * After unmount, Vue stops the Regle effect scope. A deferred `$reset` (e.g. router/navigation)
+   * can still run; `scope.run()` is then a no-op and leaves `scopeState` unset, so `applyImmediateDirty`
+   * must bail out instead of reading `$immediateDirty`.
+   */
+  it('should not throw when $reset runs after unmount (deferred reset)', async () => {
+    let r$AfterUnmount: ReturnType<typeof useRegle>['r$'];
+
+    const TestComponent = defineComponent({
+      setup() {
+        const form = ref({ name: '' });
+        const regle = useRegle(form, {
+          name: { required },
+        });
+        r$AfterUnmount = regle.r$;
+        return { r$: regle.r$ };
+      },
+      template: '<div></div>',
+    });
+
+    const wrapper = mount(TestComponent, {
+      global: {
+        plugins: [RegleVuePlugin],
+      },
+    });
+
+    await nextTick();
+    wrapper.unmount();
+    await nextTick();
+
+    expect(() => {
+      r$AfterUnmount!.$reset({ toInitialState: true });
+    }).not.toThrow();
+  });
+
   it('should properly clean up on $reset', async () => {
     const TestComponent = defineComponent({
       setup() {

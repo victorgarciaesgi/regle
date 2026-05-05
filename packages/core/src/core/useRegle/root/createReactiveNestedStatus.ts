@@ -695,6 +695,9 @@ export function createReactiveNestedStatus({
   }
 
   function applyImmediateDirty(): void {
+    if (!scopeState) {
+      return;
+    }
     if (
       scopeState.$immediateDirty.value !== 'lazy-non-empty' &&
       shouldApplyImmediateDirty(
