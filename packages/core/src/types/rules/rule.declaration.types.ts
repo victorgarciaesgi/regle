@@ -1,7 +1,13 @@
 import type { IsAny } from 'type-fest';
 import type { Raw, Ref } from 'vue';
 import type { useRegleFn } from '../../core';
-import type { CollectionRegleBehaviourOptions, DeepReactiveState, FieldRegleBehaviourOptions, Regle } from '../core';
+import type {
+  CollectionRegleBehaviourOptions,
+  DeepReactiveState,
+  FieldRegleBehaviourOptions,
+  Regle,
+  RegleImmediateDirtyMode,
+} from '../core';
 import type {
   ArrayElement,
   HasNamedKeys,
@@ -143,7 +149,7 @@ export type RegleRuleDecl<
         | RegleRuleDefinitionLight<ParamsToLooseParams<TParams>, boolean, TMetadata>
         | InlineRuleDeclaration<TValue, ParamsToLooseParams<TParams>, any>
     : TCustomRules[TKey];
-} & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined };
+} & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined | RegleImmediateDirtyMode };
 
 /**
  * @internal

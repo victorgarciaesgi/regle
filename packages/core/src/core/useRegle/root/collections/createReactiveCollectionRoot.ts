@@ -19,6 +19,7 @@ import { randomId, unwrapGetter } from '../../../../utils';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../../utils/version-compare';
 import { isNestedRulesStatus, isRuleDef } from '../../guards';
 import type { CommonResolverOptions, CommonResolverScopedState, StateWithId } from '../common/common-types';
+import { resolveImmediateDirtyMode, type ResolvedImmediateDirtyMode } from '../common/immediateDirty';
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createStandardSchema } from '../standard-schemas';
 import { createCollectionElement, type CollectionIndexTrackers } from './createReactiveCollectionElement';
@@ -458,11 +459,11 @@ export function createReactiveCollectionStatus({
         return true;
       });
 
-      const $immediateDirty = computed<boolean>(() => {
+      const $immediateDirty = computed<ResolvedImmediateDirtyMode>(() => {
         if ($localOptions.value.$immediateDirty != null) {
-          return $localOptions.value.$immediateDirty;
+          return resolveImmediateDirtyMode($localOptions.value.$immediateDirty);
         } else if (toValue(options.immediateDirty) != null) {
-          return toValue(options.immediateDirty) === true;
+          return resolveImmediateDirtyMode(toValue(options.immediateDirty));
         }
         return false;
       });

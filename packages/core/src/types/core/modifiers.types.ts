@@ -13,6 +13,8 @@ import type {
 import type { DeepMaybeRef, OmitByType, Unwrap } from '../utils';
 import type { isEditedHandlerFn } from './overrides.types';
 
+export type RegleImmediateDirtyMode = 'eager' | 'non-empty' | 'lazy-non-empty';
+
 export interface RegleBehaviourOptions {
   /**
    * Does not run rules until the field is dirty.
@@ -54,10 +56,15 @@ export interface RegleBehaviourOptions {
    */
   clearExternalErrorsOnValidate?: boolean | undefined;
   /**
-   * Set the dirty state to true when the form is initialized.
+   * Set the dirty state when the form is initialized.
+   *
+   * - `true` or `'eager'`: mark every field dirty.
+   * - `'non-empty'`: mark every field dirty when any initial value is non-empty.
+   * - `'lazy-non-empty'`: mark only fields with non-empty initial values dirty.
+   *
    * @default false
    */
-  immediateDirty?: boolean | undefined;
+  immediateDirty?: boolean | RegleImmediateDirtyMode | undefined;
   /**
    * Disable all the computation
    * @default false
