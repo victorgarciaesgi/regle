@@ -1,15 +1,13 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, unknown>">
   import { flatErrors } from '@regle/core';
-  import type { MaybeSchemaVariantStatus, RegleSchemaFieldStatus, RegleSchemaStatus } from '@regle/schemas';
-
-  import { type Email } from './Issue338.vue';
+  import type { RegleSchemaFieldStatus, MaybeSchemaVariantStatus } from '@regle/schemas';
 
   const { field, options } = defineProps<{
-    field: RegleSchemaFieldStatus<Email> | MaybeSchemaVariantStatus<Email>;
-    options: Email[];
+    options: T[];
+    field: RegleSchemaFieldStatus<T | null> | MaybeSchemaVariantStatus<T>;
   }>();
 
-  const [model] = defineModel<Email | null>({ required: true });
+  const [model] = defineModel<T | null>({ required: true });
 </script>
 
 <template>
@@ -20,18 +18,9 @@
       <option :value="null">--Please choose an option--</option>
 
       <template v-for="option of options">
-        <option :value="option">{{ option.label }}</option>
+        <option :value="option">{{ option }}</option>
       </template>
     </select>
-
-    <ul v-if="model !== null">
-      <li>
-        id: <b>{{ model.id }}</b>
-      </li>
-      <li>
-        label: <b>{{ model.label }}</b>
-      </li>
-    </ul>
 
     <ul v-if="field.$error" style="font-size: 12px; color: red">
       <li v-for="error of flatErrors(field.$errors)" :key="error">

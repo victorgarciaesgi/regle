@@ -18,7 +18,7 @@ import type {
   RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsAny, IsUnknown } from 'type-fest';
+import type { EmptyObject, IsAny, IsUnion, IsUnknown } from 'type-fest';
 import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
@@ -187,7 +187,7 @@ export type RegleSchemaFieldStatus<TState = any, TShortcuts extends RegleShortcu
   readonly $inactive: boolean;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: {
-    [`~validator`]: RegleRuleStatus<TState, []>;
+    [`~validator`]: RegleRuleStatus<IsUnion<TState> extends true ? any : TState, []>;
   };
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: string[]): void;

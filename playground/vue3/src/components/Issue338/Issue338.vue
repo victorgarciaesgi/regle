@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useRegleSchema } from '@regle/schemas';
+  import { useRegleSchema, type MaybeSchemaVariantStatus, type RegleSchemaFieldStatus } from '@regle/schemas';
   import { z } from 'zod';
 
   import EmailComponent from './EmailComponent.vue';
@@ -41,6 +41,18 @@
       console.warn('Errors: ', errors);
     }
   }
+
+  function handleEmail<T extends Record<string, unknown>>(
+    options: T[],
+    field: RegleSchemaFieldStatus<T | null> | MaybeSchemaVariantStatus<T>
+  ) {
+    return {
+      options,
+      field,
+    };
+  }
+
+  handleEmail(emailOptions, r$.email);
 </script>
 
 <template>
