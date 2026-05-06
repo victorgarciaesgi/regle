@@ -38,19 +38,35 @@ export interface useRegleSchemaFn<
   TAdditionalReturnProperties extends Record<string, any> = {},
   TAdditionalOptions extends Record<string, any> = {},
 > {
-  <TSchema extends StandardSchemaV1, TState extends StandardSchemaV1.InferInput<TSchema> | undefined>(
+  <
+    TSchema extends StandardSchemaV1,
+    TInput extends StandardSchemaV1.InferInput<TSchema> | undefined,
+    TOutput extends StandardSchemaV1.InferOutput<TSchema> = StandardSchemaV1.InferOutput<TSchema>,
+  >(
     ...params: [
-      state: MaybeRef<DeepPartial<NoInferLegacy<TState>>> | DeepReactiveState<DeepPartial<NoInferLegacy<TState>>>,
+      state: MaybeRef<DeepPartial<NoInferLegacy<TInput>>> | DeepReactiveState<DeepPartial<NoInferLegacy<TInput>>>,
       rulesFactory: MaybeRef<TSchema>,
       ...(HaveAnyRequiredProps<
-        useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>
+        useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TInput>>, TAdditionalOptions>
       > extends true
-        ? [options: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>]
-        : [options?: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TState>>, TAdditionalOptions>]),
+        ? [options: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TInput>>, TAdditionalOptions>]
+        : [options?: useRegleSchemaFnOptions<NoInferLegacy<NonNullable<TInput>>, TAdditionalOptions>]),
     ]
-  ): NonNullable<TState> extends PrimitiveTypes
-    ? RegleSingleFieldSchema<NonNullable<TState>, TSchema, TShortcuts, TAdditionalReturnProperties>
-    : RegleSchema<UnwrapNestedRefs<NonNullable<TState>>, TSchema, TShortcuts, TAdditionalReturnProperties>;
+  ): NonNullable<TInput> extends PrimitiveTypes
+    ? RegleSingleFieldSchema<
+        NonNullable<TInput>,
+        NonNullable<TOutput>,
+        TSchema,
+        TShortcuts,
+        TAdditionalReturnProperties
+      >
+    : RegleSchema<
+        UnwrapNestedRefs<NonNullable<TInput>>,
+        UnwrapNestedRefs<NonNullable<TOutput>>,
+        TSchema,
+        TShortcuts,
+        TAdditionalReturnProperties
+      >;
 }
 
 export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutDefinition<any>>(params?: {
@@ -66,7 +82,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     options?: Partial<DeepMaybeRef<RegleBehaviourOptions>> &
       LocalRegleBehaviourOptions<Record<string, any>, {}, never> &
       RegleSchemaBehaviourOptions
-  ): RegleSchema<Record<string, any>, StandardSchemaV1, RegleShortcutDefinition> {
+  ): RegleSchema<Record<string, any>, Record<string, any>, StandardSchemaV1, RegleShortcutDefinition> {
     if (!unref(schema)?.['~standard']) {
       throw new Error(`Only "standard-schema" compatible libraries are supported`);
     }

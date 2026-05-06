@@ -1,5 +1,18 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, isRef, nextTick, reactive, ref, toRef, toValue, unref, watch, watchEffect } from 'vue';
+import {
+  computed,
+  effectScope,
+  isRef,
+  nextTick,
+  reactive,
+  readonly,
+  ref,
+  toRef,
+  toValue,
+  unref,
+  watch,
+  watchEffect,
+} from 'vue';
 import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
@@ -68,6 +81,7 @@ export function createReactiveNestedStatus({
   interface ScopeState extends CommonResolverScopedState {
     $immediateDirty: ComputedRef<ResolvedImmediateDirtyMode>;
     $value: ComputedRef<any>;
+    $output: Readonly<Ref<any>>;
     $silentValue: ComputedRef<any>;
     $dirty: ComputedRef<boolean>;
     $autoDirty: ComputedRef<boolean>;
@@ -330,6 +344,8 @@ export function createReactiveNestedStatus({
         },
       });
 
+      const $output = readonly($value);
+
       const $silentValue = computed({
         get: () => state.value,
         set(value) {
@@ -567,6 +583,7 @@ export function createReactiveNestedStatus({
                     $dirty,
                     $path: path,
                     $value: state,
+                    $output: state,
                     $silentValue: $silentValue,
                     $error,
                     $originalValue: originalState,
@@ -655,6 +672,7 @@ export function createReactiveNestedStatus({
         $autoDirty,
         $silent,
         $value,
+        $output,
         $modifiers,
       } satisfies ScopeState;
     })!;
