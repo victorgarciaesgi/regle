@@ -36,7 +36,7 @@ describe.each([
     vm.r$.$value.enum = 'Salmon';
     vm.r$.$value.nativeEnum = MyEnum.Foo;
     vm.r$.$value.union = 6;
-    vm.r$.$value.date = '1995-01-08';
+    vm.r$.$value.date = new Date('1995-01-08');
 
     if (vm.r$.gift) {
       vm.r$.gift.type.$value = 'Cash';
@@ -117,10 +117,10 @@ describe.each([
 
     expectTypeOf(vm.r$.gift?.company).toExtend<RegleSchemaFieldStatus<string> | undefined>();
     expectTypeOf(vm.r$.gift?.amount).toEqualTypeOf<
-      RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number, RegleShortcutDefinition<any>> | undefined
     >();
     expectTypeOf(vm.r$.gift?.shares).toExtend<
-      RegleSchemaFieldStatus<number, RegleShortcutDefinition<any>> | undefined
+      RegleSchemaFieldStatus<number, number, RegleShortcutDefinition<any>> | undefined
     >();
 
     // @ts-expect-error Invalid type on purpose

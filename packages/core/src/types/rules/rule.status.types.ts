@@ -128,7 +128,7 @@ export type RegleStatus<
   TRules extends ReglePartialRuleTree<NonNullable<TState>, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   _TFields = ProcessNestedFields<TState, TRules, TShortcuts, true>,
-> = RegleCommonStatus<TState, TRules> & {
+> = RegleCommonStatus<TState, TState, TRules> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: _TFields;
   /**
@@ -243,7 +243,7 @@ export type InferRegleStatusType<
                         []
                       >
                   : RegleFieldStatus<TState[TKey], TRule, TShortcuts>
-    : RegleCommonStatus<unknown>;
+    : RegleCommonStatus<unknown, unknown>;
 
 /**
  * @internal
@@ -261,7 +261,7 @@ export type RegleFieldStatus<
   TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
-> = Omit<RegleCommonStatus<TState, TRules>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
+> = Omit<RegleCommonStatus<TState, TState, TRules>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
@@ -353,11 +353,12 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
  * @public
  */
 export interface RegleCommonStatus<
-  TValue = any,
+  TInput = any,
+  TOutput = TInput,
   TRules extends Record<string, any> = Record<string, any>,
 > extends StandardSchemaV1<
-  TValue,
-  HasNamedKeys<TRules> extends true ? InferOutput<TRules, TValue> : MaybeOrPartial<TValue>
+  TInput,
+  HasNamedKeys<TRules> extends true ? InferOutput<TRules, TInput> : MaybeOrPartial<TInput>
 > {
   /** Indicates whether the field is invalid. It becomes true if any associated rules return false. */
   readonly $invalid: boolean;
@@ -394,20 +395,22 @@ export interface RegleCommonStatus<
   /** Id used to track collections items */
   $id?: string;
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
-  $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  $value: JoinDiscriminatedUnions<UnwrapNestedRefs<TInput>>;
+  /** The output value of the field. */
+  readonly $output: JoinDiscriminatedUnions<UnwrapNestedRefs<TOutput>>;
   /**
    * `$value` variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction.
    * */
-  $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  $silentValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TInput>>;
   /**
    * This value reflect the current initial value of the field.
    * The initial value is different than the original value as the initial value can be mutated when using `$reset`.
    */
-  readonly $initialValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  readonly $initialValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TInput>>;
   /**
    * This value reflect the original value of the field at original call. This can't be mutated
    */
-  readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TValue>>;
+  readonly $originalValue: JoinDiscriminatedUnions<UnwrapNestedRefs<TInput>>;
 
   /**
    * Validates the field synchronously without waiting for async rules.
@@ -452,7 +455,7 @@ export interface RegleCommonStatus<
    * Rerun rules if `$lazy` is false
    */
   $reset(): void;
-  $reset(options?: ResetOptions<TValue>): void;
+  $reset(options?: ResetOptions<TInput>): void;
   /** Clears the $externalErrors state back to an empty object. */
   $clearExternalErrors(): void;
 }
@@ -571,7 +574,7 @@ export type RegleCollectionStatus<
   TRules extends ReglePartialRuleTree<Record<string, any>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<RegleCommonStatus<TState, TRules>, '$value'> & {
+> = Omit<RegleCommonStatus<TState, TState, TRules>, '$value'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<TState>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */

@@ -4,13 +4,14 @@
   <!-- <ZodForm /> -->
   <!-- <ZodValibotTypes /> -->
   <!-- <ArkTypeForm /> -->
-  <Test12 />
+  <!-- <Test12 /> -->
   <!-- <Test13 /> -->
   <!-- <Test12 /> -->
   <!-- <Test15></Test15> -->
   <!-- <Parent /> -->
   <!-- <ParentNested /> -->
   <!-- <Issue333 /> -->
+  <Issue326 />
 </template>
 
 <script setup lang="ts">
@@ -28,4 +29,5 @@
   import Test12 from './components/Test12.vue';
   import Test15 from './components/Test15.vue';
   import Issue333 from './components/Issue333.vue';
+  import Issue326 from './components/Issue326/Issue326.vue';
 </script>
