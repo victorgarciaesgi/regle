@@ -9,8 +9,8 @@ export function createRegleComponent<
   T extends
     | Regle<any, any, any, any>
     | RegleSingleField<any, any>
-    | RegleSchema<{}, StandardSchemaV1, {}, any>
-    | RegleSingleFieldSchema<any, StandardSchemaV1, {}, any>
+    | RegleSchema<{}, {}, StandardSchemaV1, {}, any>
+    | RegleSingleFieldSchema<any, any, StandardSchemaV1, {}, any>
     | SuperCompatibleRegle,
 >(regleComposable: () => T) {
   return mount(

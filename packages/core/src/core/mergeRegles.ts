@@ -383,6 +383,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $silentErrors,
     $instances,
     $value: $value as any,
+    $output: $value as any,
     $dirty,
     $anyDirty,
     $invalid,

@@ -921,6 +921,7 @@ export function createReactiveFieldStatus({
     ...restScope,
     $externalErrors: externalErrors,
     $value: state,
+    $output: state,
     $initialValue: initialState,
     $originalValue: originalState,
     $rules: $rules,

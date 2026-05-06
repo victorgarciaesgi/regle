@@ -4,38 +4,52 @@ import type { InferRegleSchemaStatusType, RegleSchemaStatus } from './core.types
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 export type MaybeSchemaVariantStatus<
-  TState extends Record<string, any> | undefined = Record<string, any>,
+  TInput extends Record<string, any> | undefined = Record<string, any>,
+  TOutput extends Record<string, any> | undefined = TInput,
   TSchema extends StandardSchemaV1 = StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   TRoot extends boolean = false,
 > =
-  IsUnion<NonNullable<TState>> extends true
-    ? Omit<RegleSchemaStatus<TState, TSchema, TShortcuts, TRoot>, '$fields'> & {
-        $fields: ProcessChildrenFields<TState, TShortcuts>[keyof ProcessChildrenFields<TState, TShortcuts>];
-      } & (HasNamedKeys<TState> extends true
-          ? ProcessChildrenFields<TState, TShortcuts>[keyof ProcessChildrenFields<TState, TShortcuts>]
+  IsUnion<NonNullable<TInput>> extends true
+    ? Omit<RegleSchemaStatus<TInput, TOutput, TSchema, TShortcuts, TRoot>, '$fields'> & {
+        $fields: ProcessChildrenFields<TInput, TOutput, TShortcuts>[keyof ProcessChildrenFields<
+          TInput,
+          TOutput,
+          TShortcuts
+        >];
+      } & (HasNamedKeys<TInput> extends true
+          ? ProcessChildrenFields<TInput, TOutput, TShortcuts>[keyof ProcessChildrenFields<TInput, TOutput, TShortcuts>]
           : {})
-    : RegleSchemaStatus<TState, TSchema, TShortcuts, TRoot>;
+    : RegleSchemaStatus<TInput, TOutput, TSchema, TShortcuts, TRoot>;
 
 type ProcessChildrenFields<
-  TState extends Record<string, any> | undefined,
+  TInput extends Record<string, any> | undefined,
+  TOutput = TInput,
   TShortcuts extends RegleShortcutDefinition = {},
 > = {
-  [TIndex in keyof TupleToPlainObj<UnionToTuple<TState>>]: TIndex extends `${infer TIndexInt extends number}`
+  [TIndex in keyof TupleToPlainObj<UnionToTuple<TInput>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
         // Defined keys
-        [TKey in keyof UnionToTuple<TState>[TIndexInt] as NonNullable<
-          UnionToTuple<TState>[TIndexInt]
-        >[TKey] extends UnionToTuple<TState>[TIndexInt][TKey]
+        [TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
+          UnionToTuple<TInput>[TIndexInt]
+        >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
           ? TKey
-          : never]-?: InferRegleSchemaStatusType<NonNullable<UnionToTuple<TState>[TIndexInt]>[TKey], TShortcuts>;
+          : never]-?: InferRegleSchemaStatusType<
+          NonNullable<UnionToTuple<TInput>[TIndexInt]>[TKey],
+          NonNullable<UnionToTuple<TOutput>[TIndexInt]>[TKey],
+          TShortcuts
+        >;
       } & {
         // Maybe undefined keys
-        [TKey in keyof UnionToTuple<TState>[TIndexInt] as NonNullable<
-          UnionToTuple<TState>[TIndexInt]
-        >[TKey] extends UnionToTuple<TState>[TIndexInt][TKey]
+        [TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
+          UnionToTuple<TInput>[TIndexInt]
+        >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
           ? never
-          : TKey]?: InferRegleSchemaStatusType<NonNullable<UnionToTuple<TState>[TIndexInt]>[TKey], TShortcuts>;
+          : TKey]?: InferRegleSchemaStatusType<
+          NonNullable<UnionToTuple<TInput>[TIndexInt]>[TKey],
+          NonNullable<UnionToTuple<TOutput>[TIndexInt]>[TKey],
+          TShortcuts
+        >;
       }
     : {};
 };
