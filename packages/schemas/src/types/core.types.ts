@@ -18,7 +18,7 @@ import type {
   RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsAny, IsUnion, IsUnknown } from 'type-fest';
+import type { EmptyObject, IsAny, IsUnion, IsUnknown, Or } from 'type-fest';
 import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
@@ -99,7 +99,9 @@ type ProcessNestedFields<
             >
           : never;
       }
-    : {};
+    : {
+        [x: string]: RegleCommonStatus<unknown, unknown>;
+      };
 
 /**
  * @public
@@ -128,7 +130,9 @@ export type RegleSchemaStatus<
   $setExternalErrors(errors: RegleExternalSchemaErrorTree<TInput>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
-} & ProcessNestedFields<JoinDiscriminatedUnions<TInput>, JoinDiscriminatedUnions<TOutput>, TShortcuts> &
+} & (HasNamedKeys<TInput> extends true
+    ? ProcessNestedFields<JoinDiscriminatedUnions<TInput>, JoinDiscriminatedUnions<TOutput>, TShortcuts>
+    : {}) &
   (IsRoot extends true
     ? {
         /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
