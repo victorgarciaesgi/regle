@@ -237,7 +237,7 @@ export type RegleSchemaFieldStatus<
         [K in keyof TShortcuts['fields']]: ReturnType<NonNullable<TShortcuts['fields']>[K]>;
       });
 
-export type RegleSchemaCommonStatus<TInput extends unknown, TOutput = TInput> = Omit<
+export type RegleSchemaCommonStatus<TInput extends unknown = unknown, TOutput = TInput> = Omit<
   RegleCommonStatus<TInput, TOutput>,
   '$pending'
 >;
