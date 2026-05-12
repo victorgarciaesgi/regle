@@ -118,7 +118,9 @@ type ProcessNestedFields<
                 : TKey
               : never]-?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
           })
-    : {};
+    : {
+        [x: string]: RegleCommonStatus<unknown, unknown>;
+      };
 
 /**
  * @public
