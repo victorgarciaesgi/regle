@@ -10,6 +10,7 @@ export {
 export type {
   InferRegleSchemaStatusType,
   RegleSchema,
+  RegleSchemaCommonStatus,
   RegleSchemaCollectionStatus,
   RegleSchemaFieldStatus,
   RegleSchemaResult,

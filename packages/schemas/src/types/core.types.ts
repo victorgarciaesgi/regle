@@ -18,7 +18,7 @@ import type {
   RegleStaticImpl,
 } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { EmptyObject, IsAny, IsUnion, IsUnknown, Or } from 'type-fest';
+import type { EmptyObject, IsAny, IsUnion, IsUnknown } from 'type-fest';
 import type { Raw, UnwrapNestedRefs } from 'vue';
 import type { MaybeSchemaVariantStatus } from './variants.types';
 
@@ -100,7 +100,7 @@ type ProcessNestedFields<
           : never;
       }
     : {
-        [x: string]: RegleCommonStatus<unknown, unknown>;
+        [x: string]: RegleSchemaCommonStatus<unknown, unknown>;
       };
 
 /**
@@ -236,6 +236,11 @@ export type RegleSchemaFieldStatus<
     : {
         [K in keyof TShortcuts['fields']]: ReturnType<NonNullable<TShortcuts['fields']>[K]>;
       });
+
+export type RegleSchemaCommonStatus<TInput extends unknown, TOutput = TInput> = Omit<
+  RegleCommonStatus<TInput, TOutput>,
+  '$pending'
+>;
 
 /**
  * @public
