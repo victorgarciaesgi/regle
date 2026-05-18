@@ -112,7 +112,7 @@ export type RegleSchemaStatus<
   TSchema extends StandardSchemaV1 = StandardSchemaV1,
   TShortcuts extends RegleShortcutDefinition = {},
   IsRoot extends boolean = false,
-> = Omit<RegleCommonStatus<TInput, TOutput>, IsRoot extends false ? '$pending' : ''> & {
+> = Omit<RegleCommonStatus<TInput, TOutput>, (IsRoot extends false ? '$pending' : '') | '$issues' | '$errors'> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: ProcessNestedFields<JoinDiscriminatedUnions<TInput>, JoinDiscriminatedUnions<TOutput>, TShortcuts>;
   /** Collection of all issues, collected for all children properties and nested forms.
@@ -189,7 +189,7 @@ export type RegleSchemaFieldStatus<
   TShortcuts extends RegleShortcutDefinition = {},
 > = Omit<
   RegleCommonStatus<TInput, TOutput>,
-  '$pending' | '$value' | '$silentValue' | '$initialValue' | '$originalValue'
+  '$pending' | '$value' | '$silentValue' | '$initialValue' | '$originalValue' | '$issues' | '$errors'
 > & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<UnwrapNestedRefs<TInput>>;
@@ -249,7 +249,7 @@ export type RegleSchemaCollectionStatus<
   TInput extends any[],
   TOutput = TInput,
   TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<RegleSchemaFieldStatus<TInput, TOutput, TShortcuts>, '$errors' | '$silentErrors'> & {
+> = Omit<RegleSchemaFieldStatus<TInput, TOutput, TShortcuts>, '$issues' | '$errors' | '$silentErrors'> & {
   /** Collection of status for every item in your collection. Each item will be a field you can access or iterate to display your elements. */
   readonly $each: Array<InferRegleSchemaStatusType<ArrayElement<TInput>, ArrayElement<TOutput>, TShortcuts>>;
   /** Represents the status of the collection itself. You can have validation rules on the array like minLength, this field represents the isolated status of the collection. */
