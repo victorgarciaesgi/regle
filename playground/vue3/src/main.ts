@@ -37,7 +37,7 @@ const pinia = createPinia();
 
 const options = defineRegleOptions({
   rules: () => ({
-    required: withMessage(required, 'Coucou'),
+    // required: withMessage(required, 'Coucou'),
   }),
   modifiers: {
     autoDirty: true,

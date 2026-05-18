@@ -1,5 +1,5 @@
-import type { EffectScope } from 'vue';
-import { effectScope, type Ref } from 'vue';
+import type { EffectScope, MaybeRef } from 'vue';
+import { computed, effectScope, type Ref } from 'vue';
 import { isObject } from '../../../shared';
 import type { MaybeGetter } from '../types';
 
@@ -36,11 +36,14 @@ export function unwrapGetter<T extends any>(
   getter: MaybeGetter<T, any, any, any>,
   value: Ref<any>,
   index?: number
-): { scope: EffectScope; unwrapped: T } {
+): { scope: EffectScope; unwrapped: MaybeRef<T> } {
   const scope = effectScope();
-  let unwrapped: T;
+  let unwrapped: MaybeRef<T>;
   if (getter instanceof Function) {
-    unwrapped = scope.run(() => getter(value, index ?? 0))!;
+    unwrapped = scope.run(() => {
+      const computedEach = computed(() => getter(value, index ?? 0));
+      return { computedEach };
+    })!.computedEach;
   } else {
     unwrapped = getter;
   }

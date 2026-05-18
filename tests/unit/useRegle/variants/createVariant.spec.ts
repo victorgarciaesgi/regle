@@ -429,6 +429,130 @@ describe('createVariant', () => {
     }
   });
 
+  function createNestedArrayVariantRegle() {
+    type FieldType = 'test' | 'rest' | 'grest' | '';
+    type Form = {
+      name: string;
+      type: 'a' | 'b' | 'c';
+      a: string;
+      b: string;
+      c: string;
+      array: {
+        type: FieldType;
+        test: string;
+        rest: string;
+        grest: string;
+      }[];
+    };
+
+    const createArrayField = (type: FieldType = 'test') => ({
+      type,
+      test: type === 'test' ? 'test' : '',
+      rest: type === 'rest' ? 'rest' : '',
+      grest: type === 'grest' ? 'grest' : '',
+    });
+
+    const values = ref<Form>({
+      name: 'test',
+      type: 'a',
+      a: 'a',
+      b: '',
+      c: '',
+      array: [createArrayField()],
+    });
+
+    const { r$ } = useRegle(values, () => {
+      const topLevelVariant = createVariant(values, 'type', [
+        { type: { literal: literal('a') }, a: { required } },
+        { type: { literal: literal('b') }, b: { required } },
+        { type: { literal: literal('c') }, c: { required } },
+        { type: { required } },
+      ]);
+
+      return {
+        name: { required },
+        a: {},
+        b: {},
+        c: {},
+        ...topLevelVariant.value,
+        array: {
+          $each: (field) => {
+            const variant = createVariant(field, 'type', [
+              { type: { literal: literal('test') }, test: { required } },
+              { type: { literal: literal('rest') }, rest: { required } },
+              { type: { literal: literal('grest') }, grest: { required } },
+              { type: { required } },
+            ]);
+
+            return {
+              test: {},
+              rest: {},
+              grest: {},
+              ...variant.value,
+            };
+          },
+        },
+      };
+    });
+
+    return {
+      r$,
+      createArrayField,
+    };
+  }
+
+  it('should correctly validate variants inside nested arrays', async () => {
+    const { vm } = createRegleComponent(createNestedArrayVariantRegle);
+
+    expect((await vm.r$.$validate()).valid).toBe(true);
+    shouldBeValidField(vm.r$.array.$each[0].type);
+    shouldBeValidField(vm.r$.array.$each[0].test);
+
+    vm.r$.$value.array[0].test = '';
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    shouldBeErrorField(vm.r$.array.$each[0].test);
+
+    vm.r$.$value.array[0].type = 'rest';
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    shouldBeValidField(vm.r$.array.$each[0].test, false);
+    shouldBeErrorField(vm.r$.array.$each[0].rest);
+
+    vm.r$.$value.array[0].rest = 'rest';
+    vm.r$.$value.array.push(vm.createArrayField(''));
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    shouldBeValidField(vm.r$.array.$each[0].rest);
+    shouldBeErrorField(vm.r$.array.$each[1].type);
+
+    vm.r$.$value.array[1].type = 'grest';
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    shouldBeErrorField(vm.r$.array.$each[1].grest);
+
+    vm.r$.$value.array[1].grest = 'grest';
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    shouldBeValidField(vm.r$.array.$each[1].grest);
+
+    const lastField = vm.r$.$value.array.pop();
+    expect(lastField).toBeDefined();
+    vm.r$.$value.array.unshift(lastField!);
+    await vm.$nextTick();
+    await vm.r$.$validate();
+
+    expect(vm.r$.$value.array[0].type).toBe('grest');
+    shouldBeValidField(vm.r$.array.$each[0].grest);
+    expect(vm.r$.$value.array[1].type).toBe('rest');
+    shouldBeValidField(vm.r$.array.$each[1].rest);
+  });
+
   it('should correctly with nullable nested variants', async () => {
     function createNullableNestedVariantRegle() {
       type Form = {
@@ -548,6 +672,8 @@ describe('createVariant', () => {
       };
     }
 
+    const form = ref<CreateQuoteStateSchema>({ QUOTE_SETUP: { type: 'FIXED_PRICE' } } as any);
+
     const quoteVariant = createVariant(() => form.value.QUOTE_SETUP, 'type', [
       {
         type: { literal: literal('FIXED_PRICE') },
@@ -580,8 +706,6 @@ describe('createVariant', () => {
         type: { required },
       },
     ]);
-
-    const form = ref<CreateQuoteStateSchema>({ QUOTE_SETUP: { type: 'FIXED_PRICE' } } as any);
 
     inferRules(form, { INVITE_A_CLIENT: {} });
     inferRules(form, {

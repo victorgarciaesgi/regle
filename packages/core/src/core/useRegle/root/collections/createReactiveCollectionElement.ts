@@ -1,10 +1,11 @@
 import type { ComputedRef, Ref } from 'vue';
-import { computed, ref, toRef } from 'vue';
+import { computed, ref, toRef, toValue } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
   $InternalRegleSchemaErrors,
   $InternalRegleStatusType,
+  MaybeRefOrComputedRef,
   RegleCollectionRuleDeclKeyProperty,
 } from '../../../../types';
 import { randomId } from '../../../../utils';
@@ -31,7 +32,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   $id: string;
   index: number;
   stateValue: Ref<StateWithId | undefined>;
-  rules: $InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty;
+  rules: MaybeRefOrComputedRef<$InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty>;
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
   schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
@@ -65,7 +66,9 @@ export function createCollectionElement({
   overrides,
   currentIndexes,
 }: CreateCollectionElementArgs): $InternalRegleStatusType | undefined {
-  const $fieldId = stateValue.value?.$id ?? rules.$key ?? randomId();
+  const computedRules = computed(() => toValue(rules));
+
+  const $fieldId = stateValue.value?.$id ?? computedRules.value.$key ?? randomId();
   let $cachePath = `${cachePath}.${String($fieldId)}`;
   // Reactive index so that `$schemaErrors` lookups follow the element's current position
   // when the array gets mutated (swap/splice). `updateStatus` keeps this in sync through
@@ -92,7 +95,8 @@ export function createCollectionElement({
   const $status = createReactiveChildrenStatus({
     index,
     state: stateValue,
-    rulesDef: toRef(() => rules),
+    rulesDef: computedRules,
+    nestedReactiveRules: true,
     customMessages,
     path: $path,
     cachePath: $cachePath,

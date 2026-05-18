@@ -49,6 +49,7 @@ interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any> | undefined>;
   rootRules?: Ref<$InternalReglePartialRuleTree>;
   rulesDef: Ref<$InternalReglePartialRuleTree>;
+  nestedReactiveRules?: boolean;
   initialState: Ref<Record<string, any> | undefined>;
   originalState: Record<string, any>;
   externalErrors: Ref<$InternalRegleErrorTree | undefined> | undefined;
@@ -76,6 +77,7 @@ export function createReactiveNestedStatus({
   initialState,
   originalState,
   fieldName,
+  nestedReactiveRules,
   ...commonArgs
 }: CreateReactiveNestedStatus): $InternalRegleStatus {
   interface ScopeState extends CommonResolverScopedState {
@@ -298,10 +300,10 @@ export function createReactiveNestedStatus({
   }
 
   function $watch() {
-    if (rootRules) {
+    if (rootRules || nestedReactiveRules) {
       $unwatchRules?.();
       $unwatchRules = watch(
-        rootRules,
+        rulesDef,
         () => {
           $unwatch();
           createReactiveFieldsStatus();
@@ -938,6 +940,7 @@ export function createReactiveNestedStatus({
 interface CreateReactiveChildrenStatus extends CommonResolverOptions {
   state: Ref<any>;
   rulesDef: Ref<$InternalFormPropertyTypes>;
+  nestedReactiveRules?: boolean;
   externalErrors: Ref<any | undefined> | undefined;
   schemaErrors?: ComputedRef<any | undefined>;
   schemaMode: boolean | undefined;
