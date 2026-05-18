@@ -130,7 +130,7 @@ export type RegleStatus<
   TRules extends ReglePartialRuleTree<NonNullable<TState>, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   _TFields = ProcessNestedFields<TState, TRules, TShortcuts, true>,
-> = RegleCommonStatus<TState, TState, TRules> & {
+> = Omit<RegleCommonStatus<TState, TState, TRules>, '$issues' | '$errors'> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: _TFields;
   /**
@@ -263,7 +263,10 @@ export type RegleFieldStatus<
   TState extends any = any,
   TRules extends RegleFormPropertyType<any, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
-> = Omit<RegleCommonStatus<TState, TState, TRules>, '$value' | '$silentValue' | '$initialValue' | '$originalValue'> & {
+> = Omit<
+  RegleCommonStatus<TState, TState, TRules>,
+  '$value' | '$silentValue' | '$initialValue' | '$originalValue' | '$issues' | '$errors'
+> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<UnwrapNestedRefs<TState>>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
@@ -388,6 +391,10 @@ export interface RegleCommonStatus<
   readonly $pending: boolean;
   /** Convenience flag to easily decide if a message should be displayed. Equivalent to $dirty && !$pending && $invalid. */
   readonly $error: boolean;
+  /** Collection of all the error messages, collected for all children properties and nested forms. */
+  readonly $errors: string[] | RegleErrorTree | RegleCollectionErrors<unknown, false>;
+  /** Collection of all the issues, collected for all children properties and nested forms. */
+  readonly $issues: RegleFieldIssue[] | RegleIssuesTree | RegleCollectionErrors<unknown, true>;
   /** Indicates whether the field is ready for submission. Equivalent to !$invalid && !$pending. */
   readonly $ready: boolean;
   /** Return the current key name of the field. */
@@ -576,7 +583,7 @@ export type RegleCollectionStatus<
   TRules extends ReglePartialRuleTree<Record<string, any>> = Record<string, any>,
   TFieldRule extends RegleCollectionRuleDecl<any, any> = never,
   TShortcuts extends RegleShortcutDefinition = {},
-> = Omit<RegleCommonStatus<TState, TState, TRules>, '$value'> & {
+> = Omit<RegleCommonStatus<TState, TState, TRules>, '$value' | '$issues' | '$errors'> & {
   /** A reference to the original validated model. It can be used to bind your form with v-model.*/
   $value: MaybeOutput<TState>;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */

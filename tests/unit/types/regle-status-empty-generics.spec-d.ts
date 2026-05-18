@@ -1,9 +1,10 @@
-import type { RegleCommonStatus, RegleStatus } from '@regle/core';
+import type { RegleCommonStatus, RegleErrorTree, RegleStatus } from '@regle/core';
 import type { RegleSchemaCommonStatus, RegleSchemaStatus } from '@regle/schemas';
 import { expectTypeOf } from 'vitest';
 import { ref, provide, type InjectionKey } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';
+import type { RegleCollectionErrors } from '@regle/core';
 
 /**
  * With default (widened) generics, `$fields` keeps a string index fallback so
@@ -23,6 +24,10 @@ it('RegleSchemaStatus default generics: unknown keys via $fields only', () => {
   const r$: RegleSchemaStatus = {} as any;
 
   expectTypeOf(r$.$fields.email).toExtend<RegleSchemaCommonStatus<unknown, unknown> | undefined>();
+
+  expectTypeOf(r$.$fields.email.$errors).toEqualTypeOf<
+    string[] | RegleErrorTree | RegleCollectionErrors<unknown, false>
+  >();
 
   // @ts-expect-error - email is not a property of RegleSchemaStatus
   assertType(r$['email']);
