@@ -104,7 +104,7 @@
   },
   "engines": {
     "node": ">=24",
-    "pnpm": ">=11.0.1"
+    "pnpm": "11.1.2"
   },
   "packageManager": "pnpm@11.1.2"
 }
