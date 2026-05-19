@@ -6,7 +6,6 @@ import {
   toRef,
   toValue,
   watch,
-  watchEffect,
   type MaybeRef,
   type MaybeRefOrGetter,
   type Ref,
@@ -73,40 +72,31 @@ export function createVariant<
 ): Ref<TVariants[number]> {
   const watchableRoot = computed(() => (toValue(root) as JoinDiscriminatedUnions<TForm>)[discriminantKey]);
 
-  const computedRules = ref<Record<string, unknown>>({});
-
-  watchEffect(
-    () => {
-      const selectedVariant = variants.find((variant) => {
-        if ((variant as any)[discriminantKey] && 'literal' in (variant as any)[discriminantKey]) {
-          const literalRule = variant[discriminantKey]['literal'];
-          if (isRuleDef(literalRule)) {
-            return toValue(literalRule._params?.[0]) === watchableRoot.value;
-          }
-        }
-      });
-
-      if (selectedVariant) {
-        computedRules.value = selectedVariant;
-        return;
-      } else {
-        const anyDiscriminantRules = variants.find(
-          (variant) =>
-            isObject(variant[discriminantKey]) &&
-            !Object.keys(variant[discriminantKey]).some((key) => key === 'literal')
-        );
-
-        if (anyDiscriminantRules) {
-          computedRules.value = anyDiscriminantRules;
-          return;
-        } else {
-          computedRules.value = {};
-          return;
+  const computedRules = computed(() => {
+    const selectedVariant = variants.find((variant) => {
+      if ((variant as any)[discriminantKey] && 'literal' in (variant as any)[discriminantKey]) {
+        const literalRule = variant[discriminantKey]['literal'];
+        if (isRuleDef(literalRule)) {
+          return toValue(literalRule._params?.[0]) === watchableRoot.value;
         }
       }
-    },
-    { flush: 'pre' }
-  );
+    });
+
+    if (selectedVariant) {
+      return selectedVariant;
+    } else {
+      const anyDiscriminantRules = variants.find(
+        (variant) =>
+          isObject(variant[discriminantKey]) && !Object.keys(variant[discriminantKey]).some((key) => key === 'literal')
+      );
+
+      if (anyDiscriminantRules) {
+        return anyDiscriminantRules;
+      } else {
+        return {};
+      }
+    }
+  });
 
   return computedRules as any;
 }
