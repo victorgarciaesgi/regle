@@ -1,2 +1,0 @@
-pnpm lint-staged || exit 1
-git diff --cached --name-only --diff-filter=d -z -- '*.js' '*.ts' '*.vue' | xargs -0 -r sh -c 'pnpm fmt "$@" && git add "$@"' sh

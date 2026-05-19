@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "1.26.0-beta.1",
+  "version": "1.26.0-beta.2",
   "private": true,
   "description": "Headless model-based form validation library for Vue.js",
   "homepage": "https://reglejs.dev/",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepare": "FORCE_COLOR=1 turbo run turbo:postinstall",
-    "turbo:postinstall": "corepack install && husky install && playwright install",
+    "turbo:postinstall": "corepack install && vp config && playwright install",
     "release": "pnpm install && pnpm test && pnpm typecheck && bumpp -r && git push --follow-tags",
     "npm:publish": "zx ./scripts/publish.mjs",
     "typecheck": "turbo run typecheck",
@@ -52,7 +52,6 @@
     "lint": "vp lint",
     "lint:fix": "vp lint --fix",
     "lint:github": "vp lint --format=github",
-    "lint:staged": "vp lint --fix",
     "fmt:check": "vp fmt --check",
     "fmt": "vp fmt"
   },
@@ -78,8 +77,6 @@
     "corepack": "0.34.7",
     "env-cmd": "11.0.0",
     "happy-dom": "20.9.0",
-    "husky": "9.1.7",
-    "lint-staged": "17.0.5",
     "nuxt": "catalog:",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
