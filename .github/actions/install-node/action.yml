@@ -13,7 +13,7 @@ runs:
     - name: Set up Node.js
       uses: actions/setup-node@v5
       with:
-        node-version-file: .nvmrc
+        node-version-file: .node-version
 
     - name: Enable Corepack
       run: corepack enable
