@@ -7,7 +7,8 @@ import {
   createResolver,
   addPlugin,
 } from '@nuxt/kit';
-import path from 'path';
+import { resolveRegleExportsTemplatePath, resolveTemplateImportPath } from './pathUtils';
+
 export interface ModuleOptions {
   /**
    * Path to your setupFile, it needs to return a useRegle composable
@@ -21,7 +22,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'regle',
   },
   defaults: {},
-  async setup(options) {
+  async setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url);
 
     addPlugin({
@@ -39,19 +40,8 @@ export default defineNuxtModule<ModuleOptions>({
         // Ensure the path is normalized for POSIX compatibility (https://github.com/victorgarciaesgi/regle/issues/152)
         // console.log(setupFilePath);
         if (setupFilePathOS) {
-          const relativePath = resolve(setupFilePathOS);
-
-          const setupFilePathWithoutExtension = path.join(
-            path.dirname(relativePath),
-            path.basename(relativePath, path.extname(relativePath))
-          );
-
-          /**
-           * Ensure absolute paths work on Windows OS
-           */
-          const setupFilePathWithoutExtensionCleaned = path.posix.normalize(
-            setupFilePathWithoutExtension.replaceAll(/\\/gi, '/')
-          );
+          const templatePath = resolveRegleExportsTemplatePath(nuxt.options.buildDir, nuxt.options.rootDir);
+          const setupFileImportPath = resolveTemplateImportPath(templatePath, setupFilePathOS);
 
           const regleImports = [
             { name: 'inferRules', type: false },
@@ -66,7 +56,7 @@ export default defineNuxtModule<ModuleOptions>({
             write: true,
             getContents: () => `
 import type { InferRegleRules, RegleCustomFieldStatus } from '@regle/core';
-import ReglePlugin from "${setupFilePathWithoutExtensionCleaned}";
+import ReglePlugin from "${setupFileImportPath}";
 export const { ${regleImports
               .filter(({ type }) => !type)
               .map(({ name }) => name)
