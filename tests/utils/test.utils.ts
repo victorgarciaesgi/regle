@@ -1,6 +1,6 @@
 import type { Regle, RegleSingleField, SuperCompatibleRegle } from '@regle/core';
 import { RegleVuePlugin } from '@regle/core';
-import type { RegleSchema, RegleSingleFieldSchema } from '@regle/schemas';
+import type { RegleSchema } from '@regle/schemas';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
@@ -10,7 +10,6 @@ export function createRegleComponent<
     | Regle<any, any, any, any>
     | RegleSingleField<any, any>
     | RegleSchema<{}, {}, StandardSchemaV1, {}, any>
-    | RegleSingleFieldSchema<any, any, StandardSchemaV1, {}, any>
     | SuperCompatibleRegle,
 >(regleComposable: () => T) {
   return mount(

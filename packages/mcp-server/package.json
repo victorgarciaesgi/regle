@@ -48,7 +48,7 @@
     "typecheck": "tsgo --noEmit",
     "build:docs": "tsx scripts/build-docs-data.ts",
     "build": "pnpm run build:docs && tsdown",
-    "lint": "oxlint",
+    "lint": "vp lint",
     "dev": "pnpm run build:docs && tsx watch src/index.ts",
     "start": "node dist/regle-mcp-server.js",
     "test": "echo 'no tests'"

@@ -31,7 +31,7 @@ function nestedStateValidations() {
 }
 
 it('should update the source value', async () => {
-  const { vm } = await createRegleComponent(nestedStateValidations);
+  const { vm } = createRegleComponent(nestedStateValidations);
 
   vm.r$.$value.email = 'Hello';
   await vm.$nextTick();

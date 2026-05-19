@@ -63,7 +63,8 @@
     "unbuild": "3.6.1",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "vite-plus": "catalog:"
   },
   "optionalDependencies": {
     "@regle/schemas": "workspace:*",

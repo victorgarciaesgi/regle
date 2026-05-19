@@ -3,7 +3,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeInvalidField, shouldBePristineField } from '../../../utils/validations.utils';
 
 it('should update the source value', async () => {
-  const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+  const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
   vm.r$.$silentValue = {
     user: {

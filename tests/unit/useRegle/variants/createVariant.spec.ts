@@ -28,7 +28,7 @@ import type { EmptyObject } from 'type-fest';
 
 describe('createVariant', () => {
   //- Given
-  function createRootVariantRegle(initialValue?: 'ONE' | 'TWO' | undefined) {
+  function createRootVariantRegle(initialValue?: 'ONE' | 'TWO') {
     type FormVariant = {
       firstName?: string;
     } & (

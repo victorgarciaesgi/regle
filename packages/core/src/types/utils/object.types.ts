@@ -1,6 +1,5 @@
 import type { IsAny, IsUnion, IsUnknown } from 'type-fest';
 import type { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
-import type { DeepReactiveState } from '../core';
 import type { RegleStaticImpl } from './static.types';
 import type { LazyJoinDiscriminatedUnions } from './union.types';
 
@@ -50,8 +49,7 @@ export type EnumLike = {
 
 export type MaybeRefOrComputedRef<T extends any> = MaybeRef<T> | ComputedRef<T>;
 
-export type UnwrapMaybeRef<T extends MaybeRef<any> | DeepReactiveState<any>> =
-  T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
+export type UnwrapMaybeRef<T extends MaybeRef<any>> = T extends Ref<any> ? UnwrapRef<T> : UnwrapNestedRefs<T>;
 
 // ------ Object Checks -----
 export type TupleToPlainObj<T> = { [I in keyof T & `${number}`]: T[I] };

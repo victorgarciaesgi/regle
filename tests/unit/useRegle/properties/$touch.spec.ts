@@ -3,7 +3,7 @@ import { createRegleComponent } from '../../../utils/test.utils';
 
 describe('.$touch', () => {
   it('should update the `$dirty` state to `true`, on used property', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     expect(vm.r$.email.$dirty).toBe(false);
     expect(vm.r$.user.$dirty).toBe(false);
@@ -31,7 +31,7 @@ describe('.$touch', () => {
   });
 
   it('should update the `$dirty` state to `true` on all nested properties', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     expect(vm.r$.user.$dirty).toBe(false);
     expect(vm.r$.user.firstName.$dirty).toBe(false);
@@ -47,7 +47,7 @@ describe('.$touch', () => {
   });
 
   it("should not update the `$dirty` state on the property it wasn't used on", async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     expect(vm.r$.email.$invalid).toBe(true);
     expect(vm.r$.email.$error).toBe(false);
@@ -61,7 +61,7 @@ describe('.$touch', () => {
   });
 
   it('should update the `$dirty` state to `true` on all properties, when used on top level node', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithMixedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithMixedValidation);
 
     vm.r$.$touch();
 
@@ -77,7 +77,7 @@ describe('.$touch', () => {
   });
 
   it('should update the `$dirty` state even if being cached before hand', async () => {
-    const { vm } = await createRegleComponent(simpleNestedStateWithComputedValidation);
+    const { vm } = createRegleComponent(simpleNestedStateWithComputedValidation);
 
     expect(vm.r$.email.$dirty).toBe(false);
     expect(vm.r$.user.$dirty).toBe(false);

@@ -3,11 +3,13 @@
   "references.preferredLocation": "peek",
   "window.title": "Regle",
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll": "explicit",
+    "source.fixAll.oxc": "explicit"
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "oxc.oxc-vscode",
   "typescript.experimental.useTsgo": false,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
@@ -28,5 +30,13 @@
   },
   "[scss]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "oxc.fmt.configPath": "./vite.config.ts",
+  "editor.formatOnSaveMode": "file"
 }
