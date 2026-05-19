@@ -21,11 +21,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@andypf/json-viewer": "2.3.2",
+    "@andypf/json-viewer": "2.4.0",
     "@tsconfig/node20": "^20.1.9",
-    "@types/node": "^24.12.2",
+    "@types/node": "^24.12.4",
     "@typescript/native-preview": "latest",
-    "@vitejs/plugin-vue": "^6.0.6",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.9.1",
     "npm-run-all2": "^8.0.4",
     "type-fest": "catalog:",
