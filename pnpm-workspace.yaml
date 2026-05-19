@@ -20,50 +20,50 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  '@nuxt/kit': 4.4.2
-  '@nuxt/schema': 4.4.2
+  '@nuxt/kit': 4.4.6
+  '@nuxt/schema': 4.4.6
   '@pinia/nuxt': 0.11.3
-  '@playwright/test': 1.59.1
+  '@playwright/test': 1.60.0
   '@total-typescript/ts-reset': 0.6.1
-  '@types/node': 24.12.2
-  '@typescript/native-preview': 7.0.0-dev.20260331.1
-  '@vitejs/plugin-vue': 6.0.6
+  '@types/node': 24.12.4
+  '@typescript/native-preview': 7.0.0-dev.20260519.1
+  '@vitejs/plugin-vue': 6.0.7
   '@vitejs/plugin-vue-jsx': 5.1.5
-  '@vue/compiler-dom': 3.5.32
+  '@vue/compiler-dom': 3.5.34
   '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
-  '@vue/reactivity': 3.5.32
+  '@vue/reactivity': 3.5.34
   '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
-  '@vue/runtime-core': 3.5.32
+  '@vue/runtime-core': 3.5.34
   '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
-  '@vue/runtime-dom': 3.5.32
+  '@vue/runtime-dom': 3.5.34
   '@vue/runtime-dom-3.4': npm:@vue/runtime-dom@3.4.38
-  '@vue/server-renderer': 3.5.32
+  '@vue/server-renderer': 3.5.34
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
-  '@vue/shared': 3.5.32
+  '@vue/shared': 3.5.34
   '@vue/shared-3.4': npm:@vue/shared@3.4.38
-  '@vue/test-utils': 2.4.6
+  '@vue/test-utils': 2.4.10
   arktype: 2.2.0
   check-password-strength: 3.0.0
-  nuxt: 4.4.2
+  nuxt: 4.4.6
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5
-  playwright: 1.59.1
-  playwright-core: 1.59.1
+  playwright: 1.60.0
+  playwright-core: 1.60.0
   sass: 1.99.0
-  tailwindcss: 4.2.2
-  tsdown: 0.21.9
+  tailwindcss: 4.3.0
+  tsdown: 0.21.10
   tsx: 4.21.0
   type-fest: 5.6.0
   typescript: 6.0.3
-  valibot: 1.3.1
-  vite: 8.0.9
-  vitest: 4.1.2
-  vue: 3.5.32
+  valibot: 1.4.0
+  vite: 8.0.13
+  vitest: 4.1.6
+  vue: 3.5.34
   vue-3.4: npm:vue@3.4.38
   vue-eslint-parser: 10.4.0
-  vue-router: 5.0.4
+  vue-router: 5.0.7
   vue-tsc: 3.2.7
-  zod: 4.3.6
+  zod: 4.4.3
 
 engineStrict: true
 optimisticRepeatInstall: false

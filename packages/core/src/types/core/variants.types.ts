@@ -20,7 +20,7 @@ import type { RegleShortcutDefinition } from './modifiers.types';
 
 /** Types to be augmented by @regle/schemas */
 export interface NarrowVariantExtracts {}
-/* oxlint-disable eslint(no-unused-vars) */
+/* oxlint-disable no-unused-vars */
 export interface NarrowVariantFieldExtracts<T extends unknown> {}
 
 export type NarrowVariant<

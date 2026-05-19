@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "latest",
     "@regle/core": "latest",
-    "@regle/rules": "latest"
+    "@regle/rules": "latest",
+    "vue": "latest"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.6",
-    "vite": "8.0.9"
+    "@vitejs/plugin-vue": "6.0.7",
+    "vite": "8.0.13"
   }
 }
