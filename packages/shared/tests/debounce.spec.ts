@@ -17,9 +17,9 @@ describe('debounce', () => {
     const func = vi.fn((x: number) => x * 2);
     const debounced = debounce(func, 100);
 
-    debounced(1);
-    debounced(2);
-    debounced(3);
+    void debounced(1);
+    void debounced(2);
+    void debounced(3);
 
     expect(func).not.toHaveBeenCalled();
 
@@ -66,8 +66,8 @@ describe('debounce', () => {
 
     await expect(promise1).resolves.toBe(2);
 
-    debounced(2);
-    debounced(3);
+    void debounced(2);
+    void debounced(3);
 
     expect(func).toHaveBeenCalledTimes(3);
   });
@@ -79,7 +79,7 @@ describe('debounce', () => {
 
     expect(trackDebounceRef.value).toBe(false);
 
-    debounced(1);
+    void debounced(1);
 
     expect(trackDebounceRef.value).toBe(true);
 
@@ -100,7 +100,7 @@ describe('debounce', () => {
     });
     const debounced = debounce(func, 100, { trackDebounceRef });
 
-    debounced(1);
+    void debounced(1);
 
     expect(trackDebounceRef.value).toBe(true);
 
@@ -114,7 +114,7 @@ describe('debounce', () => {
     const func = vi.fn((x: number) => x * 2);
     const debounced = debounce(func, 100);
 
-    debounced(1);
+    void debounced(1);
     debounced.cancel();
 
     vi.advanceTimersByTime(100);
@@ -127,7 +127,7 @@ describe('debounce', () => {
     const func = vi.fn((x: number) => x * 2);
     const debounced = debounce(func, 100, { trackDebounceRef });
 
-    debounced(1);
+    void debounced(1);
 
     expect(trackDebounceRef.value).toBe(true);
 
@@ -140,13 +140,13 @@ describe('debounce', () => {
     const func = vi.fn((x: number) => x);
     const debounced = debounce(func, 100);
 
-    debounced(1);
+    void debounced(1);
     vi.advanceTimersByTime(50);
-    debounced(2);
+    void debounced(2);
     vi.advanceTimersByTime(50);
-    debounced(3);
+    void debounced(3);
     vi.advanceTimersByTime(50);
-    debounced(4);
+    void debounced(4);
 
     expect(func).not.toHaveBeenCalled();
 

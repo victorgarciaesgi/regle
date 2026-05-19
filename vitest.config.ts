@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath } from 'node:url';
-import type { AliasOptions } from 'vite';
+import type { AliasOptions } from 'vite-plus';
 
 const vueVersion = (process.env.VUE_VERSION as '3.4' | '3.5') ?? '3.5';
 

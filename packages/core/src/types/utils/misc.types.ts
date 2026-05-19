@@ -1,7 +1,7 @@
 import type { IsNullable, IsOptional, Or } from 'type-fest';
 import type { MaybeRef, MaybeRefOrGetter, Ref, UnwrapNestedRefs, UnwrapRef } from 'vue';
 import type { MaybeRefOrComputedRef } from './object.types';
-import type { RegleStatic, RegleStaticImpl } from './static.types';
+import type { RegleStatic } from './static.types';
 
 export type Prettify<T> = T extends infer R
   ? {
@@ -48,7 +48,7 @@ export type ExtractFromGetter<T extends MaybeGetter<any, any, any>> = T extends 
   : T;
 
 export type ExtendOnlyRealRecord<T extends unknown> =
-  NonNullable<T> extends File | Date | RegleStatic<{}> | RegleStaticImpl<{}>
+  NonNullable<T> extends File | Date | RegleStatic<{}>
     ? false
     : NonNullable<T> extends Record<string, any>
       ? true
@@ -78,7 +78,7 @@ export type WidenPrimitiveLiterals<T> = T extends string
         : T;
 
 export type isRecordLiteral<T extends unknown> =
-  NonNullable<T> extends Date | File | RegleStatic<unknown> | RegleStaticImpl<unknown>
+  NonNullable<T> extends Date | File | RegleStatic<unknown>
     ? false
     : NonNullable<T> extends Record<string, any>
       ? true

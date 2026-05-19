@@ -49,7 +49,8 @@ declare module '@regle/core' {
 const options = defineRegleOptions({
   rules: () => ({
     minValue: withMessage(minValue, ({ $params: [min] }) => `Patched min:${min}`),
-    oneOf: withMessage(oneOf, ({ $params: [options] }) => `Patched options:${options}`),
+    /* oxlint-disable typescript/no-base-to-string, typescript/restrict-template-expressions */
+    oneOf: withMessage(oneOf, ({ $params: [options] }) => `Patched options: ${options}`),
     minFileSize: withMessage(minFileSize, ({ $params: [min] }) => `Patched min:${min}`),
     maxFileSize: withMessage(maxFileSize, ({ $params: [max] }) => `Patched max:${max}`),
     sameAs: withMessage(sameAs, ({ $params: [_, otherName] }) => {

@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 import { execaSync } from 'execa';
 import fs from 'node:fs';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 
 const commit = execaSync('git', ['rev-parse', '--short', 'HEAD']);
 

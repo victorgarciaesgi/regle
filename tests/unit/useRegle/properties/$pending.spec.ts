@@ -42,7 +42,7 @@ describe('$pending', () => {
   });
 
   it('sets `$pending` to `true`, when async validators are used and are being resolved', async () => {
-    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
+    const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
     await nextTick();
 
     shouldBePristineField(vm.r$, true);
@@ -97,7 +97,7 @@ describe('$pending', () => {
   });
 
   it('propagates `$pending` up to the top most parent', async () => {
-    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
+    const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     vm.r$.$value.level1.child = 1;
     await vi.advanceTimersByTimeAsync(200);
@@ -115,7 +115,7 @@ describe('$pending', () => {
   });
 
   it('propagates should make a boolean shift when editing a async rule', async () => {
-    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
+    const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     expect(vm.r$.$correct).toBe(true);
 
@@ -139,7 +139,7 @@ describe('$pending', () => {
   });
 
   it('propagates `$pending` from a collection child', async () => {
-    const { vm } = await createRegleComponent(nestedAsyncObjectWithRefsValidation);
+    const { vm } = createRegleComponent(nestedAsyncObjectWithRefsValidation);
 
     vm.r$.$value.collection[0].child = 1;
     await vi.advanceTimersByTimeAsync(200);
@@ -215,10 +215,10 @@ describe('$pending', () => {
 
     vm.r$.$value.email = 'test@test.com';
     vi.advanceTimersByTime(200);
-    vm.r$.$validate();
+    void vm.r$.$validate();
     await nextTick();
 
-    await vi.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(2000);
 
     expect(validateFn).toHaveBeenCalledTimes(1);
   });

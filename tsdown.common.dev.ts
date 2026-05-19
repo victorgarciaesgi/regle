@@ -1,4 +1,4 @@
-import type { UserConfig } from 'tsdown';
+import type { UserConfig } from 'vite-plus/pack';
 
 export const defaultOptions: UserConfig = {
   format: ['esm'],

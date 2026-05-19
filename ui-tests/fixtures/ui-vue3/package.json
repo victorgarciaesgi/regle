@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port=9130",
+    "dev": "vp dev --port=9130",
     "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "build-only": "vite build",
+    "preview": "vp preview",
+    "build-only": "vp build",
     "typecheck": "vue-tsc --noEmit --project ./tsconfig.app.json"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "vite-plus": "catalog:"
   }
 }

@@ -47,7 +47,7 @@ interface AtLeastOneFn extends RegleRuleWithParamsDefinition<
  */
 export const atLeastOne: AtLeastOneFn = createRule({
   type: 'atLeastOne',
-  validator: (value: Maybe<Record<string, unknown> | object>, keys?: readonly string[] | undefined) => {
+  validator: (value: Maybe<Record<string, unknown> | object>, keys?: readonly string[]) => {
     if (isFilled(value, true, false) && isObject(value)) {
       if (keys?.length) {
         return keys.some((key) => isFilled(value[key]));

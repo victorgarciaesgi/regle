@@ -51,7 +51,7 @@ describe('$validate cached field result (Test12 async + submit)', () => {
   });
 
   it('does not re-run async rules on repeated r$.$validate after auto-validation has finished (default autoDirty)', async () => {
-    const { vm } = await createRegleComponent(createTest12LikeRegle());
+    const { vm } = createRegleComponent(createTest12LikeRegle());
 
     vm.r$.$value.username = 'okuser';
     await flushAsyncValidationAfterEdit();
@@ -75,7 +75,7 @@ describe('$validate cached field result (Test12 async + submit)', () => {
   });
 
   it('does not re-run async rules when the last result was invalid (taken)', async () => {
-    const { vm } = await createRegleComponent(createTest12LikeRegle());
+    const { vm } = createRegleComponent(createTest12LikeRegle());
 
     vm.r$.$value.username = 'taken-user';
     await flushAsyncValidationAfterEdit();
@@ -96,7 +96,7 @@ describe('$validate cached field result (Test12 async + submit)', () => {
   });
 
   it('runs async rules again on each r$.$validate when autoDirty is false (shortcut disabled)', async () => {
-    const { vm } = await createRegleComponent(createTest12LikeRegle({ autoDirty: false }));
+    const { vm } = createRegleComponent(createTest12LikeRegle({ autoDirty: false }));
 
     vm.r$.$value.username = 'okuser';
     await flushAsyncValidationAfterEdit();

@@ -15,7 +15,7 @@ describe('.$reset', () => {
 
     shouldBeInvalidField(vm.r$.email);
 
-    vm.r$.email.$validate();
+    void vm.r$.email.$validate();
     await nextTick();
 
     shouldBeErrorField(vm.r$.email);
@@ -86,7 +86,8 @@ describe('.$reset', () => {
     shouldBeErrorField(vm.r$.user.firstName);
     shouldBeErrorField(vm.r$.user.lastName);
 
-    await Promise.all([vm.r$.user.$reset(), flushPromises()]);
+    vm.r$.user.$reset();
+    await flushPromises();
 
     shouldBeInvalidField(vm.r$.user.firstName);
     shouldBeInvalidField(vm.r$.user.lastName);
@@ -97,7 +98,7 @@ describe('.$reset', () => {
 
     await nextTick();
 
-    vm.r$.$validate();
+    void vm.r$.$validate();
     await nextTick();
 
     shouldBeErrorField(vm.r$);
