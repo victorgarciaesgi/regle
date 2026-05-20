@@ -245,13 +245,13 @@ type ObjectHaveAtLeastOneRequiredField<
 > =
   TState extends Maybe<TState>
     ? ({
-        [K in keyof NonNullable<TState>]-?: IsPropertyOutputRequired<
+        [K in keyof TRules & keyof NonNullable<TState>]-?: IsPropertyOutputRequired<
           NonNullable<TState>[K],
-          TRules[K] extends RegleFormPropertyType<any, any> ? TRules[K] : {}
+          TRules[K] extends RegleFormPropertyType<any, any> ? TRules[K] : undefined
         >;
       } & {
         $self: IsPropertyOutputRequired<string, TRules['$self']>;
-      })[keyof TState | '$self'] extends false
+      })[(keyof TRules & keyof NonNullable<TState>) | '$self'] extends false
       ? false
       : true
     : true;
