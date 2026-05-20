@@ -2,6 +2,7 @@ import type { EffectScope, Ref, WatchStopHandle } from 'vue';
 import { effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
 import { dotPathObjectToNested, isObject } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
+import { isRegleDevtoolsTestEnv } from '../../../utils/devtools.utils';
 import type {
   $InternalRegleErrorTree,
   $InternalReglePartialRuleTree,
@@ -222,7 +223,12 @@ export function useRootStorage({
   bindToCurrentScope();
 
   function registerDevtools() {
-    if (typeof window !== 'undefined' && __USE_DEVTOOLS__ && regle.value) {
+    if (
+      typeof window !== 'undefined' &&
+      (__USE_DEVTOOLS__ || (typeof __VUE_PROD_DEVTOOLS__ !== 'undefined' && __VUE_PROD_DEVTOOLS__)) &&
+      !isRegleDevtoolsTestEnv() &&
+      regle.value
+    ) {
       registerRegleInstance(regle.value as any, { name: toValue(options.id) });
     }
   }
