@@ -16,10 +16,10 @@ export function cloneDeep<T>(obj: T, dep = 0): T {
   let result = obj as any;
   let type = {}.toString.call(obj).slice(8, -1);
   if (type == 'Set') {
-    result = new Set([...(obj as any)].map((value) => cloneDeep(value, dep++)));
+    result = new Set([...(obj as any)].map((value) => cloneDeep(value, dep + 1)));
   }
   if (type == 'Map') {
-    result = new Map([...(obj as any)].map((kv) => [cloneDeep(kv[0]), cloneDeep(kv[1])]));
+    result = new Map([...(obj as any)].map((kv) => [cloneDeep(kv[0], dep + 1), cloneDeep(kv[1], dep + 1)]));
   }
   if (type == 'Date') {
     result = new Date((obj as any).getTime());
@@ -31,7 +31,7 @@ export function cloneDeep<T>(obj: T, dep = 0): T {
     result = Array.isArray(obj) ? [] : {};
     for (let key in obj) {
       // include prototype properties
-      result[key] = cloneDeep(obj[key], dep++);
+      result[key] = cloneDeep(obj[key], dep + 1);
     }
   }
 
