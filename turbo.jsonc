@@ -19,7 +19,7 @@
         "$TURBO_DEFAULT$",
         "!README.md",
         "!eslint.config.mjs",
-        "src/**/*.ts",
+        "./src/**/*.ts",
         "tsdown.config.ts",
         "$TURBO_ROOT$/tsdown.common.build.ts"
       ]
