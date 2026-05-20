@@ -20,8 +20,8 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  '@nuxt/kit': 4.4.6
-  '@nuxt/schema': 4.4.6
+  '@nuxt/kit': 4.4.5
+  '@nuxt/schema': 4.4.5
   '@pinia/nuxt': 0.11.3
   '@playwright/test': 1.60.0
   '@total-typescript/ts-reset': 0.6.1
@@ -44,7 +44,7 @@ catalog:
   '@vue/test-utils': 2.4.10
   arktype: 2.2.0
   check-password-strength: 3.0.0
-  nuxt: 4.4.6
+  nuxt: 4.4.5
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5
   playwright: 1.60.0
