@@ -2,6 +2,7 @@ import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandl
 import { regleSymbol } from '../constants';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
+import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
 import { emitInspectorState } from './actions';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
@@ -112,42 +113,22 @@ export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
  * To be used by `useRegle` like composables.
  */
 export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { name?: string }): () => void {
-  if (typeof window === 'undefined') return () => {};
+  if (
+    typeof window === 'undefined' ||
+    !(__USE_DEVTOOLS__ || (typeof __VUE_PROD_DEVTOOLS__ !== 'undefined' && __VUE_PROD_DEVTOOLS__)) ||
+    isRegleDevtoolsTestEnv()
+  ) {
+    return () => {};
+  }
 
-  if (__USE_DEVTOOLS__) {
-    // Skip devtools logic when running in a test environment
-    const isTestEnv =
-      typeof globalThis !== 'undefined' && // Vitest
-      ('__vitest_worker__' in globalThis ||
-        // Jest
-        '__JEST_GLOBAL__' in globalThis ||
-        // Cypress
-        (typeof window !== 'undefined' && 'Cypress' in window) ||
-        // Process-based detection (Jest, Vitest, Mocha, etc.)
-        (typeof process !== 'undefined' &&
-          process.env &&
-          (process.env.VITEST ||
-            process.env.JEST_WORKER_ID ||
-            process.env.NODE_ENV === 'test' ||
-            process.env.PLAYWRIGHT_TEST)));
+  const regleVersion = inject(regleSymbol, undefined);
 
-    if (isTestEnv) {
-      return () => {};
-    }
-    const regleVersion = inject(regleSymbol, undefined);
-
-    if (
-      !regleVersion &&
-      !regleDevtoolsRegistry.loggedWarning.value &&
-      !!regleDevtoolsRegistry.devtoolsApi &&
-      !isTestEnv
-    ) {
-      regleDevtoolsRegistry.loggedWarning.value = true;
-      console.warn(
-        `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
-      );
-      return () => {};
-    }
+  if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value && !!regleDevtoolsRegistry.devtoolsApi) {
+    regleDevtoolsRegistry.loggedWarning.value = true;
+    console.warn(
+      `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
+    );
+    return () => {};
   }
 
   const instance = getCurrentInstance();

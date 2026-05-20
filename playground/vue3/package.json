@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vp build",
     "preview": "vp preview",
     "build-only": "vp build",
     "type-check": "vue-tsc --build --force"
