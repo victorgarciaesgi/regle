@@ -206,7 +206,7 @@ export function createReactiveCollectionStatus({
 
   function updateStatus() {
     if (Array.isArray(state.value) && (!immediateScopeState.isPrimitiveArray.value || schemaMode)) {
-      const previousStatus = cloneDeep($eachStatus.value);
+      const previousStatus = [...$eachStatus.value];
       const survivingIds = new Set<string>();
 
       $eachStatus.value = state.value
