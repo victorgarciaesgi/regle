@@ -34,6 +34,7 @@ import type {
   RegleErrorTree,
   RegleExternalCollectionErrors,
   RegleExternalErrorTree,
+  RegleExternalIssueTree,
   RegleFieldIssue,
   RegleFieldResult,
   RegleFormPropertyType,
@@ -149,6 +150,8 @@ export type RegleStatus<
   readonly $silentErrors: RegleErrorTree<TState>;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: RegleExternalErrorTree<TState>): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(issues: RegleExternalIssueTree<TState>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -180,6 +183,7 @@ export type RegleStatus<
  */
 export interface $InternalRegleStatus extends $InternalRegleCommonStatus {
   readonly $externalErrors?: $InternalRegleErrorTree;
+  readonly $externalIssues?: $InternalRegleIssues;
   $fields: {
     [x: string]: $InternalRegleStatusType;
   };
@@ -297,6 +301,8 @@ export type RegleFieldStatus<
   readonly $silentIssues: RegleFieldIssue<TRules>[];
   /** Stores external errors of the current field */
   readonly $externalErrors: string[];
+  /** Stores external issues of the current field */
+  readonly $externalIssues: RegleFieldIssue[];
   /** Stores active tooltips messages of the current field */
   readonly $tooltips: string[];
   /** Represents the inactive status. Is true when this state have empty rules */
@@ -310,6 +316,8 @@ export type RegleFieldStatus<
   addRules: (rules: RegleRuleDecl) => void;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: string[]): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(issues: RegleFieldIssue[]): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -332,6 +340,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   $silentValue: any;
   readonly $rules: Record<string, $InternalRegleRuleStatus>;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleFieldIssue[];
   readonly $errors: string[];
   readonly $tooltips: string[];
   readonly $inactive: boolean;
@@ -467,6 +476,8 @@ export interface RegleCommonStatus<
   $reset(options?: ResetOptions<TInput>): void;
   /** Clears the $externalErrors state back to an empty object. */
   $clearExternalErrors(): void;
+  /** Clears the $externalIssues state back to an empty object. */
+  $clearExternalIssues(): void;
 }
 
 export interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$touch' | '$reset'> {
@@ -476,6 +487,7 @@ export interface $InternalRegleCommonStatus extends Omit<RegleCommonStatus, '$to
   $reset(options?: ResetOptions<any>, fromParent?: boolean): void;
   $abort(): void;
   $setExternalErrors(errors: RegleExternalErrorTree<unknown>): void;
+  $setExternalIssues(issues: RegleExternalIssueTree<unknown>): void;
 }
 
 /**
@@ -613,6 +625,8 @@ export type RegleCollectionStatus<
   readonly $silentErrors: RegleCollectionErrors<TState>;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: RegleExternalCollectionErrors<TState>): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(errors: RegleExternalCollectionErrors<TState, true>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
@@ -640,6 +654,7 @@ export interface $InternalRegleCollectionStatus extends Omit<
   readonly $errors: $InternalRegleCollectionErrors;
   readonly $silentErrors: $InternalRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleFieldIssue[];
   readonly '~modifiers'?: CollectionRegleBehaviourOptions;
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate: (forceValues?: any) => Promise<$InternalRegleResult>;

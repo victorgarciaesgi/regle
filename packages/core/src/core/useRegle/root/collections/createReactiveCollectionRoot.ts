@@ -28,6 +28,7 @@ interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
+  externalIssues: Ref<$InternalRegleCollectionIssues | undefined> | undefined;
   schemaErrors?: ComputedRef<$InternalRegleSchemaCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
@@ -43,6 +44,7 @@ export function createReactiveCollectionStatus({
   storage,
   options,
   externalErrors,
+  externalIssues,
   schemaErrors,
   schemaMode,
   initialState,
@@ -150,6 +152,7 @@ export function createReactiveCollectionStatus({
 
           const initialStateRef = toRef(initialState.value ?? [], index);
           const $externalErrors = toRef(externalErrors?.value ?? {}, `$each`);
+          const $externalIssues = toRef(externalIssues?.value ?? {}, `$each`);
           const $schemaErrors = computed(() => schemaErrors?.value?.$each);
 
           const element = createCollectionElement({
@@ -163,6 +166,7 @@ export function createReactiveCollectionStatus({
             options,
             storage,
             externalErrors: $externalErrors,
+            externalIssues: $externalIssues,
             schemaErrors: $schemaErrors,
             initialState: initialStateRef,
             originalState,
@@ -193,6 +197,7 @@ export function createReactiveCollectionStatus({
       storage,
       options,
       externalErrors: toRef(externalErrors?.value ?? {}, `$self`),
+      externalIssues: toRef(externalIssues?.value ?? {}, `$self`),
       schemaErrors: computed(() => schemaErrors?.value?.$self),
       $isArray: true,
       initialState,
@@ -233,6 +238,7 @@ export function createReactiveCollectionStatus({
               collectionScopes.push(scope);
             }
             const $externalErrors = toRef(externalErrors?.value ?? {}, `$each`);
+            const $externalIssues = toRef(externalIssues?.value ?? {}, `$each`);
             const $schemaErrors = computed(() => schemaErrors?.value?.$each ?? []);
 
             const element = createCollectionElement({
@@ -246,6 +252,7 @@ export function createReactiveCollectionStatus({
               options,
               storage,
               externalErrors: $externalErrors,
+              externalIssues: $externalIssues,
               schemaErrors: $schemaErrors,
               initialState: toRef(initialState.value ?? [], index),
               originalState,
@@ -641,6 +648,7 @@ export function createReactiveCollectionStatus({
 
     if (options?.clearExternalErrors) {
       $clearExternalErrors();
+      $clearExternalIssues();
     }
 
     if (!options?.keepValidationState) {
@@ -721,15 +729,30 @@ export function createReactiveCollectionStatus({
   }
 
   function $setExternalErrors(errors: RegleExternalCollectionErrors<unknown[]>) {
-    if (externalErrors?.value) {
+    if (externalErrors) {
       externalErrors.value = errors;
     }
+    $clearExternalIssues();
   }
 
   function $clearExternalErrors() {
     $selfStatus.value.$clearExternalErrors();
     $eachStatus.value.forEach(($each) => {
       $each.$clearExternalErrors();
+    });
+  }
+
+  function $setExternalIssues(issues: RegleExternalCollectionErrors<unknown[], true>) {
+    if (externalIssues) {
+      externalIssues.value = issues;
+    }
+    $clearExternalErrors();
+  }
+
+  function $clearExternalIssues() {
+    $selfStatus.value.$clearExternalIssues();
+    $eachStatus.value.forEach(($each) => {
+      $each.$clearExternalIssues();
     });
   }
 
@@ -774,7 +797,9 @@ export function createReactiveCollectionStatus({
     $abort,
     $extractDirtyFields,
     $clearExternalErrors,
+    $clearExternalIssues,
     $setExternalErrors,
+    $setExternalIssues,
     '~modifiers': scopeState.$modifiers,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleCollectionStatus;

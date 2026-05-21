@@ -69,7 +69,42 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
             })
           | Record<Paths<TState> | (string & {}), string[]>;
 
+export type RegleExternalIssueTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      :
+          | ({
+              readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+                JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+                true,
+                true,
+                TSchema
+              >;
+            } & {
+              readonly $self?: RegleExternalFieldIssue[];
+            })
+          | Partial<Record<Paths<TState> | (string & {}), RegleExternalFieldIssue[]>>;
+
 export type RegleExternalSchemaErrorTree<
+  TState = MaybeRef<Record<string, any> | any[]>,
+  TSchema extends boolean = false,
+> =
+  IsAny<TState> extends true
+    ? any
+    : IsUnknown<TState> extends true
+      ? any
+      : {
+          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+            JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
+            true,
+            true,
+            TSchema
+          >;
+        };
+
+export type RegleExternalSchemaIssueTree<
   TState = MaybeRef<Record<string, any> | any[]>,
   TSchema extends boolean = false,
 > =
@@ -91,6 +126,8 @@ type ErrorMessageOrIssue<
   TRules extends RegleFormPropertyType<Record<string, any>> = EmptyObject,
 > = TIssue extends true ? RegleFieldIssue<TRules>[] : string[];
 
+type ExternalErrorMessageOrIssue<TIssue extends boolean> = TIssue extends true ? RegleExternalFieldIssue[] : string[];
+
 export type RegleValidationErrors<
   TState extends Record<string, any> | any[] | unknown = never,
   TExternal extends boolean = false,
@@ -110,14 +147,22 @@ export type RegleValidationErrors<
               : RegleExternalCollectionErrors<U, TIssue, TSchema>
             : RegleCollectionErrors<U, TIssue, TSchema>
           : NonNullable<TState> extends Date | File
-            ? ErrorMessageOrIssue<TIssue, TRules>
+            ? TExternal extends true
+              ? ExternalErrorMessageOrIssue<TIssue>
+              : ErrorMessageOrIssue<TIssue, TRules>
             : NonNullable<TState> extends Record<string, any>
               ? IsRegleStatic<NonNullable<TState>> extends true
-                ? ErrorMessageOrIssue<TIssue, TRules>
+                ? TExternal extends true
+                  ? ExternalErrorMessageOrIssue<TIssue>
+                  : ErrorMessageOrIssue<TIssue, TRules>
                 : TExternal extends false
                   ? RegleErrorTree<TState, TIssue, TSchema>
-                  : RegleExternalErrorTree<TState, TSchema>
-              : ErrorMessageOrIssue<TIssue, TRules>
+                  : TIssue extends true
+                    ? RegleExternalIssueTree<TState, TSchema>
+                    : RegleExternalErrorTree<TState, TSchema>
+              : TExternal extends true
+                ? ExternalErrorMessageOrIssue<TIssue>
+                : ErrorMessageOrIssue<TIssue, TRules>
         : any;
 
 export type RegleFieldIssue<
@@ -139,6 +184,8 @@ export type RegleFieldIssue<
           : { readonly $rule: string }
         : { readonly $rule: string };
     }[keyof ComputeFieldRules<any, TRules>]);
+
+export type RegleExternalFieldIssue = RegleFieldIssue & Record<string, unknown>;
 
 export type ComputeFieldRules<
   TState extends any,
@@ -178,7 +225,7 @@ export type RegleExternalCollectionErrors<
   TIssue extends boolean = false,
   TSchema extends boolean = false,
 > = {
-  readonly $self?: TIssue extends true ? RegleFieldIssue[] : string[];
+  readonly $self?: TIssue extends true ? RegleExternalFieldIssue[] : string[];
   readonly $each?: RegleValidationErrors<TState, true, TIssue, TSchema>[];
 };
 

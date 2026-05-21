@@ -1,4 +1,4 @@
-import { mergeRegles, RegleVuePlugin, useRegle } from '@regle/core';
+import { mergeRegles, RegleVuePlugin, useRegle, type RegleFieldIssue } from '@regle/core';
 import { numeric, required } from '@regle/rules';
 import { mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
@@ -180,6 +180,63 @@ describe('mergeRegles', () => {
     expectTypeOf(dirtyFields[1]).toBeObject();
     expectTypeOf(dirtyFields[2]).toBeObject();
     expect(vm.r$Merged.$extractDirtyFields()).toStrictEqual([{}, {}, {}]);
+  });
+
+  it('should expose external issues helpers on merged instances', async () => {
+    const issue: RegleFieldIssue & { code: string } = {
+      $message: 'Server issue',
+      $property: 'name',
+      $rule: 'external',
+      code: 'SERVER',
+    };
+
+    vm.secondR$.$touch();
+    vm.secondR$.$setExternalIssues({ name: [issue] });
+    await vm.$nextTick();
+    expect(vm.secondR$.name.$errors).toStrictEqual(['This field is required', 'Server issue']);
+
+    vm.secondR$.$clearExternalIssues();
+    await vm.$nextTick();
+    expect(vm.secondR$.name.$errors).toStrictEqual(['This field is required']);
+  });
+
+  it('should forward external issues helpers from merged root', () => {
+    const setExternalIssues = vi.fn();
+    const clearExternalIssues = vi.fn();
+    const regle = {
+      $value: { foo: 'a' },
+      $silentValue: { foo: 'a' },
+      $dirty: false,
+      $anyDirty: false,
+      $invalid: false,
+      $correct: true,
+      $error: false,
+      $pending: false,
+      $ready: true,
+      $edited: false,
+      $anyEdited: false,
+      $issues: {},
+      $silentIssues: {},
+      $errors: {},
+      $silentErrors: {},
+      $extractDirtyFields: () => ({}),
+      $clearExternalErrors: () => {},
+      $clearExternalIssues: clearExternalIssues,
+      $setExternalErrors: () => {},
+      $setExternalIssues: setExternalIssues,
+      $reset: () => {},
+      $touch: () => {},
+      $validate: vi.fn(),
+      $validateSync: vi.fn(),
+    };
+    const issues = [{ $message: 'Server issue', $property: 'foo', $rule: 'external' }];
+    const merged = mergeRegles({ regle });
+
+    merged.$setExternalIssues(issues);
+    merged.$clearExternalIssues();
+
+    expect(setExternalIssues).toHaveBeenCalledWith(issues);
+    expect(clearExternalIssues).toHaveBeenCalledOnce();
   });
 
   it('should validate with force values and handle rejected validations', async () => {

@@ -4,6 +4,7 @@ import type {
   HasNamedKeys,
   PromiseReturn,
   RegleCommonStatus,
+  RegleExternalFieldIssue,
   RegleResult,
   RegleStatus,
   RegleValidationErrors,
@@ -45,6 +46,10 @@ export type MergedRegles<
   };
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TValue>[];
+  /** Sets external errors on every merged instance. */
+  $setExternalErrors(errors: string[]): void;
+  /** Sets structured external issues on every merged instance. */
+  $setExternalIssues(issues: RegleExternalFieldIssue[]): void;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
   $validate: (forceValues?: TRegles['$value']) => Promise<MergedReglesResult<TRegles>>;
   $validateSync: (forceValues?: TRegles['$value']) => boolean;
@@ -328,9 +333,21 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   }
 
+  function $setExternalIssues(issues: any[]) {
+    Object.values(regles).forEach((regle) => {
+      regle.$setExternalIssues(issues);
+    });
+  }
+
   function $clearExternalErrors() {
     Object.values(regles).forEach((regle) => {
       regle.$clearExternalErrors();
+    });
+  }
+
+  function $clearExternalIssues() {
+    Object.values(regles).forEach((regle) => {
+      regle.$clearExternalIssues();
     });
   }
 
@@ -399,7 +416,9 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $validateSync,
     $extractDirtyFields,
     $clearExternalErrors,
+    $clearExternalIssues,
     $setExternalErrors,
+    $setExternalIssues,
   } as Record<
     keyof Omit<RegleStatus, '$initialValue' | '$originalValue' | '$path' | '$name' | '$id' | '~standard' | '$fields'>,
     any

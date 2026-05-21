@@ -47,8 +47,7 @@ The `$reset` method accepts an options object with the following properties:
 #### `clearExternalErrors`
 - **Type:** `boolean`
 - **Description:**  
-  Clears the `$externalErrors` state back to an empty object.
-
+  Clears the `$externalErrors` and `$externalIssues` state back to an empty object.
 
 ```ts
 r$.$reset(); // Only reset validation state, set the initialValue as the current value
@@ -67,7 +66,7 @@ r$.$reset({ toState: { email: 'test@test.com' } }); // Reset validation state an
 ```
 
 ```ts
-r$.$reset({ clearExternalErrors: true }); // Clear $externalErrors state
+r$.$reset({ clearExternalErrors: true }); // Clear $externalErrors and $externalIssues state
 ```
 
 
