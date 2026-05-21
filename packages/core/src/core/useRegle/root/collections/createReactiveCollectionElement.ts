@@ -3,6 +3,7 @@ import { computed, ref, toRef, toValue } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
+  $InternalRegleIssues,
   $InternalRegleSchemaErrors,
   $InternalRegleStatusType,
   MaybeRefOrComputedRef,
@@ -34,6 +35,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId | undefined>;
   rules: MaybeRefOrComputedRef<$InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty>;
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
+  externalIssues: Ref<$InternalRegleIssues[] | undefined> | undefined;
   schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
   originalState: Record<string, any>;
@@ -57,6 +59,7 @@ export function createCollectionElement({
   customMessages,
   rules,
   externalErrors,
+  externalIssues,
   schemaErrors,
   initialState,
   originalState,
@@ -90,6 +93,7 @@ export function createCollectionElement({
   }
 
   const $externalErrors = toRef(externalErrors?.value ?? [], index);
+  const $externalIssues = toRef(externalIssues?.value ?? [], index);
   const $schemaErrors = computed(() => schemaErrors?.value?.[currentIndex.value]);
 
   const $status = createReactiveChildrenStatus({
@@ -103,6 +107,7 @@ export function createCollectionElement({
     storage,
     options,
     externalErrors: $externalErrors,
+    externalIssues: $externalIssues,
     schemaErrors: $schemaErrors,
     initialState,
     originalState,

@@ -11,6 +11,7 @@ import type {
   RegleErrorTree,
   RegleExternalCollectionErrors,
   RegleExternalSchemaErrorTree,
+  RegleExternalSchemaIssueTree,
   RegleFieldIssue,
   RegleIssuesTree,
   RegleRuleStatus,
@@ -128,6 +129,8 @@ export type RegleSchemaStatus<
   readonly $silentErrors: RegleErrorTree<TInput, false, true>;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: RegleExternalSchemaErrorTree<TInput>): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(issues: RegleExternalSchemaIssueTree<TInput>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
 } & (HasNamedKeys<TInput> extends true
@@ -220,6 +223,8 @@ export type RegleSchemaFieldStatus<
   readonly $silentIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   readonly $externalErrors: string[];
+  /** Stores external issues of the current field */
+  readonly $externalIssues: (RegleFieldIssue & StandardSchemaV1.Issue)[];
   /** Represents the inactive status. Is true when this state have empty rules */
   readonly $inactive: boolean;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
@@ -229,6 +234,8 @@ export type RegleSchemaFieldStatus<
   readonly $output: TOutput;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: string[]): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(issues: (RegleFieldIssue & StandardSchemaV1.Issue)[]): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
 } & ([TShortcuts['fields']] extends [never]
@@ -270,6 +277,8 @@ export type RegleSchemaCollectionStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: RegleExternalCollectionErrors<TInput>): void;
+  /** Sets the external issues for the field. */
+  $setExternalIssues(errors: RegleExternalCollectionErrors<TInput, true>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
 } & ([TShortcuts['collections']] extends [never]
