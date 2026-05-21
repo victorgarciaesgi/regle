@@ -64,6 +64,7 @@ export interface SuperCompatibleRegleFieldStatus extends SuperCompatibleRegleCom
   $silentValue: any;
   readonly $rules: Record<string, SuperCompatibleRegleRuleStatus>;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleFieldIssue[];
   readonly $issues: RegleFieldIssue[];
   readonly $silentIssues: RegleFieldIssue[];
   readonly $errors: string[];
@@ -82,6 +83,7 @@ export interface SuperCompatibleRegleCollectionStatus extends Omit<
   readonly $errors: SuperCompatibleRegleCollectionErrors;
   readonly $silentErrors: SuperCompatibleRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleFieldIssue[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate?: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
   $validateSync?: (...args: any[]) => boolean;

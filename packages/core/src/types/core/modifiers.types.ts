@@ -6,6 +6,8 @@ import type {
   $InternalRegleStatus,
   RegleCollectionStatus,
   RegleExternalErrorTree,
+  RegleExternalIssueTree,
+  RegleFieldIssue,
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleStatus,
@@ -89,6 +91,14 @@ export interface LocalRegleBehaviourOptions<
    */
   externalErrors?: Ref<RegleExternalErrorTree<Unwrap<TState>> | Record<string, string[]>>;
   /**
+   * A dictionary of external issues to be injected into the field statuses.
+   *
+   * External issues preserve metadata in `$issues` and their `$message` is reflected in `$errors`.
+   * They are mutually exclusive with `externalErrors`: assigning one clears the other.
+   * You can also call `r$.$setExternalIssues(...)` directly without providing this option.
+   */
+  externalIssues?: Ref<RegleExternalIssueTree<Unwrap<TState>> | Record<string, RegleFieldIssue[]>>;
+  /**
    * Allows you to group fields for custom collective validation logic.
    *
    * The `validationGroups` option lets you define logical groupings of fields within your form that should be validated or checked together.
@@ -112,6 +122,10 @@ export type FieldOnlyRegleBehaviourOptions = {
    * Set external errors for the field.
    */
   externalErrors?: Ref<string[]>;
+  /**
+   * Set external issues for the field.
+   */
+  externalIssues?: Ref<RegleFieldIssue[]>;
   /**
    * A unique identifier for the Regle instance in the devtools.
    * @default undefined

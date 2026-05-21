@@ -99,6 +99,15 @@ Pass an object, matching your error state, that holds external validation errors
 
 Check the [External errors](/common-usage/external-errors) section for more details.
 
+### `externalIssues`
+
+__Type__: `RegleExternalIssueTree<State>`
+
+Pass an object, matching your state, that holds structured external validation issues. Each issue keeps its metadata in `$issues`, and its `$message` is also exposed through `$errors`.
+
+`externalIssues` and `externalErrors` are mutually exclusive. Setting one clears the other.
+
+Check the [External errors and issues](/common-usage/external-errors) section for more details.
 
 ### `rewardEarly`
 
@@ -119,7 +128,7 @@ __Type__: `boolean`
 __Default__: `true`
 
 This mode is similar to `rewardEarly`, but only applies to external errors.
-Setting it to `false` will keep the server errors until `$clearExternalErrors` is called.
+Setting it to `false` will keep the server errors and issues until `$clearExternalErrors` or `$clearExternalIssues` is called.
 
 
 ### `clearExternalErrorsOnValidate`
@@ -129,7 +138,7 @@ __Type__: `boolean`
 __Default__: `false`
 
 This mode is similar to `clearExternalErrorsOnChange`, but for the `$validate` and `$validateSync` methods.
-Setting it to `false` will keep the server errors until `$clearExternalErrors` is called manually, or the `externalErrors` is set again.
+Setting it to `false` will keep the server errors and issues until `$clearExternalErrors` or `$clearExternalIssues` is called manually, or `externalErrors` / `externalIssues` is set again.
 
 ### `validationGroups`
 
