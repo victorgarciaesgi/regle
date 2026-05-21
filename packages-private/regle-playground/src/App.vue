@@ -41,6 +41,7 @@
         ...store.getImportMap().imports,
         vue: 'https://play.vuejs.org/vue.runtime.esm-browser.js',
         'vue/server-renderer': 'https://play.vuejs.org/server-renderer.esm-browser.js',
+        '@vue/devtools-api': 'https://cdn.jsdelivr.net/npm/@vue/devtools-api@7.7.9/+esm',
         '@regle/core': 'https://www.unpkg.com/@regle/core@latest/dist/regle-core.min.js',
         '@regle/rules': 'https://www.unpkg.com/@regle/rules@latest/dist/regle-rules.min.js',
         '@regle/schemas': 'https://www.unpkg.com/@regle/schemas@latest/dist/regle-schemas.min.js',
