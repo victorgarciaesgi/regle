@@ -143,4 +143,67 @@ describe('cloneDeep', () => {
     expect(cloned[4]).not.toBe(original[4]);
     expect(cloned[5]).not.toBe(original[5]);
   });
+
+  it('should clone an object with 20+ sibling keys', () => {
+    const original: Record<string, { value: number }> = {};
+    for (let i = 0; i < 25; i++) {
+      original[`key${i}`] = { value: i };
+    }
+    const cloned = cloneDeep(original);
+
+    expect(cloned).toEqual(original);
+    expect(cloned).not.toBe(original);
+
+    // Depth is tracked per-branch, so every sibling is cloned regardless of count
+    for (let i = 0; i < 25; i++) {
+      expect(cloned[`key${i}`]).toEqual(original[`key${i}`]);
+      expect(cloned[`key${i}`]).not.toBe(original[`key${i}`]);
+    }
+  });
+
+  it('should deep clone nested keys down to a depth of 20', () => {
+    const maxDepth = 25;
+    // Build a chain where the node at nesting level n is reached via n `.child` hops
+    const nodes: Array<{ level: number; child?: any }> = Array.from({ length: maxDepth + 1 });
+    nodes[maxDepth] = { level: maxDepth };
+    for (let i = maxDepth - 1; i >= 0; i--) {
+      nodes[i] = { level: i, child: nodes[i + 1] };
+    }
+    const original = nodes[0];
+
+    const getAtLevel = (obj: any, level: number) => {
+      let node = obj;
+      for (let i = 0; i < level; i++) node = node.child;
+      return node;
+    };
+
+    const cloned = cloneDeep(original);
+
+    // Levels 0 through 20 are cloned (new references)
+    for (let level = 0; level <= 20; level++) {
+      expect(getAtLevel(cloned, level)).toEqual(getAtLevel(original, level));
+      expect(getAtLevel(cloned, level)).not.toBe(getAtLevel(original, level));
+    }
+  });
+
+  it('should return the original reference at depth 21 instead of cloning', () => {
+    const maxDepth = 25;
+    const nodes: Array<{ level: number; child?: any }> = Array.from({ length: maxDepth + 1 });
+    nodes[maxDepth] = { level: maxDepth };
+    for (let i = maxDepth - 1; i >= 0; i--) {
+      nodes[i] = { level: i, child: nodes[i + 1] };
+    }
+    const original = nodes[0];
+
+    const getAtLevel = (obj: any, level: number) => {
+      let node = obj;
+      for (let i = 0; i < level; i++) node = node.child;
+      return node;
+    };
+
+    const cloned = cloneDeep(original);
+
+    // The node at level 21 exceeds the depth limit, so the reference is returned as-is
+    expect(getAtLevel(cloned, 21)).toBe(getAtLevel(original, 21));
+  });
 });
