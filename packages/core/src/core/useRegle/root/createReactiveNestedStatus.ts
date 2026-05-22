@@ -257,8 +257,8 @@ export function createReactiveNestedStatus({
         cachePath,
         externalErrors: ref(undefined),
         schemaErrors: ref(undefined),
-        initialState: toRef(initialState?.value ?? {}, `$self`),
-        originalState: originalState?.[`$self`],
+        initialState: initialState ?? ref(undefined),
+        originalState,
         fieldName: `$self`,
         ...commonArgs,
       });
