@@ -91,6 +91,7 @@ export type {
   RegleFormPropertyType,
   RegleInternalRuleDefs,
   RegleIssuesTree,
+  RegleIssueCustomMetadata,
   ReglePartialRuleTree,
   RegleResult,
   RegleRoot,

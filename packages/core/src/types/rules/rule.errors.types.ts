@@ -165,25 +165,29 @@ export type RegleValidationErrors<
                 : ErrorMessageOrIssue<TIssue, TRules>
         : any;
 
+export interface RegleIssueCustomMetadata {}
+
 export type RegleFieldIssue<
   TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
 > = {
   readonly $property: string;
   readonly $type?: string;
   readonly $message: string;
-} & (IsEmptyObject<TRules> extends true
-  ? {
-      readonly $rule: string;
-    }
-  : {
-      [K in keyof ComputeFieldRules<any, TRules>]: ComputeFieldRules<any, TRules>[K] extends {
-        $metadata: infer TMetadata;
+  [x: string]: unknown;
+} & RegleIssueCustomMetadata &
+  (IsEmptyObject<TRules> extends true
+    ? {
+        readonly $rule: string;
       }
-        ? K extends string
-          ? { readonly $rule: K } & (TMetadata extends boolean ? { readonly $rule: string } : TMetadata)
-          : { readonly $rule: string }
-        : { readonly $rule: string };
-    }[keyof ComputeFieldRules<any, TRules>]);
+    : {
+        [K in keyof ComputeFieldRules<any, TRules>]: ComputeFieldRules<any, TRules>[K] extends {
+          $metadata: infer TMetadata;
+        }
+          ? K extends string
+            ? { readonly $rule: K } & (TMetadata extends boolean ? { readonly $rule: string } : TMetadata)
+            : { readonly $rule: string }
+          : { readonly $rule: string };
+      }[keyof ComputeFieldRules<any, TRules>]);
 
 export type RegleExternalFieldIssue = Pick<RegleFieldIssue, '$message'> &
   Partial<Omit<RegleFieldIssue, '$message'>> &
