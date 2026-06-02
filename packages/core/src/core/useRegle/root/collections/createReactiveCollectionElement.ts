@@ -3,7 +3,7 @@ import { computed, ref, toRef, toValue } from 'vue';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
-  $InternalRegleIssues,
+  $InternalRegleExternalIssues,
   $InternalRegleSchemaErrors,
   $InternalRegleStatusType,
   MaybeRefOrComputedRef,
@@ -35,7 +35,7 @@ interface CreateCollectionElementArgs extends CommonResolverOptions {
   stateValue: Ref<StateWithId | undefined>;
   rules: MaybeRefOrComputedRef<$InternalFormPropertyTypes & RegleCollectionRuleDeclKeyProperty>;
   externalErrors: Ref<$InternalRegleErrors[] | string[] | undefined> | undefined;
-  externalIssues: Ref<$InternalRegleIssues[] | undefined> | undefined;
+  externalIssues: Ref<$InternalRegleExternalIssues[] | undefined> | undefined;
   schemaErrors: ComputedRef<$InternalRegleSchemaErrors[] | string[] | undefined> | undefined;
   initialState: Ref<unknown>;
   originalState: Record<string, any>;

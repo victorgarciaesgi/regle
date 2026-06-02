@@ -2,6 +2,7 @@ import {
   inferRules,
   useRegle,
   type RegleExternalErrorTree,
+  type RegleExternalFieldIssue,
   type RegleExternalIssueTree,
   type RegleFieldIssue,
 } from '@regle/core';
@@ -10,11 +11,10 @@ import { computed, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeUnRuledCorrectField } from '../../../utils/validations.utils';
 
-function issue(message: string, property: string, code: string): RegleFieldIssue & { code: string } {
+function issue(message: string, property: string, code: string): RegleExternalFieldIssue & { code: string } {
   return {
     $message: message,
     $property: property,
-    $rule: 'external',
     code,
   };
 }
@@ -83,9 +83,13 @@ describe('external issues', () => {
     expect(vm.r$.collection.$each[0].item.$errors).toStrictEqual([]);
     expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['Server Item']);
 
-    expect(vm.r$.root.$issues).toStrictEqual([issue('Server Root', 'root', 'ROOT')]);
-    expect(vm.r$.nested.name1.name2.$issues).toStrictEqual([issue('Server Nested', 'name2', 'NESTED')]);
-    expect(vm.r$.collection.$each[1].item.$issues).toStrictEqual([issue('Server Item', 'item', 'ITEM')]);
+    expect(vm.r$.root.$issues).toStrictEqual([{ ...issue('Server Root', 'root', 'ROOT'), $rule: 'external' }]);
+    expect(vm.r$.nested.name1.name2.$issues).toStrictEqual([
+      { ...issue('Server Nested', 'name2', 'NESTED'), $rule: 'external' },
+    ]);
+    expect(vm.r$.collection.$each[1].item.$issues).toStrictEqual([
+      { ...issue('Server Item', 'item', 'ITEM'), $rule: 'external' },
+    ]);
 
     const { valid } = await vm.r$.$validate();
     expect(valid).toBe(true);
@@ -141,7 +145,7 @@ describe('external issues', () => {
 
     shouldBeErrorField(r$.nested.name);
     expect(r$.nested.name.$errors).toStrictEqual(['Server Name']);
-    expect(r$.nested.name.$issues).toStrictEqual([issue('Server Name', 'name', 'NAME')]);
+    expect(r$.nested.name.$issues).toStrictEqual([{ ...issue('Server Name', 'name', 'NAME'), $rule: 'external' }]);
 
     form.value.nested.name = 'foo';
     await nextTick();
@@ -151,8 +155,8 @@ describe('external issues', () => {
   });
 
   it('should support single-field external issues', async () => {
-    const externalIssues = ref<RegleFieldIssue[]>([]);
-    const { r$ } = useRegle(ref('foo'), { required }, { externalIssues });
+    const externalIssues = ref<RegleExternalFieldIssue[]>([]);
+    const { r$ } = useRegle(ref('foo'), { required }, { externalIssues: externalIssues });
 
     r$.$touch();
     externalIssues.value = [issue('Server Field', 'root', 'FIELD')];
@@ -160,7 +164,7 @@ describe('external issues', () => {
     await nextTick();
 
     expect(r$.$errors).toStrictEqual(['Server Field']);
-    expect(r$.$issues).toStrictEqual([issue('Server Field', 'root', 'FIELD')]);
+    expect(r$.$issues).toStrictEqual([{ ...issue('Server Field', 'root', 'FIELD'), $rule: 'external' }]);
 
     r$.$clearExternalIssues();
 
@@ -171,7 +175,7 @@ describe('external issues', () => {
   });
 
   it('should clear external issues on validate and reset', async () => {
-    const externalIssues = ref<RegleFieldIssue[]>([issue('Server Field', 'root', 'FIELD')]);
+    const externalIssues = ref<RegleExternalFieldIssue[]>([issue('Server Field', 'root', 'FIELD')]);
     const { r$ } = useRegle(ref('foo'), { required }, { externalIssues, clearExternalErrorsOnValidate: true });
 
     r$.$touch();

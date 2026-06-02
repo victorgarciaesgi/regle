@@ -34,6 +34,7 @@ import type {
   RegleErrorTree,
   RegleExternalCollectionErrors,
   RegleExternalErrorTree,
+  RegleExternalFieldIssue,
   RegleExternalIssueTree,
   RegleFieldIssue,
   RegleFieldResult,
@@ -340,7 +341,7 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   $silentValue: any;
   readonly $rules: Record<string, $InternalRegleRuleStatus>;
   readonly $externalErrors?: string[];
-  readonly $externalIssues?: RegleFieldIssue[];
+  readonly $externalIssues?: RegleExternalFieldIssue[];
   readonly $errors: string[];
   readonly $tooltips: string[];
   readonly $inactive: boolean;

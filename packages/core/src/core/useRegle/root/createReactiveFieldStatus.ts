@@ -20,6 +20,7 @@ import type {
   CollectionRegleBehaviourOptions,
   FieldRegleBehaviourOptions,
   isEditedHandlerFn,
+  RegleExternalFieldIssue,
   RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
@@ -43,7 +44,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
   externalErrors: Ref<string[] | undefined> | undefined;
-  externalIssues: Ref<RegleFieldIssue[] | undefined> | undefined;
+  externalIssues: Ref<RegleExternalFieldIssue[] | undefined> | undefined;
   schemaErrors?: Ref<RegleFieldIssue[] | undefined> | undefined;
   schemaMode: boolean | undefined;
   onUnwatch?: () => void;

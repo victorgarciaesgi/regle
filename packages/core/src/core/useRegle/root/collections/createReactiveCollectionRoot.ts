@@ -6,6 +6,7 @@ import type {
   $InternalRegleCollectionIssues,
   $InternalRegleCollectionRuleDecl,
   $InternalRegleCollectionStatus,
+  $InternalRegleExternalCollectionIssues,
   $InternalRegleFieldStatus,
   $InternalRegleResult,
   $InternalRegleSchemaCollectionErrors,
@@ -28,7 +29,7 @@ interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
   rulesDef: Ref<$InternalRegleCollectionRuleDecl>;
   externalErrors: Ref<$InternalRegleCollectionErrors | undefined> | undefined;
-  externalIssues: Ref<$InternalRegleCollectionIssues | undefined> | undefined;
+  externalIssues: Ref<$InternalRegleExternalCollectionIssues | undefined> | undefined;
   schemaErrors?: ComputedRef<$InternalRegleSchemaCollectionErrors | undefined> | undefined;
   schemaMode: boolean | undefined;
   initialState: Ref<(unknown | undefined)[]>;
