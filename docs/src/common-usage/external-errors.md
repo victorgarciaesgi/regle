@@ -69,7 +69,6 @@ r$.$setExternalIssues({
     {
       $message: 'Email already exists',
       $property: 'email',
-      $rule: 'external',
       code: 'EMAIL_TAKEN',
     },
   ],
@@ -211,7 +210,7 @@ For structured issues, use the matching methods and options:
 
 ```ts
 r$.$setExternalIssues({
-  email: [{ $message: 'Email already exists', $property: 'email', $rule: 'external' }],
+  email: [{ $message: 'Email already exists', code: 'EMAIL_TAKEN' }],
 });
 
 r$.$clearExternalIssues();

@@ -26,7 +26,7 @@
     "build": "turbo build --filter='@regle/*' --filter='!@regle/shared'",
     "build:sourcemaps": "turbo build:sourcemaps --filter='@regle/*' --filter='!@regle/shared'",
     "dev": "turbo run dev --filter='@regle/*' --filter='!@regle/mcp-server'",
-    "run:vitest:vue-3.5": "vp test",
+    "run:vitest:vue-3.5": "vp test --watch",
     "run:vitest:vue-3.4": "env-cmd -e 'vue-3.4' -- vitest",
     "unit-tests:run": "pnpm run:vitest:vue-3.5 run && pnpm run:vitest:vue-3.4 run",
     "test": "pnpm build && pnpm lint && pnpm fmt:check && pnpm typecheck && pnpm unit-tests:run && pnpm test:typecheck && pnpm ui-tests:run",

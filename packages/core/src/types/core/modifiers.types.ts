@@ -6,8 +6,8 @@ import type {
   $InternalRegleStatus,
   RegleCollectionStatus,
   RegleExternalErrorTree,
+  RegleExternalFieldIssue,
   RegleExternalIssueTree,
-  RegleFieldIssue,
   RegleFieldStatus,
   ReglePartialRuleTree,
   RegleStatus,
@@ -97,7 +97,7 @@ export interface LocalRegleBehaviourOptions<
    * They are mutually exclusive with `externalErrors`: assigning one clears the other.
    * You can also call `r$.$setExternalIssues(...)` directly without providing this option.
    */
-  externalIssues?: Ref<RegleExternalIssueTree<Unwrap<TState>> | Record<string, RegleFieldIssue[]>>;
+  externalIssues?: Ref<RegleExternalIssueTree<Unwrap<TState>> | Record<string, RegleExternalFieldIssue[]>>;
   /**
    * Allows you to group fields for custom collective validation logic.
    *
@@ -125,7 +125,7 @@ export type FieldOnlyRegleBehaviourOptions = {
   /**
    * Set external issues for the field.
    */
-  externalIssues?: Ref<RegleFieldIssue[]>;
+  externalIssues?: Ref<RegleExternalIssueTree[]>;
   /**
    * A unique identifier for the Regle instance in the devtools.
    * @default undefined
