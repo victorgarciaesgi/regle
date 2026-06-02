@@ -96,6 +96,7 @@ export function createReactiveNestedStatus({
     $errors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $silentErrors: ComputedRef<Record<string, $InternalRegleErrors>>;
     $clearExternalErrorsOnValidate: ComputedRef<boolean>;
+    $clearExternalErrorsOnChange: ComputedRef<boolean>;
     $ready: ComputedRef<boolean>;
     $shortcuts: ToRefs<$InternalRegleShortcutDefinition['nested']>;
     $groups: ComputedRef<Record<string, RegleValidationGroupOutput>>;
@@ -323,6 +324,10 @@ export function createReactiveNestedStatus({
           // Do not watch deep to only track mutation on the object itself on not its children
           $touch(false, true);
         }
+        if (scopeState.$clearExternalErrorsOnChange.value) {
+          $clearExternalErrors();
+          $clearExternalIssues();
+        }
       },
       { flush: 'post' }
     );
@@ -372,6 +377,10 @@ export function createReactiveNestedStatus({
           if (scopeState.$autoDirty.value && !scopeState.$silent.value) {
             // Do not watch deep to only track mutation on the object itself on not its children
             $touch(false, true);
+          }
+          if (scopeState.$clearExternalErrorsOnChange.value) {
+            $clearExternalErrors();
+            $clearExternalIssues();
           }
         },
       });
@@ -506,7 +515,7 @@ export function createReactiveNestedStatus({
         if (toValue(commonArgs.options.clearExternalErrorsOnChange) != null) {
           return toValue(commonArgs.options.clearExternalErrorsOnChange) === true;
         }
-        return false;
+        return true;
       });
 
       const $clearExternalErrorsOnValidate = computed<boolean>(() => {
@@ -692,6 +701,7 @@ export function createReactiveNestedStatus({
         $errors,
         $silentErrors,
         $clearExternalErrorsOnValidate,
+        $clearExternalErrorsOnChange,
         $ready,
         $name,
         $shortcuts,

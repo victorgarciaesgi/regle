@@ -1,5 +1,4 @@
 import {
-  inferRules,
   useRegle,
   type RegleExternalErrorTree,
   type RegleExternalFieldIssue,
@@ -7,7 +6,7 @@ import {
   type RegleFieldIssue,
 } from '@regle/core';
 import { required } from '@regle/rules';
-import { computed, nextTick, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeUnRuledCorrectField } from '../../../utils/validations.utils';
 
@@ -44,22 +43,23 @@ describe('external issues', () => {
     const externalErrors = ref<RegleExternalErrorTree<Form> | Record<string, string[]>>({});
     const externalIssues = ref<RegleExternalIssueTree<Form> | Record<string, RegleFieldIssue[]>>({});
 
-    const rules = computed(() => {
-      return inferRules(form, {
-        root: { required },
-        nested: { name1: { name2: { required } } },
-        collection: {
-          $each: {
-            item: { required },
-          },
-        },
-      });
-    });
-
     return {
       externalErrors,
       externalIssues,
-      ...useRegle(form, rules, { externalErrors, externalIssues, clearExternalErrorsOnChange: false }),
+      form,
+      ...useRegle(
+        form,
+        {
+          root: { required },
+          nested: { name1: { name2: { required } } },
+          collection: {
+            $each: {
+              item: { required },
+            },
+          },
+        },
+        { externalErrors, externalIssues }
+      ),
     };
   }
 
@@ -67,6 +67,7 @@ describe('external issues', () => {
     const { vm } = createRegleComponent(nestedExternalIssuesWithRules);
 
     vm.r$.$touch();
+
     vm.externalIssues = {
       root: [issue('Server Root', 'root', 'ROOT')],
       nested: { name1: { name2: [issue('Server Nested', 'name2', 'NESTED')] } },
@@ -99,7 +100,14 @@ describe('external issues', () => {
       { ...issue('Server Item', 'item', 'ITEM'), $rule: 'external' },
     ]);
 
+    vm.r$.$value = {
+      root: 'bar',
+      nested: { name1: { name2: 'bar' } },
+      collection: [{ item: 'bar' }, { item: 'bar' }],
+    };
+
     const { valid } = await vm.r$.$validate();
+
     expect(valid).toBe(true);
   });
 
