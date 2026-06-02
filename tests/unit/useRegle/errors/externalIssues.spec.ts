@@ -11,6 +11,12 @@ import { computed, nextTick, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import { shouldBeErrorField, shouldBeUnRuledCorrectField } from '../../../utils/validations.utils';
 
+declare module '@regle/core' {
+  interface RegleIssueCustomMetadata {
+    code?: string;
+  }
+}
+
 function issue(message: string, property: string, code: string): RegleExternalFieldIssue & { code: string } {
   return {
     $message: message,
@@ -87,6 +93,8 @@ describe('external issues', () => {
     expect(vm.r$.nested.name1.name2.$issues).toStrictEqual([
       { ...issue('Server Nested', 'name2', 'NESTED'), $rule: 'external' },
     ]);
+    expect(vm.r$.nested.name1.name2.$issues[0].code).toBe('NESTED');
+    expectTypeOf(vm.r$.nested.name1.name2.$issues[0].code).toEqualTypeOf<string | undefined>();
     expect(vm.r$.collection.$each[1].item.$issues).toStrictEqual([
       { ...issue('Server Item', 'item', 'ITEM'), $rule: 'external' },
     ]);
