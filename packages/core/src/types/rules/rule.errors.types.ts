@@ -185,7 +185,9 @@ export type RegleFieldIssue<
         : { readonly $rule: string };
     }[keyof ComputeFieldRules<any, TRules>]);
 
-export type RegleExternalFieldIssue = RegleFieldIssue & Record<string, unknown>;
+export type RegleExternalFieldIssue = Pick<RegleFieldIssue, '$message'> &
+  Partial<Omit<RegleFieldIssue, '$message'>> &
+  Record<string, unknown>;
 
 export type ComputeFieldRules<
   TState extends any,
@@ -252,6 +254,16 @@ export type $InternalRegleIssues = $InternalRegleCollectionIssues | RegleFieldIs
 export type $InternalRegleCollectionIssues = {
   readonly $self?: RegleFieldIssue[];
   readonly $each?: $InternalRegleIssues[];
+};
+
+export type $InternalRegleExternalIssues =
+  | $InternalRegleExternalCollectionIssues
+  | RegleExternalFieldIssue[]
+  | $InternalRegleIssuesTree;
+
+export type $InternalRegleExternalCollectionIssues = {
+  readonly $self?: RegleExternalFieldIssue[];
+  readonly $each?: $InternalRegleExternalIssues[];
 };
 
 // -- Schemas

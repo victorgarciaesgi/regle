@@ -231,8 +231,6 @@ r$.$setExternalIssues({
   email: [
     {
       $message: 'Email already exists',
-      $property: 'email',
-      $rule: 'external',
       code: 'EMAIL_TAKEN',
     },
   ],
