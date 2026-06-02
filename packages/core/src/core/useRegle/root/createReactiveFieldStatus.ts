@@ -832,7 +832,7 @@ export function createReactiveFieldStatus({
       ) {
         // Value have already been validated, so we can return the result immediately
         return {
-          valid: $rulesAreValid(),
+          valid: !scopeState.$invalid.value,
           data,
           errors: scopeState.$errors.value,
           issues: scopeState.$issues.value,

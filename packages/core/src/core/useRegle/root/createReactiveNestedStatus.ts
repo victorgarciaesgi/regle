@@ -273,8 +273,8 @@ export function createReactiveNestedStatus({
         externalErrors: ref(undefined),
         externalIssues: ref(undefined),
         schemaErrors: ref(undefined),
-        initialState: toRef(initialState?.value ?? {}, `$self`),
-        originalState: originalState?.[`$self`],
+        initialState: initialState ?? ref(undefined),
+        originalState,
         fieldName: `$self`,
         ...commonArgs,
       });

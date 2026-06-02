@@ -1,7 +1,7 @@
-import { useRegle } from '@regle/core';
+import { useRegle, type isEditedHandlerFn } from '@regle/core';
 import { simpleNestedStateWithMixedValidation } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { minLength } from '@regle/rules';
+import { minLength, required } from '@regle/rules';
 import { addDays, addMonths } from 'date-fns';
 
 describe('$edited', () => {
@@ -311,5 +311,44 @@ describe('$edited', () => {
 
     expect(vm.r$.collection.$self.$edited).toBe(true);
     expect(vm.r$.collection.$anyEdited).toBe(true);
+  });
+
+  it('should pass the item initial value to a $self.$isEdited handler on collection items', async () => {
+    const isEditedHandler = vi
+      .fn<isEditedHandlerFn<{ test: string; test2: number }>>()
+      .mockImplementation((currentValue, initialValue, defaultHandlerFn) => {
+        return defaultHandlerFn(currentValue, initialValue);
+      });
+
+    function regleWithSelfIsEdited() {
+      return useRegle(
+        { item: [{ test: 'test', test2: 8 }] },
+        {
+          item: {
+            $each: {
+              $self: {
+                $isEdited: isEditedHandler,
+              },
+              test: { required },
+              test2: { required },
+            },
+          },
+        }
+      );
+    }
+
+    const { vm } = createRegleComponent(regleWithSelfIsEdited);
+
+    vm.r$.$value.item[0].test = 'edited';
+    await vm.$nextTick();
+
+    // Regression for #355: the second argument (initialValue / `prev`) must be the item's
+    // initial object, not `undefined`.
+    expect(isEditedHandler).toHaveBeenCalledWith(
+      { test: 'edited', test2: 8 },
+      { test: 'test', test2: 8 },
+      expect.any(Function)
+    );
+    expect(vm.r$.item.$each[0].$anyEdited).toBe(true);
   });
 });
