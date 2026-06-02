@@ -782,10 +782,6 @@ export function createReactiveFieldStatus({
     }
   }
 
-  function $rulesAreValid(): boolean {
-    return Object.values($rules.value).every((rule) => rule.$valid && !rule.$maybePending);
-  }
-
   async function $validate(forceValues?: any): Promise<$InternalRegleResult> {
     if (forceValues) {
       state.value = forceValues;
