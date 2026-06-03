@@ -19,14 +19,14 @@ This skill defines a reproducible process to measure TypeScript memory usage in 
 ## Environment setup
 
 ```bash
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH"
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH"
 node -v
 pnpm -v
 ```
 
 Expected:
 - Node `v24.x`
-- pnpm `11.1.2` (or project-compatible version)
+- pnpm `11.5.0` (or project-compatible version)
 
 ## Measurement runbook (must follow)
 
@@ -41,7 +41,7 @@ Expected:
 ### A. @regle/core compiler diagnostics
 
 ```bash
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 ./node_modules/.bin/tsc -p "packages/core/tsconfig.json" --noEmit --extendedDiagnostics
 ```
 
@@ -55,13 +55,13 @@ Capture:
 Run build first:
 
 ```bash
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" pnpm build
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" pnpm build
 ```
 
 Then:
 
 ```bash
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 /usr/bin/time -l pnpm run test:typecheck
 ```
 
@@ -75,15 +75,15 @@ Recommended sequence:
 
 ```bash
 # warm-up (discard)
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 /usr/bin/time -l corepack pnpm run test:typecheck
 
 # measured runs (collect all 3)
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 /usr/bin/time -l corepack pnpm run test:typecheck
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 /usr/bin/time -l corepack pnpm run test:typecheck
-PATH="/Users/victorgarcia/.nvm/versions/node/v24.14.0/bin:$PATH" \
+PATH="/Users/victorgarcia/.nvm/versions/node/v24.15.0/bin:$PATH" \
 /usr/bin/time -l corepack pnpm run test:typecheck
 ```
 

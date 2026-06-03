@@ -27,12 +27,12 @@
     "@typescript/native-preview": "latest",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.9.1",
-    "npm-run-all2": "^8.0.4",
+    "npm-run-all2": "^9.0.1",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
+    "vite-plus": "catalog:",
     "vue-eslint-parser": "catalog:",
-    "vue-tsc": "catalog:",
-    "vite-plus": "catalog:"
+    "vue-tsc": "catalog:"
   }
 }
