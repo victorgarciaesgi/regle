@@ -115,7 +115,11 @@ export function createUseRegleComposable<
     });
 
     return {
-      r$: toReactive(regle, isDisabled, bindToCurrentScope) as any,
+      r$: toReactive(regle, isDisabled, () => {
+        if (!regle.value) {
+          bindToCurrentScope();
+        }
+      }) as any,
     };
   }
 

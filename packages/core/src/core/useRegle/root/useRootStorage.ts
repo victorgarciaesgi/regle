@@ -306,6 +306,8 @@ export function useRootStorage({
     clearWatchHandles();
     rootScope?.stop();
     rootScope = undefined;
+    regle.value = undefined;
+    storage.clearAll();
   }
 
   function bindToCurrentScope() {

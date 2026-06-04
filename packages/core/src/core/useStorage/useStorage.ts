@@ -166,18 +166,22 @@ export function useStorage() {
     }
   }
 
+  function clearAll() {
+    ruleDeclStorage.value.clear();
+    fieldsStorage.value.clear();
+    collectionsStorage.value.clear();
+    dirtyStorage.value.clear();
+    ruleStatusStorage.value.clear();
+    additionalRulesStorage.value.clear();
+    arrayStatusStorage.value.clear();
+  }
+
   if (getCurrentScope()) {
-    onScopeDispose(() => {
-      ruleDeclStorage.value.clear();
-      fieldsStorage.value.clear();
-      collectionsStorage.value.clear();
-      dirtyStorage.value.clear();
-      ruleStatusStorage.value.clear();
-      arrayStatusStorage.value.clear();
-    });
+    onScopeDispose(clearAll);
   }
 
   return {
+    clearAll,
     addRuleDeclEntry,
     setDirtyEntry,
     checkRuleDeclEntry,
