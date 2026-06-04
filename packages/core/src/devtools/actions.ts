@@ -101,6 +101,7 @@ export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayload
 
     if (fieldStatus && '$value' in fieldStatus) {
       fieldStatus.$value = state.value;
+      regleDevtoolsRegistry.notifyDevtools();
     }
   }
 }
