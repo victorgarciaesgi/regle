@@ -13,6 +13,7 @@ function useRegleDevtoolsRegistry() {
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
   const idCounters = shallowRef(new Map<string, number>());
   const looseIdCounter = ref(0);
+  let pendingNotifyFrame: number | undefined;
 
   function setApi(api: DevtoolsV6PluginAPI): void {
     devtoolsApi.value = api;
@@ -39,12 +40,12 @@ function useRegleDevtoolsRegistry() {
     });
 
     const stopHandle = watch(
-      () => r$,
-      () => notifyDevtools(),
+      [() => r$.$value, () => r$.$errors, () => r$.$externalErrors, () => r$.$issues, () => r$.$externalIssues],
+      () => scheduleNotifyDevtools(),
       { deep: true, flush: 'post' }
     );
 
-    regleDevtoolsRegistry.addWatcher(id, stopHandle);
+    watchers.value.set(id, stopHandle);
 
     window.requestAnimationFrame(() => {
       notifyDevtools();
@@ -57,6 +58,15 @@ function useRegleDevtoolsRegistry() {
     if (devtoolsApi.value) {
       emitInspectorState(devtoolsApi.value);
     }
+  }
+
+  function scheduleNotifyDevtools(): void {
+    if (pendingNotifyFrame != null) return;
+
+    pendingNotifyFrame = window.requestAnimationFrame(() => {
+      pendingNotifyFrame = undefined;
+      notifyDevtools();
+    });
   }
 
   function unregister(id: string): void {
@@ -87,10 +97,6 @@ function useRegleDevtoolsRegistry() {
     notifyDevtools();
   }
 
-  function addWatcher(id: string, stopHandle: WatchStopHandle): void {
-    watchers.value.set(id, stopHandle);
-  }
-
   return {
     devtoolsApi,
     register,
@@ -98,7 +104,6 @@ function useRegleDevtoolsRegistry() {
     getAll,
     get,
     clear,
-    addWatcher,
     setApi,
     notifyDevtools,
     loggedWarning,

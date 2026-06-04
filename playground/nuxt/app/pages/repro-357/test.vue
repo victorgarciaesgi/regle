@@ -52,42 +52,42 @@
     },
     field_013: { required, string },
     field_015: {
-      $each: () => ({
+      $each: {
         field_016: { required, string },
         field_017: { required, string },
         field_018: {
-          $each: () => ({
+          $each: {
             field_001: { required, string },
             field_019: { required, string },
             field_022: {
-              $each: () => ({
+              $each: {
                 field_001: { required, string },
                 field_026: { required, string },
                 field_025: { required, string },
                 field_021: { required, string },
                 field_029: { required, number },
-              }),
+              },
             },
             field_023: {
-              $each: () => ({
+              $each: {
                 field_001: { required, string },
                 field_002: { required, string },
                 field_026: { required, string },
                 field_030: {
-                  $each: () => ({
+                  $each: {
                     required,
                     string,
-                  }),
+                  },
                 },
                 field_031: { required, string },
-              }),
+              },
             },
             field_024: {
-              $each: () => ({}),
+              $each: {},
             },
-          }),
+          },
         },
-      }),
+      },
     },
     field_032: { required, string },
   };
