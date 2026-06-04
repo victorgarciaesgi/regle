@@ -728,12 +728,9 @@ export function createReactiveNestedStatus({
     $unwatchGroups?.();
     $unwatchSchemaErrors?.();
 
-    // Apparently doesn't need to be stopped with Vue 3.5 https://github.com/vuejs/core/issues/11886
-    // nestedScopes.forEach((s) => s.stop());
+    nestedScopes.forEach((s) => s.stop());
     nestedScopes = [];
 
-    // Apparently doesn't need to be stopped with Vue 3.5 https://github.com/vuejs/core/issues/11886
-    // scope.stop();
     scopeState = {} as any;
 
     if ($fields.value) {

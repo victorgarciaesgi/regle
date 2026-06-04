@@ -132,6 +132,75 @@ describe('Memory and cleanup behavior', () => {
     expect(true).toBe(true);
   });
 
+  it('should handle deeply nested $each mount/unmount cycles (issue #357)', async () => {
+    const createState = () => ({
+      field_001: '',
+      field_015: Array.from({ length: 4 }, () => ({
+        field_018: Array.from({ length: 2 }, () => ({
+          field_001: '',
+          field_022: [{ field_001: '' }, { field_001: '' }],
+        })),
+      })),
+    });
+
+    const rules = {
+      field_001: { required },
+      field_015: {
+        $each: () => ({
+          field_018: {
+            $each: () => ({
+              field_001: { required },
+              field_022: {
+                $each: () => ({
+                  field_001: { required },
+                }),
+              },
+            }),
+          },
+        }),
+      },
+    };
+
+    const TestComponent = defineComponent({
+      setup() {
+        const form = ref(createState());
+        const { r$ } = useRegle(form, rules);
+        return { r$ };
+      },
+      template: `
+        <div>
+          <input v-model="r$.field_001.$value" />
+          <span>{{ r$.field_015.$each.length }}</span>
+        </div>
+      `,
+    });
+
+    for (let i = 0; i < 5; i++) {
+      const wrapper = mount(TestComponent, {
+        global: {
+          plugins: [RegleVuePlugin],
+        },
+      });
+
+      wrapper.vm.r$.field_001.$value = `cycle-${i}`;
+      await nextTick();
+      await wrapper.vm.r$.$validate();
+      await nextTick();
+
+      wrapper.unmount();
+      await nextTick();
+    }
+
+    const wrapper = mount(TestComponent, {
+      global: {
+        plugins: [RegleVuePlugin],
+      },
+    });
+
+    expect(wrapper.vm.r$.field_001.$value).toBe('');
+    wrapper.unmount();
+  });
+
   it('should handle multiple mount/unmount cycles', async () => {
     const TestComponent = defineComponent({
       setup() {
@@ -196,7 +265,7 @@ describe('Memory and cleanup behavior', () => {
     await nextTick();
 
     expect(() => {
-      r$AfterUnmount!.$reset({ toInitialState: true });
+      r$AfterUnmount!.$reset?.({ toInitialState: true });
     }).not.toThrow();
   });
 

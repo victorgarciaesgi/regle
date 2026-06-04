@@ -6,7 +6,6 @@ import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
 import { emitInspectorState } from './actions';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
-/*#__PURE__*/
 function useRegleDevtoolsRegistry() {
   const loggedWarning = ref(false);
   const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
@@ -106,7 +105,6 @@ function useRegleDevtoolsRegistry() {
   };
 }
 
-/*#__PURE__*/
 export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 
 /**
