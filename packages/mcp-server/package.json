@@ -65,5 +65,8 @@
     "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"
+  },
+  "bugs": {
+    "url": "https://github.com/victorgarciaesgi/regle/issues"
   }
 }
