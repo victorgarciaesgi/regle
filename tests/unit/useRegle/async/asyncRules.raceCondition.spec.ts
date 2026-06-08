@@ -215,4 +215,55 @@ describe('useRegle async rules race conditions', () => {
     expect(vm.r$.$pending).toBe(false);
     expect(vm.r$.$rules.slowWhenValid.$valid).toBe(false);
   });
+
+  /**
+   * Same race, but the validator returns a metadata object. The stale run must not
+   * leave its metadata behind paired with the latest run's validity.
+   */
+  function metadataRaceValidation() {
+    const slowWhenValid = createRule({
+      async validator(value: Maybe<string>) {
+        if (!isFilled(value)) {
+          return { $valid: true, label: value } as const;
+        }
+        await timeout(value === 'valid' ? 2000 : 200);
+        return { $valid: value === 'valid', label: value };
+      },
+      message: 'Invalid value',
+    });
+
+    return useRegle(ref(''), {
+      slowWhenValid,
+    });
+  }
+
+  it('should not keep stale metadata when a slower previous validation resolves last', async () => {
+    const { vm } = createRegleComponent(metadataRaceValidation);
+
+    vm.r$.$value = 'valid';
+    await vm.$nextTick();
+
+    await vi.advanceTimersByTimeAsync(200);
+    await flushPromises();
+    expect(vm.r$.$pending).toBe(true);
+
+    vm.r$.$value = 'invalid';
+    await vm.$nextTick();
+
+    await vi.advanceTimersByTimeAsync(200);
+    await flushPromises();
+    await vi.advanceTimersByTimeAsync(200);
+    await flushPromises();
+
+    expect(vm.r$.$rules.slowWhenValid.$valid).toBe(false);
+    expect(vm.r$.$rules.slowWhenValid.$metadata.label).toBe('invalid');
+
+    // The stale "valid" run resolves last: neither its validity nor its metadata
+    // may overwrite the latest "invalid" result.
+    await vi.advanceTimersByTimeAsync(2000);
+    await flushPromises();
+
+    expect(vm.r$.$rules.slowWhenValid.$valid).toBe(false);
+    expect(vm.r$.$rules.slowWhenValid.$metadata.label).toBe('invalid');
+  });
 });
