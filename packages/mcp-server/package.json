@@ -21,6 +21,9 @@
     "type": "git",
     "url": "git+https://github.com/victorgarciaesgi/regle.git"
   },
+  "bugs": {
+    "url": "https://github.com/victorgarciaesgi/regle/issues"
+  },
   "bin": {
     "regle-mcp-server": "./dist/regle-mcp-server.js"
   },
