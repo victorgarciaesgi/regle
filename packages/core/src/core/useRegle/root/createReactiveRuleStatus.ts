@@ -245,7 +245,7 @@ export function createReactiveRuleStatus({
         return false;
       }
       const resultOrPromise = validator(state.value, ...scopeState.$params.value);
-      const cachedValue = state.value;
+      let cachedValue = state.value;
       updatePendingState();
       let validatorResult;
       if (resultOrPromise instanceof Promise) {
@@ -254,17 +254,16 @@ export function createReactiveRuleStatus({
         validatorResult = resultOrPromise;
       }
 
-      // A newer validation run was started (or the value changed) while this one was
-      // pending. This result is stale: leave the shared state untouched so it cannot
-      // overwrite the result of the latest run.
+      // A newer run started (or the value changed) while pending: this result is stale,
+      // keep the current valid state so it can't overwrite the latest run's result.
       if (parseId !== $lastParseId || state.value !== cachedValue) {
         return $valid.value;
       }
       if (typeof validatorResult === 'boolean') {
         ruleResult = validatorResult;
       } else {
-        const { $valid: $validResult, ...rest } = validatorResult;
-        ruleResult = $validResult;
+        const { $valid, ...rest } = validatorResult;
+        ruleResult = $valid;
         $metadata.value = rest;
       }
     } catch {
@@ -326,8 +325,7 @@ export function createReactiveRuleStatus({
         const validator = scopeState.$validator.value;
         ruleResult = computeSyncResult(validator);
       }
-      // A newer validation run superseded this one while it was pending: don't write
-      // the stale result over the latest one.
+      // A newer run superseded this one while pending: don't overwrite its result.
       if (parseId !== $lastParseId) {
         return $valid.value;
       }
