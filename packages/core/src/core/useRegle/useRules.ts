@@ -113,7 +113,11 @@ export function createUseRulesComposable<
       overrides,
     });
 
-    return toReactive(regle, isDisabled, bindToCurrentScope) as any;
+    return toReactive(regle, isDisabled, () => {
+      if (!regle.value) {
+        bindToCurrentScope();
+      }
+    }) as any;
   }
 
   return useRules as any;

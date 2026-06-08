@@ -1,6 +1,6 @@
 {
   "name": "regle",
-  "version": "1.26.1",
+  "version": "1.27.0-beta.2",
   "private": true,
   "description": "Headless model-based form validation library for Vue.js",
   "homepage": "https://reglejs.dev/",
@@ -31,7 +31,7 @@
     "unit-tests:run": "pnpm run:vitest:vue-3.5 run && pnpm run:vitest:vue-3.4 run",
     "test": "pnpm build && pnpm lint && pnpm fmt:check && pnpm typecheck && pnpm unit-tests:run && pnpm test:typecheck && pnpm ui-tests:run",
     "test:coverage": "pnpm build:sourcemaps && TEST_TRACE=true vp test run --coverage",
-    "test:dev": "TEST_TRACE=true pnpm run:vitest:vue-3.5",
+    "test:dev": "TEST_TRACE=true pnpm run:vitest:vue-3.5 --watch",
     "test:typecheck:vue": "vue-tsc --noEmit --project ./tests/tsconfig.vue.json",
     "test:typecheck:ts": "tsgo --noEmit --project ./tests/tsconfig.json && tsgo --noEmit --project ./tests/plugin-config-tests/tsconfig.json",
     "test:typecheck": "pnpm test:typecheck:vue && pnpm test:typecheck:ts && pnpm --filter='ui-vue3' typecheck",
@@ -56,8 +56,8 @@
     "fmt": "vp fmt"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.5.3",
-    "@commitlint/config-conventional": "20.5.3",
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
     "@commitlint/types": "21.0.1",
     "@nuxt/kit": "catalog:",
     "@nuxt/schema": "catalog:",
@@ -68,25 +68,25 @@
     "@typescript/native-preview": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "@vitejs/plugin-vue-jsx": "catalog:",
-    "@vitest/coverage-istanbul": "4.1.6",
-    "@vitest/coverage-v8": "4.1.6",
+    "@vitest/coverage-istanbul": "4.1.8",
+    "@vitest/coverage-v8": "4.1.8",
     "@vue/compiler-dom": "catalog:",
     "@vue/test-utils": "2.4.10",
     "bumpp": "11.1.0",
     "changelogithub": "14.0.0",
-    "corepack": "0.34.7",
+    "corepack": "0.35.0",
     "env-cmd": "11.0.0",
     "happy-dom": "20.9.0",
     "nuxt": "catalog:",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
-    "rolldown": "1.0.1",
-    "semver": "7.8.0",
+    "rolldown": "1.1.0",
+    "semver": "7.8.1",
     "std-env": "4.1.0",
-    "taze": "19.11.0",
+    "taze": "19.14.1",
     "tsx": "catalog:",
-    "turbo": "2.9.14",
+    "turbo": "2.9.16",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
@@ -98,13 +98,13 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "24.14.1",
+      "version": "24.15.0",
       "onFail": "download"
     }
   },
   "engines": {
     "node": ">=24",
-    "pnpm": "11.1.2"
+    "pnpm": "11.5.0"
   },
-  "packageManager": "pnpm@11.1.2"
+  "packageManager": "pnpm@11.5.0"
 }

@@ -7,7 +7,7 @@ runs:
     - name: Set up pnpm
       uses: pnpm/action-setup@v6
       with:
-        version: 11.1.2
+        version: 11.5.0
         run_install: false
 
     - name: Set up Node.js

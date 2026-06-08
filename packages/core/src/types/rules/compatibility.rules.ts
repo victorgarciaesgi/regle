@@ -5,6 +5,7 @@ import type {
   $InternalRegleRuleStatus,
   RegleBehaviourOptions,
   RegleCommonStatus,
+  RegleExternalFieldIssue,
   RegleFieldIssue,
   RegleValidationErrors,
   RegleValidationGroupOutput,
@@ -64,6 +65,7 @@ export interface SuperCompatibleRegleFieldStatus extends SuperCompatibleRegleCom
   $silentValue: any;
   readonly $rules: Record<string, SuperCompatibleRegleRuleStatus>;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleExternalFieldIssue[];
   readonly $issues: RegleFieldIssue[];
   readonly $silentIssues: RegleFieldIssue[];
   readonly $errors: string[];
@@ -82,6 +84,7 @@ export interface SuperCompatibleRegleCollectionStatus extends Omit<
   readonly $errors: SuperCompatibleRegleCollectionErrors;
   readonly $silentErrors: SuperCompatibleRegleCollectionErrors;
   readonly $externalErrors?: string[];
+  readonly $externalIssues?: RegleExternalFieldIssue[];
   $extractDirtyFields: (filterNullishValues?: boolean) => any[];
   $validate?: (...args: any[]) => Promise<SuperCompatibleRegleResult>;
   $validateSync?: (...args: any[]) => boolean;

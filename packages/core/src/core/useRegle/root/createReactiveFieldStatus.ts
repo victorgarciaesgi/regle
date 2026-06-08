@@ -20,6 +20,7 @@ import type {
   CollectionRegleBehaviourOptions,
   FieldRegleBehaviourOptions,
   isEditedHandlerFn,
+  RegleExternalFieldIssue,
   RegleFieldIssue,
   RegleRuleDecl,
   RegleShortcutDefinition,
@@ -43,6 +44,7 @@ interface CreateReactiveFieldStatusArgs extends CommonResolverOptions {
   state: Ref<unknown>;
   rulesDef: Ref<$InternalRegleRuleDecl>;
   externalErrors: Ref<string[] | undefined> | undefined;
+  externalIssues: Ref<RegleExternalFieldIssue[] | undefined> | undefined;
   schemaErrors?: Ref<RegleFieldIssue[] | undefined> | undefined;
   schemaMode: boolean | undefined;
   onUnwatch?: () => void;
@@ -63,6 +65,7 @@ export function createReactiveFieldStatus({
   storage,
   options,
   externalErrors,
+  externalIssues,
   schemaErrors,
   schemaMode,
   onUnwatch,
@@ -398,6 +401,7 @@ export function createReactiveFieldStatus({
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
+            $externalIssues: externalIssues?.value,
             $schemaErrors: schemaErrors?.value,
             fieldName: $name.value,
           },
@@ -410,6 +414,7 @@ export function createReactiveFieldStatus({
             $rules: $rules.value,
             $error: $error.value,
             $externalErrors: externalErrors?.value,
+            $externalIssues: externalIssues?.value,
             $schemaErrors: schemaErrors?.value,
             fieldName: $name.value,
           },
@@ -476,7 +481,7 @@ export function createReactiveFieldStatus({
       });
 
       const $invalid = computed<boolean>(() => {
-        if (externalErrors?.value?.length || schemaErrors?.value?.length) {
+        if (externalErrors?.value?.length || externalIssues?.value?.length || schemaErrors?.value?.length) {
           return true;
         } else if ($inactive.value) {
           return false;
@@ -492,7 +497,7 @@ export function createReactiveFieldStatus({
       });
 
       const $correct = computed<boolean>(() => {
-        if (externalErrors?.value?.length) {
+        if (externalErrors?.value?.length || externalIssues?.value?.length) {
           return false;
         } else if ($inactive.value) {
           return false;
@@ -546,6 +551,7 @@ export function createReactiveFieldStatus({
                   reactive({
                     $dirty,
                     $externalErrors: externalErrors?.value ?? [],
+                    $externalIssues: externalIssues?.value ?? [],
                     $value: state,
                     $silentValue,
                     $rules,
@@ -653,6 +659,7 @@ export function createReactiveFieldStatus({
         }
         if (scopeState.$clearExternalErrorsOnChange.value) {
           $clearExternalErrors();
+          $clearExternalIssues();
         }
       },
       { deep: scopeState.$isArrayOrRegleStatic.value ? true : isVueSuperiorOrEqualTo3dotFive ? 1 : true }
@@ -689,6 +696,7 @@ export function createReactiveFieldStatus({
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     abortCommit();
     $clearExternalErrors();
+    $clearExternalIssues();
     scopeState.$dirty.value = false;
     storage.setDirtyEntry(cachePath, false);
 
@@ -719,6 +727,7 @@ export function createReactiveFieldStatus({
 
     if (options?.clearExternalErrors) {
       $clearExternalErrors();
+      $clearExternalIssues();
     }
 
     if (!fromParent && !options?.keepValidationState) {
@@ -803,6 +812,11 @@ export function createReactiveFieldStatus({
 
       const data = state.value;
 
+      if (scopeState.$clearExternalErrorsOnValidate.value) {
+        $clearExternalErrors();
+        $clearExternalIssues();
+      }
+
       if (
         scopeState.$autoDirty.value &&
         !scopeState.$silent.value &&
@@ -863,6 +877,11 @@ export function createReactiveFieldStatus({
         return false;
       }
 
+      if (scopeState.$clearExternalErrorsOnValidate.value) {
+        $clearExternalErrors();
+        $clearExternalIssues();
+      }
+
       const result = Object.values($rules.value)
         .map((rule) => rule.$parseSync())
         .every((result) => !!result);
@@ -888,11 +907,25 @@ export function createReactiveFieldStatus({
     if (externalErrors) {
       externalErrors.value = errors;
     }
+    $clearExternalIssues();
   }
 
   function $clearExternalErrors() {
     if (externalErrors?.value?.length) {
       externalErrors.value = [];
+    }
+  }
+
+  function $setExternalIssues(issues: RegleFieldIssue[]) {
+    if (externalIssues) {
+      externalIssues.value = issues;
+    }
+    $clearExternalErrors();
+  }
+
+  function $clearExternalIssues() {
+    if (externalIssues?.value?.length) {
+      externalIssues.value = [];
     }
   }
 
@@ -920,6 +953,7 @@ export function createReactiveFieldStatus({
   const fullStatus = reactive({
     ...restScope,
     $externalErrors: externalErrors,
+    $externalIssues: externalIssues,
     $value: state,
     $output: state,
     $initialValue: initialState,
@@ -937,12 +971,14 @@ export function createReactiveFieldStatus({
     $watch,
     $extractDirtyFields,
     $clearExternalErrors,
+    $clearExternalIssues,
     $abort,
     $addRules,
     addRules,
     $schemaMode: schemaMode,
     '~modifiers': scopeState.$modifiers,
     $setExternalErrors,
+    $setExternalIssues,
     ...createStandardSchema($validate),
   }) satisfies $InternalRegleFieldStatus;
 

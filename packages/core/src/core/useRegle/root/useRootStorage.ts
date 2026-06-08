@@ -5,6 +5,8 @@ import { registerRegleInstance } from '../../../devtools';
 import { isRegleDevtoolsTestEnv } from '../../../utils/devtools.utils';
 import type {
   $InternalRegleErrorTree,
+  $InternalRegleIssues,
+  $InternalRegleIssuesTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
   $InternalRegleShortcutDefinition,
@@ -19,6 +21,146 @@ import { useStorage } from '../../useStorage';
 import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
+
+function normalizeExternalValue<T>(value: T | undefined): T | undefined {
+  if (value && isObject(value) && Object.keys(value).some((key) => key.includes('.'))) {
+    return dotPathObjectToNested(value as Record<string, unknown>) as T;
+  }
+  return value;
+}
+
+function hasExternalValue(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  return isObject(value) && Object.keys(value).length > 0;
+}
+
+function emptyExternalValue(value: unknown) {
+  return Array.isArray(value) ? [] : {};
+}
+
+function createExternalChannels(options: ResolvedRegleBehaviourOptions) {
+  type ExternalErrors = $InternalRegleErrorTree | string[];
+  type ExternalIssues = $InternalRegleIssues;
+
+  const externalErrors = ref<ExternalErrors | undefined>();
+  const externalIssues = ref<ExternalIssues | undefined>();
+
+  let unwatchOptionErrors: WatchStopHandle | undefined;
+  let unwatchInternalErrors: WatchStopHandle | undefined;
+  let unwatchOptionIssues: WatchStopHandle | undefined;
+  let unwatchInternalIssues: WatchStopHandle | undefined;
+  let syncing = false;
+
+  function clearIssues() {
+    const emptyIssues = emptyExternalValue(externalIssues.value ?? options.externalIssues?.value);
+    externalIssues.value = emptyIssues as ExternalIssues;
+    if (options.externalIssues) {
+      options.externalIssues.value = emptyIssues as any;
+    }
+  }
+
+  function clearErrors() {
+    const emptyErrors = emptyExternalValue(externalErrors.value ?? options.externalErrors?.value);
+    externalErrors.value = emptyErrors as ExternalErrors;
+    if (options.externalErrors) {
+      options.externalErrors.value = emptyErrors as any;
+    }
+  }
+
+  function syncErrors(newErrors: ExternalErrors | undefined, updateOptionRef = false) {
+    if (syncing) return;
+    syncing = true;
+
+    const normalizedErrors = normalizeExternalValue(newErrors);
+    externalErrors.value = normalizedErrors;
+    if (updateOptionRef && options.externalErrors) {
+      options.externalErrors.value = normalizedErrors as any;
+    }
+    if (hasExternalValue(normalizedErrors)) {
+      clearIssues();
+    }
+
+    syncing = false;
+  }
+
+  function syncIssues(newIssues: ExternalIssues | undefined, updateOptionRef = false) {
+    if (syncing) return;
+    syncing = true;
+
+    const normalizedIssues = normalizeExternalValue(newIssues);
+    externalIssues.value = normalizedIssues;
+    if (updateOptionRef && options.externalIssues) {
+      options.externalIssues.value = normalizedIssues as any;
+    }
+    if (hasExternalValue(normalizedIssues)) {
+      clearErrors();
+    }
+
+    syncing = false;
+  }
+
+  function watchOptionRefs() {
+    unwatchOptionErrors?.();
+    unwatchOptionIssues?.();
+    unwatchOptionErrors = watch(
+      () => options.externalErrors?.value,
+      (errors) => syncErrors(errors as ExternalErrors),
+      {
+        deep: true,
+      }
+    );
+    unwatchOptionIssues = watch(
+      () => options.externalIssues?.value,
+      (issues) => syncIssues(issues as ExternalIssues),
+      {
+        deep: true,
+      }
+    );
+  }
+
+  function watchInternalRefs() {
+    unwatchInternalErrors?.();
+    unwatchInternalIssues?.();
+    unwatchInternalErrors = watch(
+      () => externalErrors.value,
+      (errors) => syncErrors(errors, true),
+      { deep: true }
+    );
+    unwatchInternalIssues = watch(
+      () => externalIssues.value,
+      (issues) => syncIssues(issues, true),
+      { deep: true }
+    );
+  }
+
+  function start() {
+    stop();
+    syncErrors(options.externalErrors?.value);
+    syncIssues(options.externalIssues?.value);
+    watchInternalRefs();
+  }
+
+  function stop() {
+    unwatchInternalErrors?.();
+    unwatchOptionErrors?.();
+    unwatchInternalIssues?.();
+    unwatchOptionIssues?.();
+    unwatchInternalErrors = undefined;
+    unwatchOptionErrors = undefined;
+    unwatchInternalIssues = undefined;
+    unwatchOptionIssues = undefined;
+  }
+
+  return {
+    externalErrors,
+    externalIssues,
+    start,
+    watchOptionRefs,
+    stop,
+  };
+}
 
 /**
  * @internal
@@ -56,10 +198,8 @@ export function useRootStorage({
   let rootScope: EffectScope | undefined;
 
   const regle = ref<$InternalRegleStatusType>();
-  const computedExternalErrors = ref<$InternalRegleErrorTree | undefined | string[]>();
+  const externalChannels = createExternalChannels(options);
 
-  let $unwatchExternalErrors: WatchStopHandle | undefined;
-  let $unwatchComputedExternalErrors: WatchStopHandle | undefined;
   let $unwatchDisabled: WatchStopHandle | undefined;
 
   function defineDisabledWatchSource() {
@@ -70,43 +210,10 @@ export function useRootStorage({
           unwatchRegle();
         } else {
           createRegleInstance();
-          defineExternalErrorsWatchSource();
+          externalChannels.start();
+          externalChannels.watchOptionRefs();
         }
       }
-    );
-  }
-
-  function handleExternalErrorsChange(newErrors: $InternalRegleErrorTree | undefined | string[]) {
-    $unwatchComputedExternalErrors?.();
-    if (newErrors) {
-      if (isObject(newErrors) && Object.keys(newErrors).some((key) => key.includes('.'))) {
-        computedExternalErrors.value = dotPathObjectToNested(newErrors);
-      } else if (Array.isArray(newErrors)) {
-        computedExternalErrors.value = newErrors;
-      } else {
-        computedExternalErrors.value = newErrors ?? {};
-      }
-    }
-
-    defineComputedExternalErrorsWatchSource();
-  }
-
-  function defineExternalErrorsWatchSource() {
-    $unwatchExternalErrors = watch(() => options.externalErrors?.value, handleExternalErrorsChange, { deep: true });
-  }
-
-  function defineComputedExternalErrorsWatchSource() {
-    $unwatchComputedExternalErrors = watch(
-      () => computedExternalErrors.value,
-      (newErrors) => {
-        $unwatchExternalErrors?.();
-        if (options.externalErrors?.value) {
-          options.externalErrors.value = newErrors as any;
-        }
-        handleExternalErrorsChange(newErrors);
-        defineExternalErrorsWatchSource();
-      },
-      { deep: true }
     );
   }
 
@@ -120,7 +227,8 @@ export function useRootStorage({
         storage,
         options,
         rootInitialState: initialState,
-        externalErrors: computedExternalErrors as Ref<$InternalRegleErrorTree>,
+        externalErrors: externalChannels.externalErrors as Ref<$InternalRegleErrorTree>,
+        externalIssues: externalChannels.externalIssues as unknown as Ref<$InternalRegleIssuesTree>,
         validationGroups: options.validationGroups as any,
         initialState: initialState as Ref<Record<string, any>>,
         originalState: originalState as Record<string, any>,
@@ -142,7 +250,8 @@ export function useRootStorage({
         storage,
         options,
         rootInitialState: initialState,
-        externalErrors: computedExternalErrors as Ref<string[]>,
+        externalErrors: externalChannels.externalErrors as Ref<string[]>,
+        externalIssues: externalChannels.externalIssues as Ref<any[]>,
         initialState,
         originalState: originalState,
         shortcuts: shortcuts as $InternalRegleShortcutDefinition,
@@ -158,15 +267,12 @@ export function useRootStorage({
   }
 
   function clearWatchHandles() {
-    $unwatchComputedExternalErrors = undefined;
-    $unwatchExternalErrors = undefined;
     $unwatchDisabled = undefined;
   }
 
   function unwatchRegle() {
     regle.value?.$unwatch();
-    $unwatchComputedExternalErrors?.();
-    $unwatchExternalErrors?.();
+    externalChannels.stop();
   }
 
   function startRootStorage() {
@@ -175,7 +281,7 @@ export function useRootStorage({
     isEnabled.value = true;
     rootScope = effectScope(true);
     rootScope.run(() => {
-      handleExternalErrorsChange(options.externalErrors?.value);
+      externalChannels.start();
 
       createRegleInstance();
 
@@ -184,7 +290,7 @@ export function useRootStorage({
           regle.value?.$unwatch();
         });
       } else {
-        defineExternalErrorsWatchSource();
+        externalChannels.watchOptionRefs();
       }
 
       defineDisabledWatchSource();
@@ -200,6 +306,8 @@ export function useRootStorage({
     clearWatchHandles();
     rootScope?.stop();
     rootScope = undefined;
+    regle.value = undefined;
+    storage.clearAll();
   }
 
   function bindToCurrentScope() {

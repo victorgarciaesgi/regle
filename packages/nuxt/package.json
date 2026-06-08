@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.26.1",
+  "version": "1.27.0-beta.2",
   "description": "Regle nuxt module",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
@@ -61,10 +61,10 @@
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "unbuild": "3.6.1",
+    "vite-plus": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-tsc": "catalog:",
-    "vite-plus": "catalog:"
+    "vue-tsc": "catalog:"
   },
   "optionalDependencies": {
     "@regle/schemas": "workspace:*",

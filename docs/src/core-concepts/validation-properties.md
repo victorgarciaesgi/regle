@@ -127,6 +127,7 @@ Collection of all the error messages, collected for all children properties.
 - Type: `RegleFieldIssue[]`
 
 Collect all metadata of validators (errors, messages etc). Only contains metadata from properties where $dirty equals true.
+Structured external issues are also exposed here with their metadata.
 
 ### `$name` 
 - Type: `readonly string`
@@ -210,6 +211,29 @@ This method is available on the root `r$`, and works with or without passing the
 r$.$setExternalErrors({
   email: ['Email already exists'],
   'user.firstName': ['First name already exists'],
+});
+```
+
+### `$clearExternalIssues`
+- Type: `() => void`
+
+Clears the `$externalIssues` state back to an empty object.
+
+### `$setExternalIssues`
+- Type: `(issues: RegleExternalIssueTree<TState> | Record<string, RegleFieldIssue[]>) => void`
+
+Sets structured external issues from either a nested object or dot-path keys.
+The full issue objects are available in `$issues`, and each `$message` is also exposed in `$errors`.
+This method is mutually exclusive with `$setExternalErrors`: setting one clears the other.
+
+```ts
+r$.$setExternalIssues({
+  email: [
+    {
+      $message: 'Email already exists',
+      code: 'EMAIL_TAKEN',
+    },
+  ],
 });
 ```
 

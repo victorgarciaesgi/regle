@@ -11,16 +11,16 @@
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
     "arktype": "catalog:",
-    "date-fns": "4.1.0",
+    "date-fns": "4.4.0",
     "decimal.js": "10.6.0",
     "pinia": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "valibot": "catalog:",
+    "vite-plus": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.2.7",
-    "zod": "catalog:",
-    "vite-plus": "catalog:"
+    "vue-component-type-helpers": "3.3.3",
+    "zod": "catalog:"
   }
 }

@@ -18,7 +18,7 @@ export function extractRulesIssues({
   field,
   silent = false,
 }: {
-  field: Pick<$InternalRegleFieldStatus, '$rules' | '$error' | '$externalErrors'> & {
+  field: Pick<$InternalRegleFieldStatus, '$rules' | '$error' | '$externalErrors' | '$externalIssues'> & {
     $schemaErrors: RegleFieldIssue[] | undefined;
     fieldName: string;
   };
@@ -54,13 +54,22 @@ export function extractRulesIssues({
     return acc;
   }, []);
 
-  const externalIssues =
-    field.$error && field.$externalErrors && Array.isArray(field.$externalErrors)
+  const externalErrorIssues =
+    field.$error && field.$externalErrors && Array.isArray(field.$externalErrors) && !field.$externalIssues?.length
       ? field.$externalErrors.map((error) => ({
           $message: error,
           $property: field.fieldName,
           $rule: 'external',
           $type: undefined,
+        }))
+      : [];
+
+  const externalIssues =
+    field.$error && field.$externalIssues && Array.isArray(field.$externalIssues)
+      ? field.$externalIssues.map((issue) => ({
+          ...issue,
+          $property: issue.$property ?? field.fieldName,
+          $rule: issue.$rule ?? 'external',
         }))
       : [];
 
@@ -74,7 +83,7 @@ export function extractRulesIssues({
     }
   }
 
-  return [...ruleIssues, ...externalIssues, ...schemaIssues];
+  return [...ruleIssues, ...externalErrorIssues, ...externalIssues, ...schemaIssues];
 }
 
 export function extractRulesTooltips({ field }: { field: Pick<$InternalRegleFieldStatus, '$rules'> }): string[] {
