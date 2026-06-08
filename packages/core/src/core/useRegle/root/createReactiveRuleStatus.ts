@@ -67,6 +67,13 @@ export function createReactiveRuleStatus({
   });
   const $maybePending = ref(false);
 
+  /**
+   * Monotonic token identifying the latest validation run.
+   * Any async run that resolves after a newer run has started is considered stale
+   * and must not write its result, to avoid an outdated value overwriting a fresh one.
+   */
+  let $lastParseId = 0;
+
   const { $pending, $valid, $metadata, $validating } = storage.trySetRuleStatusRef(`${cachePath}.${ruleKey}`);
 
   function $watch() {
@@ -229,7 +236,7 @@ export function createReactiveRuleStatus({
     }
   }
 
-  async function computeAsyncResult(): Promise<boolean> {
+  async function computeAsyncResult(parseId: number): Promise<boolean> {
     let ruleResult = false;
     try {
       const validator = scopeState.$validator.value;
@@ -238,7 +245,7 @@ export function createReactiveRuleStatus({
         return false;
       }
       const resultOrPromise = validator(state.value, ...scopeState.$params.value);
-      let cachedValue = state.value;
+      const cachedValue = state.value;
       updatePendingState();
       let validatorResult;
       if (resultOrPromise instanceof Promise) {
@@ -247,20 +254,26 @@ export function createReactiveRuleStatus({
         validatorResult = resultOrPromise;
       }
 
-      if (state.value !== cachedValue) {
-        return true;
+      // A newer validation run was started (or the value changed) while this one was
+      // pending. This result is stale: leave the shared state untouched so it cannot
+      // overwrite the result of the latest run.
+      if (parseId !== $lastParseId || state.value !== cachedValue) {
+        return $valid.value;
       }
       if (typeof validatorResult === 'boolean') {
         ruleResult = validatorResult;
       } else {
-        const { $valid, ...rest } = validatorResult;
-        ruleResult = $valid;
+        const { $valid: $validResult, ...rest } = validatorResult;
+        ruleResult = $validResult;
         $metadata.value = rest;
       }
     } catch {
       ruleResult = false;
     } finally {
-      $pending.value = false;
+      // Only the latest run is allowed to clear the shared pending flag.
+      if (parseId === $lastParseId) {
+        $pending.value = false;
+      }
     }
 
     return ruleResult;
@@ -300,6 +313,7 @@ export function createReactiveRuleStatus({
   }
 
   async function $parse(): Promise<boolean> {
+    const parseId = ++$lastParseId;
     try {
       $validating.value = true;
 
@@ -307,18 +321,26 @@ export function createReactiveRuleStatus({
       $maybePending.value = true;
 
       if (isRuleDef(rule.value) && rule.value._async) {
-        ruleResult = await computeAsyncResult();
+        ruleResult = await computeAsyncResult(parseId);
       } else {
         const validator = scopeState.$validator.value;
         ruleResult = computeSyncResult(validator);
+      }
+      // A newer validation run superseded this one while it was pending: don't write
+      // the stale result over the latest one.
+      if (parseId !== $lastParseId) {
+        return $valid.value;
       }
       $valid.value = ruleResult;
       return ruleResult;
     } catch {
       return false;
     } finally {
-      $validating.value = false;
-      $maybePending.value = false;
+      // Only the latest run owns the shared validating/pending flags.
+      if (parseId === $lastParseId) {
+        $validating.value = false;
+        $maybePending.value = false;
+      }
     }
   }
 
@@ -339,6 +361,8 @@ export function createReactiveRuleStatus({
   }
 
   function $reset() {
+    // Invalidate any in-flight async run so it cannot write after the reset.
+    $lastParseId++;
     $valid.value = true;
     $metadata.value = {};
     $pending.value = false;
