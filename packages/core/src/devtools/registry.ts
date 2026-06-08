@@ -40,7 +40,14 @@ function useRegleDevtoolsRegistry() {
     });
 
     const stopHandle = watch(
-      [() => r$.$value, () => r$.$errors, () => r$.$externalErrors, () => r$.$issues, () => r$.$externalIssues],
+      [
+        () => r$.$value,
+        () => r$.$externalErrors,
+        () => r$.$externalIssues,
+        () => r$.$error,
+        () => r$.$invalid,
+        () => r$.$pending,
+      ],
       () => scheduleNotifyDevtools(),
       { deep: true, flush: 'post' }
     );
