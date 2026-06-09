@@ -102,7 +102,7 @@ function findMarkdownFiles(dir: string, baseDir: string = dir): string[] {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (['assets', 'public', 'parts', 'blog'].includes(entry.name)) {
+      if (['parts'].includes(entry.name)) {
         continue;
       }
       files.push(...findMarkdownFiles(fullPath, baseDir));
@@ -119,7 +119,7 @@ function findMarkdownFiles(dir: string, baseDir: string = dir): string[] {
  * Build docs data and write to JSON
  */
 function buildDocsData(): void {
-  const docsDir = path.resolve(__dirname, '../../../docs/src');
+  const docsDir = path.resolve(__dirname, '../../../docs/content');
   const outputPath = path.resolve(__dirname, '../src/generated/docs-data.json');
   const outputDir = path.dirname(outputPath);
 

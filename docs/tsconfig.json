@@ -1,5 +1,10 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {},
-  "include": ["./**/*", "./.vitepress/**/*.ts"]
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@regle/core": ["../packages/core/src"],
+      "@regle/rules": ["../packages/rules/src"],
+      "@regle/schemas": ["../packages/schemas/src"]
+    }
+  }
 }

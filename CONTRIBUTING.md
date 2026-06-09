@@ -48,8 +48,8 @@ Ui testing uses playwright. You can run the tests using:
 
 ### Docs
 
-1. Run `pnpm run docs:dev` to start the docs in dev mode
-2. Run `pnpm run docs:build` to ensure docs build correctly, `twoslash` can fail if not done right
+1. Run `pnpm run docs:dev` to start the Docus docs in dev mode (port 6001)
+2. Run `pnpm run docs:build` to ensure docs build correctly — this runs `nuxt-content-twoslash verify` before the Nuxt build
 
 ## Notes
 

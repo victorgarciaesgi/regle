@@ -3,38 +3,28 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev --port 6001",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
+    "dev": "nuxt dev --extends docus --port 6001",
+    "build": "nuxt-content-twoslash verify && nuxt build --extends docus",
+    "preview": "nuxt preview",
+    "twoslash:verify": "nuxt-content-twoslash verify"
   },
   "dependencies": {
+    "@docsearch/css": "3.8.2",
+    "@docsearch/js": "3.8.2",
+    "@nuxtjs/algolia": "^1.11.2",
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "@resvg/resvg-js": "2.6.2",
-    "@shikijs/vitepress-twoslash": "4.2.0",
-    "@tailwindcss/forms": "0.5.11",
-    "@types/lodash-es": "4.17.12",
     "arktype": "catalog:",
-    "autoprefixer": "10.5.0",
+    "better-sqlite3": "^12.2.0",
     "check-password-strength": "catalog:",
-    "lodash-es": "4.18.1",
+    "docus": "^5.12.1",
+    "nuxt": "catalog:",
+    "nuxt-content-twoslash": "^0.4.0",
     "pinia": "catalog:",
-    "postcss": "8.5.15",
-    "sass": "catalog:",
-    "satori": "0.26.0",
-    "satori-html": "0.3.2",
-    "tailwindcss": "catalog:",
-    "typescript": "6.0.3",
+    "typescript": "catalog:",
     "valibot": "catalog:",
-    "vite": "catalog:",
-    "vitepress": "1.6.4",
-    "vitepress-plugin-group-icons": "1.7.5",
-    "vitepress-plugin-llms": "1.13.1",
     "vue": "catalog:",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "vite-plus": "catalog:"
   }
 }
