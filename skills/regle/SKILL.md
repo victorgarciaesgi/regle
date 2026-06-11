@@ -1,6 +1,12 @@
 ---
 name: regle
-description: Core skills for using Regle form validation in Vue.js. Provides setup, validation rules, and usage patterns.
+description: Core Regle form validation in Vue 3 — setup with `useRegle`, the reactive `r$` object, validation properties, displaying errors, and modifiers. Use when adding or editing Regle forms, binding `v-model` to `r$.$value`, or reading `$error`/`$errors`/`$invalid`/`$validate`/`$reset`. For validation rules see regle-rules; for advanced patterns see regle-advanced.
+license: MIT
+compatibility: Requires Vue 3.3+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
+metadata:
+  author: Victor Garcia
+  version: "1.27.0"
+  source: https://reglejs.dev
 ---
 
 # Regle
@@ -72,15 +78,13 @@ const { r$ } = useRegle(
 | Topic | Description | Reference |
 |-------|-------------|-----------|
 | useRegle | State definition, rules declaration, dynamic rules, `r$` object | [core-use-regle](references/core-use-regle.md) |
-| Built-in Rules | All validation rules from `@regle/rules` | [core-built-in-rules](references/core-built-in-rules.md) |
 | Validation Properties | `$invalid`, `$dirty`, `$error`, `$errors`, `$pending`, `$validate`, `$touch`, `$reset` | [core-validation-properties](references/core-validation-properties.md) |
 | Displaying Errors | Showing errors, custom messages, `getErrors`, `flatErrors` | [core-displaying-errors](references/core-displaying-errors.md) |
 | Modifiers | `autoDirty`, `lazy`, `silent`, `rewardEarly`, `disabled`, `validationGroups`, per-field modifiers | [core-modifiers](references/core-modifiers.md) |
 
-## Rules
+## Related skills
 
-| Topic | Description | Reference |
-|-------|-------------|-----------|
-| Custom Rules | Inline rules, `createRule`, reactive parameters, async rules, metadata | [core-custom-rules](references/core-custom-rules.md) |
-| Rule Wrappers | `withMessage`, `withParams`, `withAsync`, `withTooltip`, chaining | [core-rule-wrappers](references/core-rule-wrappers.md) |
-| Rule Operators | `and`, `or`, `xor`, `not`, `applyIf`, `assignIf`, `pipe` | [core-rule-operators](references/core-rule-operators.md) |
+- **regle-rules** — built-in rules, custom rules (`createRule`), rule wrappers (`withMessage`, `withParams`, `withAsync`), and rule operators (`and`, `or`, `applyIf`, `assignIf`).
+- **regle-advanced** — collections, async, server errors, reset, scoped validation, variants, global config.
+- **regle-schemas** — Zod, Valibot, ArkType, and Standard Schema integration.
+- **regle-typescript** — type-safe output, typing rules schemas and component props.
