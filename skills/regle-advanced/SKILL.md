@@ -1,11 +1,17 @@
 ---
 name: regle-advanced
-description: Advanced patterns for Regle form validation, including arrays, async, server errors, global config, variants, scoped validation, and schema integration.
+description: Advanced Regle form validation patterns — collection validation with `$each`, async rules and `$pending`, server/`externalErrors`, `$reset` options, global config with `defineRegleConfig`, discriminated-union variants, cross-component `useScopedRegle`/`useCollectScope`, `mergeRegles`, and object-level `$self`. Use for arrays of fields, async/server validation, scoped or merged forms, i18n messages, or variant forms. For schema libraries see regle-schemas.
+license: MIT
+compatibility: Requires Vue 3.3+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
+metadata:
+  author: Victor Garcia
+  version: "1.27.0"
+  source: https://reglejs.dev
 ---
 
 # Regle Advanced Patterns
 
-Advanced usage patterns for Regle form validation in Vue 3. Covers collections, async validation, server errors, global configuration, discriminated unions (variants), scoped validation, and schema library integration.
+Advanced usage patterns for Regle form validation in Vue 3. Covers collections, async validation, server errors, reset options, global configuration, discriminated unions (variants), scoped validation, merging, and object-level self validation.
 
 ## Common Patterns
 
@@ -26,9 +32,9 @@ Advanced usage patterns for Regle form validation in Vue 3. Covers collections, 
 | Merge Regles | `mergeRegles` to combine multiple form instances | [advanced-merge-regles](references/advanced-merge-regles.md) |
 | Self Validation | `$self` for object-level cross-field validation | [advanced-self-validation](references/advanced-self-validation.md) |
 
-## Schema Integration
+## Related skills
 
-| Topic | Description | Reference |
-|-------|-------------|-----------|
-| Schema Libraries | `useRegleSchema` with Zod, Valibot, ArkType | [advanced-schema-libraries](references/advanced-schema-libraries.md) |
-| Standard Schema | Standard Schema spec, `useRules`, `refineRules`, `InferInput` | [advanced-standard-schema](references/advanced-standard-schema.md) |
+- **regle** — form setup with `useRegle`, validation properties, displaying errors, modifiers.
+- **regle-rules** — built-in/custom rules, wrappers, and operators.
+- **regle-schemas** — Zod, Valibot, ArkType, and Standard Schema integration.
+- **regle-typescript** — typing rules schemas and component props.

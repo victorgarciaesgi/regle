@@ -12,9 +12,12 @@ npx skills add victorgarciaesgi/regle
 
 | Skill | Description |
 |-------|-------------|
-| **regle** | Core usage — `useRegle`, built-in rules, validation properties, displaying errors, modifiers, custom rules, rule wrappers, rule operators |
-| **regle-advanced** | Advanced patterns — collections, async validation, server errors, global config, variants, scoped validation, merge, schema libraries (Zod, Valibot, ArkType) |
+| **regle** | Core usage — `useRegle`, the `r$` object, validation properties, displaying errors, modifiers |
+| **regle-rules** | Validation rules — built-in rules, custom rules (`createRule`), rule wrappers (`withMessage`, `withParams`, `withAsync`), rule operators (`and`, `or`, `applyIf`, `assignIf`) |
+| **regle-advanced** | Advanced patterns — collections, async validation, server errors, reset, global config, variants, scoped validation, merge, `$self` |
+| **regle-schemas** | Schema integration — `useRegleSchema` with Zod, Valibot, ArkType, and Standard Schema |
 | **regle-typescript** | TypeScript integration — type-safe output, typing rules schemas, typing component props |
+| **regle-migrate-vuelidate** | Migration guide — port Vuelidate forms (`useVuelidate`) to Regle (`useRegle`/`useScopedRegle`) |
 
 ## Compatibility
 

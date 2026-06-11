@@ -9,6 +9,10 @@ Migrating from Vuelidate is really simple. Regle API is similar to Vuelidate's o
 
 Regle type safety will ensure you make no mistakes while making the migration.
 
+:::tip
+There is a dedicated **`regle-migrate-vuelidate`** [Agent Skill](/integrations/agent-skills) that walks an AI coding agent through this migration step by step. Install it with `npx skills add victorgarciaesgi/regle`.
+:::
+
 ## Imports
 
 ```ts
