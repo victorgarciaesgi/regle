@@ -91,6 +91,18 @@ Usage:
 
 When set to false, tells the rules to be called on init, otherwise they are lazy and only called when the field is dirty.
 
+### `debounce`
+
+__Type__: `number` (ms)
+
+__Default__: `200` (for fields with async rules)
+
+Number of milliseconds every async field should wait before executing its rules. It applies to every async field in your form.
+
+The per-field [`$debounce`](#debounce-1) modifier always takes priority over this global value.
+
+Set to `0` to disable the default debounce on async rules.
+
 ### `externalErrors`
 
 __Type__: `RegleExternalErrorTree<State>` 
@@ -194,6 +206,8 @@ const { r$ } = useRegle({ name: '' }, {
 Type: `number` (ms)
 
 This let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
+
+It takes priority over the global [`debounce`](#debounce) deep modifier.
 
 :::tip
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`
