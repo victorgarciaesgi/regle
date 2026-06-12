@@ -12,47 +12,43 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   { immediate = false, trackDebounceRef }: { immediate?: boolean; trackDebounceRef?: Ref<boolean> } = {}
 ): DebouncedFunction<T> {
   let timeout: NodeJS.Timeout | undefined;
-  const debouncedFn: DebouncedFunction<T> = (...args) => {
-    if (trackDebounceRef) {
-      trackDebounceRef.value = true;
-    }
+  // Promises of calls that were superseded before their timer fired. They are
+  // collapsed onto the trailing execution so they always settle (a debounced call
+  // must never leave its promise hanging forever).
+  let pending: { resolve: (value: any) => void; reject: (reason?: any) => void }[] = [];
 
-    function disableDebounceRef() {
-      if (trackDebounceRef) {
-        trackDebounceRef.value = false;
-      }
+  const setDebounceRef = (value: boolean) => {
+    if (trackDebounceRef) {
+      trackDebounceRef.value = value;
     }
+  };
+
+  const debouncedFn: DebouncedFunction<T> = (...args) => {
+    setDebounceRef(true);
 
     return new Promise((resolve, reject) => {
-      function customResolve(value: any) {
-        resolve(value);
-        disableDebounceRef();
-      }
+      pending.push({ resolve, reject });
       clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        disableDebounceRef();
+
+      const run = () => {
+        const settled = pending;
+        pending = [];
         timeout = undefined;
-        if (!immediate) {
-          try {
-            Promise.resolve(func.apply(this, [...args] as any))
-              .then(customResolve)
-              .catch((e) => reject(e))
-              .finally(disableDebounceRef);
-          } catch (e) {
-            reject(e);
-          }
-        }
-      }, wait);
-      if (immediate) {
-        disableDebounceRef();
+        setDebounceRef(false);
         try {
-          Promise.resolve(func.apply(this, [...args] as any))
-            .then(customResolve)
-            .catch((e) => reject(e))
-            .finally(disableDebounceRef);
+          Promise.resolve(func.apply(this, args as any))
+            .then((value) => settled.forEach((p) => p.resolve(value)))
+            .catch((e) => settled.forEach((p) => p.reject(e)))
+            .finally(() => setDebounceRef(false));
         } catch (e) {
-          reject(e);
+          settled.forEach((p) => p.reject(e));
         }
+      };
+
+      if (immediate) {
+        run();
+      } else {
+        timeout = setTimeout(run, wait);
       }
     });
   };
@@ -60,9 +56,11 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   debouncedFn.cancel = () => {
     clearTimeout(timeout);
     timeout = undefined;
-    if (trackDebounceRef) {
-      trackDebounceRef.value = false;
-    }
+    const settled = pending;
+    pending = [];
+    // Settle any in-flight promises so awaiting callers don't hang on a cancel.
+    settled.forEach((p) => p.resolve(undefined));
+    setDebounceRef(false);
   };
 
   return debouncedFn;
