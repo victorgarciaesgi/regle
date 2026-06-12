@@ -131,7 +131,9 @@ export const { useRegle: useCustomRegle } = defineRegleConfig({
     autoDirty: false,
     silent: true,
     lazy: true,
-    rewardEarly: true
+    rewardEarly: true,
+    // Applies to every async field. A per-field `$debounce` still takes priority.
+    debounce: 500
   }
 })
 ```

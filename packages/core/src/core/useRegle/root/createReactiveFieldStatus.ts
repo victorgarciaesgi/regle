@@ -281,6 +281,9 @@ export function createReactiveFieldStatus({
         if ($localOptions.value.$debounce != null) {
           return $localOptions.value.$debounce;
         }
+        if (toValue(options.debounce) != null) {
+          return toValue(options.debounce);
+        }
         if (scopeState.$haveAnyAsyncRule.value) {
           return DEFAULT_DEBOUNCE_TIME;
         }
