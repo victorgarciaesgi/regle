@@ -59,13 +59,13 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
       ? any
       :
           | ({
-              readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+              [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
                 JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
                 true,
                 TSchema
               >;
             } & {
-              readonly $self?: RegleFieldIssue[];
+              $self?: RegleFieldIssue[];
             })
           | Record<Paths<TState> | (string & {}), string[]>;
 
@@ -76,14 +76,14 @@ export type RegleExternalIssueTree<TState = MaybeRef<Record<string, any> | any[]
       ? any
       :
           | ({
-              readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+              [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
                 JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
                 true,
                 true,
                 TSchema
               >;
             } & {
-              readonly $self?: RegleExternalFieldIssue[];
+              $self?: RegleExternalFieldIssue[];
             })
           | Partial<Record<Paths<TState> | (string & {}), RegleExternalFieldIssue[]>>;
 
@@ -96,7 +96,7 @@ export type RegleExternalSchemaErrorTree<
     : IsUnknown<TState> extends true
       ? any
       : {
-          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+          [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
             JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
             true,
             true,
@@ -113,7 +113,7 @@ export type RegleExternalSchemaIssueTree<
     : IsUnknown<TState> extends true
       ? any
       : {
-          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+          [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
             JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
             true,
             true,
