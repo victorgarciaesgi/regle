@@ -72,6 +72,16 @@ export interface RegleBehaviourOptions {
    * @default false
    */
   disabled?: boolean | undefined;
+  /**
+   * Number of milliseconds every async field should wait before executing its rules.
+   *
+   * Applies to every async field in the form. A per-field `$debounce` always takes priority over this global value.
+   *
+   * Set to `0` to disable the default debounce on async rules.
+   *
+   * @default 200 (for fields with async rules)
+   */
+  debounce?: number | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<
@@ -153,10 +163,6 @@ export interface RegleValidationGroupOutput {
 }
 
 export type FieldRegleBehaviourOptions<TValue extends unknown = unknown> = AddDollarToOptions<RegleBehaviourOptions> & {
-  /**
-   * Let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
-   */
-  $debounce?: number;
   /**
    * Override the default `$edited` handler.
    */
