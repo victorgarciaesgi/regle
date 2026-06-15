@@ -1,22 +1,28 @@
-import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, inject, ref, shallowRef, watch, type App, type WatchStopHandle } from 'vue';
 import { regleSymbol } from '../constants';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
-import { emitInspectorState } from './actions';
+import { emitInspectorState } from './inspector-sync';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
-function useRegleDevtoolsRegistry() {
+const REGLE_DEVTOOLS_GLOBAL_KEY = '__REGLE_DEVTOOLS_REGISTRY__' as const;
+
+function createRegleDevtoolsRegistry() {
   const loggedWarning = ref(false);
   const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
+  const devtoolsApp = shallowRef<App>();
   const instances = shallowRef(new Map<string, RegleInstance>());
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
   const idCounters = shallowRef(new Map<string, number>());
   const looseIdCounter = ref(0);
   let pendingNotifyFrame: number | undefined;
 
-  function setApi(api: DevtoolsV6PluginAPI): void {
+  function setApi(api: DevtoolsV6PluginAPI, app?: App): void {
     devtoolsApi.value = api;
+    if (app) {
+      devtoolsApp.value = app;
+    }
   }
 
   function register(
@@ -63,7 +69,7 @@ function useRegleDevtoolsRegistry() {
 
   function notifyDevtools(): void {
     if (devtoolsApi.value) {
-      emitInspectorState(devtoolsApi.value);
+      emitInspectorState(devtoolsApi.value, devtoolsApp.value);
     }
   }
 
@@ -106,6 +112,7 @@ function useRegleDevtoolsRegistry() {
 
   return {
     devtoolsApi,
+    devtoolsApp,
     register,
     unregister,
     getAll,
@@ -117,7 +124,22 @@ function useRegleDevtoolsRegistry() {
   };
 }
 
-export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
+type RegleDevtoolsRegistry = ReturnType<typeof createRegleDevtoolsRegistry>;
+
+function getRegleDevtoolsRegistry(): RegleDevtoolsRegistry {
+  if (typeof globalThis === 'undefined') {
+    return createRegleDevtoolsRegistry();
+  }
+
+  const globalRegistry = globalThis as typeof globalThis & {
+    [REGLE_DEVTOOLS_GLOBAL_KEY]?: RegleDevtoolsRegistry;
+  };
+
+  globalRegistry[REGLE_DEVTOOLS_GLOBAL_KEY] ??= createRegleDevtoolsRegistry();
+  return globalRegistry[REGLE_DEVTOOLS_GLOBAL_KEY];
+}
+
+export const regleDevtoolsRegistry = getRegleDevtoolsRegistry();
 
 /**
  * To be used by `useRegle` like composables.
