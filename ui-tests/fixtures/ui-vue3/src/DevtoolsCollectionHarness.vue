@@ -4,10 +4,10 @@
 
     <label>
       Item name
-      <input v-model="r$.$value.items[0].name" data-testid="collection-item-name" />
+      <input v-if="r$.items.$each[0]" v-model="r$.items.$each[0].name.$value" data-testid="collection-item-name" />
     </label>
 
-    <p data-testid="collection-item-invalid">{{ r$.items.$each[0].name.$invalid }}</p>
+    <p data-testid="collection-item-invalid">{{ r$.items.$each[0]?.name.$invalid }}</p>
     <p data-testid="collection-self-invalid">{{ r$.items.$self.$invalid }}</p>
   </div>
 </template>
