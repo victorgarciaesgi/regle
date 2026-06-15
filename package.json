@@ -37,7 +37,7 @@
     "test:typecheck": "pnpm test:typecheck:vue && pnpm test:typecheck:ts && pnpm --filter='ui-vue3' typecheck",
     "ui-tests:server": "pnpm -r --filter='ui-vue3' dev",
     "ui-tests:run": "turbo run playwright:ci",
-    "ui-tests:test": "playwright test --reporter=junit",
+    "ui-tests:test": "playwright test",
     "playwright:ci": "playwright test",
     "playwright:install": "playwright install",
     "docs:dev": "turbo run dev --filter='docs'",
