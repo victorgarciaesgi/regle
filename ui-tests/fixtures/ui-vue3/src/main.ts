@@ -10,6 +10,7 @@ import DevtoolsHarness from './DevtoolsHarness.vue';
 import DevtoolsCollectionHarness from './DevtoolsCollectionHarness.vue';
 import DevtoolsNestedHarness from './DevtoolsNestedHarness.vue';
 import DevtoolsSelfHarness from './DevtoolsSelfHarness.vue';
+import DevtoolsDynamicHarness from './DevtoolsDynamicHarness.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +20,7 @@ const router = createRouter({
     { path: '/devtools/nested', component: DevtoolsNestedHarness },
     { path: '/devtools/collection', component: DevtoolsCollectionHarness },
     { path: '/devtools/self', component: DevtoolsSelfHarness },
+    { path: '/devtools/dynamic', component: DevtoolsDynamicHarness },
   ],
 });
 
