@@ -23,6 +23,7 @@ import type {
   RegleExternalFieldIssue,
   RegleFieldIssue,
   RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../types';
@@ -122,7 +123,7 @@ export function createReactiveFieldStatus({
 
   const additionalRules = ref<RegleRuleDecl<unknown, any>>(storage.getAdditionalRulesEntry(cachePath) ?? {});
 
-  function $addRules(rules: RegleRuleDecl) {
+  function $addRules(rules: RegleRuleDeclInput) {
     additionalRules.value = rules ?? {};
     storage.addAdditionalRulesEntry(cachePath, rules ?? {});
     createRuleProcessor();
@@ -132,7 +133,7 @@ export function createReactiveFieldStatus({
   /**
    * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
    */
-  function addRules(rules: RegleRuleDecl) {
+  function addRules(rules: RegleRuleDeclInput) {
     $addRules(rules);
   }
 

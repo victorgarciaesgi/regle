@@ -10,6 +10,7 @@ import type {
   RegleFieldStatus,
   RegleRoot,
   RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleShortcutDefinition,
   RegleUnknownRulesTree,
   RegleValidationGroupEntry,
@@ -62,7 +63,7 @@ export interface useRulesFn<
 > {
   <
     TRules extends RegleUnknownRulesTree | RegleRuleDecl,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & TCustomRules>,
+    TDecl extends RegleRuleDeclInput<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & TCustomRules>,
     TValidationGroups extends Record<string, RegleValidationGroupEntry[]>,
     TState extends Record<string, any> = InferInput<TRules>,
   >(

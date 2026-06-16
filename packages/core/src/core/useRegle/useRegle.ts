@@ -12,7 +12,7 @@ import type {
   Regle,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
-  RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleShortcutDefinition,
   RegleSingleField,
   RegleValidationGroupEntry,
@@ -57,7 +57,7 @@ export interface useRegleFn<
       JoinDiscriminatedUnions<Unwrap<TState>>,
       Partial<ExtendedRulesDeclarations & Omit<TCustomRules, keyof DefaultValidatorsTree>>
     >,
-    TDecl extends RegleRuleDecl<
+    TDecl extends RegleRuleDeclInput<
       WidenPrimitiveLiterals<NonNullable<Unwrap<TState>>>,
       Partial<ExtendedRulesDeclarations & TCustomRules>
     >,

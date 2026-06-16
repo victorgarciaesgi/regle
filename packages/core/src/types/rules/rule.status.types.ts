@@ -43,6 +43,7 @@ import type {
   ReglePartialRuleTree,
   RegleResult,
   RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleRuleMetadataDefinition,
   RegleShortcutDefinition,
   RegleStaticImpl,
@@ -172,10 +173,10 @@ export type RegleStatus<
     : {
         [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;
       }) &
-  (TRules['$self'] extends RegleRuleDecl
+  (TRules['$self'] extends RegleRuleDeclInput<any, Partial<ExtendedRulesDeclarations>>
     ? {
         /** Represents the status of the parent object. Status only concern the object itself and not its children */
-        readonly $self: RegleFieldStatus<NonNullable<TRules['$self']>, NonNullable<TRules['$self']>, TShortcuts>;
+        readonly $self: RegleFieldStatus<TState, NonNullable<TRules['$self']>, TShortcuts>;
       }
     : {});
 /**
@@ -309,12 +310,12 @@ export type RegleFieldStatus<
   /** Represents the inactive status. Is true when this state have empty rules */
   readonly $inactive: boolean;
   /** Adds runtime rules to the field. */
-  $addRules: (rules: RegleRuleDecl) => void;
+  $addRules: (rules: RegleRuleDeclInput<TState>) => void;
   /**
    * Adds runtime rules to the field.
    * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
    */
-  addRules: (rules: RegleRuleDecl) => void;
+  addRules: (rules: RegleRuleDeclInput<TState>) => void;
   /** Sets the external errors for the field. */
   $setExternalErrors(errors: string[]): void;
   /** Sets the external issues for the field. */
@@ -350,9 +351,9 @@ export interface $InternalRegleFieldStatus extends $InternalRegleCommonStatus {
   readonly $isDebouncing: boolean;
   readonly $schemaMode?: boolean;
   readonly '~modifiers'?: FieldRegleBehaviourOptions;
-  $addRules: (rules: RegleRuleDecl) => void;
+  $addRules: (rules: RegleRuleDeclInput) => void;
   /** @deprecated Use `$addRules` instead. */
-  addRules: (rules: RegleRuleDecl) => void;
+  addRules: (rules: RegleRuleDeclInput) => void;
   $extractDirtyFields: (filterNullishValues?: boolean) => any;
   $validate: (forceValues?: unknown) => Promise<$InternalRegleResult>;
   /**
