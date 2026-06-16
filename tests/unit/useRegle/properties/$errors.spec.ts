@@ -15,6 +15,7 @@ describe('$silentErrors', () => {
         ],
         $self: [],
       },
+      terms: [],
       email: [],
       user: {
         firstName: [],
@@ -35,6 +36,7 @@ describe('$silentErrors', () => {
         ],
         $self: [],
       },
+      terms: ['The field must be checked'],
       email: ['This field is required'],
       user: {
         firstName: ['This field is required'],
@@ -57,6 +59,7 @@ describe('$silentErrors', () => {
         ],
         $self: [],
       },
+      terms: ['The field must be checked'],
       email: ['The value must be a valid email address'],
       user: {
         firstName: ['This field is required'],
