@@ -22,7 +22,7 @@ import type {
   Unwrap,
   UnwrapMaybeRef,
 } from '../utils';
-import type { DefaultValidatorsTree, ExtendedRulesDeclarations } from './rule.custom.types';
+import type { ExtendedRulesDeclarations } from './rule.custom.types';
 import type {
   RegleRuleDefinition,
   RegleRuleDefinitionLight,
@@ -137,7 +137,7 @@ export type $InternalFormPropertyTypes =
  */
 export type RegleRuleDecl<
   TValue extends any = any,
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<DefaultValidatorsTree>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = {},
   TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions<TValue>,
 > = TOptions & {
   [TKey in keyof RemoveIndexSignature<TCustomRules>]?: NonNullable<TCustomRules[TKey]> extends RegleRuleDefinitionLight<
@@ -150,6 +150,18 @@ export type RegleRuleDecl<
         | InlineRuleDeclaration<TValue, ParamsToLooseParams<TParams>, any>
     : TCustomRules[TKey];
 } & { [x: string]: FormRuleDeclaration<TValue, any[]> | boolean | number | undefined | RegleImmediateDirtyMode };
+
+/**
+ * Rule declaration type for rule *input* sites (useRegle, inferRules, $addRules).
+ * Uses the full validator catalog for autocomplete and strict checking.
+ *
+ * @public
+ */
+export type RegleRuleDeclInput<
+  TValue extends any = any,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+  TOptions extends Record<string, unknown> = FieldRegleBehaviourOptions<TValue>,
+> = RegleRuleDecl<TValue, TCustomRules, TOptions>;
 
 /**
  * @internal

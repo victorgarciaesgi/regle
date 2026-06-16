@@ -97,6 +97,7 @@ export type {
   RegleRoot,
   RegleRuleCore,
   RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleRuleDefinition,
   RegleRuleDefinitionProcessor,
   RegleRuleDefinitionWithMetadataProcessor,

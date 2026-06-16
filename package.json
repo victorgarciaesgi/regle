@@ -33,7 +33,7 @@
     "test:coverage": "pnpm build:sourcemaps && TEST_TRACE=true vp test run --coverage",
     "test:dev": "TEST_TRACE=true pnpm run:vitest:vue-3.5 --watch",
     "test:typecheck:vue": "vue-tsc --noEmit --project ./tests/tsconfig.vue.json",
-    "test:typecheck:ts": "tsgo --noEmit --project ./tests/tsconfig.json && tsgo --noEmit --project ./tests/plugin-config-tests/tsconfig.json",
+    "test:typecheck:ts": "zx ./scripts/typecheck-tests.mjs",
     "test:typecheck": "pnpm test:typecheck:vue && pnpm test:typecheck:ts && pnpm --filter='ui-vue3' typecheck",
     "ui-tests:server": "pnpm -r --filter='ui-vue3' dev",
     "ui-tests:run": "turbo run playwright:ci",

@@ -252,7 +252,7 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
   immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const condition = ref(true);
-  const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
+  const { useRegle: useCustomRegle } = defineRegleConfig({
     modifiers: {
       autoDirty,
       silent,
