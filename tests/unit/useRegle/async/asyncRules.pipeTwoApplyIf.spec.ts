@@ -35,12 +35,13 @@ describe('pipe(two applyIf) field $validate, first rule not applied', () => {
   }
 
   function watchdog<T>(p: Promise<T>, ms = 1500): Promise<T> {
-    return Promise.race([
-      p,
-      timeout(ms).then(() => {
-        throw new Error('TIMED OUT: $validate never settled');
-      }) as Promise<T>,
-    ]);
+    let t: ReturnType<typeof setTimeout> | undefined;
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      t = setTimeout(() => reject(new Error('TIMED OUT: $validate never settled')), ms);
+    });
+
+    return Promise.race([p.finally(() => t && clearTimeout(t)), timeoutPromise]);
   }
 
   function makeForm(condA: boolean) {
@@ -71,6 +72,6 @@ describe('pipe(two applyIf) field $validate, first rule not applied', () => {
     await timeout(50); // inside the 200ms window
 
     const result = await watchdog(field().$validate());
-    expect(result).toBeDefined();
+    expect(result.valid).toBe(true);
   });
 });

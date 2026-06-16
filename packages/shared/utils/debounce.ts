@@ -1,7 +1,11 @@
 import type { Ref } from 'vue';
 
+// Resolved value of a debounced call, mirroring `await`-ing the original function.
+type DebouncedResult<T extends (...args: any[]) => any> = Awaited<ReturnType<T>>;
+
 export interface DebouncedFunction<T extends (...args: any[]) => any | Promise<any>> {
-  (...args: Parameters<T>): Promise<ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>>;
+  // The resolved value is `undefined` when the call is cancelled via `cancel()`.
+  (...args: Parameters<T>): Promise<DebouncedResult<T> | undefined>;
   cancel(): void;
 }
 
@@ -15,7 +19,7 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   // Promises of calls that were superseded before their timer fired. They are
   // collapsed onto the trailing execution so they always settle (a debounced call
   // must never leave its promise hanging forever).
-  let pending: { resolve: (value: any) => void; reject: (reason?: any) => void }[] = [];
+  let pending: { resolve: (value: DebouncedResult<T> | undefined) => void; reject: (reason?: any) => void }[] = [];
 
   const setDebounceRef = (value: boolean) => {
     if (trackDebounceRef) {
