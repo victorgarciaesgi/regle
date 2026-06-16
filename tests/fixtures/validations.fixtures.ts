@@ -260,11 +260,12 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
     },
   });
   const form = ref({
-    email: '',
+    email: undefined as string | undefined,
     user: {
       firstName: '',
       lastName: '',
     },
+    terms: undefined as boolean | undefined,
     contacts: [{ name: '' }],
   });
 
@@ -281,6 +282,7 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
           name: { required },
         },
       },
+      terms: { checked },
     }),
   };
 }
