@@ -37,14 +37,25 @@ import type { $InternalRegleFieldStatus } from './rule.status.types';
  */
 export type ReglePartialRuleTree<
   TForm extends Record<string, any> = Record<string, any>,
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = {},
 > = {
   [TKey in keyof TForm]?: RegleFormPropertyType<TForm[TKey], TCustomRules>;
 } & SelfObjectValidationDecl<TForm, TCustomRules>;
 
-type SelfObjectValidationDecl<
+/**
+ * Rule tree type for rule *input* sites (useRegle, inferRules, satisfies RegleComputedRules).
+ * Uses the full validator catalog for autocomplete and strict checking.
+ *
+ * @public
+ */
+export type ReglePartialRuleTreeInput<
   TForm extends Record<string, any> = Record<string, any>,
   TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+> = ReglePartialRuleTree<TForm, TCustomRules>;
+
+type SelfObjectValidationDecl<
+  TForm extends Record<string, any> = Record<string, any>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = {},
 > = {
   $self?: MaybeRefOrComputedRef<RegleRuleDecl<TForm, TCustomRules>>;
 };
@@ -104,10 +115,9 @@ export type $InternalReglePartialRuleTree = {
 /**
  * @public
  */
-export type RegleFormPropertyType<
-  TValue = any,
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-> = [NonNullable<TValue>] extends [never]
+export type RegleFormPropertyType<TValue = any, TCustomRules extends Partial<ExtendedRulesDeclarations> = {}> = [
+  NonNullable<TValue>,
+] extends [never]
   ? MaybeRefOrComputedRef<RegleRuleDecl<TValue, TCustomRules>>
   : NonNullable<TValue> extends PrimitiveTypes
     ? MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>
@@ -120,6 +130,16 @@ export type RegleFormPropertyType<
             ? MaybeRefOrComputedRef<RegleRuleDecl<Raw<U>, TCustomRules>>
             : ReglePartialRuleTree<NonNullable<TValue>, TCustomRules>
           : MaybeRefOrComputedRef<RegleRuleDecl<NonNullable<TValue>, TCustomRules>>;
+
+/**
+ * Form property rules for rule *input* sites.
+ *
+ * @public
+ */
+export type RegleFormPropertyTypeInput<
+  TValue = any,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+> = RegleFormPropertyType<TValue, TCustomRules>;
 
 /**
  * @internal
@@ -178,10 +198,7 @@ export type RegleCollectionRuleDeclKeyProperty = {
   $key?: PropertyKey;
 };
 
-type CollectionEachRuleDecl<
-  TValue = any[],
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-> =
+type CollectionEachRuleDecl<TValue = any[], TCustomRules extends Partial<ExtendedRulesDeclarations> = {}> =
   IsAny<TValue> extends true
     ? {
         $each?: RegleCollectionEachRules<TValue, TCustomRules>;
@@ -207,10 +224,7 @@ type CollectionEachRuleDecl<
 /**
  * @public
  */
-export type RegleCollectionRuleDecl<
-  TValue = any[],
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
-> =
+export type RegleCollectionRuleDecl<TValue = any[], TCustomRules extends Partial<ExtendedRulesDeclarations> = {}> =
   | (CollectionEachRuleDecl<TValue, TCustomRules> &
       RegleRuleDecl<NonNullable<TValue>, TCustomRules, CollectionRegleBehaviourOptions>)
   | (CollectionEachRuleDecl<TValue, TCustomRules> & CollectionRegleBehaviourOptions);
@@ -218,7 +232,7 @@ export type RegleCollectionRuleDecl<
 /** @public */
 export type RegleCollectionEachRules<
   TValue = any[],
-  TCustomRules extends Partial<ExtendedRulesDeclarations> = Partial<ExtendedRulesDeclarations>,
+  TCustomRules extends Partial<ExtendedRulesDeclarations> = {},
 > = MaybeGetter<
   RegleFormPropertyType<ArrayElement<NonNullable<TValue>>, TCustomRules>,
   ArrayElement<TValue>,

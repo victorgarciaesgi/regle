@@ -85,6 +85,8 @@ type ComputeNestedFieldStatus<
     : InferRegleStatusType<NonNullable<TRules[TKey]>, NonNullable<TState>, TKey, TShortcuts>
   : never;
 
+type $IsFieldLevelRule<TRule> = NonNullable<TRule> extends MaybeRef<RegleRuleDecl> ? true : false;
+
 type ProcessNestedFields<
   TState extends Record<string, any> | undefined,
   TRules extends ReglePartialRuleTree<NonNullable<TState>>,
@@ -94,7 +96,7 @@ type ProcessNestedFields<
   Or<HasNamedKeys<TState>, TIsFields> extends true
     ? {
         readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-          ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
+          ? $IsFieldLevelRule<TRules[TKey]> extends true
             ? IsEmptyObject<TRules[TKey]> extends true
               ? TKey
               : never
@@ -103,7 +105,7 @@ type ProcessNestedFields<
       } & (IsEmptyObject<TRules> extends true
         ? {
             readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-              ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
+              ? $IsFieldLevelRule<TRules[TKey]> extends true
                 ? IsEmptyObject<TRules[TKey]> extends true
                   ? never
                   : TKey
@@ -114,7 +116,7 @@ type ProcessNestedFields<
           }
         : {
             readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-              ? NonNullable<TRules[TKey]> extends MaybeRef<RegleRuleDecl>
+              ? $IsFieldLevelRule<TRules[TKey]> extends true
                 ? IsEmptyObject<TRules[TKey]> extends true
                   ? never
                   : TKey
@@ -130,7 +132,7 @@ type ProcessNestedFields<
  */
 export type RegleStatus<
   TState extends object | Record<string, any> | undefined = Record<string, any>,
-  TRules extends ReglePartialRuleTree<NonNullable<TState>, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
+  TRules extends ReglePartialRuleTree<NonNullable<TState>> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = {},
   _TFields = ProcessNestedFields<TState, TRules, TShortcuts, true>,
 > = Omit<RegleCommonStatus<TState, TState, TRules>, '$issues' | '$errors'> & {
@@ -267,7 +269,7 @@ export type $InternalRegleStatusType =
  */
 export type RegleFieldStatus<
   TState extends any = any,
-  TRules extends RegleFormPropertyType<any, Partial<ExtendedRulesDeclarations>> = Record<string, any>,
+  TRules extends RegleFormPropertyType<any> = Record<string, any>,
   TShortcuts extends RegleShortcutDefinition = never,
 > = Omit<
   RegleCommonStatus<TState, TState, TRules>,

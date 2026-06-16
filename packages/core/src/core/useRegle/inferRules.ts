@@ -3,7 +3,7 @@ import type {
   DeepReactiveState,
   ExtendedRulesDeclarations,
   ExtendedRulesDeclarationsOverrides,
-  ReglePartialRuleTree,
+  ReglePartialRuleTreeInput,
   RegleRuleDeclInput,
 } from '../../types';
 import type { Maybe, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
@@ -11,7 +11,7 @@ import type { Maybe, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/util
 export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>> {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<
+    TRules extends ReglePartialRuleTreeInput<
       Unwrap<TState extends Record<string, any> ? TState : {}>,
       Partial<ExtendedRulesDeclarations> & TCustomRules
     >,

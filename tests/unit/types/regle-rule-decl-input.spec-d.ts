@@ -45,6 +45,7 @@ describe('RegleRuleDeclInput regressions', () => {
     expectTypeOf(r$.user.firstName.$dirty).toEqualTypeOf<boolean>();
 
     // @ts-expect-error - email is a field, not a nested form with firstName
+    // oxlint-disable-next-line no-unused-expressions
     r$.email.firstName;
   });
 });
