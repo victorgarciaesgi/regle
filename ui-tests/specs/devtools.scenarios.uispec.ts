@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { openRegleDevtools, REGLE_DEVTOOLS_HARNESSES, regleInstanceLabel } from '../utils/devtools.utils';
+import {
+  openRegleDevtools,
+  REGLE_DEVTOOLS_HARNESSES,
+  regleInstanceIndexLabel,
+  regleInstanceLabel,
+} from '../utils/devtools.utils';
 
 test.describe('Regle devtools nested forms', () => {
   test('shows nested fields in the inspector tree', async ({ context }) => {
@@ -105,5 +110,46 @@ test.describe('Regle devtools object $self validation', () => {
     await inspector.selectNode('$self');
     await inspector.expectState('$invalid', 'false');
     await inspector.expectState('$dirty', 'true');
+  });
+});
+
+test.describe('Regle devtools dynamic instance ids', () => {
+  test('shows a single incremental id for the initial form', async ({ context }) => {
+    const { inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
+
+    await expect(inspector.page.getByText(regleInstanceIndexLabel(1))).toBeVisible();
+    await inspector.expectInstanceIndexCount(1, 1);
+  });
+
+  test('keeps unique incremental ids when the same form component is added again', async ({ context }) => {
+    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
+
+    await appPage.getByTestId('dynamic-add-form-a').click();
+    await inspector.waitForInstanceIndex(2);
+
+    await inspector.expectInstanceIndexCount(1, 1);
+    await inspector.expectInstanceIndexCount(2, 1);
+  });
+
+  test('keeps unique incremental ids when a different form component is added', async ({ context }) => {
+    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
+
+    await appPage.getByTestId('dynamic-add-form-b').click();
+    await inspector.waitForInstanceIndex(2);
+
+    await inspector.expectInstanceIndexCount(1, 1);
+    await inspector.expectInstanceIndexCount(2, 1);
+  });
+
+  test('continues incrementing ids when multiple forms are added dynamically', async ({ context }) => {
+    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
+
+    await appPage.getByTestId('dynamic-add-form-a').click();
+    await appPage.getByTestId('dynamic-add-form-b').click();
+    await inspector.waitForInstanceIndex(3);
+
+    await inspector.expectInstanceIndexCount(1, 1);
+    await inspector.expectInstanceIndexCount(2, 1);
+    await inspector.expectInstanceIndexCount(3, 1);
   });
 });

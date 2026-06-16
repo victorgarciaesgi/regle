@@ -441,6 +441,15 @@ export function createReactiveFieldStatus({
         } else if (initialValue == null) {
           // Keep empty string as the same value of undefined|null,
           // but preserve falsy values like false/0 as edited.
+          if (typeof currentValue === 'boolean') {
+            // Optional booleans often start as undefined; false is equivalent to unchecked.
+            if (initialValue === undefined) {
+              return currentValue === true;
+            }
+
+            return currentValue != null;
+          }
+
           return currentValue != null && currentValue !== '';
         } else if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
           return !isEqual(currentValue, initialValue, $localOptions.value.$deepCompare);

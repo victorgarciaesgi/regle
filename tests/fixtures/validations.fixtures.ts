@@ -207,12 +207,13 @@ export function simpleNestedStateWithMixedValidation({
   immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const form = ref({
-    email: '',
+    email: undefined as string | undefined,
     user: {
       firstName: '',
       lastName: '',
     },
     contacts: [{ name: '' }],
+    terms: undefined as boolean | undefined,
   });
 
   const condition = ref(true);
@@ -234,6 +235,7 @@ export function simpleNestedStateWithMixedValidation({
             name: { required },
           },
         },
+        terms: { checked },
       }),
       { autoDirty, rewardEarly, silent, immediateDirty }
     ),

@@ -47,6 +47,11 @@ export const REGLE_DEVTOOLS_HARNESSES = {
     readyTestId: 'self-user-invalid',
     instanceId: 'playwright-devtools-self',
   },
+  dynamic: {
+    path: '/devtools/dynamic',
+    readyTestId: 'dynamic-form-a-email-1',
+    instanceId: '1',
+  },
 } as const satisfies Record<string, RegleDevtoolsHarness>;
 
 export interface RegleDevtoolsSession {
@@ -60,6 +65,10 @@ function inspectorPane(page: Page, filterPlaceholder: string): Locator {
 
 export function regleInstanceLabel(instanceId: string) {
   return `r$ #${instanceId}`;
+}
+
+export function regleInstanceIndexLabel(index: number) {
+  return regleInstanceLabel(String(index));
 }
 
 export class RegleInspector {
@@ -83,6 +92,14 @@ export class RegleInspector {
 
   async waitForInstance(instanceId: string) {
     await this.page.waitForSelector(`text=${regleInstanceLabel(instanceId)}`);
+  }
+
+  async waitForInstanceIndex(index: number) {
+    await this.page.waitForSelector(`text=${regleInstanceIndexLabel(index)}`);
+  }
+
+  async expectInstanceIndexCount(index: number, count: number) {
+    await expect(this.node(regleInstanceIndexLabel(index))).toHaveCount(count);
   }
 
   async selectNode(label: string) {

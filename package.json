@@ -71,22 +71,22 @@
     "@vitest/coverage-istanbul": "4.1.8",
     "@vitest/coverage-v8": "4.1.8",
     "@vue/compiler-dom": "catalog:",
-    "@vue/test-utils": "2.4.10",
+    "@vue/test-utils": "2.4.11",
     "bumpp": "11.1.0",
     "changelogithub": "14.0.0",
     "corepack": "0.35.0",
     "env-cmd": "11.0.0",
-    "happy-dom": "20.9.0",
+    "happy-dom": "20.10.3",
     "nuxt": "catalog:",
     "pinia-2.2.5": "catalog:",
     "playwright": "catalog:",
     "playwright-core": "catalog:",
-    "rolldown": "1.1.0",
-    "semver": "7.8.1",
+    "rolldown": "1.1.1",
+    "semver": "7.8.4",
     "std-env": "4.1.0",
     "taze": "19.14.1",
     "tsx": "catalog:",
-    "turbo": "2.9.16",
+    "turbo": "2.9.18",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
@@ -104,7 +104,7 @@
   },
   "engines": {
     "node": ">=24",
-    "pnpm": "11.5.0"
+    "pnpm": "11.6.0"
   },
-  "packageManager": "pnpm@11.5.0"
+  "packageManager": "pnpm@11.6.0"
 }

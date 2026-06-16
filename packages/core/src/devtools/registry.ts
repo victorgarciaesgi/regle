@@ -14,8 +14,7 @@ function createRegleDevtoolsRegistry() {
   const devtoolsApp = shallowRef<App>();
   const instances = shallowRef(new Map<string, RegleInstance>());
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
-  const idCounters = shallowRef(new Map<string, number>());
-  const looseIdCounter = ref(0);
+  const instanceIndexCounter = ref(0);
   let pendingNotifyFrame: number | undefined;
 
   function setApi(api: DevtoolsV6PluginAPI, app?: App): void {
@@ -29,13 +28,9 @@ function createRegleDevtoolsRegistry() {
     r$: SuperCompatibleRegleRoot,
     options?: { name?: string; componentName?: string; uid?: number; filePath?: string }
   ): string {
-    const idPath = options?.filePath ?? 'loose';
-    const existingCounter = idCounters.value.get(idPath);
-    const perComponentCounter = existingCounter ? existingCounter + 1 : 1;
-    idCounters.value.set(idPath, perComponentCounter);
-
-    const id = `${options?.uid?.toString() ?? 'regle'}#${++looseIdCounter.value}`;
-    const name = `${'r$'} #${options?.name ?? perComponentCounter}`;
+    const instanceIndex = ++instanceIndexCounter.value;
+    const id = `${options?.uid?.toString() ?? 'regle'}#${instanceIndex}`;
+    const name = `${'r$'} #${options?.name ?? instanceIndex}`;
 
     instances.value.set(id, {
       id,
