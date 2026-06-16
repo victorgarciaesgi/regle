@@ -2,7 +2,6 @@ import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown, Paths } from 'type-f
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { FieldRegleBehaviourOptions } from '../core';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
-import type { ExtendedRulesDeclarations } from './rule.custom.types';
 import type { InlineRuleDeclaration, RegleFormPropertyType, ReglePartialRuleTree } from './rule.declaration.types';
 import type { RegleRuleDefinitionLight, RegleRuleMetadataDefinition } from './rule.definition.type';
 import type { RegleRuleStatus } from './rule.status.types';
@@ -167,9 +166,7 @@ export type RegleValidationErrors<
 
 export interface RegleIssueCustomMetadata {}
 
-export type RegleFieldIssue<
-  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
-> = {
+export type RegleFieldIssue<TRules extends RegleFormPropertyType<unknown> = EmptyObject> = {
   readonly $property: string;
   readonly $type?: string;
   readonly $message: string;
@@ -193,10 +190,7 @@ export type RegleExternalFieldIssue = Pick<RegleFieldIssue, '$message'> &
   Partial<Omit<RegleFieldIssue, '$message'>> &
   Record<string, unknown>;
 
-export type ComputeFieldRules<
-  TState extends any,
-  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>>>,
-> =
+export type ComputeFieldRules<TState extends any, TRules extends MaybeRef<RegleFormPropertyType<unknown>>> =
   IsEmptyObject<UnwrapRef<TRules>> extends true
     ? {
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;
