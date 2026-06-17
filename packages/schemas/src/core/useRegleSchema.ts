@@ -22,6 +22,7 @@ import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, Re
 import { type SchemaIssueWithArrayValue } from './useRegleSchema/issues.mapper';
 import { createSchemaState } from './useRegleSchema/state.factory';
 import { createSchemaValidationRunner } from './useRegleSchema/validation.runner';
+import { diagnostics } from '../diagnostics/schema';
 
 export type useRegleSchemaFnOptions<
   TSchema extends Record<string, any>,
@@ -84,7 +85,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       RegleSchemaBehaviourOptions
   ): RegleSchema<Record<string, any>, Record<string, any>, StandardSchemaV1, RegleShortcutDefinition> {
     if (!unref(schema)?.['~standard']) {
-      throw new Error(`Only "standard-schema" compatible libraries are supported`);
+      throw diagnostics.REGLE_C0001();
     }
 
     const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};

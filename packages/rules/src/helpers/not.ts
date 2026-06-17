@@ -10,6 +10,7 @@ import type {
 import { createRule } from '@regle/core';
 import { isFilled } from './ruleHelpers';
 import { extractValidator } from './common/extractValidator';
+import { diagnostics } from '../diagnostics/rules';
 import { capitalize } from 'vue';
 import type { IsUnknown } from 'type-fest';
 
@@ -75,7 +76,10 @@ export function not<
         try {
           const result = await validator(value, ...(params as any));
           return !result;
-        } catch {
+        } catch (e) {
+          if (__IS_DEV__) {
+            diagnostics.REGLE_R0104({ cause: e }, { method: 'error' });
+          }
           return true;
         }
       }

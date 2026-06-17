@@ -2,6 +2,7 @@ import { computed, reactive, ref, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { RegleRoot, ScopedInstancesRecord, SuperCompatibleRegleRoot } from '../../types';
 import { mergeRegles, type MergedRegles, type MergedScopedRegles } from '../mergeRegles';
+import { diagnostics } from '../../diagnostics/runtime';
 
 export type useCollectScopeFn<TNamedScoped extends boolean = false> = TNamedScoped extends true
   ? <const TValue extends Record<string, Record<string, any>>>(
@@ -61,7 +62,11 @@ export function createUseCollectScope<TNamedScoped extends boolean = false>(
     function collectRegles(r$Instances: ScopedInstancesRecord) {
       if (computedNamespace.value) {
         if (typeof computedNamespace.value === 'string') {
-          return mergeRegles(r$Instances[computedNamespace.value] ?? {}, !options.asRecord);
+          const namespaceInstances = r$Instances[computedNamespace.value] ?? {};
+          if (__IS_DEV__ && Object.keys(namespaceInstances).length === 0) {
+            diagnostics.REGLE_R0017({ namespace: computedNamespace.value });
+          }
+          return mergeRegles(namespaceInstances, !options.asRecord);
         } else {
           Object.keys(namespaceInstances).forEach((key) => {
             delete namespaceInstances[key];

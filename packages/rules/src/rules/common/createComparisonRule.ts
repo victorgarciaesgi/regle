@@ -1,5 +1,6 @@
 import type { CommonComparisonOptions, MaybeInput, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../../diagnostics/rules';
 import { isFilled } from '../../helpers/ruleHelpers/isFilled';
 import { toNumber } from '../../helpers/ruleHelpers/toNumber';
 
@@ -50,7 +51,7 @@ export function createValueComparisonRule<TType extends string | unknown>({
           return compare(toNumber(value), toNumber(limit), allowEqual);
         }
         if (__IS_DEV__) {
-          console.warn(`[${type}] Value or parameter isn't a number, got value: ${value}, parameter: ${limit}`);
+          diagnostics.REGLE_R0101({ rule: String(type), value, param: limit });
         }
         return true;
       }

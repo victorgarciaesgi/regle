@@ -1,4 +1,5 @@
 import { replacePlugin } from 'rolldown/plugins';
+import { nosticsStrip } from '@nostics/unplugin/strip-transform';
 import type { UserConfig } from 'vite-plus/pack';
 
 export function outExtensions(isMin = false): UserConfig['outExtensions'] | undefined {
@@ -22,6 +23,7 @@ export const devBuildPlugins = [
     __USE_DEVTOOLS__: 'true',
     __IS_DEV__: 'true',
   }),
+  nosticsStrip.rolldown({ packageName: 'nostics' }),
 ];
 
 export const productionBuildPlugins = [
@@ -29,6 +31,7 @@ export const productionBuildPlugins = [
     __USE_DEVTOOLS__: 'false',
     __IS_DEV__: 'false',
   }),
+  nosticsStrip.rolldown({ packageName: 'nostics' }),
 ];
 
 export function defineBanner({ name, version }: { name: string; version: string }) {

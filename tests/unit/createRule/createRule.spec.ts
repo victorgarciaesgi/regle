@@ -6,12 +6,19 @@ import {
   useRegle,
 } from '@regle/core';
 import { minLength } from '@regle/rules';
+import { Diagnostic } from 'nostics';
 import { nextTick } from 'vue';
 import { createRegleComponent } from '../../utils/test.utils';
 
 describe('createRule', () => {
   it('should error when creating a rule without a function', () => {
-    assert.throw(() => createRule({} as any), '[createRule] validator must be a function');
+    try {
+      createRule({} as any);
+      expect.fail('should throw');
+    } catch (err) {
+      expect(err).toBeInstanceOf(Diagnostic);
+      expect((err as Diagnostic).name).toBe('REGLE_R0006');
+    }
   });
 
   it('should create a rule definition without parameters', () => {

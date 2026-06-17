@@ -46,6 +46,7 @@ import {
   type ResolvedImmediateDirtyMode,
 } from './common/immediateDirty';
 import { createStandardSchema } from './standard-schemas';
+import { diagnostics } from '../../../diagnostics/runtime';
 
 interface CreateReactiveNestedStatus extends CommonResolverOptions {
   state: Ref<Record<string, any> | undefined>;
@@ -883,6 +884,9 @@ export function createReactiveNestedStatus({
           scopeState.$localPending.value = true;
           return commonArgs.onValidate();
         } else {
+          if (__IS_DEV__) {
+            diagnostics.REGLE_R0008({ path });
+          }
           return {
             valid: false,
             data: state.value,
@@ -1066,5 +1070,11 @@ export function createReactiveChildrenStatus({
     });
   }
 
+  if (__IS_DEV__) {
+    diagnostics.REGLE_R0010({
+      path: properties.path,
+      reason: 'Rules definition shape does not match state shape. No Regle node was created.',
+    });
+  }
   return undefined;
 }

@@ -6,6 +6,7 @@ import type {
   RegleRuleRaw,
 } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../../diagnostics/rules';
 import type {
   ExtractValueFromRules,
   ExtractParamsFromRules,
@@ -162,6 +163,9 @@ export function combineRules<
         };
   } else {
     // For empty rules: 'and' returns false (nothing to satisfy), 'or' also returns false (nothing passes)
+    if (__IS_DEV__) {
+      diagnostics.REGLE_R0019({ operator: mode });
+    }
     validator = (_value: any) => {
       return false;
     };

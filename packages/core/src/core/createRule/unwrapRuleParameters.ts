@@ -1,4 +1,5 @@
 import { computed, isRef, toRef, toValue, type MaybeRefOrGetter } from 'vue';
+import { diagnostics } from '../../diagnostics/runtime';
 
 /**
  * Returns a clean list of parameters
@@ -7,7 +8,10 @@ import { computed, isRef, toRef, toValue, type MaybeRefOrGetter } from 'vue';
 export function unwrapRuleParameters<TParams extends any[]>(params: MaybeRefOrGetter[]): TParams {
   try {
     return params.map((param) => toValue(param)) as TParams;
-  } catch {
+  } catch (e) {
+    if (__IS_DEV__) {
+      diagnostics.REGLE_R0011({ cause: e });
+    }
     return [] as any;
   }
 }

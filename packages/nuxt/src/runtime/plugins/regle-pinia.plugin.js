@@ -1,4 +1,5 @@
 import { defineNuxtPlugin } from 'nuxt/app';
+import { diagnostics } from '../../diagnostics/nuxt';
 
 /**
  * Marks Regle instances with Pinia's skipHydrate so SSR payload
@@ -28,7 +29,7 @@ export default defineNuxtPlugin({
         }
       });
     } catch (error) {
-      console.error('Failed to import skipHydrate from pinia', { cause: error });
+      diagnostics.REGLE_C0102({ cause: error }, { method: 'error' });
     }
   },
 });

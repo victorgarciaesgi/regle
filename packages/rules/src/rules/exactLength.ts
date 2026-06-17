@@ -1,6 +1,7 @@
 import { isFilled, isNumber, getSize } from '../helpers';
 import type { Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../diagnostics/rules';
 
 /**
  * Requires the input value to have a strict specified length. Works with arrays, objects, numbers, and strings.
@@ -40,7 +41,7 @@ export const exactLength: RegleRuleWithParamsDefinition<
         return getSize(value) === count;
       }
       if (__IS_DEV__) {
-        console.warn(`[exactLength] Parameter isn't a number, got parameter: ${count}`);
+        diagnostics.REGLE_R0101({ rule: 'exactLength', param: count });
       }
       return false;
     }

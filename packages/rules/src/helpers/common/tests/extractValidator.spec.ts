@@ -1,4 +1,5 @@
 import { createRule, InternalRuleType } from '@regle/core';
+import { Diagnostic } from 'nostics';
 import { extractValidator } from '../extractValidator';
 
 describe('extractValidator', () => {
@@ -35,6 +36,12 @@ describe('extractValidator', () => {
   });
 
   it('should throw on invalid rules', () => {
-    expect(() => extractValidator({} as any)).toThrowError('Cannot extract validator from invalid rule');
+    expect(() => extractValidator({} as any)).toThrowError(Diagnostic);
+    try {
+      extractValidator({} as any);
+    } catch (err) {
+      expect(err).toBeInstanceOf(Diagnostic);
+      expect((err as Diagnostic).name).toBe('REGLE_R0103');
+    }
   });
 });

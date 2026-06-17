@@ -10,6 +10,7 @@ import type {
 import { createRule, InternalRuleType } from '@regle/core';
 import type { Ref } from 'vue';
 import { extractValidator } from './common/extractValidator';
+import { diagnostics } from '../diagnostics/rules';
 
 /**
  * `withAsync` works like `withParams`, but is specifically designed for async rules that depend on external values.
@@ -64,6 +65,9 @@ export function withAsync(
       return rule(value, ...(params as []));
     };
   } else {
+    if (__IS_DEV__) {
+      diagnostics.REGLE_R0016();
+    }
     validator = async (...args: any[]) => rule.validator(args);
   }
 

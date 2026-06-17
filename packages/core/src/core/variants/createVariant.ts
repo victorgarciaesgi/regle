@@ -22,6 +22,7 @@ import type {
   VariantTuple,
 } from '../../types';
 import { isRuleDef } from '../useRegle/guards';
+import { diagnostics } from '../../diagnostics/runtime';
 
 /**
  * Create variant-based validation rules that depend on a discriminant field value.
@@ -93,6 +94,12 @@ export function createVariant<
       if (anyDiscriminantRules) {
         return anyDiscriminantRules;
       } else {
+        if (__IS_DEV__) {
+          diagnostics.REGLE_R0009({
+            discriminantKey: String(discriminantKey),
+            value: watchableRoot.value,
+          });
+        }
         return {};
       }
     }

@@ -161,6 +161,7 @@ const Examples: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] 
 
 const Troubleshooting: DefaultTheme.NavItemWithLink[] = [
   { text: 'Reactivity caveats', link: '/troubleshooting/reactivity' },
+  { text: 'Error reference', link: '/errors/' },
 ];
 
 const shortDescription = 'Headless model-based form validation library for Vue.js';

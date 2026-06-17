@@ -6,6 +6,7 @@ import type {
   ScopedInstancesRecord,
 } from '../../types';
 import { randomId, tryOnScopeDispose } from '../../utils';
+import { diagnostics } from '../../diagnostics/runtime';
 import { useRegle, type useRegleFn } from '../useRegle';
 import type { RequireAtLeastOne } from 'type-fest';
 
@@ -42,7 +43,8 @@ export function createUseScopedRegleComposable<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarationsOverrides>>,
 >(
   instances: Ref<ScopedInstancesRecord>,
-  customUseRegle?: TCustomRegle
+  customUseRegle?: TCustomRegle,
+  factoryOptions?: { asRecord?: boolean }
 ): {
   useScopedRegle: TCustomRegle;
 } {
@@ -60,6 +62,10 @@ export function createUseScopedRegleComposable<
     const computedScopeId = computed(() => id ?? scopeKey);
 
     const computedNamespace = computed(() => toValue(namespace));
+
+    if (__IS_DEV__ && factoryOptions?.asRecord && !computedScopeId.value) {
+      diagnostics.REGLE_R0018();
+    }
 
     // Keep order while avoiding conflicting ids
     const $id = ref(`${Object.keys(instances.value).length + 1}-${randomId()}`);

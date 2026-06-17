@@ -12,6 +12,7 @@ import type {
   RegleRuleMetadataDefinition,
 } from '../../../types';
 import { unwrapRuleParameters } from '../../createRule/unwrapRuleParameters';
+import { diagnostics } from '../../../diagnostics/runtime';
 import type { RegleStorage } from '../../useStorage';
 import { isFormRuleDefinition, isRuleDef } from '../guards';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
@@ -123,7 +124,7 @@ export function createReactiveRuleStatus({
             return true;
           }
         } catch (e) {
-          console.error(`Error in "active" function for "${path}.${ruleKey}" rule`, { cause: e });
+          diagnostics.REGLE_R0001({ path, ruleKey, cause: e }, { method: 'error' });
           return true;
         }
       });
@@ -152,7 +153,7 @@ export function createReactiveRuleStatus({
           }
           return result;
         } catch (e) {
-          console.error(`Error in "${key}" function for "${path}.${ruleKey}" rule`, { cause: e });
+          diagnostics.REGLE_R0002({ path, ruleKey, processor: key, cause: e }, { method: 'error' });
           return '';
         }
       }
@@ -162,9 +163,9 @@ export function createReactiveRuleStatus({
 
         if (isEmpty(message)) {
           message = 'This field is not valid';
-          // if (typeof window !== 'undefined' && typeof process === 'undefined') {
-          //   console.warn(`No error message defined for ${path}.${ruleKey}`);
-          // }
+          if (__IS_DEV__) {
+            diagnostics.REGLE_R0013({ path, ruleKey });
+          }
         }
 
         return message;
@@ -241,7 +242,7 @@ export function createReactiveRuleStatus({
     try {
       const validator = scopeState.$validator.value;
       if (typeof validator !== 'function') {
-        console.error(`${path}: Incorrect rule format, it needs to be either a function or created with "createRule".`);
+        diagnostics.REGLE_R0003({ path }, { method: 'error' });
         return false;
       }
       const resultOrPromise = validator(state.value, ...scopeState.$params.value);
@@ -266,7 +267,10 @@ export function createReactiveRuleStatus({
         ruleResult = $valid;
         $metadata.value = rest;
       }
-    } catch {
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0007({ path, ruleKey, cause: e }, { method: 'error' });
+      }
       ruleResult = false;
     } finally {
       // Only the latest run is allowed to clear the shared pending flag.
@@ -292,9 +296,7 @@ export function createReactiveRuleStatus({
     const resultOrPromise = validator(state.value, ...scopeState.$params.value);
     if (resultOrPromise instanceof Promise) {
       if (__IS_DEV__ && logWarning) {
-        console.warn(
-          'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
-        );
+        diagnostics.REGLE_R0004();
       }
       return true;
     } else {
@@ -331,7 +333,10 @@ export function createReactiveRuleStatus({
       }
       $valid.value = ruleResult;
       return ruleResult;
-    } catch {
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0007({ path, ruleKey, cause: e }, { method: 'error' });
+      }
       return false;
     } finally {
       // Only the latest run owns the shared validating/pending flags.
@@ -351,7 +356,10 @@ export function createReactiveRuleStatus({
     try {
       $validating.value = true;
       return computeSyncResult(scopeState.$validator.value);
-    } catch {
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0007({ path, ruleKey, cause: e }, { method: 'error' });
+      }
       return false;
     } finally {
       $validating.value = false;

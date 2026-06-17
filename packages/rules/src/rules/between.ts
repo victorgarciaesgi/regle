@@ -1,6 +1,7 @@
 import { isFilled, toNumber, isNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../diagnostics/rules';
 import type { CommonComparisonOptions } from '@regle/core';
 
 /**
@@ -54,7 +55,7 @@ export const between: RegleRuleWithParamsDefinition<
         }
       }
       if (__IS_DEV__) {
-        console.warn(`[between] Value or parameters aren't numbers, got value: ${value}, min: ${min}, max: ${max}`);
+        diagnostics.REGLE_R0101({ rule: 'between', value, param: `min: ${min}, max: ${max}` });
       }
       return true;
     }

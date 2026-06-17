@@ -24,6 +24,7 @@ import { resolveImmediateDirtyMode, type ResolvedImmediateDirtyMode } from '../c
 import { createReactiveFieldStatus } from '../createReactiveFieldStatus';
 import { createStandardSchema } from '../standard-schemas';
 import { createCollectionElement, type CollectionIndexTrackers } from './createReactiveCollectionElement';
+import { diagnostics } from '../../../../diagnostics/runtime';
 
 interface CreateReactiveCollectionStatusArgs extends CommonResolverOptions {
   state: Ref<(StateWithId[] & StateWithId) | undefined>;
@@ -80,6 +81,12 @@ export function createReactiveCollectionStatus({
   let collectionScopes: EffectScope[] = [];
 
   if (!Array.isArray(state.value) && !rulesDef.value.$each) {
+    if (__IS_DEV__) {
+      diagnostics.REGLE_R0010({
+        path,
+        reason: 'State is not an array and rules have no $each key. Collection validation is skipped.',
+      });
+    }
     return undefined;
   }
   const $id = ref<string>() as Ref<string>;
@@ -591,9 +598,7 @@ export function createReactiveCollectionStatus({
     })!;
 
     if (immediateScopeState.isPrimitiveArray.value && rulesDef.value.$each) {
-      console.warn(
-        `${path} is a Array of primitives. Tracking can be lost when reassigning the Array. We advise to use an Array of objects instead`
-      );
+      diagnostics.REGLE_R0005({ path });
     }
   }
 

@@ -3,6 +3,7 @@ import { regleSymbol } from '../constants';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
+import { devtoolsDiagnostics } from '../diagnostics/devtools';
 import { emitInspectorState } from './inspector-sync';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
@@ -152,9 +153,7 @@ export function registerRegleInstance(r$: SuperCompatibleRegleRoot, options?: { 
 
   if (!regleVersion && !regleDevtoolsRegistry.loggedWarning.value && !!regleDevtoolsRegistry.devtoolsApi) {
     regleDevtoolsRegistry.loggedWarning.value = true;
-    console.warn(
-      `📏 Regle Devtools are not available. Install Regle plugin in your app to enable them. https://reglejs.dev/introduction/devtools`
-    );
+    devtoolsDiagnostics.REGLE_R0020();
     return () => {};
   }
 

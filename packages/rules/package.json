@@ -42,10 +42,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "nostics": "catalog:",
     "@regle/core": "workspace:*",
     "type-fest": "catalog:"
   },
   "devDependencies": {
+    "@nostics/unplugin": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@vue/reactivity": "catalog:",

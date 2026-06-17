@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "add-diagnostic": {
+      "source": "vercel-labs/nostics",
+      "sourceType": "github",
+      "skillPath": "skills/add-diagnostic/SKILL.md",
+      "computedHash": "c7b8e4657722027d0ec9099406e05941d33103cc76b4915859e3cd60f94617a0"
+    },
+    "nostics": {
+      "source": "vercel-labs/nostics",
+      "sourceType": "github",
+      "skillPath": "skills/nostics/SKILL.md",
+      "computedHash": "9128d127b9d6ecc856bb0646bd4d31d53ab5604ee2f392672713c3af701ceee5"
+    }
+  }
+}

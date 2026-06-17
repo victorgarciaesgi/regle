@@ -8,6 +8,7 @@ import {
   addPlugin,
 } from '@nuxt/kit';
 import { resolveRegleExportsTemplatePath, resolveTemplateImportPath } from './pathUtils';
+import { diagnostics } from './diagnostics/nuxt';
 
 export interface ModuleOptions {
   /**
@@ -85,10 +86,13 @@ export type RegleFieldStatus<
 
           await addDefaultImportSources();
         } else {
-          console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`);
+          diagnostics.REGLE_C0101({ setupFile: options.setupFile }, { method: 'error' });
         }
       } catch (e) {
-        console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`, e);
+        diagnostics.REGLE_C0101(
+          { setupFile: options.setupFile, cause: e, sources: [options.setupFile] },
+          { method: 'error' }
+        );
       }
     } else {
       addImportsSources({
@@ -127,8 +131,8 @@ export type RegleFieldStatus<
             >,
           });
         }
-      } catch {
-        // do nothing
+      } catch (e) {
+        diagnostics.REGLE_C0103({ cause: e }, { method: 'error' });
       }
     }
   },

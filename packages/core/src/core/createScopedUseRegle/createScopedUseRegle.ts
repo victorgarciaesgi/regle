@@ -1,6 +1,7 @@
 import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
 import type { ExtendedRulesDeclarationsOverrides, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
+import { diagnostics } from '../../diagnostics/runtime';
 import type { MergedScopedRegles } from '../mergeRegles';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
@@ -70,6 +71,9 @@ export function createScopedUseRegle<
           if (!options.customStore?.value['~~global']) {
             options.customStore.value['~~global'] = {};
           } else if (options.customStore?.value) {
+            if (__IS_DEV__) {
+              diagnostics.REGLE_R0012();
+            }
             options.customStore.value = { '~~global': {} };
           }
         }
@@ -82,7 +86,9 @@ export function createScopedUseRegle<
 
   const instances = useInstances();
 
-  const { useScopedRegle } = createUseScopedRegleComposable(instances, options?.customUseRegle);
+  const { useScopedRegle } = createUseScopedRegleComposable(instances, options?.customUseRegle, {
+    asRecord: options?.asRecord,
+  });
   const { useCollectScope } = createUseCollectScope(instances, { asRecord: options?.asRecord });
 
   return {

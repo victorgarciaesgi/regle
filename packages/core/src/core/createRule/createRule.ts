@@ -7,6 +7,7 @@ import type {
 } from '../../types';
 import { defineRuleProcessors } from './defineRuleProcessors';
 import { getFunctionParametersLength } from './unwrapRuleParameters';
+import { diagnostics } from '../../diagnostics/runtime';
 
 /**
  * Create a typed custom rule that can be used like built-in rules.
@@ -75,6 +76,9 @@ export function createRule<
   if (typeof definition.validator === 'function') {
     let fakeParams: any[] = [];
     const isAsync = definition.async ?? definition.validator.constructor.name === 'AsyncFunction';
+    if (__IS_DEV__ && isAsync && !definition.async) {
+      diagnostics.REGLE_R0021();
+    }
     const staticProcessors = defineRuleProcessors(
       { ...definition, async: isAsync } as $InternalRegleRuleInit,
       ...fakeParams
@@ -108,5 +112,5 @@ export function createRule<
       return staticProcessors as any;
     }
   }
-  throw new Error('[createRule] validator must be a function');
+  throw diagnostics.REGLE_R0006();
 }

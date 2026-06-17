@@ -1,5 +1,6 @@
 import type { CommonComparisonOptions, Maybe, RegleRuleWithParamsDefinition, MeasurableValue } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../../diagnostics/rules';
 import { isFilled } from '../../helpers/ruleHelpers/isFilled';
 import { isNumber } from '../../helpers/ruleHelpers/isNumber';
 import { getSize } from '../../helpers/ruleHelpers/getSize';
@@ -52,7 +53,7 @@ export function createLengthRule<TType extends string>({
           return compare(getSize(value), limit, allowEqual);
         }
         if (__IS_DEV__) {
-          console.warn(`[${type}] Parameter isn't a number, got parameter: ${limit}`);
+          diagnostics.REGLE_R0101({ rule: String(type), param: limit });
         }
         return true;
       }

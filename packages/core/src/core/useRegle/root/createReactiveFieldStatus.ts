@@ -28,6 +28,7 @@ import type {
   ResetOptions,
 } from '../../../types';
 import { isVueSuperiorOrEqualTo3dotFive } from '../../../utils';
+import { diagnostics } from '../../../diagnostics/runtime';
 import { extractRulesIssues, extractRulesTooltips } from '../useErrors';
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveRuleStatus } from './createReactiveRuleStatus';
@@ -685,7 +686,11 @@ export function createReactiveFieldStatus({
         Promise.allSettled(Object.values($rules.value).map((rule) => rule.$parse()))
       );
       await promise;
-    } catch {}
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0014({ path, cause: e }, { method: 'error' });
+      }
+    }
   }
 
   const $rules = ref({}) as Ref<Record<string, $InternalRegleRuleStatus>>;
@@ -814,6 +819,9 @@ export function createReactiveFieldStatus({
           $touch(false);
           return onValidate();
         } else {
+          if (__IS_DEV__) {
+            diagnostics.REGLE_R0008({ path });
+          }
           return {
             valid: false,
             data: state.value,

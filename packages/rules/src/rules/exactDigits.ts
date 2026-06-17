@@ -1,5 +1,6 @@
 import type { Maybe, RegleRuleWithParamsDefinition } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../diagnostics/rules';
 import { isFilled, isNumber, matchRegex } from '../helpers';
 
 /**
@@ -41,7 +42,7 @@ export const exactDigits: RegleRuleWithParamsDefinition<
         return matchRegex(value.toString(), digitsRegex);
       }
       if (__IS_DEV__) {
-        console.warn(`[exactDigits] Parameter isn't a number, got parameter: ${count}`);
+        diagnostics.REGLE_R0101({ rule: 'exactDigits', param: count });
       }
       return true;
     }

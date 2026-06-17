@@ -6,6 +6,7 @@ import {
   type RegleRuleMetadataConsumer,
 } from '@regle/core';
 import { isRuleDef } from '../../utils/guards.utils';
+import { diagnostics } from '../../diagnostics/rules';
 
 export function extractValidator(rule: FormRuleDeclaration<any, any, any, any>) {
   let _type: string | undefined;
@@ -29,7 +30,7 @@ export function extractValidator(rule: FormRuleDeclaration<any, any, any, any>) 
   } else if (isRuleDef(rule)) {
     ({ _type, validator, _message, _async, _params, _active } = rule);
   } else {
-    throw new Error('Cannot extract validator from invalid rule');
+    throw diagnostics.REGLE_R0103();
   }
 
   return {

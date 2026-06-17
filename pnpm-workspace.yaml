@@ -44,6 +44,8 @@ catalog:
   '@vue/test-utils': 2.4.11
   arktype: 2.2.0
   check-password-strength: 3.0.0
+  '@nostics/unplugin': 1.0.0
+  nostics: 1.0.0
   nuxt: 4.4.8
   pinia: 3.0.4
   pinia-2.2.5: npm:pinia@2.2.5

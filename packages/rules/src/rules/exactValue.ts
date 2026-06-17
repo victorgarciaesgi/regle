@@ -1,6 +1,7 @@
 import { isFilled, isNumber, toNumber } from '../helpers';
 import type { RegleRuleWithParamsDefinition, MaybeInput } from '@regle/core';
 import { createRule } from '@regle/core';
+import { diagnostics } from '../diagnostics/rules';
 
 /**
  * Requires a field to have a strict numeric value.
@@ -41,7 +42,7 @@ export const exactValue: RegleRuleWithParamsDefinition<
         return toNumber(value) === count;
       }
       if (__IS_DEV__) {
-        console.warn(`[exactValue] Value or parameter isn't a number, got value: ${value}, parameter: ${count}`);
+        diagnostics.REGLE_R0101({ rule: 'exactValue', value, param: count });
       }
       return true;
     }

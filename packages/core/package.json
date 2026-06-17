@@ -55,12 +55,14 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
+    "nostics": "catalog:",
     "@standard-schema/spec": "1.1.0",
     "@vue/devtools-api": "7.7.9",
     "@vue/devtools-kit": "7.7.9",
     "type-fest": "catalog:"
   },
   "devDependencies": {
+    "@nostics/unplugin": "catalog:",
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",

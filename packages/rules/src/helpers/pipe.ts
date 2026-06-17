@@ -12,6 +12,7 @@ import { computed, effectScope, onScopeDispose, ref, type ComputedRef, type Effe
 import { debounce, isObject } from '../../../shared';
 import { applyIf } from './applyIf';
 import { extractValidator } from './common/extractValidator';
+import { diagnostics } from '../diagnostics/rules';
 
 type PipeTupleToObject<TArray extends unknown[]> = {
   [Key in keyof TArray as TArray[Key] extends RegleRuleDefinition<infer TType extends string, any, any>
@@ -75,9 +76,7 @@ function createTrackedValidator({
 
     if (result instanceof Promise) {
       if (__IS_DEV__) {
-        console.warn(
-          'You used a async validator function on a non-async rule, please use "async await" or the "withAsync" helper'
-        );
+        diagnostics.REGLE_R0102();
       }
       return false;
     }

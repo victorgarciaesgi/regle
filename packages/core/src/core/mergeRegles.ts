@@ -12,6 +12,7 @@ import type {
   SuperCompatibleRegleRoot,
 } from '../types';
 import { computed, reactive, watchEffect } from 'vue';
+import { diagnostics } from '../diagnostics/runtime';
 
 export type MergedRegles<
   TRegles extends Record<string, SuperCompatibleRegleRoot>,
@@ -359,7 +360,10 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
       return Object.values(regles).every((regle) => {
         return regle.$validateSync(forceValues);
       });
-    } catch {
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0015({ cause: e }, { method: 'error' });
+      }
       return false;
     }
   }
@@ -385,7 +389,10 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
         }
       });
       return { valid: validationResults, data, errors: $errors.value, issues: $issues.value };
-    } catch {
+    } catch (e) {
+      if (__IS_DEV__) {
+        diagnostics.REGLE_R0015({ cause: e }, { method: 'error' });
+      }
       return { valid: false, data: $value.value, errors: $errors.value, issues: $issues.value };
     }
   }

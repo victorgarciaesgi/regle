@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev --port 6001",
-    "build": "vitepress build",
+    "build": "node ../scripts/validate-error-docs.mjs && vitepress build",
     "preview": "vitepress preview"
   },
   "dependencies": {
