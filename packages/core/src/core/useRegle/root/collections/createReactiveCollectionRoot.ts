@@ -647,7 +647,7 @@ export function createReactiveCollectionStatus({
       }
     }
 
-    if (options?.clearExternalErrors) {
+    if (options?.clearExternalErrors !== false) {
       $clearExternalErrors();
       $clearExternalIssues();
     }
