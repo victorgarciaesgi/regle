@@ -708,8 +708,6 @@ export function createReactiveFieldStatus({
 
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     abortCommit();
-    $clearExternalErrors();
-    $clearExternalIssues();
     scopeState.$dirty.value = false;
     storage.setDirtyEntry(cachePath, false);
 
@@ -738,7 +736,7 @@ export function createReactiveFieldStatus({
       }
     }
 
-    if (options?.clearExternalErrors) {
+    if (options?.clearExternalErrors !== false) {
       $clearExternalErrors();
       $clearExternalIssues();
     }

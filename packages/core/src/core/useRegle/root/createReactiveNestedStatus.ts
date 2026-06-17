@@ -815,7 +815,7 @@ export function createReactiveNestedStatus({
       $selfStatus.value?.$reset(options, true);
     }
 
-    if (options?.clearExternalErrors === false) {
+    if (options?.clearExternalErrors !== false) {
       $clearExternalErrors();
       $clearExternalIssues();
     }
