@@ -203,6 +203,31 @@ describe('$immediateDirty string modes', () => {
     expect(vm.r$.contacts.$each[1].name.$dirty).toBe(true);
   });
 
+  it('does not touch the form when only inactive fields have non-empty initial values', async () => {
+    const form = ref({
+      email: '',
+      notes: 'prefilled',
+    });
+
+    const { vm } = createRegleComponent(() =>
+      useRegle(
+        form,
+        {
+          email: { required, email },
+        },
+        { immediateDirty: 'non-empty' }
+      )
+    );
+
+    expect(vm.r$.email.$dirty).toBe(false);
+    expect(vm.r$.notes.$dirty).toBe(false);
+    expect(vm.r$.notes.$inactive).toBe(true);
+    expect(vm.r$.$dirty).toBe(false);
+    expect(vm.r$.$anyDirty).toBe(false);
+    shouldBeInvalidField(vm.r$.email);
+    expect(vm.r$.notes.$invalid).toBe(false);
+  });
+
   it('touches a root field when non-empty mode finds an initial value', async () => {
     const form = ref('test@example.com');
 

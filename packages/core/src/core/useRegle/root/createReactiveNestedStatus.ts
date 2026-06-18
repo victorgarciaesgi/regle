@@ -41,8 +41,8 @@ import { createReactiveCollectionStatus } from './collections/createReactiveColl
 import type { CommonResolverOptions, CommonResolverScopedState } from './common/common-types';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import {
+  childrenHaveActiveNonEmptyValue,
   resolveImmediateDirtyMode,
-  shouldApplyImmediateDirty,
   type ResolvedImmediateDirtyMode,
 } from './common/immediateDirty';
 import { createStandardSchema } from './standard-schemas';
@@ -75,7 +75,8 @@ export function createReactiveNestedStatus({
   externalErrors,
   externalIssues,
   schemaErrors,
-  rootInitialState,
+  // Destructured out so it isn't forwarded to children via `commonArgs`; not needed here.
+  rootInitialState: _rootInitialState,
   rootSchemaErrors,
   validationGroups,
   initialState,
@@ -770,13 +771,14 @@ export function createReactiveNestedStatus({
     if (!scopeState) {
       return;
     }
-    if (
-      scopeState.$immediateDirty.value !== 'lazy-non-empty' &&
-      shouldApplyImmediateDirty(
-        scopeState.$immediateDirty.value,
-        initialState.value,
-        rootInitialState?.value ?? initialState.value
-      )
+    const mode = scopeState.$immediateDirty.value;
+
+    // `lazy-non-empty` and `false` never touch the whole form (handled per-field).
+    if (mode === 'eager') {
+      $touch(true, false);
+    } else if (
+      mode === 'non-empty' &&
+      childrenHaveActiveNonEmptyValue($selfStatus.value, $fields.value, initialState.value)
     ) {
       $touch(true, false);
     }
