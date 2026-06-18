@@ -10,6 +10,15 @@ import { PRIORITY_KEYS } from './constants';
 import type { FieldsDictionary, RegleInstance } from './types';
 import { getPriorityProperties, getRemainingProperties, parseFieldNodeId, parseRuleNodeId } from './utils';
 
+const modifiersKeys = [
+  '$autoDirty',
+  '$rewardEarly',
+  '$clearExternalErrorsOnChange',
+  '$clearExternalErrorsOnValidate',
+  '$immediateDirty',
+  '$silent',
+];
+
 /**
  * Build state for a field node
  */
@@ -25,15 +34,13 @@ function buildFieldState(fieldStatus: $InternalRegleFieldStatus): CustomInspecto
   // Remaining properties
   const remainingProperties = getRemainingProperties(fieldStatus, [
     ...PRIORITY_KEYS.FIELD,
+    ...modifiersKeys,
     '$rules',
     '$fields',
     '$modifiers',
     '$deepCompare',
-    '$clearExternalErrorsOnValidate',
-    '$silent',
     '$isArrayOrRegleStatic',
     '$schemaMode',
-    '$immediateDirty',
   ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;
@@ -119,8 +126,7 @@ function buildRootState(r$: SuperCompatibleRegleRoot): CustomInspectorState {
     '$fields',
     '$modifiers',
     '$path',
-    '$clearExternalErrorsOnValidate',
-    '$silent',
+    ...modifiersKeys,
   ]);
   if (remainingProperties.length > 0) {
     state['Other Properties'] = remainingProperties;

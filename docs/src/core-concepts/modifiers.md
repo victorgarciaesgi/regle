@@ -38,7 +38,7 @@ __Default__: `false`
 Set the dirty state to `true` when the form is initialized.
 
 - `true` or `'eager'`: touch the whole form on mount.
-- `'non-empty'`: touch the whole form on mount only if one of the initial values is non-empty.
+- `'non-empty'`: touch the whole form on mount only if an **active** field (a field with rules) has a non-empty initial value. Inactive fields — fields without rules — are ignored, so a prefilled field with no rules will not trigger a touch.
 - `'lazy-non-empty'`: touch only the fields that are non-empty on mount.
 
 ### `disabled`

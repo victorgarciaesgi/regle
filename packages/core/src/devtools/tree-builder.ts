@@ -32,6 +32,8 @@ function buildNodeTags(
       !fieldOrR$.$schemaMode
     : false;
 
+  const isInactive = isFieldStatus(fieldOrR$) ? fieldOrR$.$inactive : false;
+
   const isNestedOrCollection = isNestedRulesStatus(fieldOrR$) || isCollectionRulesStatus(fieldOrR$);
 
   if (fieldOrR$.$error) {
@@ -68,22 +70,29 @@ function buildNodeTags(
     });
   }
 
-  if (isOptional) {
+  if (isInactive) {
+    tags.push({
+      label: 'inactive',
+      textColor: COLORS.INACTIVE.text,
+      backgroundColor: COLORS.INACTIVE.bg,
+      tooltip: TOOLTIP_LABELS_FIELDS.INACTIVE,
+    });
+  } else if (isOptional) {
     tags.push({
       label: 'optional',
       textColor: COLORS.OPTIONAL.text,
       backgroundColor: COLORS.OPTIONAL.bg,
       tooltip: TOOLTIP_LABELS_FIELDS.OPTIONAL,
     });
+  }
 
-    if (!fieldOrR$.$invalid && fieldOrR$.$dirty) {
-      tags.push({
-        label: 'valid',
-        textColor: COLORS.VALID.text,
-        backgroundColor: COLORS.VALID.bg,
-        tooltip: TOOLTIP_LABELS_FIELDS.VALID,
-      });
-    }
+  if (!fieldOrR$.$invalid && fieldOrR$.$dirty) {
+    tags.push({
+      label: 'valid',
+      textColor: COLORS.VALID.text,
+      backgroundColor: COLORS.VALID.bg,
+      tooltip: TOOLTIP_LABELS_FIELDS.VALID,
+    });
   }
 
   if (fieldOrR$.$dirty) {

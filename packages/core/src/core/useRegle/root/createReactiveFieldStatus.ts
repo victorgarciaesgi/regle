@@ -699,7 +699,8 @@ export function createReactiveFieldStatus({
         scopeState.$immediateDirty.value,
         initialState.value,
         rootInitialState?.value ?? initialState.value,
-        path === ''
+        path === '',
+        scopeState.$inactive.value
       )
     ) {
       scopeState.$dirty.value = true;
