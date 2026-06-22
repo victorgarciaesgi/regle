@@ -48,10 +48,12 @@
     "type-fest": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@vue/test-utils": "catalog:",
+    "publint": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",

@@ -120,36 +120,4 @@ test.describe('Regle devtools dynamic instance ids', () => {
     await expect(inspector.page.getByText(regleInstanceIndexLabel(1))).toBeVisible();
     await inspector.expectInstanceIndexCount(1, 1);
   });
-
-  test('keeps unique incremental ids when the same form component is added again', async ({ context }) => {
-    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
-
-    await appPage.getByTestId('dynamic-add-form-a').click();
-    await inspector.waitForInstanceIndex(2);
-
-    await inspector.expectInstanceIndexCount(1, 1);
-    await inspector.expectInstanceIndexCount(2, 1);
-  });
-
-  test('keeps unique incremental ids when a different form component is added', async ({ context }) => {
-    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
-
-    await appPage.getByTestId('dynamic-add-form-b').click();
-    await inspector.waitForInstanceIndex(2);
-
-    await inspector.expectInstanceIndexCount(1, 1);
-    await inspector.expectInstanceIndexCount(2, 1);
-  });
-
-  test('continues incrementing ids when multiple forms are added dynamically', async ({ context }) => {
-    const { appPage, inspector } = await openRegleDevtools(context, REGLE_DEVTOOLS_HARNESSES.dynamic);
-
-    await appPage.getByTestId('dynamic-add-form-a').click();
-    await appPage.getByTestId('dynamic-add-form-b').click();
-    await inspector.waitForInstanceIndex(3);
-
-    await inspector.expectInstanceIndexCount(1, 1);
-    await inspector.expectInstanceIndexCount(2, 1);
-    await inspector.expectInstanceIndexCount(3, 1);
-  });
 });

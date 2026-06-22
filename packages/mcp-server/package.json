@@ -62,9 +62,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "dotenv": "17.4.2",
+    "publint": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"

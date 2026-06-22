@@ -1,7 +1,9 @@
-import type { DevToolsV6PluginAPIHookPayloads } from '@vue/devtools-kit';
+import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
 import { resolveFieldByPath } from './state-builder';
+import type { DevtoolsV6PluginAPI } from './types';
 import { parseFieldNodeId } from './utils';
+import type { DevToolsV6PluginAPIHookPayloads } from '@vue/devtools-kit';
 
 export function handleValidateAction(nodeId: string) {
   if (nodeId.includes(':rule:')) {
@@ -79,7 +81,6 @@ export function handleTouchAction(nodeId: string) {
 
   regleDevtoolsRegistry.notifyDevtools();
 }
-
 export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayloads['editInspectorState']) {
   const { nodeId, path, state } = payload;
 
@@ -103,4 +104,8 @@ export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayload
       regleDevtoolsRegistry.notifyDevtools();
     }
   }
+}
+export async function emitInspectorState(api: DevtoolsV6PluginAPI) {
+  api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
+  api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);
 }

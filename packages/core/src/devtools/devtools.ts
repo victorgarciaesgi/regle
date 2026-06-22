@@ -1,4 +1,4 @@
-import { onDevToolsClientConnected, setupDevtoolsPlugin } from '@vue/devtools-api';
+import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import { type App } from 'vue';
 import { handleEditInspectorState, handleResetAction, handleTouchAction, handleValidateAction } from './actions';
 import { INSPECTOR_IDS } from './constants';
@@ -19,40 +19,7 @@ export function createDevtools(app: App) {
       app,
     },
     (api) => {
-      regleDevtoolsRegistry.setApi(api, app);
-
-      api.on.getInspectorTree(async (payload) => {
-        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          const instances = regleDevtoolsRegistry.getAll();
-          const nodes = buildInspectorTree(instances, payload.filter);
-          if (nodes.length > 0) {
-            payload.rootNodes = nodes;
-          } else {
-            payload.rootNodes = [{ id: 'empty-regles', label: 'No Regles instances found', children: [] }];
-          }
-        }
-      });
-
-      api.on.getInspectorState((payload) => {
-        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
-          if (!state) {
-            api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
-          }
-
-          if (state) {
-            payload.state = state;
-          } else {
-            payload.state = {};
-          }
-        }
-      });
-
-      api.on.editInspectorState((payload) => {
-        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          handleEditInspectorState(payload);
-        }
-      });
+      regleDevtoolsRegistry.setApi(api);
 
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,
@@ -102,11 +69,40 @@ export function createDevtools(app: App) {
         ],
       });
 
-      onDevToolsClientConnected(() => {
-        regleDevtoolsRegistry.notifyDevtools();
+      regleDevtoolsRegistry.notifyDevtools();
+
+      api.on.getInspectorTree(async (payload) => {
+        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
+          const instances = regleDevtoolsRegistry.getAll();
+          const nodes = buildInspectorTree(instances, payload.filter);
+          if (nodes.length > 0) {
+            payload.rootNodes = nodes;
+          } else {
+            payload.rootNodes = [{ id: 'empty-regles', label: 'No Regles instances found', children: [] }];
+          }
+        }
       });
 
-      regleDevtoolsRegistry.notifyDevtools();
+      api.on.getInspectorState((payload) => {
+        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
+          const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
+          if (!state) {
+            api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
+          }
+
+          if (state) {
+            payload.state = state;
+          } else {
+            payload.state = {};
+          }
+        }
+      });
+
+      api.on.editInspectorState((payload) => {
+        if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
+          handleEditInspectorState(payload);
+        }
+      });
     }
   );
 }

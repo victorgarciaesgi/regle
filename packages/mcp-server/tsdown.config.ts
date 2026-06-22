@@ -1,5 +1,6 @@
 import { defineConfig, type UserConfig } from 'tsdown';
 import 'dotenv/config';
+import { packageValidationOptions } from '../../tsdown.common.build.ts';
 
 const sharedOptions: UserConfig = {
   format: ['esm'],
@@ -25,4 +26,4 @@ const sharedOptions: UserConfig = {
   },
 };
 
-export default defineConfig([sharedOptions]);
+export default defineConfig([{ ...sharedOptions, ...packageValidationOptions }]);

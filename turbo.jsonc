@@ -47,7 +47,6 @@
       "outputs": ["dist/**"],
       "outputLogs": "errors-only"
     },
-
     // -- Dev
     "@regle/core#dev": {
       "persistent": true,

@@ -1,36 +1,35 @@
-import { getCurrentInstance, inject, ref, shallowRef, watch, type App, type WatchStopHandle } from 'vue';
+import { getCurrentInstance, inject, ref, shallowRef, watch, type WatchStopHandle } from 'vue';
 import { regleSymbol } from '../constants';
 import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
-import { emitInspectorState } from './inspector-sync';
+import { emitInspectorState } from './actions';
 import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
 
-const REGLE_DEVTOOLS_GLOBAL_KEY = '__REGLE_DEVTOOLS_REGISTRY__' as const;
-
-function createRegleDevtoolsRegistry() {
+function useRegleDevtoolsRegistry() {
   const loggedWarning = ref(false);
   const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
-  const devtoolsApp = shallowRef<App>();
   const instances = shallowRef(new Map<string, RegleInstance>());
   const watchers = shallowRef(new Map<string, WatchStopHandle>());
-  const instanceIndexCounter = ref(0);
+  const idCounters = shallowRef(new Map<string, number>());
+  const looseIdCounter = ref(0);
   let pendingNotifyFrame: number | undefined;
 
-  function setApi(api: DevtoolsV6PluginAPI, app?: App): void {
+  function setApi(api: DevtoolsV6PluginAPI): void {
     devtoolsApi.value = api;
-    if (app) {
-      devtoolsApp.value = app;
-    }
   }
 
   function register(
     r$: SuperCompatibleRegleRoot,
     options?: { name?: string; componentName?: string; uid?: number; filePath?: string }
   ): string {
-    const instanceIndex = ++instanceIndexCounter.value;
-    const id = `${options?.uid?.toString() ?? 'regle'}#${instanceIndex}`;
-    const name = `${'r$'} #${options?.name ?? instanceIndex}`;
+    const idPath = options?.filePath ?? 'loose';
+    const existingCounter = idCounters.value.get(idPath);
+    const perComponentCounter = existingCounter ? existingCounter + 1 : 1;
+    idCounters.value.set(idPath, perComponentCounter);
+
+    const id = `${options?.uid?.toString() ?? 'regle'}#${++looseIdCounter.value}`;
+    const name = `${'r$'} #${options?.name ?? perComponentCounter}`;
 
     instances.value.set(id, {
       id,
@@ -64,7 +63,7 @@ function createRegleDevtoolsRegistry() {
 
   function notifyDevtools(): void {
     if (devtoolsApi.value) {
-      emitInspectorState(devtoolsApi.value, devtoolsApp.value);
+      emitInspectorState(devtoolsApi.value);
     }
   }
 
@@ -107,7 +106,6 @@ function createRegleDevtoolsRegistry() {
 
   return {
     devtoolsApi,
-    devtoolsApp,
     register,
     unregister,
     getAll,
@@ -119,22 +117,7 @@ function createRegleDevtoolsRegistry() {
   };
 }
 
-type RegleDevtoolsRegistry = ReturnType<typeof createRegleDevtoolsRegistry>;
-
-function getRegleDevtoolsRegistry(): RegleDevtoolsRegistry {
-  if (typeof globalThis === 'undefined') {
-    return createRegleDevtoolsRegistry();
-  }
-
-  const globalRegistry = globalThis as typeof globalThis & {
-    [REGLE_DEVTOOLS_GLOBAL_KEY]?: RegleDevtoolsRegistry;
-  };
-
-  globalRegistry[REGLE_DEVTOOLS_GLOBAL_KEY] ??= createRegleDevtoolsRegistry();
-  return globalRegistry[REGLE_DEVTOOLS_GLOBAL_KEY];
-}
-
-export const regleDevtoolsRegistry = getRegleDevtoolsRegistry();
+export const regleDevtoolsRegistry = useRegleDevtoolsRegistry();
 
 /**
  * To be used by `useRegle` like composables.
