@@ -578,7 +578,6 @@ export interface $InternalRegleRuleStatus {
   $fieldCorrect: boolean;
   $fieldError: boolean;
   $maybePending: boolean;
-  $validator(value: any, ...args: any[]): RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>;
   /** @internal */
   $parse(): Promise<boolean>;
   /**

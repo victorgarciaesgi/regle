@@ -49,6 +49,7 @@
     "repl:build": "turbo run build --filter='regle-playground'",
     "play:vue3": "cd playground/vue3 && pnpm dev",
     "play:nuxt": "cd playground/nuxt && pnpm dev",
+    "clean": "zx ./scripts/cleanup.mjs",
     "deps:upgrade": "taze",
     "commitlint": "commitlint --edit",
     "lint": "vp lint",

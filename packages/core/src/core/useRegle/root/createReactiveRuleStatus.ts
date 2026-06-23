@@ -375,8 +375,10 @@ export function createReactiveRuleStatus({
     scope = effectScope();
   }
 
+  const { $validator: _, ...restScopeState } = scopeState;
+
   return reactive({
-    ...scopeState,
+    ...restScopeState,
     $pending,
     $valid,
     $metadata,
