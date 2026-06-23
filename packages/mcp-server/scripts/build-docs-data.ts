@@ -53,14 +53,15 @@ function stripScriptTags(content: string): string {
     result = result.replace(blockPattern, '');
   }
 
-  previous = '';
-  while (result.includes('<script')) {
+  const openingTagPattern = /<script\b[^>]*>/gi;
+  const closingTagPattern = /<\/script>/gi;
+  do {
     previous = result;
-    result = result.replaceAll(/<script\b[^>]*>/gi, '').replaceAll('<script', '');
-    if (result === previous) {
-      break;
-    }
-  }
+    result = result
+      .replace(openingTagPattern, '')
+      .replace(closingTagPattern, '')
+      .replace(/<script/gi, '');
+  } while (result !== previous);
 
   return result;
 }
