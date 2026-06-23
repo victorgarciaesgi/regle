@@ -46,17 +46,17 @@ function parseFrontmatter(content: string): { title: string; content: string } {
 function cleanMarkdownContent(content: string): string {
   return (
     content
-      .replace(/<script\s+setup[^>]*>[\s\S]*?<\/script>/g, '')
+      .replaceAll(/<script\s+setup[^>]*>[\s\S]*?<\/script>/g, '')
       // Remove Vue component tags like <QuickUsage/>
-      .replace(/<[A-Z][a-zA-Z]*\s*\/>/g, '')
+      .replaceAll(/<[A-Z][a-zA-Z]*\s*\/>/g, '')
       // Remove includes
-      .replace(/<!--\s*@include:.*-->/g, '')
+      .replaceAll(/<!--\s*@include:.*-->/g, '')
       // Remove twoslash annotations
-      .replace(/\/\/\s*@\w+.*$/gm, '')
+      .replaceAll(/\/\/\s*@\w+.*$/gm, '')
       // Remove ^| cursor position markers
-      .replace(/\/\/\s*\^.*/gm, '')
+      .replaceAll(/\/\/\s*\^.*/gm, '')
       // Clean up multiple blank lines
-      .replace(/\n{3,}/g, '\n\n')
+      .replaceAll(/\n{3,}/g, '\n\n')
       .trim()
   );
 }

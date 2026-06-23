@@ -25,10 +25,14 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
   if (!lastProp) {
     return false;
   }
-  prototypeCheck(lastProp);
+  if (isPrototypeKey(lastProp)) {
+    throw new Error('setting of prototype values not supported');
+  }
   var thisProp;
   while ((thisProp = props.shift())) {
-    prototypeCheck(thisProp);
+    if (isPrototypeKey(thisProp)) {
+      throw new Error('setting of prototype values not supported');
+    }
 
     if (!isNaN(parseInt(thisProp))) {
       if (obj.$each == undefined) {
@@ -50,6 +54,9 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
   }
   if (isArray) {
     if (!obj[lastProp]) {
+      if (isPrototypeKey(lastProp)) {
+        throw new Error('setting of prototype values not supported');
+      }
       obj[lastProp] = { $self: value };
     } else {
       obj[lastProp].$self = (obj[lastProp].$self ??= []).concat(value);
@@ -61,8 +68,14 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
       }
       obj.$each[lastProp] = (obj.$each[lastProp] ??= []).concat(value);
     } else if (Array.isArray(obj[lastProp])) {
+      if (isPrototypeKey(lastProp)) {
+        throw new Error('setting of prototype values not supported');
+      }
       obj[lastProp] = obj[lastProp].concat(value);
     } else {
+      if (isPrototypeKey(lastProp)) {
+        throw new Error('setting of prototype values not supported');
+      }
       obj[lastProp] = value;
     }
   }
@@ -102,11 +115,8 @@ export function getDotPath(obj: Record<string, any>, propsArg: string | string[]
   return obj;
 }
 
-function prototypeCheck(prop: string) {
-  // coercion is intentional to catch prop values like `['__proto__']`
-  if (prop == '__proto__' || prop == 'constructor' || prop == 'prototype') {
-    throw new Error('setting of prototype values not supported');
-  }
+function isPrototypeKey(prop: string): boolean {
+  return prop === '__proto__' || prop === 'constructor' || prop === 'prototype';
 }
 
 export function merge<TObj1 extends object = object, TObjs extends [...any[]] = [...any[]]>(
