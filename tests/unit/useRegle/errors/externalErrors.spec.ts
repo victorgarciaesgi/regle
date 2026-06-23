@@ -458,6 +458,50 @@ describe('external errors', () => {
     vi.useRealTimers();
   });
 
+  it('should keep external errors when calling $reset with clearExternalErrors: false', async () => {
+    const { vm } = createRegleComponent(nestedExternalErrorsWithRules);
+
+    await vm.r$.$validate();
+
+    vm.externalErrors = {
+      root: ['Server Error'],
+      nested: { name1: { name2: ['Server Error'] } },
+      collection: {
+        $each: [{}, { item: ['Server Error'] }],
+      },
+    };
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+
+    vm.r$.$reset({ clearExternalErrors: false });
+
+    await vm.$nextTick();
+
+    shouldBeInvalidField(vm.r$.root);
+
+    expect(vm.externalErrors).toStrictEqual({
+      root: ['Server Error'],
+      nested: { name1: { name2: ['Server Error'] } },
+      collection: {
+        $each: [{}, { item: ['Server Error'] }],
+      },
+    });
+
+    vm.r$.$touch();
+
+    await vm.$nextTick();
+
+    shouldBeErrorField(vm.r$.root);
+    shouldBeErrorField(vm.r$.nested.name1.name2);
+    shouldBeErrorField(vm.r$.collection.$each[1].item);
+
+    expect(vm.r$.root.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.nested.name1.name2.$errors).toStrictEqual(['This field is required', 'Server Error']);
+    expect(vm.r$.collection.$each[1].item.$errors).toStrictEqual(['This field is required', 'Server Error']);
+  });
+
   it('should behave correctly with clearExternalErrorsOnChange and rewardEarly', async () => {
     const { vm } = createRegleComponent(() =>
       nestedExternalErrorsWithRules({ clearExternalErrorsOnChange: true, rewardEarly: true })

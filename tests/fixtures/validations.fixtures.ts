@@ -207,12 +207,13 @@ export function simpleNestedStateWithMixedValidation({
   immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const form = ref({
-    email: '',
+    email: undefined as string | undefined,
     user: {
       firstName: '',
       lastName: '',
     },
     contacts: [{ name: '' }],
+    terms: undefined as boolean | undefined,
   });
 
   const condition = ref(true);
@@ -234,6 +235,7 @@ export function simpleNestedStateWithMixedValidation({
             name: { required },
           },
         },
+        terms: { checked },
       }),
       { autoDirty, rewardEarly, silent, immediateDirty }
     ),
@@ -250,7 +252,7 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
   immediateDirty?: RegleBehaviourOptions['immediateDirty'];
 } = {}) {
   const condition = ref(true);
-  const { useRegle: useCustomRegle }: { useRegle: typeof useRegle } = defineRegleConfig({
+  const { useRegle: useCustomRegle } = defineRegleConfig({
     modifiers: {
       autoDirty,
       silent,
@@ -258,11 +260,12 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
     },
   });
   const form = ref({
-    email: '',
+    email: undefined as string | undefined,
     user: {
       firstName: '',
       lastName: '',
     },
+    terms: undefined as boolean | undefined,
     contacts: [{ name: '' }],
   });
 
@@ -279,6 +282,7 @@ export function simpleNestedStateWithMixedValidationAndGlobalConfig({
           name: { required },
         },
       },
+      terms: { checked },
     }),
   };
 }

@@ -1,6 +1,6 @@
 {
   "name": "@regle/core",
-  "version": "1.27.2",
+  "version": "1.28.1",
   "description": "Headless form validation library for Vue",
   "keywords": [
     "regle",
@@ -60,11 +60,13 @@
     "type-fest": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
-    "@vue/devtools-kit": "7.7.9",
     "@vue/test-utils": "catalog:",
+    "@vue/devtools-kit": "7.7.9",
+    "publint": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",

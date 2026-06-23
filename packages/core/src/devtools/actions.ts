@@ -105,7 +105,6 @@ export function handleEditInspectorState(payload: DevToolsV6PluginAPIHookPayload
     }
   }
 }
-
 export async function emitInspectorState(api: DevtoolsV6PluginAPI) {
   api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
   api.sendInspectorState(INSPECTOR_IDS.INSPECTOR);

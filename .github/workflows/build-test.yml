@@ -1,4 +1,8 @@
 name: build-test
+
+permissions:
+  contents: read
+
 on:
   push:
     paths-ignore:

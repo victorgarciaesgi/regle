@@ -38,7 +38,7 @@ __Default__: `false`
 Set the dirty state to `true` when the form is initialized.
 
 - `true` or `'eager'`: touch the whole form on mount.
-- `'non-empty'`: touch the whole form on mount only if one of the initial values is non-empty.
+- `'non-empty'`: touch the whole form on mount only if an **active** field (a field with rules) has a non-empty initial value. Inactive fields — fields without rules — are ignored, so a prefilled field with no rules will not trigger a touch.
 - `'lazy-non-empty'`: touch only the fields that are non-empty on mount.
 
 ### `disabled`
@@ -90,6 +90,18 @@ __Default__: `false`
 Usage:
 
 When set to false, tells the rules to be called on init, otherwise they are lazy and only called when the field is dirty.
+
+### `debounce`
+
+__Type__: `number` (ms)
+
+__Default__: `200` (for fields with async rules)
+
+Number of milliseconds every async field should wait before executing its rules. It applies to every async field in your form.
+
+The per-field [`$debounce`](#debounce-1) modifier always takes priority over this global value.
+
+Set to `0` to disable the default debounce on async rules.
 
 ### `externalErrors`
 
@@ -194,6 +206,8 @@ const { r$ } = useRegle({ name: '' }, {
 Type: `number` (ms)
 
 This let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
+
+It takes priority over the global [`debounce`](#debounce) deep modifier.
 
 :::tip
 All async rules have a default debounce of `200ms`, you can disable or modify this setting with `$debounce`

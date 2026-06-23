@@ -1,6 +1,6 @@
 {
   "name": "@regle/schemas",
-  "version": "1.27.2",
+  "version": "1.28.1",
   "description": "Schemas adapter for Regle",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
@@ -48,10 +48,12 @@
     "type-fest": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@vue/test-utils": "catalog:",
+    "publint": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",

@@ -1,6 +1,8 @@
+import { defineNuxtConfig } from 'nuxt/config';
+
 export default defineNuxtConfig({
   ssr: true,
-  modules: ['@regle/nuxt', '@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@regle/nuxt'],
   compatibilityDate: '2024-12-08',
   experimental: {
     externalVue: false,

@@ -1,5 +1,5 @@
 import { replacePlugin } from 'rolldown/plugins';
-import type { UserConfig } from 'vite-plus/pack';
+import type { UserConfig } from 'tsdown';
 
 export function outExtensions(isMin = false): UserConfig['outExtensions'] | undefined {
   return ({ format }) => {
@@ -39,6 +39,19 @@ export function defineBanner({ name, version }: { name: string; version: string 
  */
 `;
 }
+
+/** Run after the full production build (including minified output and .d.ts). */
+export const packageValidationOptions = {
+  publint: {
+    enabled: 'ci-only' as const,
+    level: 'error' as const,
+  },
+  attw: {
+    enabled: 'ci-only' as const,
+    profile: 'esm-only' as const,
+    level: 'error' as const,
+  },
+} satisfies Pick<UserConfig, 'publint' | 'attw'>;
 
 export const defaultOptions: UserConfig = {
   format: ['esm'],

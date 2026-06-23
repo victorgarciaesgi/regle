@@ -1,21 +1,21 @@
 import { type ComputedRef, type MaybeRef } from 'vue';
 import type {
   DeepReactiveState,
-  DefaultValidatorsTree,
+  ExtendedRulesDeclarations,
   ExtendedRulesDeclarationsOverrides,
-  ReglePartialRuleTree,
-  RegleRuleDecl,
+  ReglePartialRuleTreeInput,
+  RegleRuleDeclInput,
 } from '../../types';
 import type { Maybe, MaybeInput, PrimitiveTypes, Unwrap } from '../../types/utils';
 
 export interface inferRulesFn<TCustomRules extends Partial<ExtendedRulesDeclarationsOverrides>> {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<
+    TRules extends ReglePartialRuleTreeInput<
       Unwrap<TState extends Record<string, any> ? TState : {}>,
-      Partial<DefaultValidatorsTree> & TCustomRules
+      Partial<ExtendedRulesDeclarations> & TCustomRules
     >,
-    TDecl extends RegleRuleDecl<NonNullable<TState>, Partial<DefaultValidatorsTree> & TCustomRules>,
+    TDecl extends RegleRuleDeclInput<NonNullable<TState>, Partial<ExtendedRulesDeclarations> & TCustomRules>,
   >(
     state: Maybe<TState> | DeepReactiveState<TState>,
     rulesFactory: Unwrap<TState> extends MaybeInput<PrimitiveTypes>

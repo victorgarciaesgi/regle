@@ -1,6 +1,6 @@
 {
   "name": "@regle/nuxt",
-  "version": "1.27.2",
+  "version": "1.28.1",
   "description": "Regle nuxt module",
   "homepage": "https://reglejs.dev/",
   "license": "MIT",
@@ -52,12 +52,14 @@
     "@regle/rules": "workspace:*"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "4.0.3",
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "nuxt": "catalog:",
+    "publint": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
     "unbuild": "3.6.1",

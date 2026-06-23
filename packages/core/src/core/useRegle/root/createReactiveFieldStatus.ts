@@ -23,6 +23,7 @@ import type {
   RegleExternalFieldIssue,
   RegleFieldIssue,
   RegleRuleDecl,
+  RegleRuleDeclInput,
   RegleShortcutDefinition,
   ResetOptions,
 } from '../../../types';
@@ -122,7 +123,7 @@ export function createReactiveFieldStatus({
 
   const additionalRules = ref<RegleRuleDecl<unknown, any>>(storage.getAdditionalRulesEntry(cachePath) ?? {});
 
-  function $addRules(rules: RegleRuleDecl) {
+  function $addRules(rules: RegleRuleDeclInput) {
     additionalRules.value = rules ?? {};
     storage.addAdditionalRulesEntry(cachePath, rules ?? {});
     createRuleProcessor();
@@ -132,7 +133,7 @@ export function createReactiveFieldStatus({
   /**
    * @deprecated Use `$addRules` instead. This alias will be removed in a future version.
    */
-  function addRules(rules: RegleRuleDecl) {
+  function addRules(rules: RegleRuleDeclInput) {
     $addRules(rules);
   }
 
@@ -280,6 +281,9 @@ export function createReactiveFieldStatus({
       const $debounce = computed<number>(() => {
         if ($localOptions.value.$debounce != null) {
           return $localOptions.value.$debounce;
+        }
+        if (toValue(options.debounce) != null) {
+          return toValue(options.debounce);
         }
         if (scopeState.$haveAnyAsyncRule.value) {
           return DEFAULT_DEBOUNCE_TIME;
@@ -438,6 +442,15 @@ export function createReactiveFieldStatus({
         } else if (initialValue == null) {
           // Keep empty string as the same value of undefined|null,
           // but preserve falsy values like false/0 as edited.
+          if (typeof currentValue === 'boolean') {
+            // Optional booleans often start as undefined; false is equivalent to unchecked.
+            if (initialValue === undefined) {
+              return currentValue === true;
+            }
+
+            return currentValue != null;
+          }
+
           return currentValue != null && currentValue !== '';
         } else if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
           return !isEqual(currentValue, initialValue, $localOptions.value.$deepCompare);
@@ -686,7 +699,8 @@ export function createReactiveFieldStatus({
         scopeState.$immediateDirty.value,
         initialState.value,
         rootInitialState?.value ?? initialState.value,
-        path === ''
+        path === '',
+        scopeState.$inactive.value
       )
     ) {
       scopeState.$dirty.value = true;
@@ -695,8 +709,6 @@ export function createReactiveFieldStatus({
 
   function $reset(options?: ResetOptions<unknown>, fromParent?: boolean): void {
     abortCommit();
-    $clearExternalErrors();
-    $clearExternalIssues();
     scopeState.$dirty.value = false;
     storage.setDirtyEntry(cachePath, false);
 
@@ -725,7 +737,7 @@ export function createReactiveFieldStatus({
       }
     }
 
-    if (options?.clearExternalErrors) {
+    if (options?.clearExternalErrors !== false) {
       $clearExternalErrors();
       $clearExternalIssues();
     }

@@ -1,6 +1,6 @@
 {
   "name": "@regle/mcp-server",
-  "version": "1.27.2",
+  "version": "1.28.1",
   "description": "MCP Server for Regle",
   "keywords": [
     "ai",
@@ -58,13 +58,15 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
-    "posthog-node": "5.35.13",
+    "posthog-node": "5.37.0",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "dotenv": "17.4.2",
+    "publint": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:"

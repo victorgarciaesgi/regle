@@ -1,9 +1,10 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "noErrorTruncation": true,
-    "paths": {}
-  },
-  "include": ["./**/*.ts"],
-  "exclude": ["./**/scoped-regle/**/*", "./plugin-config-tests/**/*"]
+  "extends": "./tsconfig.base.json",
+  "include": ["./env.d.ts", "./utils/**/*.ts"],
+  "references": [
+    { "path": "./fixtures" },
+    { "path": "./unit/useRegle" },
+    { "path": "./unit/schemas" },
+    { "path": "./unit" }
+  ]
 }

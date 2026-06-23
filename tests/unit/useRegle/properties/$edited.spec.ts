@@ -1,7 +1,7 @@
 import { useRegle, type isEditedHandlerFn } from '@regle/core';
 import { simpleNestedStateWithMixedValidation } from '../../../fixtures';
 import { createRegleComponent } from '../../../utils/test.utils';
-import { minLength, required } from '@regle/rules';
+import { minLength, required, checked } from '@regle/rules';
 import { addDays, addMonths } from 'date-fns';
 
 describe('$edited', () => {
@@ -18,6 +18,18 @@ describe('$edited', () => {
     await vm.$nextTick();
 
     expect(vm.r$.email.$edited).toBe(false);
+    expect(vm.r$.$anyEdited).toBe(false);
+
+    vm.r$.$value.terms = true;
+    await vm.$nextTick();
+
+    expect(vm.r$.terms.$edited).toBe(true);
+    expect(vm.r$.$anyEdited).toBe(true);
+
+    vm.r$.$value.terms = false;
+    await vm.$nextTick();
+
+    expect(vm.r$.terms.$edited).toBe(false);
     expect(vm.r$.$anyEdited).toBe(false);
 
     // shouldn't be considered as a Date
@@ -160,6 +172,28 @@ describe('$edited', () => {
 
     expect(vm.r$.file.$edited).toBe(true);
     expect(vm.r$.file.$anyEdited).toBe(true);
+  });
+
+  it('should mark optional boolean as edited when moving from undefined to true', async () => {
+    function regleWithOptionalBoolean() {
+      return useRegle({ terms: undefined as boolean | undefined }, { terms: { checked } });
+    }
+
+    const { vm } = createRegleComponent(regleWithOptionalBoolean);
+
+    expect(vm.r$.terms.$edited).toBe(false);
+
+    vm.r$.$value.terms = true;
+    await vm.$nextTick();
+
+    expect(vm.r$.terms.$edited).toBe(true);
+    expect(vm.r$.$anyEdited).toBe(true);
+
+    vm.r$.$value.terms = false;
+    await vm.$nextTick();
+
+    expect(vm.r$.terms.$edited).toBe(false);
+    expect(vm.r$.$anyEdited).toBe(false);
   });
 
   it('should mark nullable boolean as edited when moving from null to true', async () => {

@@ -1,6 +1,6 @@
 import { isEmpty, isObject } from '../../../../../../shared';
-import type { RegleImmediateDirtyMode } from '../../../../types';
-import { isStatic } from '../../guards';
+import type { $InternalRegleStatusType, RegleImmediateDirtyMode } from '../../../../types';
+import { isCollectionRulesStatus, isFieldStatus, isNestedRulesStatus, isStatic } from '../../guards';
 
 export type ResolvedImmediateDirtyMode = RegleImmediateDirtyMode | false;
 
@@ -24,25 +24,66 @@ export function hasNonEmptyInitialValue(value: unknown): boolean {
   return !isEmpty(value);
 }
 
-export function shouldApplyImmediateDirty(
-  mode: ResolvedImmediateDirtyMode,
-  value: unknown,
-  rootValue: unknown
-): boolean {
-  if (mode === 'eager') return true;
-  if (mode === 'non-empty') return hasNonEmptyInitialValue(rootValue);
-  if (mode === 'lazy-non-empty') return hasNonEmptyInitialValue(value);
+/**
+ * Walks a validation status and its initial value, returning `true` as soon as an
+ * active (rule-bearing) field holds a non-empty initial value. Inactive fields and
+ * their values are ignored, so a prefilled field without rules won't trigger a touch.
+ */
+function statusHasActiveNonEmptyValue(status: $InternalRegleStatusType, initialValue: unknown): boolean {
+  if (isFieldStatus(status)) {
+    return !status.$inactive && hasNonEmptyInitialValue(initialValue);
+  }
+
+  if (isNestedRulesStatus(status)) {
+    return childrenHaveActiveNonEmptyValue(status.$self, status.$fields, initialValue);
+  }
+
+  if (isCollectionRulesStatus(status) && Array.isArray(initialValue)) {
+    if (status.$self && statusHasActiveNonEmptyValue(status.$self, initialValue)) {
+      return true;
+    }
+    return status.$each.some((item, index) => statusHasActiveNonEmptyValue(item, initialValue[index]));
+  }
+
   return false;
 }
 
+/**
+ * Same check as {@link statusHasActiveNonEmptyValue} for a nested node whose `$self`
+ * status and `$fields` are held separately (e.g. the root status).
+ */
+export function childrenHaveActiveNonEmptyValue(
+  selfStatus: $InternalRegleStatusType | undefined,
+  fields: Record<string, $InternalRegleStatusType>,
+  initialValue: unknown
+): boolean {
+  if (selfStatus && statusHasActiveNonEmptyValue(selfStatus, initialValue)) {
+    return true;
+  }
+
+  if (!isObject(initialValue) || isStatic(initialValue)) {
+    return false;
+  }
+
+  const state = initialValue as Record<string, unknown>;
+  return Object.entries(fields).some(([key, child]) => statusHasActiveNonEmptyValue(child, state[key]));
+}
+
+/**
+ * Determines whether a field should be marked as dirty based on its immediate dirty mode and value.
+ */
 export function shouldApplyFieldImmediateDirty(
   mode: ResolvedImmediateDirtyMode,
   value: unknown,
   rootValue: unknown,
-  isRootField = false
+  isRootField = false,
+  isInactive = false
 ): boolean {
   if (mode === 'eager') return true;
-  if (mode === 'non-empty') return isRootField && !isEmpty(rootValue);
-  if (mode === 'lazy-non-empty') return !isEmpty(value);
+  if (mode === 'non-empty') {
+    if (!isRootField || isInactive) return false;
+    return hasNonEmptyInitialValue(rootValue);
+  }
+  if (mode === 'lazy-non-empty') return hasNonEmptyInitialValue(value);
   return false;
 }

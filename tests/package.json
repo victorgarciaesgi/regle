@@ -20,7 +20,7 @@
     "vite-plus": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
-    "vue-component-type-helpers": "3.3.3",
+    "vue-component-type-helpers": "3.3.5",
     "zod": "catalog:"
   }
 }

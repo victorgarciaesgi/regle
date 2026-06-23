@@ -508,7 +508,7 @@ export function createReactiveCollectionStatus({
       const $modifiers = computed<CollectionRegleBehaviourOptions>(() => {
         return {
           $deepCompare: $localOptions.value.$deepCompare ?? false,
-          $debounce: $localOptions.value.$debounce ?? 0,
+          $debounce: $localOptions.value.$debounce ?? toValue(options.debounce) ?? 0,
           $lazy: $localOptions.value.$lazy ?? false,
           $rewardEarly: $rewardEarly.value,
           $autoDirty: $autoDirty.value,
@@ -647,7 +647,7 @@ export function createReactiveCollectionStatus({
       }
     }
 
-    if (options?.clearExternalErrors) {
+    if (options?.clearExternalErrors !== false) {
       $clearExternalErrors();
       $clearExternalIssues();
     }

@@ -12,7 +12,8 @@ import type {
   Regle,
   RegleBehaviourOptions,
   ReglePartialRuleTree,
-  RegleRuleDecl,
+  ReglePartialRuleTreeInput,
+  RegleRuleDeclInput,
   RegleShortcutDefinition,
   RegleSingleField,
   RegleValidationGroupEntry,
@@ -53,11 +54,11 @@ export interface useRegleFn<
 > {
   <
     TState extends MaybeRef<Record<string, any> | MaybeInput<PrimitiveTypes>>,
-    TRules extends ReglePartialRuleTree<
+    TRules extends ReglePartialRuleTreeInput<
       JoinDiscriminatedUnions<Unwrap<TState>>,
       Partial<ExtendedRulesDeclarations & Omit<TCustomRules, keyof DefaultValidatorsTree>>
     >,
-    TDecl extends RegleRuleDecl<
+    TDecl extends RegleRuleDeclInput<
       WidenPrimitiveLiterals<NonNullable<Unwrap<TState>>>,
       Partial<ExtendedRulesDeclarations & TCustomRules>
     >,

@@ -25,10 +25,14 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
   if (!lastProp) {
     return false;
   }
-  prototypeCheck(lastProp);
+  if (isPrototypeKey(lastProp)) {
+    throw new Error('setting of prototype values not supported');
+  }
   var thisProp;
   while ((thisProp = props.shift())) {
-    prototypeCheck(thisProp);
+    if (isPrototypeKey(thisProp)) {
+      throw new Error('setting of prototype values not supported');
+    }
 
     if (!isNaN(parseInt(thisProp))) {
       if (obj.$each == undefined) {
@@ -102,11 +106,10 @@ export function getDotPath(obj: Record<string, any>, propsArg: string | string[]
   return obj;
 }
 
-function prototypeCheck(prop: string) {
+function isPrototypeKey(prop: string): boolean {
   // coercion is intentional to catch prop values like `['__proto__']`
-  if (prop == '__proto__' || prop == 'constructor' || prop == 'prototype') {
-    throw new Error('setting of prototype values not supported');
-  }
+  const key = String(prop);
+  return key === '__proto__' || key === 'constructor' || key === 'prototype';
 }
 
 export function merge<TObj1 extends object = object, TObjs extends [...any[]] = [...any[]]>(

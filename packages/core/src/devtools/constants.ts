@@ -72,7 +72,7 @@ export const TOOLTIP_LABELS_RULES = {
 } as const;
 
 export const PRIORITY_KEYS = {
-  ROOT: ['$invalid', '$dirty', '$error', '$pending', '$valid', '$ready'],
+  ROOT: ['$value', '$invalid', '$dirty', '$error', '$pending', '$valid', '$ready'],
   FIELD: ['$value', '$invalid', '$dirty', '$error', '$pending', '$errors'],
 } as const;
 

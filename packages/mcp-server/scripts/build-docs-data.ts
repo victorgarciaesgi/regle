@@ -41,22 +41,60 @@ function parseFrontmatter(content: string): { title: string; content: string } {
 }
 
 /**
+ * Remove script blocks and any remaining `<script` fragments from markdown.
+ */
+function stripScriptTags(content: string): string {
+  // Allow malformed closing tags (e.g. `</script >`, `</script\t\n bar>`).
+  const blockPattern = /<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi;
+  const openingTagPattern = /<script\b[^>]*>/gi;
+  const closingTagPattern = /<\/script[^>]*>/gi;
+  const scriptFragmentPattern = /<script/gi;
+
+  let result = content;
+  let previous = '';
+
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(blockPattern, '');
+  }
+
+  previous = '';
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(openingTagPattern, '');
+  }
+
+  previous = '';
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(closingTagPattern, '');
+  }
+
+  previous = '';
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(scriptFragmentPattern, '');
+  }
+
+  return result;
+}
+
+/**
  * Clean markdown content for AI consumption
  */
 function cleanMarkdownContent(content: string): string {
   return (
-    content
-      .replace(/<script\s+setup[^>]*>[\s\S]*?<\/script>/g, '')
+    stripScriptTags(content)
       // Remove Vue component tags like <QuickUsage/>
-      .replace(/<[A-Z][a-zA-Z]*\s*\/>/g, '')
+      .replaceAll(/<[A-Z][a-zA-Z]*\s*\/>/g, '')
       // Remove includes
-      .replace(/<!--\s*@include:.*-->/g, '')
+      .replaceAll(/<!--\s*@include:.*-->/g, '')
       // Remove twoslash annotations
-      .replace(/\/\/\s*@\w+.*$/gm, '')
+      .replaceAll(/\/\/\s*@\w+.*$/gm, '')
       // Remove ^| cursor position markers
-      .replace(/\/\/\s*\^.*/gm, '')
+      .replaceAll(/\/\/\s*\^.*/gm, '')
       // Clean up multiple blank lines
-      .replace(/\n{3,}/g, '\n\n')
+      .replaceAll(/\n{3,}/g, '\n\n')
       .trim()
   );
 }

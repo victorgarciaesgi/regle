@@ -61,7 +61,7 @@ export interface RegleBehaviourOptions {
    * Set the dirty state when the form is initialized.
    *
    * - `true` or `'eager'`: mark every field dirty.
-   * - `'non-empty'`: mark every field dirty when any initial value is non-empty.
+   * - `'non-empty'`: mark every field dirty when any active field (a field with rules) has a non-empty initial value. Inactive fields are ignored.
    * - `'lazy-non-empty'`: mark only fields with non-empty initial values dirty.
    *
    * @default false
@@ -72,6 +72,16 @@ export interface RegleBehaviourOptions {
    * @default false
    */
   disabled?: boolean | undefined;
+  /**
+   * Number of milliseconds every async field should wait before executing its rules.
+   *
+   * Applies to every async field in the form. A per-field `$debounce` always takes priority over this global value.
+   *
+   * Set to `0` to disable the default debounce on async rules.
+   *
+   * @default 200 (for fields with async rules)
+   */
+  debounce?: number | undefined;
 }
 
 export interface LocalRegleBehaviourOptions<
@@ -153,10 +163,6 @@ export interface RegleValidationGroupOutput {
 }
 
 export type FieldRegleBehaviourOptions<TValue extends unknown = unknown> = AddDollarToOptions<RegleBehaviourOptions> & {
-  /**
-   * Let you declare the number of milliseconds the rule needs to wait before executing. Useful for async or heavy computations.
-   */
-  $debounce?: number;
   /**
    * Override the default `$edited` handler.
    */

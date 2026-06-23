@@ -2,7 +2,6 @@ import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown, Paths } from 'type-f
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { FieldRegleBehaviourOptions } from '../core';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
-import type { ExtendedRulesDeclarations } from './rule.custom.types';
 import type { InlineRuleDeclaration, RegleFormPropertyType, ReglePartialRuleTree } from './rule.declaration.types';
 import type { RegleRuleDefinitionLight, RegleRuleMetadataDefinition } from './rule.definition.type';
 import type { RegleRuleStatus } from './rule.status.types';
@@ -59,13 +58,13 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
       ? any
       :
           | ({
-              readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+              [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
                 JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
                 true,
                 TSchema
               >;
             } & {
-              readonly $self?: RegleFieldIssue[];
+              $self?: RegleFieldIssue[];
             })
           | Record<Paths<TState> | (string & {}), string[]>;
 
@@ -76,14 +75,14 @@ export type RegleExternalIssueTree<TState = MaybeRef<Record<string, any> | any[]
       ? any
       :
           | ({
-              readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+              [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
                 JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
                 true,
                 true,
                 TSchema
               >;
             } & {
-              readonly $self?: RegleExternalFieldIssue[];
+              $self?: RegleExternalFieldIssue[];
             })
           | Partial<Record<Paths<TState> | (string & {}), RegleExternalFieldIssue[]>>;
 
@@ -96,7 +95,7 @@ export type RegleExternalSchemaErrorTree<
     : IsUnknown<TState> extends true
       ? any
       : {
-          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+          [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
             JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
             true,
             true,
@@ -113,7 +112,7 @@ export type RegleExternalSchemaIssueTree<
     : IsUnknown<TState> extends true
       ? any
       : {
-          readonly [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
+          [K in keyof JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>]?: RegleValidationErrors<
             JoinDiscriminatedUnions<UnwrapMaybeRef<TState>>[K],
             true,
             true,
@@ -167,9 +166,7 @@ export type RegleValidationErrors<
 
 export interface RegleIssueCustomMetadata {}
 
-export type RegleFieldIssue<
-  TRules extends RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>> = EmptyObject,
-> = {
+export type RegleFieldIssue<TRules extends RegleFormPropertyType<unknown> = EmptyObject> = {
   readonly $property: string;
   readonly $type?: string;
   readonly $message: string;
@@ -193,10 +190,7 @@ export type RegleExternalFieldIssue = Pick<RegleFieldIssue, '$message'> &
   Partial<Omit<RegleFieldIssue, '$message'>> &
   Record<string, unknown>;
 
-export type ComputeFieldRules<
-  TState extends any,
-  TRules extends MaybeRef<RegleFormPropertyType<unknown, Partial<ExtendedRulesDeclarations>>>,
-> =
+export type ComputeFieldRules<TState extends any, TRules extends MaybeRef<RegleFormPropertyType<unknown>>> =
   IsEmptyObject<UnwrapRef<TRules>> extends true
     ? {
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;

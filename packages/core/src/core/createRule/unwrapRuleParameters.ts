@@ -31,9 +31,11 @@ export function createReactiveParams<TParams extends any[]>(params: MaybeRefOrGe
  * Due to `function.length` not returning default parameters, it needed to parse the func.toString()
  */
 export function getFunctionParametersLength(func: Function): number {
-  const funcStr = func.toString();
-
-  const cleanStr = funcStr.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const cleanStr = func
+    .toString()
+    .slice(0, 512)
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
 
   const paramsMatch = cleanStr.match(
     /^(?:async\s*)?(?:function\b.*?\(|\((.*?)\)|(\w+))\s*=>|\((.*?)\)\s*=>|function.*?\((.*?)\)|\((.*?)\)/

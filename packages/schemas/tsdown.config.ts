@@ -6,6 +6,7 @@ import {
   devBuildPlugins,
   outExtensions,
   productionBuildPlugins,
+  packageValidationOptions,
 } from '../../tsdown.common.build.ts';
 import pkg from './package.json' with { type: 'json' };
 const { name, version } = pkg;
@@ -34,5 +35,6 @@ export default defineConfig([
     },
     outExtensions: outExtensions(true),
     plugins: [...productionBuildPlugins],
+    ...packageValidationOptions,
   },
 ]);

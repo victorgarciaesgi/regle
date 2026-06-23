@@ -8,6 +8,7 @@ export default defineNuxtPlugin({
   name: 'regle-pinia',
   enforce: 'post',
   async setup(nuxtApp) {
+    /** @type {import('pinia').Pinia} */
     const pinia = nuxtApp.$pinia;
 
     if (!pinia) return;
