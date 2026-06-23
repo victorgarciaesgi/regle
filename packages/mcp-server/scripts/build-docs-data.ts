@@ -44,24 +44,37 @@ function parseFrontmatter(content: string): { title: string; content: string } {
  * Remove script blocks and any remaining `<script` fragments from markdown.
  */
 function stripScriptTags(content: string): string {
+  // Allow optional whitespace before `>` in closing tags (e.g. `</script >`).
+  const blockPattern = /<script\b[^>]*>[\s\S]*?<\/script\s*>/gi;
+  const openingTagPattern = /<script\b[^>]*>/gi;
+  const closingTagPattern = /<\/script\s*>/gi;
+  const scriptFragmentPattern = /<script/gi;
+
   let result = content;
   let previous = '';
 
-  const blockPattern = /<script\b[^>]*>[\s\S]*?<\/script>/gi;
   while (result !== previous) {
     previous = result;
     result = result.replace(blockPattern, '');
   }
 
-  const openingTagPattern = /<script\b[^>]*>/gi;
-  const closingTagPattern = /<\/script>/gi;
-  do {
+  previous = '';
+  while (result !== previous) {
     previous = result;
-    result = result
-      .replace(openingTagPattern, '')
-      .replace(closingTagPattern, '')
-      .replace(/<script/gi, '');
-  } while (result !== previous);
+    result = result.replace(openingTagPattern, '');
+  }
+
+  previous = '';
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(closingTagPattern, '');
+  }
+
+  previous = '';
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(scriptFragmentPattern, '');
+  }
 
   return result;
 }
