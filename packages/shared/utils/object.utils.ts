@@ -65,14 +65,8 @@ export function setObjectError(obj: Record<string, any>, propsArg: string | unde
       }
       obj.$each[lastProp] = (obj.$each[lastProp] ??= []).concat(value);
     } else if (Array.isArray(obj[lastProp])) {
-      if (isPrototypeKey(lastProp)) {
-        throw new Error('setting of prototype values not supported');
-      }
       obj[lastProp] = obj[lastProp].concat(value);
     } else {
-      if (isPrototypeKey(lastProp)) {
-        throw new Error('setting of prototype values not supported');
-      }
       obj[lastProp] = value;
     }
   }
