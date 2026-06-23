@@ -1,5 +1,8 @@
 name: coverage
 
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows: [Unit & E2E tests]
