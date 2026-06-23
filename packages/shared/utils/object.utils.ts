@@ -116,7 +116,9 @@ export function getDotPath(obj: Record<string, any>, propsArg: string | string[]
 }
 
 function isPrototypeKey(prop: string): boolean {
-  return prop === '__proto__' || prop === 'constructor' || prop === 'prototype';
+  // coercion is intentional to catch prop values like `['__proto__']`
+  const key = String(prop);
+  return key === '__proto__' || key === 'constructor' || key === 'prototype';
 }
 
 export function merge<TObj1 extends object = object, TObjs extends [...any[]] = [...any[]]>(
