@@ -131,7 +131,7 @@ export class RegleInspector {
   }
 
   async expectState(key: string, value: string | boolean) {
-    const escapedKey = key.replace(/\$/g, '\\$');
+    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     await expect(this.state).toContainText(new RegExp(`${escapedKey}:${value}`));
   }
 
