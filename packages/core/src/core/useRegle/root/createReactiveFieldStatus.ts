@@ -102,7 +102,7 @@ export function createReactiveFieldStatus({
     $inactive: ComputedRef<boolean>;
     $modifiers: ComputedRef<FieldRegleBehaviourOptions<unknown>>;
     $isArrayOrRegleStatic: ComputedRef<boolean>;
-    $enableShortcuts: Ref<boolean>;
+    processShortcuts: () => void;
   }
 
   let scope = effectScope();
@@ -198,7 +198,7 @@ export function createReactiveFieldStatus({
 
     createRuleProcessor();
 
-    scopeState.$enableShortcuts.value = true;
+    scopeState.processShortcuts();
 
     define$commit();
     define$setDirty();
@@ -258,7 +258,6 @@ export function createReactiveFieldStatus({
       s.stop();
     }
     fieldScopes = [];
-    scopeState.$enableShortcuts.value = false;
     onUnwatch?.();
     $unwatchAsync?.();
   }
@@ -552,14 +551,6 @@ export function createReactiveFieldStatus({
         };
       });
 
-      const $enableShortcuts = ref(false);
-
-      watch($enableShortcuts, (newEnableShortcuts) => {
-        if (newEnableShortcuts) {
-          processShortcuts();
-        }
-      });
-
       function processShortcuts() {
         if (shortcuts?.fields) {
           Object.entries(shortcuts.fields).forEach(([key, value]) => {
@@ -631,7 +622,7 @@ export function createReactiveFieldStatus({
         $validating,
         $tooltips,
         $dirty,
-        $enableShortcuts,
+        processShortcuts,
         $silentValue,
         $inactive,
         $modifiers,

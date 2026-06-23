@@ -41,12 +41,36 @@ function parseFrontmatter(content: string): { title: string; content: string } {
 }
 
 /**
+ * Remove script blocks and any remaining `<script` fragments from markdown.
+ */
+function stripScriptTags(content: string): string {
+  let result = content;
+  let previous = '';
+
+  const blockPattern = /<script\b[^>]*>[\s\S]*?<\/script>/gi;
+  while (result !== previous) {
+    previous = result;
+    result = result.replace(blockPattern, '');
+  }
+
+  previous = '';
+  while (result.includes('<script')) {
+    previous = result;
+    result = result.replaceAll(/<script\b[^>]*>/gi, '').replaceAll('<script', '');
+    if (result === previous) {
+      break;
+    }
+  }
+
+  return result;
+}
+
+/**
  * Clean markdown content for AI consumption
  */
 function cleanMarkdownContent(content: string): string {
   return (
-    content
-      .replaceAll(/<script\s+setup[^>]*>[\s\S]*?<\/script>/g, '')
+    stripScriptTags(content)
       // Remove Vue component tags like <QuickUsage/>
       .replaceAll(/<[A-Z][a-zA-Z]*\s*\/>/g, '')
       // Remove includes
