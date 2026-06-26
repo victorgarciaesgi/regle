@@ -13,7 +13,7 @@ import {
   watch,
   watchEffect,
 } from 'vue';
-import { cloneDeep, isEmpty, isObject } from '../../../../../shared';
+import { cloneDeep, isEmpty, isObject, normalizeDotPathExternalValue } from '../../../../../shared';
 import type {
   $InternalFormPropertyTypes,
   $InternalRegleErrors,
@@ -743,7 +743,7 @@ export function createReactiveNestedStatus({
 
   function $setExternalErrors(errors: RegleExternalErrorTree<unknown>) {
     if (externalErrors) {
-      externalErrors.value = errors;
+      externalErrors.value = rootRules ? normalizeDotPathExternalValue(errors, state.value) : errors;
     }
     $clearExternalIssues();
   }

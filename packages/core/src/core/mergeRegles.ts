@@ -420,7 +420,10 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $setExternalErrors,
     $setExternalIssues,
   } as Record<
-    keyof Omit<RegleStatus, '$initialValue' | '$originalValue' | '$path' | '$name' | '$id' | '~standard' | '$fields'>,
+    keyof Omit<
+      RegleStatus,
+      '$initialValue' | '$originalValue' | '$path' | '$name' | '$id' | '~standard' | '$fields' | '$self'
+    >,
     any
   >);
 

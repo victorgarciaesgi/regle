@@ -6,7 +6,6 @@ import type {
   $InternalRegleStatus,
   RegleCollectionStatus,
   RegleExternalErrorTree,
-  RegleExternalFieldIssue,
   RegleExternalIssueTree,
   RegleFieldStatus,
   ReglePartialRuleTree,
@@ -99,7 +98,7 @@ export interface LocalRegleBehaviourOptions<
    *
    * More details: https://reglejs.dev/advanced-usage/external-errors
    */
-  externalErrors?: Ref<RegleExternalErrorTree<Unwrap<TState>> | Record<string, string[]>>;
+  externalErrors?: Ref<RegleExternalErrorTree<Unwrap<TState>>>;
   /**
    * A dictionary of external issues to be injected into the field statuses.
    *
@@ -107,7 +106,7 @@ export interface LocalRegleBehaviourOptions<
    * They are mutually exclusive with `externalErrors`: assigning one clears the other.
    * You can also call `r$.$setExternalIssues(...)` directly without providing this option.
    */
-  externalIssues?: Ref<RegleExternalIssueTree<Unwrap<TState>> | Record<string, RegleExternalFieldIssue[]>>;
+  externalIssues?: Ref<RegleExternalIssueTree<Unwrap<TState>>>;
   /**
    * Allows you to group fields for custom collective validation logic.
    *
@@ -181,7 +180,8 @@ export type CollectionRegleBehaviourOptions<TValue extends unknown = unknown> = 
 };
 
 export type ResolvedRegleBehaviourOptions = DeepMaybeRef<RequiredDeep<RegleBehaviourOptions>> &
-  LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>>;
+  LocalRegleBehaviourOptions<Record<string, any>, Record<string, any>, Record<string, any[]>> &
+  FieldOnlyRegleBehaviourOptions;
 
 export type ShortcutCommonFn<T extends Record<string, any>> = {
   [x: string]: (element: Omit<OmitByType<T, Function>, '~standard'>) => unknown;
