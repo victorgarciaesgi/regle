@@ -1,6 +1,6 @@
 import { inferRules, useRegle, type RegleBehaviourOptions, type RegleExternalErrorTree } from '@regle/core';
 import { required } from '@regle/rules';
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -840,6 +840,50 @@ describe('external errors', () => {
     expect(vm.r$.base.players.$each[0].shoes.$self.$errors).toStrictEqual(['Server Error']);
     expect(vm.r$.base.players.$each[0].shoes.$each[0].name.$errors).toStrictEqual([]);
     expect(vm.r$.base.players.$each[0].shoes.$each[0].id.$errors).toStrictEqual(['Server Error']);
+  });
+
+  it('should preserve child errors when parent object and child dot paths conflict', async () => {
+    function objectAndChildDotPathErrors() {
+      const form = reactive({ active: true, user: { email: '' } });
+      const externalErrors = ref<RegleExternalErrorTree<typeof form>>({});
+
+      return {
+        externalErrors,
+        ...useRegle(form, { active: { required } }, { externalErrors }),
+      };
+    }
+
+    const { vm } = createRegleComponent(objectAndChildDotPathErrors);
+
+    vm.externalErrors = {
+      user: ['user-level error'],
+      'user.email': ['email error'],
+    };
+
+    await vm.$nextTick();
+
+    expect(vm.r$.user.email.$externalErrors).toStrictEqual(['email error']);
+    expect(vm.r$.user.$self.$externalErrors).toStrictEqual(['user-level error']);
+  });
+
+  it('should preserve child errors with root $setExternalErrors when parent and child dot paths conflict', async () => {
+    function objectAndChildDotPathErrorsWithoutOption() {
+      const form = reactive({ active: true, user: { email: '' } });
+
+      return useRegle(form, { active: { required } });
+    }
+
+    const { vm } = createRegleComponent(objectAndChildDotPathErrorsWithoutOption);
+
+    vm.r$.$setExternalErrors({
+      user: ['user-level error'],
+      'user.email': ['email error'],
+    });
+
+    await vm.$nextTick();
+
+    expect(vm.r$.user.email.$externalErrors).toStrictEqual(['email error']);
+    expect(vm.r$.user.$self.$externalErrors).toStrictEqual(['user-level error']);
   });
 
   it('should work with a single field useRegle call', async () => {

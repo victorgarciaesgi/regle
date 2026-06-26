@@ -1,4 +1,4 @@
-import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown, Paths } from 'type-fest';
+import type { EmptyObject, IsAny, IsEmptyObject, IsUnknown, OrAll, Paths } from 'type-fest';
 import type { MaybeRef, UnwrapRef } from 'vue';
 import type { FieldRegleBehaviourOptions } from '../core';
 import type { HasNamedKeys, IsRegleStatic, JoinDiscriminatedUnions, UnwrapMaybeRef } from '../utils';
@@ -66,7 +66,7 @@ export type RegleExternalErrorTree<TState = MaybeRef<Record<string, any> | any[]
             } & {
               $self?: RegleFieldIssue[];
             })
-          | Record<Paths<TState> | (string & {}), string[]>;
+          | Partial<Record<Paths<TState> | (string & {}), string[]>>;
 
 export type RegleExternalIssueTree<TState = MaybeRef<Record<string, any> | any[]>, TSchema extends boolean = false> =
   IsAny<TState> extends true
@@ -191,7 +191,7 @@ export type RegleExternalFieldIssue = Pick<RegleFieldIssue, '$message'> &
   Record<string, unknown>;
 
 export type ComputeFieldRules<TState extends any, TRules extends MaybeRef<RegleFormPropertyType<unknown>>> =
-  IsEmptyObject<UnwrapRef<TRules>> extends true
+  OrAll<[IsEmptyObject<UnwrapRef<TRules>>, IsEmptyObject<TState>, IsAny<UnwrapRef<TRules>>]> extends true
     ? {
         readonly [x: string]: RegleRuleStatus<TState, any[], any>;
       }

@@ -1,11 +1,10 @@
 import type { EffectScope, Ref, WatchStopHandle } from 'vue';
 import { effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
-import { dotPathObjectToNested, isObject } from '../../../../../shared';
+import { isObject, normalizeDotPathExternalValue } from '../../../../../shared';
 import { registerRegleInstance } from '../../../devtools';
-import { isRegleDevtoolsTestEnv } from '../../../utils/devtools.utils';
 import type {
   $InternalRegleErrorTree,
-  $InternalRegleIssues,
+  $InternalRegleExternalIssues,
   $InternalRegleIssuesTree,
   $InternalReglePartialRuleTree,
   $InternalRegleResult,
@@ -17,17 +16,11 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '../../../types';
+import { isRegleDevtoolsTestEnv } from '../../../utils/devtools.utils';
 import { useStorage } from '../../useStorage';
 import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
-
-function normalizeExternalValue<T>(value: T | undefined): T | undefined {
-  if (value && isObject(value) && Object.keys(value).some((key) => key.includes('.'))) {
-    return dotPathObjectToNested(value as Record<string, unknown>) as T;
-  }
-  return value;
-}
 
 function hasExternalValue(value: unknown): boolean {
   if (Array.isArray(value)) {
@@ -40,9 +33,12 @@ function emptyExternalValue(value: unknown) {
   return Array.isArray(value) ? [] : {};
 }
 
-function createExternalChannels(options: ResolvedRegleBehaviourOptions) {
+function createExternalChannels(
+  options: ResolvedRegleBehaviourOptions,
+  state: Ref<Record<string, any> | PrimitiveTypes>
+) {
   type ExternalErrors = $InternalRegleErrorTree | string[];
-  type ExternalIssues = $InternalRegleIssues;
+  type ExternalIssues = $InternalRegleExternalIssues;
 
   const externalErrors = ref<ExternalErrors | undefined>();
   const externalIssues = ref<ExternalIssues | undefined>();
@@ -73,7 +69,7 @@ function createExternalChannels(options: ResolvedRegleBehaviourOptions) {
     if (syncing) return;
     syncing = true;
 
-    const normalizedErrors = normalizeExternalValue(newErrors);
+    const normalizedErrors = normalizeDotPathExternalValue(newErrors, toValue(state));
     externalErrors.value = normalizedErrors;
     if (updateOptionRef && options.externalErrors) {
       options.externalErrors.value = normalizedErrors as any;
@@ -89,7 +85,7 @@ function createExternalChannels(options: ResolvedRegleBehaviourOptions) {
     if (syncing) return;
     syncing = true;
 
-    const normalizedIssues = normalizeExternalValue(newIssues);
+    const normalizedIssues = normalizeDotPathExternalValue(newIssues, toValue(state) as Record<string, unknown>);
     externalIssues.value = normalizedIssues;
     if (updateOptionRef && options.externalIssues) {
       options.externalIssues.value = normalizedIssues as any;
@@ -138,7 +134,7 @@ function createExternalChannels(options: ResolvedRegleBehaviourOptions) {
   function start() {
     stop();
     syncErrors(options.externalErrors?.value);
-    syncIssues(options.externalIssues?.value);
+    syncIssues(options.externalIssues?.value as $InternalRegleExternalIssues);
     watchInternalRefs();
   }
 
@@ -198,7 +194,7 @@ export function useRootStorage({
   let rootScope: EffectScope | undefined;
 
   const regle = ref<$InternalRegleStatusType>();
-  const externalChannels = createExternalChannels(options);
+  const externalChannels = createExternalChannels(options, state);
 
   let $unwatchDisabled: WatchStopHandle | undefined;
 

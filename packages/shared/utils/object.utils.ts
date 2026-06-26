@@ -136,6 +136,25 @@ export function merge<TObj1 extends object = object, TObjs extends [...any[]] = 
   return result;
 }
 
+const numericPartRegex = /^\d+$/;
+
+function isCollectionConflict(
+  fieldPath: string[],
+  nextPart: string,
+  state?: Record<string, any> | PrimitiveTypes
+): boolean {
+  if (state !== undefined && isObject(state)) {
+    const pathKey = fieldPath.join('.');
+    const stateValue = pathKey ? getDotPath(state, pathKey) : state;
+    if (stateValue !== undefined) {
+      return Array.isArray(stateValue);
+    }
+  }
+  return numericPartRegex.test(nextPart);
+}
+
+type PrimitiveTypes = string | number | boolean | bigint | Date | File;
+
 /**
  * Converts an object with dot-path keys into a nested object structure.
  * Example:
@@ -150,79 +169,83 @@ export function merge<TObj1 extends object = object, TObjs extends [...any[]] = 
  *     password: "bar",
  *     collection: [{ name: "hello" }]
  *   }
+ *
+ * When a parent key and a deeper dot-path key conflict (e.g. `user` + `user.email`),
+ * the parent error is moved to `$self` and children are nested as object keys.
+ * Collection fields use `$each` when the next segment is a numeric index.
  */
-export function dotPathObjectToNested(obj: Record<string, any> | undefined): Record<string, any> {
-  const result: Record<string, any> = {};
+export function dotPathObjectToNested(
+  obj: Record<string, any> | undefined,
+  state?: Record<string, any> | PrimitiveTypes
+): Record<string, any> {
+  if (!obj) {
+    return {};
+  }
 
-  for (const key in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
-    const value = obj[key];
+  const result: Record<string, any> = {};
+  const entries = Object.entries(obj).sort((a, b) => b[0].split('.').length - a[0].split('.').length);
+
+  for (const [key, value] of entries) {
     const path = key.split('.');
     let current = result;
 
     for (let i = 0; i < path.length; i++) {
       const part = path[i];
       const isLast = i === path.length - 1;
-      // Check if this part is an array index
-      const arrayIndex = part.match(/^\d+$/) ? Number(part) : null;
+      const isNumericPart = numericPartRegex.test(part);
+      const arrayIndex = Array.isArray(current) && isNumericPart ? Number(part) : null;
+      const nextPart = path[i + 1];
+      const fieldPath = path.slice(0, i + 1);
 
       if (arrayIndex !== null) {
-        // This part is an array index
-
         if (Array.isArray(current)) {
           if (isLast) {
             current[arrayIndex] = value;
           } else {
             if (typeof current[arrayIndex] !== 'object' || current[arrayIndex] === null) {
-              // Decide if next is array or object
-              const nextPart = path[i + 1];
-              current[arrayIndex] = nextPart && nextPart.match(/^\d+$/) ? { $each: [], $self: [] } : {};
+              current[arrayIndex] = nextPart && numericPartRegex.test(nextPart) ? { $each: [], $self: [] } : {};
             }
             current = '$each' in current[arrayIndex] ? current[arrayIndex].$each : current[arrayIndex];
           }
         }
-      } else {
-        // This part is an object key
-        if (isLast) {
-          if (Array.isArray(current[part])) {
-            let previous = current[part].slice();
-            current[part] = {};
-            current[part].$self = previous;
-          } else if (typeof current[part] === 'object' && current[part] !== null && '$each' in current[part]) {
-            current[part].$self = value;
-          } else {
-            current[part] = value;
-          }
+      } else if (isLast) {
+        if (typeof current[part] === 'object' && current[part] !== null && !Array.isArray(current[part])) {
+          current[part].$self = value;
         } else {
-          const nextPart = path[i + 1];
+          current[part] = value;
+        }
+      } else {
+        const isCollection = isCollectionConflict(fieldPath, nextPart, state);
 
-          if (Array.isArray(current[part])) {
-            let previous = current[part].slice();
-            current[part] = { $each: [] };
-            current[part].$self = previous;
-          }
-          if (
-            typeof current[part] !== 'object' ||
-            current[part] === null ||
-            (Array.isArray(current[part]) && !nextPart.match(/^\d+$/))
-          ) {
-            if (nextPart && nextPart.match(/^\d+$/)) {
-              current[part] = { $each: [], $self: [] };
-            } else {
-              current[part] = {};
-            }
-          }
-          if ('$each' in current[part]) {
-            current = current[part].$each;
-          } else {
-            current = current[part];
-          }
+        if (Array.isArray(current[part])) {
+          const previous = current[part].slice();
+          current[part] = isCollection ? { $each: [], $self: previous } : { $self: previous };
+        }
+
+        if (typeof current[part] !== 'object' || current[part] === null) {
+          current[part] = isCollection ? { $each: [], $self: [] } : {};
+        }
+
+        if (isCollection && '$each' in current[part]) {
+          current = current[part].$each;
+        } else {
+          current = current[part];
         }
       }
     }
   }
 
   return result;
+}
+
+export function normalizeDotPathExternalValue<T>(
+  value: T | undefined,
+  state?: Record<string, unknown> | PrimitiveTypes
+): T | undefined {
+  if (value && isObject(value) && Object.keys(value).some((key) => key.includes('.'))) {
+    return dotPathObjectToNested(value as Record<string, unknown>, state) as T;
+  }
+  return value;
 }
 
 export function hasOwn(val: object, key: string | symbol): key is keyof typeof val {

@@ -138,6 +138,12 @@ export type RegleStatus<
 > = Omit<RegleCommonStatus<TState, TState, TRules>, '$issues' | '$errors'> & {
   /** Represents all the children of your object. You can access any nested child at any depth to get the relevant data you need for your form. */
   readonly $fields: _TFields;
+  /** Represents the status of the parent object. Status only concern the object itself and not its children */
+  readonly $self: RegleFieldStatus<
+    TState,
+    TRules['$self'] extends RegleRuleDeclInput<any, Partial<ExtendedRulesDeclarations>> ? TRules['$self'] : EmptyObject,
+    TShortcuts
+  >;
   /**
    * Collection of all the issues, collected for all children properties and nested forms.
    *
@@ -174,13 +180,7 @@ export type RegleStatus<
     ? {}
     : {
         [K in keyof TShortcuts['nested']]: ReturnType<NonNullable<TShortcuts['nested']>[K]>;
-      }) &
-  (TRules['$self'] extends RegleRuleDeclInput<any, Partial<ExtendedRulesDeclarations>>
-    ? {
-        /** Represents the status of the parent object. Status only concern the object itself and not its children */
-        readonly $self: RegleFieldStatus<TState, NonNullable<TRules['$self']>, TShortcuts>;
-      }
-    : {});
+      });
 /**
  * @internal
  * @reference {@link RegleStatus}
@@ -325,7 +325,9 @@ export type RegleFieldStatus<
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => MaybeOutput<TState>;
   /** Sets all properties as dirty, triggering all rules. It returns a promise that will either resolve to false or a type safe copy of your form state. Values that had the required rule will be transformed into a non-nullable value (type only). */
-  $validate: (forceValues?: IsUnknown<TState> extends true ? any : TState) => Promise<RegleFieldResult<TState, TRules>>;
+  $validate: (
+    forceValues?: HasNamedKeys<TState> extends true ? (IsUnknown<TState> extends true ? any : TState) : any
+  ) => Promise<RegleFieldResult<TState, TRules>>;
   /** This is reactive tree containing all the declared rules of your field. To know more about the rule properties check the rules properties section */
   readonly $rules: ComputeFieldRules<TState, TRules>;
 } & CustomFieldProperties &
@@ -536,11 +538,11 @@ export type RegleRuleStatus<
   $reset(): void;
   /** Returns the original rule validator function. */
   $validator: ((
-    value: IsUnknown<TValue> extends true ? any : MaybeInput<TValue>,
+    value: HasNamedKeys<TValue> extends true ? (IsUnknown<TValue> extends true ? any : MaybeInput<TValue>) : any,
     ...args: any[]
   ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>) &
     ((
-      value: IsUnknown<TValue> extends true ? any : TValue,
+      value: HasNamedKeys<TValue> extends true ? (IsUnknown<TValue> extends true ? any : MaybeInput<TValue>) : any,
       ...args: [TParams] extends [never[]] ? [] : [unknown[]] extends [TParams] ? any[] : TParams
     ) => RegleRuleMetadataDefinition | Promise<RegleRuleMetadataDefinition>);
 } & ([TParams] extends [never[]]
