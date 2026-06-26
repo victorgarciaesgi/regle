@@ -191,6 +191,7 @@ export function dotPathObjectToNested(
 
     for (let i = 0; i < path.length; i++) {
       const part = path[i];
+      if (isPrototypeKey(part)) break;
       const isLast = i === path.length - 1;
       const isNumericPart = numericPartRegex.test(part);
       const arrayIndex = Array.isArray(current) && isNumericPart ? Number(part) : null;
