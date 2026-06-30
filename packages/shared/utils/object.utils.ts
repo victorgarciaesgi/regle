@@ -201,7 +201,15 @@ export function dotPathObjectToNested(
       if (arrayIndex !== null) {
         if (Array.isArray(current)) {
           if (isLast) {
-            current[arrayIndex] = value;
+            const existing = current[arrayIndex];
+            if (typeof existing === 'object' && existing !== null && !Array.isArray(existing)) {
+              existing.$self = value;
+            } else {
+              const itemState =
+                state !== undefined && isObject(state) ? getDotPath(state, fieldPath.join('.')) : undefined;
+              const needsSelfWrapper = itemState !== undefined && isObject(itemState) && !Array.isArray(itemState);
+              current[arrayIndex] = needsSelfWrapper ? { $self: value } : value;
+            }
           } else {
             if (typeof current[arrayIndex] !== 'object' || current[arrayIndex] === null) {
               current[arrayIndex] = nextPart && numericPartRegex.test(nextPart) ? { $each: [], $self: [] } : {};
@@ -210,8 +218,13 @@ export function dotPathObjectToNested(
           }
         }
       } else if (isLast) {
+        const isCollectionField =
+          state !== undefined && isObject(state) && Array.isArray(getDotPath(state, fieldPath.join('.')));
+
         if (typeof current[part] === 'object' && current[part] !== null && !Array.isArray(current[part])) {
           current[part].$self = value;
+        } else if (isCollectionField && Array.isArray(value)) {
+          current[part] = { $self: value };
         } else {
           current[part] = value;
         }
@@ -239,14 +252,43 @@ export function dotPathObjectToNested(
   return result;
 }
 
+function wrapBareCollectionExternalErrors(obj: Record<string, any>, state: Record<string, any>): Record<string, any> {
+  let changed = false;
+  const result = { ...obj };
+
+  for (const key of Object.keys(result)) {
+    const value = result[key];
+    if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+      const stateValue = getDotPath(state, key);
+      if (Array.isArray(stateValue)) {
+        result[key] = { $self: value };
+        changed = true;
+      }
+    }
+  }
+
+  return changed ? result : obj;
+}
+
 export function normalizeDotPathExternalValue<T>(
   value: T | undefined,
   state?: Record<string, unknown> | PrimitiveTypes
 ): T | undefined {
-  if (value && isObject(value) && Object.keys(value).some((key) => key.includes('.'))) {
-    return dotPathObjectToNested(value as Record<string, unknown>, state) as T;
+  if (!value || !isObject(value)) {
+    return value;
   }
-  return value;
+
+  let normalized: Record<string, unknown> = value as Record<string, unknown>;
+
+  if (Object.keys(value).some((key) => key.includes('.'))) {
+    normalized = dotPathObjectToNested(value as Record<string, unknown>, state);
+  }
+
+  if (state !== undefined && isObject(state)) {
+    normalized = wrapBareCollectionExternalErrors(normalized, state);
+  }
+
+  return normalized as T;
 }
 
 export function hasOwn(val: object, key: string | symbol): key is keyof typeof val {

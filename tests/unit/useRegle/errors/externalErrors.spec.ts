@@ -886,6 +886,48 @@ describe('external errors', () => {
     expect(vm.r$.user.$self.$externalErrors).toStrictEqual(['user-level error']);
   });
 
+  it('should preserve collection item self and child errors from dot paths (#376)', async () => {
+    function collectionItemDotPathErrors() {
+      const form = reactive({
+        active: true,
+        apps: [{ url: '', tags: [{ value: '' }] }],
+      });
+
+      return useRegle(form, { active: { required } });
+    }
+
+    const { vm } = createRegleComponent(collectionItemDotPathErrors);
+
+    vm.r$.$setExternalErrors({
+      'apps.0': ['item error'],
+      'apps.0.url': ['url error'],
+    });
+
+    await vm.$nextTick();
+
+    expect(vm.r$.apps.$each[0].$self?.$externalErrors).toStrictEqual(['item error']);
+    expect(vm.r$.apps.$each[0].url.$externalErrors).toStrictEqual(['url error']);
+  });
+
+  it('should attach standalone collection self-errors from dot paths (#376)', async () => {
+    function collectionSelfDotPathErrors() {
+      const form = reactive({
+        active: true,
+        apps: [{ url: '', tags: [{ value: '' }] }],
+      });
+
+      return useRegle(form, { active: { required } });
+    }
+
+    const { vm } = createRegleComponent(collectionSelfDotPathErrors);
+
+    vm.r$.$setExternalErrors({ apps: ['apps error'] });
+
+    await vm.$nextTick();
+
+    expect(vm.r$.apps.$self?.$externalErrors).toStrictEqual(['apps error']);
+  });
+
   it('should work with a single field useRegle call', async () => {
     function singleFieldRegle() {
       const externalErrors = ref<string[]>([]);
