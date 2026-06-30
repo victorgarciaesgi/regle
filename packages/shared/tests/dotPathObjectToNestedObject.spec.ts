@@ -1,4 +1,4 @@
-import { dotPathObjectToNested } from '../utils/object.utils';
+import { dotPathObjectToNested, normalizeDotPathExternalValue } from '../utils/object.utils';
 
 describe('dotPathObjectToNested', () => {
   it('should convert a dot path object to a nested object', () => {
@@ -79,6 +79,56 @@ describe('dotPathObjectToNested', () => {
 
     expect(dotPathObjectToNested(errors, arrayState)).toStrictEqual({
       data: { $self: ['data error'], $each: [['child error']] },
+    });
+  });
+
+  it('should wrap collection self-errors in $self when state is an array', () => {
+    const state = { apps: [{ url: '', tags: [{ value: '' }] }] };
+
+    expect(dotPathObjectToNested({ apps: ['apps error'] }, state)).toStrictEqual({
+      apps: { $self: ['apps error'] },
+    });
+  });
+
+  it('should preserve collection item children when item self-error conflicts', () => {
+    const state = { apps: [{ url: '', tags: [{ value: '' }] }] };
+
+    expect(
+      dotPathObjectToNested(
+        {
+          'apps.0': ['item error'],
+          'apps.0.url': ['url error'],
+        },
+        state
+      )
+    ).toStrictEqual({
+      apps: {
+        $self: [],
+        $each: [{ $self: ['item error'], url: ['url error'] }],
+      },
+    });
+
+    expect(
+      dotPathObjectToNested(
+        {
+          'apps.0.url': ['url error'],
+          'apps.0': ['item error'],
+        },
+        state
+      )
+    ).toStrictEqual({
+      apps: {
+        $self: [],
+        $each: [{ $self: ['item error'], url: ['url error'] }],
+      },
+    });
+  });
+
+  it('should wrap bare collection keys via normalizeDotPathExternalValue when state is an array', () => {
+    const state = { apps: [{ url: '' }] };
+
+    expect(normalizeDotPathExternalValue({ apps: ['apps error'] }, state)).toStrictEqual({
+      apps: { $self: ['apps error'] },
     });
   });
 });
