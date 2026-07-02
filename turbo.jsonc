@@ -8,7 +8,14 @@
     "@regle/core#build": {
       "outputs": ["dist/**"],
       "outputLogs": "errors-only",
-      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!eslint.config.mjs", "src/**/*.ts", "tsdown.config.ts"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!eslint.config.mjs",
+        "src/**/*.ts",
+        "tsdown.config.ts",
+        "$TURBO_ROOT$/packages/shared/**"
+      ]
     },
     // @regle/nuxt specific build at `packages/nuxt/turbo.json`
     "build": {
@@ -45,7 +52,17 @@
     // -- Coverage build
     "@regle/core#build:sourcemaps": {
       "outputs": ["dist/**"],
-      "outputLogs": "errors-only"
+      "outputLogs": "errors-only",
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!eslint.config.mjs",
+        "src/**/*.ts",
+        "tsdown.config.ts",
+        "tsdown.sourcemap.ts",
+        "$TURBO_ROOT$/tsdown.common.build.ts",
+        "$TURBO_ROOT$/packages/shared/**"
+      ]
     },
     // -- Dev
     "@regle/core#dev": {
