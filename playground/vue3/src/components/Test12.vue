@@ -34,9 +34,6 @@
     };
   };
 
-  /* Workaround:
-  const useMyFormSave = (myForm: ReturnType<typeof useFormMyForm>['myForm']) => {
-*/
   const useMyFormSave = (myForm: RegleRoot<MyForm>) => {
     const save = async () => {
       isFormValid.value = false;
