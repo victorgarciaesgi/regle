@@ -20,7 +20,7 @@ export default defineNuxtPlugin({
 
       pinia.use(({ store }) => {
         const state = pinia.state.value[store.$id];
-        if (!state && typeof state !== 'object') return;
+        if (!state || typeof state !== 'object') return;
 
         for (const key of Object.keys(state)) {
           if (state[key] && typeof state[key] === 'object' && REGLE_SYMBOL in state[key]) {

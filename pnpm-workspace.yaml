@@ -96,6 +96,13 @@ minimumReleaseAgeExclude:
 overrides:
   vite: 'catalog:'
   vitest: 'catalog:'
+  # @typescript/native is aliased to npm:typescript@7 for the native tsc CLI, but that
+  # second `typescript` package must not fork vue/pinia peer graphs. Pinia's
+  # skipHydrate uses a per-module Symbol(); dual pinia copies break Nuxt SSR payload
+  # serialization for Regle store state (processShortcuts, etc.).
+  'vue>typescript': 'catalog:'
+  'pinia>typescript': 'catalog:'
+  '@vue/server-renderer>typescript': 'catalog:'
 peerDependencyRules:
   allowAny:
     - vite

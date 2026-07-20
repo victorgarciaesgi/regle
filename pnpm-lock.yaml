@@ -118,6 +118,9 @@ catalogs:
 overrides:
   vite: 8.0.16
   vitest: 4.1.8
+  vue>typescript: 6.0.3
+  pinia>typescript: 6.0.3
+  '@vue/server-renderer>typescript': 6.0.3
 
 importers:
 
@@ -521,7 +524,7 @@ importers:
     dependencies:
       '@pinia/nuxt':
         specifier: 'catalog:'
-        version: 0.11.3(magicast@0.5.2)(pinia@3.0.4(typescript@7.0.2)(vue@3.5.35(typescript@7.0.2)))
+        version: 0.11.3(magicast@0.5.2)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))
       '@regle/nuxt':
         specifier: workspace:*
         version: link:../..
@@ -530,7 +533,7 @@ importers:
         version: 3.0.0
       pinia:
         specifier: 'catalog:'
-        version: 3.0.4(typescript@7.0.2)(vue@3.5.35(typescript@7.0.2))
+        version: 3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3))
 
   packages/rules:
     dependencies:
@@ -7279,7 +7282,7 @@ packages:
     resolution: {integrity: sha512-T4PEQ4uFv2KIRC8A1Y3k1ceQGTDtxtd7nngYGu1IJUUSpuQoYfGq7w7rOc+f5YN1vx3mEs2NjjtN2IFbNS7jqA==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
-      typescript: '>=4.4.4'
+      typescript: 6.0.3
       vue: ^2.6.14 || ^3.5.11
     peerDependenciesMeta:
       '@vue/composition-api':
@@ -7290,7 +7293,7 @@ packages:
   pinia@2.3.0:
     resolution: {integrity: sha512-ohZj3jla0LL0OH5PlLTDMzqKiVw2XARmC1XYLdLWIPBMdhDW/123ZWr4zVAhtJm+aoSkFa13pYXskAvAscIkhQ==}
     peerDependencies:
-      typescript: '>=4.4.4'
+      typescript: 6.0.3
       vue: ^2.7.0 || ^3.5.11
     peerDependenciesMeta:
       typescript:
@@ -7299,7 +7302,7 @@ packages:
   pinia@3.0.4:
     resolution: {integrity: sha512-l7pqLUFTI/+ESXn6k3nu30ZIzW5E2WZF/LaHJEpoq6ElcLD+wduZoB2kBN19du6K/4FDpPMazY2wJr+IndBtQw==}
     peerDependencies:
-      typescript: '>=4.5.0'
+      typescript: 6.0.3
       vue: ^3.5.11
     peerDependenciesMeta:
       typescript:
@@ -9050,7 +9053,7 @@ packages:
   vue@3.4.38:
     resolution: {integrity: sha512-f0ZgN+mZ5KFgVv9wz0f4OgVKukoXtS3nwET4c2vLBGQR50aI8G0cqbFtLlX9Yiyg3LFGBitruPHt2PxwTduJEw==}
     peerDependencies:
-      typescript: '*'
+      typescript: 6.0.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -9058,7 +9061,7 @@ packages:
   vue@3.5.35:
     resolution: {integrity: sha512-cx89fnr+0kVGHiNFG6y6s0bdjypJRFNZn6x3WPstNdQR1bi1mbB7h4v5IBGTsPJU3nK1+0Iqj3Zf+hZWMieR4Q==}
     peerDependencies:
-      typescript: '*'
+      typescript: 6.0.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -11271,13 +11274,6 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@pinia/nuxt@0.11.3(magicast@0.5.2)(pinia@3.0.4(typescript@7.0.2)(vue@3.5.35(typescript@7.0.2)))':
-    dependencies:
-      '@nuxt/kit': 4.4.8(magicast@0.5.2)
-      pinia: 3.0.4(typescript@7.0.2)(vue@3.5.35(typescript@7.0.2))
-    transitivePeerDependencies:
-      - magicast
-
   '@pinia/testing@1.0.3(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))':
     dependencies:
       pinia: 3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3))
@@ -12665,12 +12661,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.35
       '@vue/shared': 3.5.35
       vue: 3.5.35(typescript@6.0.3)
-
-  '@vue/server-renderer@3.5.35(vue@3.5.35(typescript@7.0.2))':
-    dependencies:
-      '@vue/compiler-ssr': 3.5.35
-      '@vue/shared': 3.5.35
-      vue: 3.5.35(typescript@7.0.2)
 
   '@vue/shared@3.4.38': {}
 
@@ -15864,13 +15854,6 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  pinia@3.0.4(typescript@7.0.2)(vue@3.5.35(typescript@7.0.2)):
-    dependencies:
-      '@vue/devtools-api': 7.7.9
-      vue: 3.5.35(typescript@7.0.2)
-    optionalDependencies:
-      typescript: 7.0.2
-
   pirates@4.0.7: {}
 
   pkce-challenge@5.0.1: {}
@@ -17951,16 +17934,6 @@ snapshots:
       '@vue/shared': 3.5.35
     optionalDependencies:
       typescript: 6.0.3
-
-  vue@3.5.35(typescript@7.0.2):
-    dependencies:
-      '@vue/compiler-dom': 3.5.35
-      '@vue/compiler-sfc': 3.5.35
-      '@vue/runtime-dom': 3.5.35
-      '@vue/server-renderer': 3.5.35(vue@3.5.35(typescript@7.0.2))
-      '@vue/shared': 3.5.35
-    optionalDependencies:
-      typescript: 7.0.2
 
   webidl-conversions@3.0.1: {}
 
