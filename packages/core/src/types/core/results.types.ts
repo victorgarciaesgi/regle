@@ -100,7 +100,7 @@ export type RegleResult<
           ? unknown
           : IsEmptyObject<TRules> extends true
             ? isRecordLiteral<Data> extends true
-              ? PartialFormState<Data extends Record<string, any> ? Data : {}>
+              ? DeepSafeFormState<Data extends Record<string, any> ? Data : {}, {}>
               : MaybeOutput<Data>
             : HasNamedKeys<Data> extends true
               ? HasNamedKeys<TRules> extends true
@@ -112,7 +112,7 @@ export type RegleResult<
                       ? DeepSafeFormState<NonNullable<Data>, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
                       : SafeFieldProperty<Data, TRules extends ReglePartialRuleTree<any> ? TRules : {}>
                 : isRecordLiteral<Data> extends true
-                  ? PartialFormState<Data extends Record<string, any> ? Data : {}>
+                  ? DeepSafeFormState<Data extends Record<string, any> ? Data : {}, {}>
                   : MaybeOutput<Data>
               : unknown;
       issues: EmptyObject;

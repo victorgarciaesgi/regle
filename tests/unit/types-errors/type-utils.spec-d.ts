@@ -333,4 +333,32 @@ describe('type utils - misc', () => {
     // Should not error
     whatever(r$);
   });
+
+  // https://github.com/victorgarciaesgi/regle/issues/378
+  it('RegleRoot should accept forms with unruled object collections', () => {
+    interface MyForm {
+      firstName: string;
+      lastName: string;
+      someThings: { uuid: string }[];
+    }
+
+    const { r$: myForm } = useRegle(
+      {
+        firstName: '',
+        lastName: '',
+        someThings: [],
+      } as MyForm,
+      {
+        firstName: { required },
+        lastName: { required },
+      }
+    );
+
+    function useMyFormSave(form: RegleRoot<MyForm>) {
+      return form;
+    }
+
+    // Should not error
+    useMyFormSave(myForm);
+  });
 });
