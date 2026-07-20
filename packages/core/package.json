@@ -48,7 +48,7 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "build": "tsdown",
     "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
     "dev": "tsdown --config=tsdown.dev.ts",
@@ -63,7 +63,7 @@
     "@arethetypeswrong/core": "catalog:",
     "@total-typescript/ts-reset": "catalog:",
     "@types/node": "catalog:",
-    "@typescript/native-preview": "catalog:",
+    "@typescript/native": "catalog:",
     "@vue/test-utils": "catalog:",
     "@vue/devtools-kit": "7.7.9",
     "publint": "catalog:",

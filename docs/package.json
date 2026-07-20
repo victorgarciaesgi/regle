@@ -25,7 +25,7 @@
     "satori": "0.26.0",
     "satori-html": "0.3.2",
     "tailwindcss": "catalog:",
-    "typescript": "6.0.3",
+    "typescript": "catalog:",
     "valibot": "catalog:",
     "vite": "catalog:",
     "vitepress": "1.6.4",

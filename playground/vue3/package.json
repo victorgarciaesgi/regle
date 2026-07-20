@@ -24,7 +24,7 @@
     "@andypf/json-viewer": "2.7.1",
     "@tsconfig/node20": "20.1.9",
     "@types/node": "catalog:",
-    "@typescript/native-preview": "catalog:",
+    "@typescript/native": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "@vue/tsconfig": "0.9.1",
     "npm-run-all2": "9.0.2",

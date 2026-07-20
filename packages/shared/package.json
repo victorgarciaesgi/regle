@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@typescript/native-preview": "catalog:",
+    "@typescript/native": "catalog:",
     "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",

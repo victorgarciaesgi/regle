@@ -11,5 +11,5 @@ const testTsconfigs = [
 ];
 
 for (const project of testTsconfigs) {
-  await $`tsgo --noEmit --project ${project}`;
+  await $`tsc --noEmit --project ${project}`;
 }
