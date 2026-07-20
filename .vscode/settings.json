@@ -1,5 +1,5 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "references.preferredLocation": "peek",
   "window.title": "Regle",
   "editor.codeActionsOnSave": {
@@ -13,7 +13,6 @@
     }
   },
   "editor.formatOnSave": true,
-  "typescript.experimental.useTsgo": false,
   "editor.defaultFormatter": "oxc.oxc-vscode",
 
   "[typescript]": {

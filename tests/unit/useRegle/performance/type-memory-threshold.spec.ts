@@ -16,7 +16,7 @@ function readEnvNumber(name: string, fallback: number): number {
 }
 
 function runTypeDiagnostics(tsProjectPath: string): TsDiagnostics {
-  const result = spawnSync('pnpm', ['exec', 'tsgo', '--noEmit', '--extendedDiagnostics', '-p', tsProjectPath], {
+  const result = spawnSync('pnpm', ['exec', 'tsc', '--noEmit', '--extendedDiagnostics', '-p', tsProjectPath], {
     encoding: 'utf-8',
     cwd: process.cwd(),
   });

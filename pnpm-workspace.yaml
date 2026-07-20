@@ -27,7 +27,6 @@ catalog:
   '@playwright/test': 1.60.0
   '@total-typescript/ts-reset': 0.6.1
   '@types/node': 24.13.2
-  '@typescript/native-preview': 7.0.0-dev.20260616.1
   '@vitejs/plugin-vue': 6.0.7
   '@vitejs/plugin-vue-jsx': 5.1.5
   '@vue/compiler-dom': 3.5.35
@@ -56,6 +55,11 @@ catalog:
   tsdown: 0.22.2
   tsx: 4.22.4
   type-fest: 5.7.0
+  # TypeScript 7 native compiler (tsc). Kept under an alias so the `typescript`
+  # package can remain the Strada/JS 6.x API for vue-tsc / Volar (the
+  # @typescript/typescript6 shim breaks volar's tsc patching).
+  # See: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+  '@typescript/native': npm:typescript@7.0.2
   typescript: 6.0.3
   valibot: 1.4.1
   vite: 8.0.16
@@ -66,7 +70,7 @@ catalog:
   vue-3.4: npm:vue@3.4.38
   vue-eslint-parser: 10.4.1
   vue-router: 5.1.0
-  vue-tsc: 3.3.5
+  vue-tsc: 3.3.7
   zod: 4.4.3
 
 engineStrict: true
@@ -79,7 +83,8 @@ minimumReleaseAgeExclude:
   - '@oxlint*'
   - oxfmt*
   - '@oxfmt*'
-  - '@typescript/native-preview*'
+  - typescript
+  - '@typescript/*'
   - vite-plus
   - '@voidzero-dev/*'
   - '@oxlint/*'
