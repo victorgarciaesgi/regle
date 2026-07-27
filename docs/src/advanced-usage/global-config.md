@@ -122,6 +122,8 @@ const { r$ } = useCustomRegle({ name: '' }, {
 
 You can include global modifiers in your configuration to automatically apply them wherever you use the `useRegle` composable. This avoids repetitive declarations and keeps your code clean.
 
+When using the [declarative plugin approach](#declarative) (or the [Nuxt setup file](/integrations/nuxt#setupfile)), those same `modifiers`, `shortcuts`, and `overrides` also apply to [`useRegleSchema`](/integrations/schemas-libraries#global-configuration). `rules` remain specific to `useRegle`.
+
 ```ts
 import { defineRegleConfig } from '@regle/core';
 import { withMessage, minLength, required } from '@regle/rules';
@@ -189,7 +191,9 @@ useExtendedRegle({name: ''}, {
 
 ## Declarative {#declarative}
 
-The declarative approach uses `defineRegleOptions` combined with the `RegleVuePlugin` to provide global configuration at the Vue app level. The configuration is injected via Vue's `provide/inject` mechanism, so it applies to every `useRegle` call in your application — including the default one from `@regle/core`.
+The declarative approach uses `defineRegleOptions` combined with the `RegleVuePlugin` to provide global configuration at the Vue app level. The configuration is injected via Vue's `provide/inject` mechanism, so it applies to every `useRegle` and `useRegleSchema` call in your application — including the default ones from `@regle/core` and `@regle/schemas`.
+
+`modifiers`, `shortcuts`, and `overrides` are shared. `rules` only affect `useRegle` (schema libraries own their own messages).
 
 This is especially useful when you want app-wide defaults without needing to import a custom composable everywhere.
 

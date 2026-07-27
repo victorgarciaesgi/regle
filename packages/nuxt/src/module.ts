@@ -68,6 +68,25 @@ export type RegleFieldStatus<
 `,
           });
 
+          const pluginTemplate = addTemplate({
+            filename: 'regle-plugin.ts',
+            write: true,
+            getContents: () => `
+import { RegleVuePlugin } from '@regle/core';
+import { defineNuxtPlugin } from 'nuxt/app';
+import ReglePlugin from "${setupFileImportPath}";
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(RegleVuePlugin, ReglePlugin.__config);
+});
+`,
+          });
+
+          addPlugin({
+            src: pluginTemplate.dst,
+            mode: 'all',
+          });
+
           regleImports.forEach(({ name, type }) => addImports({ name, as: name, from: template.dst, type }));
 
           addImportsSources({
@@ -89,6 +108,11 @@ export type RegleFieldStatus<
         console.error(`[regle] Couldn't find your setup file at ${options.setupFile}`, e);
       }
     } else {
+      addPlugin({
+        src: resolve('runtime/plugins/regle.plugin'),
+        mode: 'all',
+      });
+
       addImportsSources({
         from: '@regle/core',
         imports: [

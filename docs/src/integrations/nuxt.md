@@ -49,7 +49,7 @@ export default defineNuxtConfig({
 
 The Regle Nuxt module allow you to define a global configuration plugin to provide all your forms with the same translations, options and custom rules.
 
-
+`modifiers`, `shortcuts`, and `overrides` from this setup file are also applied to `useRegleSchema`. `rules` remain specific to `useRegle`.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -75,6 +75,9 @@ export default defineRegleNuxtPlugin(() => {
         customRule: myCustomRule,
       }
     },
+    modifiers: {
+      autoDirty: false,
+    },
   });
 });
 
@@ -88,6 +91,8 @@ This will inject the following composables to your auto-imports and `#imports`, 
 - `useCollectScope` 
 - `useScopedRegle` 
 - `type RegleFieldStatus`
+
+It also installs `RegleVuePlugin` with your setup config, so the default `useRegleSchema` auto-import inherits the same `modifiers`, `shortcuts`, and `overrides`.
 
 
 ```vue [app.vue] {2}

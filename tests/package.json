@@ -10,6 +10,7 @@
     "@standard-schema/spec": "1.1.0",
     "@vue/compiler-dom": "catalog:",
     "@vue/reactivity": "catalog:",
+    "@vue/test-utils": "catalog:",
     "arktype": "catalog:",
     "date-fns": "4.4.0",
     "decimal.js": "10.6.0",

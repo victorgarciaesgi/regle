@@ -13,10 +13,21 @@ import type {
   RegleShortcutDefinition,
   ResolvedRegleBehaviourOptions,
 } from '@regle/core';
-import { useRootStorage } from '@regle/core';
+import { regleConfigSymbol, useRootStorage } from '@regle/core';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { EffectScope, MaybeRef, Raw, UnwrapNestedRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, getCurrentScope, nextTick, onScopeDispose, ref, toValue, unref, watch } from 'vue';
+import {
+  computed,
+  effectScope,
+  getCurrentScope,
+  inject,
+  nextTick,
+  onScopeDispose,
+  ref,
+  toValue,
+  unref,
+  watch,
+} from 'vue';
 import { toReactive } from '../../../shared';
 import type { $InternalRegleResult, RegleSchema, RegleSchemaBehaviourOptions, RegleSingleFieldSchema } from '../types';
 import { type SchemaIssueWithArrayValue } from './useRegleSchema/issues.mapper';
@@ -90,10 +101,26 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
     const { syncState = { onUpdate: false, onValidate: false }, ...defaultOptions } = options ?? {};
     const { onUpdate: syncOnUpdate = false, onValidate: syncOnValidate = false } = syncState;
 
+    /**
+     * Options injected by the plugin (`RegleVuePlugin` / `defineRegleConfig`)
+     */
+    const pluginOptions = inject(regleConfigSymbol, undefined) ?? {};
+
     const resolvedOptions: ResolvedRegleBehaviourOptions = {
+      ...pluginOptions.modifiers,
       ...modifiers,
       ...defaultOptions,
     } as any;
+
+    const mergedShortcuts = {
+      ...pluginOptions.shortcuts,
+      ...shortcuts,
+    };
+
+    const mergedOverrides = {
+      ...pluginOptions.overrides,
+      ...overrides,
+    };
 
     const { processedState, isSingleField, initialState, originalState } = createSchemaState(state);
 
@@ -218,10 +245,10 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
       schemaErrors: customErrors,
       initialState,
       originalState,
-      shortcuts,
+      shortcuts: mergedShortcuts,
       schemaMode: true,
       onValidate,
-      overrides,
+      overrides: mergedOverrides,
     });
 
     bindSchemaToCurrentScope();

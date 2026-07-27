@@ -22,6 +22,7 @@ export {
   markStatic,
   defineRegleOptions,
   isRegleInstance,
+  type GlobalConfigOptions,
   type CommonAlphaOptions,
   type CommonComparisonOptions,
   type UrlOptions,
@@ -36,6 +37,7 @@ export {
   type useScopedRegleFn,
 } from './core';
 export { RegleVuePlugin } from './plugin';
+export { regleConfigSymbol } from './constants';
 export { InternalRuleType } from './types';
 export type {
   $InternalRegleStatus,

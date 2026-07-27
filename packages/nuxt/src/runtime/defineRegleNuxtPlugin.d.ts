@@ -3,6 +3,7 @@ import {
   type useRegleFn,
   type inferRulesFn,
   type ExtendedRulesDeclarationsOverrides,
+  type GlobalConfigOptions,
   type RegleShortcutDefinition,
   type useScopedRegleFn,
 } from '@regle/core';
@@ -20,4 +21,5 @@ export declare function defineRegleNuxtPlugin<
   inferRules: inferRulesFn<TCustomRules>;
   useScopedRegle: useScopedRegleFn<TCustomRules, TShortcuts, false>;
   useCollectScope: typeof defaultUseCollectScope;
+  __config?: GlobalConfigOptions<TCustomRules, TShortcuts>;
 };

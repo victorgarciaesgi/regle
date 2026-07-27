@@ -89,7 +89,44 @@ Using schema libraries uses a different mechanism than the core "rules" one. Reg
 One other limitation is you won't have access to any children `$rules`, so checking if a field is required with `xx.$rules.required.active` is not possible with schemas.
 :::
 
+## Global configuration
 
+`useRegleSchema` shares the same global configuration as `useRegle` for `modifiers`, `shortcuts`, and `overrides`.
+
+That means app-wide defaults from [`RegleVuePlugin`](/advanced-usage/global-config#declarative) (or the [Nuxt setup file](/integrations/nuxt#setupfile)) also apply to schema forms:
+
+```ts
+import { createApp } from 'vue';
+import { RegleVuePlugin, defineRegleOptions } from '@regle/core';
+
+const options = defineRegleOptions({
+  modifiers: {
+    autoDirty: false,
+  },
+});
+
+createApp(App).use(RegleVuePlugin, options);
+```
+
+```ts
+import { useRegleSchema } from '@regle/schemas';
+import { z } from 'zod';
+
+// Inherits `autoDirty: false` from the plugin
+const { r$ } = useRegleSchema({ name: '' }, z.object({
+  name: z.string().min(1),
+}));
+```
+
+You can still create a schema-specific composable with `defineRegleSchemaConfig` when you need typed shortcuts or scoped overrides. Merge precedence is:
+
+1. Plugin / Nuxt setup config (lowest)
+2. `defineRegleSchemaConfig`
+3. Per-call options (highest)
+
+:::tip
+`rules` from `defineRegleConfig` only apply to `useRegle`. Schema libraries own their own error messages.
+:::
 
 ## Computed schema
 

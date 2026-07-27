@@ -8,7 +8,9 @@
     "generate": "nuxi generate"
   },
   "dependencies": {
+    "@pinia/nuxt": "catalog:",
+    "@regle/schemas": "workspace:*",
     "nuxt": "catalog:",
-    "@pinia/nuxt": "catalog:"
+    "zod": "catalog:"
   }
 }

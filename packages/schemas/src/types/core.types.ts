@@ -1,5 +1,8 @@
 import type {
   ArrayElement,
+  CustomCollectionProperties,
+  CustomFieldProperties,
+  CustomNestedProperties,
   DeepPartial,
   HasNamedKeys,
   JoinDiscriminatedUnions,
@@ -144,6 +147,7 @@ export type RegleSchemaStatus<
         ) => Promise<RegleSchemaResult<StandardSchemaV1.InferOutput<TSchema>>>;
       }
     : {}) &
+  CustomNestedProperties &
   ([TShortcuts['nested']] extends [never]
     ? {}
     : {
@@ -238,7 +242,8 @@ export type RegleSchemaFieldStatus<
   $setExternalIssues(issues: (RegleFieldIssue & StandardSchemaV1.Issue)[]): void;
   /** Will return a copy of your state with only the fields that are dirty. By default it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
-} & ([TShortcuts['fields']] extends [never]
+} & CustomFieldProperties &
+  ([TShortcuts['fields']] extends [never]
     ? {}
     : {
         [K in keyof TShortcuts['fields']]: ReturnType<NonNullable<TShortcuts['fields']>[K]>;
@@ -281,7 +286,8 @@ export type RegleSchemaCollectionStatus<
   $setExternalIssues(errors: RegleExternalCollectionErrors<TInput, true>): void;
   /** Will return a copy of your state with only the fields that are dirty. By default, it will filter out nullish values or objects, but you can override it with the first parameter $extractDirtyFields(false). */
   $extractDirtyFields: (filterNullishValues?: boolean) => DeepPartial<TInput>;
-} & ([TShortcuts['collections']] extends [never]
+} & CustomCollectionProperties &
+  ([TShortcuts['collections']] extends [never]
     ? {}
     : {
         [K in keyof TShortcuts['collections']]: ReturnType<NonNullable<TShortcuts['collections']>[K]>;

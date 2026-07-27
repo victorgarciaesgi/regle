@@ -4,10 +4,9 @@
 
 import { defineRegleConfig, RegleVuePlugin } from '@regle/core';
 import { defineRegleNuxtPlugin } from './defineRegleNuxtPlugin';
-import { required } from '@regle/rules';
+import { required, withMessage } from '@regle/rules';
 import { mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
-import { withMessage } from '@regle/rules';
 
 describe('defineRegleNuxtPlugin', () => {
   it('should return a function', async () => {
@@ -25,6 +24,8 @@ describe('defineRegleNuxtPlugin', () => {
     const plugin = defineRegleNuxtPlugin(() => config);
 
     expect(plugin).toBeDefined();
+    expect(plugin.__config).toBeDefined();
+    expect(plugin.__config?.modifiers).toBeUndefined();
 
     const component = defineComponent({
       setup() {
@@ -52,5 +53,17 @@ describe('defineRegleNuxtPlugin', () => {
 
     expect(vm.r$2.$errors.email).toStrictEqual(['foo']);
     expect(vm.r$2.email.$isRequired).toBe(true);
+  });
+
+  it('should expose setup-file config on __config for RegleVuePlugin', () => {
+    const config = defineRegleConfig({
+      modifiers: {
+        autoDirty: false,
+      },
+    });
+
+    const plugin = defineRegleNuxtPlugin(() => config);
+
+    expect(plugin.__config?.modifiers).toStrictEqual({ autoDirty: false });
   });
 });

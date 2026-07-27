@@ -1,49 +1,83 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useRegle } from '#imports';
+  import { useRegleSchema } from '@regle/schemas';
   import { required, minLength, email } from '@regle/rules';
+  import { z } from 'zod';
 
-  const state = ref({ name: '', email: '' });
+  const rulesState = ref({ name: '', email: '' });
+  const schemaState = ref({ name: '', email: '' });
 
-  const { r$ } = useRegle(state, {
+  // Custom useRegle from setupFile (config baked in)
+  const { r$: rules$ } = useRegle(rulesState, {
     name: { required, minLength: minLength(4) },
     email: { email },
   });
 
-  async function submit() {
-    const { valid, data } = await r$.$validate();
-    if (valid) {
-      // console.log(data.name);
-      // //               ^ string
-      // console.log(data.email);
-      //.              ^ string | undefined
-    } else {
-      console.warn('Errors: ', r$.$errors);
-    }
-  }
+  // Default useRegleSchema — should inherit modifiers from RegleVuePlugin via setupFile __config
+  const { r$: schema$ } = useRegleSchema(
+    schemaState,
+    z.object({
+      name: z.string().min(1, 'Required'),
+      email: z.email('Invalid email'),
+    })
+  );
 </script>
 
 <template>
-  <h2>Hello Regle!</h2>
+  <h1>Issue #381 — schema global config</h1>
+  <p>
+    Setup file sets <code>modifiers.autoDirty: false</code>. Typing in either form should <strong>not</strong> set
+    <code>$dirty</code> until you touch/validate.
+  </p>
 
-  <label>Name</label><br />
-  <input v-model="r$.$value.name" placeholder="Type your name" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.name" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+  <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem">
+    <div>
+      <h2>useRegle (setupFile)</h2>
+      <label>Name</label><br />
+      <input v-model="rules$.$value.name" placeholder="Type your name" />
+      <p style="font-size: 12px">
+        $dirty: <strong>{{ rules$.name.$dirty }}</strong>
+      </p>
+      <ul style="font-size: 12px; color: red">
+        <li v-for="error of rules$.$errors.name" :key="error">{{ error }}</li>
+      </ul>
 
-  <label>Email (optional)</label><br />
-  <input v-model="r$.$value.email" placeholder="Type your email" />
-  <ul style="font-size: 12px; color: red">
-    <li v-for="error of r$.$errors.email" :key="error">
-      {{ error }}
-    </li>
-  </ul>
+      <label>Email</label><br />
+      <input v-model="rules$.$value.email" placeholder="Type your email" />
+      <p style="font-size: 12px">
+        $dirty: <strong>{{ rules$.email.$dirty }}</strong>
+      </p>
+      <ul style="font-size: 12px; color: red">
+        <li v-for="error of rules$.$errors.email" :key="error">{{ error }}</li>
+      </ul>
 
-  <button @click="submit">Submit</button>
-  <button @click="r$.$reset()">Reset</button>
-  <button @click="r$.$reset({ toState: { name: '', email: '' } })">Restart</button>
-  <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+      <button @click="rules$.$touch()">Touch</button>
+      <button @click="rules$.$reset()">Reset</button>
+    </div>
+
+    <div>
+      <h2>useRegleSchema (plugin inject)</h2>
+      <label>Name</label><br />
+      <input v-model="schema$.$value.name" placeholder="Type your name" />
+      <p style="font-size: 12px">
+        $dirty: <strong>{{ schema$.name.$dirty }}</strong>
+      </p>
+      <ul style="font-size: 12px; color: red">
+        <li v-for="error of schema$.$errors.name" :key="error">{{ error }}</li>
+      </ul>
+
+      <label>Email</label><br />
+      <input v-model="schema$.$value.email" placeholder="Type your email" />
+      <p style="font-size: 12px">
+        $dirty: <strong>{{ schema$.email.$dirty }}</strong>
+      </p>
+      <ul style="font-size: 12px; color: red">
+        <li v-for="error of schema$.$errors.email" :key="error">{{ error }}</li>
+      </ul>
+
+      <button @click="schema$.$touch()">Touch</button>
+      <button @click="schema$.$reset()">Reset</button>
+    </div>
+  </section>
 </template>

@@ -8,5 +8,9 @@ export default defineRegleNuxtPlugin(() => {
       required: withMessage(required, 'Coucou Nuxt'),
       customRule: withMessage(required, 'Custom rule'),
     }),
+    // Issue #381 — these modifiers should also apply to useRegleSchema
+    modifiers: {
+      autoDirty: false,
+    },
   });
 });
