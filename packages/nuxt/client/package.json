@@ -1,0 +1,22 @@
+{
+  "name": "@regle/nuxt-devtools-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxi generate",
+    "dev": "nuxi dev"
+  },
+  "dependencies": {
+    "@regle/core": "workspace:*",
+    "@vue/devtools-applet": "catalog:",
+    "@vue/devtools-core": "catalog:",
+    "@vue/devtools-kit": "catalog:",
+    "hookable": "catalog:",
+    "nuxt": "catalog:",
+    "superjson": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@nuxt/devtools-ui-kit": "catalog:"
+  }
+}

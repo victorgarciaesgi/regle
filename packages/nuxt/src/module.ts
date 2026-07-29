@@ -8,12 +8,19 @@ import {
   addPlugin,
 } from '@nuxt/kit';
 import { resolveRegleExportsTemplatePath, resolveTemplateImportPath } from './pathUtils';
+import { setupDevToolsUI } from './devtools';
 
 export interface ModuleOptions {
   /**
    * Path to your setupFile, it needs to return a useRegle composable
    */
-  setupFile: string;
+  setupFile?: string;
+  /**
+   * Enable Nuxt DevTools integration
+   *
+   * @default true
+   */
+  devtools?: boolean;
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -21,13 +28,29 @@ export default defineNuxtModule<ModuleOptions>({
     name: '@regle/nuxt',
     configKey: 'regle',
   },
-  defaults: {},
+  defaults: {
+    devtools: true,
+  },
   async setup(options, nuxt) {
-    const { resolve } = createResolver(import.meta.url);
+    const resolver = createResolver(import.meta.url);
+
+    if (nuxt.options.dev && !nuxt.options.test && options.devtools !== false) {
+      nuxt.options.vite = nuxt.options.vite || {};
+      nuxt.options.vite.define = {
+        ...nuxt.options.vite.define,
+        __USE_DEVTOOLS__: true,
+      };
+
+      setupDevToolsUI(nuxt, resolver);
+      addPlugin({
+        src: resolver.resolve('runtime/plugins/regle-devtools-host.client'),
+        mode: 'client',
+      });
+    }
 
     if (nuxt.options.modules.includes('@pinia/nuxt')) {
       addPlugin({
-        src: resolve('runtime/plugins/regle-pinia.plugin'),
+        src: resolver.resolve('runtime/plugins/regle-pinia.plugin'),
         mode: 'all',
       });
     }
@@ -109,7 +132,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     } else {
       addPlugin({
-        src: resolve('runtime/plugins/regle.plugin'),
+        src: resolver.resolve('runtime/plugins/regle.plugin'),
         mode: 'all',
       });
 

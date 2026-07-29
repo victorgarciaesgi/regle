@@ -4,9 +4,10 @@ import type { SuperCompatibleRegleRoot } from '../types';
 import { tryOnScopeDispose } from '../utils';
 import { isRegleDevtoolsTestEnv } from '../utils/devtools.utils';
 import { emitInspectorState } from './actions';
-import type { DevtoolsV6PluginAPI, RegleInstance } from './types';
+import { emitRegleDevtoolsChange } from './headless';
+import type { DevtoolsV6PluginAPI, RegleDevtoolsRegistry, RegleInstance } from './types';
 
-function useRegleDevtoolsRegistry() {
+function useRegleDevtoolsRegistry(): RegleDevtoolsRegistry {
   const loggedWarning = ref(false);
   const devtoolsApi = shallowRef<DevtoolsV6PluginAPI>();
   const instances = shallowRef(new Map<string, RegleInstance>());
@@ -65,6 +66,7 @@ function useRegleDevtoolsRegistry() {
     if (devtoolsApi.value) {
       emitInspectorState(devtoolsApi.value);
     }
+    emitRegleDevtoolsChange();
   }
 
   function scheduleNotifyDevtools(): void {
@@ -105,7 +107,6 @@ function useRegleDevtoolsRegistry() {
   }
 
   return {
-    devtoolsApi,
     register,
     unregister,
     getAll,

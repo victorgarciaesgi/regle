@@ -24,3 +24,17 @@ export interface RegleInstance {
 }
 
 export type DevtoolsNotifyCallback = () => void;
+
+export interface RegleDevtoolsRegistry {
+  register: (
+    r$: SuperCompatibleRegleRoot,
+    options?: { name?: string; componentName?: string; uid?: number; filePath?: string }
+  ) => string;
+  unregister: (id: string) => void;
+  getAll: () => RegleInstance[];
+  get: (id: string) => RegleInstance | undefined;
+  clear: () => void;
+  setApi: (api: DevtoolsV6PluginAPI) => void;
+  notifyDevtools: () => void;
+  loggedWarning: { value: boolean };
+}
