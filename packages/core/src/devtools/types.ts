@@ -37,4 +37,5 @@ export interface RegleDevtoolsRegistry {
   setApi: (api: DevtoolsV6PluginAPI) => void;
   notifyDevtools: () => void;
   loggedWarning: { value: boolean };
+  devtoolsApi: { value: DevtoolsV6PluginAPI | undefined };
 }

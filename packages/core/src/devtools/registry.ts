@@ -115,6 +115,7 @@ function useRegleDevtoolsRegistry(): RegleDevtoolsRegistry {
     setApi,
     notifyDevtools,
     loggedWarning,
+    devtoolsApi,
   };
 }
 
