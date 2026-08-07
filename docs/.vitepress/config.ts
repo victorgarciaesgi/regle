@@ -402,7 +402,6 @@ export default defineConfig({
       'script',
       { defer: '', src: 'https://cloud.umami.is/script.js', 'data-website-id': 'b891ca9d-441a-44e0-ba1b-a35bea61fb35' },
     ],
-    ['script', { async: '', src: 'https://media.bitterbrains.com/main.js?from=REGLE&type=top' }],
   ],
   markdown: {
     codeTransformers: [transformerTwoslash({ typesCache: createFileSystemTypesCache() }) as any],
