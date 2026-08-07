@@ -32,7 +32,9 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build && pnpm run client:build",
+    "client:build": "nuxi generate client",
+    "client:dev": "nuxi dev client --port 3301",
     "dev": "nuxt-module-build build --stub",
     "dev:playground": "nuxi dev playground",
     "dev:build": "nuxi build playground",
@@ -46,13 +48,21 @@
     "test": "playwright test"
   },
   "dependencies": {
+    "@nuxt/devtools-kit": "catalog:",
     "@nuxt/kit": "catalog:",
     "@nuxt/schema": "catalog:",
     "@regle/core": "workspace:*",
-    "@regle/rules": "workspace:*"
+    "@regle/rules": "workspace:*",
+    "@vue/devtools-kit": "catalog:",
+    "birpc": "catalog:",
+    "hookable": "catalog:",
+    "sirv": "catalog:",
+    "superjson": "catalog:"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "catalog:",
+    "@nuxt/devtools": "catalog:",
+    "@nuxt/devtools-ui-kit": "catalog:",
     "@nuxt/module-builder": "1.0.2",
     "@nuxt/test-utils": "4.0.3",
     "@playwright/test": "catalog:",

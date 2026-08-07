@@ -37,6 +37,20 @@ export {
   type useScopedRegleFn,
 } from './core';
 export { RegleVuePlugin } from './plugin';
+export {
+  callInspectorAction,
+  callInspectorNodeAction,
+  editNodeValue,
+  emitRegleDevtoolsChange,
+  getInspectorMeta,
+  getInspectorState,
+  getInspectorTree,
+  onRegleDevtoolsChange,
+  REGLE_DEVTOOLS_PLUGIN_ID,
+  resetNode,
+  touchNode,
+  validateNode,
+} from './devtools/headless';
 export { regleConfigSymbol } from './constants';
 export { InternalRuleType } from './types';
 export type {

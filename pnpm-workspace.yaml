@@ -3,6 +3,7 @@ packages:
   - packages/rules
   - packages/schemas
   - packages/nuxt
+  - packages/nuxt/client
   - packages/nuxt/test/fixtures
   - packages/shared
   - packages/mcp-server
@@ -21,6 +22,16 @@ allowBuilds:
 
 catalog:
   '@arethetypeswrong/core': 0.18.3
+  '@nuxt/devtools-kit': 2.7.0
+  '@nuxt/devtools': 2.7.0
+  '@nuxt/devtools-ui-kit': 2.7.0
+  '@vue/devtools-applet': 7.7.9
+  '@vue/devtools-core': 7.7.9
+  '@vue/devtools-kit': 7.7.9
+  birpc: 2.5.0
+  hookable: 5.5.3
+  sirv: 3.0.2
+  superjson: 2.2.2
   '@nuxt/kit': 4.4.8
   '@nuxt/schema': 4.4.8
   '@pinia/nuxt': 0.11.3

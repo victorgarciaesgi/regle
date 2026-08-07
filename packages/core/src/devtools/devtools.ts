@@ -1,20 +1,27 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import { type App } from 'vue';
-import { handleEditInspectorState, handleResetAction, handleTouchAction, handleValidateAction } from './actions';
+import {
+  callInspectorAction,
+  callInspectorNodeAction,
+  editNodeValue,
+  getInspectorMeta,
+  getInspectorState,
+  getInspectorTree,
+  REGLE_DEVTOOLS_PLUGIN_ID,
+} from './headless';
 import { INSPECTOR_IDS } from './constants';
 import { regleDevtoolsRegistry } from './registry';
-import { buildInspectorState } from './state-builder';
-import { buildInspectorTree } from './tree-builder';
-import { version } from '../../package.json';
 
 export function createDevtools(app: App) {
+  const inspectorMeta = getInspectorMeta();
+
   setupDevtoolsPlugin(
     {
-      id: 'regle-devtools',
-      label: 'Regle',
-      logo: 'https://reglejs.dev/logo_main.png',
-      packageName: '@regle/core',
-      homepage: 'https://reglejs.dev',
+      id: REGLE_DEVTOOLS_PLUGIN_ID,
+      label: inspectorMeta.label,
+      logo: inspectorMeta.logo,
+      packageName: inspectorMeta.packageName,
+      homepage: inspectorMeta.homepage,
       componentStateTypes: ['Regles'],
       app,
     },
@@ -23,84 +30,48 @@ export function createDevtools(app: App) {
 
       api.addInspector({
         id: INSPECTOR_IDS.INSPECTOR,
-        label: 'Regle',
+        label: inspectorMeta.label,
         noSelectionText: 'No instance selected',
         icon: 'rule',
-        treeFilterPlaceholder: 'Filter state',
-        stateFilterPlaceholder: 'Filter validation status',
-        actions: [
-          {
-            icon: 'confirmation_number',
-            tooltip: 'Log Regle version',
-            action: () => {
-              console.info('Regle version', version);
-            },
+        treeFilterPlaceholder: inspectorMeta.treeFilterPlaceholder,
+        stateFilterPlaceholder: inspectorMeta.stateFilterPlaceholder,
+        actions: inspectorMeta.actions.map((action, index) => ({
+          icon: action.icon,
+          tooltip: action.tooltip,
+          action: () => {
+            callInspectorAction(index);
           },
-        ],
-        nodeActions: [
-          {
-            icon: 'check',
-            tooltip: 'Validate',
-            action: (nodeId) => {
-              handleValidateAction(nodeId);
-            },
+        })),
+        nodeActions: inspectorMeta.nodeActions.map((action, index) => ({
+          icon: action.icon,
+          tooltip: action.tooltip,
+          action: (nodeId) => {
+            callInspectorNodeAction(nodeId, index);
           },
-          {
-            icon: 'touch_app',
-            action: (nodeId) => {
-              handleTouchAction(nodeId);
-            },
-            tooltip: 'Touch the instance with $touch',
-          },
-          {
-            icon: 'refresh',
-            tooltip: 'Reset validation state',
-            action: (nodeId) => {
-              handleResetAction(nodeId);
-            },
-          },
-          {
-            icon: 'restore',
-            tooltip: 'Restore to original state',
-            action: (nodeId) => {
-              handleResetAction(nodeId, true);
-            },
-          },
-        ],
+        })),
       });
 
       regleDevtoolsRegistry.notifyDevtools();
 
       api.on.getInspectorTree(async (payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          const instances = regleDevtoolsRegistry.getAll();
-          const nodes = buildInspectorTree(instances, payload.filter);
-          if (nodes.length > 0) {
-            payload.rootNodes = nodes;
-          } else {
-            payload.rootNodes = [{ id: 'empty-regles', label: 'No Regles instances found', children: [] }];
-          }
+          payload.rootNodes = getInspectorTree(payload.filter);
         }
       });
 
       api.on.getInspectorState((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          const state = buildInspectorState(payload.nodeId, (id) => regleDevtoolsRegistry.get(id));
-          if (!state) {
+          const state = getInspectorState(payload.nodeId);
+          if (!state || Object.keys(state).length === 0) {
             api.sendInspectorTree(INSPECTOR_IDS.INSPECTOR);
           }
-
-          if (state) {
-            payload.state = state;
-          } else {
-            payload.state = {};
-          }
+          payload.state = state;
         }
       });
 
       api.on.editInspectorState((payload) => {
         if (payload.inspectorId === INSPECTOR_IDS.INSPECTOR) {
-          handleEditInspectorState(payload);
+          editNodeValue(payload);
         }
       });
     }

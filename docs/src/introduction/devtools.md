@@ -90,3 +90,24 @@ You should see the Regle panel show up automatically in the Vite devtools if you
 You will see the Regle icon showing in the devtools. Just click on it!
 
 <img src="/screenshots/vite-devtools-regle.png" alt="Vite Devtools with Regle panel" />
+
+### Nuxt DevTools Integration
+
+When using [`@regle/nuxt`](./installation.md#nuxt) with [Nuxt DevTools](https://devtools.nuxt.com/) enabled, Regle automatically registers a **Regle** tab in the Modules category.
+
+The tab reuses the same inspector experience as Vue DevTools (tree, state, validate, touch, reset actions) via a dedicated Nuxt DevTools iframe panel.
+
+Requirements:
+
+- Nuxt DevTools enabled (`devtools: { enabled: true }` in `nuxt.config`)
+- `@regle/nuxt` module installed (enabled by default)
+
+To disable the Nuxt DevTools integration:
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  regle: {
+    devtools: false,
+  },
+});
+```
