@@ -26,7 +26,7 @@ pnpm -v
 
 Expected:
 - Node `v24.x`
-- pnpm `11.6.0` (or project-compatible version)
+- pnpm `11.20.0` (or project-compatible version)
 
 ## Measurement runbook (must follow)
 

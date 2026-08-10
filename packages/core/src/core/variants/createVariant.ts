@@ -131,7 +131,7 @@ export function narrowVariant<
     $value: unknown;
   },
   const TKey extends keyof Omit<NonNullable<TRoot>, `$${string}` | `~${string}`>,
-  const TValue extends LazyJoinDiscriminatedUnions<
+  const TValue extends (LazyJoinDiscriminatedUnions<
     Exclude<
       NonNullable<TRoot>[TKey],
       | RegleCollectionStatus<any, any, any>
@@ -140,7 +140,7 @@ export function narrowVariant<
     >
   > extends { $value: infer V }
     ? V
-    : unknown,
+    : unknown),
 >(
   root: TRoot | undefined,
   discriminantKey: TKey,
@@ -182,7 +182,7 @@ export function narrowVariant<
 export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
-  const TValue extends LazyJoinDiscriminatedUnions<
+  const TValue extends (LazyJoinDiscriminatedUnions<
     Exclude<
       TRoot['$fields'][TKey],
       | RegleCollectionStatus<any, any, any>
@@ -191,7 +191,7 @@ export function variantToRef<
     >
   > extends { $value: infer V }
     ? V
-    : unknown,
+    : unknown),
 >(
   root: MaybeRef<TRoot>,
   discriminantKey: TKey,
@@ -206,7 +206,7 @@ export function variantToRef<
 export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
-  const TValue extends LazyJoinDiscriminatedUnions<
+  const TValue extends (LazyJoinDiscriminatedUnions<
     Exclude<
       TRoot['$fields'][TKey],
       | RegleCollectionStatus<any, any, any>
@@ -215,7 +215,7 @@ export function variantToRef<
     >
   > extends { $value: infer V }
     ? V
-    : unknown,
+    : unknown),
 >(
   root: MaybeRef<TRoot>,
   discriminantKey: TKey,
@@ -224,11 +224,11 @@ export function variantToRef<
 export function variantToRef<
   TRoot extends RegleStatus<{}, any, any>,
   const TKey extends keyof TRoot['$fields'],
-  const TValue extends LazyJoinDiscriminatedUnions<
+  const TValue extends (LazyJoinDiscriminatedUnions<
     Exclude<TRoot['$fields'][TKey], RegleCollectionStatus<any, any, any> | RegleStatus<any, any, any>>
   > extends { $value: infer V }
     ? V
-    : unknown,
+    : unknown),
 >(
   root: MaybeRef<TRoot>,
   discriminantKey: TKey,

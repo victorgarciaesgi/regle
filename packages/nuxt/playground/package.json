@@ -10,7 +10,10 @@
   "dependencies": {
     "@pinia/nuxt": "catalog:",
     "@regle/schemas": "workspace:*",
+    "@vue/devtools-api": "catalog:",
     "nuxt": "catalog:",
+    "pinia": "catalog:",
+    "vue": "catalog:",
     "zod": "catalog:"
   }
 }

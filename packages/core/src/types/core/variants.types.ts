@@ -32,7 +32,7 @@ export type NarrowVariant<
     $value: unknown;
   },
   TKey extends keyof TRoot,
-  TValue extends LazyJoinDiscriminatedUnions<
+  TValue extends (LazyJoinDiscriminatedUnions<
     Exclude<
       TRoot[TKey],
       | RegleCollectionStatus<any, any, any>
@@ -41,7 +41,7 @@ export type NarrowVariant<
     >
   > extends { $value: infer V }
     ? V
-    : unknown,
+    : unknown),
 > = Extract<
   TRoot,
   {

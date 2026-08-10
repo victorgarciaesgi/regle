@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@regle/nuxt": "workspace:*",
+    "@vue/devtools-api": "catalog:",
     "check-password-strength": "catalog:",
     "pinia": "catalog:",
-    "@pinia/nuxt": "catalog:"
+    "@pinia/nuxt": "catalog:",
+    "vue": "catalog:"
   }
 }

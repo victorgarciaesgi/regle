@@ -20,57 +20,59 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  '@arethetypeswrong/core': 0.18.3
-  '@nuxt/kit': 4.4.8
-  '@nuxt/schema': 4.4.8
-  '@pinia/nuxt': 0.11.3
-  '@playwright/test': 1.60.0
+  '@arethetypeswrong/core': 0.18.5
+  '@nuxt/kit': 4.5.1
+  '@nuxt/schema': 4.5.1
+  '@pinia/nuxt': 1.0.1
+  '@playwright/test': 1.62.1
   '@total-typescript/ts-reset': 0.6.1
-  '@types/node': 24.13.2
-  '@vitejs/plugin-vue': 6.0.7
-  '@vitejs/plugin-vue-jsx': 5.1.5
-  '@vue/compiler-dom': 3.5.35
+  '@types/node': 24.13.3
+  '@vitejs/plugin-vue': 6.0.8
+  '@vitejs/plugin-vue-jsx': 5.1.6
+  '@vue/compiler-dom': 3.5.41
   '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
-  '@vue/reactivity': 3.5.35
+  '@vue/devtools-api': 8.2.1
+  '@vue/devtools-kit': 8.2.1
+  '@vue/reactivity': 3.5.41
   '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
-  '@vue/runtime-core': 3.5.35
+  '@vue/runtime-core': 3.5.41
   '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
-  '@vue/runtime-dom': 3.5.35
+  '@vue/runtime-dom': 3.5.41
   '@vue/runtime-dom-3.4': npm:@vue/runtime-dom@3.4.38
-  '@vue/server-renderer': 3.5.35
+  '@vue/server-renderer': 3.5.41
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
-  '@vue/shared': 3.5.35
+  '@vue/shared': 3.5.41
   '@vue/shared-3.4': npm:@vue/shared@3.4.38
   '@vue/test-utils': 2.4.11
-  arktype: 2.2.0
+  arktype: 2.2.3
   check-password-strength: 3.0.0
-  nuxt: 4.4.8
-  pinia: 3.0.4
+  nuxt: 4.5.1
+  pinia: 4.0.2
   pinia-2.2.5: npm:pinia@2.2.5
-  playwright: 1.60.0
-  playwright-core: 1.60.0
-  publint: 0.3.21
-  sass: 1.101.0
-  tailwindcss: 4.3.1
-  tsdown: 0.22.2
-  tsx: 4.22.4
-  type-fest: 5.7.0
+  playwright: 1.62.1
+  playwright-core: 1.62.1
+  publint: 0.3.23
+  sass: 1.102.0
+  tailwindcss: 4.3.3
+  tsdown: 0.22.14
+  tsx: 4.23.7
+  type-fest: 5.8.0
   # TypeScript 7 native compiler (tsc). Kept under an alias so the `typescript`
   # package can remain the Strada/JS 6.x API for vue-tsc / Volar (the
   # @typescript/typescript6 shim breaks volar's tsc patching).
   # See: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
   '@typescript/native': npm:typescript@7.0.2
   typescript: 6.0.3
-  valibot: 1.4.1
-  vite: 8.0.16
-  vitest: 4.1.8
-  vite-plus: 0.2.1
-  vite-plugin-vue-devtools: 7.7.9
-  vue: 3.5.35
+  valibot: 1.4.2
+  vite: 8.2.0
+  vitest: 4.1.10
+  vite-plus: 0.2.8
+  vite-plugin-vue-devtools: 7.7.10
+  vue: 3.5.41
   vue-3.4: npm:vue@3.4.38
   vue-eslint-parser: 10.4.1
-  vue-router: 5.1.0
-  vue-tsc: 3.3.7
+  vue-router: 5.2.0
+  vue-tsc: 3.3.9
   zod: 4.4.3
 
 engineStrict: true

@@ -11,7 +11,7 @@ export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true):
       length = a.length;
       if (length != b.length) return false;
       if (firstDeep || (!firstDeep && deep)) {
-        for (i = length; i-- !== 0; ) {
+        for (i = length; i-- !== 0;) {
           if (!isEqual(a[i], b[i], deep, false)) {
             return false;
           }
@@ -27,9 +27,9 @@ export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true):
     length = keys.length;
     if (length !== Object.keys(b).length) return false;
 
-    for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+    for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
 
-    for (i = length; i-- !== 0; ) {
+    for (i = length; i-- !== 0;) {
       var key = keys[i];
       if (isObject(a) && isObject(b) && key) {
         if (firstDeep || (!firstDeep && deep)) {
