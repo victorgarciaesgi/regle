@@ -415,6 +415,12 @@ export default defineConfig({
     languages: ['ts', 'vue'] as any,
   },
   vite: {
+    define: {
+      __VUE_PROD_DEVTOOLS__: 'false',
+    },
+    ssr: {
+      noExternal: ['pinia'],
+    },
     plugins: [
       vueJsx(),
       llmstxt(),
