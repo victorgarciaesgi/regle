@@ -122,6 +122,33 @@ describe('debounce', () => {
     expect(func).not.toHaveBeenCalled();
   });
 
+  it('should settle superseded calls with the result of the run that executes', async () => {
+    const func = vi.fn(async (x: number) => x * 2);
+    const debounced = debounce(func, 100);
+
+    const first = debounced(1);
+    const second = debounced(2);
+
+    vi.advanceTimersByTime(100);
+
+    await expect(first).resolves.toBe(4);
+    await expect(second).resolves.toBe(4);
+    expect(func).toHaveBeenCalledTimes(1);
+  });
+
+  it('should settle pending calls when cancelled', async () => {
+    const func = vi.fn((x: number) => x * 2);
+    const debounced = debounce(func, 100);
+
+    const promise = debounced(1);
+    debounced.cancel();
+
+    vi.advanceTimersByTime(100);
+
+    await expect(promise).resolves.toBeUndefined();
+    expect(func).not.toHaveBeenCalled();
+  });
+
   it('should set trackDebounceRef to false when cancelled', async () => {
     const trackDebounceRef = ref(false);
     const func = vi.fn((x: number) => x * 2);
