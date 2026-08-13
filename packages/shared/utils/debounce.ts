@@ -11,13 +11,15 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
   wait: number,
   { immediate = false, trackDebounceRef }: { immediate?: boolean; trackDebounceRef?: Ref<boolean> } = {}
 ): DebouncedFunction<T> {
+  type PromiseHandlers = Pick<PromiseWithResolvers<any>, 'resolve' | 'reject'>;
+
   let timeout: NodeJS.Timeout | undefined;
   /**
    * Callers waiting on a debounced run. A new call clears the previous timer, so the
    * superseded callers are settled together with the run that actually executes,
    * otherwise their promises would never settle.
    */
-  let pendingCallbacks: { resolve: (value: any) => void; reject: (reason: any) => void }[] = [];
+  let pendingCallbacks: PromiseHandlers[] = [];
 
   function disableDebounceRef() {
     if (trackDebounceRef) {
@@ -25,7 +27,7 @@ export function debounce<T extends (...args: any[]) => any | Promise<any>>(
     }
   }
 
-  function settleAll(settle: (callback: (typeof pendingCallbacks)[number]) => void) {
+  function settleAll(settle: (callback: PromiseHandlers) => void) {
     const callbacks = pendingCallbacks;
     pendingCallbacks = [];
     callbacks.forEach(settle);
