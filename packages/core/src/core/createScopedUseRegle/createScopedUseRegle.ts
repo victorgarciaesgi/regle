@@ -1,4 +1,4 @@
-import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
+import { getCurrentInstance, ref, type App, type MaybeRefOrGetter, type Ref } from 'vue';
 import type { ExtendedRulesDeclarationsOverrides, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
 import { createGlobalState } from '../../utils';
 import type { MergedScopedRegles } from '../mergeRegles';
@@ -64,26 +64,44 @@ export function createScopedUseRegle<
   useScopedRegle: TReturnedRegle;
   useCollectScope: useCollectScopeFn<TAsRecord>;
 } {
-  const useInstances = options?.customStore
-    ? () => {
-        if (options.customStore) {
-          if (!options.customStore?.value['~~global']) {
-            options.customStore.value['~~global'] = {};
-          } else if (options.customStore?.value) {
-            options.customStore.value = { '~~global': {} };
-          }
-        }
-        return options.customStore as Ref<ScopedInstancesRecord>;
-      }
-    : createGlobalState(() => {
-        const $inst = ref<ScopedInstancesRecord>({ '~~global': {} });
-        return $inst;
-      });
+  if (options?.customStore) {
+    if (!options.customStore.value['~~global']) {
+      options.customStore.value['~~global'] = {};
+    } else if (options.customStore.value) {
+      options.customStore.value = { '~~global': {} };
+    }
+  }
 
-  const instances = useInstances();
+  const useGlobalInstances = createGlobalState(() => {
+    const $inst = ref<ScopedInstancesRecord>({ '~~global': {} });
+    return $inst;
+  });
 
-  const { useScopedRegle } = createUseScopedRegleComposable(instances, options?.customUseRegle);
-  const { useCollectScope } = createUseCollectScope(instances, { asRecord: options?.asRecord });
+  const appInstances = new WeakMap<App, Ref<ScopedInstancesRecord>>();
+
+  function resolveInstances(): Ref<ScopedInstancesRecord> {
+    if (options?.customStore) {
+      return options.customStore as Ref<ScopedInstancesRecord>;
+    }
+
+    const app = getCurrentInstance()?.appContext.app;
+
+    if (!app) {
+      return useGlobalInstances();
+    }
+
+    let instances = appInstances.get(app);
+
+    if (!instances) {
+      instances = ref<ScopedInstancesRecord>({ '~~global': {} });
+      appInstances.set(app, instances);
+    }
+
+    return instances;
+  }
+
+  const { useScopedRegle } = createUseScopedRegleComposable(resolveInstances, options?.customUseRegle);
+  const { useCollectScope } = createUseCollectScope(resolveInstances, { asRecord: options?.asRecord });
 
   return {
     useScopedRegle: useScopedRegle as unknown as TReturnedRegle,
