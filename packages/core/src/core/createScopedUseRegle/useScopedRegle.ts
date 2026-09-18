@@ -41,7 +41,7 @@ export type useScopedRegleFn<
 export function createUseScopedRegleComposable<
   TCustomRegle extends useRegleFn<any, any> = useRegleFn<Partial<ExtendedRulesDeclarationsOverrides>>,
 >(
-  resolveInstances: () => Ref<ScopedInstancesRecord>,
+  useInstances: () => Ref<ScopedInstancesRecord>,
   customUseRegle?: TCustomRegle
 ): {
   useScopedRegle: TCustomRegle;
@@ -55,7 +55,7 @@ export function createUseScopedRegleComposable<
   ) => {
     const { namespace, scopeKey, id, ...restOptions } = options ?? {};
 
-    const instances = resolveInstances();
+    const instances = useInstances();
 
     scopedUseRegle.__config ??= {};
 

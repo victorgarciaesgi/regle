@@ -1,4 +1,4 @@
-import { createScopedUseRegle, RegleVuePlugin } from '@regle/core';
+import { createScopedUseRegle, RegleVuePlugin, type ScopedInstancesRecord } from '@regle/core';
 import { required } from '@regle/rules';
 import { createSSRApp, defineComponent, h, ref, type App } from 'vue';
 import { renderToString } from 'vue/server-renderer';
@@ -109,9 +109,43 @@ describe('useScopedRegle - SSR isolation', () => {
     dispose();
   });
 
+  it('should not let an appless collector observe in-app registrations', async () => {
+    // given
+    await renderRequestAsSsrRequest();
+
+    // when
+    const { r$ } = useCollectScope();
+
+    // then
+    expect(r$.$instances?.length ?? 0).toBe(0);
+  });
+
+  it('should not leak instances registered after await in async setup', async () => {
+    // given
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const AsyncChild = defineComponent({
+      async setup() {
+        await Promise.resolve();
+        const { r$ } = useScopedRegle({ email: '' }, { email: { required } });
+        return () => h('input', { value: r$.$value.email });
+      },
+    });
+
+    // when
+    for (let i = 0; i < 20; i++) {
+      const app = createSSRApp({ render: () => h('div', [h(AsyncChild)]) });
+      app.use(RegleVuePlugin);
+      await renderToString(app);
+    }
+
+    // then
+    expect(await collectedCount()).toBe(0);
+    warn.mockRestore();
+  });
+
   it('should still honour an explicit customStore', async () => {
     // given
-    const customStore = ref({});
+    const customStore = ref<Partial<ScopedInstancesRecord>>({});
     const { useScopedRegle: useStoredRegle } = createScopedUseRegle({ customStore });
 
     const StoredChild = defineComponent({

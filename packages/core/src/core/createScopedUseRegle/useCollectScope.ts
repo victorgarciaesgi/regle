@@ -18,13 +18,13 @@ export type useCollectScopeFn<TNamedScoped extends boolean = false> = TNamedScop
     };
 
 export function createUseCollectScope<TNamedScoped extends boolean = false>(
-  resolveInstances: () => Ref<ScopedInstancesRecord>,
+  useInstances: () => Ref<ScopedInstancesRecord>,
   options: { asRecord?: TNamedScoped }
 ): { useCollectScope: useCollectScopeFn<TNamedScoped> } {
   function useCollectScope(namespace?: MaybeRefOrGetter<string | string[]>): {
     r$: MergedScopedRegles<Record<string, unknown>[]> | MergedRegles<Record<string, SuperCompatibleRegleRoot>>;
   } {
-    const instances = resolveInstances();
+    const instances = useInstances();
 
     const computedNamespace = computed<string | string[] | undefined>(() => toValue(namespace));
 

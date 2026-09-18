@@ -1,6 +1,6 @@
 # Scoped Validation
 
-Collect validation from multiple components without DOM restrictions.
+Collect validation from multiple components in the same Vue app, without DOM hierarchy restrictions. Both sides must run with a current Vue instance.
 
 ## Basic setup
 
