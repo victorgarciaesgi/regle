@@ -1,6 +1,5 @@
-import { ref, type MaybeRefOrGetter, type Ref } from 'vue';
+import { getCurrentInstance, ref, type App, type MaybeRefOrGetter, type Ref } from 'vue';
 import type { ExtendedRulesDeclarationsOverrides, ScopedInstancesRecord, ScopedInstancesRecordLike } from '../../types';
-import { createGlobalState } from '../../utils';
 import type { MergedScopedRegles } from '../mergeRegles';
 import { type useRegleFn } from '../useRegle';
 import { createUseCollectScope, type useCollectScopeFn } from './useCollectScope';
@@ -12,7 +11,10 @@ export type CreateScopedUseRegleOptions<TCustomRegle extends useRegleFn<any, any
    */
   customUseRegle?: TCustomRegle;
   /**
-   * Store the collected instances externally
+   * Store the collected instances externally.
+   *
+   * The store is process-wide. On SSR, pass a per-request ref — a module-level `ref()`
+   * reintroduces the cross-request leak this API otherwise avoids.
    */
   customStore?: Ref<ScopedInstancesRecordLike>;
   /**
@@ -64,26 +66,43 @@ export function createScopedUseRegle<
   useScopedRegle: TReturnedRegle;
   useCollectScope: useCollectScopeFn<TAsRecord>;
 } {
-  const useInstances = options?.customStore
-    ? () => {
-        if (options.customStore) {
-          if (!options.customStore?.value['~~global']) {
-            options.customStore.value['~~global'] = {};
-          } else if (options.customStore?.value) {
-            options.customStore.value = { '~~global': {} };
-          }
-        }
-        return options.customStore as Ref<ScopedInstancesRecord>;
-      }
-    : createGlobalState(() => {
-        const $inst = ref<ScopedInstancesRecord>({ '~~global': {} });
-        return $inst;
-      });
+  if (options?.customStore) {
+    if (!options.customStore.value['~~global']) {
+      options.customStore.value['~~global'] = {};
+    } else {
+      options.customStore.value = { '~~global': {} };
+    }
+  }
 
-  const instances = useInstances();
+  // Per Vue app, not per process: SSR never disposes component scopes, so a shared
+  // store would keep every request's instances alive and visible to the next one.
+  const stores = new WeakMap<App, Ref<ScopedInstancesRecord>>();
 
-  const { useScopedRegle } = createUseScopedRegleComposable(instances, options?.customUseRegle);
-  const { useCollectScope } = createUseCollectScope(instances, { asRecord: options?.asRecord });
+  function useInstances(): Ref<ScopedInstancesRecord> {
+    if (options?.customStore) {
+      return options.customStore as Ref<ScopedInstancesRecord>;
+    }
+
+    const app = getCurrentInstance()?.appContext.app;
+
+    if (!app) {
+      // No current app: do not retain a process-wide store. Calls without an instance
+      // (async setup after await, plugins) would otherwise leak across SSR requests.
+      return ref<ScopedInstancesRecord>({ '~~global': {} });
+    }
+
+    let instances = stores.get(app);
+
+    if (!instances) {
+      instances = ref<ScopedInstancesRecord>({ '~~global': {} });
+      stores.set(app, instances);
+    }
+
+    return instances;
+  }
+
+  const { useScopedRegle } = createUseScopedRegleComposable(useInstances, options?.customUseRegle);
+  const { useCollectScope } = createUseCollectScope(useInstances, { asRecord: options?.asRecord });
 
   return {
     useScopedRegle: useScopedRegle as unknown as TReturnedRegle,
@@ -94,8 +113,9 @@ export function createScopedUseRegle<
 const { useCollectScope: _useCollectScope, useScopedRegle: _useScopedRegle } = createScopedUseRegle();
 
 /**
- * Composable to collect and merge all Regle instances created with the default `useScopedRegle` within the same scope.
+ * Composable to collect and merge all Regle instances created with the default `useScopedRegle` in the same Vue app.
  * Returns a merged `r$` object allowing validation across multiple components simultaneously.
+ * Both this composable and `useScopedRegle` must run with a current Vue instance (typically `setup`).
  *
  * Children properties like `$value` and `$errors` are converted to arrays instead of objects.
  * You have access to all validation properties like `$error`, `$invalid`, `$validate()`, etc.
@@ -130,7 +150,9 @@ const useCollectScope: <TValue extends Record<string, unknown>[] = Record<string
  * Clone of `useRegle` that automatically registers its instance for collection by `useCollectScope`.
  * Every time it's called, a new instance is added for the parent scope to collect.
  *
- * Can be called multiple times anywhere in your app - not restricted to components or DOM.
+ * Can be called from any component in the same Vue app — not restricted by DOM hierarchy.
+ * Collection is per app: a call made outside `setup` (no current instance) is not collected
+ * by in-app `useCollectScope`, and is not stored process-wide (SSR would never dispose it).
  * When the component is unmounted or scope is disposed, the instance is automatically unregistered.
  *
  * @param state - Reactive state object to validate

@@ -29,9 +29,9 @@ Regle's solution solves all these problems
 
 `useScopedRegle` is a clone of `useRegle`, but with the difference that every time it's used and updated, its state will be collected by the same scope created using `createScopedUseRegle`.
 
-Every time it's called, a instance will be added for `useCollectScope` to collect.
+Every time it's called, an instance will be added for `useCollectScope` to collect.
 
-It can be called multiple times at any place, not only on components, as it's not restricted by DOM.
+It can be called from any component in the same Vue app — not restricted by DOM hierarchy. Both `useScopedRegle` and `useCollectScope` must run with a current Vue instance (typically `setup`). A call made outside an app is not collected, and is not stored process-wide so SSR requests cannot leak into each other.
 
 ### `useCollectScope`
 
@@ -221,9 +221,9 @@ const {r$} = useScopedRegle({name: ''}, {
 
 ## Custom store for instances
 
-By default collected instances are stored in a local ref. 
+By default collected instances are stored per Vue app.
 
-You can provide your own store ref.
+You can provide your own store ref. That store is process-wide: on SSR, pass a per-request ref. A module-level `ref()` reintroduces the cross-request leak this API otherwise avoids.
 
 
 ```ts
