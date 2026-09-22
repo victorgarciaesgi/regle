@@ -61,6 +61,24 @@ describe('mergeRegles', () => {
   });
 
   it('should merge properties', async () => {
+    expect(vm.r$Merged.$initialValue).toStrictEqual(vm.r$Merged.$value);
+    expect(vm.r$Merged.$originalValue).toStrictEqual(vm.r$Merged.$value);
+    expect(vm.r$Merged.$initialValue.firstR$).toStrictEqual(vm.firstR$.$initialValue);
+    expect(vm.r$Merged.$originalValue.firstR$).toStrictEqual(vm.firstR$.$originalValue);
+    expectTypeOf(vm.r$Merged.$initialValue).toEqualTypeOf<{
+      firstR$: typeof vm.firstR$.$initialValue;
+      secondR$: typeof vm.secondR$.$initialValue;
+      thirdR$: typeof vm.thirdR$.$initialValue;
+    }>();
+    expectTypeOf(vm.r$Merged.$originalValue).toEqualTypeOf<{
+      firstR$: typeof vm.firstR$.$originalValue;
+      secondR$: typeof vm.secondR$.$originalValue;
+      thirdR$: typeof vm.thirdR$.$originalValue;
+    }>();
+    expectTypeOf(vm.r$Merged).not.toHaveProperty('$path');
+    expectTypeOf(vm.r$Merged).not.toHaveProperty('$id');
+    expectTypeOf(vm.r$Merged).not.toHaveProperty('~standard');
+
     expect(vm.r$Merged.$invalid).toBe(true);
     expect(vm.r$Merged.$dirty).toBe(false);
     expect(vm.r$Merged.$anyDirty).toBe(false);
@@ -180,6 +198,57 @@ describe('mergeRegles', () => {
     expectTypeOf(dirtyFields[1]).toBeObject();
     expectTypeOf(dirtyFields[2]).toBeObject();
     expect(vm.r$Merged.$extractDirtyFields()).toStrictEqual([{}, {}, {}]);
+  });
+
+  it('should track child baselines through $reset', async () => {
+    const Comp = defineComponent({
+      setup() {
+        const { r$: personal$ } = useRegle({ name: 'Ada' }, { name: { required } });
+        const { r$: address$ } = useRegle({ city: 'Paris' }, { city: { required } });
+        const merged = mergeRegles({ personal$, address$ });
+        return { personal$, address$, merged };
+      },
+      template: '<div></div>',
+    });
+    const { vm } = mount(Comp);
+
+    vm.personal$.$value.name = 'Grace';
+    await vm.$nextTick();
+
+    expect(vm.merged.$value.personal$.name).toBe('Grace');
+    expect(vm.merged.$initialValue).toStrictEqual({
+      personal$: { name: 'Ada' },
+      address$: { city: 'Paris' },
+    });
+    expect(vm.merged.$originalValue).toStrictEqual({
+      personal$: { name: 'Ada' },
+      address$: { city: 'Paris' },
+    });
+
+    vm.personal$.$reset({ toState: { name: 'Grace' } });
+
+    expect(vm.merged.$initialValue.personal$).toStrictEqual({ name: 'Grace' });
+    expect(vm.merged.$originalValue.personal$).toStrictEqual({ name: 'Ada' });
+    expect(vm.merged.$initialValue.address$).toStrictEqual({ city: 'Paris' });
+  });
+
+  it('should expose baselines as arrays for a scoped merge', () => {
+    const Comp = defineComponent({
+      setup() {
+        const { r$: personal$ } = useRegle({ name: 'Ada' }, { name: { required } });
+        const { r$: address$ } = useRegle({ city: 'Paris' }, { city: { required } });
+        const merged = mergeRegles({ personal$, address$ }, true);
+        return { merged };
+      },
+      template: '<div></div>',
+    });
+    const { vm } = mount(Comp);
+
+    expect(vm.merged.$initialValue).toStrictEqual([{ name: 'Ada' }, { city: 'Paris' }]);
+    expect(vm.merged.$originalValue).toStrictEqual([{ name: 'Ada' }, { city: 'Paris' }]);
+    expectTypeOf(vm.merged.$initialValue).toEqualTypeOf<Record<string, unknown>[]>();
+    expectTypeOf(vm.merged.$originalValue).toEqualTypeOf<Record<string, unknown>[]>();
+    expectTypeOf(vm.merged).not.toHaveProperty('$path');
   });
 
   it('should expose external issues helpers on merged instances', async () => {

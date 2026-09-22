@@ -20,7 +20,19 @@ export type MergedRegles<
   },
 > = Omit<
   RegleCommonStatus,
-  '$value' | '$silentValue' | '$errors' | '$silentErrors' | '$name' | '$unwatch' | '$watch' | '$extractDirtyFields'
+  | '$value'
+  | '$silentValue'
+  | '$errors'
+  | '$silentErrors'
+  | '$name'
+  | '$unwatch'
+  | '$watch'
+  | '$extractDirtyFields'
+  | '$initialValue'
+  | '$originalValue'
+  | '$path'
+  | '$id'
+  | '~standard'
 > & {
   /** Map of merged Regle instances and their properties  */
   readonly $instances: { [K in keyof TRegles]: TRegles[K] };
@@ -28,6 +40,20 @@ export type MergedRegles<
   $value: TValue;
   /** $value variant that will not "touch" the field and update the value silently, running only the rules, so you can easily swap values without impacting user interaction. */
   $silentValue: TValue;
+  /**
+   * Current initial value of every merged instance, in the same shape as `$value`.
+   * This is the baseline `$edited` compares against, and `$reset` can replace it.
+   */
+  readonly $initialValue: {
+    [K in keyof TRegles]: TRegles[K]['$initialValue'];
+  };
+  /**
+   * Original value of every merged instance from when that instance was created, in the same shape as `$value`.
+   * `$reset` does not change it.
+   */
+  readonly $originalValue: {
+    [K in keyof TRegles]: TRegles[K]['$originalValue'];
+  };
   /** Collection of all the error messages, collected for all children properties and nested forms.
    *
    * Only contains errors from properties where $dirty equals true. */
@@ -57,12 +83,30 @@ export type MergedRegles<
 
 export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record<string, unknown>[]> = Omit<
   MergedRegles<Record<string, SuperCompatibleRegleRoot>, TValue>,
-  '$instances' | '$errors' | '$silentErrors' | '$value' | '$silentValue' | '$validate' | '$extractDirtyFields'
+  | '$instances'
+  | '$errors'
+  | '$silentErrors'
+  | '$value'
+  | '$silentValue'
+  | '$validate'
+  | '$extractDirtyFields'
+  | '$initialValue'
+  | '$originalValue'
 > & {
   /** Array of scoped Regles instances  */
   readonly $instances: SuperCompatibleRegleRoot[];
   /** Collection of all registered Regles instances values */
   readonly $value: TValue;
+  /**
+   * Current initial value of every registered instance.
+   * This is the baseline `$edited` compares against, and `$reset` can replace it.
+   */
+  readonly $initialValue: TValue;
+  /**
+   * Original value of every registered instance from when that instance was created.
+   * `$reset` does not change it.
+   */
+  readonly $originalValue: TValue;
   /** Collection of all registered Regles instances errors */
   readonly $errors: RegleValidationErrors<Record<string, unknown>>[];
   /** Collection of all registered Regles instances silent errors */
@@ -137,6 +181,7 @@ type MergedReglesResult<TRegles extends Record<string, SuperCompatibleRegleRoot>
  * // Access combined state
  * merged$.$valid           // true when ALL forms are valid
  * merged$.$errors          // { personalInfo: {...}, address: {...} }
+ * merged$.$initialValue    // { personalInfo: {...}, address: {...} }
  * await merged$.$validate() // Validates all forms
  * ```
  *
@@ -172,6 +217,20 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
         Object.entries(value).forEach(([key, newValue]) => (regles[key].$silentValue = newValue));
       }
     },
+  });
+
+  const $initialValue = computed(() => {
+    if (scoped) {
+      return Object.values(regles).map((r) => r.$initialValue);
+    }
+    return Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$initialValue]));
+  });
+
+  const $originalValue = computed(() => {
+    if (scoped) {
+      return Object.values(regles).map((r) => r.$originalValue);
+    }
+    return Object.fromEntries(Object.entries(regles).map(([key, r]) => [key, r.$originalValue]));
   });
 
   const $dirty = computed<boolean>(() => {
@@ -400,6 +459,8 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $silentErrors,
     $instances,
     $value: $value as any,
+    $initialValue,
+    $originalValue,
     $output: $value as any,
     $dirty,
     $anyDirty,
@@ -419,13 +480,7 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $clearExternalIssues,
     $setExternalErrors,
     $setExternalIssues,
-  } as Record<
-    keyof Omit<
-      RegleStatus,
-      '$initialValue' | '$originalValue' | '$path' | '$name' | '$id' | '~standard' | '$fields' | '$self'
-    >,
-    any
-  >);
+  } as Record<keyof Omit<RegleStatus, '$path' | '$name' | '$id' | '~standard' | '$fields' | '$self'>, any>);
 
   watchEffect(() => {
     if (scoped) {
