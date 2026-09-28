@@ -875,6 +875,8 @@ export function createReactiveNestedStatus({
   }
 
   async function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
+    // A parent rebuild can $unwatch() this node while children are awaited, which resets `scopeState`.
+    const validationScope = scopeState;
     try {
       if (forceValues) {
         state.value = forceValues;
@@ -882,21 +884,21 @@ export function createReactiveNestedStatus({
       if (commonArgs.schemaMode) {
         if (commonArgs.onValidate) {
           $touch(false);
-          scopeState.$localPending.value = true;
+          validationScope.$localPending.value = true;
           return commonArgs.onValidate();
         } else {
           return {
             valid: false,
             data: state.value,
-            errors: scopeState.$errors.value,
-            issues: scopeState.$issues.value,
+            errors: validationScope.$errors.value,
+            issues: validationScope.$issues.value,
           };
         }
       } else {
         const data = state.value;
         $abort();
 
-        if (scopeState.$clearExternalErrorsOnValidate.value) {
+        if (validationScope.$clearExternalErrorsOnValidate.value) {
           $clearExternalErrors();
           $clearExternalIssues();
         }
@@ -911,12 +913,22 @@ export function createReactiveNestedStatus({
           (value) => value.status === 'fulfilled' && value?.value?.valid === true
         );
 
-        return { valid: validationResults, data, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
+        return {
+          valid: validationResults,
+          data,
+          errors: validationScope.$errors.value,
+          issues: validationScope.$issues.value,
+        };
       }
     } catch {
-      return { valid: false, data: state.value, errors: scopeState.$errors.value, issues: scopeState.$issues.value };
+      return {
+        valid: false,
+        data: state.value,
+        errors: validationScope.$errors.value,
+        issues: validationScope.$issues.value,
+      };
     } finally {
-      scopeState.$localPending.value = false;
+      validationScope.$localPending.value = false;
     }
   }
 

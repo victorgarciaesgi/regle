@@ -1,6 +1,7 @@
 import { inferRules, useRegle, type RegleBehaviourOptions, type RegleExternalErrorTree } from '@regle/core';
-import { required } from '@regle/rules';
+import { required, withAsync } from '@regle/rules';
 import { computed, nextTick, reactive, ref } from 'vue';
+import { flushPromises } from '@vue/test-utils';
 import { createRegleComponent } from '../../../utils/test.utils';
 import {
   shouldBeErrorField,
@@ -1045,5 +1046,79 @@ describe('external errors', () => {
 
     shouldBeValidField(vm.r$);
     expect(vm.r$.$errors).toStrictEqual([]);
+  });
+
+  describe('clearExternalErrorsOnValidate', () => {
+    type Form = { name: string; address: { city: string } };
+
+    function useNestedForm(externalErrors = ref<RegleExternalErrorTree<Form>>({})) {
+      return useRegle(
+        ref<Form>({ name: 'John', address: { city: 'Paris' } }),
+        { name: { required }, address: { city: { required } } },
+        { externalErrors, clearExternalErrorsOnValidate: true }
+      );
+    }
+
+    type NestedR$ = ReturnType<typeof useNestedForm>['r$'];
+
+    it.each([
+      ['a top-level error', (r$: NestedR$) => r$.$setExternalErrors({ name: ['Server error'] })],
+      ['a nested error', (r$: NestedR$) => r$.$setExternalErrors({ address: { city: ['Server error'] } })],
+      ['an external issue', (r$: NestedR$) => r$.$setExternalIssues({ name: [{ $message: 'Server error' }] })],
+    ])('first $validate is valid after clearing %s', async (_, setErrors) => {
+      const { vm } = createRegleComponent(() => useNestedForm());
+      setErrors(vm.r$);
+      await nextTick();
+
+      const { valid, errors } = await vm.r$.$validate();
+
+      expect(valid).toBe(true);
+      expect(errors).toStrictEqual({ name: [], address: { city: [] } });
+    });
+
+    it('first $validate is valid after clearing the externalErrors option', async () => {
+      const externalErrors = ref<RegleExternalErrorTree<Form>>({ name: ['Server error'] });
+      const { vm } = createRegleComponent(() => useNestedForm(externalErrors));
+
+      expect((await vm.r$.$validate()).valid).toBe(true);
+      expect(externalErrors.value).toStrictEqual({});
+    });
+
+    it('first $validate on a nested child is valid', async () => {
+      const { vm } = createRegleComponent(() => useNestedForm());
+      vm.r$.$setExternalErrors({ address: { city: ['Server error'] } });
+      await nextTick();
+
+      expect((await vm.r$.address.$validate()).valid).toBe(true);
+    });
+
+    it('first $validate is valid for a collection of objects', async () => {
+      const { vm } = createRegleComponent(() =>
+        useRegle(
+          ref({ items: [{ name: 'a' }] }),
+          { items: { $each: { name: { required } } } },
+          { clearExternalErrorsOnValidate: true }
+        )
+      );
+      vm.r$.$setExternalErrors({ items: { $each: [{ name: ['Server error'] }] } });
+      await nextTick();
+
+      expect((await vm.r$.$validate()).valid).toBe(true);
+    });
+
+    it('pending $validate still resolves when the component unmounts', async () => {
+      let resolveRule!: (value: boolean) => void;
+      const asyncRule = withAsync(() => new Promise<boolean>((resolve) => (resolveRule = resolve)));
+      const wrapper = createRegleComponent(() =>
+        useRegle(ref({ address: { city: 'Paris' } }), { address: { city: { asyncRule } } })
+      );
+
+      const pending = wrapper.vm.r$.$validate();
+      await flushPromises();
+      wrapper.unmount();
+      resolveRule(true);
+
+      await expect(pending).resolves.toMatchObject({ valid: true });
+    });
   });
 });
