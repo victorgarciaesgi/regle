@@ -19,7 +19,6 @@
     "typescript": "catalog:",
     "valibot": "catalog:",
     "vite-plus": "catalog:",
-    "vitest": "catalog:",
     "vue": "catalog:",
     "vue-component-type-helpers": "3.3.9",
     "zod": "catalog:"

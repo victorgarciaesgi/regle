@@ -1,6 +1,6 @@
 import type { RegleCommonStatus, RegleErrorTree, RegleStatus } from '@regle/core';
 import type { RegleSchemaCommonStatus, RegleSchemaStatus } from '@regle/schemas';
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf } from 'vite-plus/test';
 import { ref, provide, type InjectionKey } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import * as v from 'valibot';

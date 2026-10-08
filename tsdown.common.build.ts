@@ -1,5 +1,5 @@
 import { replacePlugin } from 'rolldown/plugins';
-import type { UserConfig } from 'tsdown';
+import type { UserConfig } from 'vite-plus/pack';
 
 export function outExtensions(isMin = false): UserConfig['outExtensions'] | undefined {
   return ({ format }) => {

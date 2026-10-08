@@ -1,4 +1,5 @@
-import { defineConfig, type UserConfig } from 'tsdown';
+import { defineConfig } from 'vite-plus';
+import type { UserConfig } from 'vite-plus/pack';
 import 'dotenv/config';
 import { packageValidationOptions } from '../../tsdown.common.build.ts';
 
@@ -26,4 +27,8 @@ const sharedOptions: UserConfig = {
   },
 };
 
-export default defineConfig([{ ...sharedOptions, ...packageValidationOptions }]);
+const productionConfig: UserConfig[] = [{ ...sharedOptions, ...packageValidationOptions }];
+
+export default defineConfig({
+  pack: productionConfig,
+});

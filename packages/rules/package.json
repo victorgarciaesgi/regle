@@ -36,10 +36,10 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsdown",
-    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
-    "dev": "tsdown --config=tsdown.dev.ts --watch",
-    "test": "vitest run"
+    "build": "vp pack",
+    "build:sourcemaps": "REGLE_BUILD_MODE=sourcemap vp pack",
+    "dev": "REGLE_BUILD_MODE=dev vp pack --watch",
+    "test": "vp test run --root ../.. --config vitest.config.ts --project \"Rules tests*\""
   },
   "dependencies": {
     "@regle/core": "workspace:*",
@@ -52,10 +52,9 @@
     "@vue/reactivity": "catalog:",
     "@vue/test-utils": "catalog:",
     "publint": "catalog:",
-    "tsdown": "catalog:",
     "type-fest": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
+    "vite-plus": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
   }

@@ -1,11 +1,14 @@
-import { defineConfig, type UserConfig } from 'tsdown';
+import devConfig from './pack.dev.ts';
+import sourcemapConfig from './pack.sourcemap.ts';
+import { defineConfig } from 'vite-plus';
+import type { UserConfig } from 'vite-plus/pack';
 import {
-  defaultExternals,
   defaultOptions,
-  defineBanner,
-  devBuildPlugins,
   outExtensions,
+  defaultExternals,
+  devBuildPlugins,
   productionBuildPlugins,
+  defineBanner,
   packageValidationOptions,
 } from '../../tsdown.common.build.ts';
 import pkg from './package.json' with { type: 'json' };
@@ -13,14 +16,14 @@ const { name, version } = pkg;
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
-  entry: { 'regle-rules': 'src/index.ts' },
+  entry: { 'regle-core': 'src/index.ts' },
   deps: {
-    neverBundle: [...defaultExternals, '@regle/core'],
+    neverBundle: [...defaultExternals, '@vue/devtools-api'],
   },
   banner: defineBanner({ name, version }),
 };
 
-export default defineConfig([
+const productionConfig: UserConfig[] = [
   {
     ...sharedOptions,
     plugins: [...devBuildPlugins],
@@ -37,4 +40,13 @@ export default defineConfig([
     plugins: [...productionBuildPlugins],
     ...packageValidationOptions,
   },
-]);
+];
+
+export default defineConfig({
+  pack:
+    process.env.REGLE_BUILD_MODE === 'dev'
+      ? devConfig
+      : process.env.REGLE_BUILD_MODE === 'sourcemap'
+        ? sourcemapConfig
+        : productionConfig,
+});

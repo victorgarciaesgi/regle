@@ -1,6 +1,6 @@
 import { useRegle, useScopedRegle } from '#imports';
 import { required } from '@regle/rules';
-import { describe, it, expectTypeOf } from 'vitest';
+import { describe, it, expectTypeOf } from 'vite-plus/test';
 
 describe('test.types', () => {
   it('should have correct types', () => {

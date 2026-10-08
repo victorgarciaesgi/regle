@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { isObject, setObjectError, getDotPath, merge, isConstructor, def, hasOwn } from '../utils/object.utils';
 
 describe('isObject', () => {

@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from 'vite-plus/pack';
 import { defaultExternals, defaultOptions, productionBuildPlugins } from '../../tsdown.common.build.ts';
 
 export default defineConfig({
