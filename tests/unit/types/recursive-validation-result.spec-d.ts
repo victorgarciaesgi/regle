@@ -1,6 +1,6 @@
 import { useRegle, type MaybeOutput } from '@regle/core';
 import { required } from '@regle/rules';
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf } from 'vite-plus/test';
 import { ref } from 'vue';
 
 type Category = {

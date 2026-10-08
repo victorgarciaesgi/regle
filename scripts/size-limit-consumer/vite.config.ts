@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 
 const root = path.resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const fixtureDir = path.join(root, 'scripts/size-limit-consumer');

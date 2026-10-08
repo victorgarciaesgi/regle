@@ -14,9 +14,11 @@ import { applyIf } from './applyIf';
 import { extractValidator } from './common/extractValidator';
 
 type PipeTupleToObject<TArray extends unknown[]> = {
-  [Key in keyof TArray as TArray[Key] extends RegleRuleDefinition<infer TType extends string, any, any>
-    ? `${TType & string}`
-    : `anonymous${Key & (`${number}` | (IsTuple<TArray> extends true ? never : number))}`]: TArray[Key & string];
+  [
+    Key in keyof TArray as TArray[Key] extends RegleRuleDefinition<infer TType extends string, any, any>
+      ? `${TType & string}`
+      : `anonymous${Key & (`${number}` | (IsTuple<TArray> extends true ? never : number))}`
+  ]: TArray[Key & string];
 };
 
 type TRulesTuple = [FormRuleDeclaration<any>, ...FormRuleDeclaration<any>[]];

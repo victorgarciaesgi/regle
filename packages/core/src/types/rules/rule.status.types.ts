@@ -95,33 +95,39 @@ type ProcessNestedFields<
 > =
   Or<HasNamedKeys<TState>, TIsFields> extends true
     ? {
-        readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-          ? $IsFieldLevelRule<TRules[TKey]> extends true
-            ? IsEmptyObject<TRules[TKey]> extends true
-              ? TKey
+        readonly [
+          TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+            ? $IsFieldLevelRule<TRules[TKey]> extends true
+              ? IsEmptyObject<TRules[TKey]> extends true
+                ? TKey
+                : never
               : never
-            : never
-          : TKey]: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
+            : TKey
+        ]: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
       } & (IsEmptyObject<TRules> extends true
         ? {
-            readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-              ? $IsFieldLevelRule<TRules[TKey]> extends true
-                ? IsEmptyObject<TRules[TKey]> extends true
-                  ? never
+            readonly [
+              TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+                ? $IsFieldLevelRule<TRules[TKey]> extends true
+                  ? IsEmptyObject<TRules[TKey]> extends true
+                    ? never
+                    : TKey
                   : TKey
-                : TKey
-              : never]:
+                : never
+            ]:
               | ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>
               | (isUndefinedOrNull<TState[TKey]> extends true ? undefined : never);
           }
         : {
-            readonly [TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
-              ? $IsFieldLevelRule<TRules[TKey]> extends true
-                ? IsEmptyObject<TRules[TKey]> extends true
-                  ? never
+            readonly [
+              TKey in keyof TState as TRules[TKey] extends NonNullable<TRules[TKey]>
+                ? $IsFieldLevelRule<TRules[TKey]> extends true
+                  ? IsEmptyObject<TRules[TKey]> extends true
+                    ? never
+                    : TKey
                   : TKey
-                : TKey
-              : never]-?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
+                : never
+            ]-?: ComputeNestedFieldStatus<NonNullable<TState>, TRules, TKey, TShortcuts>;
           })
     : {
         [x: string]: RegleCommonStatus<unknown, unknown>;

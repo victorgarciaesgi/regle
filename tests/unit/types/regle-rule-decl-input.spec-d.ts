@@ -1,4 +1,4 @@
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf } from 'vite-plus/test';
 import { ref } from 'vue';
 import { inferRules, useRegle } from '@regle/core';
 import { email, minLength, required } from '@regle/rules';

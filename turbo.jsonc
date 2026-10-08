@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.v2.json",
+  "globalEnv": ["REGLE_BUILD_MODE"],
   "futureFlags": {
     "errorsOnlyShowHash": true
   },
@@ -13,7 +14,8 @@
         "!README.md",
         "!eslint.config.mjs",
         "src/**/*.ts",
-        "tsdown.config.ts",
+        "vite.config.ts",
+        "$TURBO_ROOT$/tsdown.common.build.ts",
         "$TURBO_ROOT$/packages/shared/**"
       ]
     },
@@ -27,7 +29,7 @@
         "!README.md",
         "!eslint.config.mjs",
         "./src/**/*.ts",
-        "tsdown.config.ts",
+        "vite.config.ts",
         "$TURBO_ROOT$/tsdown.common.build.ts"
       ]
     },
@@ -40,7 +42,7 @@
         "!README.md",
         "!eslint.config.mjs",
         "src/**/*.ts",
-        "tsdown.config.ts",
+        "vite.config.ts",
         "$TURBO_ROOT$/tsdown.common.build.ts"
       ]
     },
@@ -58,8 +60,8 @@
         "!README.md",
         "!eslint.config.mjs",
         "src/**/*.ts",
-        "tsdown.config.ts",
-        "tsdown.sourcemap.ts",
+        "vite.config.ts",
+        "pack.sourcemap.ts",
         "$TURBO_ROOT$/tsdown.common.build.ts",
         "$TURBO_ROOT$/packages/shared/**"
       ]

@@ -54,7 +54,6 @@ catalog:
   publint: 0.3.23
   sass: 1.102.0
   tailwindcss: 4.3.3
-  tsdown: 0.22.14
   tsx: 4.23.7
   type-fest: 5.8.0
   # TypeScript 7 native compiler (tsc). Kept under an alias so the `typescript`
@@ -64,9 +63,9 @@ catalog:
   '@typescript/native': npm:typescript@7.0.2
   typescript: 6.0.3
   valibot: 1.4.2
-  vite: 8.2.0
-  vitest: 4.1.10
-  vite-plus: 0.2.8
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vitest: 5.0.3
+  vite-plus: 1.1.0
   vite-plugin-vue-devtools: 7.7.10
   vue: 3.5.41
   vue-3.4: npm:vue@3.4.38
@@ -74,6 +73,8 @@ catalog:
   vue-router: 5.2.0
   vue-tsc: 3.3.9
   zod: 4.4.3
+  '@vitest/coverage-istanbul': 5.0.3
+  '@vitest/coverage-v8': 5.0.3
 
 engineStrict: true
 optimisticRepeatInstall: false
@@ -94,10 +95,10 @@ minimumReleaseAgeExclude:
   - '@oxlint-tsgolint/*'
   - oxfmt
   - '@oxfmt/*'
+  - vitest
+  - '@vitest/*'
 
 overrides:
-  vite: 'catalog:'
-  vitest: 'catalog:'
   # @typescript/native is aliased to npm:typescript@7 for the native tsc CLI, but that
   # second `typescript` package must not fork vue/pinia peer graphs. Pinia's
   # skipHydrate uses a per-module Symbol(); dual pinia copies break Nuxt SSR payload
@@ -105,6 +106,8 @@ overrides:
   'vue>typescript': 'catalog:'
   'pinia>typescript': 'catalog:'
   '@vue/server-renderer>typescript': 'catalog:'
+  vite@*: 'catalog:'
+  vitest@*: 'catalog:'
 peerDependencyRules:
   allowAny:
     - vite

@@ -140,15 +140,17 @@ type ProcessChildrenFields<
           [TIndex in keyof TupleToPlainObj<TStateTuple>]: TIndex extends `${infer TIndexInt extends number}`
             ? {
                 // Defined keys
-                [TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
-                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
-                > extends true
-                  ? TKey extends keyof TState
-                    ? TState[TKey] extends NonNullable<TState[TKey]>
-                      ? TKey
+                [
+                  TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
+                    VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
+                  > extends true
+                    ? TKey extends keyof TState
+                      ? TState[TKey] extends NonNullable<TState[TKey]>
+                        ? TKey
+                        : never
                       : never
-                    : never
-                  : TKey]-?: InferRegleStatusType<
+                    : TKey
+                ]-?: InferRegleStatusType<
                   VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>,
                   NonNullableStateTupleItem<TStateTuple, TIndexInt>,
                   TKey,
@@ -156,15 +158,17 @@ type ProcessChildrenFields<
                 >;
               } & {
                 // Maybe undefined keys
-                [TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
-                  VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
-                > extends true
-                  ? TKey extends keyof TState
-                    ? TState[TKey] extends NonNullable<TState[TKey]>
-                      ? never
+                [
+                  TKey in keyof TStateTuple[TIndexInt] as IsEmptyObject<
+                    VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>
+                  > extends true
+                    ? TKey extends keyof TState
+                      ? TState[TKey] extends NonNullable<TState[TKey]>
+                        ? never
+                        : TKey
                       : TKey
-                    : TKey
-                  : never]?: InferRegleStatusType<
+                    : never
+                ]?: InferRegleStatusType<
                   VariantRuleForKey<TStateTuple, TRulesTuple, TIndexInt, TKey>,
                   NonNullableStateTupleItem<TStateTuple, TIndexInt>,
                   TKey,

@@ -7,7 +7,6 @@
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
     "@vue/test-utils": "catalog:",
-    "vitest": "catalog:",
     "vue": "catalog:",
     "zod": "catalog:"
   }

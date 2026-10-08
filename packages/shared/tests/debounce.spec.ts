@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vite-plus/test';
 import { ref } from 'vue';
 import { flushPromises } from '@vue/test-utils';
 import { debounce } from '../utils/debounce';

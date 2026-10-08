@@ -1,10 +1,10 @@
-import { defineConfig, type UserConfig } from 'tsdown';
+import { defineConfig, type UserConfig } from 'vite-plus/pack';
 import { defaultOptions } from '../../tsdown.common.dev.ts';
 import { defaultExternals, devBuildPlugins } from '../../tsdown.common.build.ts';
 
 const sharedOptions: UserConfig = {
   ...defaultOptions,
-  entry: { 'regle-rules': 'src/index.ts' },
+  entry: { 'regle-schemas': 'src/index.ts' },
   dts: true,
   clean: false,
   deps: {

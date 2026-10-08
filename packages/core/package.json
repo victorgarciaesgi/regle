@@ -49,9 +49,9 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsdown",
-    "build:sourcemaps": "tsdown --config=tsdown.sourcemap.ts",
-    "dev": "tsdown --config=tsdown.dev.ts",
+    "build": "vp pack",
+    "build:sourcemaps": "REGLE_BUILD_MODE=sourcemap vp pack",
+    "dev": "REGLE_BUILD_MODE=dev vp pack",
     "test": "echo 'no tests'"
   },
   "dependencies": {
@@ -67,9 +67,8 @@
     "@vue/devtools-kit": "catalog:",
     "@vue/test-utils": "catalog:",
     "publint": "catalog:",
-    "tsdown": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
+    "vite-plus": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
   },

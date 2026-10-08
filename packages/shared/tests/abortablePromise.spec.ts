@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import { abortablePromise, AbortError } from '../utils/abortablePromise';
 
 describe('abortablePromise', () => {
