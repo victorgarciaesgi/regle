@@ -21,59 +21,59 @@ allowBuilds:
 
 catalog:
   '@arethetypeswrong/core': 0.18.5
-  '@nuxt/kit': 4.5.1
-  '@nuxt/schema': 4.5.1
-  '@pinia/nuxt': 1.0.1
-  '@playwright/test': 1.62.1
+  '@nuxt/kit': 4.5.2
+  '@nuxt/schema': 4.5.2
+  '@pinia/nuxt': 1.0.2
+  '@playwright/test': 1.63.0
   '@total-typescript/ts-reset': 0.6.1
-  '@types/node': 24.13.3
-  '@vitejs/plugin-vue': 6.0.8
+  '@types/node': 24.19.1
+  '@vitejs/plugin-vue': 6.0.9
   '@vitejs/plugin-vue-jsx': 5.1.6
-  '@vue/compiler-dom': 3.5.41
+  '@vue/compiler-dom': 3.5.43
   '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
   '@vue/devtools-api': 8.2.1
   '@vue/devtools-kit': 8.2.1
-  '@vue/reactivity': 3.5.41
+  '@vue/reactivity': 3.5.43
   '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
-  '@vue/runtime-core': 3.5.41
+  '@vue/runtime-core': 3.5.43
   '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
-  '@vue/runtime-dom': 3.5.41
+  '@vue/runtime-dom': 3.5.43
   '@vue/runtime-dom-3.4': npm:@vue/runtime-dom@3.4.38
-  '@vue/server-renderer': 3.5.41
+  '@vue/server-renderer': 3.5.43
   '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
-  '@vue/shared': 3.5.41
+  '@vue/shared': 3.5.43
   '@vue/shared-3.4': npm:@vue/shared@3.4.38
-  '@vue/test-utils': 2.4.11
-  arktype: 2.2.3
+  '@vue/test-utils': 2.5.1
+  arktype: 2.2.7
   check-password-strength: 3.0.0
-  nuxt: 4.5.1
-  pinia: 4.0.2
+  nuxt: 4.5.2
+  pinia: 4.0.3
   pinia-2.2.5: npm:pinia@2.2.5
-  playwright: 1.62.1
-  playwright-core: 1.62.1
-  publint: 0.3.23
-  sass: 1.102.0
+  playwright: 1.63.0
+  playwright-core: 1.63.0
+  publint: 0.3.25
+  sass: 1.105.1
   tailwindcss: 4.3.3
-  tsdown: 0.22.14
-  tsx: 4.23.7
-  type-fest: 5.8.0
+  tsdown: 0.23.0
+  tsx: 4.23.15
+  type-fest: 5.10.0
   # TypeScript 7 native compiler (tsc). Kept under an alias so the `typescript`
   # package can remain the Strada/JS 6.x API for vue-tsc / Volar (the
   # @typescript/typescript6 shim breaks volar's tsc patching).
   # See: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
   '@typescript/native': npm:typescript@7.0.2
   typescript: 6.0.3
-  valibot: 1.4.2
-  vite: 8.2.0
-  vitest: 4.1.10
-  vite-plus: 0.2.8
-  vite-plugin-vue-devtools: 7.7.10
-  vue: 3.5.41
+  valibot: 1.5.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vitest: 5.0.3
+  vite-plus: 1.1.0
+  vite-plugin-vue-devtools: 8.2.1
+  vue: 3.5.43
   vue-3.4: npm:vue@3.4.38
   vue-eslint-parser: 10.4.1
-  vue-router: 5.2.0
-  vue-tsc: 3.3.9
-  zod: 4.4.3
+  vue-router: 5.3.1
+  vue-tsc: 3.3.12
+  zod: 4.6.5
 
 engineStrict: true
 optimisticRepeatInstall: false

@@ -61,13 +61,17 @@ export type InferInput<
             : TMarkMaybe extends true
               ? Prettify<
                   {
-                    [K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
-                      ? K
-                      : never]?: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
+                    [
+                      K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
+                        ? K
+                        : never
+                    ]?: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
                   } & {
-                    [K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
-                      ? never
-                      : K]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
+                    [
+                      K in keyof TRulesUnwrapped as [TRulesUnwrapped[K]] extends [MaybeRef<RegleRuleDecl<any, any>>]
+                        ? never
+                        : K
+                    ]: ProcessInputChildren<TRulesUnwrapped[K], TMarkMaybe>;
                   }
                 >
               : Prettify<{

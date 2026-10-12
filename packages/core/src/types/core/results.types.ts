@@ -34,17 +34,21 @@ export type PartialFormState<TState extends Record<string, any>> = [unknown] ext
   ? {}
   : Prettify<
       {
-        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
-          ? never
-          : TState[K] extends Array<any>
+        [
+          K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
             ? never
-            : K]?: MaybeOutput<TState[K]>;
+            : TState[K] extends Array<any>
+              ? never
+              : K
+        ]?: MaybeOutput<TState[K]>;
       } & {
-        [K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
-          ? K
-          : TState[K] extends Array<any>
+        [
+          K in keyof TState as ExtendOnlyRealRecord<TState[K]> extends true
             ? K
-            : never]: NonNullable<TState[K]> extends Array<infer U extends Record<string, any>>
+            : TState[K] extends Array<any>
+              ? K
+              : never
+        ]: NonNullable<TState[K]> extends Array<infer U extends Record<string, any>>
           ? PartialFormState<U>[]
           : PartialFormState<TState[K]>;
       }
@@ -199,15 +203,15 @@ export type DeepSafeFormState<
           ? TRules extends ReglePartialRuleTree<TState, CustomRulesDeclarationTree>
             ? Prettify<
                 {
-                  [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-                    ? K
-                    : never]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
+                  [
+                    K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false ? K : never
+                  ]?: SafeProperty<TState[K], TRules[K]> extends MaybeInput<infer M>
                     ? MaybeOutput<M>
                     : SafeProperty<TState[K], TRules[K]>;
                 } & {
-                  [K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false
-                    ? never
-                    : K]-?: IsUnknown<SafeProperty<TState[K], TRules[K]>> extends true
+                  [
+                    K in keyof TState as IsPropertyOutputRequired<TState[K], TRules[K]> extends false ? never : K
+                  ]-?: IsUnknown<SafeProperty<TState[K], TRules[K]>> extends true
                     ? unknown
                     : IsAny<TState[K]> extends true
                       ? unknown

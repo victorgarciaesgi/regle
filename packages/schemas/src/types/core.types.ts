@@ -89,11 +89,13 @@ type ProcessNestedFields<
             >
           : never;
       } & {
-        readonly [TKey in keyof JoinDiscriminatedUnions<TInput> as TKey extends keyof JoinDiscriminatedUnions<TInput>
-          ? JoinDiscriminatedUnions<TInput>[TKey] extends NonNullable<JoinDiscriminatedUnions<TInput>[TKey]>
-            ? TKey
+        readonly [
+          TKey in keyof JoinDiscriminatedUnions<TInput> as TKey extends keyof JoinDiscriminatedUnions<TInput>
+            ? JoinDiscriminatedUnions<TInput>[TKey] extends NonNullable<JoinDiscriminatedUnions<TInput>[TKey]>
+              ? TKey
+              : never
             : never
-          : never]-?: TKey extends keyof JoinDiscriminatedUnions<TInput>
+        ]-?: TKey extends keyof JoinDiscriminatedUnions<TInput>
           ? InferRegleSchemaStatusType<
               NonNullable<JoinDiscriminatedUnions<TInput>[TKey]>,
               TKey extends keyof JoinDiscriminatedUnions<TOutput>

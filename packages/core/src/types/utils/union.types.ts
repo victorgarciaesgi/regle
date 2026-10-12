@@ -91,13 +91,13 @@ type RetrieveUnionUnknownValues<T extends readonly any[], TKeys extends string> 
 ]
   ? [
       {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
-          ? never
-          : K]?: GetMaybeObjectValue<F, K>;
+        [
+          K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>> ? never : K
+        ]?: GetMaybeObjectValue<F, K>;
       } & {
-        [K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>>
-          ? K
-          : never]: GetMaybeObjectValue<F, K>;
+        [
+          K in TKeys as GetMaybeObjectValue<F, K> extends NonUndefined<GetMaybeObjectValue<F, K>> ? K : never
+        ]: GetMaybeObjectValue<F, K>;
       },
       ...RetrieveUnionUnknownValues<R, TKeys>,
     ]

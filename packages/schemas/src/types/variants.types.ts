@@ -30,22 +30,26 @@ type ProcessChildrenFields<
   [TIndex in keyof TupleToPlainObj<UnionToTuple<TInput>>]: TIndex extends `${infer TIndexInt extends number}`
     ? {
         // Defined keys
-        [TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
-          UnionToTuple<TInput>[TIndexInt]
-        >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
-          ? TKey
-          : never]-?: InferRegleSchemaStatusType<
+        [
+          TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
+            UnionToTuple<TInput>[TIndexInt]
+          >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
+            ? TKey
+            : never
+        ]-?: InferRegleSchemaStatusType<
           NonNullable<UnionToTuple<TInput>[TIndexInt]>[TKey],
           NonNullable<UnionToTuple<TOutput>[TIndexInt]>[TKey],
           TShortcuts
         >;
       } & {
         // Maybe undefined keys
-        [TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
-          UnionToTuple<TInput>[TIndexInt]
-        >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
-          ? never
-          : TKey]?: InferRegleSchemaStatusType<
+        [
+          TKey in keyof UnionToTuple<TInput>[TIndexInt] as NonNullable<
+            UnionToTuple<TInput>[TIndexInt]
+          >[TKey] extends UnionToTuple<TInput>[TIndexInt][TKey]
+            ? never
+            : TKey
+        ]?: InferRegleSchemaStatusType<
           NonNullable<UnionToTuple<TInput>[TIndexInt]>[TKey],
           NonNullable<UnionToTuple<TOutput>[TIndexInt]>[TKey],
           TShortcuts

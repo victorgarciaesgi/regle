@@ -12,9 +12,9 @@
   "dependencies": {
     "@regle/core": "workspace:*",
     "@regle/rules": "workspace:*",
+    "@vue/devtools-api": "catalog:",
     "check-password-strength": "catalog:",
     "pinia": "catalog:",
-    "@vue/devtools-api": "catalog:",
     "sass": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
@@ -23,8 +23,8 @@
     "@tailwindcss/forms": "0.5.11",
     "@vitejs/plugin-vue": "catalog:",
     "@vue/tsconfig": "0.9.1",
-    "autoprefixer": "10.5.4",
-    "postcss": "8.5.25",
+    "autoprefixer": "10.6.1",
+    "postcss": "8.5.29",
     "tailwindcss": "3.4.19",
     "vite": "catalog:",
     "vite-plus": "catalog:"

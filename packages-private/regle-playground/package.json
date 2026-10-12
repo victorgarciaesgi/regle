@@ -10,11 +10,11 @@
   "dependencies": {
     "@vue/repl": "4.7.2",
     "file-saver": "2.0.5",
-    "jszip": "3.10.1",
+    "jszip": "3.10.2",
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.8",
+    "@vitejs/plugin-vue": "6.0.9",
     "execa": "10.0.1",
     "vite": "catalog:",
     "vite-plus": "catalog:"

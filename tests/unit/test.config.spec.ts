@@ -9,8 +9,8 @@ describe('ensure test is correctly configured', () => {
       expect(piniaVersion).toBe('2.2.5');
     } else {
       // To be sure the version switching works
-      expect(version).toBe('3.5.41');
-      expect(piniaVersion).toBe('4.0.2');
+      expect(version).toBe('3.5.43');
+      expect(piniaVersion).toBe('4.0.3');
     }
   });
 });

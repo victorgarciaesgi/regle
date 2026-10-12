@@ -14,8 +14,8 @@
     "@regle/nuxt": "workspace:*",
     "@regle/rules": "workspace:*",
     "@regle/schemas": "workspace:*",
-    "pinia": "catalog:",
     "@vue/devtools-api": "catalog:",
+    "pinia": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"
   },

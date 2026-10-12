@@ -1,5 +1,7 @@
 {
   "$schema": "https://turborepo.org/schema.v2.json",
+  // Skip turbo auto-writing AGENTS.md; the guidance lives in .cursor/skills/turborepo/SKILL.md
+  "agentGuidance": false,
   "futureFlags": {
     "errorsOnlyShowHash": true
   },
