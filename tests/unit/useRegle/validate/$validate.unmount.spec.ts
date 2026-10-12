@@ -8,10 +8,13 @@ describe('$validate while the component unmounts', () => {
     const results: Promise<unknown>[] = [];
 
     const Child = defineComponent({
-      setup() {
+      emits: ['validating'],
+      setup(_, { emit }) {
         const { r$ } = useRegle({ name: '' }, { name: { required } });
         onMounted(() => {
           results.push(r$.$validate());
+          // Unmount the owner in the same flush, while $validate is awaiting nextTick
+          emit('validating');
         });
         return () => null;
       },
@@ -21,28 +24,20 @@ describe('$validate while the component unmounts', () => {
       components: { Child },
       setup() {
         const isLoading = ref(false);
-        // Parent's onMounted runs after the child's, in the same flush, and unmounts the child
-        onMounted(() => {
-          isLoading.value = true;
-        });
         return { isLoading };
       },
-      template: `<Child v-if="!isLoading" />`,
+      template: `<Child v-if="!isLoading" @validating="isLoading = true" />`,
     });
 
     const Root = defineComponent({
       components: { Parent },
-      setup() {
-        const open = ref(false);
-        return { open };
-      },
-      template: `<button @click="open = true" /><Parent v-if="open" />`,
+      props: { isOpen: Boolean },
+      template: `<Parent v-if="isOpen" />`,
     });
 
-    const wrapper = mount(Root);
+    const wrapper = mount(Root, { props: { isOpen: false } });
     // Must be mounted by an update, not the initial app mount
-    await wrapper.find('button').trigger('click');
-    await nextTick();
+    await wrapper.setProps({ isOpen: true });
 
     expect(results).toHaveLength(1);
     await expect(results[0]).resolves.toMatchObject({ valid: false });
