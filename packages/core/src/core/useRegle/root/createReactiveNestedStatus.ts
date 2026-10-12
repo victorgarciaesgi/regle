@@ -870,13 +870,18 @@ export function createReactiveNestedStatus({
     if (forceValues) {
       state.value = forceValues;
     }
+    // The owner can be unmounted during `nextTick`, which $unwatch()es this node and resets `scopeState`.
+    const validationScope = scopeState;
     await nextTick();
-    return $validateWithoutRaceconditions();
+    return runValidation(validationScope);
   }
 
-  async function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
+  function $validateWithoutRaceconditions(forceValues?: any): Promise<$InternalRegleResult> {
     // A parent rebuild can $unwatch() this node while children are awaited, which resets `scopeState`.
-    const validationScope = scopeState;
+    return runValidation(scopeState, forceValues);
+  }
+
+  async function runValidation(validationScope: typeof scopeState, forceValues?: any): Promise<$InternalRegleResult> {
     try {
       if (forceValues) {
         state.value = forceValues;

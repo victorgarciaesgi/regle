@@ -1,75 +1,32 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRegle } from '@regle/core';
-  import { required, minLength, email } from '@regle/rules';
+  import FormLoader from './FormLoader.vue';
 
-  const state = ref({ name: '', email: '' });
+  const isOpen = ref(false);
+  const result = ref('');
 
-  const { r$ } = useRegle(state, {
-    name: { required, minLength: minLength(4) },
-    email: { email },
-  });
+  function open() {
+    result.value = 'Waiting for $validate()...';
+    isOpen.value = true;
+  }
 
-  async function submit() {
-    const { valid, data } = await r$.$validate();
-    if (valid) {
-      console.log(data.name);
-      //               ^ string
-      console.log(data.email);
-      //.              ^ string | undefined
-    } else {
-      console.warn('Errors: ', r$.$errors);
-    }
+  function onResult(value: string) {
+    result.value = value;
+    isOpen.value = false;
   }
 </script>
 
 <template>
   <div class="container p-3">
-    <h2>Hello Regle!</h2>
+    <h2>$validate() while the component unmounts</h2>
 
-    <div class="py-2 has-validation">
-      <label class="form-label">Name</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.name"
-        placeholder="Type your name"
-        :class="{
-          'is-valid': r$.name.$correct,
-          'is-invalid': r$.name.$error,
-        }"
-        aria-describedby="name-error"
-      />
-      <ul id="name-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.name" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
+    <button v-if="!isOpen" class="btn btn-primary" @click="open"> Open form </button>
+    <FormLoader v-else :on-result="onResult" />
 
-    <div class="py-2 has-validation">
-      <label class="form-label">Email (optional)</label>
-      <input
-        class="form-control"
-        v-model="r$.$value.email"
-        placeholder="Type your email"
-        :class="{
-          'is-valid': r$.email.$correct,
-          'is-invalid': r$.email.$error,
-        }"
-        aria-describedby="email-error"
-      />
-      <ul id="email-errors" class="invalid-feedback">
-        <li v-for="error of r$.$errors.email" :key="error">
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-
-    <button class="btn btn-primary m-2" @click="submit">Submit</button>
-    <button class="btn btn-secondary" @click="r$.$reset({ toInitialState: true })"> Restart </button>
-    <code class="status"> Form status {{ r$.$correct ? '✅' : '❌' }}</code>
+    <pre class="mt-3">{{ result }}</pre>
   </div>
 </template>
+
 <style>
   @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css';
 </style>
