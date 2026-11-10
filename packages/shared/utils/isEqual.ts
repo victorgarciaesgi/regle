@@ -20,8 +20,9 @@ export function isEqual(a: unknown, b: unknown, deep = false, firstDeep = true):
       return true;
     }
 
-    if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
-    if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+    if (typeof a.valueOf === 'function' && a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+    if (typeof a.toString === 'function' && a.toString !== Object.prototype.toString)
+      return a.toString() === b.toString();
 
     keys = Object.keys(a);
     length = keys.length;
