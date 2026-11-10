@@ -163,14 +163,14 @@ export interface RegleValidationGroupOutput {
 
 export type FieldRegleBehaviourOptions<TValue extends unknown = unknown> = AddDollarToOptions<RegleBehaviourOptions> & {
   /**
-   * Override the default `$edited` handler.
+   * Override the default `$edited` and `$modified` handler.
    */
   $isEdited?: isEditedHandlerFn<TValue>;
 };
 
 export type CollectionRegleBehaviourOptions<TValue extends unknown = unknown> = FieldRegleBehaviourOptions<TValue> & {
   /**
-   * Allow deep compare of array children to compute the `$edited` property
+   * Allow deep compare of array children to compute the `$edited` and `$modified` properties
    *
    * Disabled by default for performance
    *

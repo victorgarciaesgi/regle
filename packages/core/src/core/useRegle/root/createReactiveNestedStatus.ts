@@ -595,6 +595,23 @@ export function createReactiveNestedStatus({
         return false;
       });
 
+      const $modified = computed<boolean>(() => {
+        if ($selfStatus.value?.$modified) return true;
+        if (!Object.keys($fields.value).length) return false;
+        for (const key in $fields.value) {
+          if (!$fields.value[key]?.$modified) return false;
+        }
+        return true;
+      });
+
+      const $anyModified = computed<boolean>(() => {
+        if ($selfStatus.value?.$anyModified) return true;
+        for (const key in $fields.value) {
+          if ($fields.value[key]?.$anyModified) return true;
+        }
+        return false;
+      });
+
       const $name = computed(() => fieldName ?? commonArgs.options.id ?? 'root');
 
       const $modifiers = computed<RegleBehaviourOptions>(() => {
@@ -641,6 +658,8 @@ export function createReactiveNestedStatus({
                     $fields,
                     $edited,
                     $anyEdited,
+                    $modified,
+                    $anyModified,
                     $issues,
                     $self: $selfStatus,
                     '~modifiers': unref(commonArgs.options) as any,
@@ -711,6 +730,8 @@ export function createReactiveNestedStatus({
         $immediateDirty,
         $edited,
         $anyEdited,
+        $modified,
+        $anyModified,
         $localPending,
         $autoDirty,
         $silent,

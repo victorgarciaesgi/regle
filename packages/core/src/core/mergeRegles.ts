@@ -42,7 +42,7 @@ export type MergedRegles<
   $silentValue: TValue;
   /**
    * Current initial value of every merged instance, in the same shape as `$value`.
-   * This is the baseline `$edited` compares against, and `$reset` can replace it.
+   * This is the baseline `$edited` and `$modified` compare against, and `$reset` can replace it.
    */
   readonly $initialValue: {
     [K in keyof TRegles]: TRegles[K]['$initialValue'];
@@ -99,7 +99,7 @@ export type MergedScopedRegles<TValue extends Record<string, unknown>[] = Record
   readonly $value: TValue;
   /**
    * Current initial value of every registered instance.
-   * This is the baseline `$edited` compares against, and `$reset` can replace it.
+   * This is the baseline `$edited` and `$modified` compare against, and `$reset` can replace it.
    */
   readonly $initialValue: TValue;
   /**
@@ -362,6 +362,23 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     });
   });
 
+  const $modified = computed<boolean>(() => {
+    const entries = Object.entries(regles);
+
+    return (
+      !!entries.length &&
+      entries.every(([_, regle]) => {
+        return regle?.$modified;
+      })
+    );
+  });
+
+  const $anyModified = computed<boolean>(() => {
+    return Object.entries(regles).some(([_, regle]) => {
+      return regle?.$anyModified;
+    });
+  });
+
   const $instances = computed<TRegles | SuperCompatibleRegleRoot[]>(() => {
     if (scoped) {
       return Object.values(regles);
@@ -471,6 +488,8 @@ export function mergeRegles<TRegles extends Record<string, SuperCompatibleRegleR
     $ready,
     $edited,
     $anyEdited,
+    $modified,
+    $anyModified,
     $reset,
     $touch,
     $validate,
