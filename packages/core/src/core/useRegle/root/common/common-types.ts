@@ -31,4 +31,6 @@ export interface CommonResolverScopedState {
   $name: ComputedRef<string>;
   $edited: Ref<boolean>;
   $anyEdited: ComputedRef<boolean>;
+  $modified: ComputedRef<boolean>;
+  $anyModified: ComputedRef<boolean>;
 }

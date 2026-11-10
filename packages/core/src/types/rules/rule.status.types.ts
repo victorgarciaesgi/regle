@@ -408,6 +408,14 @@ export interface RegleCommonStatus<
   readonly $edited: boolean;
   /** Similar to $edited, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is $edited. */
   readonly $anyEdited: boolean;
+  /** Indicates whether the value is different than the initial one (`$initialValue`), regardless of the `$dirty` state.
+   *  Uses the same comparison as `$edited` (honouring `$isEdited` and `$deepCompare`), but doesn't require the field to be touched.
+   *  On nested elements and collections, it's true only if all its children are also `$modified`.
+   *  Use `$anyModified` to check for any modified children
+   */
+  readonly $modified: boolean;
+  /** Similar to $modified, with one exception. The $anyModified flag is considered true if given model was modified or any of its children are $anyModified which means at least one descendant is $modified. */
+  readonly $anyModified: boolean;
   /** Indicates if any async rule for the field is currently running. Always false for synchronous rules. */
   readonly $pending: boolean;
   /** Convenience flag to easily decide if a message should be displayed. Equivalent to $dirty && !$pending && $invalid. */

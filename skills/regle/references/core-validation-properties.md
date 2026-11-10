@@ -12,6 +12,8 @@ Every field in `r$` exposes reactive computed properties and methods for validat
 | `$anyDirty` | `boolean` | `true` if the field or any descendant is dirty |
 | `$edited` | `boolean` | `true` if dirty and value differs from initial value |
 | `$anyEdited` | `boolean` | `true` if edited or any descendant is edited |
+| `$modified` | `boolean` | `true` if value differs from initial value, regardless of `$dirty` |
+| `$anyModified` | `boolean` | `true` if modified or any descendant is modified |
 | `$value` | `TValue` | The current value. Use with `v-model` |
 | `$silentValue` | `TValue` | Set value without marking dirty |
 | `$initialValue` | `TValue` | Initial value (mutated by `$reset`) |

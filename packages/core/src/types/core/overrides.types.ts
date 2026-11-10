@@ -2,7 +2,7 @@ import type { MaybeInput } from '../utils';
 
 export interface GlobalConfigOverrides<TValue extends unknown = unknown> {
   /**
-   * Override the default $edited handler.
+   * Override the default $edited and $modified handler.
    */
   isEdited?: isEditedHandlerFn<TValue>;
 }

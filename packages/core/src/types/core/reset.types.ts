@@ -7,7 +7,7 @@ export type ResetOptions<TState extends unknown> = RequireOneOrNone<
      *
      * Initial state is different than the original state as the initial state can be mutated when using `$reset`.
      *
-     * This serve as the base comparison state for `$edited` property.
+     * This serve as the base comparison state for `$edited` and `$modified` properties.
      *
      * ⚠️ This doesn't work if the state is a `reactive` object.
      */

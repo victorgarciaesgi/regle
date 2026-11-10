@@ -418,6 +418,24 @@ export function createReactiveCollectionStatus({
         );
       });
 
+      const $modified = computed<boolean>(() => {
+        return (
+          !!$eachStatus.value.length &&
+          $eachStatus.value.every((statusOrField) => {
+            return statusOrField.$modified;
+          })
+        );
+      });
+
+      const $anyModified = computed<boolean>(() => {
+        return (
+          $selfStatus.value.$anyModified ||
+          $eachStatus.value.some((statusOrField) => {
+            return statusOrField.$anyModified;
+          })
+        );
+      });
+
       const $issues = computed(() => {
         return {
           $self: $selfStatus.value.$issues,
@@ -552,6 +570,8 @@ export function createReactiveCollectionStatus({
                     $output: state,
                     $edited,
                     $anyEdited,
+                    $modified,
+                    $anyModified,
                     $issues: $issues as any,
                   })
                 );
@@ -582,6 +602,8 @@ export function createReactiveCollectionStatus({
         $silentValue,
         $edited,
         $anyEdited,
+        $modified,
+        $anyModified,
         $rewardEarly,
         $silent,
         $autoDirty,

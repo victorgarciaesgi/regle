@@ -458,16 +458,18 @@ export function createReactiveFieldStatus({
         return initialValue !== currentValue;
       }
 
-      watchEffect(() => {
-        if ($dirty.value) {
-          if ($isEdited.value) {
-            $edited.value = $isEdited.value(state.value, initialState.value, isEditedHandler);
-          } else {
-            $edited.value = isEditedHandler(state.value, initialState.value);
-          }
-        } else {
-          $edited.value = false;
+      /** Value differs from the initial one, independently of the `$dirty` state */
+      const $modified = computed<boolean>(() => {
+        if ($isEdited.value) {
+          return $isEdited.value(state.value, initialState.value, isEditedHandler);
         }
+        return isEditedHandler(state.value, initialState.value);
+      });
+
+      const $anyModified = computed(() => $modified.value);
+
+      watchEffect(() => {
+        $edited.value = $dirty.value && $modified.value;
       });
 
       const $anyEdited = computed(() => $edited.value);
@@ -581,6 +583,8 @@ export function createReactiveFieldStatus({
                     $inactive,
                     $edited,
                     $anyEdited,
+                    $modified,
+                    $anyModified,
                   })
                 );
               });
@@ -616,6 +620,8 @@ export function createReactiveFieldStatus({
         $anyDirty,
         $edited,
         $anyEdited,
+        $modified,
+        $anyModified,
         $name,
         $haveAnyAsyncRule,
         $shortcuts,
