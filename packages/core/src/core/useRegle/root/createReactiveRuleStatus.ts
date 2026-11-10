@@ -79,19 +79,11 @@ export function createReactiveRuleStatus({
   function $watch() {
     scope = effectScope();
     scopeState = scope.run(() => {
-      // Temp fix for Vue 3.4, to avoid loops
+      // Parent field status, pushed by the field (not computed here) to avoid circular reactive dependencies
       const $fieldDirty = ref(false);
-
-      // Temp fix for Vue 3.4, to avoid loops
       const $fieldError = ref(false);
-
-      // Temp fix for Vue 3.4, to avoid loops
       const $fieldInvalid = ref(true);
-
-      // Temp fix for Vue 3.4, to avoid loops
       const $fieldPending = ref(false);
-
-      // Temp fix for Vue 3.4, to avoid loops
       // Represent the parent field $valid status
       const $fieldCorrect = ref(false);
 

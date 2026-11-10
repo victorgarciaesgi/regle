@@ -6,9 +6,8 @@ import { createPinia, defineStore, setActivePinia, skipHydrate, storeToRefs } fr
 import { defineComponent, nextTick, ref } from 'vue';
 import { z } from 'zod/v3';
 import { shouldBeErrorField, shouldBeInvalidField, shouldBeValidField } from '../../utils/validations.utils';
-import { vueVersion } from '../../utils/vueVersion';
 
-describe.runIf(vueVersion === '3.5')('$dispose', () => {
+describe('$dispose', () => {
   const useStore = defineStore('store', () => {
     const { r$ } = useRegle(
       { name: 'Hello', nested: { child: '' }, collection: [{ name: '' }] },

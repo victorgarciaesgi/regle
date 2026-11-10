@@ -3,8 +3,7 @@ import { useRegle } from '@regle/core';
 import { email, required } from '@regle/rules';
 import { defineComponent, nextTick, ref } from 'vue';
 
-// With the Vue 3.4 alias, the built packages still run on Vue 3.5, so component scope disposal can't be observed.
-describe.skipIf(process.env.VUE_VERSION === '3.4')('issue #407 - r$ access after the owning scope stops', () => {
+describe('issue #407 - r$ access after the owning scope stops', () => {
   it('should not throw when interacting with a field during a leave transition', async () => {
     const errors: unknown[] = [];
 

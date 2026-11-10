@@ -3,30 +3,14 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath } from 'node:url';
 import type { AliasOptions } from 'vite-plus';
 
-const vueVersion = (process.env.VUE_VERSION as '3.4' | '3.5') ?? '3.5';
-
-const alias: AliasOptions = [
-  ...(vueVersion === '3.4'
-    ? [
-        {
-          find: 'vue',
-          replacement: 'vue-3.4',
-        },
-        {
-          find: 'pinia',
-          replacement: 'pinia-2.2.5',
-        },
-      ]
-    : []),
-  ...(process.env.TEST_TRACE
-    ? [
-        {
-          find: /^@regle\/(.*?)$/,
-          replacement: fileURLToPath(new URL('./packages/$1/src', import.meta.url)),
-        },
-      ]
-    : []),
-];
+const alias: AliasOptions = process.env.TEST_TRACE
+  ? [
+      {
+        find: /^@regle\/(.*?)$/,
+        replacement: fileURLToPath(new URL('./packages/$1/src', import.meta.url)),
+      },
+    ]
+  : [];
 
 export default defineConfig({
   define: {
@@ -58,7 +42,7 @@ export default defineConfig({
         extends: true,
         test: {
           alias,
-          name: `Global tests - Vue ${vueVersion}.x`,
+          name: 'Global tests',
           root: './tests',
           environment: 'happy-dom',
           pool: 'vmThreads',
@@ -70,7 +54,7 @@ export default defineConfig({
         extends: true,
         test: {
           alias,
-          name: `Core tests - Vue ${vueVersion}.x`,
+          name: 'Core tests',
           root: './packages/core',
           environment: 'happy-dom',
           pool: 'vmThreads',
@@ -82,7 +66,7 @@ export default defineConfig({
         extends: true,
         test: {
           alias,
-          name: `Rules tests - Vue ${vueVersion}.x`,
+          name: 'Rules tests',
           root: './packages/rules',
           environment: 'happy-dom',
           include: ['**/*.spec.ts'],
@@ -93,7 +77,7 @@ export default defineConfig({
         extends: true,
         test: {
           alias,
-          name: `Shared tests - Vue ${vueVersion}.x`,
+          name: 'Shared tests',
           root: './packages/shared',
           environment: 'happy-dom',
           pool: 'vmThreads',
@@ -103,7 +87,7 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: `Nuxt tests - Vue ${vueVersion}.x`,
+          name: 'Nuxt tests',
           root: './packages/nuxt',
           testTimeout: 30000,
           include: ['**/*.{spec,test}.ts'],

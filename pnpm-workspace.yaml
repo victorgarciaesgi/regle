@@ -30,25 +30,18 @@ catalog:
   '@vitejs/plugin-vue': 6.0.9
   '@vitejs/plugin-vue-jsx': 5.1.6
   '@vue/compiler-dom': 3.5.43
-  '@vue/compiler-dom-3.4': npm:@vue/compiler-dom@3.4.38
   '@vue/devtools-api': 8.2.1
   '@vue/devtools-kit': 8.2.1
   '@vue/reactivity': 3.5.43
-  '@vue/reactivity-3.4': npm:@vue/reactivity@3.4.38
   '@vue/runtime-core': 3.5.43
-  '@vue/runtime-core-3.4': npm:@vue/runtime-core@3.4.38
   '@vue/runtime-dom': 3.5.43
-  '@vue/runtime-dom-3.4': npm:@vue/runtime-dom@3.4.38
   '@vue/server-renderer': 3.5.43
-  '@vue/server-renderer-3.4': npm:@vue/server-renderer@3.4.38
   '@vue/shared': 3.5.43
-  '@vue/shared-3.4': npm:@vue/shared@3.4.38
   '@vue/test-utils': 2.5.1
   arktype: 2.2.7
   check-password-strength: 3.0.0
   nuxt: 4.5.2
   pinia: 4.0.3
-  pinia-2.2.5: npm:pinia@2.2.5
   playwright: 1.63.0
   playwright-core: 1.63.0
   publint: 0.3.25
@@ -69,7 +62,6 @@ catalog:
   vite-plus: 1.1.0
   vite-plugin-vue-devtools: 8.2.1
   vue: 3.5.43
-  vue-3.4: npm:vue@3.4.38
   vue-eslint-parser: 10.4.1
   vue-router: 5.3.1
   vue-tsc: 3.3.12

@@ -11,7 +11,6 @@ import {
   shouldBeUnRuledPristineField,
   shouldBeValidField,
 } from '../../../utils/validations.utils';
-import { vueVersion } from '../../../utils/vueVersion';
 
 describe('external errors', () => {
   it('should behave correctly when no client rule are present', async () => {
@@ -82,9 +81,7 @@ describe('external errors', () => {
     // Validation is true because all local rules are valid, this doesn't count external errors
     expect(valid).toBe(true);
 
-    if (vueVersion === '3.5') {
-      await nextTick();
-    }
+    await nextTick();
 
     await vm.$nextTick();
 

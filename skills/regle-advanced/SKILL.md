@@ -2,7 +2,7 @@
 name: regle-advanced
 description: Advanced Regle form validation patterns — collection validation with `$each`, async rules and `$pending`, server/`externalErrors`, `$reset` options, global config with `defineRegleConfig`, discriminated-union variants, cross-component `useScopedRegle`/`useCollectScope`, `mergeRegles`, and object-level `$self`. Use for arrays of fields, async/server validation, scoped or merged forms, i18n messages, or variant forms. For schema libraries see regle-schemas.
 license: MIT
-compatibility: Requires Vue 3.3+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
+compatibility: Requires Vue 3.5+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
 metadata:
   author: Victor Garcia
   version: "1.27.0"

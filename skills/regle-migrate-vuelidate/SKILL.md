@@ -2,7 +2,7 @@
 name: regle-migrate-vuelidate
 description: Migrate Vuelidate form validation to Regle. Use when porting forms that import from `@vuelidate/core`/`@vuelidate/validators` or call `useVuelidate` over to `useRegle`/`useScopedRegle`, including rules, validation properties, `v-model` bindings, nested/scoped validation, and parent-child form propagation.
 license: MIT
-compatibility: Requires Vue 3.3+, TypeScript 5.1+, `@regle/core`, and `@regle/rules`. Works with any agent supporting the Agent Skills spec.
+compatibility: Requires Vue 3.5+, TypeScript 5.1+, `@regle/core`, and `@regle/rules`. Works with any agent supporting the Agent Skills spec.
 metadata:
   author: Victor Garcia
   version: "1.27.0"
