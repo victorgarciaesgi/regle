@@ -73,6 +73,24 @@ Indicates whether a field has been touched and if the value is different than th
 Similar to `$edited`, with one exception. The $anyEdited flag is considered true if given model was edited or any of its children are $anyEdited which means at least one descendant is `$edited`.
 
 
+### `$modified` 
+- Type: `readonly boolean`
+
+Indicates whether the value is different than the initial one (`$initialValue`), **regardless of the `$dirty` state**.
+
+It uses the same comparison as `$edited` (honouring `$isEdited` and `$deepCompare`) and the same baseline, so `$reset` re-baselines it. It has no effect on `$dirty`, rule execution or error display.
+
+This is useful with `autoDirty: false`, or when using `$silentValue`, where `$edited` stays `false` until the field is touched.
+
+On nested elements and collections, it's true only if all its children are also `$modified`.
+
+
+### `$anyModified` 
+- Type: `readonly boolean`
+
+Similar to `$modified`, with one exception. The `$anyModified` flag is considered true if given model was modified or any of its children are `$anyModified` which means at least one descendant is `$modified`.
+
+
 ### `$value` 
 - Type: `TValue` (The current property value type)
 
@@ -138,10 +156,19 @@ Return the current key name of the field.
 
 
 ### `$validate` 
-- Type: `(forceValues?: TState) => Promise<false | SafeOutput<TState>>`
+- Type: `(forceValues?: TState) => Promise<RegleResult<TState, TRules>>`
 
 Sets all properties as dirty, triggering all rules. 
-It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
+It resolves to an object containing `valid`, `data`, `errors`, and `issues`. Check `valid` before using `data` as validated output. When `valid` is `true`, values with the `required` rule are typed as non-nullable. Field and collection validation use the corresponding `RegleFieldResult` and `RegleCollectionResult` types.
+
+```ts
+const { valid, data } = await r$.$validate();
+if (valid) {
+  console.log(data);
+}
+```
+
+An invalid result object is still truthy. Use its `valid` property instead of `if (await r$.$validate())`.
 
 #### `forceValues` parameter
 

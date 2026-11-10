@@ -94,6 +94,10 @@ minimumReleaseAgeExclude:
   - '@oxlint-tsgolint/*'
   - oxfmt
   - '@oxfmt/*'
+# semver@6.3.1 is npm's 2023 ReDoS backport for the 6.x line, published without provenance
+# after 7.5.2 had it. Required by @babel/core, so the trust-downgrade check is a false positive.
+trustPolicyExclude:
+  - semver@6.3.1
 
 overrides:
   vite: 'catalog:'

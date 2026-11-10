@@ -52,13 +52,28 @@ export function createUseCollectScope<TNamedScoped extends boolean = false>(
 
     watch(computedNamespace, setEmptyNamespace);
 
-    watch(
-      instances,
-      (newInstances) => {
-        r$.value = collectRegles(newInstances);
-      },
-      { deep: true }
+    const collectedNamespaces = computed<string[]>(() => {
+      if (!computedNamespace.value) {
+        return ['~~global'];
+      }
+      return Array.isArray(computedNamespace.value) ? computedNamespace.value : [computedNamespace.value];
+    });
+
+    /**
+     * Only track the registered instances of the collected namespaces (which instances exist, and which `r$` each key holds).
+     * The merged `r$` already reads each instance state reactively, so deep watching the whole store
+     * would make every collector re-run on any field change in any namespace.
+     */
+    const collectedInstances = computed(() =>
+      collectedNamespaces.value.map((namespace) => {
+        const namespaceRecord = instances.value[namespace];
+        return [namespaceRecord, namespaceRecord ? Object.entries(namespaceRecord) : []];
+      })
     );
+
+    watch(collectedInstances, () => {
+      r$.value = collectRegles(instances.value);
+    });
 
     function collectRegles(r$Instances: ScopedInstancesRecord) {
       if (computedNamespace.value) {

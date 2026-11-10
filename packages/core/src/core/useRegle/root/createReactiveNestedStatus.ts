@@ -119,7 +119,8 @@ export function createReactiveNestedStatus({
   const $selfStatus = ref<$InternalRegleFieldStatus | undefined>(undefined);
 
   async function createReactiveFieldsStatus(watchSources = true) {
-    const mapOfRulesDef = Object.entries(rulesDef.value).filter(([key]) => key !== '$self');
+    // `$self` is handled separately, `$key` is a collection item identifier (not a field)
+    const mapOfRulesDef = Object.entries(rulesDef.value).filter(([key]) => key !== '$self' && key !== '$key');
 
     const scopedRulesStatus = Object.fromEntries(
       mapOfRulesDef.reduce(
@@ -595,6 +596,23 @@ export function createReactiveNestedStatus({
         return false;
       });
 
+      const $modified = computed<boolean>(() => {
+        if ($selfStatus.value?.$modified) return true;
+        if (!Object.keys($fields.value).length) return false;
+        for (const key in $fields.value) {
+          if (!$fields.value[key]?.$modified) return false;
+        }
+        return true;
+      });
+
+      const $anyModified = computed<boolean>(() => {
+        if ($selfStatus.value?.$anyModified) return true;
+        for (const key in $fields.value) {
+          if ($fields.value[key]?.$anyModified) return true;
+        }
+        return false;
+      });
+
       const $name = computed(() => fieldName ?? commonArgs.options.id ?? 'root');
 
       const $modifiers = computed<RegleBehaviourOptions>(() => {
@@ -641,6 +659,8 @@ export function createReactiveNestedStatus({
                     $fields,
                     $edited,
                     $anyEdited,
+                    $modified,
+                    $anyModified,
                     $issues,
                     $self: $selfStatus,
                     '~modifiers': unref(commonArgs.options) as any,
@@ -711,6 +731,8 @@ export function createReactiveNestedStatus({
         $immediateDirty,
         $edited,
         $anyEdited,
+        $modified,
+        $anyModified,
         $localPending,
         $autoDirty,
         $silent,

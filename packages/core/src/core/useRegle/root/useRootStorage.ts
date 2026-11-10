@@ -19,6 +19,7 @@ import type {
 import { isRegleDevtoolsTestEnv } from '../../../utils/devtools.utils';
 import { useStorage } from '../../useStorage';
 import { isNestedRulesDef, isValidatorRulesDef } from '../guards';
+import { createDetachedStatus } from './createDetachedStatus';
 import { createReactiveFieldStatus } from './createReactiveFieldStatus';
 import { createReactiveNestedStatus } from './createReactiveNestedStatus';
 
@@ -189,7 +190,7 @@ export function useRootStorage({
   overrides: GlobalConfigOverrides | undefined;
 }) {
   const storage = useStorage();
-  const isEnabled = ref(false);
+  let isEnabled = false;
   const attachedScopes = new Set<EffectScope>();
   let rootScope: EffectScope | undefined;
 
@@ -272,9 +273,9 @@ export function useRootStorage({
   }
 
   function startRootStorage() {
-    if (isEnabled.value) return;
+    if (isEnabled) return;
 
-    isEnabled.value = true;
+    isEnabled = true;
     rootScope = effectScope(true);
     rootScope.run(() => {
       externalChannels.start();
@@ -294,15 +295,17 @@ export function useRootStorage({
   }
 
   function stopRootStorage() {
-    if (!isEnabled.value) return;
+    if (!isEnabled) return;
 
-    isEnabled.value = false;
+    isEnabled = false;
     unwatchRegle();
     $unwatchDisabled?.();
     clearWatchHandles();
     rootScope?.stop();
     rootScope = undefined;
-    regle.value = undefined;
+    // Release the status tree, but keep `r$` safe to use for handlers that still run after
+    // the scope stopped (blur on unmount, leave transitions...). See #407.
+    regle.value = createDetachedStatus();
     storage.clearAll();
   }
 
@@ -310,7 +313,7 @@ export function useRootStorage({
     const currentScope = getCurrentScope();
 
     if (!currentScope || attachedScopes.has(currentScope)) return;
-    if (!isEnabled.value) {
+    if (!isEnabled) {
       startRootStorage();
     }
 
@@ -342,5 +345,6 @@ export function useRootStorage({
   return {
     regle,
     bindToCurrentScope,
+    isActive: () => isEnabled,
   };
 }

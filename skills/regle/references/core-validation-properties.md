@@ -12,6 +12,8 @@ Every field in `r$` exposes reactive computed properties and methods for validat
 | `$anyDirty` | `boolean` | `true` if the field or any descendant is dirty |
 | `$edited` | `boolean` | `true` if dirty and value differs from initial value |
 | `$anyEdited` | `boolean` | `true` if edited or any descendant is edited |
+| `$modified` | `boolean` | `true` if value differs from initial value, regardless of `$dirty` |
+| `$anyModified` | `boolean` | `true` if modified or any descendant is modified |
 | `$value` | `TValue` | The current value. Use with `v-model` |
 | `$silentValue` | `TValue` | Set value without marking dirty |
 | `$initialValue` | `TValue` | Initial value (mutated by `$reset`) |
@@ -29,12 +31,23 @@ Every field in `r$` exposes reactive computed properties and methods for validat
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
-| `$validate` | `(forceValues?) => Promise<false \| SafeOutput>` | Set all dirty, run all rules, return typed result |
+| `$validate` | `(forceValues?) => Promise<RegleResult<TState, TRules>>` | Set all dirty, run all rules, return typed result |
 | `$validateSync` | `(forceValues?) => boolean` | Synchronous validation (skips async rules) |
 | `$touch` | `() => void` | Mark field and children as dirty |
 | `$reset` | `(options?) => void` | Reset validation state. See reset forms reference |
 | `$extractDirtyFields` | `(filterNullish?) => DeepPartial<TState>` | Extract only dirty fields |
 | `$clearExternalErrors` | `() => void` | Clear external errors |
+
+`$validate()` resolves to an object with `valid`, `data`, `errors`, and `issues`. Check `valid` before using the validated data. Field and collection results use `RegleFieldResult` and `RegleCollectionResult` respectively, with the same result properties.
+
+```ts
+const { valid, data } = await r$.$validate();
+if (valid) {
+  console.log(data);
+}
+```
+
+An invalid result object is still truthy, so `if (await r$.$validate())` does not check validity. `$validateSync()` returns a boolean and skips async rules.
 
 ## Nested object properties
 
