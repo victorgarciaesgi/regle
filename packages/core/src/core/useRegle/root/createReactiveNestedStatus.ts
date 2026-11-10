@@ -119,7 +119,8 @@ export function createReactiveNestedStatus({
   const $selfStatus = ref<$InternalRegleFieldStatus | undefined>(undefined);
 
   async function createReactiveFieldsStatus(watchSources = true) {
-    const mapOfRulesDef = Object.entries(rulesDef.value).filter(([key]) => key !== '$self');
+    // `$self` is handled separately, `$key` is a collection item identifier (not a field)
+    const mapOfRulesDef = Object.entries(rulesDef.value).filter(([key]) => key !== '$self' && key !== '$key');
 
     const scopedRulesStatus = Object.fromEntries(
       mapOfRulesDef.reduce(
