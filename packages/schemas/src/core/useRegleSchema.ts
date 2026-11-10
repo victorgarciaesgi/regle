@@ -255,7 +255,7 @@ export function createUseRegleSchemaComposable<TShortcuts extends RegleShortcutD
 
     return {
       r$: toReactive(regle.regle, isDisabled, () => {
-        if (!regle.regle.value) {
+        if (!regle.isActive()) {
           bindSchemaToCurrentScope();
           regle.bindToCurrentScope();
         }
