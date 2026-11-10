@@ -58,7 +58,15 @@ export default defineConfig({
             },
           ],
           '@typescript-eslint/no-explicit-any': 'off',
-          'no-unused-vars': 'warn',
+          'no-unused-vars': [
+            'warn',
+            {
+              argsIgnorePattern: '^_',
+              varsIgnorePattern: '^_',
+              caughtErrorsIgnorePattern: '^_',
+              destructuredArrayIgnorePattern: '^_',
+            },
+          ],
         },
         plugins: ['import', 'promise', 'typescript', 'eslint', 'vue', 'unicorn', 'vitest', 'oxc', 'jsdoc'],
       },

@@ -2,7 +2,7 @@
 name: regle-schemas
 description: Validate Regle forms with schema libraries via `@regle/schemas` — Zod, Valibot, ArkType, and any Standard Schema spec library using `useRegleSchema`, `useRules`, `refineRules`, and `InferInput`. Use when a form's validation is defined by an external schema instead of `@regle/rules`. For native rules see regle-rules; for form setup see regle.
 license: MIT
-compatibility: Requires Vue 3.3+, TypeScript 5.1+, and `@regle/schemas`. Works with any agent supporting the Agent Skills spec.
+compatibility: Requires Vue 3.5+, TypeScript 5.1+, and `@regle/schemas`. Works with any agent supporting the Agent Skills spec.
 metadata:
   author: Victor Garcia
   version: "1.27.0"

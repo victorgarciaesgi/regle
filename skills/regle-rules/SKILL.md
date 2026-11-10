@@ -2,7 +2,7 @@
 name: regle-rules
 description: Regle validation rules — built-in rules from `@regle/rules`, custom rules with `createRule`, rule wrappers (`withMessage`, `withParams`, `withAsync`, `withTooltip`), and rule operators (`and`, `or`, `xor`, `not`, `applyIf`, `assignIf`, `pipe`). Use when declaring, customizing, composing, or conditionally applying validation rules in a Regle form. For form setup see regle.
 license: MIT
-compatibility: Requires Vue 3.3+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
+compatibility: Requires Vue 3.5+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
 metadata:
   author: Victor Garcia
   version: "1.27.0"

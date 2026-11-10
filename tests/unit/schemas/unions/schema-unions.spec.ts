@@ -10,7 +10,6 @@ import {
 } from '../../../utils/validations.utils';
 import { MyEnum, valibotUnionsFixture } from './fixtures/valibot.fixture';
 import { zod4UnionsFixture } from './fixtures/zod4.fixture';
-import { vueVersion } from '../../../utils/vueVersion';
 
 describe.each([
   ['valibot', valibotUnionsFixture],
@@ -77,12 +76,10 @@ describe.each([
     await vm.$nextTick();
     await vm.$nextTick();
 
-    if (vueVersion === '3.5') {
-      shouldBeValidField(vm.r$.gift);
-      expect(vm.r$.$value.gift?.type).toBe('Shares');
-      shouldBeValidField(vm.r$.gift?.company);
-      shouldBeValidField(vm.r$.gift?.shares);
-    }
+    shouldBeValidField(vm.r$.gift);
+    expect(vm.r$.$value.gift?.type).toBe('Shares');
+    shouldBeValidField(vm.r$.gift?.company);
+    shouldBeValidField(vm.r$.gift?.shares);
 
     const [{ valid }] = await Promise.all([vm.r$.$validate(), vi.advanceTimersByTimeAsync(200)]);
 
@@ -131,10 +128,8 @@ describe.each([
     vm.r$.$value.union = false;
     await vm.$nextTick();
 
-    if (vueVersion === '3.5') {
-      shouldBeErrorField(vm.r$.enum);
-      shouldBeErrorField(vm.r$.nativeEnum);
-      shouldBeErrorField(vm.r$.union);
-    }
+    shouldBeErrorField(vm.r$.enum);
+    shouldBeErrorField(vm.r$.nativeEnum);
+    shouldBeErrorField(vm.r$.union);
   });
 });

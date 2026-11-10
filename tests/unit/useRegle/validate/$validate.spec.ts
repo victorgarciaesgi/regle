@@ -118,7 +118,7 @@ describe('$validate', () => {
     }
   });
 
-  it.skipIf(process.env.VUE_VERSION === '3.4')('should work with race conditions on value update', async () => {
+  it('should work with race conditions on value update', async () => {
     const ChildComponent = defineComponent({
       template: `<div>
         <input id="email" type="text" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />

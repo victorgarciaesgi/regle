@@ -7,7 +7,7 @@ title: Installation
 ## Prerequisites
 
 Required
-- [Vue](https://vuejs.org/) <span data-title="vue"></span>  `3.4+`.
+- [Vue](https://vuejs.org/) <span data-title="vue"></span>  `3.5+`.
 - [Typescript](https://www.typescriptlang.org/) <span data-title="ee.ts"></span>  `5.1+`. 
   - Compatible with plain javascript.
 - Text Editor with Vue syntax support.
@@ -15,7 +15,7 @@ Required
 
 Optional
 - [Nuxt](https://nuxt.com/) <span data-title="nuxt"></span> 
-  - Nuxt  `3.2.0+`, and check docs for [Nuxt module](/integrations/nuxt)
+  - Nuxt  `3.13.0+`, and check docs for [Nuxt module](/integrations/nuxt)
 - [Pinia](https://pinia.vuejs.org/) <span data-title="pinia"></span> 
   - Pinia  `2.2.5+`
 

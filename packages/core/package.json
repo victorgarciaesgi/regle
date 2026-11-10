@@ -75,7 +75,7 @@
   },
   "peerDependencies": {
     "pinia": ">=2.2.5",
-    "vue": ">=3.3.0"
+    "vue": ">=3.5.0"
   },
   "peerDependenciesMeta": {
     "pinia": {

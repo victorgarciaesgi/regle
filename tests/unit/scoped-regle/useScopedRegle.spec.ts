@@ -2,10 +2,8 @@ import { mount } from '@vue/test-utils';
 import ParentCollector from './fixtures/ParentCollector.vue';
 import { useScope5Regle } from './fixtures/scoped-config';
 import { RegleVuePlugin } from '@regle/core';
-import { vueVersion } from '../../utils/vueVersion';
 
-describe.runIf(vueVersion === '3.5')('useScopedRegle', () => {
-  // Weird test bug to resolve with Vue 3.4
+describe('useScopedRegle', () => {
   const wrapper = mount(ParentCollector, {
     attachTo: document.documentElement,
     global: {

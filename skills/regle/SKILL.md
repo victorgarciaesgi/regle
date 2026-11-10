@@ -2,7 +2,7 @@
 name: regle
 description: Core Regle form validation in Vue 3 — setup with `useRegle`, the reactive `r$` object, validation properties, displaying errors, and modifiers. Use when adding or editing Regle forms, binding `v-model` to `r$.$value`, or reading `$error`/`$errors`/`$invalid`/`$validate`/`$reset`. For validation rules see regle-rules; for advanced patterns see regle-advanced.
 license: MIT
-compatibility: Requires Vue 3.3+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
+compatibility: Requires Vue 3.5+ and TypeScript 5.1+. Works with any agent supporting the Agent Skills spec.
 metadata:
   author: Victor Garcia
   version: "1.27.0"
@@ -38,7 +38,7 @@ pnpm add @regle/core @regle/rules
 pnpm add @regle/schemas
 ```
 
-Requires Vue 3.3+ and TypeScript 5.1+.
+Requires Vue 3.5+ and TypeScript 5.1+.
 
 ## Quick Start
 
