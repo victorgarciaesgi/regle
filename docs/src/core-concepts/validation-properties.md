@@ -156,10 +156,19 @@ Return the current key name of the field.
 
 
 ### `$validate` 
-- Type: `(forceValues?: TState) => Promise<false | SafeOutput<TState>>`
+- Type: `(forceValues?: TState) => Promise<RegleResult<TState, TRules>>`
 
 Sets all properties as dirty, triggering all rules. 
-It returns a promise that will either resolve to `false` or a Headless copy of your form state. Values that had the `required` rule will be transformed into a non-nullable value (type only).
+It resolves to an object containing `valid`, `data`, `errors`, and `issues`. Check `valid` before using `data` as validated output. When `valid` is `true`, values with the `required` rule are typed as non-nullable. Field and collection validation use the corresponding `RegleFieldResult` and `RegleCollectionResult` types.
+
+```ts
+const { valid, data } = await r$.$validate();
+if (valid) {
+  console.log(data);
+}
+```
+
+An invalid result object is still truthy. Use its `valid` property instead of `if (await r$.$validate())`.
 
 #### `forceValues` parameter
 
