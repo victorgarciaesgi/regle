@@ -332,4 +332,28 @@ describe('collections validations', () => {
     shouldBeErrorField(vm.r$.collection.$each[6]);
     shouldBeErrorField(vm.r$.collection.$each[7]);
   });
+
+  it('should ignore `$key` returned from `$each` when validating (#409)', async () => {
+    const { r$ } = useRegle(
+      ref({
+        items: [
+          { id: 1, name: 'foo' },
+          { id: 2, name: 'bar' },
+        ],
+      }),
+      {
+        items: {
+          $each: (item) => ({
+            $key: item.value.id,
+            name: { required },
+          }),
+        },
+      }
+    );
+
+    expect(Object.keys(r$.items.$each[0].$fields)).not.toContain('$key');
+    expect(r$.$validateSync()).toBe(true);
+    expect((await r$.$validate()).valid).toBe(true);
+    expect(r$.$invalid).toBe(false);
+  });
 });
