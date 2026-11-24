@@ -160,7 +160,8 @@ export function createReactiveNestedStatus({
       Array.from(
         new Set([...Object.keys(toValue(externalErrors) ?? {}), ...Object.keys(toValue(externalIssues) ?? {})])
       )
-        .filter((key) => !(key in rulesDef.value))
+        // `$self` external errors belong to the `$self` status
+        .filter((key) => key !== '$self' && !(key in rulesDef.value))
         .map((key) => {
           const stateRef = toRef(state.value ?? {}, key);
           const $externalErrors = toRef(externalErrors?.value ?? {}, key);
@@ -267,14 +268,14 @@ export function createReactiveNestedStatus({
   }
 
   function createReactiveSelfStatus() {
-    if (rulesDef.value.$self) {
+    if (rulesDef.value.$self || !isEmpty(externalErrors?.value?.$self) || !isEmpty(externalIssues?.value?.$self)) {
       $selfStatus.value = createReactiveFieldStatus({
         state,
         rulesDef: computed(() => rulesDef.value.$self ?? {}),
         path,
         cachePath,
-        externalErrors: ref(undefined),
-        externalIssues: ref(undefined),
+        externalErrors: toRef(externalErrors?.value ?? {}, '$self') as Ref<string[] | undefined>,
+        externalIssues: toRef(externalIssues?.value ?? {}, '$self') as Ref<any>,
         schemaErrors: ref(undefined),
         initialState: initialState ?? ref(undefined),
         originalState,
@@ -441,7 +442,8 @@ export function createReactiveNestedStatus({
         const hasSelfRules = rulesDef.value.$self && !isEmpty(rulesDef.value.$self);
 
         if (fields.length || hasSelfRules) {
-          const selfCorrect = $selfStatus.value?.$correct ?? true;
+          // A `$self` status without rules only carries external errors
+          const selfCorrect = hasSelfRules ? ($selfStatus.value?.$correct ?? true) : !$selfStatus.value?.$invalid;
           let childrenCorrect = false;
 
           if (commonArgs.schemaMode) {

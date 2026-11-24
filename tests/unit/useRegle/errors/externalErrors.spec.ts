@@ -1045,6 +1045,109 @@ describe('external errors', () => {
     expect(vm.r$.$errors).toStrictEqual([]);
   });
 
+  describe('nested object $self external errors (#415)', () => {
+    it('should attach $self errors to the $self status and clear them on property change when there are no $self rules', async () => {
+      function nestedSelfWithoutRules() {
+        const form = reactive({ owner: { id: 1 } });
+        return { form, ...useRegle(form, { owner: { id: { required } } }, { clearExternalErrorsOnChange: true }) };
+      }
+
+      const { vm } = createRegleComponent(nestedSelfWithoutRules);
+
+      vm.r$.$setExternalErrors({ owner: { $self: ['Unknown owner'] } });
+      await vm.$nextTick();
+      vm.r$.$touch();
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ $self: ['Unknown owner'], id: [] });
+      expect(vm.r$.owner.$self?.$externalErrors).toStrictEqual(['Unknown owner']);
+      expect(Object.keys(vm.r$.owner.$fields)).toStrictEqual(['id']);
+      expect(vm.r$.owner.$invalid).toBe(true);
+      expect(vm.r$.owner.$error).toBe(true);
+      expect(vm.r$.owner.$correct).toBe(false);
+
+      vm.form.owner.id = 3;
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ id: [] });
+      expect(vm.r$.owner.$invalid).toBe(false);
+      expect(vm.r$.owner.$error).toBe(false);
+      expect(vm.r$.owner.$correct).toBe(true);
+    });
+
+    it('should clear $self errors when the object is replaced and there are no $self rules', async () => {
+      function nestedSelfReplaced() {
+        const form = reactive({ owner: { id: 1 } });
+        return { form, ...useRegle(form, { owner: { id: { required } } }, { clearExternalErrorsOnChange: true }) };
+      }
+
+      const { vm } = createRegleComponent(nestedSelfReplaced);
+
+      vm.r$.$setExternalErrors({ owner: { $self: ['Unknown owner'] } });
+      await vm.$nextTick();
+      vm.r$.$touch();
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ $self: ['Unknown owner'], id: [] });
+
+      vm.form.owner = { id: 4 };
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ id: [] });
+      expect(vm.r$.owner.$invalid).toBe(false);
+    });
+
+    it('should show $self errors and clear them on property change when there are $self rules', async () => {
+      function nestedSelfWithRules() {
+        const form = reactive({ owner: { id: 1 } as { id: number } | null });
+        return {
+          form,
+          ...useRegle(
+            form,
+            { owner: { $self: { required }, id: { required } } },
+            { clearExternalErrorsOnChange: true }
+          ),
+        };
+      }
+
+      const { vm } = createRegleComponent(nestedSelfWithRules);
+
+      vm.r$.$setExternalErrors({ owner: { $self: ['Unknown owner'] } });
+      await vm.$nextTick();
+      vm.r$.$touch();
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ $self: ['Unknown owner'], id: [] });
+      expect(vm.r$.owner.$self?.$externalErrors).toStrictEqual(['Unknown owner']);
+      shouldBeErrorField(vm.r$.owner.$self);
+
+      vm.form.owner!.id = 3;
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ $self: [], id: [] });
+      shouldBeValidField(vm.r$.owner.$self);
+    });
+
+    it('should keep $self errors on property change when clearExternalErrorsOnChange is false', async () => {
+      function nestedSelfNoClear() {
+        const form = reactive({ owner: { id: 1 } });
+        return { form, ...useRegle(form, { owner: { id: { required } } }, { clearExternalErrorsOnChange: false }) };
+      }
+
+      const { vm } = createRegleComponent(nestedSelfNoClear);
+
+      vm.r$.$setExternalErrors({ owner: { $self: ['Unknown owner'] } });
+      await vm.$nextTick();
+      vm.r$.$touch();
+      await vm.$nextTick();
+
+      vm.form.owner.id = 3;
+      await vm.$nextTick();
+
+      expect(vm.r$.owner.$errors).toStrictEqual({ $self: ['Unknown owner'], id: [] });
+    });
+  });
+
   describe('clearExternalErrorsOnValidate', () => {
     type Form = { name: string; address: { city: string } };
 
