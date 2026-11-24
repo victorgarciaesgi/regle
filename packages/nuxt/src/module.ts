@@ -7,6 +7,7 @@ import {
   createResolver,
   addPlugin,
 } from '@nuxt/kit';
+import type { NuxtModule } from '@nuxt/schema';
 import { resolveRegleExportsTemplatePath, resolveTemplateImportPath } from './pathUtils';
 
 export interface ModuleOptions {
@@ -16,7 +17,7 @@ export interface ModuleOptions {
   setupFile: string;
 }
 
-export default defineNuxtModule<ModuleOptions>({
+const regleNuxtModule: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
   meta: {
     name: '@regle/nuxt',
     configKey: 'regle',
@@ -155,3 +156,5 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   },
 });
+
+export default regleNuxtModule;

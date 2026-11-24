@@ -21,33 +21,33 @@ allowBuilds:
 
 catalog:
   '@arethetypeswrong/core': 0.18.5
-  '@nuxt/kit': 4.5.2
-  '@nuxt/schema': 4.5.2
-  '@pinia/nuxt': 1.0.2
-  '@playwright/test': 1.63.0
+  '@nuxt/kit': 4.6.4
+  '@nuxt/schema': 4.6.4
+  '@pinia/nuxt': 1.0.3
+  '@playwright/test': 1.65.1
   '@total-typescript/ts-reset': 0.6.1
-  '@types/node': 24.19.1
-  '@vitejs/plugin-vue': 6.0.9
+  '@types/node': 24.19.2
+  '@vitejs/plugin-vue': 6.0.11
   '@vitejs/plugin-vue-jsx': 5.1.6
-  '@vue/compiler-dom': 3.5.43
+  '@vue/compiler-dom': 3.5.45
   '@vue/devtools-api': 8.2.1
   '@vue/devtools-kit': 8.2.1
-  '@vue/reactivity': 3.5.43
-  '@vue/runtime-core': 3.5.43
-  '@vue/runtime-dom': 3.5.43
-  '@vue/server-renderer': 3.5.43
-  '@vue/shared': 3.5.43
-  '@vue/test-utils': 2.5.1
-  arktype: 2.2.7
+  '@vue/reactivity': 3.5.45
+  '@vue/runtime-core': 3.5.45
+  '@vue/runtime-dom': 3.5.45
+  '@vue/server-renderer': 3.5.45
+  '@vue/shared': 3.5.45
+  '@vue/test-utils': 2.6.0
+  arktype: 2.2.9
   check-password-strength: 3.0.0
-  nuxt: 4.5.2
-  pinia: 4.0.3
-  playwright: 1.63.0
-  playwright-core: 1.63.0
+  nuxt: 4.6.4
+  pinia: 4.1.0
+  playwright: 1.65.1
+  playwright-core: 1.65.1
   publint: 0.3.25
-  sass: 1.105.1
-  tailwindcss: 4.3.3
-  tsdown: 0.23.0
+  sass: 1.108.2
+  tailwindcss: 4.3.5
+  tsdown: 0.23.7
   tsx: 4.23.15
   type-fest: 5.10.0
   # TypeScript 7 native compiler (tsc). Kept under an alias so the `typescript`
@@ -57,15 +57,15 @@ catalog:
   '@typescript/native': npm:typescript@7.0.2
   typescript: 6.0.3
   valibot: 1.5.0
-  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
-  vitest: 5.0.3
-  vite-plus: 1.1.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.6.0
+  vitest: 5.1.0
+  vite-plus: 1.6.0
   vite-plugin-vue-devtools: 8.2.1
-  vue: 3.5.43
-  vue-eslint-parser: 10.4.1
-  vue-router: 5.3.1
-  vue-tsc: 3.3.12
-  zod: 4.6.5
+  vue: 3.5.45
+  vue-eslint-parser: 10.4.2
+  vue-router: 5.5.1
+  vue-tsc: 3.3.14
+  zod: 4.6.7
 
 engineStrict: true
 optimisticRepeatInstall: false

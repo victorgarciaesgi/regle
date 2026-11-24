@@ -36,18 +36,14 @@
       <h2>useRegle (setupFile)</h2>
       <label>Name</label><br />
       <input v-model="rules$.$value.name" placeholder="Type your name" />
-      <p style="font-size: 12px">
-        $dirty: <strong>{{ rules$.name.$dirty }}</strong>
-      </p>
+      <p style="font-size: 12px"> $dirty: <strong>{{ rules$.name.$dirty }}</strong> </p>
       <ul style="font-size: 12px; color: red">
         <li v-for="error of rules$.$errors.name" :key="error">{{ error }}</li>
       </ul>
 
       <label>Email</label><br />
       <input v-model="rules$.$value.email" placeholder="Type your email" />
-      <p style="font-size: 12px">
-        $dirty: <strong>{{ rules$.email.$dirty }}</strong>
-      </p>
+      <p style="font-size: 12px"> $dirty: <strong>{{ rules$.email.$dirty }}</strong> </p>
       <ul style="font-size: 12px; color: red">
         <li v-for="error of rules$.$errors.email" :key="error">{{ error }}</li>
       </ul>
@@ -60,18 +56,14 @@
       <h2>useRegleSchema (plugin inject)</h2>
       <label>Name</label><br />
       <input v-model="schema$.$value.name" placeholder="Type your name" />
-      <p style="font-size: 12px">
-        $dirty: <strong>{{ schema$.name.$dirty }}</strong>
-      </p>
+      <p style="font-size: 12px"> $dirty: <strong>{{ schema$.name.$dirty }}</strong> </p>
       <ul style="font-size: 12px; color: red">
         <li v-for="error of schema$.$errors.name" :key="error">{{ error }}</li>
       </ul>
 
       <label>Email</label><br />
       <input v-model="schema$.$value.email" placeholder="Type your email" />
-      <p style="font-size: 12px">
-        $dirty: <strong>{{ schema$.email.$dirty }}</strong>
-      </p>
+      <p style="font-size: 12px"> $dirty: <strong>{{ schema$.email.$dirty }}</strong> </p>
       <ul style="font-size: 12px; color: red">
         <li v-for="error of schema$.$errors.email" :key="error">{{ error }}</li>
       </ul>

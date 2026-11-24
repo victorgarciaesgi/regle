@@ -1,7 +1,7 @@
 import { useRegle } from '@regle/core';
 import { required } from '@regle/rules';
 import { mount } from '@vue/test-utils';
-import { defineComponent, nextTick, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 describe('$validate while the component unmounts', () => {
   it('should resolve instead of rejecting when the owner unmounts during nextTick (#404)', async () => {

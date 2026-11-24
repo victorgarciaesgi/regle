@@ -57,8 +57,8 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.1",
-    "posthog-node": "5.55.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "posthog-node": "5.74.0",
     "zod": "catalog:"
   },
   "devDependencies": {

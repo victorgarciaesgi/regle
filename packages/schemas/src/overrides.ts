@@ -9,5 +9,3 @@ declare module '@regle/core' {
     'regle-schemas-field-status': RegleSchemaFieldStatus<T, any>;
   }
 }
-
-export {};

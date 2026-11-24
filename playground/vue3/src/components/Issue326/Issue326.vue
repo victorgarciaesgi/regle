@@ -65,12 +65,8 @@
   <EmailComponent v-model="r$.email.$value" :field="r$.email" name="Email" :options="emailOptions" />
 
   <ul v-if="r$.$value.email !== null">
-    <li>
-      id: <b>{{ r$.$value.email.id }}</b>
-    </li>
-    <li>
-      label: <b>{{ r$.$value.email.label }}</b>
-    </li>
+    <li> id: <b>{{ r$.$value.email.id }}</b> </li>
+    <li> label: <b>{{ r$.$value.email.label }}</b> </li>
   </ul>
 
   <button @click="submit()">Submit</button>
