@@ -23,7 +23,7 @@
     "pinia": "catalog:",
     "postcss": "8.5.33",
     "sass": "catalog:",
-    "satori": "0.29.1",
+    "satori": "0.33.5",
     "satori-html": "0.3.2",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",

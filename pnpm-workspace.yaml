@@ -101,6 +101,13 @@ overrides:
   'vue>typescript': 'catalog:'
   'pinia>typescript': 'catalog:'
   '@vue/server-renderer>typescript': 'catalog:'
+  # Security: changelogithub -> changelogen -> c12@1 -> giget@1 still pins tar@6 (critical advisories).
+  'tar@<7': ^7.5.21
+  # Security: @vue/test-utils -> js-beautify pins glob@13 / minimatch@10 (fixed in glob@14.0.2).
+  'glob@^13': ^14.0.2
+  'minimatch@^10': ^11.0.1
+  # Security: satori -> @shuding/opentype.js pins fflate@0.7.4.
+  'fflate@~0.7': ^0.7.5
 peerDependencyRules:
   allowAny:
     - vite
