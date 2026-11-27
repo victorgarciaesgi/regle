@@ -356,4 +356,198 @@ describe('collections validations', () => {
     expect((await r$.$validate()).valid).toBe(true);
     expect(r$.$invalid).toBe(false);
   });
+
+  describe('immutable updates of a collection using `$key` (#416)', () => {
+    function keyedCollection(options?: { autoDirty?: boolean; silent?: boolean }) {
+      const form = ref({
+        items: [
+          { id: 1, name: 'foo' },
+          { id: 2, name: 'bar' },
+        ],
+      });
+
+      const { r$ } = useRegle(
+        form,
+        {
+          items: {
+            $each: (item) => ({
+              $key: item.value.id,
+              name: { required },
+            }),
+          },
+        },
+        options
+      );
+
+      return { form, r$ };
+    }
+
+    function unkeyedCollection() {
+      const form = ref({
+        items: [
+          { id: 1, name: 'foo' },
+          { id: 2, name: 'bar' },
+        ],
+      });
+
+      const { r$ } = useRegle(form, {
+        items: {
+          $each: {
+            name: { required },
+          },
+        },
+      });
+
+      return { form, r$ };
+    }
+
+    it('should mark only the replaced item as dirty', async () => {
+      const { form, r$ } = keyedCollection();
+
+      expect(r$.items.$each[0].name.$dirty).toBe(false);
+      expect(r$.items.$each[1].name.$dirty).toBe(false);
+
+      form.value.items = form.value.items.map((item) => (item.id === 1 ? { ...item, name: '' } : item));
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('');
+      shouldBeErrorField(r$.items.$each[0].name);
+
+      expect(r$.items.$each[1].name.$value).toBe('bar');
+      shouldBePristineField(r$.items.$each[1].name);
+    });
+
+    it('should not mark reordered items as dirty', async () => {
+      const { form, r$ } = keyedCollection();
+
+      form.value.items = [form.value.items[1], form.value.items[0]];
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('bar');
+      expect(r$.items.$each[1].name.$value).toBe('foo');
+      shouldBePristineField(r$.items.$each[0].name);
+      shouldBePristineField(r$.items.$each[1].name);
+    });
+
+    it('should not mark a replaced item as dirty when `autoDirty` is false', async () => {
+      const { form, r$ } = keyedCollection({ autoDirty: false });
+
+      form.value.items = form.value.items.map((item) => (item.id === 1 ? { ...item, name: '' } : item));
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('');
+      expect(r$.items.$each[0].name.$dirty).toBe(false);
+      expect(r$.items.$each[0].name.$error).toBe(false);
+    });
+
+    it('should not mark a replaced item as dirty when `silent` is true', async () => {
+      const { form, r$ } = keyedCollection({ silent: true });
+
+      form.value.items = form.value.items.map((item) => (item.id === 1 ? { ...item, name: '' } : item));
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('');
+      expect(r$.items.$each[0].name.$dirty).toBe(false);
+      expect(r$.items.$each[0].name.$error).toBe(false);
+    });
+
+    it('should validate the item currently in the array when the original object is restored', async () => {
+      const { form, r$ } = keyedCollection();
+      const original = form.value.items[0];
+
+      form.value.items = [{ ...original, name: '' }, form.value.items[1]];
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('');
+      expect(r$.items.$each[0].name.$invalid).toBe(true);
+
+      form.value.items = [original, form.value.items[1]];
+      await nextTick();
+
+      expect(form.value.items[0].name).toBe('foo');
+      expect(r$.items.$each[0].name.$value).toBe('foo');
+      expect(r$.items.$each[0].name.$invalid).toBe(false);
+      expect(r$.$validateSync()).toBe(true);
+      expect((await r$.$validate()).valid).toBe(true);
+    });
+
+    it('should keep the behavior of a collection without `$key` unchanged', async () => {
+      const { form, r$ } = unkeyedCollection();
+      const original = form.value.items[0];
+
+      form.value.items = form.value.items.map((item) => (item.id === 1 ? { ...item, name: '' } : item));
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('');
+      expect(r$.items.$each[0].name.$dirty).toBe(false);
+
+      form.value.items = [original, form.value.items[1]];
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('foo');
+      expect(r$.items.$each[0].name.$dirty).toBe(false);
+      expect(r$.$validateSync()).toBe(true);
+      expect((await r$.$validate()).valid).toBe(true);
+    });
+
+    it('should track an item whose `$key` is `0`', async () => {
+      const form = ref({
+        items: [
+          { id: 0, name: 'zero' },
+          { id: 1, name: 'one' },
+        ],
+      });
+
+      const { r$ } = useRegle(form, {
+        items: {
+          $each: (item) => ({
+            $key: item.value.id,
+            name: { required },
+          }),
+        },
+      });
+
+      form.value.items = [form.value.items[1], form.value.items[0]];
+      await nextTick();
+
+      shouldBePristineField(r$.items.$each[0].name);
+      shouldBePristineField(r$.items.$each[1].name);
+
+      form.value.items = form.value.items.map((item) => ({ ...item, name: '' }));
+      await nextTick();
+
+      shouldBeErrorField(r$.items.$each[0].name);
+      shouldBeErrorField(r$.items.$each[1].name);
+    });
+
+    it('should not mark the remaining items as dirty after an item is removed', async () => {
+      const form = ref({
+        items: [
+          { id: '0', name: 'zero' },
+          { id: '1', name: 'one' },
+          { id: '2', name: 'two' },
+        ],
+      });
+
+      const { r$ } = useRegle(form, {
+        items: {
+          $each: (item) => ({
+            $key: item.value.id,
+            name: { required },
+          }),
+        },
+      });
+
+      form.value.items = [form.value.items[0], form.value.items[1]];
+      await nextTick();
+
+      form.value.items = [form.value.items[1], form.value.items[0]];
+      await nextTick();
+
+      expect(r$.items.$each[0].name.$value).toBe('one');
+      expect(r$.items.$each[1].name.$value).toBe('zero');
+      shouldBePristineField(r$.items.$each[0].name);
+      shouldBePristineField(r$.items.$each[1].name);
+    });
+  });
 });
