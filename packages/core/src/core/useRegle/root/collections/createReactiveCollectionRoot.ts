@@ -1,5 +1,5 @@
 import type { ComputedRef, EffectScope, Ref, ToRefs, WatchStopHandle } from 'vue';
-import { computed, effectScope, reactive, ref, toRef, toValue, watch, watchEffect } from 'vue';
+import { computed, effectScope, reactive, ref, toRaw, toRef, toValue, watch, watchEffect } from 'vue';
 import { cloneDeep, isEmpty } from '../../../../../../shared';
 import type {
   $InternalRegleCollectionErrors,
@@ -218,21 +218,22 @@ export function createReactiveCollectionStatus({
       $eachStatus.value = state.value
         .map((value, index) => {
           const currentValue = toRef(() => value);
-          if (value.$id && $eachStatus.value.find((each) => each.$id === value.$id)) {
-            const existingStatus = storage.getArrayStatus($id.value, value.$id);
-            if (existingStatus) {
-              // Keep the reactive index tracker in sync with the new position so that
-              // `$schemaErrors` lookups inside the element follow the current location
-              // after swaps/reorderings (see createCollectionElement).
-              const indexRef = currentIndexes.get(value.$id);
-              if (indexRef) {
-                indexRef.value = index;
-              }
-              survivingIds.add(value.$id);
-              existingStatus.$value = currentValue;
-              return existingStatus;
+          const existingStatus = value.$id != null ? storage.getArrayStatus($id.value, value.$id) : undefined;
+          // With a `$key`, a replacement object shares the `$id` of the item it replaced, but the
+          // stored status keeps its fields bound to that replaced object.
+          const isSameItem = !!existingStatus && toRaw(existingStatus.$value) === toRaw(value);
+
+          if (value.$id != null && isSameItem && $eachStatus.value.find((each) => each.$id === value.$id)) {
+            // Keep the reactive index tracker in sync with the new position so that
+            // `$schemaErrors` lookups inside the element follow the current location
+            // after swaps/reorderings (see createCollectionElement).
+            const indexRef = currentIndexes.get(value.$id);
+            if (indexRef) {
+              indexRef.value = index;
             }
-            return null;
+            survivingIds.add(value.$id);
+            existingStatus.$value = currentValue;
+            return existingStatus;
           } else {
             const { scope, unwrapped } = unwrapGetter(rulesDef.value.$each, currentValue, index);
             if (scope) {
@@ -265,7 +266,18 @@ export function createReactiveCollectionStatus({
             });
 
             if (element) {
-              if (element.$id) survivingIds.add(element.$id);
+              if (element.$id != null) {
+                // Replaced item: dirty it like a replaced nested object does
+                // (`define$watchState` in `createReactiveNestedStatus`).
+                if (
+                  previousStatus.some((status) => status.$id === element.$id) &&
+                  scopeState.$autoDirty.value &&
+                  !scopeState.$silent.value
+                ) {
+                  element.$touch(false, true);
+                }
+                survivingIds.add(element.$id);
+              }
               return element;
             }
             return null;
@@ -275,8 +287,8 @@ export function createReactiveCollectionStatus({
 
       previousStatus
         .filter(($each) => !state.value?.find((f) => $each.$id === f.$id))
-        .forEach((_, index) => {
-          storage.deleteArrayStatus($id.value, index.toString());
+        .forEach(($each) => {
+          storage.deleteArrayStatus($id.value, $each.$id);
         });
 
       // Drop index trackers for items that no longer exist in the array.
